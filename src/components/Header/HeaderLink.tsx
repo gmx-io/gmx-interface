@@ -3,7 +3,7 @@ import { NavLink, NavLinkProps } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
-import "./Header.css";
+import "./Header.scss";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 
 type Props = {

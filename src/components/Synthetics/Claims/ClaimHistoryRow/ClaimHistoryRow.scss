@@ -1,0 +1,36 @@
+.ClaimHistoryRow-external-link {
+  vertical-align: top;
+
+  svg {
+    path {
+      fill: currentColor;
+    }
+  }
+}
+
+.ClaimHistoryRow-tooltip-row {
+  white-space: nowrap;
+  margin-bottom: 0.5rem;
+}
+
+.ClaimHistoryRow-time {
+  font-size: var(--font-sm);
+}
+
+.ClaimHistoryRow-size {
+  text-align: end !important;
+}
+
+.ClaimHistoryRow-action-handle {
+  display: block;
+  min-width: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ClaimHistoryRow-size-tooltip-portal .Tooltip-popup {
+  min-width: unset !important;
+  width: max-content;
+  max-width: unset !important;
+}

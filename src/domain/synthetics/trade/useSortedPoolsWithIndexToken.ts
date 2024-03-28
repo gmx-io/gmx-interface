@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { MarketInfo, MarketsInfoData } from "../markets";
 import groupBy from "lodash/groupBy";
 import { getByKey } from "lib/objects";
-import { TokensData, convertToUsd } from "../tokens";
+import { TokenData, TokensData, convertToUsd } from "../tokens";
 import { bigNumberify } from "lib/numbers";
 
 function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
@@ -47,7 +47,7 @@ function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketT
     });
 
     // Sort markets within each group by total supply
-    const sortedMarkets = sortedGroups.map((markets: any) => {
+    const sortedMarkets = sortedGroups.map((markets) => {
       return markets.sort((a, b) => {
         const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
         const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
@@ -56,7 +56,7 @@ function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketT
     });
 
     // Flatten the sorted markets array
-    const flattenedMarkets = sortedMarkets.flat(Infinity).filter(Boolean);
+    const flattenedMarkets = sortedMarkets.flat(Infinity).filter(Boolean) as TokenData[];
     return {
       markets: flattenedMarkets,
       marketsInfo: flattenedMarkets.map((market) => getByKey(marketsInfoData, market.address)!),

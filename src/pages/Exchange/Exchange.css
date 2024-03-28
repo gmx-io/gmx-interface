@@ -544,7 +544,7 @@ table.Exchange-list tr {
   border-bottom: 1px solid #23263b;
 }
 
-table.Exchange-list tr:last-child {
+table.Exchange-list tbody tr:last-child {
   border-bottom: none;
 }
 
@@ -588,7 +588,7 @@ table.Position-list .Exchange-list-item-active {
   content: "";
   border-left: 2px solid #3a3f79;
   position: absolute;
-  left: -7px;
+  left: -10px;
   bottom: -1px;
   height: 21px;
 }

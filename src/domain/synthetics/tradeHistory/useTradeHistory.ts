@@ -1,22 +1,25 @@
 import { gql } from "@apollo/client";
+import { BigNumber, ethers } from "ethers";
+import { useMemo } from "react";
+import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
+
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { parseContractPrice } from "domain/synthetics/tokens";
-import { BigNumber, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useMemo } from "react";
-import useInfinateSwr from "swr/infinite";
-import { isSwapOrderType } from "../orders";
+import { GraphQlFilters, getSyntheticsGraphClient } from "lib/subgraph";
+import { buildFiltersBody } from "lib/subgraph";
+
+import { OrderType, isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
-import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
+import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
   isLoading: boolean;
   pageIndex: number;
-  setPageIndex: (index: number) => Promise<RawTradeAction[] | undefined>;
+  setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
 
 export function useTradeHistory(
@@ -25,9 +28,18 @@ export function useTradeHistory(
     account: string | null | undefined;
     forAllAccounts?: boolean;
     pageSize: number;
+    fromTxTimestamp?: number;
+    toTxTimestamp?: number;
+    marketAddresses?: string[];
+    orderEventCombinations?: {
+      eventName?: TradeActionType;
+      orderType?: OrderType;
+      isDepositOrWithdraw?: boolean;
+    }[];
   }
-) {
-  const { pageSize, account, forAllAccounts } = p;
+): TradeHistoryResult {
+  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses, orderEventCombinations } =
+    p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -35,7 +47,18 @@ export function useTradeHistory(
 
   const getKey = (index: number) => {
     if (chainId && client && (account || forAllAccounts)) {
-      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize];
+      return [
+        chainId,
+        "useTradeHistory",
+        account,
+        forAllAccounts,
+        index,
+        pageSize,
+        fromTxTimestamp,
+        toTxTimestamp,
+        JSON.stringify(orderEventCombinations),
+        structuredClone(marketAddresses)?.sort().join(","),
+      ];
     }
     return null;
   };
@@ -45,28 +68,85 @@ export function useTradeHistory(
     error,
     size: pageIndex,
     setSize: setPageIndex,
-  } = useInfinateSwr<RawTradeAction[]>(getKey, {
+  } = useInfiniteSwr<RawTradeAction[]>(getKey, {
     fetcher: async (key) => {
       const [, , , , pageIndex] = key;
       const skip = pageIndex * pageSize;
       const first = pageSize;
 
+      const maybeLowercaseMarketAddresses = marketAddresses?.map((s) => s.toLowerCase());
+
+      const filtersStr = buildFiltersBody({
+        and: [
+          {
+            account: forAllAccounts ? undefined : account!.toLowerCase(),
+            transaction: {
+              timestamp_gte: fromTxTimestamp,
+              timestamp_lte: toTxTimestamp,
+            },
+          },
+          {
+            or: [
+              // For non-swap orders
+              {
+                orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                marketAddress_in: maybeLowercaseMarketAddresses,
+              },
+              // For swap orders
+              {
+                and: [
+                  {
+                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  },
+                  {
+                    or: [
+                      // Source token is not in swap path so we add it to the or filter
+                      {
+                        marketAddress_in: maybeLowercaseMarketAddresses,
+                      } as GraphQlFilters,
+                    ].concat(
+                      maybeLowercaseMarketAddresses?.map((marketAddress) => ({
+                        swapPath_contains: [marketAddress],
+                      })) || []
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            or: orderEventCombinations?.map((combination) => ({
+              eventName: combination.eventName,
+              orderType: combination.orderType,
+              sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
+            })),
+          },
+          {
+            // We do not show create liquidation orders in the trade history, thus we filter it out
+            // ... && not (liquidation && orderCreated) === ... && (not liquidation || not orderCreated)
+            or: [{ orderType_not: OrderType.Liquidation }, { eventName_not: TradeActionType.OrderCreated }],
+          },
+        ],
+      });
+
+      const whereClause = `where: ${filtersStr}`;
+
       const query = gql(`{
         tradeActions(
-          skip: ${skip},
-          first: ${first},
-          orderBy: transaction__timestamp,
-          orderDirection: desc,
-          ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
+            skip: ${skip},
+            first: ${first},
+            orderBy: transaction__timestamp,
+            orderDirection: desc,
+            ${whereClause}
         ) {
             id
             eventName
-            
+
             account
             marketAddress
             swapPath
             initialCollateralTokenAddress
-            
+
             initialCollateralDeltaAmount
             sizeDeltaUsd
             triggerPrice
@@ -81,21 +161,22 @@ export function useTradeHistory(
             borrowingFeeAmount
             fundingFeeAmount
             pnlUsd
+            basePnlUsd
 
             collateralTokenPriceMax
             collateralTokenPriceMin
 
             indexTokenPriceMin
             indexTokenPriceMax
-            
+
             orderType
             orderKey
             isLong
             shouldUnwrapNativeToken
-            
+
             reason
             reasonBytes
-            
+
             transaction {
                 timestamp
                 hash
@@ -157,6 +238,8 @@ export function useTradeHistory(
             targetCollateralToken,
             initialCollateralToken,
             transaction: rawAction.transaction,
+            reason: rawAction.reason,
+            reasonBytes: rawAction.reasonBytes,
           };
 
           return tradeAction;
@@ -221,6 +304,7 @@ export function useTradeHistory(
             orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
             pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
+            basePnlUsd: rawAction.basePnlUsd ? BigNumber.from(rawAction.basePnlUsd) : undefined,
 
             priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
             priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,

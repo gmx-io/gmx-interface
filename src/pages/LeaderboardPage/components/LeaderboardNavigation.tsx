@@ -18,7 +18,14 @@ type LeaderboardNavigationItem = {
   href: string;
 };
 
-function getChip(pageKey: LeaderboardPageKey) {
+const sortingPoints: Record<LeaderboardNavigationItem["chip"], number> = {
+  over: 3,
+  soon: 2,
+  live: 1,
+  none: 0,
+};
+
+function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"] {
   if (pageKey === "leaderboard") return "none";
 
   const timeframe = LEADERBOARD_PAGES[pageKey].timeframe;
@@ -45,7 +52,9 @@ export function LeaderboardNavigation() {
           href: page.href,
           chainId: page.isCompetition ? page.chainId : undefined,
         };
-      });
+      })
+      .sort((a, b) => sortingPoints[a.chip] - sortingPoints[b.chip]);
+
     return items;
   }, [pageKey]);
 

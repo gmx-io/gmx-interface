@@ -372,6 +372,16 @@ export function TradeFeesRow(p: Props) {
     );
   }, [rebateIsApplicable, tradingIncentives]);
 
+  const swapRouteMsg = useMemo(() => {
+    if (p.swapFees && p.swapFees.length <= 2) return;
+    return (
+      <>
+        <br />
+        <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
+      </>
+    );
+  }, [p.swapFees]);
+
   let value: ReactNode = useMemo(() => {
     if (!totalFeeUsd || totalFeeUsd.eq(0)) {
       return "-";
@@ -402,12 +412,13 @@ export function TradeFeesRow(p: Props) {
               )}
               {incentivesBottomText && <br />}
               {incentivesBottomText}
+              {swapRouteMsg}
             </div>
           )}
         />
       );
     }
-  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd]);
+  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd, swapRouteMsg]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
 }
