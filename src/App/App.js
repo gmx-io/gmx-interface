@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { SWRConfig } from "swr";
 import "@wagmi/connectors";
 
-import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
@@ -598,7 +598,6 @@ function App() {
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
-  app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
