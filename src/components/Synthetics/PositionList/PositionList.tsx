@@ -185,7 +185,6 @@ const PositionItemWrapper = memo(
 
     return (
       <PositionItem
-        key={position.key}
         position={position}
         onEditCollateralClick={handleEditCollateralClick}
         onClosePositionClick={handleClosePositionClick}

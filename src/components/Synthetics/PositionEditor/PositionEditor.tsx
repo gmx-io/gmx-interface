@@ -187,18 +187,29 @@ export function PositionEditor(p: Props) {
     selectedCollateralAddress !== ethers.constants.AddressZero &&
     collateralDeltaAmount.gt(tokenAllowance);
 
-  const minCollateralUsdForLeverage = position ? getMinCollateralUsdForLeverage(position) : BigNumber.from(0);
-  let _minCollateralUsd = minCollateralUsdForLeverage;
-  if (minCollateralUsd?.gt(_minCollateralUsd)) {
-    _minCollateralUsd = minCollateralUsd;
-  }
-  _minCollateralUsd = _minCollateralUsd
-    .add(position?.pendingBorrowingFeesUsd || 0)
-    .add(position?.pendingFundingFeesUsd || 0);
+  const maxWithdrawAmount = useMemo(() => {
+    if (!position) return BigNumber.from(0);
 
-  const maxWithdrawUsd = position ? position.collateralUsd.sub(_minCollateralUsd) : BigNumber.from(0);
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
+    let _minCollateralUsd = minCollateralUsdForLeverage;
 
-  const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
+    if (minCollateralUsd?.gt(_minCollateralUsd)) {
+      _minCollateralUsd = minCollateralUsd;
+    }
+
+    _minCollateralUsd = _minCollateralUsd
+      .add(position?.pendingBorrowingFeesUsd || 0)
+      .add(position?.pendingFundingFeesUsd || 0);
+
+    if (position.collateralUsd.lt(_minCollateralUsd)) {
+      return BigNumber.from(0);
+    }
+
+    const maxWithdrawUsd = position.collateralUsd.sub(_minCollateralUsd);
+    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
+
+    return maxWithdrawAmount;
+  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !gasLimits || !tokensData || !gasPrice) {
@@ -307,7 +318,6 @@ export function PositionEditor(p: Props) {
       nextLeverage,
       nextLiqPrice,
       minCollateralUsd,
-      maxWithdrawAmount,
       isDeposit,
       position,
       depositToken: collateralToken,
@@ -345,7 +355,6 @@ export function PositionEditor(p: Props) {
     nextLeverage,
     nextLiqPrice,
     minCollateralUsd,
-    maxWithdrawAmount,
     isDeposit,
     position,
     collateralToken,

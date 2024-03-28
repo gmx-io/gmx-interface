@@ -405,7 +405,6 @@ export function getEditCollateralError(p: {
   collateralDeltaUsd: BigNumber | undefined;
   nextCollateralUsd: BigNumber | undefined;
   minCollateralUsd: BigNumber | undefined;
-  maxWithdrawAmount: BigNumber | undefined;
   nextLiqPrice: BigNumber | undefined;
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
@@ -418,7 +417,6 @@ export function getEditCollateralError(p: {
     collateralDeltaAmount,
     collateralDeltaUsd,
     minCollateralUsd,
-    maxWithdrawAmount,
     nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
@@ -429,8 +427,6 @@ export function getEditCollateralError(p: {
     minCollateralFactor,
   } = p;
 
-  const isFullClose = maxWithdrawAmount ? collateralDeltaAmount?.eq(maxWithdrawAmount) : false;
-
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
     return [t`Enter an amount`];
   }
@@ -439,8 +435,8 @@ export function getEditCollateralError(p: {
     return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
-  if (!isFullClose && nextCollateralUsd && minCollateralUsd && position) {
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
+  if (nextCollateralUsd && minCollateralUsd && position) {
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
 
     if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
       return [t`Min collateral: ${formatAmount(minCollateralUsdForLeverage, USD_DECIMALS, 2)} USD`];
@@ -457,11 +453,11 @@ export function getEditCollateralError(p: {
     }
   }
 
-  if (!isFullClose && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+  if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (!isFullClose && position && minCollateralFactor && !isDeposit) {
+  if (position && minCollateralFactor && !isDeposit) {
     const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,

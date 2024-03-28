@@ -3,7 +3,13 @@ import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  getLeverage,
+  getLiquidationPrice,
+  getMinCollateralFactorForPosition,
+  getPositionPnlUsd,
+} from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
@@ -420,23 +426,9 @@ export function getIsFullClose(p: {
   return false;
 }
 
-// TODO should minCollateralFactorForOpenInterestShort be multiplied by OI?
-export function getMinCollateralUsdForLeverage(position: PositionInfo) {
-  const { marketInfo, isLong } = position;
-
-  let minCollateralFactor = isLong
-    ? marketInfo.minCollateralFactorForOpenInterestLong
-    : marketInfo.minCollateralFactorForOpenInterestShort;
-
-  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
-
-  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
-    minCollateralFactor = minCollateralFactorForMarket;
-  }
-
-  const minCollateralUsdForLeverage = applyFactor(position.sizeInUsd, minCollateralFactor);
-
-  return minCollateralUsdForLeverage;
+export function getMinCollateralUsdForLeverage(position: PositionInfo, openInterestDelta: BigNumber) {
+  const minCollateralFactor = getMinCollateralFactorForPosition(position, openInterestDelta);
+  return applyFactor(position.sizeInUsd, minCollateralFactor);
 }
 
 export function payForCollateralCost(p: {

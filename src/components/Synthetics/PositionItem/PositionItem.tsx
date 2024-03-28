@@ -375,7 +375,7 @@ export function PositionItem(p: Props) {
           );
         }
         return (
-          <div key={getKey(order)} className="Position-list-order">
+          <div key={order.key} className="Position-list-order">
             {renderOrderText(order)}
           </div>
         );
@@ -765,13 +765,4 @@ export function PositionItem(p: Props) {
   }
 
   return p.isLarge ? renderLarge() : renderSmall();
-}
-
-function getKey(order: PositionOrderInfo) {
-  return (
-    order.initialCollateralToken.address +
-    order.orderType +
-    order.triggerPrice.toString() +
-    order.targetCollateralToken.address
-  );
 }
