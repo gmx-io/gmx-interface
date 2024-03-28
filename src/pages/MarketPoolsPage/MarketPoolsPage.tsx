@@ -53,14 +53,14 @@ export function MarketPoolsPage(p: Props) {
 
   const handleSetSelectedMarketKey = (marketKey: string) => {
     const currentMode = mode;
-    const availableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, marketKey));
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, marketKey));
 
-    if (availableModes.includes(currentMode)) {
+    if (newAvailableModes.includes(currentMode)) {
       setSelectedMarketKey(marketKey);
       return;
     }
 
-    const firstAvailableMode = availableModes[0];
+    const firstAvailableMode = newAvailableModes[0];
     setMode(firstAvailableMode);
     setSelectedMarketKey(marketKey);
   };
