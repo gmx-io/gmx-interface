@@ -10,12 +10,13 @@ import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
-import "./Header.css";
+import "./Header.scss";
 import { Link } from "react-router-dom";
 import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 import { Trans } from "@lingui/macro";
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
+import { useMedia } from "react-use";
 import { HeaderLink } from "./HeaderLink";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
@@ -51,6 +52,8 @@ export function Header({
   showRedirectModal,
   tradePageVersion,
 }: Props) {
+  const isMobile = useMedia("(max-width: 1200px)");
+
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
   const isTradingIncentiveActive = useIncentiveStats()?.trading?.isActive ?? false;
@@ -100,56 +103,63 @@ export function Header({
         </AnimatePresence>
       )}
       <header>
-        <div className="App-header large">
-          <div className="App-header-container-left">
-            <Link className="App-header-link-main" to="/">
-              <img src={logoImg} className="big" alt="GMX Logo" />
-              <img src={logoSmallImg} className="small" alt="GMX Logo" />
-            </Link>
-            {isHomeSite() ? (
-              <HomeHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
-            ) : (
-              <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
-            )}
-          </div>
-          <div className="App-header-container-right">
-            <AppHeaderUser
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-              openSettings={openSettings}
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
-              tradePageVersion={tradePageVersion}
-            />
-          </div>
-        </div>
-        <div className={cx("App-header", "small", { active: isDrawerVisible })}>
-          <div
-            className={cx("App-header-link-container", "App-header-top", {
-              active: isDrawerVisible,
-            })}
-          >
+        {!isMobile && (
+          <div className="App-header large">
             <div className="App-header-container-left">
-              <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-              </div>
-              <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+              <Link className="App-header-link-main" to="/">
                 <img src={logoImg} className="big" alt="GMX Logo" />
                 <img src={logoSmallImg} className="small" alt="GMX Logo" />
-              </div>
+              </Link>
+              {isHomeSite() ? (
+                <HomeHeaderLinks
+                  redirectPopupTimestamp={redirectPopupTimestamp}
+                  showRedirectModal={showRedirectModal}
+                />
+              ) : (
+                <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+              )}
             </div>
             <div className="App-header-container-right">
               <AppHeaderUser
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}
-                small
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
                 tradePageVersion={tradePageVersion}
               />
             </div>
           </div>
-        </div>
+        )}
+        {isMobile && (
+          <div className={cx("App-header", "small", { active: isDrawerVisible })}>
+            <div
+              className={cx("App-header-link-container", "App-header-top", {
+                active: isDrawerVisible,
+              })}
+            >
+              <div className="App-header-container-left">
+                <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                  {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                  {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+                </div>
+                <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                  <img src={logoImg} className="big" alt="GMX Logo" />
+                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                </div>
+              </div>
+              <div className="App-header-container-right">
+                <AppHeaderUser
+                  disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+                  openSettings={openSettings}
+                  small
+                  redirectPopupTimestamp={redirectPopupTimestamp}
+                  showRedirectModal={showRedirectModal}
+                  tradePageVersion={tradePageVersion}
+                />
+              </div>
+            </div>
+          </div>
+        )}
         {isTradingIncentiveActive && (
           <HeaderPromoBanner>
             <Trans>

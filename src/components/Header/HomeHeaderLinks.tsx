@@ -2,7 +2,7 @@ import { FiX } from "react-icons/fi";
 import logoImg from "img/logo_GMX.svg";
 import { t } from "@lingui/macro";
 
-import "./Header.css";
+import "./Header.scss";
 import { Link } from "react-router-dom";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { HeaderLink } from "./HeaderLink";
