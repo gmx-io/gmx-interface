@@ -6,7 +6,6 @@ import {
   createTradeFlags,
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
-  makeSelectTradeRatios,
 } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
 import { useSavedIsPnlInLeverage } from "./globalsHooks";
@@ -90,33 +89,6 @@ export const useSwapRoutes = (fromTokenAddress: string | undefined, toTokenAddre
   const selector = useMemo(
     () => makeSelectSwapRoutes(fromTokenAddress, toTokenAddress),
     [fromTokenAddress, toTokenAddress]
-  );
-  return useSelector(selector);
-};
-
-export const useTradeRatios = ({
-  fromTokenAddress,
-  toTokenAddress,
-  tradeType,
-  tradeMode,
-  triggerRatioValue,
-}: {
-  fromTokenAddress: string | undefined;
-  toTokenAddress: string | undefined;
-  tradeType: TradeType;
-  tradeMode: TradeMode;
-  triggerRatioValue: BigNumber | undefined;
-}) => {
-  const selector = useMemo(
-    () =>
-      makeSelectTradeRatios({
-        fromTokenAddress,
-        toTokenAddress,
-        tradeType,
-        tradeMode,
-        triggerRatioValue,
-      }),
-    [fromTokenAddress, toTokenAddress, tradeType, tradeMode, triggerRatioValue]
   );
   return useSelector(selector);
 };

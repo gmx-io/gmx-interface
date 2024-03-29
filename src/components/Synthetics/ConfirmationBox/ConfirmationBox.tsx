@@ -75,7 +75,6 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -115,6 +114,7 @@ import {
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
@@ -136,7 +136,6 @@ export type Props = {
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
-  triggerRatioValue: BigNumber | undefined;
   markPrice: BigNumber | undefined;
 };
 
@@ -158,7 +157,6 @@ export function ConfirmationBox(p: Props) {
     onClose,
     onSubmitted,
     setPendingTxns,
-    triggerRatioValue,
     markPrice,
   } = p;
   const {
@@ -170,8 +168,6 @@ export function ConfirmationBox(p: Props) {
     collateralToken,
     keepLeverage,
     setKeepLeverage,
-    tradeMode,
-    tradeType,
   } = useSelector(selectTradeboxState);
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
 
@@ -179,13 +175,7 @@ export function ConfirmationBox(p: Props) {
     executionFee?.feeUsd
   );
 
-  const { markRatio, triggerRatio } = useTradeRatios({
-    fromTokenAddress,
-    toTokenAddress,
-    tradeMode,
-    tradeType,
-    triggerRatioValue,
-  });
+  const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
 
   const tokensData = useTokensData();
   const ordersData = useOrdersInfoData();

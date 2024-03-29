@@ -1,5 +1,4 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   TradeFlags,
   TradeMode,
@@ -9,7 +8,6 @@ import {
   getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
-  getMarkPrice,
   getMarketsGraph,
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
@@ -334,85 +332,6 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           minPositionSizeUsd,
           uiFeeFactor,
         });
-      }
-    )
-);
-
-export const makeSelectMarkPrice = createSelectorFactory(
-  ({
-    toTokenAddress,
-    tradeMode,
-    tradeType,
-  }: {
-    toTokenAddress: string | undefined;
-    tradeType: TradeType;
-    tradeMode: TradeMode;
-  }) =>
-    createSelectorDeprecated([selectTokensData], (tokensData) => {
-      const tradeFlags = createTradeFlags(tradeType, tradeMode);
-      const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-
-      if (!toToken) {
-        return undefined;
-      }
-
-      if (tradeFlags.isSwap) {
-        return toToken.prices.minPrice;
-      }
-
-      return getMarkPrice({ prices: toToken.prices, isIncrease: tradeFlags.isIncrease, isLong: tradeFlags.isLong });
-    })
-);
-
-export const makeSelectTradeRatios = createSelectorFactory(
-  ({
-    fromTokenAddress,
-    toTokenAddress,
-    tradeType,
-    tradeMode,
-    triggerRatioValue,
-  }: {
-    fromTokenAddress: string | undefined;
-    toTokenAddress: string | undefined;
-    tradeType: TradeType;
-    tradeMode: TradeMode;
-    triggerRatioValue: BigNumber | undefined;
-  }) =>
-    createSelectorDeprecated(
-      [
-        selectTokensData,
-        makeSelectMarkPrice({
-          toTokenAddress,
-          tradeMode,
-          tradeType,
-        }),
-      ],
-      (tokensData, markPrice) => {
-        const tradeFlags = createTradeFlags(tradeType, tradeMode);
-        const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-        const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-        const fromTokenPrice = fromToken?.prices.minPrice;
-        if (!tradeFlags.isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
-          return {};
-        }
-        const markRatio = getTokensRatioByPrice({
-          fromToken,
-          toToken,
-          fromPrice: fromTokenPrice,
-          toPrice: markPrice,
-        });
-        if (!triggerRatioValue) {
-          return { markRatio };
-        }
-        const triggerRatio: TokensRatio = {
-          ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
-          largestToken: markRatio.largestToken,
-          smallestToken: markRatio.smallestToken,
-        };
-        return {
-          markRatio,
-          triggerRatio,
-        };
       }
     )
 );

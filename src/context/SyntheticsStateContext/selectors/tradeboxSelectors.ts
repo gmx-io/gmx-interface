@@ -21,7 +21,6 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
-  makeSelectTradeRatios,
 } from "./tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -42,7 +41,7 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -209,18 +208,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const { findSwapPath } = q(
     makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
   );
-  const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
-  const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
 
-  const { markRatio, triggerRatio } = q(
-    makeSelectTradeRatios({
-      fromTokenAddress,
-      toTokenAddress,
-      tradeMode,
-      tradeType: TradeType.Swap,
-      triggerRatioValue,
-    })
-  );
+  const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
   if (isWrapOrUnwrap) {
     const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
@@ -357,6 +346,11 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   const chainId = q(selectChainId);
 
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+});
+
+const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {
+  const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
+  return parseValue(triggerRatioInputValue, USD_DECIMALS);
 });
 
 export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) {
@@ -731,4 +725,45 @@ export const selectTradeboxAvailableMarketsOptions = createSelector(function sel
   }
 
   return result;
+});
+
+export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
+  const tradeFlags = q(selectTradeboxTradeFlags);
+
+  if (!tradeFlags.isSwap) return {};
+
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const triggerRatioValue = q(selectTradeboxTriggerRatioValue);
+
+  const toToken = q((s) => (toTokenAddress ? selectTokensData(s)?.[toTokenAddress] : undefined));
+  const fromToken = q((s) => (fromTokenAddress ? selectTokensData(s)?.[fromTokenAddress] : undefined));
+  const fromTokenPrice = fromToken?.prices.minPrice;
+  const markPrice = toToken?.prices.minPrice;
+
+  if (!tradeFlags.isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
+    return {};
+  }
+
+  const markRatio = getTokensRatioByPrice({
+    fromToken,
+    toToken,
+    fromPrice: fromTokenPrice,
+    toPrice: markPrice,
+  });
+
+  if (!triggerRatioValue) {
+    return { markRatio };
+  }
+
+  const triggerRatio: TokensRatio = {
+    ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
+    largestToken: markRatio.largestToken,
+    smallestToken: markRatio.smallestToken,
+  };
+
+  return {
+    markRatio,
+    triggerRatio,
+  };
 });

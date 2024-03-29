@@ -29,7 +29,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -46,6 +46,7 @@ import {
   selectTradeboxSwapRoutes,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
@@ -254,6 +255,7 @@ export function TradeBox(p: Props) {
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
+  const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -302,15 +304,6 @@ export function TradeBox(p: Props) {
   }, [marketInfo]);
 
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
-  const triggerRatioValue = useMemo(() => parseValue(triggerRatioInputValue, USD_DECIMALS), [triggerRatioInputValue]);
-
-  const { markRatio, triggerRatio } = useTradeRatios({
-    fromTokenAddress,
-    toTokenAddress,
-    tradeMode,
-    tradeType,
-    triggerRatioValue,
-  });
 
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useMemo(() => {
     if (!marketInfo || !isIncrease) {
@@ -1412,7 +1405,6 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        triggerRatioValue={triggerRatioValue}
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
