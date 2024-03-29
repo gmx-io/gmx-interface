@@ -83,6 +83,8 @@ export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: Syntheti
   s.tradebox.defaultTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSelectedTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.selectedTriggerAcceptablePriceImpactBps;
+export const selectTradeboxSetSelectedAcceptablePriceImpactBps = (s: SyntheticsState) =>
+  s.tradebox.setSelectedAcceptablePriceImpactBps;
 export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
@@ -92,6 +94,7 @@ export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.kee
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
+export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 
 export const selectTradeboxSwapRoutes = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

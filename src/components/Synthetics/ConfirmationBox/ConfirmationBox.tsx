@@ -103,16 +103,27 @@ import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
+  selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
+  selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFixedTriggerOrderType,
+  selectTradeboxFixedTriggerThresholdType,
+  selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsWrapOrUnwrap,
+  selectTradeboxKeepLeverage,
   selectTradeboxMarkPrice,
+  selectTradeboxMarketInfo,
   selectTradeboxNextPositionValuesForDecrease,
   selectTradeboxNextPositionValuesForIncrease,
   selectTradeboxSelectedPosition,
-  selectTradeboxState,
+  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
+  selectTradeboxSetKeepLeverage,
+  selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxSwapAmounts,
+  selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
@@ -122,15 +133,11 @@ import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;
-  fixedTriggerThresholdType: TriggerThresholdType | undefined;
-  fixedTriggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined;
   swapLiquidityUsd: BigNumber | undefined;
   longLiquidityUsd: BigNumber | undefined;
   shortLiquidityUsd: BigNumber | undefined;
   error: string | undefined;
   shouldDisableValidation: boolean;
-  selectedTriggerAcceptablePriceImpactBps: BigNumber | undefined;
-  setSelectedTriggerAcceptablePriceImpactBps: (value: BigNumber) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
@@ -138,36 +145,32 @@ export type Props = {
 
 export function ConfirmationBox(p: Props) {
   const {
-    fixedTriggerThresholdType,
-    fixedTriggerOrderType,
     swapLiquidityUsd,
     longLiquidityUsd,
     shortLiquidityUsd,
     error,
     shouldDisableValidation,
-    selectedTriggerAcceptablePriceImpactBps,
-    setSelectedTriggerAcceptablePriceImpactBps,
     onClose,
     onSubmitted,
     setPendingTxns,
   } = p;
-  const {
-    isWrapOrUnwrap,
-    fromTokenAddress,
-    toTokenAddress,
-    defaultTriggerAcceptablePriceImpactBps,
-    marketInfo,
-    collateralToken,
-    keepLeverage,
-    setKeepLeverage,
-  } = useSelector(selectTradeboxState);
+  const tokensData = useTokensData();
+  const ordersData = useOrdersInfoData();
 
+  const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
+  const keepLeverage = useSelector(selectTradeboxKeepLeverage);
+  const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
   const fees = useSelector(selectTradeboxFees);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
-  const tokensData = useTokensData();
-  const ordersData = useOrdersInfoData();
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -179,6 +182,8 @@ export function ConfirmationBox(p: Props) {
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+  const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
+  const fixedTriggerOrderType = useSelector(selectTradeboxFixedTriggerOrderType);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd

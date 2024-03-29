@@ -186,7 +186,6 @@ export function TradeBox(p: Props) {
     setFocusedInput,
     fixedTriggerThresholdType,
     setFixedTriggerThresholdType,
-    fixedTriggerOrderType,
     setFixedTriggerOrderType,
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
@@ -1376,10 +1375,6 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        fixedTriggerThresholdType={fixedTriggerThresholdType}
-        fixedTriggerOrderType={fixedTriggerOrderType}
-        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
-        setSelectedTriggerAcceptablePriceImpactBps={setSelectedAcceptablePriceImpactBps}
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}
         shortLiquidityUsd={shortLiquidity}
