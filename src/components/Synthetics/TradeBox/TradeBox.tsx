@@ -245,6 +245,9 @@ export function TradeBox(p: Props) {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
+  const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -277,9 +280,6 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
-  const { availableMarkets } = marketsOptions;
-
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
 
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useMemo(() => {
@@ -300,9 +300,7 @@ export function TradeBox(p: Props) {
     };
   }, [increaseAmounts, isIncrease, isLong, marketInfo]);
 
-  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const userReferralInfo = useUserReferralInfo();
-  const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
@@ -698,13 +696,9 @@ export function TradeBox(p: Props) {
       }
     },
     [
-      availableMarkets,
-      chainId,
-      isLong,
       isPosition,
       marketAddress,
       marketsOptions.availableMarkets,
-      marketsOptions.collateralWithPosition,
       marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
