@@ -2,16 +2,16 @@ import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { Token } from "domain/tokens";
 import cx from "classnames";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
+import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 export type Props = {
   selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
-  marketsOptions?: AvailableMarketsOptions;
   availableCollaterals?: Token[];
   hasExistingPosition?: boolean;
   hasExistingOrder?: boolean;
@@ -23,7 +23,6 @@ export function CollateralSelectorRow(p: Props) {
   const {
     selectedCollateralAddress,
     selectedMarketAddress,
-    marketsOptions,
     hasExistingOrder,
     hasExistingPosition,
     availableCollaterals,
@@ -31,6 +30,7 @@ export function CollateralSelectorRow(p: Props) {
     isMarket,
   } = p;
 
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const { chainId } = useChainId();

@@ -32,6 +32,7 @@ import {
 import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectTradeboxAvailableMarketsOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxExistingOrder,
@@ -67,7 +68,6 @@ import {
   getMarkPrice,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade";
-import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
   ValidationResult,
@@ -288,15 +288,7 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const marketsOptions = useAvailableMarketsOptions({
-    isIncrease,
-    disable: !isPosition,
-    indexToken: toToken,
-    isLong,
-    increaseSizeUsd: increaseAmounts?.sizeDeltaUsd,
-    hasExistingOrder: Boolean(existingOrder),
-    hasExistingPosition: Boolean(selectedPosition),
-  });
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const { availableMarkets } = marketsOptions;
 
   const availableCollaterals = useMemo(() => {
@@ -1065,7 +1057,6 @@ export function TradeBox(p: Props) {
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
           indexToken={toToken}
-          marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(selectedPosition)}
           isOutPositionLiquidity={isOutPositionLiquidity}
@@ -1077,7 +1068,6 @@ export function TradeBox(p: Props) {
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
           availableCollaterals={availableCollaterals}
-          marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(selectedPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
@@ -1434,7 +1424,6 @@ export function TradeBox(p: Props) {
         fixedTriggerOrderType={fixedTriggerOrderType}
         selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         setSelectedTriggerAcceptablePriceImpactBps={setSelectedAcceptablePriceImpactBps}
-        marketsOptions={marketsOptions}
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}
         shortLiquidityUsd={shortLiquidity}

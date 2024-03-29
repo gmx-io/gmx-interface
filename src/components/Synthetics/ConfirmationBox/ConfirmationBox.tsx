@@ -77,7 +77,6 @@ import {
 import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -108,6 +107,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import "./ConfirmationBox.scss";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
+  selectTradeboxAvailableMarketsOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxNextPositionValuesForDecrease,
@@ -123,7 +123,6 @@ export type Props = {
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  marketsOptions?: AvailableMarketsOptions;
   swapLiquidityUsd?: BigNumber;
   longLiquidityUsd?: BigNumber;
   shortLiquidityUsd?: BigNumber;
@@ -154,7 +153,6 @@ export function ConfirmationBox(p: Props) {
     error,
     existingPosition,
     shouldDisableValidation,
-    marketsOptions,
     selectedTriggerAcceptablePriceImpactBps,
     setSelectedTriggerAcceptablePriceImpactBps,
     onClose,
@@ -175,6 +173,7 @@ export function ConfirmationBox(p: Props) {
     tradeMode,
     tradeType,
   } = useSelector(selectTradeboxState);
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd

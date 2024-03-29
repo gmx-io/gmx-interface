@@ -2,8 +2,9 @@ import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Market, MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "lib/numbers";
@@ -13,7 +14,6 @@ import { useCallback, useMemo } from "react";
 export type Props = {
   indexToken?: Token;
   selectedMarket?: MarketInfo;
-  marketsOptions?: AvailableMarketsOptions;
   hasExistingPosition?: boolean;
   hasExistingOrder?: boolean;
   isOutPositionLiquidity?: boolean;
@@ -25,14 +25,13 @@ export function MarketPoolSelectorRow(p: Props) {
   const {
     selectedMarket,
     indexToken,
-    marketsOptions,
     hasExistingOrder,
     hasExistingPosition,
     isOutPositionLiquidity,
     currentPriceImpactBps,
     onSelectMarketAddress,
   } = p;
-
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const {
     isNoSufficientLiquidityInAnyMarket,
     marketWithOrder,

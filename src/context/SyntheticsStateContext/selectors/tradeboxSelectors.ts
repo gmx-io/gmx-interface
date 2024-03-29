@@ -4,6 +4,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectSavedIsPnlInLeverage,
@@ -11,7 +12,7 @@ import {
   selectUiFeeFactor,
 } from "./globalSelectors";
 import { getByKey } from "lib/objects";
-import { parseValue } from "lib/numbers";
+import { expandDecimals, parseValue } from "lib/numbers";
 import { BigNumber } from "ethers";
 import {
   createTradeFlags,
@@ -25,16 +26,23 @@ import {
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { createSelector, createSelectorDeprecated } from "../utils";
-import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
+import {
+  DecreasePositionSwapType,
+  PositionOrderInfo,
+  isIncreaseOrderType,
+  isSwapOrderType,
+} from "domain/synthetics/orders";
 import {
   SwapAmounts,
   TradeFeesType,
   TradeType,
+  getAcceptablePriceByPriceImpact,
+  getMarkPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -42,6 +50,13 @@ import {
   getExecutionFee,
 } from "domain/synthetics/fees";
 import { mustNeverExist } from "lib/types";
+import {
+  MarketInfo,
+  getAvailableUsdLiquidityForPosition,
+  getMinPriceImpactMarket,
+  getMostLiquidMarketForPosition,
+  isMarketIndexToken,
+} from "domain/synthetics/markets";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -597,3 +612,120 @@ export const selectTradeboxExistingOrder = createSelectorDeprecated(
       });
   }
 );
+
+export type AvailableMarketsOptions = {
+  allMarkets?: MarketInfo[];
+  availableMarkets?: MarketInfo[];
+  marketWithPosition?: MarketInfo;
+  collateralWithPosition?: TokenData;
+  marketWithOrder?: MarketInfo;
+  collateralWithOrder?: TokenData;
+  maxLiquidityMarket?: MarketInfo;
+  minPriceImpactMarket?: MarketInfo;
+  minPriceImpactBps?: BigNumber;
+  isNoSufficientLiquidityInAnyMarket?: boolean;
+};
+
+export const selectTradeboxAvailableMarketsOptions = createSelector(function selectTradeboxAvailableMarketsOptions(
+  q
+): AvailableMarketsOptions {
+  const { isIncrease, isPosition, isLong } = q(selectTradeboxTradeFlags);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  if (!toTokenAddress) return {};
+  const indexToken = q((s) => selectTokensData(s)?.[toTokenAddress]);
+
+  if (!isPosition || !indexToken) return {};
+
+  const marketsInfoData = q(selectMarketsInfoData);
+
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const increaseSizeUsd = increaseAmounts?.sizeDeltaUsd;
+
+  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
+
+  const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
+
+  const liquidMarkets = increaseSizeUsd
+    ? availableMarkets.filter((marketInfo) => {
+        const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+
+        return liquidity.gt(increaseSizeUsd);
+      })
+    : availableMarkets;
+
+  const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
+
+  if (isIncrease && liquidMarkets.length === 0) {
+    result.isNoSufficientLiquidityInAnyMarket = true;
+
+    return result;
+  }
+
+  result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
+
+  const hasExistingPosition = !!q(selectTradeboxSelectedPosition);
+
+  if (!hasExistingPosition) {
+    const positionsInfo = q(selectPositionsInfoData);
+
+    const positions = Object.values(positionsInfo || {});
+    const availablePosition = positions.find(
+      (pos) =>
+        pos.isLong === isLong && availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+    );
+
+    if (availablePosition) {
+      result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
+      result.collateralWithPosition = availablePosition.collateralToken;
+    }
+  }
+
+  const hasExistingOrder = !!q(selectTradeboxExistingOrder);
+
+  if (!result.marketWithPosition && !hasExistingOrder) {
+    const ordersInfo = q(selectOrdersInfoData);
+    const orders = Object.values(ordersInfo || {});
+    const availableOrder = orders.find(
+      (order) =>
+        isIncreaseOrderType(order.orderType) &&
+        order.isLong === isLong &&
+        availableMarkets.some((market) => market.marketTokenAddress === order.marketAddress)
+    ) as PositionOrderInfo;
+
+    if (availableOrder) {
+      result.marketWithOrder = getByKey(marketsInfoData, availableOrder.marketAddress);
+      result.collateralWithOrder = availableOrder.targetCollateralToken;
+    }
+  }
+
+  if (
+    increaseSizeUsd &&
+    !hasExistingPosition &&
+    !hasExistingOrder &&
+    !result.marketWithPosition &&
+    !result.marketWithOrder
+  ) {
+    const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
+      liquidMarkets,
+      indexToken.address,
+      isLong,
+      isIncrease,
+      increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
+    );
+
+    if (bestMarket && bestImpactDeltaUsd) {
+      const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
+        isIncrease: true,
+        isLong,
+        indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+        priceImpactDeltaUsd: bestImpactDeltaUsd,
+        sizeDeltaUsd: increaseSizeUsd,
+      });
+
+      result.minPriceImpactMarket = bestMarket;
+      result.minPriceImpactBps = acceptablePriceDeltaBps;
+    }
+  }
+
+  return result;
+});
