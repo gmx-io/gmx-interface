@@ -38,6 +38,7 @@ import {
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
+  selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxNextLeverageWithoutPnl,
   selectTradeboxNextPositionValues,
@@ -52,7 +53,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
-import { getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
+import { getMarketIndexName } from "domain/synthetics/markets";
 import {
   formatLeverage,
   formatLiquidationPrice,
@@ -248,6 +249,7 @@ export function TradeBox(p: Props) {
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
+  const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -281,24 +283,6 @@ export function TradeBox(p: Props) {
   );
 
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
-
-  const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useMemo(() => {
-    if (!marketInfo || !isIncrease) {
-      return {};
-    }
-    const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-    const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
-
-    const isOutPositionLiquidity = isLong
-      ? longLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0)
-      : shortLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0);
-
-    return {
-      longLiquidity,
-      shortLiquidity,
-      isOutPositionLiquidity,
-    };
-  }, [increaseAmounts, isIncrease, isLong, marketInfo]);
 
   const userReferralInfo = useUserReferralInfo();
 
@@ -1375,9 +1359,6 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        swapLiquidityUsd={swapOutLiquidity}
-        longLiquidityUsd={longLiquidity}
-        shortLiquidityUsd={shortLiquidity}
         error={buttonErrorText}
         shouldDisableValidation={shouldDisableValidation!}
         onClose={onConfirmationClose}

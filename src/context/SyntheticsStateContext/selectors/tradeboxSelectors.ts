@@ -788,3 +788,26 @@ export const selectTradeboxMarkPrice = createSelector(function selectTradeboxMar
 
   return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
 });
+
+export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiquidity(q) {
+  const marketInfo = q(selectTradeboxMarketInfo);
+  const { isIncrease, isLong } = q(selectTradeboxTradeFlags);
+
+  if (!marketInfo || !isIncrease) {
+    return {};
+  }
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+
+  const isOutPositionLiquidity = isLong
+    ? longLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0)
+    : shortLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0);
+
+  return {
+    longLiquidity,
+    shortLiquidity,
+    isOutPositionLiquidity,
+  };
+});

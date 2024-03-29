@@ -100,10 +100,12 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralToken,
+  selectTradeboxCollateralTokenAddress,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
@@ -114,6 +116,7 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
+  selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
   selectTradeboxNextPositionValuesForDecrease,
@@ -133,9 +136,6 @@ import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;
-  swapLiquidityUsd: BigNumber | undefined;
-  longLiquidityUsd: BigNumber | undefined;
-  shortLiquidityUsd: BigNumber | undefined;
   error: string | undefined;
   shouldDisableValidation: boolean;
   onClose: () => void;
@@ -144,16 +144,7 @@ export type Props = {
 };
 
 export function ConfirmationBox(p: Props) {
-  const {
-    swapLiquidityUsd,
-    longLiquidityUsd,
-    shortLiquidityUsd,
-    error,
-    shouldDisableValidation,
-    onClose,
-    onSubmitted,
-    setPendingTxns,
-  } = p;
+  const { error, shouldDisableValidation, onClose, onSubmitted, setPendingTxns } = p;
   const tokensData = useTokensData();
   const ordersData = useOrdersInfoData();
 
@@ -184,6 +175,7 @@ export function ConfirmationBox(p: Props) {
   const gasPrice = useSelector(selectGasPrice);
   const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
   const fixedTriggerOrderType = useSelector(selectTradeboxFixedTriggerOrderType);
+  const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
@@ -197,6 +189,9 @@ export function ConfirmationBox(p: Props) {
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
+  const collateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
+  const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
+  const swapLiquidityUsd = swapRoute.maxSwapLiquidity;
   const { indexToken } = marketInfo || {};
 
   const { signer, account } = useWallet();
@@ -993,7 +988,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (isIncrease && increaseAmounts) {
-      availableLiquidityUsd = isLong ? longLiquidityUsd : shortLiquidityUsd;
+      availableLiquidityUsd = isLong ? longLiquidity : shortLiquidity;
 
       isLiquidityRisk = availableLiquidityUsd!
         .mul(riskThresholdBps)
