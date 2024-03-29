@@ -1,36 +1,24 @@
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import {
-  selectAccount,
-  selectChainId,
-  selectGasLimits,
-  selectGasPrice,
-  selectMarketsInfoData,
-  selectOrdersInfoData,
-  selectPositionsInfoData,
-  selectSavedIsPnlInLeverage,
-  selectTokensData,
-  selectUiFeeFactor,
-} from "./globalSelectors";
-import { getByKey } from "lib/objects";
-import { expandDecimals, parseValue } from "lib/numbers";
-import { BigNumber } from "ethers";
-import {
-  createTradeFlags,
-  makeSelectDecreasePositionAmounts,
-  makeSelectIncreasePositionAmounts,
-  makeSelectNextPositionValuesForDecrease,
-  makeSelectNextPositionValuesForIncrease,
-  makeSelectSwapRoutes,
-} from "./tradeSelectors";
-import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+} from "domain/synthetics/fees";
+import {
+  MarketInfo,
+  getAvailableUsdLiquidityForPosition,
+  getMinPriceImpactMarket,
+  getMostLiquidMarketForPosition,
+  isMarketIndexToken,
+} from "domain/synthetics/markets";
 import {
   DecreasePositionSwapType,
   PositionOrderInfo,
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
+import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   SwapAmounts,
   TradeFeesType,
@@ -41,21 +29,33 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-} from "domain/synthetics/fees";
+import { BigNumber } from "ethers";
+import { USD_DECIMALS, getPositionKey } from "lib/legacy";
+import { expandDecimals, parseValue } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector, createSelectorDeprecated } from "../utils";
 import {
-  MarketInfo,
-  getAvailableUsdLiquidityForPosition,
-  getMinPriceImpactMarket,
-  getMostLiquidMarketForPosition,
-  isMarketIndexToken,
-} from "domain/synthetics/markets";
+  selectAccount,
+  selectChainId,
+  selectGasLimits,
+  selectGasPrice,
+  selectMarketsInfoData,
+  selectOrdersInfoData,
+  selectPositionsInfoData,
+  selectTokensData,
+  selectUiFeeFactor,
+} from "./globalSelectors";
+import { selectIsPnlInLeverage } from "./settingsSelectors";
+import {
+  createTradeFlags,
+  makeSelectDecreasePositionAmounts,
+  makeSelectIncreasePositionAmounts,
+  makeSelectNextPositionValuesForDecrease,
+  makeSelectNextPositionValuesForIncrease,
+  makeSelectSwapRoutes,
+} from "./tradeSelectors";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -463,7 +463,7 @@ const selectNextValuesForIncrease = createSelector(
     const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
     const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
     const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-    const isPnlInLeverage = q(selectSavedIsPnlInLeverage);
+    const isPnlInLeverage = q(selectIsPnlInLeverage);
 
     return {
       collateralTokenAddress,
@@ -523,7 +523,7 @@ const selectNextValuesDecreaseArgs = createSelector((q) => {
   const keepLeverage = q(selectTradeboxKeepLeverage);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const positionKey = q(selectTradeboxSelectedPositionKey);
-  const isPnlInLeverage = q(selectSavedIsPnlInLeverage);
+  const isPnlInLeverage = q(selectIsPnlInLeverage);
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = q(selectTradeboxTriggerPrice);
 

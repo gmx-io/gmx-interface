@@ -19,8 +19,9 @@ import { ImSpinner2 } from "react-icons/im";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxMarketAddress,
@@ -54,7 +55,7 @@ export type Props = {
 export function PositionItem(p: Props) {
   const ordersWithErrors = usePositionOrdersWithErrors(p.position.key);
   const { showDebugValues } = useSettings();
-  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
+  const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const currentTradeType = useSelector(selectTradeboxTradeType);
   const currentMarketAddress = useSelector(selectTradeboxMarketAddress);
   const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);

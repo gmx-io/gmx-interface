@@ -59,12 +59,9 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
-  shouldDisableValidation: boolean;
-  savedShouldShowPositionLines: boolean;
-  savedSlippageAmount: number;
-  setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
@@ -79,16 +76,7 @@ enum ListSection {
 }
 
 export function SyntheticsPage(p: Props) {
-  const {
-    shouldDisableValidation,
-    savedShouldShowPositionLines,
-    tradePageVersion,
-    setSavedShouldShowPositionLines,
-    setPendingTxns,
-    setTradePageVersion,
-    savedSlippageAmount,
-    openSettings,
-  } = p;
+  const { tradePageVersion, setPendingTxns, setTradePageVersion, openSettings } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const marketsInfoData = useMarketsInfoData();
@@ -197,8 +185,15 @@ export function SyntheticsPage(p: Props) {
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
+  const {
+    savedAllowedSlippage,
+    shouldShowPositionLines,
+    shouldDisableValidationForTesting,
+    setShouldShowPositionLines,
+  } = useSettings();
+
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  let allowedSlippage = savedSlippageAmount!;
+  let allowedSlippage = savedAllowedSlippage!;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
@@ -337,7 +332,7 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-left">
           <TVChart
             tokensData={tokensData}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
+            savedShouldShowPositionLines={shouldShowPositionLines}
             ordersInfo={ordersInfoData}
             positionsInfo={positionsInfoData}
             chartTokenAddress={chartToken?.address}
@@ -370,9 +365,9 @@ export function SyntheticsPage(p: Props) {
                   </button>
                 )}
                 <Checkbox
-                  isChecked={savedShouldShowPositionLines}
-                  setIsChecked={setSavedShouldShowPositionLines}
-                  className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}
+                  isChecked={shouldShowPositionLines}
+                  setIsChecked={setShouldShowPositionLines}
+                  className={cx("muted chart-positions", { active: shouldShowPositionLines })}
                 >
                   <span>
                     <Trans>Chart positions</Trans>
@@ -411,7 +406,7 @@ export function SyntheticsPage(p: Props) {
           <div className="Exchange-swap-box">
             <TradeBox
               avaialbleTokenOptions={availableTokensOptions}
-              shouldDisableValidation={shouldDisableValidation}
+              shouldDisableValidation={shouldDisableValidationForTesting}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
@@ -461,13 +456,13 @@ export function SyntheticsPage(p: Props) {
         setPendingTxns={setPendingTxns}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-        shouldDisableValidation={shouldDisableValidation}
+        shouldDisableValidation={shouldDisableValidationForTesting}
       />
 
       <PositionEditor
         allowedSlippage={allowedSlippage}
         setPendingTxns={setPendingTxns}
-        shouldDisableValidation={shouldDisableValidation}
+        shouldDisableValidation={shouldDisableValidationForTesting}
       />
 
       <Footer />

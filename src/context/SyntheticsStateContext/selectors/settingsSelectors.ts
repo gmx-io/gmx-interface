@@ -13,3 +13,5 @@ export const selectSetSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) =>
 export const selectShouldUseExecutionFeeBuffer = (s: SyntheticsState) => s.settings.shouldUseExecutionFeeBuffer;
 export const selectOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.oracleKeeperInstancesConfig;
 export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.setOracleKeeperInstancesConfig;
+export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
+export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;

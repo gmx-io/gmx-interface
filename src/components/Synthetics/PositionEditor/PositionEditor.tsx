@@ -22,7 +22,6 @@ import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   usePositionsConstants,
-  useSavedIsPnlInLeverage,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -85,6 +84,7 @@ import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useKey } from "react-use";
 import "./PositionEditor.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   allowedSlippage: number;
@@ -106,7 +106,7 @@ export function PositionEditor(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const { setPendingTxns, allowedSlippage } = p;
   const { chainId } = useChainId();
-  const showPnlInLeverage = useSavedIsPnlInLeverage();
+  const { isPnlInLeverage } = useSettings();
   const tokensData = useTokensData();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -267,7 +267,7 @@ export function PositionEditor(p: Props) {
       collateralUsd: nextCollateralUsd,
       pendingBorrowingFeesUsd: BigNumber.from(0),
       pendingFundingFeesUsd: BigNumber.from(0),
-      pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
+      pnl: isPnlInLeverage ? position.pnl : BigNumber.from(0),
     });
 
     const nextLiqPrice = getLiquidationPrice({
@@ -299,7 +299,7 @@ export function PositionEditor(p: Props) {
     isDeposit,
     minCollateralUsd,
     position,
-    showPnlInLeverage,
+    isPnlInLeverage,
     userReferralInfo,
   ]);
 

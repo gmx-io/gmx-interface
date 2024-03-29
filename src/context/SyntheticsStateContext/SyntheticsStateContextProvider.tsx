@@ -35,8 +35,6 @@ export type SyntheticsState = {
     positionsConstants: PositionsConstantsResult;
     uiFeeFactor: BigNumber;
     userReferralInfo: UserReferralInfo | undefined;
-    savedIsPnlInLeverage: boolean;
-    savedShowPnlAfterFees: boolean;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
@@ -55,14 +53,10 @@ const StateCtx = createContext<SyntheticsState | null>(null);
 
 export function SyntheticsStateContextProvider({
   children,
-  savedIsPnlInLeverage,
-  savedShowPnlAfterFees,
   skipLocalReferralCode,
   pageType,
 }: {
   children: ReactNode;
-  savedIsPnlInLeverage: boolean;
-  savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
   pageType: SyntheticsState["pageType"];
 }) {
@@ -89,9 +83,11 @@ export function SyntheticsStateContextProvider({
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
 
+  const settings = useSettings();
+
   const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
     account,
-    showPnlInLeverage: savedIsPnlInLeverage,
+    showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
     pricesUpdatedAt: marketsInfo.pricesUpdatedAt,
     skipLocalReferralCode,
@@ -103,7 +99,6 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
-  const settings = useSettings();
 
   const tradeboxState = useTradeboxState(chainId, {
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -133,9 +128,6 @@ export function SyntheticsStateContextProvider({
         uiFeeFactor,
         userReferralInfo,
 
-        savedIsPnlInLeverage,
-        savedShowPnlAfterFees,
-
         closingPositionKey,
         setClosingPositionKey,
 
@@ -162,8 +154,6 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
-    savedIsPnlInLeverage,
-    savedShowPnlAfterFees,
     closingPositionKey,
     gasLimits,
     gasPrice,

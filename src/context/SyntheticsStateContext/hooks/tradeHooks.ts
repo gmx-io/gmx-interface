@@ -8,7 +8,7 @@ import {
   makeSelectSwapRoutes,
 } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
-import { useSavedIsPnlInLeverage } from "./globalsHooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export const useNextPositionValuesForIncrease = ({
   collateralTokenAddress,
@@ -43,7 +43,7 @@ export const useNextPositionValuesForIncrease = ({
   tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   overrideIsPnlInLeverage?: boolean;
 }) => {
-  const isPnlInLeverage = useSavedIsPnlInLeverage();
+  const { isPnlInLeverage } = useSettings();
   const selector = useMemo(
     () =>
       makeSelectNextPositionValuesForIncrease({

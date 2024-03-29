@@ -12,8 +12,6 @@ export const selectPricesUpdatedAt = (s: SyntheticsState) => s.globals.marketsIn
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
-export const selectSavedIsPnlInLeverage = (s: SyntheticsState) => s.globals.savedIsPnlInLeverage;
-export const selectSavedShowPnlAfterFees = (s: SyntheticsState) => s.globals.savedShowPnlAfterFees;
 
 export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
 export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;

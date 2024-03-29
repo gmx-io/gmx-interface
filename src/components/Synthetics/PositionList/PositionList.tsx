@@ -1,8 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { usePositionsInfoData, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -164,7 +166,7 @@ const PositionItemWrapper = memo(
     openSettings: () => void;
     hideActions: boolean | undefined;
   }) => {
-    const showPnlAfterFees = useSavedShowPnlAfterFees();
+    const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
     const handleEditCollateralClick = useCallback(
       () => onEditCollateralClick(position.key),
       [onEditCollateralClick, position.key]

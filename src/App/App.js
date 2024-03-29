@@ -341,13 +341,9 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                     pageType="trade"
                   >
                     <SyntheticsPage
-                      shouldDisableValidation={settings.shouldDisableValidationForTesting}
-                      savedShouldShowPositionLines={settings.shouldShowPositionLines}
-                      setSavedShouldShowPositionLines={settings.setShouldShowPositionLines}
                       setPendingTxns={setPendingTxns}
                       tradePageVersion={tradePageVersion}
                       setTradePageVersion={setTradePageVersion}
-                      savedSlippageAmount={settings.savedAllowedSlippage}
                       openSettings={openSettings}
                     />
                   </SyntheticsStateContextProvider>
@@ -374,12 +370,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route path="/leaderboard/">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={settings.isPnlInLeverage}
-                    savedShowPnlAfterFees={settings.showPnlAfterFees}
-                    skipLocalReferralCode
-                    pageType="leaderboard"
-                  >
+                  <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
                     <LeaderboardPage />
                   </SyntheticsStateContextProvider>
                 ) : (
@@ -388,12 +379,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/competitions/">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={settings.isPnlInLeverage}
-                    savedShowPnlAfterFees={settings.showPnlAfterFees}
-                    skipLocalReferralCode
-                    pageType="competitions"
-                  >
+                  <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
                     <CompetitionRedirect />
                   </SyntheticsStateContextProvider>
                 ) : (
@@ -402,12 +388,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route path="/competitions/:leaderboardPageKey">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={settings.isPnlInLeverage}
-                    savedShowPnlAfterFees={settings.showPnlAfterFees}
-                    skipLocalReferralCode
-                    pageType="competitions"
-                  >
+                  <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
                     <LeaderboardPage isCompetitions />
                   </SyntheticsStateContextProvider>
                 ) : (
