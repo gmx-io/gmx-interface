@@ -19,7 +19,7 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
   const [leaderboardDataType, setLeaderboardDataType] = useState<LeaderboardDataType>("accounts");
   const { leaderboardPageKey: leaderboardPageKeyRaw } = useParams<{ leaderboardPageKey?: LeaderboardPageKey }>();
   const leaderboardPageKey = leaderboardPageKeyRaw ?? "leaderboard";
-  const timeframe = useLeaderboardTimeframe(leaderboardTimeframeType, leaderboardPageKey);
+  const timeframe = useLeaderboardTimeframe(leaderboardTimeframeType, leaderboardPageKey, leaderboardDataType);
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
   const isStartInFuture = timeframe.from > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
@@ -77,7 +77,8 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
 
 function useLeaderboardTimeframe(
   leaderboardTimeframeType: LeaderboardTimeframeType,
-  pageKey: LeaderboardPageKey | undefined
+  pageKey: LeaderboardPageKey | undefined,
+  leaderboardDataType: LeaderboardDataType
 ): LeaderboardTimeframe {
   const isCompetitions = pageKey !== "leaderboard";
   const competitionsTimeframe: LeaderboardTimeframe = useMemo(() => {
@@ -85,6 +86,10 @@ function useLeaderboardTimeframe(
   }, [pageKey]);
 
   const leaderboardTimeframe: LeaderboardTimeframe = useMemo(() => {
+    if (leaderboardDataType === "positions") {
+      return LEADERBOARD_PAGES.leaderboard.timeframe;
+    }
+
     if (leaderboardTimeframeType === "all") {
       return LEADERBOARD_PAGES.leaderboard.timeframe;
     } else if (leaderboardTimeframeType === "30days") {
@@ -100,7 +105,7 @@ function useLeaderboardTimeframe(
     } else {
       throw mustNeverExist(leaderboardTimeframeType);
     }
-  }, [leaderboardTimeframeType]);
+  }, [leaderboardDataType, leaderboardTimeframeType]);
 
   return isCompetitions ? competitionsTimeframe : leaderboardTimeframe;
 }

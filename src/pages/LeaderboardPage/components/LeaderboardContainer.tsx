@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
+import cx from "classnames";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import { getChainName } from "config/chains";
@@ -49,7 +49,7 @@ export function LeaderboardContainer() {
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
 
   const [, setLeaderboardTimeframeType] = useLeaderboardTimeframeTypeState();
-  const [, setLeaderboardDataType] = useLeaderboardDataTypeState();
+  const [leaderboardDataType, setLeaderboardDataType] = useLeaderboardDataTypeState();
 
   const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
   const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30 days`, t`Last 7 days`], []);
@@ -198,7 +198,9 @@ export function LeaderboardContainer() {
           options={leaderboardTimeframeTabs}
           optionLabels={leaderboardTimeframeLabels}
           type="inline"
-          className="LeaderboardContainer__leaderboard-tabs default-container"
+          className={cx("LeaderboardContainer__leaderboard-tabs default-container", {
+            "LeaderboardContainer__leaderboard-tabs_positions": leaderboardDataType === "positions",
+          })}
         />
       )}
 

@@ -395,6 +395,10 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__leaderboard-tabs {
   margin-bottom: 1rem;
   margin-top: 3rem;
+
+  &_positions {
+    visibility: hidden;
+  }
 }
 
 .LeaderboardNavigation {
