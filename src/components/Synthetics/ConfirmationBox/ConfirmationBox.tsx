@@ -109,6 +109,7 @@ import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarkPrice,
   selectTradeboxNextPositionValuesForDecrease,
   selectTradeboxNextPositionValuesForIncrease,
   selectTradeboxState,
@@ -136,7 +137,6 @@ export type Props = {
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
-  markPrice: BigNumber | undefined;
 };
 
 export function ConfirmationBox(p: Props) {
@@ -157,7 +157,6 @@ export function ConfirmationBox(p: Props) {
     onClose,
     onSubmitted,
     setPendingTxns,
-    markPrice,
   } = p;
   const {
     isWrapOrUnwrap,
@@ -179,6 +178,7 @@ export function ConfirmationBox(p: Props) {
 
   const tokensData = useTokensData();
   const ordersData = useOrdersInfoData();
+  const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
@@ -1539,8 +1539,8 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             label={t`Mark Price`}
             value={
-              p.markPrice
-                ? formatUsd(p.markPrice, {
+              markPrice
+                ? formatUsd(markPrice, {
                     displayDecimals: toTokenPriceDecimals,
                   })
                 : "..."

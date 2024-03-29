@@ -38,6 +38,7 @@ import {
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
+  selectTradeboxMarkPrice,
   selectTradeboxNextLeverageWithoutPnl,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
@@ -65,7 +66,6 @@ import {
   TradeType,
   getExecutionPriceForDecrease,
   getIncreasePositionAmounts,
-  getMarkPrice,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -226,18 +226,6 @@ export function TradeBox(p: Props) {
     !fromToken.balance.eq(fromTokenAmount) &&
     (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
-  const markPrice = useMemo(() => {
-    if (!toToken) {
-      return undefined;
-    }
-
-    if (isSwap) {
-      return toToken.prices.minPrice;
-    }
-
-    return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
-  }, [isIncrease, isLong, isSwap, toToken]);
-
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
@@ -245,6 +233,7 @@ export function TradeBox(p: Props) {
 
   const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
 
+  const markPrice = useSelector(selectTradeboxMarkPrice);
   const nextLeverageWithoutPnl = useSelector(selectTradeboxNextLeverageWithoutPnl);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -290,18 +279,6 @@ export function TradeBox(p: Props) {
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const { availableMarkets } = marketsOptions;
-
-  const availableCollaterals = useMemo(() => {
-    if (!marketInfo) {
-      return [];
-    }
-
-    if (marketInfo.isSameCollaterals) {
-      return [marketInfo.longToken];
-    }
-
-    return [marketInfo.longToken, marketInfo.shortToken];
-  }, [marketInfo]);
 
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
 
@@ -1056,7 +1033,6 @@ export function TradeBox(p: Props) {
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
-          availableCollaterals={availableCollaterals}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />
@@ -1421,7 +1397,6 @@ export function TradeBox(p: Props) {
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
-        markPrice={markPrice}
       />
     </>
   );

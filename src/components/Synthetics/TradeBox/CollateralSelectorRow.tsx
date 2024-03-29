@@ -1,34 +1,41 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import { Token } from "domain/tokens";
-import cx from "classnames";
-import { useChainId } from "lib/chains";
-import { useMemo } from "react";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxHasExistingOrder,
   selectTradeboxHasExistingPosition,
+  selectTradeboxMarketInfo,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useChainId } from "lib/chains";
+import { useMemo } from "react";
 
 export type Props = {
   selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
-  availableCollaterals?: Token[];
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
-  const {
-    selectedCollateralAddress,
-    selectedMarketAddress,
-    availableCollaterals,
-    onSelectCollateralAddress,
-    isMarket,
-  } = p;
+  const { selectedCollateralAddress, selectedMarketAddress, onSelectCollateralAddress, isMarket } = p;
+
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+
+  const availableCollaterals = useMemo(() => {
+    if (!marketInfo) {
+      return [];
+    }
+
+    if (marketInfo.isSameCollaterals) {
+      return [marketInfo.longToken];
+    }
+
+    return [marketInfo.longToken, marketInfo.shortToken];
+  }, [marketInfo]);
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);

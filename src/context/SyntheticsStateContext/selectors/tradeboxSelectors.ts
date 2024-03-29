@@ -728,20 +728,19 @@ export const selectTradeboxAvailableMarketsOptions = createSelector(function sel
 });
 
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
-  const tradeFlags = q(selectTradeboxTradeFlags);
+  const { isSwap } = q(selectTradeboxTradeFlags);
 
-  if (!tradeFlags.isSwap) return {};
+  if (!isSwap) return {};
 
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
   const triggerRatioValue = q(selectTradeboxTriggerRatioValue);
-
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
   const toToken = q((s) => (toTokenAddress ? selectTokensData(s)?.[toTokenAddress] : undefined));
   const fromToken = q((s) => (fromTokenAddress ? selectTokensData(s)?.[fromTokenAddress] : undefined));
   const fromTokenPrice = fromToken?.prices.minPrice;
-  const markPrice = toToken?.prices.minPrice;
+  const markPrice = q(selectTradeboxMarkPrice);
 
-  if (!tradeFlags.isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
+  if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
     return {};
   }
 
@@ -766,4 +765,20 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
     markRatio,
     triggerRatio,
   };
+});
+
+export const selectTradeboxMarkPrice = createSelector(function selectTradeboxMarkPrice(q) {
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const toToken = q((s) => (toTokenAddress ? selectTokensData(s)?.[toTokenAddress] : undefined));
+  const { isSwap, isIncrease, isLong } = q(selectTradeboxTradeFlags);
+
+  if (!toToken) {
+    return undefined;
+  }
+
+  if (isSwap) {
+    return toToken.prices.minPrice;
+  }
+
+  return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
 });
