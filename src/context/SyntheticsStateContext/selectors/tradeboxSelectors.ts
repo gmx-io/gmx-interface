@@ -626,6 +626,9 @@ export type AvailableMarketsOptions = {
   isNoSufficientLiquidityInAnyMarket?: boolean;
 };
 
+export const selectTradeboxHasExistingOrder = createSelector((q) => !!q(selectTradeboxExistingOrder));
+export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
+
 export const selectTradeboxAvailableMarketsOptions = createSelector(function selectTradeboxAvailableMarketsOptions(
   q
 ): AvailableMarketsOptions {
@@ -663,7 +666,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector(function sel
 
   result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
 
-  const hasExistingPosition = !!q(selectTradeboxSelectedPosition);
+  const hasExistingPosition = q(selectTradeboxHasExistingPosition);
 
   if (!hasExistingPosition) {
     const positionsInfo = q(selectPositionsInfoData);
@@ -680,7 +683,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector(function sel
     }
   }
 
-  const hasExistingOrder = !!q(selectTradeboxExistingOrder);
+  const hasExistingOrder = q(selectTradeboxHasExistingOrder);
 
   if (!result.marketWithPosition && !hasExistingOrder) {
     const ordersInfo = q(selectOrdersInfoData);

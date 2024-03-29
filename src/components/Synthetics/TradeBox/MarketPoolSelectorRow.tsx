@@ -2,7 +2,11 @@ import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingPosition,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Market, MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
@@ -14,23 +18,13 @@ import { useCallback, useMemo } from "react";
 export type Props = {
   indexToken?: Token;
   selectedMarket?: MarketInfo;
-  hasExistingPosition?: boolean;
-  hasExistingOrder?: boolean;
   isOutPositionLiquidity?: boolean;
   currentPriceImpactBps?: BigNumber;
   onSelectMarketAddress: (marketAddress?: string) => void;
 };
 
 export function MarketPoolSelectorRow(p: Props) {
-  const {
-    selectedMarket,
-    indexToken,
-    hasExistingOrder,
-    hasExistingPosition,
-    isOutPositionLiquidity,
-    currentPriceImpactBps,
-    onSelectMarketAddress,
-  } = p;
+  const { selectedMarket, indexToken, isOutPositionLiquidity, currentPriceImpactBps, onSelectMarketAddress } = p;
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const {
     isNoSufficientLiquidityInAnyMarket,
@@ -50,6 +44,8 @@ export function MarketPoolSelectorRow(p: Props) {
     },
     [selectedMarket]
   );
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
 
   const message = useMemo(() => {
     if (isNoSufficientLiquidityInAnyMarket) {

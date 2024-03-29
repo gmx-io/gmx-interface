@@ -6,15 +6,17 @@ import { Token } from "domain/tokens";
 import cx from "classnames";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
-import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingPosition,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 export type Props = {
   selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
   availableCollaterals?: Token[];
-  hasExistingPosition?: boolean;
-  hasExistingOrder?: boolean;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
@@ -23,14 +25,14 @@ export function CollateralSelectorRow(p: Props) {
   const {
     selectedCollateralAddress,
     selectedMarketAddress,
-    hasExistingOrder,
-    hasExistingPosition,
     availableCollaterals,
     onSelectCollateralAddress,
     isMarket,
   } = p;
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const { chainId } = useChainId();

@@ -35,7 +35,6 @@ import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
-  selectTradeboxExistingOrder,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
@@ -250,7 +249,6 @@ export function TradeBox(p: Props) {
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
-  const existingOrder = useSelector(selectTradeboxExistingOrder);
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
@@ -1057,8 +1055,6 @@ export function TradeBox(p: Props) {
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
           indexToken={toToken}
-          hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(selectedPosition)}
           isOutPositionLiquidity={isOutPositionLiquidity}
           currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
           onSelectMarketAddress={onSelectMarketAddress}
@@ -1068,8 +1064,6 @@ export function TradeBox(p: Props) {
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
           availableCollaterals={availableCollaterals}
-          hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(selectedPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />
