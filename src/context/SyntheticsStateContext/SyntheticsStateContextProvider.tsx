@@ -9,14 +9,16 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
-import { TradeState, useTradeState } from "domain/synthetics/trade/useTradeState";
+import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
+import { TradeState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -34,10 +36,15 @@ export type SyntheticsTradeState = {
     userReferralInfo: UserReferralInfo | undefined;
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
+
+    closingPositionKey: string | undefined;
+    setClosingPositionKey: (key: string | undefined) => void;
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeState;
+  positionSeller: PositionSellerState;
+  positionEditor: PositionEditorState;
 };
 
 const StateCtx = createContext<SyntheticsTradeState | null>(null);
@@ -76,8 +83,9 @@ export function SyntheticsStateContextProvider({
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const [closingPositionKey, setClosingPositionKey] = useState<string>();
 
-  const positionsInfo = usePositionsInfoRequest(chainId, {
+  const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: savedIsPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -85,18 +93,21 @@ export function SyntheticsStateContextProvider({
     skipLocalReferralCode,
     tokensData: marketsInfo.tokensData,
   });
+
   const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
-    positionsInfoData: positionsInfo.positionsInfoData,
     tokensData: marketsInfo.tokensData,
   });
   const settings = useSettings();
 
-  const tradeState = useTradeState(chainId, {
+  const tradeboxState = useTradeboxState(chainId, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
+
+  const positionSellerState = usePositionSellerState(chainId);
+  const positionEditorState = usePositionEditorState(chainId);
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {
@@ -108,16 +119,24 @@ export function SyntheticsStateContextProvider({
         marketsInfo,
         ordersInfo,
         positionsConstants,
-        positionsInfo,
+        positionsInfo: {
+          isLoading,
+          positionsInfoData,
+        },
         uiFeeFactor,
         userReferralInfo,
 
         savedIsPnlInLeverage,
         savedShowPnlAfterFees,
+
+        closingPositionKey,
+        setClosingPositionKey,
       },
       leaderboard,
       settings,
-      tradebox: tradeState,
+      tradebox: tradeboxState,
+      positionSeller: positionSellerState,
+      positionEditor: positionEditorState,
     };
 
     return s;
@@ -129,14 +148,18 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
-    positionsInfo,
+    isLoading,
+    positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
+    closingPositionKey,
     leaderboard,
     settings,
-    tradeState,
+    tradeboxState,
+    positionSellerState,
+    positionEditorState,
   ]);
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
@@ -147,5 +170,6 @@ export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsTra
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
+
   return useContextSelector(StateCtx as Context<SyntheticsTradeState>, selector) as Selected;
 }
