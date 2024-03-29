@@ -506,20 +506,23 @@ const selectTradeboxNextPositionValuesForIncreaseWithoutPnlInLeverage = createSe
   return q(selector);
 });
 
+export const selectTradeboxTriggerPrice = createSelector((q) => {
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+  return parseValue(triggerPriceInputValue, USD_DECIMALS);
+});
+
 const selectNextValuesDecreaseArgs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const marketAddress = q(selectTradeboxMarketAddress);
-  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
   const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
   const keepLeverage = q(selectTradeboxKeepLeverage);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const isPnlInLeverage = q(selectSavedIsPnlInLeverage);
-
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
 
   return {
     collateralTokenAddress: collateralTokenAddress,

@@ -48,6 +48,7 @@ import {
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
@@ -227,7 +228,7 @@ export function TradeBox(p: Props) {
     (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
 
   const uiFeeFactor = useUiFeeFactor();
 
@@ -1375,7 +1376,6 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
         selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
@@ -1383,10 +1383,7 @@ export function TradeBox(p: Props) {
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}
         shortLiquidityUsd={shortLiquidity}
-        fees={fees}
-        executionFee={executionFee}
         error={buttonErrorText}
-        existingPosition={selectedPosition}
         shouldDisableValidation={shouldDisableValidation!}
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
