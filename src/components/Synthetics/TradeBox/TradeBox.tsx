@@ -31,6 +31,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
+  useTradeboxChooseSuitableMarket,
   useTradeboxDecreasePositionAmounts,
   useTradeboxExistingOrder,
   useTradeboxIncreasePositionAmounts,
@@ -115,6 +116,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import "./TradeBox.scss";
 import { useHistory } from "react-router-dom";
@@ -156,14 +158,7 @@ export function TradeBox(p: Props) {
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
-  const {
-    swapTokens,
-    indexTokens,
-    infoTokens,
-    sortedIndexTokensWithPoolValue,
-    sortedLongAndShortTokens,
-    sortedAllMarkets,
-  } = avaialbleTokenOptions;
+  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = avaialbleTokenOptions;
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
 
@@ -190,7 +185,7 @@ export function TradeBox(p: Props) {
     setMarketAddress: onSelectMarketAddress,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
-    setToTokenAddress: onSelectToTokenAddress,
+    // setToTokenAddress,
     setTradeType: onSelectTradeType,
     setTradeMode: onSelectTradeMode,
     stage,
@@ -923,6 +918,8 @@ export function TradeBox(p: Props) {
     setStage("trade");
   }, [isMarket, setStage]);
 
+  const onSelectToTokenAddress = useTradeboxChooseSuitableMarket();
+
   if (showDebugValues) {
     const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;
 
@@ -1048,18 +1045,23 @@ export function TradeBox(p: Props) {
             showMaxButton={false}
           >
             {toTokenAddress && (
-              <TokenSelector
+              <MarketSelector
                 label={tradeTypeLabels[tradeType!]}
-                chainId={chainId}
-                tokenAddress={toTokenAddress}
-                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
-                tokens={indexTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showBalances={false}
-                showTokenImgInDropdown={true}
-                extendedSortSequence={sortedIndexTokensWithPoolValue}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+                selectedMarketLabel={
+                  toToken && (
+                    <>
+                      <span className="inline-items-center">
+                        <TokenIcon className="mr-xs" symbol={toToken.symbol} importSize={24} displaySize={20} />
+                        <span className="Token-symbol-text">{toToken.symbol}</span>
+                      </span>
+                    </>
+                  )
+                }
+                markets={sortedAllMarkets ?? EMPTY_ARRAY}
+                isSideMenu
+                onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
               />
             )}
           </BuyInputSection>

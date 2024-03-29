@@ -327,7 +327,7 @@ export function SyntheticsPage(p: Props) {
         <style type="text/css">
           {`
             :root {
-              --main-bg-color: #08091b;                   
+              --main-bg-color: #08091b;
              {
          `}
         </style>
@@ -343,8 +343,6 @@ export function SyntheticsPage(p: Props) {
             availableTokens={availableChartTokens}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
-            avaialbleTokenOptions={availableTokensOptions}
-            marketsInfoData={marketsInfoData}
           />
 
           <div className="Exchange-lists large">

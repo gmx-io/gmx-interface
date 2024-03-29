@@ -682,7 +682,9 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateByQueryParams() {
-      const { market, operation, mode, from: fromToken, pool, scroll } = searchParams;
+      const { market: marketRaw, operation, mode, from: fromToken, pool, scroll } = searchParams;
+      const marketAddress = marketRaw?.toLowerCase();
+
       if (operation) {
         let finalOperation;
 
@@ -717,29 +719,24 @@ export function GmSwapBox(p: Props) {
         window.scrollTo({ top: 0, left: 0 });
       }
 
-      if ((market || pool) && markets.length > 0) {
-        let indexTokenAddress;
-        if (SWAP_MARKET_REGEX.test(market || "")) {
-          indexTokenAddress = NATIVE_TOKEN_ADDRESS;
-        } else {
-          const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true, version: "v2" });
-          indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
-        }
-        const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
-        if (marketInfo) {
-          setIndexName(getMarketIndexName(marketInfo));
-          onSelectMarket(marketInfo.marketTokenAddress);
-          const indexName = getMarketIndexName(marketInfo);
-          const poolName = getMarketPoolName(marketInfo);
-          helperToast.success(
-            <Trans>
-              <div className="inline-flex">
-                GM:&nbsp;<span>{indexName}</span>
-                <span className="subtext gm-toast">[{poolName}]</span>
-              </div>{" "}
-              <span>selected in order form</span>
-            </Trans>
-          );
+      if ((marketAddress || pool) && markets.length > 0) {
+        if (marketAddress && isAddress(marketAddress)) {
+          const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
+          if (marketInfo) {
+            setIndexName(getMarketIndexName(marketInfo));
+            onSelectMarket(marketInfo.marketTokenAddress);
+            const indexName = getMarketIndexName(marketInfo);
+            const poolName = getMarketPoolName(marketInfo);
+            helperToast.success(
+              <Trans>
+                <div className="inline-flex">
+                  GM:&nbsp;<span>{indexName}</span>
+                  <span className="subtext gm-toast lh-1">[{poolName}]</span>
+                </div>{" "}
+                <span>selected in order form</span>
+              </Trans>
+            );
+          }
         }
 
         if (history.location.search) {
@@ -747,7 +744,7 @@ export function GmSwapBox(p: Props) {
         }
       }
 
-      if (!market && !pool) {
+      if (!marketAddress && !pool) {
         if (history.location.search) {
           history.replace({ search: "" });
         }

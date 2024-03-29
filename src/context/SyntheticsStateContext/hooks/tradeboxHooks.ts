@@ -22,6 +22,8 @@ import {
   selectTradeboxNextLeverageWithoutPnl,
   selectTradeboxSetTradeConfig,
   selectTradeboxTradeMode,
+  selectTradeboxChooseSuitableMarket,
+  selectTradeboxGetMaxLongShortLiquidityPool,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -50,3 +52,5 @@ export const useTradeboxIncreasePositionAmounts = () => useSelector(selectTradeb
 export const useTradeboxDecreasePositionAmounts = () => useSelector(selectTradeboxDecreasePositionAmounts);
 export const useTradeboxNextPositionValues = () => useSelector(selectTradeboxNextPositionValues);
 export const useTradeboxNextLeverageWithoutPnl = () => useSelector(selectTradeboxNextLeverageWithoutPnl);
+export const useTradeboxChooseSuitableMarket = () => useSelector(selectTradeboxChooseSuitableMarket);
+export const useTradeboxGetMaxLongShortLiquidityPool = () => useSelector(selectTradeboxGetMaxLongShortLiquidityPool);

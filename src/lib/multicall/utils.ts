@@ -188,7 +188,7 @@ export class Multicall {
       const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
 
       // eslint-disable-next-line no-console
-      console.log(`using multicall fallback for chain ${this.chainId}`);
+      console.debug(`using multicall fallback for chain ${this.chainId}`);
 
       return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));

@@ -48,7 +48,7 @@ export type TradeState = {
   setTradeType: (tradeType: TradeType) => void;
   setTradeMode: (tradeMode: TradeMode) => void;
   setFromTokenAddress: (tokenAddress?: string) => void;
-  setToTokenAddress: (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
+  setToTokenAddress: (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
   setMarketAddress: (marketAddress?: string) => void;
   setCollateralAddress: (tokenAddress?: string) => void;
   switchTokenAddresses: () => void;
@@ -230,8 +230,8 @@ export function useTradeboxState(
   );
 
   const setToTokenAddress = useCallback(
-    (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => {
-      const oldState = JSON.parse(JSON.stringify(storedOptions)) as StoredTradeOptions;
+    (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => {
+      const oldState = structuredClone(storedOptions!);
 
       if (tradeType) {
         oldState.tradeType = tradeType;

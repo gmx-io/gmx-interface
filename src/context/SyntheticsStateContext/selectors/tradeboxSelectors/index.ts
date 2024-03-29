@@ -1,4 +1,4 @@
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsTradeState } from "../../SyntheticsStateContextProvider";
 import {
   selectAccount,
   selectOrdersInfoData,
@@ -6,7 +6,7 @@ import {
   selectSavedIsPnlInLeverage,
   selectTokensData,
   selectUiFeeFactor,
-} from "./globalSelectors";
+} from "../globalSelectors";
 import { getByKey } from "lib/objects";
 import { parseValue } from "lib/numbers";
 import { BigNumber } from "ethers";
@@ -18,13 +18,16 @@ import {
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
   makeSelectTradeRatios,
-} from "./tradeSelectors";
+} from "../tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { createEnhancedSelector, createSelector } from "../utils";
+import { createEnhancedSelector, createSelector } from "../../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { SwapAmounts, TradeType, getSwapAmountsByFromValue, getSwapAmountsByToValue } from "domain/synthetics/trade";
 import { convertToUsd } from "domain/synthetics/tokens";
+
+export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxChooseSuitableMarket";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsTradeState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
