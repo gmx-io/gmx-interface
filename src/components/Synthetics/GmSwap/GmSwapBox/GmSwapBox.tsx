@@ -490,7 +490,7 @@ export function GmSwapBox(p: Props) {
     }
 
     if (marketInfo?.isSameCollaterals) {
-      setFocusedInput("shortCollateral");
+      setFocusedInput("longCollateral");
       return;
     }
 
