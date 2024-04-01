@@ -3,7 +3,6 @@ import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenBu
 import Modal from "components/Modal/Modal";
 import { getContract } from "config/contracts";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { getNeedTokenApprove, getTokenData, useTokensDataRequest } from "domain/synthetics/tokens";

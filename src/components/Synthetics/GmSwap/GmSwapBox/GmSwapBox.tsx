@@ -65,8 +65,6 @@ import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import "./GmSwapBox.scss";
 
-const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
-
 type SearchParams = {
   market?: string;
   operation?: string;
@@ -1136,29 +1134,4 @@ function showMarketToast(market) {
       <span>selected in order form</span>
     </Trans>
   );
-}
-
-function findMarketInfoByPool(markets: MarketInfo[], pool?: string, indexTokenAddress?: string) {
-  const poolMaketInfo =
-    pool &&
-    markets.find((marketInfo) => {
-      if (isAddress(pool)) {
-        return marketInfo.marketTokenAddress === pool;
-      }
-      if (indexTokenAddress) {
-        const poolName = getMarketPoolName(marketInfo);
-        const reversedPoolName = poolName.split("-").reverse().join("-");
-        return (
-          marketInfo.indexTokenAddress === indexTokenAddress &&
-          (poolName.toLowerCase() === pool.toLowerCase() || reversedPoolName.toLowerCase() === pool.toLowerCase())
-        );
-      }
-      return false;
-    });
-
-  if (poolMaketInfo) {
-    return poolMaketInfo;
-  }
-
-  return markets.find((marketInfo) => marketInfo.indexTokenAddress === indexTokenAddress);
 }
