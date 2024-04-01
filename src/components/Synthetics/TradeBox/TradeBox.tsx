@@ -533,14 +533,7 @@ export function TradeBox(p: Props) {
     detectAndSetAvailableMaxLeverage,
   ]);
 
-  const isSubmitButtonDisabled = useMemo(() => {
-    if (!account) {
-      return false;
-    }
-    if (buttonErrorText) {
-      return true;
-    }
-  }, [buttonErrorText, account]);
+  const isSubmitButtonDisabled = account ? Boolean(buttonErrorText) : false;
 
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
