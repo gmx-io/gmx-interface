@@ -829,6 +829,10 @@ msgstr "购买中..."
 msgid "COMPETITION Airdrop"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "CONCLUDED"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Can't execute because of an error"
 msgstr "错误，无法执行"
@@ -2789,6 +2793,10 @@ msgstr ""
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "LIVE"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
 msgstr ""
@@ -4615,6 +4623,10 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "SOON"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
