@@ -17,8 +17,8 @@ export function getWithdrawalAmounts(p: {
 
   const { longToken, shortToken } = marketInfo;
 
-  const longPoolAmount = marketInfo.isSameCollaterals ? marketInfo.longPoolAmount.div(2) : marketInfo.longPoolAmount;
-  const shortPoolAmount = marketInfo.isSameCollaterals ? marketInfo.shortPoolAmount.div(2) : marketInfo.shortPoolAmount;
+  const longPoolAmount = marketInfo.longPoolAmount;
+  const shortPoolAmount = marketInfo.shortPoolAmount;
 
   const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
   const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
