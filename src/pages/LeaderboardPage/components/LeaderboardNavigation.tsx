@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
@@ -101,15 +101,23 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
         return (
           <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_live">
             <span className="LeaderboardNavigation__chip-circle" />
-            LIVE
+            <Trans>LIVE</Trans>
           </div>
         );
 
       case "soon":
-        return <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">SOON</div>;
+        return (
+          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">
+            <Trans>SOON</Trans>
+          </div>
+        );
 
       case "over":
-        return <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">OVER</div>;
+        return (
+          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">
+            <Trans>CONCLUDED</Trans>
+          </div>
+        );
 
       case "none":
         return null;
