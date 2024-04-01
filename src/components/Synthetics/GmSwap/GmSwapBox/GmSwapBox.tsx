@@ -176,7 +176,10 @@ export function GmSwapBox(p: Props) {
 
   const firstToken = getTokenData(tokensData, firstTokenAddress);
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
-  const firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
+  let firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
+  if (marketInfo?.isSameCollaterals) {
+    firstTokenAmount = firstTokenAmount?.div(2);
+  }
   const firstTokenUsd = convertToUsd(
     firstTokenAmount,
     firstToken?.decimals,
@@ -189,14 +192,21 @@ export function GmSwapBox(p: Props) {
   );
   const secondToken = getTokenData(tokensData, secondTokenAddress);
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
-  const secondTokenAmount = parseValue(secondTokenInputValue, secondToken?.decimals || 0);
+  let secondTokenAmount = parseValue(secondTokenInputValue, secondToken?.decimals || 0);
+  // if (marketInfo?.isSameCollaterals) {
+  //   secondTokenAmount = firstTokenAmount;
+  // }
   const secondTokenUsd = convertToUsd(
     secondTokenAmount,
     secondToken?.decimals,
     isDeposit ? secondToken?.prices?.minPrice : secondToken?.prices?.maxPrice
   );
 
-  const { longTokenInputState, shortTokenInputState } = useMemo(() => {
+  const {
+    longTokenInputState,
+    // Undefined when isSameCollaterals is true
+    shortTokenInputState,
+  } = useMemo(() => {
     if (!marketInfo) {
       return {};
     }
@@ -221,7 +231,7 @@ export function GmSwapBox(p: Props) {
       });
     }
 
-    if ((isWithdrawal || isPair) && secondTokenAddress) {
+    if (isPair && secondTokenAddress) {
       inputs.push({
         address: secondTokenAddress,
         value: secondTokenInputValue,
@@ -246,7 +256,6 @@ export function GmSwapBox(p: Props) {
     firstTokenInputValue,
     firstTokenUsd,
     isPair,
-    isWithdrawal,
     marketInfo,
     secondToken,
     secondTokenAddress,
@@ -309,7 +318,9 @@ export function GmSwapBox(p: Props) {
       longToken: marketInfo.longToken,
       shortToken: marketInfo.shortToken,
       longTokenAmount: longTokenInputState?.amount || BigNumber.from(0),
-      shortTokenAmount: shortTokenInputState?.amount || BigNumber.from(0),
+      shortTokenAmount:
+        (marketInfo.isSameCollaterals ? longTokenInputState?.amount : shortTokenInputState?.amount) ||
+        BigNumber.from(0),
       marketTokenAmount,
       includeLongToken: Boolean(longTokenInputState?.address),
       includeShortToken: Boolean(shortTokenInputState?.address),
@@ -419,8 +430,8 @@ export function GmSwapBox(p: Props) {
       isDeposit,
       marketInfo,
       marketToken,
-      longToken: longTokenInputState?.token,
-      shortToken: shortTokenInputState?.token,
+      longToken: marketInfo?.longToken,
+      shortToken: marketInfo?.shortToken,
       marketTokenAmount,
       marketTokenUsd: amounts?.marketTokenUsd,
       longTokenAmount: amounts?.longTokenAmount,
@@ -474,13 +485,11 @@ export function GmSwapBox(p: Props) {
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     longCollateralLiquidityUsd,
-    longTokenInputState?.token,
     marketInfo,
     marketToken,
     marketTokenAmount,
     openConnectModal,
     shortCollateralLiquidityUsd,
-    shortTokenInputState?.token,
     shouldDisableValidation,
   ]);
 
@@ -546,6 +555,8 @@ export function GmSwapBox(p: Props) {
           }
 
           if (amounts) {
+            console.log("amounts", formatAmountFree(amounts.marketTokenAmount, marketToken.decimals));
+
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
@@ -586,9 +597,12 @@ export function GmSwapBox(p: Props) {
           if (amounts) {
             if (marketInfo.isSameCollaterals) {
               setFirstTokenInputValue(
-                amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
+                amounts.longTokenAmount?.gt(0)
+                  ? formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken!.decimals)
+                  : // formatAmountFree(amounts.longTokenAmount, longToken!.decimals)
+                    ""
               );
-              setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
+              // setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
             } else {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
@@ -615,26 +629,13 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
-
-            if (amounts.longTokenAmount) {
-              if (marketInfo.isSameCollaterals) {
-                setFirstTokenInputValue(
-                  amounts.longTokenAmount.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
-                );
-              } else {
-                longTokenInputState?.setValue(
-                  amounts.longTokenAmount.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
-                );
-              }
-            }
-            if (amounts.shortTokenAmount) {
-              if (marketInfo.isSameCollaterals) {
-                setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
-              } else {
-                shortTokenInputState?.setValue(
-                  amounts.shortTokenAmount.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals) : ""
-                );
-              }
+            if (marketInfo.isSameCollaterals) {
+              longTokenInputState?.setValue(
+                formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken!.decimals)
+              );
+            } else {
+              longTokenInputState?.setValue(formatAmountFree(amounts.longTokenAmount, longToken!.decimals));
+              shortTokenInputState?.setValue(formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals));
             }
           }
         }
@@ -876,7 +877,7 @@ export function GmSwapBox(p: Props) {
         <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            topLeftValue={formatUsd(firstTokenUsd)}
+            topLeftValue={marketInfo?.isSameCollaterals ? formatUsd(firstTokenUsd?.mul(2)) : formatUsd(firstTokenUsd)}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
               useCommas: true,
@@ -891,10 +892,27 @@ export function GmSwapBox(p: Props) {
               !firstTokenAmount?.eq(firstToken.balance) &&
               (firstToken?.isNative ? minResidualAmount && firstToken?.balance?.gt(minResidualAmount) : true)
             }
-            inputValue={firstTokenInputValue}
+            inputValue={
+              // marketInfo?.isSameCollaterals
+              //   ? firstTokenAmount && firstToken
+              //     ? formatAmountFree(firstTokenAmount.mul(2), firstToken.decimals)
+              //     : ""
+              //   : firstTokenInputValue
+              firstTokenInputValue
+            }
             onInputValueChange={(e) => {
               if (firstToken) {
                 setFirstTokenInputValue(e.target.value);
+
+                // if (marketInfo?.isSameCollaterals) {
+                //   const parsedValue = parseValue(e.target.value, firstToken.decimals);
+                //   if (parsedValue) {
+                //     const halfValue = parsedValue.div(2);
+                //     setFirstTokenInputValue(formatAmountFree(halfValue, firstToken.decimals));
+                //   }
+                // } else {
+                //   setFirstTokenInputValue(e.target.value);
+                // }
                 onFocusedCollateralInputChange(firstToken.address);
               }
             }}
@@ -902,7 +920,7 @@ export function GmSwapBox(p: Props) {
           >
             {firstTokenAddress && isSingle ? (
               <TokenSelector
-                label={t`Pay`}
+                label={isDeposit ? t`Pay` : t`Receive`}
                 chainId={chainId}
                 tokenAddress={firstTokenAddress}
                 onSelectToken={(token) => setFirstTokenAddress(token.address)}

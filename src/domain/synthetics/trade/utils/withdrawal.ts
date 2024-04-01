@@ -17,13 +17,13 @@ export function getWithdrawalAmounts(p: {
 
   const { longToken, shortToken } = marketInfo;
 
-  const longPoolAmount = marketInfo.longPoolAmount;
-  const shortPoolAmount = marketInfo.shortPoolAmount;
+  const longPoolAmount = marketInfo.isSameCollaterals ? marketInfo.longPoolAmount.div(2) : marketInfo.longPoolAmount;
+  const shortPoolAmount = marketInfo.isSameCollaterals ? marketInfo.shortPoolAmount.div(2) : marketInfo.shortPoolAmount;
 
   const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
   const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
 
-  const totalPoolUsd = marketInfo.isSameCollaterals ? longPoolUsd : longPoolUsd.add(shortPoolUsd);
+  const totalPoolUsd = longPoolUsd.add(shortPoolUsd);
 
   const values: WitdhrawalAmounts = {
     marketTokenAmount: BigNumber.from(0),
@@ -69,15 +69,12 @@ export function getWithdrawalAmounts(p: {
     if (strategy === "byLongCollateral" && longPoolUsd.gt(0)) {
       values.longTokenAmount = longTokenAmount;
       values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
-
-      if (!marketInfo.isSameCollaterals) {
-        values.shortTokenUsd = values.longTokenUsd.mul(shortPoolUsd).div(longPoolUsd);
-        values.shortTokenAmount = convertToTokenAmount(
-          values.shortTokenUsd,
-          shortToken.decimals,
-          shortToken.prices.maxPrice
-        )!;
-      }
+      values.shortTokenUsd = values.longTokenUsd.mul(shortPoolUsd).div(longPoolUsd);
+      values.shortTokenAmount = convertToTokenAmount(
+        values.shortTokenUsd,
+        shortToken.decimals,
+        shortToken.prices.maxPrice
+      )!;
     } else if (strategy === "byShortCollateral" && shortPoolUsd.gt(0)) {
       values.shortTokenAmount = shortTokenAmount;
       values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
@@ -89,11 +86,7 @@ export function getWithdrawalAmounts(p: {
       )!;
     }
 
-    if (marketInfo.isSameCollaterals) {
-      values.marketTokenUsd = values.longTokenUsd;
-    } else {
-      values.marketTokenUsd = values.longTokenUsd.add(values.shortTokenUsd);
-    }
+    values.marketTokenUsd = values.longTokenUsd.add(values.shortTokenUsd);
     values.swapFeeUsd = applyFactor(values.marketTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
 
     values.marketTokenUsd = values.marketTokenUsd.add(values.swapFeeUsd);

@@ -27,6 +27,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
   isVisible: boolean;
@@ -71,12 +72,12 @@ export function GmConfirmationBox({
 }: Props) {
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
-  const { marketsData } = useMarkets(chainId);
+  const marketsInfoData = useMarketsInfoData();
   const { tokensData } = useTokensDataRequest(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const market = getByKey(marketsData, marketToken?.address);
+  const market = getByKey(marketsInfoData, marketToken?.address);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
@@ -336,19 +337,29 @@ export function GmConfirmationBox({
               <div className="Confirmation-box-main trade-info-wrapper">
                 <div className="trade-info">
                   <Trans>Pay</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: longTokenAmount,
-                    usd: longTokenUsd,
-                    token: longToken,
-                    overrideSymbol: longSymbol,
-                  })}
-                  {renderTokenInfo({
-                    amount: shortTokenAmount,
-                    usd: shortTokenUsd,
-                    token: shortToken,
-                    overrideSymbol: shortSymbol,
-                    className: "mt-xs",
-                  })}
+                  {market?.isSameCollaterals ? (
+                    renderTokenInfo({
+                      amount: longTokenAmount?.add(shortTokenAmount!),
+                      usd: longTokenUsd?.add(shortTokenUsd!),
+                      token: longToken,
+                    })
+                  ) : (
+                    <>
+                      {renderTokenInfo({
+                        amount: longTokenAmount,
+                        usd: longTokenUsd,
+                        token: longToken,
+                        overrideSymbol: longSymbol,
+                      })}
+                      {renderTokenInfo({
+                        amount: shortTokenAmount,
+                        usd: shortTokenUsd,
+                        token: shortToken,
+                        overrideSymbol: shortSymbol,
+                        className: "mt-xs",
+                      })}
+                    </>
+                  )}
                 </div>
                 <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
                 <div className="trade-info">
@@ -374,19 +385,29 @@ export function GmConfirmationBox({
                 <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
                 <div className="trade-info">
                   <Trans>Receive</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: longTokenAmount,
-                    usd: longTokenUsd,
-                    token: longToken,
-                    overrideSymbol: longSymbol,
-                  })}
-                  {renderTokenInfo({
-                    amount: shortTokenAmount,
-                    usd: shortTokenUsd,
-                    token: shortToken,
-                    overrideSymbol: shortSymbol,
-                    className: "mt-xs",
-                  })}
+                  {market?.isSameCollaterals ? (
+                    renderTokenInfo({
+                      amount: longTokenAmount?.add(shortTokenAmount!),
+                      usd: longTokenUsd?.add(shortTokenUsd!),
+                      token: longToken,
+                    })
+                  ) : (
+                    <>
+                      {renderTokenInfo({
+                        amount: longTokenAmount,
+                        usd: longTokenUsd,
+                        token: longToken,
+                        overrideSymbol: longSymbol,
+                      })}
+                      {renderTokenInfo({
+                        amount: shortTokenAmount,
+                        usd: shortTokenUsd,
+                        token: shortToken,
+                        overrideSymbol: shortSymbol,
+                        className: "mt-xs",
+                      })}
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -409,7 +430,7 @@ export function GmConfirmationBox({
                 {tokensToApprove.map((address) => {
                   const token = getTokenData(tokensData, address)!;
                   const marketTokenData =
-                    address === marketToken?.address && getByKey(marketsData, marketToken?.address);
+                    address === marketToken?.address && getByKey(marketsInfoData, marketToken?.address);
 
                   return (
                     <div key={address}>
