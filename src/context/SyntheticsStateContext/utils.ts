@@ -1,4 +1,4 @@
-import { createSelector as createSelectorCommon } from "lib/selectors";
+import { createSelector as createSelectorCommon } from "reselect";
 import { EnhancedSelector, createSelectionContext } from "@taskworld.com/rereselect";
 import { Selector } from "reselect";
 import { BigNumber } from "@ethersproject/bignumber";

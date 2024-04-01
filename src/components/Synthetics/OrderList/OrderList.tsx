@@ -1,33 +1,25 @@
 import { Trans, t } from "@lingui/macro";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
-import {
-  useMarketsInfoData,
-  useOrdersInfoData,
-  usePositionsInfoData,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  PositionOrderInfo,
-  SwapOrderInfo,
-  isLimitOrderType,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-  sortPositionOrders,
-  sortSwapOrders,
-} from "domain/synthetics/orders";
+import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
+import {
+  useCancellingOrdersKeysState,
+  useEditingOrderKeyState,
+} from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { selectEditingOrder, selectOrdersList } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
-import { AvailableTokenOptions } from "domain/synthetics/trade";
 
 type Props = {
   hideActions?: boolean;
@@ -37,47 +29,24 @@ type Props = {
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
-  availableTokensOptions: AvailableTokenOptions;
 };
 
 export function OrderList(p: Props) {
-  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey, availableTokensOptions } = p;
-  const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;
+  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
   const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
-  const ordersData = useOrdersInfoData();
 
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
-  const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
-  const [editingOrderKey, setEditingOrderKey] = useState<string>();
-
   const subaccount = useSubaccount(null);
 
-  const orders = useMemo(() => {
-    const { swapOrders, positionOrders } = Object.values(ordersData || {}).reduce(
-      (acc, order) => {
-        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-          if (isSwapOrderType(order.orderType)) {
-            acc.swapOrders.push(order);
-          } else {
-            acc.positionOrders.push(order as PositionOrderInfo);
-          }
-        }
-        return acc;
-      },
-      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
-    );
-
-    return [
-      ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
-      ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
-    ];
-  }, [ordersData, sortedIndexTokensWithPoolValue, sortedLongAndShortTokens]);
+  const [canellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
+  const [, setEditingOrderKey] = useEditingOrderKeyState();
+  const editingOrder = useSelector(selectEditingOrder);
+  const orders = useSelector(selectOrdersList);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
-  const editingOrder = orders.find((o) => o.key === editingOrderKey);
   const isLastSubaccountAction = useIsLastSubaccountAction();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
@@ -150,7 +119,6 @@ export function OrderList(p: Props) {
               onSelectOrder={() => onSelectOrder(order.key)}
               isCanceling={canellingOrdersKeys.includes(order.key)}
               onCancelOrder={() => onCancelOrder(order.key)}
-              onEditOrder={() => setEditingOrderKey(order.key)}
               marketsInfoData={marketsInfoData}
               positionsInfoData={positionsData}
               hideActions={p.hideActions}
@@ -206,7 +174,6 @@ export function OrderList(p: Props) {
                   onSelectOrder={() => onSelectOrder(order.key)}
                   isCanceling={canellingOrdersKeys.includes(order.key)}
                   onCancelOrder={() => onCancelOrder(order.key)}
-                  onEditOrder={() => setEditingOrderKey(order.key)}
                   hideActions={p.hideActions}
                   marketsInfoData={marketsInfoData}
                   positionsInfoData={positionsData}

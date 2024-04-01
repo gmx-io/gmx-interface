@@ -100,6 +100,19 @@ import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
 import "./OrderEditor.scss";
+import {
+  useOrderEditorSizeInputValueState,
+  useOrderEditorTriggerPriceInputValueState,
+  useOrderEditorTriggerRatioInputValueState,
+} from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  selectOrderEditorExistingPosition,
+  selectOrderEditorNextPositionValuesForIncrease,
+  selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
+  selectOrderEditorPositionKey,
+  selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorTriggerPrice,
+} from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 
 type Props = {
   order: OrderInfo;
@@ -112,16 +125,16 @@ export function OrderEditor(p: Props) {
   const { signer } = useWallet();
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
-  const positionsData = usePositionsInfoData();
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [sizeInputValue, setSizeInputValue] = useState("");
-  const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
+  const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
+  const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
 
-  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
-  const triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS)!;
+  const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
+  const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
 
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
@@ -141,7 +154,6 @@ export function OrderEditor(p: Props) {
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
-  const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
 
   const markRatio =
     fromToken &&
@@ -199,15 +211,7 @@ export function OrderEditor(p: Props) {
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const indexPriceDecimals = indexToken?.priceDecimals;
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
-
-  const positionKey = getPositionKey(
-    p.order.account,
-    p.order.marketAddress,
-    p.order.targetCollateralToken.address,
-    p.order.isLong
-  );
-
-  const existingPosition = getByKey(positionsData, positionKey);
+  const existingPosition = useSelector(selectOrderEditorExistingPosition);
 
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
@@ -266,41 +270,8 @@ export function OrderEditor(p: Props) {
       positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
     [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
-  const nextPositionValuesArg: Parameters<typeof useNextPositionValuesForIncrease>[0] = useMemo(
-    () => ({
-      collateralTokenAddress: positionOrder?.targetCollateralToken.address,
-      fixedAcceptablePriceImpactBps: undefined,
-      indexTokenAddress: positionIndexToken?.address,
-      indexTokenAmount,
-      initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
-      initialCollateralTokenAddress: fromToken?.address,
-      leverage: existingPosition?.leverage,
-      marketAddress: positionOrder?.marketAddress,
-      positionKey: existingPosition?.key,
-      strategy: "independent",
-      tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-      tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
-      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
-      tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
-    }),
-    [
-      existingPosition,
-      fromToken?.address,
-      indexTokenAmount,
-      p.order.orderType,
-      positionIndexToken?.address,
-      positionOrder?.initialCollateralDeltaAmount,
-      positionOrder?.isLong,
-      positionOrder?.marketAddress,
-      positionOrder?.targetCollateralToken.address,
-      triggerPrice,
-    ]
-  );
-  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease(nextPositionValuesArg);
-  const nextPositionValuesWithoutPnlForIncrease = useNextPositionValuesForIncrease({
-    ...nextPositionValuesArg,
-    overrideIsPnlInLeverage: false,
-  });
+  const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
+  const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
   const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toTokenAddress);
 
@@ -678,7 +649,17 @@ export function OrderEditor(p: Props) {
 
       setIsInited(true);
     },
-    [fromToken, indexPriceDecimals, isInited, p.order, sizeInputValue, toToken]
+    [
+      fromToken,
+      indexPriceDecimals,
+      isInited,
+      p.order,
+      setSizeInputValue,
+      setTriggerPriceInputValue,
+      setTriggerRatioInputValue,
+      sizeInputValue,
+      toToken,
+    ]
   );
 
   const tradeFlags = useMemo(() => getTradeFlagsForOrder(p.order), [p.order]);

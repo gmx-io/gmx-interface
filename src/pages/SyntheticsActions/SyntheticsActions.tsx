@@ -14,8 +14,6 @@ import {
   useIsOrdersLoading,
   useIsPositionsLoading,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -26,7 +24,6 @@ export default function SyntheticsActions() {
   const checkSummedAccount = useAccount();
   const isPositionsLoading = useIsPositionsLoading();
   const isOrdersLoading = useIsOrdersLoading();
-  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
 
   const networkName = getChainName(chainId);
 
@@ -90,7 +87,6 @@ export default function SyntheticsActions() {
             isLoading={isOrdersLoading}
             setPendingTxns={() => null}
             hideActions
-            availableTokensOptions={availableTokensOptions}
           />
         </div>
       )}

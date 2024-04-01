@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -45,6 +46,7 @@ export type SyntheticsState = {
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
+  orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
 };
@@ -105,6 +107,8 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
+  const orderEditor = useOrderEditorState();
+
   const positionSellerState = usePositionSellerState(chainId);
   const positionEditorState = usePositionEditorState(chainId);
 
@@ -137,6 +141,7 @@ export function SyntheticsStateContextProvider({
       leaderboard,
       settings,
       tradebox: tradeboxState,
+      orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
     };
