@@ -28,6 +28,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxChooseSuitableMarket";
+export * from "./selectTradeboxAvailableMarketOptions";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsTradeState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;

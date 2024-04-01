@@ -31,6 +31,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
+  useTradeboxAvailableMarketsOptions,
   useTradeboxChooseSuitableMarket,
   useTradeboxDecreasePositionAmounts,
   useTradeboxExistingOrder,
@@ -76,7 +77,6 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
   ValidationResult,
@@ -397,28 +397,8 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const marketsOptions = useAvailableMarketsOptions({
-    isIncrease,
-    disable: !isPosition,
-    indexToken: toToken,
-    isLong,
-    increaseSizeUsd: increaseAmounts?.sizeDeltaUsd,
-    hasExistingOrder: Boolean(existingOrder),
-    hasExistingPosition: Boolean(selectedPosition),
-  });
+  const marketsOptions = useTradeboxAvailableMarketsOptions();
   const { availableMarkets } = marketsOptions;
-
-  const availableCollaterals = useMemo(() => {
-    if (!marketInfo) {
-      return [];
-    }
-
-    if (marketInfo.isSameCollaterals) {
-      return [marketInfo.longToken];
-    }
-
-    return [marketInfo.longToken, marketInfo.shortToken];
-  }, [marketInfo]);
 
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
   const triggerRatioValue = useMemo(() => parseValue(triggerRatioInputValue, USD_DECIMALS), [triggerRatioInputValue]);
@@ -1192,7 +1172,6 @@ export function TradeBox(p: Props) {
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
-          availableCollaterals={availableCollaterals}
           marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(selectedPosition)}

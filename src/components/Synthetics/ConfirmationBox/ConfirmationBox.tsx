@@ -88,7 +88,6 @@ import {
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -115,6 +114,8 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { AvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 import "./ConfirmationBox.scss";
 
@@ -855,9 +856,9 @@ export function ConfirmationBox(p: Props) {
       return (
         <AlertInfo compact type="warning">
           <Trans>
-            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
-            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
-            change the collateral type using the Collateral In option in the trade box.
+            You have selected {collateralTokenSymbol} as collateral; the liquidation price is higher compared to using a
+            stablecoin as collateral since the worth of the collateral will change with its price. If required and
+            available, you can change the collateral type using the "Collateral In" option in the trade box.
           </Trans>
         </AlertInfo>
       );
@@ -1173,6 +1174,7 @@ export function ConfirmationBox(p: Props) {
         <ExchangeInfo.Group>{renderMain()}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
+          <TradeboxPoolWarnings />
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}

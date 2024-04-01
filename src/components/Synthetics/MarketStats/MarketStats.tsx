@@ -14,7 +14,7 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
@@ -325,8 +325,8 @@ export function MarketStats(p: Props) {
             <CardRow
               label={t`Pool Amount`}
               value={formatTokenAmountWithUsd(
-                longPoolAmount,
-                longPoolAmountUsd,
+                longPoolAmount?.add(shortPoolAmount ?? BN_ZERO),
+                longPoolAmountUsd?.add(shortPoolAmountUsd ?? BN_ZERO),
                 longToken?.symbol,
                 longToken?.decimals
               )}

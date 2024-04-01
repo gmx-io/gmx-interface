@@ -182,9 +182,9 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
 
   const minPoolUsd = reservedUsd.mul(PRECISION).div(maxReserveFactor);
 
-  const liqudiity = poolUsd.sub(minPoolUsd);
+  const liquidity = poolUsd.sub(minPoolUsd);
 
-  return liqudiity;
+  return liquidity;
 }
 
 export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean): [BigNumber, BigNumber] {
