@@ -177,9 +177,6 @@ export function GmSwapBox(p: Props) {
   const firstToken = getTokenData(tokensData, firstTokenAddress);
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   let firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
-  if (marketInfo?.isSameCollaterals) {
-    firstTokenAmount = firstTokenAmount?.div(2);
-  }
   const firstTokenUsd = convertToUsd(
     firstTokenAmount,
     firstToken?.decimals,
@@ -312,15 +309,20 @@ export function GmSwapBox(p: Props) {
       return undefined;
     }
 
+    const longTokenAmount =
+      (marketInfo.isSameCollaterals ? longTokenInputState?.amount?.div(2) : longTokenInputState?.amount) || BN_ZERO;
+    const shortTokenAmount =
+      (marketInfo.isSameCollaterals
+        ? longTokenInputState?.amount?.sub(longTokenAmount)
+        : shortTokenInputState?.amount) || BN_ZERO;
+
     return getDepositAmounts({
       marketInfo,
       marketToken,
       longToken: marketInfo.longToken,
       shortToken: marketInfo.shortToken,
-      longTokenAmount: longTokenInputState?.amount || BigNumber.from(0),
-      shortTokenAmount:
-        (marketInfo.isSameCollaterals ? longTokenInputState?.amount : shortTokenInputState?.amount) ||
-        BigNumber.from(0),
+      longTokenAmount: longTokenAmount,
+      shortTokenAmount: shortTokenAmount,
       marketTokenAmount,
       includeLongToken: Boolean(longTokenInputState?.address),
       includeShortToken: Boolean(shortTokenInputState?.address),
@@ -354,12 +356,19 @@ export function GmSwapBox(p: Props) {
       strategy = "byShortCollateral";
     }
 
+    const longTokenAmount = marketInfo.isSameCollaterals
+      ? longTokenInputState?.amount?.div(2) || BN_ZERO
+      : longTokenInputState?.amount || BN_ZERO;
+    const shortTokenAmount = marketInfo.isSameCollaterals
+      ? longTokenInputState?.amount?.sub(longTokenAmount) || BN_ZERO
+      : shortTokenInputState?.amount || BN_ZERO;
+
     return getWithdrawalAmounts({
       marketInfo,
       marketToken,
       marketTokenAmount,
-      longTokenAmount: longTokenInputState?.amount || BigNumber.from(0),
-      shortTokenAmount: shortTokenInputState?.amount || BigNumber.from(0),
+      longTokenAmount: longTokenAmount,
+      shortTokenAmount: shortTokenAmount,
       strategy,
       uiFeeFactor,
     });
@@ -555,8 +564,6 @@ export function GmSwapBox(p: Props) {
           }
 
           if (amounts) {
-            console.log("amounts", formatAmountFree(amounts.marketTokenAmount, marketToken.decimals));
-
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
@@ -877,7 +884,7 @@ export function GmSwapBox(p: Props) {
         <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            topLeftValue={marketInfo?.isSameCollaterals ? formatUsd(firstTokenUsd?.mul(2)) : formatUsd(firstTokenUsd)}
+            topLeftValue={formatUsd(firstTokenUsd)}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
               useCommas: true,
@@ -892,27 +899,10 @@ export function GmSwapBox(p: Props) {
               !firstTokenAmount?.eq(firstToken.balance) &&
               (firstToken?.isNative ? minResidualAmount && firstToken?.balance?.gt(minResidualAmount) : true)
             }
-            inputValue={
-              // marketInfo?.isSameCollaterals
-              //   ? firstTokenAmount && firstToken
-              //     ? formatAmountFree(firstTokenAmount.mul(2), firstToken.decimals)
-              //     : ""
-              //   : firstTokenInputValue
-              firstTokenInputValue
-            }
+            inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
               if (firstToken) {
                 setFirstTokenInputValue(e.target.value);
-
-                // if (marketInfo?.isSameCollaterals) {
-                //   const parsedValue = parseValue(e.target.value, firstToken.decimals);
-                //   if (parsedValue) {
-                //     const halfValue = parsedValue.div(2);
-                //     setFirstTokenInputValue(formatAmountFree(halfValue, firstToken.decimals));
-                //   }
-                // } else {
-                //   setFirstTokenInputValue(e.target.value);
-                // }
                 onFocusedCollateralInputChange(firstToken.address);
               }
             }}
