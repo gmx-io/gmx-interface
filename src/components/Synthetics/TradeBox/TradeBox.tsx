@@ -25,6 +25,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS, V2_LEVERAGE_SLIDER_MARKS } from "config/u
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useMarketsInfoData,
+  usePositionsConstants,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -59,7 +60,6 @@ import {
   formatLiquidationPrice,
   getTriggerNameByOrderType,
   substractMaxLeverageSlippage,
-  usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
@@ -165,11 +165,13 @@ export function TradeBox(p: Props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const { showDebugValues } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-
-  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+  const minResidualAmount = useMemo(
+    () => getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice),
+    [nativeToken?.decimals, nativeToken?.prices.maxPrice]
+  );
   const {
     fromTokenInputValue,
     setFromTokenInputValue: setFromTokenInputValueRaw,
