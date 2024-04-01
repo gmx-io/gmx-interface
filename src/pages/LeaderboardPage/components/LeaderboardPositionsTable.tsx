@@ -27,6 +27,8 @@ import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatTokenAmountWithUsd } from "lib/numbers";
+import { getPositionFee } from "domain/synthetics/fees";
+import { useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -248,19 +250,24 @@ const TableRow = memo(
     const collateralToken = useTokenInfo(position.collateralToken);
     const marketInfo = useMarketInfo(position.market);
     const indexToken = marketInfo?.indexToken;
+    const uiFeeFactor = useUiFeeFactor();
 
     const liquidationPrice = useMemo(() => {
       if (!collateralToken || !marketInfo || !minCollateralUsd) return undefined;
 
+      const sizeInUsd = BigNumber.from(position.sizeInUsd);
+      const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo, uiFeeFactor).positionFeeUsd;
+      const unrealizedFees = BigNumber.from(position.unrealizedFees).sub(closingFeeUsd);
+
       return getLiquidationPrice({
         marketInfo,
         collateralToken,
-        sizeInUsd: BigNumber.from(position.sizeInUsd),
+        sizeInUsd,
         sizeInTokens: BigNumber.from(position.sizeInTokens),
         collateralUsd: BigNumber.from(position.collateralUsd),
         collateralAmount: BigNumber.from(position.collateralAmount),
         minCollateralUsd,
-        pendingBorrowingFeesUsd: BigNumber.from(position.unrealizedFees),
+        pendingBorrowingFeesUsd: unrealizedFees,
         pendingFundingFeesUsd: BigNumber.from(0),
         isLong: position.isLong,
         userReferralInfo,
@@ -275,6 +282,7 @@ const TableRow = memo(
       position.sizeInTokens,
       position.sizeInUsd,
       position.unrealizedFees,
+      uiFeeFactor,
       userReferralInfo,
     ]);
 
