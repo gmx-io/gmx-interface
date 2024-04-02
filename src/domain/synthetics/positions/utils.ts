@@ -1,8 +1,8 @@
 import { UserReferralInfo } from "domain/referrals";
-import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
-import { CHART_PERIODS } from "lib/legacy";
+import { CHART_PERIODS, PRECISION } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
@@ -331,4 +331,76 @@ export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr
   }
 
   return triggerStr;
+}
+
+function willPositionCollateralBeSufficient(
+  collateralTokenMinPrice: BigNumber,
+  collateralAmount: BigNumber,
+  collateralDeltaAmount: BigNumber,
+  collateralTokenDecimals: number,
+  realizedPnlUsd: BigNumber,
+  minCollateralFactor: BigNumber,
+  sizeInUsd: BigNumber
+) {
+  let remainingCollateralUsd = collateralAmount
+    .sub(collateralDeltaAmount)
+    .mul(collateralTokenMinPrice)
+    .div(expandDecimals(1, collateralTokenDecimals));
+
+  if (realizedPnlUsd.lt(0)) {
+    remainingCollateralUsd = remainingCollateralUsd.add(realizedPnlUsd);
+  }
+
+  if (remainingCollateralUsd.lt(0)) {
+    return false;
+  }
+
+  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, minCollateralFactor);
+
+  return remainingCollateralUsd.gte(minCollateralUsdForLeverage);
+}
+
+export function willPositionCollateralBeSufficientForPosition(
+  position: PositionInfo,
+  collateralDeltaAmount: BigNumber,
+  realizedPnlUsd: BigNumber,
+  minCollateralFactor: BigNumber,
+  sideDeltaUsd: BigNumber
+) {
+  return willPositionCollateralBeSufficient(
+    position.collateralToken.prices.minPrice,
+    position.collateralAmount,
+    collateralDeltaAmount,
+    position.collateralToken.decimals,
+    realizedPnlUsd,
+    minCollateralFactor,
+    position.sizeInUsd.add(sideDeltaUsd)
+  );
+}
+
+export function getMinCollateralFactorForPosition(position: PositionInfo, openInterestDelta: BigNumber) {
+  const marketInfo = position.marketInfo;
+  const isLong = position.isLong;
+  const openInterest = getOpenInterestUsd(marketInfo, isLong).add(openInterestDelta);
+  const minCollateralFactorMultiplier = isLong
+    ? marketInfo.minCollateralFactorForOpenInterestLong
+    : marketInfo.minCollateralFactorForOpenInterestShort;
+  let minCollateralFactor = openInterest.mul(minCollateralFactorMultiplier).div(PRECISION);
+  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+
+  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+    minCollateralFactor = minCollateralFactorForMarket;
+  }
+
+  return minCollateralFactor;
+}
+
+// 1% slippage
+export function substractMaxLeverageSlippage(number: BigNumber): BigNumber;
+export function substractMaxLeverageSlippage(number: number): number;
+export function substractMaxLeverageSlippage(number: BigNumber | number): BigNumber | number {
+  if (typeof number === "number") {
+    return Math.floor(number * 0.99);
+  }
+  return number.mul(99).div(100);
 }
