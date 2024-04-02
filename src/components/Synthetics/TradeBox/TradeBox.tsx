@@ -1455,6 +1455,7 @@ export function TradeBox(p: Props) {
       className="w-full"
       renderContent={() => tooltipContent}
       handle={buttonContent}
+      isHandlerDisabled
       handleClassName="w-full"
       position="bottom"
     />
