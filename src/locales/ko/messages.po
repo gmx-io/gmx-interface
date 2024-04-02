@@ -3721,12 +3721,16 @@ msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Only addresses with over {0} in Collateral are ranked."
-msgstr ""
+#~ msgid "Only addresses with over {0} in Collateral are ranked."
+#~ msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 가능합니다"
+
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Only positions with over {0} in Collateral are ranked."
+msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
