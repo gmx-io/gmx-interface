@@ -36,10 +36,19 @@ export function useTradeHistory(
       orderType?: OrderType;
       isDepositOrWithdraw?: boolean;
     }[];
+    isLong?: boolean;
   }
 ): TradeHistoryResult {
-  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses, orderEventCombinations } =
-    p;
+  const {
+    pageSize,
+    account,
+    forAllAccounts,
+    fromTxTimestamp,
+    toTxTimestamp,
+    marketAddresses,
+    orderEventCombinations,
+    isLong,
+  } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -58,6 +67,7 @@ export function useTradeHistory(
         toTxTimestamp,
         JSON.stringify(orderEventCombinations),
         structuredClone(marketAddresses)?.sort().join(","),
+        isLong,
       ];
     }
     return null;
@@ -84,6 +94,7 @@ export function useTradeHistory(
               timestamp_gte: fromTxTimestamp,
               timestamp_lte: toTxTimestamp,
             },
+            isLong: isLong,
           },
           {
             or: [

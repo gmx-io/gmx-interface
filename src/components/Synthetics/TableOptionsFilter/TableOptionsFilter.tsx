@@ -1,7 +1,14 @@
 import type { Placement } from "@floating-ui/dom";
 import { Trans } from "@lingui/macro";
 import isEqual from "lodash/isEqual";
-import { ChangeEventHandler, ComponentType, KeyboardEvent as ReactKeyboardEvent, useCallback, useState } from "react";
+import {
+  ChangeEventHandler,
+  ComponentType,
+  KeyboardEvent as ReactKeyboardEvent,
+  ReactNode,
+  useCallback,
+  useState,
+} from "react";
 
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -20,6 +27,7 @@ type Props<T> = {
   ItemComponent?: ComponentType<{ item: T }>;
   options: Item<T>[] | Group<T>[];
   popupPlacement?: Placement;
+  beforeContent?: ReactNode | undefined;
 } & (
   | {
       multiple?: false;
@@ -55,6 +63,7 @@ export function TableOptionsFilter<T>({
   label,
   ItemComponent,
   popupPlacement,
+  beforeContent,
 }: Props<T>) {
   const isActive = multiple ? Boolean(value?.length) : Boolean(value);
 
@@ -160,6 +169,7 @@ export function TableOptionsFilter<T>({
 
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
+      {beforeContent}
       <SearchInput
         className="TableOptionsFilter-search"
         placeholder={placeholder}
