@@ -1,8 +1,10 @@
 import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { BigNumber } from "ethers";
 import { isAddress } from "ethers/lib/utils.js";
+import mapValues from "lodash/mapValues";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
@@ -24,7 +26,7 @@ import {
 } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { Market, MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
+import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -99,13 +101,13 @@ type Props = {
 };
 
 const OPERATION_LABELS = {
-  [Operation.Deposit]: t`Buy GM`,
-  [Operation.Withdrawal]: t`Sell GM`,
+  [Operation.Deposit]: /*i18n*/ `Buy GM`,
+  [Operation.Withdrawal]: /*i18n*/ `Sell GM`,
 };
 
 const MODE_LABELS = {
-  [Mode.Single]: t`Single`,
-  [Mode.Pair]: t`Pair`,
+  [Mode.Single]: /*i18n*/ `Single`,
+  [Mode.Pair]: /*i18n*/ `Pair`,
 };
 
 export function GmSwapBox(p: Props) {
@@ -119,6 +121,7 @@ export function GmSwapBox(p: Props) {
     tokensData,
     shouldDisableValidation,
   } = p;
+  const { i18n } = useLingui();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
@@ -854,11 +857,18 @@ export function GmSwapBox(p: Props) {
     }
   }
 
+  const { localizedOperationLabels, localizedModeLabels } = useMemo(() => {
+    return {
+      localizedOperationLabels: mapValues(OPERATION_LABELS, (label) => i18n._(label)),
+      localizedModeLabels: mapValues(MODE_LABELS, (label) => i18n._(label)),
+    };
+  }, [i18n]);
+
   return (
     <div className={`App-box GmSwapBox`}>
       <Tab
         options={Object.values(Operation)}
-        optionLabels={OPERATION_LABELS}
+        optionLabels={localizedOperationLabels}
         option={operation}
         onChange={onOperationChange}
         className="Exchange-swap-option-tabs"
@@ -866,7 +876,7 @@ export function GmSwapBox(p: Props) {
 
       <Tab
         options={availableModes}
-        optionLabels={MODE_LABELS}
+        optionLabels={localizedModeLabels}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
         option={mode}

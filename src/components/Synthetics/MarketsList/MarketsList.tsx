@@ -37,10 +37,6 @@ export type MarketStat = {
   maxLiquidity: BigNumber;
   netFeeLong: BigNumber;
   netFeeShort: BigNumber;
-  // fundingRateLong: BigNumber;
-  // fundingRateShort: BigNumber;
-  // borrowingRateLong: BigNumber;
-  // borrowingRateShort: BigNumber;
   utilization: BigNumber;
 };
 
@@ -48,8 +44,6 @@ type IndexTokenStat = {
   token: TokenData;
   price: BigNumber;
   totalPoolValue: BigNumber;
-  // avgFundingRateLong: BigNumber;
-  // avgFundingRateShort: BigNumber;
   totalUtilization: BigNumber;
   totalAvailableLiquidity: BigNumber;
   totalMaxLiquidity: BigNumber;
@@ -193,7 +187,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               <Trans>PRICE</Trans>
             </th>
             <th>
-              <Trans>TVL</Trans>
+              <Trans comment="Total Value Locked">TVL</Trans>
             </th>
             <th>
               <Trans>LIQUIDITY</Trans>
