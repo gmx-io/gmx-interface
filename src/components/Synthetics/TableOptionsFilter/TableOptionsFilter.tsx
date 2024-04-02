@@ -160,7 +160,6 @@ export function TableOptionsFilter<T>({
 
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
-      {beforeContent}
       <SearchInput
         className="TableOptionsFilter-search"
         placeholder={placeholder}
@@ -168,6 +167,8 @@ export function TableOptionsFilter<T>({
         setValue={handleSetValue}
         onKeyDown={handleSearchEnterKey}
       />
+
+      {beforeContent}
 
       <div className="TableOptionsFilter-options">
         <div className="TableOptionsFilter-clear" onClick={handleClear}>
