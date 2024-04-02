@@ -3,7 +3,7 @@ import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
-import { selectAccount, selectMarketsInfoData, selectTokensData } from "./globalSelectors";
+import { selectAccount, selectMarketsInfoData, selectTokensData, selectUserReferralInfo } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
@@ -210,16 +210,33 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
 
   if (!positionBases) return undefined;
 
+  const userReferralInfoBigNumber = q(selectUserReferralInfo);
+  const userReferralInfo = {
+    totalRebateFactor: 0n,
+    discountFactor: 0n,
+  };
+
+  if (userReferralInfoBigNumber) {
+    const { totalRebateFactor, discountFactor } = userReferralInfoBigNumber;
+    userReferralInfo.totalRebateFactor = totalRebateFactor.toBigInt();
+    userReferralInfo.discountFactor = discountFactor.toBigInt();
+  }
+
   const positions = positionBases
     .map((position) => {
       const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
 
       if (!market) return undefined;
 
+      const marketInfo = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+      if (!marketInfo) return undefined;
+
       const unrealizedPnl = getPositionPnl(position, market);
 
       const pnl = position.realizedPnl + position.unrealizedPnl;
-      const fees = position.realizedFees + position.unrealizedFees;
+      const closingFeeUsd = getCloseFee(marketInfo, position.sizeInUsd, false, userReferralInfo);
+      const fees = position.realizedFees + position.unrealizedFees - closingFeeUsd;
       const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
 
       const collateralTokenPrice = q((s) =>
@@ -231,7 +248,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
 
       const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
 
-      const leverage = collateralUsd > 0n ? (position.sizeInUsd * BASIS_POINTS_DIVISOR) / collateralUsd : 0n;
+      const leverage = getLeverage(position.sizeInUsd, collateralUsd, pnl, position.unrealizedFees);
 
       const p: LeaderboardPosition = {
         ...position,
@@ -242,7 +259,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
         pnl,
         leverage,
         collateralUsd,
-        entryPrice: position.entryPrice * 10n ** BigInt(market.indexToken.decimals),
+        entryPrice: getEntryPrice(position.sizeInUsd, position.sizeInTokens, market.indexToken.decimals),
       };
 
       return p;
@@ -276,4 +293,52 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   }
 
   return pnl;
+}
+
+export function getEntryPrice(sizeInUsd: bigint, sizeInTokens: bigint, decimals: number) {
+  if (sizeInTokens <= 0n) {
+    return 0n;
+  }
+
+  return (sizeInUsd / sizeInTokens) * 10n ** BigInt(decimals);
+}
+
+function getCloseFee(
+  marketInfo: MarketInfo,
+  sizeDeltaUsd: bigint,
+  forPositiveImpact: boolean,
+  referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined
+) {
+  const factor = forPositiveImpact
+    ? marketInfo.positionFeeFactorForPositiveImpact
+    : marketInfo.positionFeeFactorForNegativeImpact;
+
+  let positionFeeUsd = applyFactor(sizeDeltaUsd, factor.toBigInt());
+
+  if (!referralInfo) {
+    return positionFeeUsd;
+  }
+
+  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
+  const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
+
+  positionFeeUsd = positionFeeUsd - discountUsd;
+
+  return positionFeeUsd;
+}
+
+const PRECISION = 10n ** 30n;
+
+function applyFactor(value: bigint, factor: bigint) {
+  return (value * factor) / PRECISION;
+}
+
+function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, pnl: bigint, unrealizedFees: bigint) {
+  const remainingCollateralUsd = collateralUsd + pnl - unrealizedFees;
+
+  if (remainingCollateralUsd < 0n) {
+    return 0n;
+  }
+
+  return (sizeInUsd * BASIS_POINTS_DIVISOR) / remainingCollateralUsd;
 }
