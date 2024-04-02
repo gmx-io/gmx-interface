@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
@@ -12,7 +12,10 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { formatTradeActionTimestamp } from "../../TradeHistory/TradeHistoryRow/utils/shared";
+import {
+  formatTradeActionTimestamp,
+  formatTradeActionTimestampISO,
+} from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
 
@@ -39,7 +42,11 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       .join(", ");
   }, [claimAction.claimItems]);
 
-  const timestamp = formatTradeActionTimestamp(claimAction.timestamp);
+  const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
+
+  const renderIsoTimestamp = useCallback(() => {
+    return formatTradeActionTimestampISO(claimAction.timestamp);
+  }, [claimAction.timestamp]);
 
   const sizeContent = useMemo(() => {
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
@@ -65,7 +72,12 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
             <NewLink20ReactComponent />
           </ExternalLink>
         </div>
-        <span className="ClaimHistoryRow-time muted">{timestamp}</span>
+        <TooltipWithPortal
+          disableHandleStyle
+          handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
+          portalClassName="ClaimHistoryRow-tooltip-portal"
+          renderContent={renderIsoTimestamp}
+        />
       </td>
       <td>{marketNamesJoined}</td>
       <td className="ClaimHistoryRow-size">{sizeContent}</td>

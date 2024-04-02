@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
@@ -10,7 +10,10 @@ import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { formatTradeActionTimestamp } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import {
+  formatTradeActionTimestamp,
+  formatTradeActionTimestampISO,
+} from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -32,6 +35,12 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
   const { chainId } = useChainId();
 
   const eventTitle = claimFundingFeeEventTitles[claimAction.eventName];
+
+  const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
+
+  const renderIsoTimestamp = useCallback(() => {
+    return formatTradeActionTimestampISO(claimAction.timestamp);
+  }, [claimAction.timestamp]);
 
   const marketContent = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
@@ -185,7 +194,12 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
             <NewLink20ReactComponent />
           </ExternalLink>
         </div>
-        <span className="ClaimHistoryRow-time muted">{formatTradeActionTimestamp(claimAction.timestamp)}</span>
+        <TooltipWithPortal
+          disableHandleStyle
+          handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
+          portalClassName="ClaimHistoryRow-tooltip-portal"
+          renderContent={renderIsoTimestamp}
+        />
       </td>
       <td>{marketContent}</td>
       <td className="ClaimHistoryRow-size">{sizeContent}</td>
