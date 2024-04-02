@@ -149,8 +149,12 @@ export default function TokenSelector(props: Props) {
   }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
 
   const _handleKeyDown = (e) => {
-    if (e.key === "Enter" && filteredTokens.length > 0) {
-      onSelectToken(filteredTokens[0]);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (filteredTokens.length > 0) {
+        onSelectToken(filteredTokens[0]);
+      }
     }
   };
 
