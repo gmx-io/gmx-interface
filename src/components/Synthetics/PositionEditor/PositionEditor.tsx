@@ -561,6 +561,7 @@ export function PositionEditor(p: Props) {
     <TooltipWithPortal
       className="w-full"
       renderContent={renderErrorTooltipContent}
+      isHandlerDisabled
       handle={buttonContent}
       handleClassName="w-full"
       position="top"
