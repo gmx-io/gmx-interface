@@ -248,7 +248,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
 
       const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
 
-      const leverage = getLeverage(position.sizeInUsd, collateralUsd, pnl, position.unrealizedFees);
+      const leverage = getLeverage(position.sizeInUsd, collateralUsd, position.unrealizedFees, position.unrealizedFees);
 
       const p: LeaderboardPosition = {
         ...position,
@@ -334,8 +334,8 @@ function applyFactor(value: bigint, factor: bigint) {
   return (value * factor) / PRECISION;
 }
 
-function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, pnl: bigint, unrealizedFees: bigint) {
-  const remainingCollateralUsd = collateralUsd + pnl - unrealizedFees;
+function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, unrealizedPnl: bigint, unrealizedFees: bigint) {
+  const remainingCollateralUsd = collateralUsd + unrealizedPnl - unrealizedFees;
 
   if (remainingCollateralUsd < 0n) {
     return 0n;
