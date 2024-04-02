@@ -5561,8 +5561,11 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees."
+msgstr "The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
 msgstr "The total realized and unrealized profit and loss for the period, including fees and price impact."
 
