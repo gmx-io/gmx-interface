@@ -135,7 +135,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
-                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                tooltip={t`Only positions with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
                   displayDecimals: 0,
                 })} in Collateral are ranked.`}
                 tooltipPosition="bottom-start"
