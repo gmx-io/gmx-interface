@@ -1,10 +1,14 @@
 import { isInBinance } from "@binance/w3w-utils";
 import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
+  coinbaseWallet,
+  coreWallet,
   injectedWallet,
   metaMaskWallet,
+  okxWallet,
   rabbyWallet,
   safeWallet,
+  trustWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { isDevelopment } from "config/env";
@@ -35,7 +39,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: isInBinance() ? [binanceWallet] : [],
+    wallets: [...(isInBinance() ? [binanceWallet] : []), coinbaseWallet, trustWallet, coreWallet, okxWallet],
   },
 ];
 
