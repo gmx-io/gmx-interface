@@ -1,8 +1,20 @@
-import React from "react";
 import cx from "classnames";
+import { ReactNode } from "react";
+
 import "./Tab.css";
 
-export default function Tab(props) {
+type Props = {
+  options: (string | number)[];
+  option: string | number | undefined;
+  setOption?: (option: any) => void;
+  onChange?: (option: any) => void;
+  type?: "block" | "inline";
+  className?: string;
+  optionLabels?: Record<string | number, ReactNode> | string[];
+  icons?: Record<string, string>;
+};
+
+export default function Tab(props: Props) {
   const { options, option, setOption, onChange, type = "block", className, optionLabels, icons } = props;
   const onClick = (opt) => {
     if (setOption) {
@@ -19,7 +31,7 @@ export default function Tab(props) {
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
           <div className={cx("Tab-option", "muted", { active: opt === option })} onClick={() => onClick(opt)} key={opt}>
-            {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={option} />}
+            {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={String(option)} />}
             {label}
           </div>
         );
