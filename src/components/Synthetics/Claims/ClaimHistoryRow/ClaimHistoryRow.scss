@@ -34,3 +34,7 @@
   width: max-content;
   max-width: unset !important;
 }
+
+.ClaimHistoryRow-tooltip-portal .Tooltip-popup {
+  min-width: max-content;
+}
