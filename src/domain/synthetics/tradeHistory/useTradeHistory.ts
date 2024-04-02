@@ -38,10 +38,19 @@ export function useTradeHistory(
       orderType?: OrderType;
       isDepositOrWithdraw?: boolean;
     }[];
+    isLong?: boolean;
   }
 ): TradeHistoryResult {
-  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses, orderEventCombinations } =
-    p;
+  const {
+    pageSize,
+    account,
+    forAllAccounts,
+    fromTxTimestamp,
+    toTxTimestamp,
+    marketAddresses,
+    orderEventCombinations,
+    isLong,
+  } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -58,6 +67,7 @@ export function useTradeHistory(
         toTxTimestamp,
         JSON.stringify(orderEventCombinations),
         structuredClone(marketAddresses)?.sort().join(","),
+        isLong,
         index,
         pageSize,
       ];
@@ -86,6 +96,7 @@ export function useTradeHistory(
         orderEventCombinations,
         marketsInfoData,
         tokensData,
+        isLong,
       });
     },
   });
@@ -248,6 +259,7 @@ export async function fetchTradeActions({
   orderEventCombinations,
   marketsInfoData,
   tokensData,
+  isLong,
 }: {
   chainId: number;
   pageIndex: number;
@@ -266,6 +278,7 @@ export async function fetchTradeActions({
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
+  isLong: boolean | undefined;
 }): Promise<TradeAction[]> {
   const client = getSyntheticsGraphClient(chainId);
   definedOrThrow(client);
@@ -283,6 +296,9 @@ export async function fetchTradeActions({
           timestamp_gte: fromTxTimestamp,
           timestamp_lte: toTxTimestamp,
         },
+        isLong: isLong,
+        // isLong is false even for swap orders, so we need to filter them out when only real shorts are requested
+        orderType_not_in: isLong !== undefined ? [OrderType.LimitSwap, OrderType.MarketSwap] : undefined,
       },
       {
         or: [

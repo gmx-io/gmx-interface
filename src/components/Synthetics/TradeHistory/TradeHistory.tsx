@@ -15,7 +15,7 @@ import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { MarketFilter } from "../TableMarketFilter/MarketFilter";
+import { MarketFilterLongShort } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
@@ -51,6 +51,7 @@ export function TradeHistory(p: Props) {
       isDepositOrWithdraw: boolean;
     }[]
   >([]);
+  const [isLongFilter, setIsLongFilter] = useState<boolean | undefined>(undefined);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -68,6 +69,7 @@ export function TradeHistory(p: Props) {
     toTxTimestamp,
     marketAddresses: marketAddressesFilter,
     orderEventCombinations: actionFilter,
+    isLong: isLongFilter,
   });
 
   const isConnected = Boolean(account);
@@ -133,7 +135,12 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilter value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+                  <MarketFilterLongShort
+                    value={marketAddressesFilter}
+                    onChange={setMarketAddressesFilter}
+                    valueIsLong={isLongFilter}
+                    onChangeIsLong={setIsLongFilter}
+                  />
                 </th>
                 <th>
                   <Trans>Size</Trans>

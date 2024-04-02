@@ -397,6 +397,11 @@ msgstr "After you scan, a connection prompt will appear for you to connect your 
 msgid "Agree"
 msgstr "Agree"
 
+#. Filter option for all markets
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "All"
+msgstr "All"
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
@@ -3109,6 +3114,7 @@ msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3250,7 +3256,7 @@ msgstr "Mark price for the order."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4712,7 +4718,7 @@ msgstr "Search Token"
 msgid "Search action"
 msgstr "Search action"
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 msgid "Search market"
 msgstr "Search market"
 
@@ -4953,6 +4959,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
