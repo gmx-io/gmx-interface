@@ -145,7 +145,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="qualifyingPnl"
