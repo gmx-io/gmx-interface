@@ -234,7 +234,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
 
       const unrealizedPnl = getPositionPnl(position, market);
 
-      const pnl = position.realizedPnl + position.unrealizedPnl;
+      const pnl = position.realizedPnl + unrealizedPnl;
       const closingFeeUsd = getCloseFee(marketInfo, position.sizeInUsd, false, userReferralInfo);
       const fees = position.realizedFees + position.unrealizedFees;
       const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
@@ -248,7 +248,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
 
       const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
 
-      const leverage = getLeverage(position.sizeInUsd, collateralUsd, position.unrealizedFees, position.unrealizedFees);
+      const leverage = getLeverage(position.sizeInUsd, collateralUsd, unrealizedPnl, position.unrealizedFees);
 
       const p: LeaderboardPosition = {
         ...position,
