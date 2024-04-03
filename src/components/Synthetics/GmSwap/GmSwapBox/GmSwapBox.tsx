@@ -101,13 +101,13 @@ type Props = {
 };
 
 const OPERATION_LABELS = {
-  [Operation.Deposit]: /*i18n*/ `Buy GM`,
-  [Operation.Withdrawal]: /*i18n*/ `Sell GM`,
+  [Operation.Deposit]: /*i18n*/ "Buy GM",
+  [Operation.Withdrawal]: /*i18n*/ "Sell GM",
 };
 
 const MODE_LABELS = {
-  [Mode.Single]: /*i18n*/ `Single`,
-  [Mode.Pair]: /*i18n*/ `Pair`,
+  [Mode.Single]: /*i18n*/ "Single",
+  [Mode.Pair]: /*i18n*/ "Pair",
 };
 
 export function GmSwapBox(p: Props) {

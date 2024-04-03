@@ -10,7 +10,7 @@ export const getGmSwapBoxAvailableModes = (
   }
 
   if (operation === Operation.Deposit) {
-    return [Mode.Single];
+    return [Mode.Single, Mode.Pair];
   }
 
   return [Mode.Pair];
