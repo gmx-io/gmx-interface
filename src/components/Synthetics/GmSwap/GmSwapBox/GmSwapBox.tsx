@@ -191,9 +191,7 @@ export function GmSwapBox(p: Props) {
   const secondToken = getTokenData(tokensData, secondTokenAddress);
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   let secondTokenAmount = parseValue(secondTokenInputValue, secondToken?.decimals || 0);
-  // if (marketInfo?.isSameCollaterals) {
-  //   secondTokenAmount = firstTokenAmount;
-  // }
+
   const secondTokenUsd = convertToUsd(
     secondTokenAmount,
     secondToken?.decimals,
@@ -508,7 +506,7 @@ export function GmSwapBox(p: Props) {
       return;
     }
 
-    if (marketInfo?.isSameCollaterals) {
+    if (marketInfo.isSameCollaterals) {
       setFocusedInput("longCollateral");
       return;
     }

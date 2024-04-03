@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/macro";
-import { getMarketPoolName, getMarketIndexName } from "domain/synthetics/markets";
+
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { formatRatePercentage } from "lib/numbers";
-import { MarketStat } from "./MarketsList";
 
 import "./NetFeeTooltip.scss";
 

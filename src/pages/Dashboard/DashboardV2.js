@@ -24,6 +24,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
@@ -113,6 +115,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 export default function DashboardV2(props) {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
+  const settings = useSettings();
   const totalVolume = useTotalVolume();
   const arbitrumOverview = useV2Stats(ARBITRUM);
   const avalancheOverview = useV2Stats(AVALANCHE);
@@ -1184,7 +1187,16 @@ export default function DashboardV2(props) {
                 </div>
               </>
             )}
-            {isV2 && getIsSyntheticsSupported(chainId) && <MarketsList />}
+            {isV2 && getIsSyntheticsSupported(chainId) && (
+              <SyntheticsStateContextProvider
+                savedIsPnlInLeverage={settings.isPnlInLeverage}
+                savedShowPnlAfterFees={settings.showPnlAfterFees}
+                skipLocalReferralCode={false}
+                pageType="pools"
+              >
+                <MarketsList />
+              </SyntheticsStateContextProvider>
+            )}
           </div>
         </div>
         <Footer />

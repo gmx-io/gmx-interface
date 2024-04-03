@@ -1,23 +1,14 @@
 import { t, Trans } from "@lingui/macro";
-import { BigNumber, constants } from "ethers";
-import { useMemo } from "react";
 import { useMedia } from "react-use";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getIcon } from "config/icons";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import {
-  getAvailableLiquidity,
-  getMarketIndexName,
-  getMarketPoolName,
-  MarketInfo,
-  MarketsInfoData,
-  useMarketsInfoRequest,
-} from "domain/synthetics/markets";
-import { getMidPrice, TokenData } from "domain/synthetics/tokens";
+import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS, importImage } from "lib/legacy";
-import { BN_ZERO, formatAmount, formatRatePercentage, formatUsd } from "lib/numbers";
+import { importImage } from "lib/legacy";
+import { formatAmount, formatRatePercentage, formatUsd } from "lib/numbers";
+import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 
 import PageTitle from "components/PageTitle/PageTitle";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
@@ -28,139 +19,13 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
 import "./MarketsList.scss";
-import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
-
-export type MarketStat = {
-  marketInfo: MarketInfo;
-  poolValueUsd: BigNumber;
-  availableLiquidity: BigNumber;
-  maxLiquidity: BigNumber;
-  netFeeLong: BigNumber;
-  netFeeShort: BigNumber;
-  utilization: BigNumber;
-};
-
-type IndexTokenStat = {
-  token: TokenData;
-  price: BigNumber;
-  totalPoolValue: BigNumber;
-  totalUtilization: BigNumber;
-  totalAvailableLiquidity: BigNumber;
-  totalMaxLiquidity: BigNumber;
-  bestNetFeeLong: BigNumber;
-  bestNetFeeShort: BigNumber;
-  marketsStats: MarketStat[];
-};
-
-type IndexTokensStats = {
-  [address: string]: IndexTokenStat;
-};
-
-function bnMax(...args: BigNumber[]): BigNumber {
-  let max = args[0];
-  for (let i = 1; i < args.length; i++) {
-    if (args[i].gt(max)) {
-      max = args[i];
-    }
-  }
-
-  return max;
-}
-
-function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoData): IndexTokenStat[] {
-  const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
-    return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
-  });
-
-  const indexMap: IndexTokensStats = {};
-
-  for (const marketInfo of markets) {
-    if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
-      continue;
-    }
-
-    const { indexToken } = marketInfo;
-
-    if (!indexMap[indexToken.address]) {
-      const price = getMidPrice(indexToken.prices)!;
-
-      indexMap[marketInfo.indexTokenAddress] = {
-        token: indexToken,
-        price,
-        totalPoolValue: BN_ZERO,
-        totalUtilization: BN_ZERO,
-        totalAvailableLiquidity: BN_ZERO,
-        totalMaxLiquidity: BN_ZERO,
-        marketsStats: [],
-        bestNetFeeLong: constants.MinInt256,
-        bestNetFeeShort: constants.MinInt256,
-      };
-    }
-
-    const indexTokenStats = indexMap[marketInfo.indexTokenAddress];
-
-    const poolValueUsd = marketInfo.poolValueMax;
-
-    const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-    const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
-    const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1);
-    const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1);
-
-    const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
-
-    const [shortAvailableLiquidity, shortMaxLiquidity] = getAvailableLiquidity(marketInfo, false);
-
-    const availableLiquidity = longAvailableLiquidity.add(shortAvailableLiquidity);
-    const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
-
-    const utilization = maxLiquidity.gt(0)
-      ? availableLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity)
-      : BigNumber.from(0);
-
-    const netFeeLong = borrowingRateLong.add(fundingRateLong);
-    const netFeeShort = borrowingRateShort.add(fundingRateShort);
-
-    indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
-    indexTokenStats.totalAvailableLiquidity = indexTokenStats.totalAvailableLiquidity.add(availableLiquidity);
-    indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity.add(maxLiquidity);
-    indexTokenStats.bestNetFeeLong = bnMax(indexTokenStats.bestNetFeeLong, netFeeLong);
-    indexTokenStats.bestNetFeeShort = bnMax(indexTokenStats.bestNetFeeShort, netFeeShort);
-    indexTokenStats.marketsStats.push({
-      marketInfo,
-      utilization,
-      netFeeLong,
-      netFeeShort,
-      availableLiquidity,
-      poolValueUsd,
-      maxLiquidity,
-    });
-  }
-
-  for (const indexTokenStats of Object.values(indexMap)) {
-    indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
-      ? indexTokenStats.totalAvailableLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
-      : BigNumber.from(0);
-  }
-
-  return Object.values(indexMap).sort((a, b) => {
-    return b.totalPoolValue.gt(a.totalPoolValue) ? 1 : -1;
-  });
-}
 
 export function MarketsList() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const indexTokensStats = useMarketsInfoDataToIndexTokensStats();
 
   const isMobile = useMedia("(max-width: 1100px)");
-
-  const indexTokensStats = useMemo(() => {
-    if (!marketsInfoData) {
-      return [];
-    }
-
-    return marketsInfoDataToIndexTokensStats(marketsInfoData);
-  }, [marketsInfoData]);
 
   return (
     <>

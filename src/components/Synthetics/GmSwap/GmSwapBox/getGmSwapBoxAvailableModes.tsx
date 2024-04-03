@@ -1,16 +1,15 @@
 import { Market } from "domain/synthetics/markets/types";
 import { Mode, Operation } from "./GmSwapBox";
 
-export const getGmSwapBoxAvailableModes = (operation: Operation, market?: Pick<Market, "isSameCollaterals">) => {
-  if (operation === Operation.Deposit) {
-    if (!market?.isSameCollaterals) {
-      return [Mode.Single, Mode.Pair];
-    }
-
+export const getGmSwapBoxAvailableModes = (
+  operation: Operation,
+  market: Pick<Market, "isSameCollaterals"> | undefined
+) => {
+  if (market && market.isSameCollaterals) {
     return [Mode.Single];
   }
 
-  if (market?.isSameCollaterals) {
+  if (operation === Operation.Deposit) {
     return [Mode.Single];
   }
 
