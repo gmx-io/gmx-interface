@@ -137,7 +137,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                 width={6}
                 tooltip={t`Only positions with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
                   displayDecimals: 0,
-                })} in Collateral are ranked.`}
+                })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
                 columnName="rank"
               />
