@@ -6650,7 +6650,7 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
+msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool.</0>"
 msgstr "{1} 마켓 풀에서 {0} 더 나은 가격으로 거래할 수 있습니다. <0>{2} 마켓 풀로 전환.</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
