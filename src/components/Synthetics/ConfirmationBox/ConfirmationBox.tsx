@@ -1177,7 +1177,6 @@ export function ConfirmationBox(p: Props) {
 
         <ExchangeInfo.Group>
           {tradeboxPoolWarnings}
-          {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
