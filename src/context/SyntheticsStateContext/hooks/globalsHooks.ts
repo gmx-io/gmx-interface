@@ -3,11 +3,13 @@ import {
   selectClosingPositionKeyState,
   selectIsOrdersLoading,
   selectIsPositionsLoading,
+  selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
   selectPricesUpdatedAt,
+  selectSetKeepLeverage,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -28,3 +30,10 @@ export const usePositionsConstants = () => useSelector(selectPositionConstants);
 
 export const useClosingPositionKeyState = () => useSelector(selectClosingPositionKeyState);
 export const useAccount = () => useSelector(selectAccount);
+
+export const useKeepLeverage = () => {
+  const keepLeverage = useSelector(selectKeepLeverage);
+  const setKeepLeverage = useSelector(selectSetKeepLeverage);
+
+  return [keepLeverage, setKeepLeverage] as const;
+};

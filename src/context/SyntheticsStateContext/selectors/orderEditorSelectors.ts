@@ -1,4 +1,5 @@
 import {
+  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isLimitOrderType,
@@ -7,18 +8,26 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector } from "../utils";
-import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "./globalSelectors";
-import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
-import { useNextPositionValuesForIncrease } from "../hooks/tradeHooks";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { TradeMode, TradeType, getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { parseValue } from "lib/numbers";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector } from "../utils";
+import {
+  selectKeepLeverage,
+  selectMarketsInfoData,
+  selectOrdersInfoData,
+  selectPositionConstants,
+  selectPositionsInfoData,
+  selectTokensData,
+  selectUiFeeFactor,
+  selectUserReferralInfo,
+} from "./globalSelectors";
+import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
-import { selectIsPnlInLeverage } from "./settingsSelectors";
+import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -33,6 +42,13 @@ export const selectOrderEditorSetTriggerPriceInputValue = (s: SyntheticsState) =
 export const selectOrderEditorTriggerRatioInputValue = (s: SyntheticsState) => s.orderEditor.triggerRatioInputValue;
 export const selectOrderEditorSetTriggerRatioInputValue = (s: SyntheticsState) =>
   s.orderEditor.setTriggerRatioInputValue;
+
+export const selectOrderEditorAcceptablePrice = (s: SyntheticsState) => s.orderEditor.acceptablePrice;
+export const selectOrderEditorAcceptablePriceImpactBps = (s: SyntheticsState) => s.orderEditor.acceptablePriceImpactBps;
+export const selectOrderEditorInitialAcceptablePriceImpactBps = (s: SyntheticsState) =>
+  s.orderEditor.initialAcceptablePriceImpactBps;
+export const selectOrderEditorSetAcceptablePriceImpactBps = (s: SyntheticsState) =>
+  s.orderEditor.setAcceptablePriceImpactBps;
 
 export const selectOrderEditorSizeDeltaUsd = createSelector((q) => {
   return parseValue(q(selectOrderEditorSizeInputValue) || "0", USD_DECIMALS);
@@ -149,4 +165,43 @@ export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSe
   });
 
   return q(selector);
+});
+
+export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
+  const order = q(selectEditingOrder);
+
+  if (!order) return undefined;
+
+  const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
+  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
+  const triggerPrice = q(selectOrderEditorTriggerPrice);
+  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+
+  if (!market || !sizeDeltaUsd || !minCollateralUsd || !minPositionSizeUsd) {
+    return undefined;
+  }
+
+  const existingPosition = q(selectOrderEditorExistingPosition);
+  const keepLeverage = q(selectKeepLeverage);
+  const acceptablePriceImpactBps = q(selectOrderEditorAcceptablePriceImpactBps);
+  const savedAcceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
+  const userReferralInfo = q(selectUserReferralInfo);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  return getDecreasePositionAmounts({
+    marketInfo: market,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    position: existingPosition,
+    closeSizeUsd: sizeDeltaUsd,
+    keepLeverage,
+    triggerPrice,
+    fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+    acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+    userReferralInfo,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor,
+    triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+  });
 });
