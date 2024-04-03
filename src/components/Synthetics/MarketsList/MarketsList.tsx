@@ -208,7 +208,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
     <tr key={stats.token.symbol}>
       <td>
         <div className="token-symbol-wrapper">
-          <div className="App-card-title-info">
+          <div className="items-center">
             <div className="App-card-title-info-icon">
               <img
                 src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
@@ -218,7 +218,6 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </div>
             <div className="App-card-title-info-text">
               <div className="App-card-info-title">{marketIndexName}</div>
-              <div className="App-card-info-subtitle">{stats.token.symbol}</div>
             </div>
             <div>
               <AssetDropdown token={stats.token} />
@@ -237,9 +236,10 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                 <StatsTooltipRow
                   key={marketInfo.marketTokenAddress}
                   showDollar={false}
+                  showColon
                   label={
                     <div className="items-top">
-                      <span className="text-white">{getMarketIndexName(marketInfo)}</span>
+                      <span>{getMarketIndexName(marketInfo)}</span>
                       <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
@@ -260,9 +260,10 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                 <StatsTooltipRow
                   key={marketInfo.marketTokenAddress}
                   showDollar={false}
+                  showColon
                   label={
                     <div className="items-top">
-                      <span className="text-white">{getMarketIndexName(marketInfo)}</span>
+                      <span>{getMarketIndexName(marketInfo)}</span>
                       <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
