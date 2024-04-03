@@ -128,8 +128,9 @@ export function CollateralSelectorRow(p: Props) {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
-                Switch to {collateralWithPosition.symbol} collateral.
+                Switch to {collateralWithPosition.symbol} collateral
               </span>
+              .
             </Trans>
           </AlertInfo>
         );
@@ -145,8 +146,9 @@ export function CollateralSelectorRow(p: Props) {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
-                Switch to {collateralWithPosition.symbol} collateral.
+                Switch to {collateralWithPosition.symbol} collateral
               </span>
+              .
             </Trans>
           </AlertInfo>
         );
@@ -164,8 +166,9 @@ export function CollateralSelectorRow(p: Props) {
                 onSelectCollateralAddress(collateralWithOrder.address);
               }}
             >
-              Switch to {collateralWithOrder.symbol} collateral.
+              Switch to {collateralWithOrder.symbol} collateral
             </span>
+            .
           </Trans>
         </AlertInfo>
       );

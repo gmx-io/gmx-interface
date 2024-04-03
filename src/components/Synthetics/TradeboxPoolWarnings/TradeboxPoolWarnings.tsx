@@ -85,8 +85,9 @@ export const useTradeboxPoolWarnings = () => {
               setMarketAddress(marketWithPosition.marketTokenAddress);
             }}
           >
-            Switch to {getMarketPoolName(marketWithPosition)} market pool.
+            Switch to {getMarketPoolName(marketWithPosition)} market pool
           </span>
+          .
         </Trans>
       </AlertInfo>
     );
@@ -130,8 +131,9 @@ export const useTradeboxPoolWarnings = () => {
               setMarketAddress(marketWithOrder.marketTokenAddress);
             }}
           >
-            Switch to {getMarketPoolName(marketWithOrder)} market pool.
+            Switch to {getMarketPoolName(marketWithOrder)} market pool
           </span>
+          .
         </Trans>
       </AlertInfo>
     );
@@ -147,8 +149,9 @@ export const useTradeboxPoolWarnings = () => {
             className="clickable underline muted"
             onClick={() => setMarketAddress(minPriceImpactMarket.marketTokenAddress)}
           >
-            Switch to {getMarketPoolName(minPriceImpactMarket)} market pool.
+            Switch to {getMarketPoolName(minPriceImpactMarket)} market pool
           </span>
+          .
         </Trans>
       </AlertInfo>
     );
