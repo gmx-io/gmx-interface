@@ -17,9 +17,10 @@ const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 type Props = {
   entriesInfo: SLTPInfo;
   marketInfo?: MarketInfo;
+  mode: "percentage" | "sizeUsd";
 };
 
-function SLTPEntries({ entriesInfo, marketInfo }: Props) {
+function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
   const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +77,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                   <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>{priceError}</div>
                 )}
               </div>
-              {entry.mode === "percentage" && (
+              {mode === "percentage" && (
                 <div className={cx("SLTP-percentage", { "input-error": !!percentageError })}>
                   <SuggestionInput
                     value={entry.percentage?.input ?? ""}
@@ -103,12 +104,12 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                   )}
                 </div>
               )}
-              {entry.mode === "size" && (
+              {mode === "sizeUsd" && (
                 <div className={cx("SLTP-size", { "input-error": !!sizeError })}>
                   <span className="price-symbol">$</span>
                   <NumberInput
-                    value={entry.size.input ?? ""}
-                    onValueChange={(e) => updateEntry(entry.id, "size", e.target.value)}
+                    value={entry.sizeUsd.input ?? ""}
+                    onValueChange={(e) => updateEntry(entry.id, "sizeUsd", e.target.value)}
                     placeholder="Size"
                     className="size-input"
                   />

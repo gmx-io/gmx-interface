@@ -13,17 +13,22 @@ import {
   isLimitIncreaseOrderType,
   isStopLossOrderType,
 } from "domain/synthetics/orders";
-import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
 import { PositionInfo, getPendingMockPosition } from "../positions";
-import { TokenData, convertToTokenAmount } from "../tokens";
+import { TokenData, convertToUsd } from "../tokens";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import useOrderEntries, { OrderEntriesInfo, OrderEntry, MAX_PERCENTAGE, getDefaultEntryField } from "./useOrderEntries";
+import useOrderEntries, {
+  OrderEntriesInfo,
+  OrderEntry,
+  MAX_PERCENTAGE,
+  getDefaultEntryField,
+  OrderEntryField,
+} from "./useOrderEntries";
 import {
   usePositionsConstants,
   useUiFeeFactor,
@@ -104,30 +109,34 @@ export default function useSLTPEntries({
 
   const existingLimitOrderEntries = useMemo(() => {
     const limitOrders = positionOrders?.filter((order) => isLimitIncreaseOrderType(order.orderType));
-    return prepareOrderEntries(limitOrders, increaseAmounts, "size", "desc");
+    return prepareInitialEntries(limitOrders, increaseAmounts, "desc");
   }, [positionOrders, increaseAmounts]);
 
-  const limitEntriesInfo = useOrderEntries<LimEntry | SLTPEntry>("limit_", handleLimitErrors, {
-    initialEntries: existingLimitOrderEntries,
-    canAddEntry: false,
-    mode: "size",
-  });
+  const limitEntriesInfo = useOrderEntries<LimEntry | SLTPEntry>(
+    "limit_",
+    marketInfo?.indexToken.decimals,
+    handleLimitErrors,
+    {
+      initialEntries: existingLimitOrderEntries,
+      canAddEntry: false,
+    }
+  );
 
-  const totalPositionSizeUsd = useMemo(() => {
+  const totalPositionSizeTokenAmount = useMemo(() => {
     let result = BigNumber.from(0);
 
-    if (existingPosition?.sizeInUsd) {
-      result = result.add(existingPosition?.sizeInUsd ?? 0);
+    if (existingPosition?.sizeInTokens) {
+      result = result.add(existingPosition?.sizeInTokens ?? 0);
     }
 
-    if (increaseAmounts?.sizeDeltaUsd) {
-      result = result.add(increaseAmounts?.sizeDeltaUsd ?? 0);
+    if (increaseAmounts?.indexTokenAmount) {
+      result = result.add(increaseAmounts?.indexTokenAmount ?? 0);
     }
 
     if (limitEntriesInfo.entries.length) {
       limitEntriesInfo.entries.forEach((e) => {
-        if (e.size.value) {
-          result = result.add(e.size.value);
+        if (e.txnType !== "cancel") {
+          result = result.add(e.size.value ?? 0);
         }
       });
     }
@@ -199,23 +208,21 @@ export default function useSLTPEntries({
 
   const existingSLOrderEntries = useMemo(() => {
     const slOrders = positionOrders?.filter((order) => isStopLossOrderType(order.orderType));
-    return prepareOrderEntries(slOrders, increaseAmounts, "percentage", isLong ? "desc" : "asc", totalPositionSizeUsd);
-  }, [positionOrders, increaseAmounts, isLong, totalPositionSizeUsd]);
+    return prepareInitialEntries(slOrders, increaseAmounts, isLong ? "desc" : "asc");
+  }, [positionOrders, increaseAmounts, isLong]);
 
   const existingTPOrderEntries = useMemo(() => {
     const slOrders = positionOrders?.filter((order) => isLimitDecreaseOrderType(order.orderType));
-    return prepareOrderEntries(slOrders, increaseAmounts, "percentage", isLong ? "asc" : "desc", totalPositionSizeUsd);
-  }, [positionOrders, increaseAmounts, isLong, totalPositionSizeUsd]);
+    return prepareInitialEntries(slOrders, increaseAmounts, isLong ? "asc" : "desc");
+  }, [positionOrders, increaseAmounts, isLong]);
 
-  const takeProfitEntriesInfo = useOrderEntries<ExtendedEntry>("tp_", handleTPErrors, {
+  const takeProfitEntriesInfo = useOrderEntries<ExtendedEntry>("tp_", marketInfo?.indexToken.decimals, handleTPErrors, {
     initialEntries: existingTPOrderEntries,
-    mode: "percentage",
-    totalPositionSizeUsd,
+    totalPositionSizeTokenAmount,
   });
-  const stopLossEntriesInfo = useOrderEntries<ExtendedEntry>("sl_", handleSLErrors, {
+  const stopLossEntriesInfo = useOrderEntries<ExtendedEntry>("sl_", marketInfo?.indexToken.decimals, handleSLErrors, {
     initialEntries: existingSLOrderEntries,
-    mode: "percentage",
-    totalPositionSizeUsd,
+    totalPositionSizeTokenAmount,
   });
 
   const positionKey = useMemo(() => {
@@ -279,15 +286,17 @@ export default function useSLTPEntries({
 
   const getDecreaseAmountsFromEntry = useCallback(
     ({ size, price }: OrderEntry) => {
-      if (!size?.value || size.error || !price?.value || price.error) return;
+      if (!size?.value || size.error || !price?.value || price.error || !marketInfo) return;
+
+      const closeSizeUsd = convertToUsd(size.value, marketInfo.indexToken.decimals, price.value);
 
       if (
         !increaseAmounts ||
-        !marketInfo ||
         !collateralToken ||
         !mockPositionInfo ||
         !minPositionSizeUsd ||
-        !minCollateralUsd
+        !minCollateralUsd ||
+        !closeSizeUsd
       ) {
         return;
       }
@@ -297,7 +306,7 @@ export default function useSLTPEntries({
         collateralToken,
         isLong,
         position: mockPositionInfo,
-        closeSizeUsd: size.value,
+        closeSizeUsd: closeSizeUsd,
         keepLeverage: true,
         triggerPrice: price.value,
         userReferralInfo,
@@ -333,8 +342,6 @@ export default function useSLTPEntries({
         return;
       }
 
-      const indexTokenAmount = convertToTokenAmount(size.value, order.indexToken.decimals, price.value);
-
       return getIncreasePositionAmounts({
         marketInfo,
         indexToken: order.indexToken,
@@ -342,7 +349,7 @@ export default function useSLTPEntries({
         collateralToken,
         isLong,
         initialCollateralAmount: order.initialCollateralDeltaAmount,
-        indexTokenAmount,
+        indexTokenAmount: size.value,
         leverage: mockPositionInfo?.leverage,
         triggerPrice: price.value,
         position: mockPositionInfo,
@@ -573,7 +580,7 @@ function handleEntryError(
     ...entry,
     size: { ...entry.size, error: sizeError },
     price: { ...entry.price, error: priceError },
-    percentage: entry.percentage ? { ...entry.percentage, error: percentageError } : null,
+    percentage: { ...entry.percentage, error: percentageError },
   };
 }
 
@@ -590,13 +597,17 @@ function getCommonError(displayableEntries: (SLTPEntryValid | LimEntryValid)[] =
     : null;
 }
 
-function prepareOrderEntries(
+type InitialEntry = {
+  order: null | PositionOrderInfo;
+  sizeUsd: OrderEntryField;
+  price: OrderEntryField;
+};
+
+function prepareInitialEntries(
   positionOrders: PositionOrderInfo[] | undefined,
   increaseAmounts: IncreasePositionAmounts | undefined,
-  mode: "percentage" | "size",
-  sort: "desc" | "asc" = "desc",
-  totalPositionSizeUsd?: BigNumber
-): undefined | Partial<OrderEntry>[] {
+  sort: "desc" | "asc" = "desc"
+): undefined | InitialEntry[] {
   if (!positionOrders || !increaseAmounts?.sizeDeltaInTokens.gt(0)) return;
 
   return positionOrders
@@ -608,22 +619,11 @@ function prepareOrderEntries(
       return 0;
     })
     .map((order) => {
-      const entry: Partial<OrderEntry> = {
-        txnType: null,
+      const entry: InitialEntry = {
+        sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
         price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }),
-        size: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
         order,
       };
-
-      if (mode === "percentage" && totalPositionSizeUsd?.gt(0)) {
-        const orderSizeDeltaInTokens = order.sizeDeltaUsd
-          .mul(expandDecimals(1, order.indexToken.decimals))
-          .div(order.triggerPrice);
-
-        const percentage = orderSizeDeltaInTokens.mul(BASIS_POINTS_DIVISOR).div(totalPositionSizeUsd);
-
-        entry.percentage = getDefaultEntryField(2, { value: percentage });
-      }
 
       return entry;
     });

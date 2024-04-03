@@ -1139,7 +1139,11 @@ export function ConfirmationBox(p: Props) {
           label={label}
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={entriesInfo} marketInfo={marketInfo} />
+              <SLTPEntries
+                entriesInfo={entriesInfo}
+                marketInfo={marketInfo}
+                mode={type === "limit" ? "sizeUsd" : "percentage"}
+              />
             </div>
           }
         />

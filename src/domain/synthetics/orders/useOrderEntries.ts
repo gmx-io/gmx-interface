@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { formatAmount, parseValue, removeTrailingZeros, expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePrevious } from "lib/usePrevious";
 
@@ -18,10 +18,10 @@ export type OrderEntryField = {
 
 export type OrderEntry = {
   id: string;
-  mode: "percentage" | "size";
   price: OrderEntryField;
   size: OrderEntryField;
-  percentage: OrderEntryField | null;
+  sizeUsd: OrderEntryField;
+  percentage: OrderEntryField;
   txnType: OrderTxnType | null;
   order: null | PositionOrderInfo;
 };
@@ -31,13 +31,13 @@ export type OrderEntriesInfo<T> = {
   canAddEntry: boolean;
   allowAddEntry: boolean;
   addEntry: () => void;
-  updateEntry: (id: string, field: "price" | "size" | "percentage", value: string) => void;
+  updateEntry: (id: string, field: "price" | "size" | "sizeUsd" | "percentage", value: string) => void;
   deleteEntry: (id: string) => void;
   reset: () => void;
 };
 
 export function getDefaultEntryField(
-  decimals: number,
+  decimals: number | undefined,
   { input, value, error }: Partial<OrderEntryField> = {}
 ): OrderEntryField {
   let nextInput = "";
@@ -47,10 +47,10 @@ export function getDefaultEntryField(
   if (input) {
     nextInput = String(removeTrailingZeros(input));
     if (!error) {
-      nextValue = parseValue(input, decimals) ?? null;
+      nextValue = (decimals && parseValue(input, decimals)) || null;
     }
   } else if (value) {
-    nextInput = String(removeTrailingZeros(formatAmount(value, decimals, decimals)));
+    nextInput = decimals ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
     if (!error) {
       nextValue = value;
     }
@@ -59,40 +59,161 @@ export function getDefaultEntryField(
   return { input: nextInput, value: nextValue, error: nextError };
 }
 
-function getDefaultEntry<T extends OrderEntry>(prefix: string, mode: "percentage" | "size", override?: Partial<T>): T {
+function getDefaultEntry<T extends OrderEntry>(prefix: string, sizeDecimals?: number, override?: Partial<T>): T {
   return {
     id: uniqueId(prefix),
-    mode,
-    price: getDefaultEntryField(USD_DECIMALS),
-    size: getDefaultEntryField(USD_DECIMALS),
-    percentage: mode === "percentage" ? getDefaultEntryField(PERCENTAGE_DECEMALS, { value: MAX_PERCENTAGE }) : null,
+    price: getDefaultEntryField(sizeDecimals),
+    size: getDefaultEntryField(sizeDecimals),
+    sizeUsd: getDefaultEntryField(USD_DECIMALS),
+    percentage: getDefaultEntryField(PERCENTAGE_DECEMALS, { value: MAX_PERCENTAGE }),
     order: null,
     txnType: null,
     ...override,
   } as T;
 }
 
+type InitialEntry<T> = Partial<T> & { price: OrderEntryField; sizeUsd: OrderEntryField };
+
 export default function useOrderEntries<T extends OrderEntry>(
   prefix: string,
+  sizeDecimals: number | undefined,
   errorHandler: (entry: T) => T,
   {
     initialEntries,
     canAddEntry = true,
-    mode = "percentage",
-    totalPositionSizeUsd,
+    totalPositionSizeTokenAmount,
   }: {
-    initialEntries?: Partial<T>[];
+    initialEntries?: InitialEntry<T>[];
     canAddEntry?: boolean;
-    mode?: "percentage" | "size";
-    totalPositionSizeUsd?: BigNumber;
+    totalPositionSizeTokenAmount?: BigNumber;
   } = {}
 ): OrderEntriesInfo<T> {
+  const getSizeByPercentage = useCallback(
+    (percentage: BigNumber | null) => {
+      if (!totalPositionSizeTokenAmount || !percentage) {
+        return null;
+      }
+
+      return totalPositionSizeTokenAmount.mul(percentage).div(BASIS_POINTS_DIVISOR);
+    },
+    [totalPositionSizeTokenAmount]
+  );
+
+  const getPercentageBySize = useCallback(
+    (size: BigNumber | null) => {
+      if (!totalPositionSizeTokenAmount?.gt(0) || !size) {
+        return null;
+      }
+
+      return size.mul(BASIS_POINTS_DIVISOR).div(totalPositionSizeTokenAmount);
+    },
+    [totalPositionSizeTokenAmount]
+  );
+
+  const getSizeUsdBySizeAndPrice = useCallback((size: BigNumber | null, price: BigNumber | null) => {
+    if (!size || !price) {
+      return null;
+    }
+
+    return size.mul(price).div(BASIS_POINTS_DIVISOR);
+  }, []);
+
+  const getSizeBySizeUsdAndPrice = useCallback(
+    (sizeUsd: BigNumber | null, price: BigNumber | null) => {
+      if (!sizeUsd || !price || !sizeDecimals) {
+        return null;
+      }
+
+      return sizeUsd.mul(expandDecimals(1, sizeDecimals)).div(price);
+    },
+    [sizeDecimals]
+  );
+
+  const recalculateEntryByField = useCallback(
+    (
+      entry: T,
+      sizeDecimals: number | undefined,
+      field: "size" | "sizeUsd" | "percentage" | "price",
+      fieldUpdate?: Partial<OrderEntryField>
+    ) => {
+      let { size, sizeUsd, percentage, price } = entry;
+
+      if (field === "size") {
+        if (fieldUpdate) {
+          size = getDefaultEntryField(sizeDecimals, fieldUpdate);
+        }
+        percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
+          value: getPercentageBySize(size.value),
+        });
+        sizeUsd = getDefaultEntryField(USD_DECIMALS, {
+          value: getSizeUsdBySizeAndPrice(size.value, price?.value),
+        });
+      } else if (field === "sizeUsd") {
+        if (fieldUpdate) {
+          sizeUsd = getDefaultEntryField(USD_DECIMALS, fieldUpdate);
+        }
+        size = getDefaultEntryField(sizeDecimals, {
+          value: getSizeBySizeUsdAndPrice(sizeUsd.value, price?.value),
+        });
+        percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
+          value: getPercentageBySize(size.value),
+        });
+      } else if (field === "percentage") {
+        if (fieldUpdate) {
+          percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, fieldUpdate);
+        }
+        size = getDefaultEntryField(sizeDecimals, {
+          value: getSizeByPercentage(percentage.value),
+        });
+        sizeUsd = getDefaultEntryField(USD_DECIMALS, {
+          value: getSizeUsdBySizeAndPrice(size.value, price?.value),
+        });
+      } else if (field === "price") {
+        if (fieldUpdate) {
+          price = getDefaultEntryField(USD_DECIMALS, fieldUpdate);
+        }
+        size = getDefaultEntryField(sizeDecimals, {
+          value: getSizeBySizeUsdAndPrice(sizeUsd.value, price.value),
+        });
+        percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
+          value: getPercentageBySize(size.value),
+        });
+      }
+
+      return { ...entry, size, sizeUsd, percentage } as T;
+    },
+    [getPercentageBySize, getSizeByPercentage, getSizeBySizeUsdAndPrice, getSizeUsdBySizeAndPrice]
+  );
+
+  const clampEntryPercentage = useCallback(
+    (entry: T, maxPercentage: BigNumber) => {
+      if (entry.percentage.value?.gt(maxPercentage)) {
+        return recalculateEntryByField(entry, sizeDecimals, "percentage", {
+          value: maxPercentage,
+        });
+      }
+
+      return entry;
+    },
+    [recalculateEntryByField, sizeDecimals]
+  );
+
   const initialState = useMemo(() => {
-    if (initialEntries?.length)
-      return initialEntries.map((entry) => errorHandler(getDefaultEntry<T>(prefix, mode, entry)));
-    if (canAddEntry) return [errorHandler(getDefaultEntry<T>(prefix, mode))];
+    if (initialEntries?.length) {
+      return initialEntries.map((entry) => {
+        const initialEntry = recalculateEntryByField(
+          getDefaultEntry<T>(prefix, sizeDecimals, entry),
+          USD_DECIMALS,
+          "sizeUsd"
+        );
+        return errorHandler(initialEntry);
+      });
+    }
+
+    if (canAddEntry) return [errorHandler(getDefaultEntry<T>(prefix, sizeDecimals))];
+
     return [];
-  }, [initialEntries, prefix, canAddEntry, mode, errorHandler]);
+  }, [initialEntries, prefix, canAddEntry, sizeDecimals, errorHandler, recalculateEntryByField]);
 
   const [entries, setEntries] = useState<T[]>(initialState);
 
@@ -106,43 +227,20 @@ export default function useOrderEntries<T extends OrderEntry>(
   }, [entries]);
 
   const addEntry = useCallback(() => {
-    if (totalPercentage.lte(MAX_PERCENTAGE)) {
-      const leftPercentage = MAX_PERCENTAGE.sub(totalPercentage);
+    const leftPercentage = MAX_PERCENTAGE.sub(totalPercentage);
+
+    if (leftPercentage.gt(0)) {
       setEntries((prevEntries) => [
         ...prevEntries,
-        getDefaultEntry<T>(prefix, mode, {
-          percentage: getDefaultEntryField(PERCENTAGE_DECEMALS, {
-            value: leftPercentage,
-          }),
-        } as Partial<T>),
+        recalculateEntryByField(getDefaultEntry<T>(prefix, sizeDecimals), sizeDecimals, "percentage", {
+          value: leftPercentage,
+        }),
       ]);
     }
-  }, [totalPercentage, prefix, mode]);
-
-  const getSizeByPercentage = useCallback(
-    (percentage: BigNumber | null) => {
-      if (!totalPositionSizeUsd || !percentage) {
-        return null;
-      }
-
-      return totalPositionSizeUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
-    },
-    [totalPositionSizeUsd]
-  );
-
-  const getPercentageBySize = useCallback(
-    (size: BigNumber | null) => {
-      if (!totalPositionSizeUsd?.gt(0) || !size) {
-        return null;
-      }
-
-      return size.mul(BASIS_POINTS_DIVISOR).div(totalPositionSizeUsd);
-    },
-    [totalPositionSizeUsd]
-  );
+  }, [totalPercentage, prefix, sizeDecimals, recalculateEntryByField]);
 
   const updateEntry = useCallback(
-    (id: string, field: "price" | "size" | "percentage", value: string) => {
+    (id: string, field: "price" | "size" | "sizeUsd" | "percentage", value: string) => {
       setEntries((prevEntries) => {
         const totalPercentageExcludingCurrent = prevEntries
           .filter((entry) => entry.txnType !== "cancel")
@@ -151,52 +249,27 @@ export default function useOrderEntries<T extends OrderEntry>(
             BigNumber.from(0)
           );
 
+        const maxPercentage = MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent);
+
         return prevEntries.map((entry) => {
           if (entry.id !== id) {
             return entry;
           }
 
-          const updatedEntry: T = { ...entry, txnType: entry.order ? "update" : "create" };
+          const recalculatedEntry = recalculateEntryByField(
+            { ...entry, txnType: entry.order ? "update" : "create" },
+            sizeDecimals,
+            field,
+            { input: value }
+          );
 
-          if (field === "size") {
-            updatedEntry.size = getDefaultEntryField(USD_DECIMALS, { input: value });
-            updatedEntry.percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
-              value: getPercentageBySize(updatedEntry.size.value),
-            });
-          } else if (field === "percentage") {
-            let nextPercentage = getDefaultEntryField(PERCENTAGE_DECEMALS, { input: value });
-
-            if (totalPercentageExcludingCurrent.add(nextPercentage.value ?? 0).gt(MAX_PERCENTAGE)) {
-              nextPercentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
-                value: MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent),
-              });
-            }
-
-            updatedEntry.percentage = nextPercentage;
-            updatedEntry.size = getDefaultEntryField(USD_DECIMALS, {
-              value: getSizeByPercentage(updatedEntry.percentage.value),
-            });
-          } else if (field === "price") {
-            updatedEntry.price = getDefaultEntryField(USD_DECIMALS, { input: value });
-          }
-
-          if (updatedEntry.txnType === "create" && updatedEntry.price?.value) {
-            if (!updatedEntry.size?.value) {
-              updatedEntry.size = getDefaultEntryField(USD_DECIMALS, { value: getSizeByPercentage(MAX_PERCENTAGE) });
-            }
-
-            if (!updatedEntry.percentage?.value) {
-              updatedEntry.size = getDefaultEntryField(PERCENTAGE_DECEMALS, {
-                value: MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent),
-              });
-            }
-          }
+          const updatedEntry = clampEntryPercentage(recalculatedEntry, maxPercentage);
 
           return errorHandler(updatedEntry);
         });
       });
     },
-    [errorHandler, getSizeByPercentage, getPercentageBySize]
+    [clampEntryPercentage, recalculateEntryByField, errorHandler, sizeDecimals]
   );
 
   const reset = useCallback(() => setEntries(initialState), [initialState]);
@@ -216,7 +289,7 @@ export default function useOrderEntries<T extends OrderEntry>(
             }
 
             if (isLastEntry && canAddEntry) {
-              acc.push(getDefaultEntry(prefix, mode));
+              acc.push(getDefaultEntry(prefix, sizeDecimals));
             }
 
             return acc;
@@ -227,30 +300,17 @@ export default function useOrderEntries<T extends OrderEntry>(
         }, []);
       });
     },
-    [prefix, mode, canAddEntry]
+    [prefix, canAddEntry, sizeDecimals]
   );
 
-  const recalculateEntriesPercentage = useCallback(() => {
-    setEntries((prevEntries) => {
-      return prevEntries.map((entry) => {
-        if (!entry.size?.value) return entry;
-
-        return {
-          ...entry,
-          percentage: getDefaultEntryField(PERCENTAGE_DECEMALS, {
-            value: getPercentageBySize(entry.size.value),
-          }),
-        };
-      });
-    });
-  }, [getPercentageBySize]);
-
-  const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
+  const prevTotalPositionSizeTokenAmount = usePrevious(totalPositionSizeTokenAmount);
   useEffect(() => {
-    if (mode === "percentage" && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeUsd ?? 0)) {
-      recalculateEntriesPercentage();
+    if (totalPositionSizeTokenAmount && !totalPositionSizeTokenAmount.eq(prevTotalPositionSizeTokenAmount ?? 0)) {
+      setEntries((prevEntries) => {
+        return prevEntries.map((entry) => recalculateEntryByField(entry, sizeDecimals, "size"));
+      });
     }
-  }, [recalculateEntriesPercentage, prevTotalPositionSizeUsd, totalPositionSizeUsd, mode]);
+  }, [prevTotalPositionSizeTokenAmount, totalPositionSizeTokenAmount, sizeDecimals, recalculateEntryByField]);
 
   return {
     entries,
