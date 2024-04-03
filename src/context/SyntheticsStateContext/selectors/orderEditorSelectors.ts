@@ -8,14 +8,21 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
-import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
-import { TradeMode, TradeType, getDecreasePositionAmounts } from "domain/synthetics/trade";
+import {
+  TokensRatio,
+  convertToTokenAmount,
+  getAmountByRatio,
+  getTokenData,
+  getTokensRatioByPrice,
+} from "domain/synthetics/tokens";
+import { TradeMode, TradeType, getDecreasePositionAmounts, getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
-import { parseValue } from "lib/numbers";
+import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
+  selectChainId,
   selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -28,6 +35,7 @@ import {
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { getWrappedToken } from "config/tokens";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -204,4 +212,116 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     uiFeeFactor,
     triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
   });
+});
+
+export const selectOrderEditorFromToken = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const tokensData = q(selectTokensData);
+  return getTokenData(tokensData, order.initialCollateralTokenAddress);
+});
+
+export const selectOrderEditorToToken = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const marketsInfoData = q(selectMarketsInfoData);
+  const chainId = q(selectChainId);
+
+  const swapPathInfo = marketsInfoData
+    ? getSwapPathOutputAddresses({
+        marketsInfoData: marketsInfoData,
+        initialCollateralAddress: order.initialCollateralTokenAddress,
+        swapPath: order.swapPath,
+        wrappedNativeTokenAddress: getWrappedToken(chainId).address,
+        shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      })
+    : undefined;
+
+  if (!swapPathInfo) return undefined;
+  if (!swapPathInfo.outTokenAddress) return undefined;
+
+  return q((s) => selectTokensData(s)?.[swapPathInfo.outTokenAddress]);
+});
+
+export const selectOrderEditorMarkRatio = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+  const fromToken = q(selectOrderEditorFromToken);
+  if (!fromToken) return undefined;
+  const toToken = q(selectOrderEditorToToken);
+  if (!toToken) return undefined;
+
+  return getTokensRatioByPrice({
+    fromToken,
+    toToken,
+    fromPrice: fromToken.prices.minPrice,
+    toPrice: toToken.prices.minPrice,
+  });
+});
+
+export const selectOrderEditorTriggerRatio = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const markRatio = q(selectOrderEditorMarkRatio);
+  if (!markRatio || !isSwapOrderType(order.orderType)) return undefined;
+
+  const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
+  const tokensRatio: TokensRatio = {
+    ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
+    largestToken: markRatio.largestToken,
+    smallestToken: markRatio.smallestToken,
+  };
+
+  return tokensRatio;
+});
+
+export const selectOrderEditorIsRatioInverted = createSelector((q) => {
+  const markRatio = q(selectOrderEditorMarkRatio);
+  const fromToken = q(selectOrderEditorFromToken);
+  return markRatio?.largestToken.address === fromToken?.address;
+});
+
+export const selectOrderEditorMinOutputAmount = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return BN_ZERO;
+
+  const fromToken = q(selectOrderEditorFromToken);
+  if (!fromToken) return BN_ZERO;
+
+  const toToken = q(selectOrderEditorToToken);
+  if (!toToken) return BN_ZERO;
+
+  const triggerRatio = q(selectOrderEditorTriggerRatio);
+  const isRatioInverted = q(selectOrderEditorIsRatioInverted);
+
+  let minOutputAmount = order.minOutputAmount;
+
+  if (triggerRatio) {
+    minOutputAmount = getAmountByRatio({
+      fromToken,
+      toToken,
+      fromTokenAmount: order.initialCollateralDeltaAmount,
+      ratio: triggerRatio?.ratio,
+      shouldInvertRatio: !isRatioInverted,
+    });
+
+    const priceImpactAmount = convertToTokenAmount(
+      order.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+      order.targetCollateralToken.decimals,
+      order.targetCollateralToken.prices.minPrice
+    );
+
+    const swapFeeAmount = convertToTokenAmount(
+      order.swapPathStats?.totalSwapFeeUsd,
+      order.targetCollateralToken.decimals,
+      order.targetCollateralToken.prices.minPrice
+    );
+
+    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
+  }
+
+  return minOutputAmount;
 });

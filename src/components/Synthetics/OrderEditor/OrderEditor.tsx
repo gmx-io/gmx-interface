@@ -22,14 +22,7 @@ import {
   getTriggerNameByOrderType,
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
-import {
-  TokensRatio,
-  convertToTokenAmount,
-  convertToUsd,
-  getAmountByRatio,
-  getTokenData,
-  getTokensRatioByPrice,
-} from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
@@ -39,7 +32,6 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  parseValue,
 } from "lib/numbers";
 
 import Button from "components/Button/Button";
@@ -50,7 +42,6 @@ import { SubaccountNavigationButton } from "components/SubaccountNavigationButto
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
-import { getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -71,7 +62,6 @@ import {
   getAcceptablePriceInfo,
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
-  getSwapPathOutputAddresses,
 } from "domain/synthetics/trade";
 import { getTradeFlagsForOrder } from "domain/synthetics/trade/utils/common";
 import { getByKey } from "lib/objects";
@@ -93,12 +83,18 @@ import {
   selectOrderEditorAcceptablePriceImpactBps,
   selectOrderEditorDecreaseAmounts,
   selectOrderEditorExistingPosition,
+  selectOrderEditorFromToken,
   selectOrderEditorInitialAcceptablePriceImpactBps,
+  selectOrderEditorIsRatioInverted,
+  selectOrderEditorMarkRatio,
+  selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorToToken,
   selectOrderEditorTriggerPrice,
+  selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
@@ -128,77 +124,12 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
-
-  // Swaps
-  const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
-
-  const swapPathInfo = marketsInfoData
-    ? getSwapPathOutputAddresses({
-        marketsInfoData: marketsInfoData,
-        initialCollateralAddress: p.order.initialCollateralTokenAddress,
-        swapPath: p.order.swapPath,
-        wrappedNativeTokenAddress: getWrappedToken(chainId).address,
-        shouldUnwrapNativeToken: p.order.shouldUnwrapNativeToken,
-      })
-    : undefined;
-
-  const toTokenAddress = swapPathInfo?.outTokenAddress;
-
-  const toToken = getTokenData(tokensData, toTokenAddress);
-  const fromTokenPrice = fromToken?.prices?.maxPrice;
-  const toTokenPrice = toToken?.prices?.minPrice;
-
-  const markRatio =
-    fromToken &&
-    toToken &&
-    fromTokenPrice &&
-    toTokenPrice &&
-    getTokensRatioByPrice({
-      fromToken,
-      toToken,
-      fromPrice: fromTokenPrice,
-      toPrice: toTokenPrice,
-    });
-
-  const isRatioInverted = markRatio?.largestToken.address === fromToken?.address;
-
-  const triggerRatio = useMemo(() => {
-    if (!markRatio || !isSwapOrderType(p.order.orderType)) return undefined;
-
-    const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
-
-    return {
-      ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
-      largestToken: markRatio.largestToken,
-      smallestToken: markRatio.smallestToken,
-    } as TokensRatio;
-  }, [markRatio, p.order.orderType, triggerRatioInputValue]);
-
-  let minOutputAmount = p.order.minOutputAmount;
-
-  if (fromToken && toToken && triggerRatio) {
-    minOutputAmount = getAmountByRatio({
-      fromToken,
-      toToken,
-      fromTokenAmount: p.order.initialCollateralDeltaAmount,
-      ratio: triggerRatio?.ratio,
-      shouldInvertRatio: !isRatioInverted,
-    });
-
-    const priceImpactAmount = convertToTokenAmount(
-      p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-      p.order.targetCollateralToken.decimals,
-      p.order.targetCollateralToken.prices.minPrice
-    );
-
-    const swapFeeAmount = convertToTokenAmount(
-      p.order.swapPathStats?.totalSwapFeeUsd,
-      p.order.targetCollateralToken.decimals,
-      p.order.targetCollateralToken.prices.minPrice
-    );
-
-    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
-  }
+  const fromToken = useSelector(selectOrderEditorFromToken);
+  const toToken = useSelector(selectOrderEditorToToken);
+  const markRatio = useSelector(selectOrderEditorMarkRatio);
+  const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
+  const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
+  const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
 
   const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
@@ -266,7 +197,7 @@ export function OrderEditor(p: Props) {
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
-  const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toTokenAddress);
+  const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toToken?.address);
 
   const userReferralInfo = useUserReferralInfo();
   const uiFeeFactor = useUiFeeFactor(chainId);
