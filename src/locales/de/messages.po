@@ -3729,8 +3729,12 @@ msgid "Only letters, numbers and underscores are allowed."
 msgstr "Es sind nur Buchstaben, Zahlen und Unterstriche erlaubt."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Only positions with over {0} in Collateral are ranked."
+msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#~ msgid "Only positions with over {0} in Collateral are ranked."
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
