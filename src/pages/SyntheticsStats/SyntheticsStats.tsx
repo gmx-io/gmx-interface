@@ -9,7 +9,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
   MarketInfo,
-  getAvailableLiquidity,
+  getUsedLiquidity,
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
@@ -210,8 +210,8 @@ export function SyntheticsStats() {
               const maxReservedUsdLong = getMaxReservedUsd(market, true);
               const maxOpenInterestLong = getMaxOpenInterestUsd(market, true);
 
-              const [liquidityLong, maxLiquidityLong] = getAvailableLiquidity(market, true);
-              const [liquidityShort, maxLiquidityShort] = getAvailableLiquidity(market, false);
+              const [liquidityLong, maxLiquidityLong] = getUsedLiquidity(market, true);
+              const [liquidityShort, maxLiquidityShort] = getUsedLiquidity(market, false);
 
               const reservedUsdShort = getReservedUsd(market, false);
               const maxReservedUsdShort = getMaxReservedUsd(market, false);

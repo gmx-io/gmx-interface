@@ -114,7 +114,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { AvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 import "./ConfirmationBox.scss";
@@ -1146,6 +1146,8 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
+  const tradeboxPoolWarnings = useTradeboxPoolWarnings();
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -1174,7 +1176,7 @@ export function ConfirmationBox(p: Props) {
         <ExchangeInfo.Group>{renderMain()}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          <TradeboxPoolWarnings />
+          {tradeboxPoolWarnings}
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}
