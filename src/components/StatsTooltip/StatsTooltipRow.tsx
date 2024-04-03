@@ -45,7 +45,7 @@ export default function StatsTooltipRow({
       return showColon ? `${label}:` : label;
     }
 
-    return label;
+    return <>{label}:</>;
   }
 
   return (
