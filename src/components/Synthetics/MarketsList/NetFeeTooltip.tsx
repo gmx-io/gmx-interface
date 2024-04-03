@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -34,8 +35,22 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                   <span className="subtext lh-1">[{getMarketPoolName(market)}]</span>
                 </div>
               </td>
-              <td className="NetFeeTooltip-cell-right">{formatRatePercentage(netFeeLong)}</td>
-              <td className="NetFeeTooltip-cell-right">{formatRatePercentage(netFeeShort)}</td>
+              <td
+                className={cx("NetFeeTooltip-cell-right", {
+                  "text-green": netFeeLong.gt(0),
+                  "text-red": netFeeLong.lt(0),
+                })}
+              >
+                {formatRatePercentage(netFeeLong)}
+              </td>
+              <td
+                className={cx("NetFeeTooltip-cell-right", {
+                  "text-green": netFeeShort.gt(0),
+                  "text-red": netFeeShort.lt(0),
+                })}
+              >
+                {formatRatePercentage(netFeeShort)}
+              </td>
             </tr>
           );
         })}

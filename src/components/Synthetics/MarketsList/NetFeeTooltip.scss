@@ -1,6 +1,12 @@
 .NetFeeTooltip {
   width: 100%;
 
+  &-head th {
+    color: var(--text-gray);
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
   &-cell-right {
     text-align: right;
   }
