@@ -446,7 +446,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {
-  const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPositionsPnlAfterFees", true);
+  const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPnlAfterFees", true);
   const realizedFees = useMemo(() => position.realizedFees * -1n, [position.realizedFees]);
   const realizedPnl = useMemo(
     () => (isPnlAfterFees ? position.realizedPnl + realizedFees + position.realizedPriceImpact : position.realizedPnl),
