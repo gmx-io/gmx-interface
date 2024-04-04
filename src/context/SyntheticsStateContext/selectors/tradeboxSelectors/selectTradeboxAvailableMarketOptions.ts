@@ -19,6 +19,7 @@ import {
   isMarketIndexToken,
   MarketInfo,
 } from "domain/synthetics/markets";
+import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
 import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
 import { TokenData } from "domain/synthetics/tokens";
@@ -83,15 +84,17 @@ export const selectTradeboxAvailableMarketOptions = createEnhancedSelector((q) =
   result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
 
   if (!hasExistingPosition) {
-    const positions = Object.values(positionsInfo || {});
-    const availablePosition = positions.find(
-      (pos) =>
-        pos.isLong === isLong && availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
-    );
+    if (positionsInfo) {
+      const availablePosition = getLargestRelatedExistingPosition({
+        isLong,
+        tokenAddress: indexToken.address,
+        positionsInfo: positionsInfo,
+      });
 
-    if (availablePosition) {
-      result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
-      result.collateralWithPosition = availablePosition.collateralToken;
+      if (availablePosition) {
+        result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
+        result.collateralWithPosition = availablePosition.collateralToken;
+      }
     }
   }
 

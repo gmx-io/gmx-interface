@@ -7,7 +7,6 @@ import { selectChainId, selectPositionsInfoData, selectTokensData } from "../glo
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
 export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => {
-  const chainId = q(selectChainId);
   const getMaxLongShortLiquidityPool = q(selectTradeboxGetMaxLongShortLiquidityPool);
   const tradeType = q(selectTradeboxTradeType);
   const positionsInfo = q(selectPositionsInfoData);
@@ -22,7 +21,6 @@ export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
     const suitableParams = chooseSuitableMarket({
-      chainId,
       tokenAddress,
       maxLongLiquidityPool,
       maxShortLiquidityPool,

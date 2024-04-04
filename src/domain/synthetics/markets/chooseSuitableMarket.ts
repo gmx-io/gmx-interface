@@ -1,15 +1,13 @@
-import { convertTokenAddress } from "config/tokens";
 import type { TokenOption } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import type { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeType } from "domain/synthetics/trade";
+import { isMarketIndexToken } from "./utils";
 
-function getLargestRelatedExistingPosition({
-  chainId,
+export function getLargestRelatedExistingPosition({
   positionsInfo,
   isLong,
   tokenAddress,
 }: {
-  chainId: number;
   positionsInfo: PositionsInfoData;
   isLong: boolean;
   tokenAddress: string;
@@ -20,7 +18,7 @@ function getLargestRelatedExistingPosition({
       continue;
     }
 
-    if (convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") !== tokenAddress) {
+    if (!isMarketIndexToken(position.marketInfo, tokenAddress)) {
       continue;
     }
 
@@ -40,15 +38,13 @@ function getLargestRelatedExistingPosition({
 export type PreferredTradeTypePickStrategy = TradeType | "largestPosition";
 
 export function chooseSuitableMarket({
-  chainId,
-  tokenAddress: tokenAddressRaw,
+  tokenAddress,
   maxLongLiquidityPool,
   maxShortLiquidityPool,
   isSwap,
   positionsInfo,
   preferredTradeType,
 }: {
-  chainId: number;
   tokenAddress: string;
   maxLongLiquidityPool: TokenOption;
   maxShortLiquidityPool: TokenOption;
@@ -56,25 +52,21 @@ export function chooseSuitableMarket({
   positionsInfo?: PositionsInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
 }): { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType } | undefined {
-  const tokenAddress = convertTokenAddress(chainId, tokenAddressRaw, "wrapped");
-
   if (isSwap) {
     return {
-      indexTokenAddress: tokenAddressRaw,
+      indexTokenAddress: tokenAddress,
       tradeType: TradeType.Swap,
     };
   }
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
     let largestLongPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
-      chainId,
       positionsInfo,
       isLong: true,
       tokenAddress,
     });
 
     let largestShortPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
-      chainId,
       positionsInfo,
       isLong: false,
       tokenAddress,
@@ -82,7 +74,7 @@ export function chooseSuitableMarket({
 
     if (!largestLongPosition && !largestShortPosition) {
       return {
-        indexTokenAddress: tokenAddressRaw,
+        indexTokenAddress: tokenAddress,
         marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
         tradeType: TradeType.Long,
       };
@@ -99,13 +91,13 @@ export function chooseSuitableMarket({
     const largestPositionTradeType = largestPosition?.isLong ? TradeType.Long : TradeType.Short;
 
     return {
-      indexTokenAddress: tokenAddressRaw,
+      indexTokenAddress: tokenAddress,
       marketTokenAddress: largestPosition.marketInfo.marketTokenAddress,
       tradeType: largestPositionTradeType,
     };
   } else if (preferredTradeType === "largestPosition") {
     return {
-      indexTokenAddress: tokenAddressRaw,
+      indexTokenAddress: tokenAddress,
       marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
       tradeType: TradeType.Long,
     };
@@ -115,7 +107,6 @@ export function chooseSuitableMarket({
     const largestLongPosition =
       positionsInfo &&
       getLargestRelatedExistingPosition({
-        chainId,
         positionsInfo,
         isLong: true,
         tokenAddress,
@@ -125,7 +116,7 @@ export function chooseSuitableMarket({
       largestLongPosition?.marketInfo.marketTokenAddress ?? maxLongLiquidityPool.marketTokenAddress;
 
     return {
-      indexTokenAddress: tokenAddressRaw,
+      indexTokenAddress: tokenAddress,
       marketTokenAddress: marketTokenAddress,
       tradeType: TradeType.Long,
     };
@@ -134,7 +125,6 @@ export function chooseSuitableMarket({
   const largestShortPosition =
     positionsInfo &&
     getLargestRelatedExistingPosition({
-      chainId,
       positionsInfo,
       isLong: false,
       tokenAddress,
@@ -144,7 +134,7 @@ export function chooseSuitableMarket({
     largestShortPosition?.marketInfo.marketTokenAddress ?? maxShortLiquidityPool.marketTokenAddress;
 
   return {
-    indexTokenAddress: tokenAddressRaw,
+    indexTokenAddress: tokenAddress,
     marketTokenAddress: marketTokenAddress,
     tradeType: TradeType.Short,
   };
