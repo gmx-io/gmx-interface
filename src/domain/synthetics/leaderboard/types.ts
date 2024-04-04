@@ -21,23 +21,20 @@ export type LeaderboardTimeframe = {
   to: number | undefined;
 };
 
-export type LeaderboardType = "all" | "30days" | "7days";
+export type LeaderboardTimeframeType = "all" | "30days" | "7days";
+export type LeaderboardDataType = "accounts" | "positions";
 
 export type LeaderboardPageKey = typeof LEADERBOARD_PAGES_ORDER[number];
 
 export type LeaderboardPageConfig =
   | {
       key: LeaderboardPageKey;
-      label: string;
-      title: string;
       href: string;
       isCompetition: false;
       timeframe: LeaderboardTimeframe;
     }
   | {
       key: LeaderboardPageKey;
-      label: string;
-      title: string;
       href: string;
       isCompetition: true;
       chainId: number;

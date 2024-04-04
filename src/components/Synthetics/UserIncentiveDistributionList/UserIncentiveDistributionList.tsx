@@ -130,7 +130,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
 
-  const isCompetition = typeId > 2000 && typeId < 3000;
+  const isCompetition = typeId >= 2000 && typeId < 3000;
   const typeStr = isCompetition ? t`COMPETITION Airdrop` : INCENTIVE_TYPE_MAP[typeId];
   const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
 

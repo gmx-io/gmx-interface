@@ -2,13 +2,16 @@ import { useMemo } from "react";
 import {
   selectLeaderboardAccountsRanks,
   selectLeaderboardCurrentAccount,
+  selectLeaderboardDataType,
   selectLeaderboardIsCompetition,
   selectLeaderboardIsEndInFuture,
   selectLeaderboardIsStartInFuture,
+  selectLeaderboardPositions,
   selectLeaderboardRankedAccounts,
-  selectLeaderboardSetType,
+  selectLeaderboardSetDataType,
+  selectLeaderboardSetTimeframeType,
   selectLeaderboardTimeframe,
-  selectLeaderboardType,
+  selectLeaderboardTimeframeType,
 } from "../selectors/leaderboardSelectors";
 import { useSelector } from "../utils";
 
@@ -16,9 +19,11 @@ export const useLeaderboardRankedAccounts = () => useSelector(selectLeaderboardR
 export const useLeaderboardAccountsRanks = () => useSelector(selectLeaderboardAccountsRanks);
 export const useLeaderboardCurrentAccount = () => useSelector(selectLeaderboardCurrentAccount);
 
-export const useLeaderboardTypeState = () => {
-  return [useSelector(selectLeaderboardType), useSelector(selectLeaderboardSetType)] as const;
-};
+export const useLeaderboardTimeframeTypeState = () =>
+  [useSelector(selectLeaderboardTimeframeType), useSelector(selectLeaderboardSetTimeframeType)] as const;
+
+export const useLeaderboardDataTypeState = () =>
+  [useSelector(selectLeaderboardDataType), useSelector(selectLeaderboardSetDataType)] as const;
 
 export const useLeaderboardTiming = () => {
   const timeframe = useSelector(selectLeaderboardTimeframe);
@@ -33,3 +38,5 @@ export const useLeaderboardPageKey = () => useSelector((s) => s.leaderboard.lead
 export const useLeaderboardIsCompetition = () => useSelector(selectLeaderboardIsCompetition);
 
 export const useLeaderboardChainId = () => useSelector((s) => s.leaderboard.chainId);
+
+export const useLeaderboardPositions = () => useSelector(selectLeaderboardPositions);
