@@ -90,7 +90,7 @@ export default function useOrderEntries<T extends OrderEntry>(
 ): OrderEntriesInfo<T> {
   const getSizeByPercentage = useCallback(
     (percentage: BigNumber | null) => {
-      if (!totalPositionSizeTokenAmount || !percentage) {
+      if (!totalPositionSizeTokenAmount?.gt(0) || !percentage) {
         return null;
       }
 
@@ -120,7 +120,7 @@ export default function useOrderEntries<T extends OrderEntry>(
 
   const getSizeBySizeUsdAndPrice = useCallback(
     (sizeUsd: BigNumber | null, price: BigNumber | null) => {
-      if (!sizeUsd || !price || !sizeDecimals) {
+      if (!sizeUsd || !price?.gt(0) || !sizeDecimals) {
         return null;
       }
 
@@ -173,7 +173,9 @@ export default function useOrderEntries<T extends OrderEntry>(
           price = getDefaultEntryField(USD_DECIMALS, fieldUpdate);
         }
         size = getDefaultEntryField(sizeDecimals, {
-          value: getSizeByPercentage(percentage.value),
+          value: percentage.value
+            ? getSizeByPercentage(percentage.value)
+            : getSizeBySizeUsdAndPrice(sizeUsd.value, price.value),
         });
         percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
           value: getPercentageBySize(size.value),
