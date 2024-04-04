@@ -47,7 +47,6 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import useWallet from "lib/wallets/useWallet";
 
@@ -79,6 +78,7 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorSwapRoutes,
   selectOrderEditorToToken,
   selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
@@ -155,7 +155,7 @@ export function OrderEditor(p: Props) {
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
-  const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toToken?.address);
+  const swapRoute = useSelector(selectOrderEditorSwapRoutes);
 
   const userReferralInfo = useUserReferralInfo();
   const uiFeeFactor = useUiFeeFactor(chainId);

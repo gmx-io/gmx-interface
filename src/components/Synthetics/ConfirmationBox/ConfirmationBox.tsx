@@ -100,12 +100,10 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralToken,
-  selectTradeboxCollateralTokenAddress,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
@@ -126,6 +124,7 @@ import {
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxSwapAmounts,
+  selectTradeboxSwapRoutes,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
@@ -189,8 +188,7 @@ export function ConfirmationBox(p: Props) {
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
-  const collateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
-  const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
+  const swapRoute = useSelector(selectTradeboxSwapRoutes);
   const swapLiquidityUsd = swapRoute.maxSwapLiquidity;
   const { indexToken } = marketInfo || {};
 

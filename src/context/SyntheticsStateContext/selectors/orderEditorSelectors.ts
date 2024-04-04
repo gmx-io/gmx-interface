@@ -462,3 +462,13 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     strategy: "independent",
   });
 });
+
+export const selectOrderEditorSwapRoutes = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) throw new Error("selectOrderEditorSwapRoutes: Order is not defined");
+
+  const toToken = q(selectOrderEditorToToken);
+  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
+
+  return q(selectSwapRoutes);
+});
