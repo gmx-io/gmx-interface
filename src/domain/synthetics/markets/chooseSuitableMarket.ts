@@ -139,7 +139,7 @@ export function chooseSuitableMarket({
 
   return {
     indexTokenAddress,
-    marketTokenAddress: marketTokenAddress,
+    marketTokenAddress,
     tradeType: TradeType.Short,
     collateralTokenAddress: largestShortPosition?.collateralTokenAddress,
   };
