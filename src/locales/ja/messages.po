@@ -236,7 +236,7 @@ msgstr "注文が執行される保証がないこと、トリガー注文がト
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "許容価格"
 
@@ -311,8 +311,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Action"
 msgstr "アクション"
 
@@ -1476,7 +1476,7 @@ msgstr "ダッシュボード"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Date"
 msgstr "日付"
@@ -1555,10 +1555,6 @@ msgstr "減額 アクティブ: {0} 執行済: {1} キャンセル済] {2}"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Decrease size"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Decrease the leverage to match the max. allowed leverage."
@@ -2034,7 +2030,7 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
 msgstr "執行価格"
 
@@ -2122,6 +2118,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+msgid "Failed to download trade history as CSV"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
@@ -2255,7 +2255,7 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Full market"
 msgstr ""
 
@@ -3203,7 +3203,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
@@ -3239,8 +3239,8 @@ msgstr "注文のためのマーク価格"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Market"
 msgstr "マーケット"
 
@@ -3491,10 +3491,6 @@ msgstr "移行申し込み済! <0>状況を確認する</0>"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min collateral: {0} USD"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -4208,13 +4204,13 @@ msgstr "価格"
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Price Impact"
 msgstr "価格インパクト"
 
@@ -5016,7 +5012,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Size"
 msgstr "サイズ"
@@ -5932,7 +5928,7 @@ msgid "Transaction"
 msgstr "取引"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Transaction ID"
 msgstr "取引ID"
 
@@ -6016,7 +6012,7 @@ msgstr "トリガー注文"
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Trigger Price"
 msgstr "トリガー価格"
 

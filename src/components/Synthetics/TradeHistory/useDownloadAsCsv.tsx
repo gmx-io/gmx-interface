@@ -21,6 +21,7 @@ import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
+import { helperToast } from "lib/helperToast";
 
 const GRAPHQL_MAX_SIZE = 10_000;
 
@@ -108,6 +109,8 @@ export function useDownloadAsCsv({
         priceImpact: t`Price Impact`,
         explorerUrl: t`Transaction ID`,
       });
+    } catch {
+      helperToast.error(t`Failed to download trade history as CSV`);
     } finally {
       setIsLoading(false);
     }
