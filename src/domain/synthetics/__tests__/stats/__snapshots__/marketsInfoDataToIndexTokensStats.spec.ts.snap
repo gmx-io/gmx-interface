@@ -13,10 +13,396 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x0c7adfe5aaa5c48e9d2224c0ddc000",
+        "marketInfo": Object {
+          "borrowingExponentFactorLong": Object {
+            "hex": "0x0c9f2c9cd04674edea40000000",
+            "type": "BigNumber",
+          },
+          "borrowingExponentFactorShort": Object {
+            "hex": "0x0c9f2c9cd04674edea40000000",
+            "type": "BigNumber",
+          },
+          "borrowingFactorLong": Object {
+            "hex": "0x0152d02c7e14af680000",
+            "type": "BigNumber",
+          },
+          "borrowingFactorPerSecondForLongs": Object {
+            "hex": "0xf437566bee487d809c",
+            "type": "BigNumber",
+          },
+          "borrowingFactorPerSecondForShorts": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "borrowingFactorShort": Object {
+            "hex": "0x0152d02c7e14af680000",
+            "type": "BigNumber",
+          },
+          "claimableFundingAmountLong": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "claimableFundingAmountShort": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "data": "",
+          "fundingDecreaseFactorPerSecond": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "fundingExponentFactor": Object {
+            "hex": "0x0c9f2c9cd04674edea40000000",
+            "type": "BigNumber",
+          },
+          "fundingFactor": Object {
+            "hex": "0x043c33c1937564800000",
+            "type": "BigNumber",
+          },
+          "fundingFactorPerSecond": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "fundingIncreaseFactorPerSecond": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "indexToken": Object {
+            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "balance": Object {
+              "hex": "0xef3c",
+              "type": "BigNumber",
+            },
+            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+            "decimals": 8,
+            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+            "name": "Bitcoin (WBTC)",
+            "prices": Object {
+              "maxPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+              "minPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+            },
+            "symbol": "WBTC",
+          },
+          "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+          "isDisabled": false,
+          "isSameCollaterals": true,
+          "isSpotOnly": false,
+          "longInterestInTokens": Object {
+            "hex": "0x0a924cec",
+            "type": "BigNumber",
+          },
+          "longInterestUsd": Object {
+            "hex": "0x17c464d3a484414de2a87352380000",
+            "type": "BigNumber",
+          },
+          "longPoolAmount": Object {
+            "hex": "0x0eaa95af",
+            "type": "BigNumber",
+          },
+          "longPoolAmountAdjustment": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "longToken": Object {
+            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "balance": Object {
+              "hex": "0xef3c",
+              "type": "BigNumber",
+            },
+            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+            "decimals": 8,
+            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+            "name": "Bitcoin (WBTC)",
+            "prices": Object {
+              "maxPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+              "minPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+            },
+            "symbol": "WBTC",
+          },
+          "longTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+          "longsPayShorts": false,
+          "marketTokenAddress": "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11",
+          "maxFundingFactorPerSecond": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "maxLongPoolAmount": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "maxLongPoolAmountForDeposit": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "maxOpenInterestLong": Object {
+            "hex": "0x0178287f49c4a1d6622fb2ab4000000000",
+            "type": "BigNumber",
+          },
+          "maxOpenInterestShort": Object {
+            "hex": "0x0178287f49c4a1d6622fb2ab4000000000",
+            "type": "BigNumber",
+          },
+          "maxPnlFactorForTradersLong": Object {
+            "hex": "0x0b5c0e8d21d902d61fa0000000",
+            "type": "BigNumber",
+          },
+          "maxPnlFactorForTradersShort": Object {
+            "hex": "0x0b5c0e8d21d902d61fa0000000",
+            "type": "BigNumber",
+          },
+          "maxPositionImpactFactorForLiquidations": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "maxPositionImpactFactorNegative": Object {
+            "hex": "0x1027e72f1f12813088000000",
+            "type": "BigNumber",
+          },
+          "maxPositionImpactFactorPositive": Object {
+            "hex": "0x1027e72f1f12813088000000",
+            "type": "BigNumber",
+          },
+          "maxShortPoolAmount": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "maxShortPoolAmountForDeposit": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "minCollateralFactor": Object {
+            "hex": "0x204fce5e3e25026110000000",
+            "type": "BigNumber",
+          },
+          "minCollateralFactorForOpenInterestLong": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "minCollateralFactorForOpenInterestShort": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "minFundingFactorPerSecond": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "minPositionImpactPoolAmount": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "name": "WBTC/USD [WBTC]",
+          "netPnlMax": Object {
+            "hex": "-0x0134c6b62eba55970d514aaf380000",
+            "type": "BigNumber",
+          },
+          "netPnlMin": Object {
+            "hex": "-0x0134c6b62eba55970d514aaf380000",
+            "type": "BigNumber",
+          },
+          "openInterestReserveFactorLong": Object {
+            "hex": "0x0b5c0e8d21d902d61fa0000000",
+            "type": "BigNumber",
+          },
+          "openInterestReserveFactorShort": Object {
+            "hex": "0x0b5c0e8d21d902d61fa0000000",
+            "type": "BigNumber",
+          },
+          "pnlLongMax": Object {
+            "hex": "-0x0134c6b62eba55970d514aaf380000",
+            "type": "BigNumber",
+          },
+          "pnlLongMin": Object {
+            "hex": "-0x0134c6b62eba55970d514aaf380000",
+            "type": "BigNumber",
+          },
+          "pnlShortMax": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "pnlShortMin": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "poolValueMax": Object {
+            "hex": "0x3f756af2112a0349c6ed75e4e5974e",
+            "type": "BigNumber",
+          },
+          "poolValueMin": Object {
+            "hex": "0x3f756af2112a0349c6ed75e4e5974e",
+            "type": "BigNumber",
+          },
+          "positionFeeFactorForNegativeImpact": Object {
+            "hex": "0x024306c4097859c43c000000",
+            "type": "BigNumber",
+          },
+          "positionFeeFactorForPositiveImpact": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "positionImpactExponentFactor": Object {
+            "hex": "0x193e5939a08ce9dbd480000000",
+            "type": "BigNumber",
+          },
+          "positionImpactFactorNegative": Object {
+            "hex": "0x152d02c7e14af6800000",
+            "type": "BigNumber",
+          },
+          "positionImpactFactorPositive": Object {
+            "hex": "0x0a968163f0a57b400000",
+            "type": "BigNumber",
+          },
+          "positionImpactPoolAmount": Object {
+            "hex": "0x29fb68",
+            "type": "BigNumber",
+          },
+          "positionImpactPoolDistributionRate": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "reserveFactorLong": Object {
+            "hex": "0x0bfd9d94f90fbbe204f0000000",
+            "type": "BigNumber",
+          },
+          "reserveFactorShort": Object {
+            "hex": "0x0bfd9d94f90fbbe204f0000000",
+            "type": "BigNumber",
+          },
+          "shortInterestInTokens": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "shortInterestUsd": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "shortPoolAmount": Object {
+            "hex": "0x0eaa95af",
+            "type": "BigNumber",
+          },
+          "shortPoolAmountAdjustment": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "shortToken": Object {
+            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "balance": Object {
+              "hex": "0xef3c",
+              "type": "BigNumber",
+            },
+            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+            "decimals": 8,
+            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+            "name": "Bitcoin (WBTC)",
+            "prices": Object {
+              "maxPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+              "minPrice": Object {
+                "hex": "0x0cb86f8142ec4294fa6a2640000000",
+                "type": "BigNumber",
+              },
+            },
+            "symbol": "WBTC",
+          },
+          "shortTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+          "swapFeeFactorForNegativeImpact": Object {
+            "hex": "0x024306c4097859c43c000000",
+            "type": "BigNumber",
+          },
+          "swapFeeFactorForPositiveImpact": Object {
+            "hex": "0x019d971e4fe8401e74000000",
+            "type": "BigNumber",
+          },
+          "swapImpactExponentFactor": Object {
+            "hex": "0x193e5939a08ce9dbd480000000",
+            "type": "BigNumber",
+          },
+          "swapImpactFactorNegative": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "swapImpactFactorPositive": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "swapImpactPoolAmountLong": Object {
+            "hex": "0x086441e2",
+            "type": "BigNumber",
+          },
+          "swapImpactPoolAmountShort": Object {
+            "hex": "0x086441e2",
+            "type": "BigNumber",
+          },
+          "thresholdForDecreaseFunding": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "thresholdForStableFunding": Object {
+            "hex": "0x00",
+            "type": "BigNumber",
+          },
+          "totalBorrowingFees": Object {
+            "hex": "0x010280d1a6baf0207a58a10b6a13",
+            "type": "BigNumber",
+          },
+          "virtualInventoryForPositions": Object {
+            "hex": "-0x12b0bdec75b5f01a894385b755d800",
+            "type": "BigNumber",
+          },
+          "virtualLongTokenId": "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
+          "virtualMarketId": "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
+          "virtualPoolAmountForLongToken": Object {
+            "hex": "0x2c5376f4",
+            "type": "BigNumber",
+          },
+          "virtualPoolAmountForShortToken": Object {
+            "hex": "0x191fd48497",
+            "type": "BigNumber",
+          },
+          "virtualShortTokenId": "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
+        },
+        "maxLiquidity": Object {
+          "hex": "0x38570a705168d005c48f1de8c00000",
           "type": "BigNumber",
         },
+        "netFeeLong": Object {
+          "hex": "-0x0d6a4a2f4dc6db64e091c0",
+          "type": "BigNumber",
+        },
+        "netFeeShort": Object {
+          "hex": "0x00",
+          "type": "BigNumber",
+        },
+        "poolValueUsd": Object {
+          "hex": "0x3f756af2112a0349c6ed75e4e5974e",
+          "type": "BigNumber",
+        },
+        "usedLiquidity": Object {
+          "hex": "0x168f9e1d75c9ebb6d55728a3000000",
+          "type": "BigNumber",
+        },
+        "utilization": Object {
+          "hex": "0x0fa4",
+          "type": "BigNumber",
+        },
+      },
+      Object {
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -398,16 +784,16 @@ Array [
           "hex": "0x30c0953e4125af58700b0d2ae7d276",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x0c7adfe5aaa5c48e9d2224c0ddc000",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x0b00",
           "type": "BigNumber",
         },
       },
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x3db4bf45c5e5aebe1fdca3f00000",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -789,16 +1175,16 @@ Array [
           "hex": "0x03701bc33f4029cb380ece8ecffb07",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x3db4bf45c5e5aebe1fdca3f00000",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x02f4",
           "type": "BigNumber",
         },
       },
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x4e34584e3ee1ada9a60f400000",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -1181,398 +1567,12 @@ Array [
           "hex": "0x7e2cdec50e1cf0af515fb6b7aeb7",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x4e34584e3ee1ada9a60f400000",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x19",
-          "type": "BigNumber",
-        },
-      },
-      Object {
-        "availableLiquidity": Object {
-          "hex": "0x168f9e1d75c9ebb6d55728a3000000",
-          "type": "BigNumber",
-        },
-        "marketInfo": Object {
-          "borrowingExponentFactorLong": Object {
-            "hex": "0x0c9f2c9cd04674edea40000000",
-            "type": "BigNumber",
-          },
-          "borrowingExponentFactorShort": Object {
-            "hex": "0x0c9f2c9cd04674edea40000000",
-            "type": "BigNumber",
-          },
-          "borrowingFactorLong": Object {
-            "hex": "0x0152d02c7e14af680000",
-            "type": "BigNumber",
-          },
-          "borrowingFactorPerSecondForLongs": Object {
-            "hex": "0xf437566bee487d809c",
-            "type": "BigNumber",
-          },
-          "borrowingFactorPerSecondForShorts": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "borrowingFactorShort": Object {
-            "hex": "0x0152d02c7e14af680000",
-            "type": "BigNumber",
-          },
-          "claimableFundingAmountLong": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "claimableFundingAmountShort": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "data": "",
-          "fundingDecreaseFactorPerSecond": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "fundingExponentFactor": Object {
-            "hex": "0x0c9f2c9cd04674edea40000000",
-            "type": "BigNumber",
-          },
-          "fundingFactor": Object {
-            "hex": "0x043c33c1937564800000",
-            "type": "BigNumber",
-          },
-          "fundingFactorPerSecond": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "fundingIncreaseFactorPerSecond": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "indexToken": Object {
-            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "balance": Object {
-              "hex": "0xef3c",
-              "type": "BigNumber",
-            },
-            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-            "decimals": 8,
-            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-            "name": "Bitcoin (WBTC)",
-            "prices": Object {
-              "maxPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-              "minPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-            },
-            "symbol": "WBTC",
-          },
-          "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-          "isDisabled": false,
-          "isSameCollaterals": true,
-          "isSpotOnly": false,
-          "longInterestInTokens": Object {
-            "hex": "0x0a924cec",
-            "type": "BigNumber",
-          },
-          "longInterestUsd": Object {
-            "hex": "0x17c464d3a484414de2a87352380000",
-            "type": "BigNumber",
-          },
-          "longPoolAmount": Object {
-            "hex": "0x0eaa95af",
-            "type": "BigNumber",
-          },
-          "longPoolAmountAdjustment": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "longToken": Object {
-            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "balance": Object {
-              "hex": "0xef3c",
-              "type": "BigNumber",
-            },
-            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-            "decimals": 8,
-            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-            "name": "Bitcoin (WBTC)",
-            "prices": Object {
-              "maxPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-              "minPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-            },
-            "symbol": "WBTC",
-          },
-          "longTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-          "longsPayShorts": false,
-          "marketTokenAddress": "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11",
-          "maxFundingFactorPerSecond": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "maxLongPoolAmount": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "maxLongPoolAmountForDeposit": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "maxOpenInterestLong": Object {
-            "hex": "0x0178287f49c4a1d6622fb2ab4000000000",
-            "type": "BigNumber",
-          },
-          "maxOpenInterestShort": Object {
-            "hex": "0x0178287f49c4a1d6622fb2ab4000000000",
-            "type": "BigNumber",
-          },
-          "maxPnlFactorForTradersLong": Object {
-            "hex": "0x0b5c0e8d21d902d61fa0000000",
-            "type": "BigNumber",
-          },
-          "maxPnlFactorForTradersShort": Object {
-            "hex": "0x0b5c0e8d21d902d61fa0000000",
-            "type": "BigNumber",
-          },
-          "maxPositionImpactFactorForLiquidations": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "maxPositionImpactFactorNegative": Object {
-            "hex": "0x1027e72f1f12813088000000",
-            "type": "BigNumber",
-          },
-          "maxPositionImpactFactorPositive": Object {
-            "hex": "0x1027e72f1f12813088000000",
-            "type": "BigNumber",
-          },
-          "maxShortPoolAmount": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "maxShortPoolAmountForDeposit": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "minCollateralFactor": Object {
-            "hex": "0x204fce5e3e25026110000000",
-            "type": "BigNumber",
-          },
-          "minCollateralFactorForOpenInterestLong": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "minCollateralFactorForOpenInterestShort": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "minFundingFactorPerSecond": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "minPositionImpactPoolAmount": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "name": "WBTC/USD [WBTC]",
-          "netPnlMax": Object {
-            "hex": "-0x0134c6b62eba55970d514aaf380000",
-            "type": "BigNumber",
-          },
-          "netPnlMin": Object {
-            "hex": "-0x0134c6b62eba55970d514aaf380000",
-            "type": "BigNumber",
-          },
-          "openInterestReserveFactorLong": Object {
-            "hex": "0x0b5c0e8d21d902d61fa0000000",
-            "type": "BigNumber",
-          },
-          "openInterestReserveFactorShort": Object {
-            "hex": "0x0b5c0e8d21d902d61fa0000000",
-            "type": "BigNumber",
-          },
-          "pnlLongMax": Object {
-            "hex": "-0x0134c6b62eba55970d514aaf380000",
-            "type": "BigNumber",
-          },
-          "pnlLongMin": Object {
-            "hex": "-0x0134c6b62eba55970d514aaf380000",
-            "type": "BigNumber",
-          },
-          "pnlShortMax": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "pnlShortMin": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "poolValueMax": Object {
-            "hex": "0x3f756af2112a0349c6ed75e4e5974e",
-            "type": "BigNumber",
-          },
-          "poolValueMin": Object {
-            "hex": "0x3f756af2112a0349c6ed75e4e5974e",
-            "type": "BigNumber",
-          },
-          "positionFeeFactorForNegativeImpact": Object {
-            "hex": "0x024306c4097859c43c000000",
-            "type": "BigNumber",
-          },
-          "positionFeeFactorForPositiveImpact": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "positionImpactExponentFactor": Object {
-            "hex": "0x193e5939a08ce9dbd480000000",
-            "type": "BigNumber",
-          },
-          "positionImpactFactorNegative": Object {
-            "hex": "0x152d02c7e14af6800000",
-            "type": "BigNumber",
-          },
-          "positionImpactFactorPositive": Object {
-            "hex": "0x0a968163f0a57b400000",
-            "type": "BigNumber",
-          },
-          "positionImpactPoolAmount": Object {
-            "hex": "0x29fb68",
-            "type": "BigNumber",
-          },
-          "positionImpactPoolDistributionRate": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "reserveFactorLong": Object {
-            "hex": "0x0bfd9d94f90fbbe204f0000000",
-            "type": "BigNumber",
-          },
-          "reserveFactorShort": Object {
-            "hex": "0x0bfd9d94f90fbbe204f0000000",
-            "type": "BigNumber",
-          },
-          "shortInterestInTokens": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "shortInterestUsd": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "shortPoolAmount": Object {
-            "hex": "0x0eaa95af",
-            "type": "BigNumber",
-          },
-          "shortPoolAmountAdjustment": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "shortToken": Object {
-            "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "balance": Object {
-              "hex": "0xef3c",
-              "type": "BigNumber",
-            },
-            "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-            "decimals": 8,
-            "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-            "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-            "name": "Bitcoin (WBTC)",
-            "prices": Object {
-              "maxPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-              "minPrice": Object {
-                "hex": "0x0cb86f8142ec4294fa6a2640000000",
-                "type": "BigNumber",
-              },
-            },
-            "symbol": "WBTC",
-          },
-          "shortTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-          "swapFeeFactorForNegativeImpact": Object {
-            "hex": "0x024306c4097859c43c000000",
-            "type": "BigNumber",
-          },
-          "swapFeeFactorForPositiveImpact": Object {
-            "hex": "0x019d971e4fe8401e74000000",
-            "type": "BigNumber",
-          },
-          "swapImpactExponentFactor": Object {
-            "hex": "0x193e5939a08ce9dbd480000000",
-            "type": "BigNumber",
-          },
-          "swapImpactFactorNegative": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "swapImpactFactorPositive": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "swapImpactPoolAmountLong": Object {
-            "hex": "0x086441e2",
-            "type": "BigNumber",
-          },
-          "swapImpactPoolAmountShort": Object {
-            "hex": "0x086441e2",
-            "type": "BigNumber",
-          },
-          "thresholdForDecreaseFunding": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "thresholdForStableFunding": Object {
-            "hex": "0x00",
-            "type": "BigNumber",
-          },
-          "totalBorrowingFees": Object {
-            "hex": "0x010280d1a6baf0207a58a10b6a13",
-            "type": "BigNumber",
-          },
-          "virtualInventoryForPositions": Object {
-            "hex": "-0x12b0bdec75b5f01a894385b755d800",
-            "type": "BigNumber",
-          },
-          "virtualLongTokenId": "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
-          "virtualMarketId": "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
-          "virtualPoolAmountForLongToken": Object {
-            "hex": "0x2c5376f4",
-            "type": "BigNumber",
-          },
-          "virtualPoolAmountForShortToken": Object {
-            "hex": "0x191fd48497",
-            "type": "BigNumber",
-          },
-          "virtualShortTokenId": "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
-        },
-        "maxLiquidity": Object {
-          "hex": "0x38570a705168d005c48f1de8c00000",
-          "type": "BigNumber",
-        },
-        "netFeeLong": Object {
-          "hex": "-0x0d6a4a2f4dc6db64e091c0",
-          "type": "BigNumber",
-        },
-        "netFeeShort": Object {
-          "hex": "0x00",
-          "type": "BigNumber",
-        },
-        "poolValueUsd": Object {
-          "hex": "0x3f756af2112a0349c6ed75e4e5974e",
-          "type": "BigNumber",
-        },
-        "utilization": Object {
-          "hex": "0x0fa4",
           "type": "BigNumber",
         },
       },
@@ -1604,16 +1604,16 @@ Array [
       },
       "symbol": "WBTC",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x234880f6be83d4d5de42d0170dc000",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x684f09fa9be5290955d64a0ce00000",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x742448d2569df95e1e58b155551382",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x234880f6be83d4d5de42d0170dc000",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -1632,10 +1632,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x05dcef46d03360226e6e3bf8a38400",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -2023,16 +2019,16 @@ Array [
           "hex": "0x1f08d4fa646a5fc508b88d49748aa3",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x05dcef46d03360226e6e3bf8a38400",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x0c22",
           "type": "BigNumber",
         },
       },
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x068e3deeb5d121aec5224530b200",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -2420,16 +2416,16 @@ Array [
           "hex": "0x04008a45b7a2db4e562eca9b9ee9ce",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x068e3deeb5d121aec5224530b200",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x46",
           "type": "BigNumber",
         },
       },
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x526535e4cc4e51c68c53dab800",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -2815,16 +2811,16 @@ Array [
           "hex": "0x01f29a2f2a0693ba4fa042d95a0d3e",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x526535e4cc4e51c68c53dab800",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x07",
           "type": "BigNumber",
         },
       },
       Object {
-        "availableLiquidity": Object {
-          "hex": "0xb77e8166bd31d39f6a0732a400",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -3210,6 +3206,10 @@ Array [
           "hex": "0x05a5c6a6f9d63978a6ab50733ca3",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0xb77e8166bd31d39f6a0732a400",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x0293",
           "type": "BigNumber",
@@ -3246,16 +3246,16 @@ Array [
       },
       "symbol": "ETH",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x05e487687634bac442995498e19200",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x185315011f5056d96d73696da06d00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x25019f35ed0da507272e460ee0be52",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x05e487687634bac442995498e19200",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -3274,10 +3274,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x19fb3355a211c57fcb9f9c4289be40",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -3657,6 +3653,10 @@ Array [
           "hex": "0x1d4a3dae1942139483b207e087379d",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x19fb3355a211c57fcb9f9c4289be40",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x21ec",
           "type": "BigNumber",
@@ -3685,16 +3685,16 @@ Array [
       },
       "symbol": "BNB",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x19fb3355a211c57fcb9f9c4289be40",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x1deade3ded726709d9e5d8ccd14c00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x1d4a3dae1942139483b207e087379d",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x19fb3355a211c57fcb9f9c4289be40",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -3713,10 +3713,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x91cd69c81c3d3bc1801818387dc0",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -4097,6 +4093,10 @@ Array [
           "hex": "0x0f6cf4e7832dced54f377bdfc01242",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x91cd69c81c3d3bc1801818387dc0",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x0195",
           "type": "BigNumber",
@@ -4126,16 +4126,16 @@ Array [
       },
       "symbol": "SOL",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x91cd69c81c3d3bc1801818387dc0",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x0e0d1a22cdcaaa0618e9759fa17900",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x0f6cf4e7832dced54f377bdfc01242",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x91cd69c81c3d3bc1801818387dc0",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -4154,10 +4154,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x046cddfc60c2fe4a1d099c98e660",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -4539,6 +4535,10 @@ Array [
           "hex": "0x068ff165dc7ac706b25d9e27b6fce2",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x046cddfc60c2fe4a1d099c98e660",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x1d",
           "type": "BigNumber",
@@ -4569,16 +4569,16 @@ Array [
       },
       "symbol": "LINK",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x046cddfc60c2fe4a1d099c98e660",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x05e8d8fecf543cb63821d54d9e6200",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x068ff165dc7ac706b25d9e27b6fce2",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x046cddfc60c2fe4a1d099c98e660",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -4597,10 +4597,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x174abe268acb9f227d4842508000",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -4982,6 +4978,10 @@ Array [
           "hex": "0x067195220605557e4b72669fe7d29a",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x174abe268acb9f227d4842508000",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x9c",
           "type": "BigNumber",
@@ -5012,16 +5012,16 @@ Array [
       },
       "symbol": "DOGE",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x174abe268acb9f227d4842508000",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x05cf73f2ad356cf65c79a0da728d00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x067195220605557e4b72669fe7d29a",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x174abe268acb9f227d4842508000",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -5040,10 +5040,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x00",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -5423,6 +5419,10 @@ Array [
           "hex": "0x065ead6c0bb7b6c2b8d738e1f531a0",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x00",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x00",
           "type": "BigNumber",
@@ -5451,16 +5451,16 @@ Array [
       },
       "symbol": "DOT",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x00",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x05bbc06504e5d944ebe9aa02314e00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x065ead6c0bb7b6c2b8d738e1f531a0",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x00",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -5479,10 +5479,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x01c73da9f59ce7dd22a859529000",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -5863,6 +5859,10 @@ Array [
           "hex": "0x02b432ed9644a093b8f855162f6f5a",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x01c73da9f59ce7dd22a859529000",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x1c",
           "type": "BigNumber",
@@ -5892,16 +5892,16 @@ Array [
       },
       "symbol": "UNI",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x01c73da9f59ce7dd22a859529000",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x026f5862e27484b117d374998d7400",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x02b432ed9644a093b8f855162f6f5a",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x01c73da9f59ce7dd22a859529000",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -5920,10 +5920,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x0109123932952f76ea9c8eaa73a2c0",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -6304,6 +6300,10 @@ Array [
           "hex": "0x016e4ee4b3b3c419b108d2b14eb42c",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x0109123932952f76ea9c8eaa73a2c0",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x21ab",
           "type": "BigNumber",
@@ -6333,16 +6333,16 @@ Array [
       },
       "symbol": "ADA",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x0109123932952f76ea9c8eaa73a2c0",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x013381daab7260faace059aaba3100",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x016e4ee4b3b3c419b108d2b14eb42c",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x0109123932952f76ea9c8eaa73a2c0",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -6361,10 +6361,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x00",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -6745,6 +6741,10 @@ Array [
           "hex": "0x013c1f9021cb2608d5b400341b5b40",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x00",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x00",
           "type": "BigNumber",
@@ -6774,16 +6774,16 @@ Array [
       },
       "symbol": "TRX",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x00",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x011cd7e2127717aa11566ece581c00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x013c1f9021cb2608d5b400341b5b40",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x00",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -6802,10 +6802,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x83d8d6dfcdd43e50d296dcb0cb80",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -7190,6 +7186,10 @@ Array [
           "hex": "0xd1a5448f526b73c703d85e61347c",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x83d8d6dfcdd43e50d296dcb0cb80",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x1360",
           "type": "BigNumber",
@@ -7224,16 +7224,16 @@ Array [
       "symbol": "AVAX",
       "wrappedAddress": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x83d8d6dfcdd43e50d296dcb0cb80",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x0109c5b4df9255f1b94473bb2bb400",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0xd1a5448f526b73c703d85e61347c",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x83d8d6dfcdd43e50d296dcb0cb80",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -7252,10 +7252,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x1c90d861c27302d0c4cfac6280",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -7635,6 +7631,10 @@ Array [
           "hex": "0x57fb214db276d72c24fde16d7abc",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x1c90d861c27302d0c4cfac6280",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x0d",
           "type": "BigNumber",
@@ -7663,16 +7663,16 @@ Array [
       },
       "symbol": "TEST",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x1c90d861c27302d0c4cfac6280",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x4fe2a97acedcbcb30331c8c20a00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x57fb214db276d72c24fde16d7abc",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x1c90d861c27302d0c4cfac6280",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
@@ -7691,10 +7691,6 @@ Array [
     },
     "marketsStats": Array [
       Object {
-        "availableLiquidity": Object {
-          "hex": "0x00",
-          "type": "BigNumber",
-        },
         "marketInfo": Object {
           "borrowingExponentFactorLong": Object {
             "hex": "0x0c9f2c9cd04674edea40000000",
@@ -8075,6 +8071,10 @@ Array [
           "hex": "0x9acc82dc7fde2130db323ecf40",
           "type": "BigNumber",
         },
+        "usedLiquidity": Object {
+          "hex": "0x00",
+          "type": "BigNumber",
+        },
         "utilization": Object {
           "hex": "0x00",
           "type": "BigNumber",
@@ -8104,16 +8104,16 @@ Array [
       },
       "symbol": "MATIC",
     },
-    "totalAvailableLiquidity": Object {
-      "hex": "0x00",
-      "type": "BigNumber",
-    },
     "totalMaxLiquidity": Object {
       "hex": "0x8b66e94f66cab8e846a177ed00",
       "type": "BigNumber",
     },
     "totalPoolValue": Object {
       "hex": "0x9acc82dc7fde2130db323ecf40",
+      "type": "BigNumber",
+    },
+    "totalUsedLiquidity": Object {
+      "hex": "0x00",
       "type": "BigNumber",
     },
     "totalUtilization": Object {
