@@ -126,8 +126,6 @@ export const useTradeFlags = ({ tradeType, tradeMode }: { tradeType: TradeType; 
   return useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
 };
 
-// const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
-
 export const useMarketInfo = (marketAddress: string | undefined) => {
   return useSelector((s) => (marketAddress ? selectMarketsInfoData(s)?.[marketAddress] : undefined));
 };
