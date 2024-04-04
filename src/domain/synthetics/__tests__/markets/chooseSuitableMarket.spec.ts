@@ -64,7 +64,7 @@ describe("chooseSuitableMarket", () => {
       });
     });
 
-    it("should should choose market with largest long liquidity pool if nothing is preferred", () => {
+    it("should should choose market with largest long liquidity pool if largest position is preferred", () => {
       const input: Input = {
         chainId,
         maxLongLiquidityPool: {
@@ -80,6 +80,7 @@ describe("chooseSuitableMarket", () => {
           maxShortLiquidity: BigNumber.from(101),
         },
         tokenAddress: "0x1",
+        preferredTradeType: "largestPosition",
       };
 
       const result = chooseSuitableMarket(input);

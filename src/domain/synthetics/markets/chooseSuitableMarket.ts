@@ -6,17 +6,17 @@ import { TradeType } from "domain/synthetics/trade";
 function getLargestRelatedExistingPosition({
   chainId,
   positionsInfo,
-  isLongPreferred,
+  isLong,
   tokenAddress,
 }: {
   chainId: number;
   positionsInfo: PositionsInfoData;
-  isLongPreferred: boolean;
+  isLong: boolean;
   tokenAddress: string;
 }) {
-  let largestRelatedExistingPosition: PositionInfo | undefined;
+  let largestRelatedExistingPosition: PositionInfo | undefined = undefined;
   for (const position of Object.values(positionsInfo)) {
-    if (position.isLong !== isLongPreferred) {
+    if (position.isLong !== isLong) {
       continue;
     }
 
@@ -37,6 +37,8 @@ function getLargestRelatedExistingPosition({
   return largestRelatedExistingPosition;
 }
 
+export type PreferredTradeTypePickStrategy = TradeType | "largestPosition";
+
 export function chooseSuitableMarket({
   chainId,
   tokenAddress: tokenAddressRaw,
@@ -52,9 +54,8 @@ export function chooseSuitableMarket({
   maxShortLiquidityPool: TokenOption;
   isSwap?: boolean;
   positionsInfo?: PositionsInfoData;
-  preferredTradeType?: TradeType;
+  preferredTradeType: PreferredTradeTypePickStrategy;
 }): { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType } | undefined {
-  const isLongPreferred = preferredTradeType !== TradeType.Short;
   const tokenAddress = convertTokenAddress(chainId, tokenAddressRaw, "wrapped");
 
   if (isSwap) {
@@ -64,30 +65,66 @@ export function chooseSuitableMarket({
     };
   }
 
-  let largestRelatedExistingPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
-    chainId,
-    positionsInfo: positionsInfo || {},
-    isLongPreferred,
-    tokenAddress,
-  });
+  if (preferredTradeType === "largestPosition" && positionsInfo) {
+    let largestLongPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
+      chainId,
+      positionsInfo,
+      isLong: true,
+      tokenAddress,
+    });
+
+    let largestShortPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
+      chainId,
+      positionsInfo,
+      isLong: false,
+      tokenAddress,
+    });
+
+    if (!largestLongPosition && !largestShortPosition) {
+      return {
+        indexTokenAddress: tokenAddressRaw,
+        marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
+        tradeType: TradeType.Long,
+      };
+    }
+
+    let largestPosition: PositionInfo;
+    if (largestLongPosition && largestShortPosition) {
+      largestPosition = largestLongPosition.sizeInUsd.gt(largestShortPosition.sizeInUsd)
+        ? largestLongPosition
+        : largestShortPosition;
+    } else {
+      largestPosition = largestLongPosition! || largestShortPosition!;
+    }
+    const largestPositionTradeType = largestPosition?.isLong ? TradeType.Long : TradeType.Short;
+
+    return {
+      indexTokenAddress: tokenAddressRaw,
+      marketTokenAddress: largestPosition.marketInfo.marketTokenAddress,
+      tradeType: largestPositionTradeType,
+    };
+  } else if (preferredTradeType === "largestPosition") {
+    return {
+      indexTokenAddress: tokenAddressRaw,
+      marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
+      tradeType: TradeType.Long,
+    };
+  }
 
   let marketTokenAddress: string | undefined;
+  let preferredTradeTypeUnwrapped: TradeType;
 
-  if (largestRelatedExistingPosition) {
-    marketTokenAddress = largestRelatedExistingPosition.marketInfo.marketTokenAddress;
+  if (preferredTradeType === TradeType.Long) {
+    marketTokenAddress = maxLongLiquidityPool.marketTokenAddress;
+    preferredTradeTypeUnwrapped = TradeType.Long;
   } else {
-    if (isLongPreferred) {
-      marketTokenAddress = maxLongLiquidityPool.marketTokenAddress;
-    }
-
-    if (!isLongPreferred) {
-      marketTokenAddress = maxShortLiquidityPool.marketTokenAddress;
-    }
+    marketTokenAddress = maxShortLiquidityPool.marketTokenAddress;
+    preferredTradeTypeUnwrapped = TradeType.Short;
   }
 
   return {
     indexTokenAddress: tokenAddressRaw,
     marketTokenAddress,
-    tradeType: preferredTradeType ?? TradeType.Long,
+    tradeType: preferredTradeTypeUnwrapped,
   };
 }

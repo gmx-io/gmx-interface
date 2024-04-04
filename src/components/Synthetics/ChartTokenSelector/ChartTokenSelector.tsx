@@ -9,6 +9,7 @@ import {
   useTradeboxGetMaxLongShortLiquidityPool,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
@@ -42,7 +43,7 @@ export default function ChartTokenSelector(props: Props) {
   const marketsInfoData = useMarketsInfoData();
 
   const handleMarketSelect = useCallback(
-    (tokenAddress: string, preferredTradeType?: TradeType | undefined) => {
+    (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
       setSearchKeyword("");
       const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType);
 
@@ -129,7 +130,10 @@ export default function ChartTokenSelector(props: Props) {
                             key={token.symbol}
                             className={isSwap ? "Swap-token-list" : "Position-token-list"}
                           >
-                            <td className="token-item" onClick={() => handleMarketSelect(token.address)}>
+                            <td
+                              className="token-item"
+                              onClick={() => handleMarketSelect(token.address, "largestPosition")}
+                            >
                               <span className="inline-items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
