@@ -2678,7 +2678,7 @@ msgid "Insufficient liquidity in any {0}/USD market pools for your order."
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
+msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool</1>."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts

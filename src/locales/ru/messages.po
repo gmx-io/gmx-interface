@@ -2678,8 +2678,8 @@ msgid "Insufficient liquidity in any {0}/USD market pools for your order."
 msgstr "Недостаточная ликвидность во всех из {0}/USD рыночных пулов для вашего ордера."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
-msgstr "Недостаточная ликвидность в рыночном пуле {0}. <0/><1>Переключитесь на рыночный пул {1}.</1>"
+msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool</1>."
+msgstr "Недостаточная ликвидность в рыночном пуле {0}. <0/><1>Переключитесь на рыночный пул {1}</1>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
