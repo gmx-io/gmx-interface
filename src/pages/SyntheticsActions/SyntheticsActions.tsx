@@ -17,6 +17,7 @@ import {
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { noop } from "lodash";
 
 export default function SyntheticsActions() {
   const { chainId } = useChainId();
@@ -68,11 +69,11 @@ export default function SyntheticsActions() {
           </div>
           <PositionList
             isLoading={isPositionsLoading}
-            onOrdersClick={() => null}
-            onSelectPositionClick={() => null}
-            onClosePositionClick={() => null}
-            onSettlePositionFeesClick={() => null}
-            openSettings={() => null}
+            onOrdersClick={noop}
+            onSelectPositionClick={noop}
+            onClosePositionClick={noop}
+            onSettlePositionFeesClick={noop}
+            openSettings={noop}
             hideActions
           />
         </div>
@@ -82,12 +83,7 @@ export default function SyntheticsActions() {
           <div className="Actions-title">
             <Trans>Orders</Trans>
           </div>
-          <OrderList
-            setSelectedOrdersKeys={() => null}
-            isLoading={isOrdersLoading}
-            setPendingTxns={() => null}
-            hideActions
-          />
+          <OrderList setSelectedOrdersKeys={noop} isLoading={isOrdersLoading} setPendingTxns={noop} hideActions />
         </div>
       )}
       <div className="Actions-section">

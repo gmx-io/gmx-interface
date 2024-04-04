@@ -39,10 +39,10 @@ export function PositionList(p: Props) {
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
   const positions = Object.values(positionsInfoData || {});
-  const handleSharePositionClick = (positionKey: string) => {
+  const handleSharePositionClick = useCallback((positionKey: string) => {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);
-  };
+  }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
 
   return (
