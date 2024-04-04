@@ -113,7 +113,7 @@ export function CollateralSelectorRow(p: Props) {
     collateralWithOrder &&
     collateralWithOrder.address !== selectedCollateralAddress;
 
-  const messages = useMemo(() => {
+  const messages = useMemo<React.ReactNode[]>(() => {
     const messages: React.ReactNode[] = [];
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
@@ -156,7 +156,7 @@ export function CollateralSelectorRow(p: Props) {
     }
 
     if (showHasExistingOrderWithDifferentCollateral) {
-      return messages.push(
+      messages.push(
         <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="info" compact>
           <Trans>
             You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
