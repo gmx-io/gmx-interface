@@ -34,13 +34,14 @@ import {
   createIncreaseOrderTxn,
 } from "domain/synthetics/orders";
 import {
-  PositionInfo,
   formatLeverage,
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
+  substractMaxLeverageSlippage,
+  willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { BigNumber, ethers } from "ethers";
@@ -48,6 +49,7 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  expandDecimals,
   formatAmountFree,
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -59,25 +61,34 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useSavedIsPnlInLeverage,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { bigNumberBinarySearch } from "lib/binarySearch";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./PositionEditor.scss";
 import { useKey } from "react-use";
+import {
+  usePositionEditorMinCollateralFactor,
+  usePositionEditorPosition,
+  usePositionEditorPositionState,
+} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 
 export type Props = {
-  position?: PositionInfo;
-  tokensData?: TokensData;
-  showPnlInLeverage: boolean;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
-  onClose: () => void;
   shouldDisableValidation: boolean;
 };
 
@@ -92,8 +103,11 @@ const OPERATION_LABELS = {
 };
 
 export function PositionEditor(p: Props) {
-  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
+  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const { setPendingTxns, allowedSlippage } = p;
   const { chainId } = useChainId();
+  const showPnlInLeverage = useSavedIsPnlInLeverage();
+  const tokensData = useTokensData();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -104,6 +118,7 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const position = usePositionEditorPosition();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -147,6 +162,10 @@ export function PositionEditor(p: Props) {
       : undefined;
   }, [chainId, position?.collateralToken.isWrapped, position?.collateralTokenAddress]);
 
+  const onClose = useCallback(() => {
+    setEditingPositionKey(undefined);
+  }, [setEditingPositionKey]);
+
   const collateralPrice = collateralToken?.prices.minPrice;
 
   const markPrice = position
@@ -168,18 +187,29 @@ export function PositionEditor(p: Props) {
     selectedCollateralAddress !== ethers.constants.AddressZero &&
     collateralDeltaAmount.gt(tokenAllowance);
 
-  const minCollateralUsdForLeverage = position ? getMinCollateralUsdForLeverage(position) : BigNumber.from(0);
-  let _minCollateralUsd = minCollateralUsdForLeverage;
-  if (minCollateralUsd?.gt(_minCollateralUsd)) {
-    _minCollateralUsd = minCollateralUsd;
-  }
-  _minCollateralUsd = _minCollateralUsd
-    .add(position?.pendingBorrowingFeesUsd || 0)
-    .add(position?.pendingFundingFeesUsd || 0);
+  const maxWithdrawAmount = useMemo(() => {
+    if (!position) return BigNumber.from(0);
 
-  const maxWithdrawUsd = position ? position.collateralUsd.sub(_minCollateralUsd) : BigNumber.from(0);
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
+    let _minCollateralUsd = minCollateralUsdForLeverage;
 
-  const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
+    if (minCollateralUsd?.gt(_minCollateralUsd)) {
+      _minCollateralUsd = minCollateralUsd;
+    }
+
+    _minCollateralUsd = _minCollateralUsd
+      .add(position?.pendingBorrowingFeesUsd || 0)
+      .add(position?.pendingFundingFeesUsd || 0);
+
+    if (position.collateralUsd.lt(_minCollateralUsd)) {
+      return BigNumber.from(0);
+    }
+
+    const maxWithdrawUsd = position.collateralUsd.sub(_minCollateralUsd);
+    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
+
+    return maxWithdrawAmount;
+  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !gasLimits || !tokensData || !gasPrice) {
@@ -272,7 +302,9 @@ export function PositionEditor(p: Props) {
     userReferralInfo,
   ]);
 
-  const error = useMemo(() => {
+  const minCollateralFactor = usePositionEditorMinCollateralFactor();
+
+  const [error, tooltipName] = useMemo(() => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -282,50 +314,93 @@ export function PositionEditor(p: Props) {
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
       collateralDeltaUsd,
-      nextCollateralUsd,
       nextLeverage,
       nextLiqPrice,
-      minCollateralUsd,
       isDeposit,
       position,
       depositToken: collateralToken,
       depositAmount: collateralDeltaAmount,
+      minCollateralFactor,
     });
 
     const error = commonError[0] || editCollateralError[0];
+    const tooltipName = commonError[1] || editCollateralError[1];
 
     if (error) {
-      return error;
+      return [error, tooltipName];
     }
 
     if (needCollateralApproval) {
-      return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
+      return [t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`];
     }
 
     if (isHighFeeConsentError) {
-      return t`High Execution Fee not yet acknowledged`;
+      return [t`High Execution Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
-      return t`Creating Order...`;
+      return [t`Creating Order...`];
     }
+
+    return [];
   }, [
-    account,
     chainId,
+    account,
+    hasOutdatedUi,
     collateralDeltaAmount,
     collateralDeltaUsd,
-    collateralToken,
-    hasOutdatedUi,
-    isHighFeeConsentError,
-    isDeposit,
-    isSubmitting,
-    minCollateralUsd,
-    needCollateralApproval,
-    nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
+    isDeposit,
     position,
+    collateralToken,
+    minCollateralFactor,
+    needCollateralApproval,
+    isHighFeeConsentError,
+    isSubmitting,
   ]);
+
+  const detectAndSetMaxSize = useCallback(() => {
+    if (!maxWithdrawAmount) return;
+    if (!collateralToken) return;
+    if (!position) return;
+    if (!minCollateralFactor) return;
+
+    const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
+      BigNumber.from(1),
+      maxWithdrawAmount,
+      expandDecimals(1, Math.ceil(collateralToken.decimals / 3)),
+      (x) => {
+        const isValid = willPositionCollateralBeSufficientForPosition(
+          position,
+          x,
+          BigNumber.from(0),
+          minCollateralFactor,
+          BigNumber.from(0)
+        );
+        return { isValid, returnValue: null };
+      }
+    );
+    setCollateralInputValue(
+      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), collateralToken.decimals)
+    );
+  }, [collateralToken, maxWithdrawAmount, minCollateralFactor, position]);
+
+  const errorTooltipContent = useMemo(() => {
+    if (tooltipName !== "maxLeverage") return null;
+
+    return (
+      <Trans>
+        Decrease the withdraw size to match the max.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+        <br />
+        <br />
+        <span onClick={detectAndSetMaxSize} className="Tradebox-handle">
+          <Trans>Set max withdrawal</Trans>
+        </span>
+      </Trans>
+    );
+  }, [detectAndSetMaxSize, tooltipName]);
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
 
@@ -468,6 +543,32 @@ export function PositionEditor(p: Props) {
   const showMaxOnDeposit = collateralToken?.isNative
     ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
     : true;
+
+  const renderErrorTooltipContent = useCallback(() => errorTooltipContent, [errorTooltipContent]);
+
+  const buttonContent = (
+    <Button
+      className="w-full"
+      variant="primary-action"
+      onClick={onSubmit}
+      disabled={Boolean(error) && !p.shouldDisableValidation}
+      buttonRef={submitButtonRef}
+    >
+      {error || OPERATION_LABELS[operation]}
+    </Button>
+  );
+  const button = errorTooltipContent ? (
+    <TooltipWithPortal
+      className="w-full"
+      renderContent={renderErrorTooltipContent}
+      isHandlerDisabled
+      handle={buttonContent}
+      handleClassName="w-full"
+      position="top"
+    />
+  ) : (
+    buttonContent
+  );
 
   return (
     <div className="PositionEditor">
@@ -654,17 +755,7 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
             </ExchangeInfo>
 
-            <div className="Exchange-swap-button-container Confirmation-box-row">
-              <Button
-                className="w-full"
-                variant="primary-action"
-                onClick={onSubmit}
-                buttonRef={submitButtonRef}
-                disabled={Boolean(error) && !p.shouldDisableValidation}
-              >
-                {error || OPERATION_LABELS[operation]}
-              </Button>
-            </div>
+            <div className="Exchange-swap-button-container Confirmation-box-row">{button}</div>
           </>
         )}
       </Modal>

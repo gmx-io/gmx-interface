@@ -367,7 +367,6 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "De plus, les ordres à seuil de déclenchement sont des ordres de bourse et ne sont pas garantis de s'exécuter au prix de déclenchement."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr ""
 
@@ -829,10 +828,6 @@ msgstr "Achat..."
 msgid "COMPETITION Airdrop"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "CONCLUDED"
-msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Can't execute because of an error"
 msgstr "Impossible d'exécuter à cause d'une erreur"
@@ -1133,7 +1128,6 @@ msgstr "Code déjà pris"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Collatéral"
 
@@ -1445,7 +1439,7 @@ msgstr "Long {0} actuel"
 msgid "Current {0} shorts"
 msgstr "Shorts {0} actuel"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr ""
 
@@ -1543,7 +1537,7 @@ msgstr "Décentralisé <0/>Bourse perpétuelle"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Diminuer"
@@ -1557,7 +1551,20 @@ msgid "Decrease size"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the leverage to match the max. allowed leverage."
+msgstr ""
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the size to match the max. allowed leverage:"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
@@ -1688,18 +1695,18 @@ msgstr "Ne montrez plus ce message pendant 30 jours."
 msgid "Download"
 msgstr "Télécharger"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844 Competition"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
 
@@ -1948,7 +1955,6 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "Prix d'entrée"
 
@@ -2304,6 +2310,7 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
 
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
 
@@ -2344,6 +2351,7 @@ msgid "GM can be sold for {0} and {1} for this market up to the specified sellin
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
@@ -2449,6 +2457,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX ne recherche pas activement de nouveaux recrutements pour le moment. Toutefois, si vous pensez pouvoir contribuer au projet, veuillez envoyer un courriel à l'adresse suivante <0>jobs@gmx.io</0>."
 
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr ""
 
@@ -2497,8 +2507,8 @@ msgstr "Création d'une image partageable..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "Global Leaderboard"
 msgstr ""
 
@@ -2583,7 +2593,7 @@ msgstr "Réseau incorrect"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Augmenter"
@@ -2793,8 +2803,8 @@ msgstr ""
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "LIVE"
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
@@ -2866,10 +2876,6 @@ msgstr ""
 msgid "Leftover position below 10 USD"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Lev."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2909,11 +2915,11 @@ msgstr ""
 msgid "Limit"
 msgstr "Limite"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
 
@@ -2933,7 +2939,7 @@ msgid "Limit Price"
 msgstr "Prix de limite"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr ""
 
@@ -2977,7 +2983,6 @@ msgstr "Le lien a été copié dans le presse-papiers."
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Liq. Price"
 msgstr "Prix de liquidation"
 
@@ -3086,15 +3091,13 @@ msgstr "Chargement..."
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "Long"
@@ -3183,7 +3186,6 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Prix de marque"
@@ -3230,12 +3232,12 @@ msgid "Market Cap"
 msgstr "Capitalisation boursière"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr "Baisse du marché"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr "Augmentation du marché"
 
@@ -3243,7 +3245,7 @@ msgstr "Augmentation du marché"
 msgid "Market Orders"
 msgstr "Ordres de marché"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr ""
 
@@ -3403,6 +3405,11 @@ msgstr "Max {0} capacité de short"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short dépassé"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Max. Leverage Exceeded"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr ""
@@ -3467,8 +3474,8 @@ msgid "Min collateral: {0}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min collateral: {0} USD"
-msgstr ""
+#~ msgid "Min collateral: {0} USD"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3523,8 +3530,6 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "NA"
 msgstr ""
 
@@ -3610,6 +3615,11 @@ msgstr "suivant"
 msgid "No PnLs found"
 msgstr "Aucun PnLs trouvés"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "No available leverage found"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr ""
@@ -3658,7 +3668,6 @@ msgid "No rebates distribution history yet."
 msgstr "Pas d'historique de distribution de remise."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
 msgstr ""
 
@@ -3674,6 +3683,10 @@ msgstr "Aucun échange ne correspond aux filtres sélectionnés"
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "Pas encore d'échanges"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order."
@@ -3720,21 +3733,9 @@ msgstr ""
 msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#~ msgid "Only addresses with over {0} in Collateral are ranked."
-#~ msgstr ""
-
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Les lettres, les chiffres et les caractères de soulignement sont autorisés."
-
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Only positions with over {0} in \"Capital Used\" are ranked."
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#~ msgid "Only positions with over {0} in Collateral are ranked."
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -4036,10 +4037,6 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Platform, GLP and GM tokens."
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Veuillez saisir un code de parrainage pour bénéficier des réductions de frais."
@@ -4072,7 +4069,6 @@ msgid "PnL"
 msgstr "PnL"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
 msgstr ""
 
@@ -4112,7 +4108,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Position"
 msgstr "Position"
 
@@ -4280,10 +4275,6 @@ msgstr "Prix inférieur à celui de la marque"
 msgid "Price below Mark Price."
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Price change to Liq."
-msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "Conditions de prix satisfaites"
@@ -4305,10 +4296,6 @@ msgstr "Prix sur Arbitrum"
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Prix sur Avalanche"
-
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#~ msgid "Price to Change"
-#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
@@ -4361,7 +4348,6 @@ msgid "REBATE"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Rank"
 msgstr ""
 
@@ -4380,12 +4366,10 @@ msgid "Read the rules"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr ""
 
@@ -4394,7 +4378,6 @@ msgid "Realized PnL insufficient for Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
 msgstr ""
 
@@ -4633,10 +4616,6 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "SOON"
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "Même que le code actif actuel"
@@ -4654,7 +4633,6 @@ msgid "Save on Fees"
 msgstr "Économisez sur les frais"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Search Address"
 msgstr ""
 
@@ -4821,6 +4799,11 @@ msgstr ""
 msgid "Sending settle request"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Set Max Leverage"
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
@@ -4911,15 +4894,13 @@ msgstr "Partager la Position"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "Short"
@@ -4993,7 +4974,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Size"
 msgstr "Montant"
 
@@ -5118,7 +5098,7 @@ msgstr ""
 msgid "Stats"
 msgstr "Stats"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -5300,7 +5280,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -5454,6 +5434,10 @@ msgstr ""
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
@@ -5510,11 +5494,11 @@ msgstr "Les frais de réseau sont très élevés actuellement, ce qui peut être
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Les frais de réseau sont très élevés actuellement, ce qui peut être dû à une augmentation temporaire des transactions sur le réseau {chainName}."
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
@@ -5566,10 +5550,6 @@ msgstr ""
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees."
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
 msgstr ""
@@ -5602,10 +5582,6 @@ msgstr "Il y a plus de longs que de courts, les frais d'emprunt pour les courts 
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "Il y a plus de courts que de longs, les frais d'emprunt pour les longs sont actuellement nuls."
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
-msgstr ""
-
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "Il n'y a pas assez de liquidité dans un seul token pour votre grandeur. Veuillez consulter la section \"Économiser sur les frais\" et envisagez de diviser votre ordre en plusieurs ordres différents."
@@ -5618,19 +5594,19 @@ msgstr ""
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr ""
 
@@ -5670,7 +5646,7 @@ msgstr ""
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
@@ -5720,28 +5696,12 @@ msgid "Tokens"
 msgstr "Tokens"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top Addresses"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top Positions"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Top addresses"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Top positions"
-#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
@@ -6070,12 +6030,10 @@ msgid "Unknown sell GM order"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr ""
 
@@ -6645,7 +6603,6 @@ msgid "You can transfer ETH from other networks to Arbitrum using any of the bel
 msgstr "Vous pouvez transférer ETH provenant d'autres réseaux vers Arbitrum en utilisant l'une des options ci-dessous:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
@@ -6708,7 +6665,6 @@ msgid "You have not deposited any tokens for vesting."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period."
 msgstr ""
 
@@ -6738,7 +6694,6 @@ msgid "You have set a high Acceptable Price Impact. The current Price Impact is 
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
@@ -6824,11 +6779,11 @@ msgstr "cacher"
 msgid "in liquidity"
 msgstr "en liquidité"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr ""
 
@@ -6846,7 +6801,7 @@ msgstr ""
 msgid "receive"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr ""
 
@@ -6862,7 +6817,7 @@ msgstr "staké"
 msgid "time to liq"
 msgstr "temps de liquider"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
 msgstr ""
 
@@ -7052,7 +7007,7 @@ msgstr "{fromText} à {toExecutionText}"
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} à {toMinText}"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 

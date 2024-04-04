@@ -2,21 +2,20 @@ import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { MarketInfo, getMintableMarketTokens, getOpenInterestUsd } from "domain/synthetics/markets";
-import { PositionInfo } from "domain/synthetics/positions";
+import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { DUST_USD, PRECISION, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
-import { getMinCollateralUsdForLeverage } from "./decrease";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
-  | [errorMessage: string, tooltipName: ValidationTooltipName];
+  | [errorMessage: string, tooltipName: "maxLeverage"];
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -145,6 +144,7 @@ export function getIncreaseError(p: {
   minCollateralUsd: BigNumber | undefined;
   isLong: boolean;
   isLimit: boolean;
+  nextLeverageWithoutPnl: BigNumber | undefined;
 }): ValidationResult {
   const {
     marketInfo,
@@ -167,6 +167,7 @@ export function getIncreaseError(p: {
     triggerPrice,
     isLimit,
     nextPositionValues,
+    nextLeverageWithoutPnl,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -254,7 +255,7 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (!nextPositionValues?.nextLeverage || nextPositionValues?.nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+  if (nextLeverageWithoutPnl?.gt(MAX_ALLOWED_LEVERAGE)) {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
@@ -262,26 +263,41 @@ export function getIncreaseError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
-  if (nextPositionValues?.nextLeverage) {
-    const openInterest = getOpenInterestUsd(marketInfo, isLong);
-    const minCollateralFactorMultiplier = isLong
-      ? marketInfo.minCollateralFactorForOpenInterestLong
-      : marketInfo.minCollateralFactorForOpenInterestShort;
-    let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
-    const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+  if (nextLeverageWithoutPnl) {
+    const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
-    if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
-      minCollateralFactor = minCollateralFactorForMarket;
-    }
-
-    const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
-
-    if (nextPositionValues.nextLeverage.gt(maxLeverage)) {
+    if (maxLeverageError) {
       return [t`Max. Leverage exceeded`, "maxLeverage"];
     }
   }
 
   return [undefined];
+}
+
+export function getIsMaxLeverageExceeded(
+  nextLeverage: BigNumber,
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  sizeDeltaUsd: BigNumber
+): boolean {
+  const openInterest = getOpenInterestUsd(marketInfo, isLong);
+  const minCollateralFactorMultiplier = isLong
+    ? marketInfo.minCollateralFactorForOpenInterestLong
+    : marketInfo.minCollateralFactorForOpenInterestShort;
+  let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
+  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+
+  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+    minCollateralFactor = minCollateralFactorForMarket;
+  }
+
+  const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
+
+  if (nextLeverage.gt(maxLeverage)) {
+    return true;
+  }
+
+  return false;
 }
 
 export function getDecreaseError(p: {
@@ -386,26 +402,24 @@ export function getDecreaseError(p: {
 export function getEditCollateralError(p: {
   collateralDeltaAmount: BigNumber | undefined;
   collateralDeltaUsd: BigNumber | undefined;
-  nextCollateralUsd: BigNumber | undefined;
-  minCollateralUsd: BigNumber | undefined;
   nextLiqPrice: BigNumber | undefined;
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: BigNumber | undefined;
-}) {
+  minCollateralFactor: BigNumber | undefined;
+}): ValidationResult {
   const {
     collateralDeltaAmount,
     collateralDeltaUsd,
-    minCollateralUsd,
-    nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
     position,
     isDeposit,
     depositToken,
     depositAmount,
+    minCollateralFactor,
   } = p;
 
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
@@ -414,14 +428,6 @@ export function getEditCollateralError(p: {
 
   if (isDeposit && depositToken && depositAmount && depositAmount.gt(depositToken.balance || 0)) {
     return [t`Insufficient ${depositToken.symbol} balance`];
-  }
-
-  if (nextCollateralUsd && minCollateralUsd && position) {
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
-
-    if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
-      return [t`Min collateral: ${formatAmount(minCollateralUsdForLeverage, USD_DECIMALS, 2)} USD`];
-    }
   }
 
   if (nextLiqPrice && position?.markPrice) {
@@ -438,7 +444,36 @@ export function getEditCollateralError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
+  if (position && minCollateralFactor && !isDeposit) {
+    const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
+      position,
+      collateralDeltaAmount,
+      BigNumber.from(0),
+      minCollateralFactor,
+      BigNumber.from(0)
+    );
+
+    if (!isPositionCollateralSufficient) {
+      return [t`Max. Leverage exceeded`, "maxLeverage"];
+    }
+  }
+
   return [undefined];
+}
+
+export function decreasePositionSizeByLeverageDiff(
+  currentLeverage: BigNumber,
+  targetLeverage: BigNumber,
+  sizeDeltaUsd: BigNumber
+) {
+  return (
+    sizeDeltaUsd
+      .mul(targetLeverage)
+      .div(currentLeverage)
+      // 2% slipage
+      .mul(98)
+      .div(100)
+  );
 }
 
 export function getGmSwapError(p: {

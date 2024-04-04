@@ -121,7 +121,7 @@ type StoredTradeOptions = {
   collateralAddress?: string;
 };
 
-export function useTradeState(
+export function useTradeboxState(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
