@@ -139,10 +139,17 @@ export function useTradeboxState(
   const { marketsInfoData, tokensData } = p;
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
 
-  const [storedOptions, setStoredOptionsWithoutFallbacks] = useLocalStorageSerializeKey<StoredTradeOptions>(
+  const [initialValue, saveLocal] = useLocalStorageSerializeKey<StoredTradeOptions>(
     getSyntheticsTradeOptionsKey(chainId),
     INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE
   );
+
+  // eslint-disable-next-line react/hook-use-state
+  const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions>(initialValue!);
+
+  useEffect(() => {
+    saveLocal(storedOptions);
+  }, [saveLocal, storedOptions]);
 
   //#region Manual useMemo zone begin
   // This ensures almost no reinitialization of all setters
@@ -185,7 +192,7 @@ export function useTradeboxState(
   const setStoredOptions = useCallback(
     (args: SetStateAction<StoredTradeOptions | undefined>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
-        let newState = typeof args === "function" ? args(oldState) : args;
+        let newState = typeof args === "function" ? args(oldState)! : args!;
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
           newState = fallbackPositionTokens(newState);
@@ -589,7 +596,7 @@ function setToTokenAddressUpdaterBuilder(
 ): (oldState: StoredTradeOptions | undefined) => StoredTradeOptions {
   return function setToTokenAddressUpdater(oldState: StoredTradeOptions | undefined): StoredTradeOptions {
     const isSwap = oldState?.tradeType === TradeType.Swap;
-    const newState = JSON.parse(JSON.stringify(oldState));
+    const newState = JSON.parse(JSON.stringify(oldState)) as StoredTradeOptions;
     if (!newState) {
       return newState;
     }
