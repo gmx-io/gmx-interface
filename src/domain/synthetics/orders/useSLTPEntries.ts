@@ -16,7 +16,7 @@ import {
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
 import { PositionInfo, getPendingMockPosition } from "../positions";
-import { TokenData, convertToUsd } from "../tokens";
+import { TokenData, convertToTokenAmount } from "../tokens";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { t } from "@lingui/macro";
@@ -112,31 +112,26 @@ export default function useSLTPEntries({
     return prepareInitialEntries(limitOrders, increaseAmounts, "desc");
   }, [positionOrders, increaseAmounts]);
 
-  const limitEntriesInfo = useOrderEntries<LimEntry | SLTPEntry>(
-    "limit_",
-    marketInfo?.indexToken.decimals,
-    handleLimitErrors,
-    {
-      initialEntries: existingLimitOrderEntries,
-      canAddEntry: false,
-    }
-  );
+  const limitEntriesInfo = useOrderEntries<LimEntry | SLTPEntry>("limit_", handleLimitErrors, {
+    initialEntries: existingLimitOrderEntries,
+    canAddEntry: false,
+  });
 
-  const totalPositionSizeTokenAmount = useMemo(() => {
+  const totalPositionSizeUsd = useMemo(() => {
     let result = BigNumber.from(0);
 
-    if (existingPosition?.sizeInTokens) {
-      result = result.add(existingPosition?.sizeInTokens ?? 0);
+    if (existingPosition?.sizeInUsd) {
+      result = result.add(existingPosition?.sizeInUsd ?? 0);
     }
 
-    if (increaseAmounts?.indexTokenAmount) {
-      result = result.add(increaseAmounts?.indexTokenAmount ?? 0);
+    if (increaseAmounts?.sizeDeltaUsd) {
+      result = result.add(increaseAmounts?.sizeDeltaUsd ?? 0);
     }
 
     if (limitEntriesInfo.entries.length) {
       limitEntriesInfo.entries.forEach((e) => {
         if (e.txnType !== "cancel") {
-          result = result.add(e.size.value ?? 0);
+          result = result.add(e.sizeUsd.value ?? 0);
         }
       });
     }
@@ -216,13 +211,13 @@ export default function useSLTPEntries({
     return prepareInitialEntries(slOrders, increaseAmounts, isLong ? "asc" : "desc");
   }, [positionOrders, increaseAmounts, isLong]);
 
-  const takeProfitEntriesInfo = useOrderEntries<ExtendedEntry>("tp_", marketInfo?.indexToken.decimals, handleTPErrors, {
+  const takeProfitEntriesInfo = useOrderEntries<ExtendedEntry>("tp_", handleTPErrors, {
     initialEntries: existingTPOrderEntries,
-    totalPositionSizeTokenAmount,
+    totalPositionSizeUsd,
   });
-  const stopLossEntriesInfo = useOrderEntries<ExtendedEntry>("sl_", marketInfo?.indexToken.decimals, handleSLErrors, {
+  const stopLossEntriesInfo = useOrderEntries<ExtendedEntry>("sl_", handleSLErrors, {
     initialEntries: existingSLOrderEntries,
-    totalPositionSizeTokenAmount,
+    totalPositionSizeUsd,
   });
 
   const positionKey = useMemo(() => {
@@ -285,10 +280,8 @@ export default function useSLTPEntries({
   }, [collateralToken, increaseAmounts, isLong, marketInfo, nextPositionValues, mockPosition, isLimit, triggerPrice]);
 
   const getDecreaseAmountsFromEntry = useCallback(
-    ({ size, price }: OrderEntry) => {
-      if (!size?.value || size.error || !price?.value || price.error || !marketInfo) return;
-
-      const closeSizeUsd = convertToUsd(size.value, marketInfo.indexToken.decimals, price.value);
+    ({ sizeUsd, price }: OrderEntry) => {
+      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
 
       if (
         !increaseAmounts ||
@@ -296,7 +289,7 @@ export default function useSLTPEntries({
         !mockPositionInfo ||
         !minPositionSizeUsd ||
         !minCollateralUsd ||
-        !closeSizeUsd
+        !sizeUsd?.value
       ) {
         return;
       }
@@ -306,7 +299,7 @@ export default function useSLTPEntries({
         collateralToken,
         isLong,
         position: mockPositionInfo,
-        closeSizeUsd: closeSizeUsd,
+        closeSizeUsd: sizeUsd.value,
         keepLeverage: true,
         triggerPrice: price.value,
         userReferralInfo,
@@ -335,8 +328,10 @@ export default function useSLTPEntries({
   const swapRoute = useSwapRoutes(fromToken?.address, collateralToken?.address);
 
   const getIncreaseAmountsFromEntry = useCallback(
-    ({ size, price, order }: OrderEntry) => {
-      if (!size?.value || size.error || !price?.value || price.error) return;
+    ({ sizeUsd, price, order }: OrderEntry) => {
+      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error) return;
+
+      const size = convertToTokenAmount(sizeUsd.value, order?.indexToken.decimals, increaseAmounts?.indexPrice);
 
       if (!marketInfo || !collateralToken || !mockPositionInfo || !swapRoute || !order) {
         return;
@@ -349,7 +344,7 @@ export default function useSLTPEntries({
         collateralToken,
         isLong,
         initialCollateralAmount: order.initialCollateralDeltaAmount,
-        indexTokenAmount: size.value,
+        indexTokenAmount: size,
         leverage: mockPositionInfo?.leverage,
         triggerPrice: price.value,
         position: mockPositionInfo,
@@ -359,7 +354,7 @@ export default function useSLTPEntries({
         strategy: "independent",
       });
     },
-    [collateralToken, mockPositionInfo, isLong, marketInfo, uiFeeFactor, userReferralInfo, swapRoute]
+    [collateralToken, increaseAmounts, isLong, marketInfo, mockPositionInfo, swapRoute, uiFeeFactor, userReferralInfo]
   );
 
   const limit = useMemo(() => {
@@ -560,7 +555,7 @@ function handleEntryError(
         }
       }
 
-      if (!entry.size?.value || entry.size.value?.eq(0)) {
+      if (!entry.sizeUsd?.value || entry.sizeUsd.value?.eq(0)) {
         sizeError = t`Limit size is required.`;
       }
 
@@ -578,7 +573,7 @@ function handleEntryError(
 
   return {
     ...entry,
-    size: { ...entry.size, error: sizeError },
+    sizeUsd: { ...entry.sizeUsd, error: sizeError },
     price: { ...entry.price, error: priceError },
     percentage: { ...entry.percentage, error: percentageError },
   };

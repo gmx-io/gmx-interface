@@ -44,7 +44,7 @@ function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
         const entrySizeUsd = entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd;
 
         const percentageError = entriesInfo.error?.percentage || entry.percentage?.error;
-        const sizeError = entry.size?.error;
+        const sizeError = entry.sizeUsd?.error;
         const priceError = entriesInfo.error?.price || entry.price?.error;
 
         const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);

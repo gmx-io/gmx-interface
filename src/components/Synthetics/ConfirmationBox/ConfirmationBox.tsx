@@ -489,7 +489,9 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (sltpEntries.length > 0) {
-      const isError = sltpEntries.some((entry) => entry.size?.error || entry.percentage?.error || entry.price?.error);
+      const isError = sltpEntries.some(
+        (entry) => entry.sizeUsd?.error || entry.percentage?.error || entry.price?.error
+      );
 
       return {
         text,
