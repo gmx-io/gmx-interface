@@ -14,6 +14,7 @@ import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type ChartLine = {
   price: number;
@@ -23,7 +24,6 @@ export type ChartLine = {
 type Props = {
   symbol: string;
   chainId: number;
-  savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
   period: string;
@@ -42,7 +42,6 @@ type Props = {
 export default function TVChartContainer({
   symbol,
   chainId,
-  savedShouldShowPositionLines,
   chartLines,
   onSelectToken,
   dataProvider,
@@ -53,6 +52,7 @@ export default function TVChartContainer({
   tradePageVersion,
   setTradePageVersion,
 }: Props) {
+  const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
@@ -107,7 +107,7 @@ export default function TVChartContainer({
   useEffect(
     function updateLines() {
       const lines: (IPositionLineAdapter | undefined)[] = [];
-      if (savedShouldShowPositionLines) {
+      if (shouldShowPositionLines) {
         chartLines.forEach((order) => {
           lines.push(drawLineOnChart(order.title, order.price));
         });
@@ -116,7 +116,7 @@ export default function TVChartContainer({
         lines.forEach((line) => line?.remove());
       };
     },
-    [chartLines, savedShouldShowPositionLines, drawLineOnChart]
+    [chartLines, shouldShowPositionLines, drawLineOnChart]
   );
 
   useEffect(() => {

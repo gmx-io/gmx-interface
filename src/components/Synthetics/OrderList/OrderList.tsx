@@ -6,7 +6,11 @@ import {
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
-import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useIsOrdersLoading,
+  useMarketsInfoData,
+  usePositionsInfoData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -25,7 +29,6 @@ type Props = {
   hideActions?: boolean;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
-  isLoading: boolean;
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
@@ -35,6 +38,7 @@ export function OrderList(p: Props) {
   const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
   const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
+  const isLoading = useIsOrdersLoading();
 
   const { chainId } = useChainId();
   const { signer } = useWallet();
@@ -105,11 +109,11 @@ export function OrderList(p: Props) {
     <>
       {orders.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
-          {p.isLoading ? t`Loading...` : t`No open orders`}
+          {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
       <div className="Exchange-list Orders small">
-        {!p.isLoading &&
+        {!isLoading &&
           orders.map((order) => (
             <OrderItem
               key={order.key}
@@ -160,10 +164,10 @@ export function OrderList(p: Props) {
           </tr>
           {orders.length === 0 && (
             <tr>
-              <td colSpan={5}>{p.isLoading ? t`Loading...` : t`No open orders`}</td>
+              <td colSpan={5}>{isLoading ? t`Loading...` : t`No open orders`}</td>
             </tr>
           )}
-          {!p.isLoading &&
+          {!isLoading &&
             orders.map((order) => {
               return (
                 <OrderItem

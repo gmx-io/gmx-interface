@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -16,7 +16,6 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
   onSettlePositionFeesClick: (key: string) => void;
-  isLoading: boolean;
   onOrdersClick: (key?: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
@@ -24,7 +23,6 @@ type Props = {
 
 export function PositionList(p: Props) {
   const {
-    isLoading,
     onClosePositionClick,
     onOrdersClick,
     onSelectPositionClick,
@@ -44,6 +42,7 @@ export function PositionList(p: Props) {
     setIsPositionShareModalOpen(true);
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const isLoading = useIsPositionsLoading();
 
   return (
     <div>
@@ -100,12 +99,12 @@ export function PositionList(p: Props) {
             <tr>
               <td colSpan={15}>
                 <div className="Exchange-empty-positions-list-note">
-                  {p.isLoading ? t`Loading...` : t`No open positions`}
+                  {isLoading ? t`Loading...` : t`No open positions`}
                 </div>
               </td>
             </tr>
           )}
-          {!p.isLoading &&
+          {!isLoading &&
             positions.map((position) => (
               <PositionItemWrapper
                 key={position.key}

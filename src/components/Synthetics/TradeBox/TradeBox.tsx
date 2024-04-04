@@ -33,6 +33,7 @@ import {
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
+  selectTradeboxAvailableTokensOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
@@ -62,7 +63,6 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
-  AvailableTokenOptions,
   TradeMode,
   TradeType,
   getExecutionPriceForDecrease,
@@ -114,7 +114,6 @@ import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
 
 export type Props = {
-  avaialbleTokenOptions: AvailableTokenOptions;
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
@@ -141,7 +140,9 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
+  const { shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
+
+  const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();

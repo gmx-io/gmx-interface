@@ -13,7 +13,6 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
-import { getToken } from "config/tokens";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { PositionInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
@@ -25,6 +24,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import Helmet from "react-helmet";
 
+import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -32,34 +33,22 @@ import {
 } from "context/SubaccountContext/SubaccountContext";
 import {
   useClosingPositionKeyState,
-  useIsOrdersLoading,
-  useIsPositionsLoading,
   useMarketsInfoData,
-  useOrdersInfoData,
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
+import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
-import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
-import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
-import { useOrderErrorsCount, useOrdersCount } from "context/SyntheticsStateContext/hooks/orderHooks";
-import {
-  selectTradeboxAvailableTokensOptions,
-  selectTradeboxFromTokenAddress,
-  selectTradeboxSetActivePosition,
-  selectTradeboxSetTradeConfig,
-  selectTradeboxToTokenAddress,
-  selectTradeboxTradeFlags,
-  selectTradeboxTradeMode,
-  selectTradeboxTradeType,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -82,9 +71,6 @@ export function SyntheticsPage(p: Props) {
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
-  const isPositionsLoading = useIsPositionsLoading();
-  const ordersInfoData = useOrdersInfoData();
-  const isOrdersLoading = useIsOrdersLoading();
 
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfo(chainId);
 
@@ -99,61 +85,12 @@ export function SyntheticsPage(p: Props) {
     (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
     [setClosingPositionKeyRaw]
   );
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
-  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
-  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
-  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
-  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
-    availableTokensOptions;
+
   const setActivePosition = useSelector(selectTradeboxSetActivePosition);
-  const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
-  const tradeMode = useSelector(selectTradeboxTradeMode);
-  const tradeType = useSelector(selectTradeboxTradeType);
 
-  useTradeParamsProcessor({
-    setTradeConfig,
-    markets: sortedAllMarkets,
-    tradeMode,
-    tradeType,
-    availableTokensOptions,
-  });
+  useTradeParamsProcessor();
 
-  const { chartToken, availableChartTokens } = useMemo(() => {
-    if (!fromTokenAddress || !toTokenAddress) {
-      return {};
-    }
-
-    try {
-      const fromToken = getToken(chainId, fromTokenAddress);
-      const toToken = getToken(chainId, toTokenAddress);
-
-      const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-      const availableChartTokens = isSwap ? swapTokens : indexTokens;
-      const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
-        if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
-          const currentSortReferenceList = isSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
-          return currentSortReferenceList.indexOf(a.address) - currentSortReferenceList.indexOf(b.address);
-        }
-        return 0;
-      });
-
-      return {
-        chartToken,
-        availableChartTokens: sortedAvailableChartTokens,
-      };
-    } catch (e) {
-      return {};
-    }
-  }, [
-    fromTokenAddress,
-    toTokenAddress,
-    chainId,
-    isSwap,
-    swapTokens,
-    indexTokens,
-    sortedIndexTokensWithPoolValue,
-    sortedLongAndShortTokens,
-  ]);
+  const chartToken = useSelector(selectChartToken);
 
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
@@ -161,7 +98,7 @@ export function SyntheticsPage(p: Props) {
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
   const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
-  const ordersCount = useOrdersCount();
+  const ordersCount = useSelector(selectOrdersCount);
   const positionsCount = useMemo(() => {
     return Object.values(positionsInfoData || {}).length;
   }, [positionsInfoData]);
@@ -330,23 +267,12 @@ export function SyntheticsPage(p: Props) {
       </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
-          <TVChart
-            tokensData={tokensData}
-            savedShouldShowPositionLines={shouldShowPositionLines}
-            ordersInfo={ordersInfoData}
-            positionsInfo={positionsInfoData}
-            chartTokenAddress={chartToken?.address}
-            availableTokens={availableChartTokens}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
-            avaialbleTokenOptions={availableTokensOptions}
-            marketsInfoData={marketsInfoData}
-          />
+          <TVChart tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
 
           <div className="Exchange-lists large">
             <div className="Exchange-list-tab-container">
               <Tab
-                options={Object.keys(ListSection)}
+                options={tabOptions}
                 optionLabels={tabLabels}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
@@ -378,7 +304,6 @@ export function SyntheticsPage(p: Props) {
 
             {listSection === ListSection.Positions && (
               <PositionList
-                isLoading={isPositionsLoading}
                 onOrdersClick={handlePositionListOrdersClick}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
@@ -390,7 +315,6 @@ export function SyntheticsPage(p: Props) {
               <OrderList
                 selectedOrdersKeys={selectedOrdersKeys}
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
-                isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
@@ -404,7 +328,6 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox
-              avaialbleTokenOptions={availableTokensOptions}
               shouldDisableValidation={shouldDisableValidationForTesting}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
@@ -427,7 +350,6 @@ export function SyntheticsPage(p: Props) {
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
-              isLoading={isPositionsLoading}
               onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
@@ -437,7 +359,6 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              isLoading={isOrdersLoading}
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}

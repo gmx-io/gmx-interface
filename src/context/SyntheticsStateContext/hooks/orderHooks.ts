@@ -4,7 +4,6 @@ import {
   makeSelectOrdersWithErrorsByPositionKey,
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
-  selectOrdersCount,
 } from "../selectors/orderSelectors";
 import { useSelector } from "../utils";
 
@@ -21,4 +20,3 @@ export const usePositionOrdersWithErrors = (positionKey: string | undefined) => 
 export const useOrderErrorsByOrderKeyMap = () => useSelector(selectOrderErrorsByOrderKeyMap);
 
 export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
-export const useOrdersCount = () => useSelector(selectOrdersCount);

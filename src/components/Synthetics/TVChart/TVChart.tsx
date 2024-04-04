@@ -4,69 +4,64 @@ import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChart
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokensData, getTokenData } from "domain/synthetics/tokens";
-import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
-import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
-import { Token } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
-import "./TVChart.scss";
-import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
-import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getByKey } from "lib/objects";
-import { helperToast } from "lib/helperToast";
-import { BigNumber } from "ethers";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
+  useMarketsInfoData,
+  useOrdersInfoData,
+  usePositionsInfoData,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import {
+  selectTradeboxAvailableTokensOptions,
   selectTradeboxSetToTokenAddress,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { getTokenData } from "domain/synthetics/tokens";
+import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
+import { TradeType } from "domain/synthetics/trade";
+import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
+import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { useEffect, useMemo, useState } from "react";
+import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+import "./TVChart.scss";
 
 export type Props = {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
-  savedShouldShowPositionLines: boolean;
-  ordersInfo?: OrdersInfoData;
-  positionsInfo?: PositionsInfoData;
-  tokensData?: TokensData;
-  chartTokenAddress?: string;
-  availableTokens?: Token[];
-  avaialbleTokenOptions: AvailableTokenOptions;
-  marketsInfoData?: MarketsInfoData;
 };
 
 const DEFAULT_PERIOD = "5m";
 
-export function TVChart({
-  ordersInfo,
-  positionsInfo,
-  tokensData,
-  savedShouldShowPositionLines,
-  chartTokenAddress,
-  availableTokens,
-  tradePageVersion,
-  setTradePageVersion,
-  avaialbleTokenOptions,
-  marketsInfoData,
-}: Props) {
+export function TVChart({ tradePageVersion, setTradePageVersion }: Props) {
+  const marketsInfoData = useMarketsInfoData();
+  const chartToken = useSelector(selectChartToken);
+  const ordersInfo = useOrdersInfoData();
+  const tokensData = useTokensData();
+  const positionsInfo = usePositionsInfoData();
+  const availableTokens = useSelector(selectAvailableChartTokens);
+  const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
+  const chartTokenAddress = chartToken?.address;
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
-
-  const chartToken = getTokenData(tokensData, chartTokenAddress);
 
   const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
     isChartAvailabeForToken(chainId, token.symbol)
@@ -259,7 +254,6 @@ export function TVChart({
         {chartToken && (
           <TVChartContainer
             chartLines={chartLines}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}

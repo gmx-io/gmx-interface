@@ -9,11 +9,7 @@ import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsV1Supported } from "config/features";
-import {
-  useAccount,
-  useIsOrdersLoading,
-  useIsPositionsLoading,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -23,9 +19,6 @@ export default function SyntheticsActions() {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const checkSummedAccount = useAccount();
-  const isPositionsLoading = useIsPositionsLoading();
-  const isOrdersLoading = useIsOrdersLoading();
-
   const networkName = getChainName(chainId);
 
   return (
@@ -68,7 +61,6 @@ export default function SyntheticsActions() {
             <Trans>Positions</Trans>
           </div>
           <PositionList
-            isLoading={isPositionsLoading}
             onOrdersClick={noop}
             onSelectPositionClick={noop}
             onClosePositionClick={noop}
@@ -83,7 +75,7 @@ export default function SyntheticsActions() {
           <div className="Actions-title">
             <Trans>Orders</Trans>
           </div>
-          <OrderList setSelectedOrdersKeys={noop} isLoading={isOrdersLoading} setPendingTxns={noop} hideActions />
+          <OrderList setSelectedOrdersKeys={noop} setPendingTxns={noop} hideActions />
         </div>
       )}
       <div className="Actions-section">
