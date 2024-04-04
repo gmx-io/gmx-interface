@@ -2,6 +2,8 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
   isLimitOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
@@ -15,7 +17,15 @@ import {
   getTokenData,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
-import { TradeMode, TradeType, getDecreasePositionAmounts, getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import {
+  TradeMode,
+  TradeType,
+  getAcceptablePriceInfo,
+  getDecreasePositionAmounts,
+  getIncreasePositionAmounts,
+  getSwapPathOutputAddresses,
+  getTradeFlagsForOrder,
+} from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
@@ -23,6 +33,8 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
   selectChainId,
+  selectGasLimits,
+  selectGasPrice,
   selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -33,9 +45,16 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
+import { makeSelectNextPositionValuesForIncrease, makeSelectSwapRoutes } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { getWrappedToken } from "config/tokens";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+  getFeeItem,
+} from "domain/synthetics/fees";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -324,4 +343,122 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   }
 
   return minOutputAmount;
+});
+
+export const selectOrderEditorTradeFlags = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) throw new Error("selectOrderEditorTradeFlags: Order is not defined");
+  return getTradeFlagsForOrder(order);
+});
+
+export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
+  const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
+  const tokensData = q(selectTokensData);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const markPrice = order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
+
+  const priceImpactFeeBps =
+    market &&
+    getFeeItem(
+      getAcceptablePriceInfo({
+        indexPrice: markPrice!,
+        isIncrease: isIncreaseOrderType(order.orderType),
+        isLong: order.isLong,
+        marketInfo: market,
+        sizeDeltaUsd: sizeDeltaUsd!,
+      }).priceImpactDeltaUsd,
+      sizeDeltaUsd
+    )?.bps;
+
+  return priceImpactFeeBps;
+});
+
+export const selectOrderEditorExecutionFee = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const gasLimits = q(selectGasLimits);
+  if (!gasLimits) return undefined;
+
+  const tokensData = q(selectTokensData);
+  if (!tokensData) return undefined;
+
+  const gasPrice = q(selectGasPrice);
+  if (!gasPrice) return undefined;
+
+  const chainId = q(selectChainId);
+
+  let estimatedGas: BigNumber | undefined;
+
+  if (isSwapOrderType(order.orderType)) {
+    estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
+      swapsCount: order.swapPath.length,
+    });
+  }
+
+  if (isIncreaseOrderType(order.orderType)) {
+    estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+      swapsCount: order.swapPath.length,
+    });
+  }
+
+  if (isDecreaseOrderType(order.orderType)) {
+    estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+      swapsCount: order.swapPath.length,
+    });
+  }
+
+  if (!estimatedGas) return undefined;
+
+  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+});
+
+export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return undefined;
+
+  const isLimitIncreaseOrder = order.orderType === OrderType.LimitIncrease;
+
+  if (!isLimitIncreaseOrder) return undefined;
+
+  const toToken = q(selectOrderEditorToToken);
+  if (!toToken) return undefined;
+
+  const fromToken = q(selectOrderEditorFromToken);
+  if (!fromToken) return undefined;
+
+  const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
+  if (!market) return undefined;
+
+  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
+  const swapRoute = q(selectSwapRoutes);
+  const triggerPrice = q(selectOrderEditorTriggerPrice);
+  const existingPosition = q(selectOrderEditorExistingPosition);
+  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
+  const userReferralInfo = q(selectUserReferralInfo);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  const positionOrder = order as PositionOrderInfo;
+  const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
+
+  return getIncreasePositionAmounts({
+    marketInfo: market,
+    indexToken: positionOrder.indexToken,
+    initialCollateralToken: fromToken,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    initialCollateralAmount: order.initialCollateralDeltaAmount,
+    indexTokenAmount,
+    leverage: existingPosition?.leverage,
+    triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
+    position: existingPosition,
+    findSwapPath: swapRoute.findSwapPath,
+    userReferralInfo,
+    uiFeeFactor,
+    strategy: "independent",
+  });
 });

@@ -8,8 +8,6 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
-  isDecreaseOrderType,
-  isIncreaseOrderType,
   isLimitOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
@@ -45,26 +43,12 @@ import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
-  useMarketsInfoData,
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-  getFeeItem,
-} from "domain/synthetics/fees";
-import {
-  getAcceptablePriceInfo,
-  getIncreasePositionAmounts,
-  getNextPositionValuesForIncreaseTrade,
-} from "domain/synthetics/trade";
-import { getTradeFlagsForOrder } from "domain/synthetics/trade/utils/common";
-import { getByKey } from "lib/objects";
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import useWallet from "lib/wallets/useWallet";
 
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -72,27 +56,31 @@ import Modal from "components/Modal/Modal";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
   selectOrderEditorDecreaseAmounts,
+  selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
   selectOrderEditorFromToken,
+  selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
   selectOrderEditorMarkRatio,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
+  selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
   selectOrderEditorToToken,
+  selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
@@ -113,7 +101,6 @@ export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const tokensData = useTokensData();
-  const marketsInfoData = useMarketsInfoData();
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -131,42 +118,13 @@ export function OrderEditor(p: Props) {
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
   const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
 
-  const market = getByKey(marketsInfoData, p.order.marketAddress);
+  const market = useMarketInfo(p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const indexPriceDecimals = indexToken?.priceDecimals;
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
 
-  const gasLimits = useSelector(selectGasLimits);
-  const gasPrice = useSelector(selectGasPrice);
-
-  const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice || !tokensData) return undefined;
-
-    let estimatedGas: BigNumber | undefined;
-
-    if (isSwapOrderType(p.order.orderType)) {
-      estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapsCount: p.order.swapPath.length,
-      });
-    }
-
-    if (isIncreaseOrderType(p.order.orderType)) {
-      estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-        swapsCount: p.order.swapPath.length,
-      });
-    }
-
-    if (isDecreaseOrderType(p.order.orderType)) {
-      estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapsCount: p.order.swapPath.length,
-      });
-    }
-
-    if (!estimatedGas) return undefined;
-
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
-  }, [chainId, gasLimits, gasPrice, p.order.orderType, p.order.swapPath, tokensData]);
+  const executionFee = useSelector(selectOrderEditorExecutionFee);
 
   const additionalExecutionFee = useMemo(() => {
     if (!executionFee || p.order.executionFee?.gte(executionFee.feeTokenAmount)) {
@@ -206,42 +164,7 @@ export function OrderEditor(p: Props) {
   const acceptablePriceImpactBps = useSelector(selectOrderEditorAcceptablePriceImpactBps);
   const initialAcceptablePriceImpactBps = useSelector(selectOrderEditorInitialAcceptablePriceImpactBps);
   const setAcceptablePriceImpactBps = useSelector(selectOrderEditorSetAcceptablePriceImpactBps);
-
-  const increaseAmounts = useMemo(() => {
-    if (!isLimitIncreaseOrder || !toToken || !fromToken || !market || !triggerPrice?.gt(0)) {
-      return undefined;
-    }
-    const positionOrder = p.order as PositionOrderInfo;
-    const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
-    return getIncreasePositionAmounts({
-      marketInfo: market,
-      indexToken: positionOrder.indexToken,
-      initialCollateralToken: fromToken,
-      collateralToken: p.order.targetCollateralToken,
-      isLong: p.order.isLong,
-      initialCollateralAmount: p.order.initialCollateralDeltaAmount,
-      indexTokenAmount,
-      leverage: existingPosition?.leverage,
-      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
-      position: existingPosition,
-      findSwapPath: swapRoute.findSwapPath,
-      userReferralInfo,
-      uiFeeFactor,
-      strategy: "independent",
-    });
-  }, [
-    isLimitIncreaseOrder,
-    existingPosition,
-    fromToken,
-    market,
-    sizeDeltaUsd,
-    p.order,
-    swapRoute,
-    toToken,
-    triggerPrice,
-    uiFeeFactor,
-    userReferralInfo,
-  ]);
+  const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
@@ -251,18 +174,7 @@ export function OrderEditor(p: Props) {
       ? increaseAmounts?.acceptablePriceDeltaBps.abs()
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
 
-  const priceImpactFeeBps =
-    market &&
-    getFeeItem(
-      getAcceptablePriceInfo({
-        indexPrice: markPrice!,
-        isIncrease: isIncreaseOrderType(p.order.orderType),
-        isLong: p.order.isLong,
-        marketInfo: market,
-        sizeDeltaUsd: sizeDeltaUsd!,
-      }).priceImpactDeltaUsd,
-      sizeDeltaUsd
-    )?.bps;
+  const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
   function getError() {
     if (isSubmitting) {
@@ -580,7 +492,7 @@ export function OrderEditor(p: Props) {
     ]
   );
 
-  const tradeFlags = useMemo(() => getTradeFlagsForOrder(p.order), [p.order]);
+  const tradeFlags = useSelector(selectOrderEditorTradeFlags);
 
   const buttonContent = (
     <Button
