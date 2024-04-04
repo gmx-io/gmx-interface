@@ -240,7 +240,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="items-top">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
+                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={formatUsd(poolValueUsd)}
@@ -264,7 +264,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="items-top">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
+                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={formatUsd(maxLiquidity)}
