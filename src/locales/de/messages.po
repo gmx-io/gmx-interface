@@ -6293,10 +6293,6 @@ msgstr ""
 msgid "V2 doesn't currently support this network"
 msgstr ""
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "V2 is newly live, and liquidity may be low initially."
-msgstr "V2 ist neu live und die Liquidität kann anfangs gering sein."
-
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr ""
@@ -6650,8 +6646,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool.</0>"
-msgstr "Du kannst einen {0} besseren Ausführungspreis im {1} Markt-Pool erhalten. <0>Wechseln Sie zum {2} Markt-Pool.</0>"
+msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool</0>."
+msgstr "Du kannst einen {0} besseren Ausführungspreis im {1} Markt-Pool erhalten. <0>Wechseln Sie zum {2} Markt-Pool</0>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -6683,16 +6679,16 @@ msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} 
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
-msgstr "Du hast eine bestehende Order im {0} Markt-Pool. <0>Wechseln Sie zum {1} Markt-Pool.</0>"
+msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral.</0>"
-msgstr "Du hast eine bestehende Order mit {0} als Kollateral. <0>Wechseln Sie zu {1} Kollateral.</0>"
+msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
+msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
-msgstr "Du hast eine bestehende Position im {0} Markt-Pool. <0>Wechseln Sie zum {1} Markt-Pool.</0>"
+msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
@@ -6703,16 +6699,16 @@ msgid "You have an existing position with {0} as collateral. This Order will not
 msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Dieser Auftrag ist für diese Position nicht gültig."
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral.</0>"
-msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Dieser Auftrag ist für diese Position nicht gültig. <0>Wechseln Sie zu {1} Kollateral.</0>"
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Diese Aktion gilt nicht für diese Position."
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral.</0>"
-msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Diese Aktion gilt nicht für diese Position. <0>Wechseln Sie zu {1} Kollateral.</0>"
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"

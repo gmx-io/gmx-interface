@@ -6296,10 +6296,6 @@ msgstr "V2 Claim"
 msgid "V2 doesn't currently support this network"
 msgstr "V2 doesn't currently support this network"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "V2 is newly live, and liquidity may be low initially."
-msgstr "V2 is newly live, and liquidity may be low initially."
-
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
@@ -6653,8 +6649,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool.</0>"
-msgstr "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool.</0>"
+msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool</0>."
+msgstr "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool</0>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -6686,16 +6682,16 @@ msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} 
 msgstr "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
-msgstr "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
+msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgstr "You have an existing order in the {0} market pool. <0>Switch to {1} market pool</0>."
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral.</0>"
-msgstr "You have an existing order with {0} as collateral. <0>Switch to {1} collateral.</0>"
+msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
+msgstr "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
-msgstr "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
+msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgstr "You have an existing position in the {0} market pool. <0>Switch to {1} market pool</0>."
 
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
@@ -6706,16 +6702,16 @@ msgid "You have an existing position with {0} as collateral. This Order will not
 msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral.</0>"
-msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral.</0>"
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "You have an existing position with {0} as collateral. This action will not apply for that position."
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral.</0>"
-msgstr "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral.</0>"
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
+msgstr "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
