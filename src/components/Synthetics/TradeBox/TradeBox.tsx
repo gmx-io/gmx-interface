@@ -30,7 +30,6 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -234,8 +233,6 @@ export function TradeBox(p: Props) {
 
   const uiFeeFactor = useUiFeeFactor();
 
-  const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
-
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const nextLeverageWithoutPnl = useSelector(selectTradeboxNextLeverageWithoutPnl);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
@@ -284,7 +281,7 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const swapOutLiquidity = swapRoute.maxSwapLiquidity;
+  const swapOutLiquidity = swapRoutes.maxSwapLiquidity;
 
   const userReferralInfo = useUserReferralInfo();
 
