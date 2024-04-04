@@ -5,9 +5,15 @@
     color: var(--text-gray);
     font-weight: normal;
     text-transform: uppercase;
+    padding-bottom: 1rem;
   }
 
   &-cell-right {
     text-align: right;
+  }
+
+  &-cell-center {
+    text-align: right;
+    padding-right: 1rem;
   }
 }

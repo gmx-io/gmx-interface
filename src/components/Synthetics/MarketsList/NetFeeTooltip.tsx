@@ -15,7 +15,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           <th>
             <Trans>Pool</Trans>
           </th>
-          <th className="NetFeeTooltip-cell-right">
+          <th className="NetFeeTooltip-cell-center">
             <Trans>Longs Net Fee / 1h</Trans>
           </th>
           <th className="NetFeeTooltip-cell-right">
@@ -36,7 +36,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </div>
               </td>
               <td
-                className={cx("NetFeeTooltip-cell-right", {
+                className={cx("NetFeeTooltip-cell-center", {
                   "text-green": netFeeLong.gt(0),
                   "text-red": netFeeLong.lt(0),
                 })}

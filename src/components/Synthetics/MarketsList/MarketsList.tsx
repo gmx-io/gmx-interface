@@ -278,7 +278,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           portalClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
-          maxAllowedWidth={500}
+          maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
