@@ -6,19 +6,19 @@ import { isMarketIndexToken } from "./utils";
 export function getLargestRelatedExistingPosition({
   positionsInfo,
   isLong,
-  tokenAddress,
+  indexTokenAddress,
 }: {
   positionsInfo: PositionsInfoData;
   isLong: boolean;
-  tokenAddress: string;
-}) {
+  indexTokenAddress: string;
+}): PositionInfo | undefined {
   let largestRelatedExistingPosition: PositionInfo | undefined = undefined;
   for (const position of Object.values(positionsInfo)) {
     if (position.isLong !== isLong) {
       continue;
     }
 
-    if (!isMarketIndexToken(position.marketInfo, tokenAddress)) {
+    if (!isMarketIndexToken(position.marketInfo, indexTokenAddress)) {
       continue;
     }
 
@@ -38,23 +38,25 @@ export function getLargestRelatedExistingPosition({
 export type PreferredTradeTypePickStrategy = TradeType | "largestPosition";
 
 export function chooseSuitableMarket({
-  tokenAddress,
+  indexTokenAddress,
   maxLongLiquidityPool,
   maxShortLiquidityPool,
   isSwap,
   positionsInfo,
   preferredTradeType,
 }: {
-  tokenAddress: string;
+  indexTokenAddress: string;
   maxLongLiquidityPool: TokenOption;
   maxShortLiquidityPool: TokenOption;
   isSwap?: boolean;
   positionsInfo?: PositionsInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
-}): { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType } | undefined {
+}):
+  | { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType; collateralTokenAddress?: string }
+  | undefined {
   if (isSwap) {
     return {
-      indexTokenAddress: tokenAddress,
+      indexTokenAddress,
       tradeType: TradeType.Swap,
     };
   }
@@ -63,18 +65,18 @@ export function chooseSuitableMarket({
     let largestLongPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
       positionsInfo,
       isLong: true,
-      tokenAddress,
+      indexTokenAddress,
     });
 
     let largestShortPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
       positionsInfo,
       isLong: false,
-      tokenAddress,
+      indexTokenAddress,
     });
 
     if (!largestLongPosition && !largestShortPosition) {
       return {
-        indexTokenAddress: tokenAddress,
+        indexTokenAddress,
         marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
         tradeType: TradeType.Long,
       };
@@ -91,13 +93,14 @@ export function chooseSuitableMarket({
     const largestPositionTradeType = largestPosition?.isLong ? TradeType.Long : TradeType.Short;
 
     return {
-      indexTokenAddress: tokenAddress,
+      indexTokenAddress,
       marketTokenAddress: largestPosition.marketInfo.marketTokenAddress,
       tradeType: largestPositionTradeType,
+      collateralTokenAddress: largestPosition.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
     return {
-      indexTokenAddress: tokenAddress,
+      indexTokenAddress,
       marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
       tradeType: TradeType.Long,
     };
@@ -109,16 +112,17 @@ export function chooseSuitableMarket({
       getLargestRelatedExistingPosition({
         positionsInfo,
         isLong: true,
-        tokenAddress,
+        indexTokenAddress,
       });
 
     const marketTokenAddress =
       largestLongPosition?.marketInfo.marketTokenAddress ?? maxLongLiquidityPool.marketTokenAddress;
 
     return {
-      indexTokenAddress: tokenAddress,
+      indexTokenAddress,
       marketTokenAddress: marketTokenAddress,
       tradeType: TradeType.Long,
+      collateralTokenAddress: largestLongPosition?.collateralTokenAddress,
     };
   }
 
@@ -127,15 +131,16 @@ export function chooseSuitableMarket({
     getLargestRelatedExistingPosition({
       positionsInfo,
       isLong: false,
-      tokenAddress,
+      indexTokenAddress,
     });
 
   const marketTokenAddress =
     largestShortPosition?.marketInfo.marketTokenAddress ?? maxShortLiquidityPool.marketTokenAddress;
 
   return {
-    indexTokenAddress: tokenAddress,
+    indexTokenAddress,
     marketTokenAddress: marketTokenAddress,
     tradeType: TradeType.Short,
+    collateralTokenAddress: largestShortPosition?.collateralTokenAddress,
   };
 }

@@ -22,7 +22,6 @@ import "./ChartTokenSelector.scss";
 
 type Props = {
   selectedToken: Token | undefined;
-  // onSelectToken: (address: string, marketAddress?: string, tradeType?: TradeType) => void;
   options: Token[] | undefined;
 };
 

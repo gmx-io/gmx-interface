@@ -10,7 +10,6 @@ describe("chooseSuitableMarket", () => {
   describe("without existing positions", () => {
     it("should should choose market with largest long liquidity pool if long is preferred", () => {
       const input: Input = {
-        chainId,
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
@@ -23,7 +22,7 @@ describe("chooseSuitableMarket", () => {
           maxLongLiquidity: BigNumber.from(99),
           maxShortLiquidity: BigNumber.from(101),
         },
-        tokenAddress: "0x1",
+        indexTokenAddress: "0x1",
         preferredTradeType: TradeType.Long,
       };
 
@@ -38,7 +37,6 @@ describe("chooseSuitableMarket", () => {
 
     it("should should choose market with largest short liquidity pool if short is preferred", () => {
       const input: Input = {
-        chainId,
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
@@ -51,7 +49,7 @@ describe("chooseSuitableMarket", () => {
           maxLongLiquidity: BigNumber.from(99),
           maxShortLiquidity: BigNumber.from(101),
         },
-        tokenAddress: "0x1",
+        indexTokenAddress: "0x1",
         preferredTradeType: TradeType.Short,
       };
 
@@ -66,7 +64,6 @@ describe("chooseSuitableMarket", () => {
 
     it("should should choose market with largest long liquidity pool if largest position is preferred", () => {
       const input: Input = {
-        chainId,
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
@@ -79,7 +76,7 @@ describe("chooseSuitableMarket", () => {
           maxLongLiquidity: BigNumber.from(99),
           maxShortLiquidity: BigNumber.from(101),
         },
-        tokenAddress: "0x1",
+        indexTokenAddress: "0x1",
         preferredTradeType: "largestPosition",
       };
 

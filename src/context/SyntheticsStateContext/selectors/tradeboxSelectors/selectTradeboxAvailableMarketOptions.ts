@@ -87,7 +87,7 @@ export const selectTradeboxAvailableMarketOptions = createEnhancedSelector((q) =
     if (positionsInfo) {
       const availablePosition = getLargestRelatedExistingPosition({
         isLong,
-        tokenAddress: indexToken.address,
+        indexTokenAddress: indexToken.address,
         positionsInfo: positionsInfo,
       });
 

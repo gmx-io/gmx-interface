@@ -66,6 +66,7 @@ export const selectTradeboxKeepLeverage = (s: SyntheticsTradeState) => s.tradebo
 export const selectTradeboxSetActivePosition = (s: SyntheticsTradeState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsTradeState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsTradeState) => s.tradebox.setTradeConfig;
+export const selectTradeboxSetCollateralAddress = (s: SyntheticsTradeState) => s.tradebox.setCollateralAddress;
 
 export const selectTradeboxSwapRoutes = createEnhancedSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

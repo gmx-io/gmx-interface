@@ -2,8 +2,8 @@ import { createEnhancedSelector } from "context/SyntheticsStateContext/utils";
 import { chooseSuitableMarket, PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { TradeType } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
-import { selectTradeboxSetToTokenAddress, selectTradeboxTradeType } from ".";
-import { selectChainId, selectPositionsInfoData, selectTokensData } from "../globalSelectors";
+import { selectTradeboxSetCollateralAddress, selectTradeboxSetToTokenAddress, selectTradeboxTradeType } from ".";
+import { selectPositionsInfoData, selectTokensData } from "../globalSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
 export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => {
@@ -12,6 +12,7 @@ export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => 
   const positionsInfo = q(selectPositionsInfoData);
   const tokensData = q(selectTokensData);
   const setSelectedToken = q(selectTradeboxSetToTokenAddress);
+  const setCollateralAddress = q(selectTradeboxSetCollateralAddress);
 
   const chooseSuitableMarketWrapped = (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy) => {
     const token = getByKey(tokensData, tokenAddress);
@@ -21,7 +22,7 @@ export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
     const suitableParams = chooseSuitableMarket({
-      tokenAddress,
+      indexTokenAddress: tokenAddress,
       maxLongLiquidityPool,
       maxShortLiquidityPool,
       isSwap: tradeType === TradeType.Swap,
@@ -32,6 +33,9 @@ export const selectTradeboxChooseSuitableMarket = createEnhancedSelector((q) => 
     if (!suitableParams) return;
 
     setSelectedToken(suitableParams.indexTokenAddress, suitableParams.marketTokenAddress, suitableParams.tradeType);
+    if (suitableParams.collateralTokenAddress) {
+      setCollateralAddress(suitableParams.collateralTokenAddress);
+    }
 
     return suitableParams;
   };
