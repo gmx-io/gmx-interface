@@ -23,6 +23,7 @@ import { useCallback, useMemo } from "react";
 import MarketNetFee from "../MarketNetFee/MarketNetFee";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DOCS_LINKS } from "config/links";
+import { formatUsdPrice } from "domain/synthetics/positions";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -47,7 +48,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
-    priceDecimals,
     currentOpenInterest,
     maxOpenInterest,
   } = useMemo(() => {
@@ -126,13 +126,13 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           label={t`Entry Price`}
           value={
             <Tooltip
-              handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
+              handle={formatUsdPrice(entryPrice) || "..."}
               position="bottom-end"
               renderContent={() => (
                 <Trans>
-                  The position will be opened at a reference price of{" "}
-                  {formatUsd(entryPrice, { displayDecimals: priceDecimals })}, not accounting for price impact, with a
-                  max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  The position will be opened at a reference price of {formatUsdPrice(entryPrice)}, not accounting for
+                  price impact, with a max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}
+                  %.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -150,16 +150,12 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           label={t`Exit Price`}
           value={
             <Tooltip
-              handle={
-                formatUsd(exitPrice, {
-                  displayDecimals: priceDecimals,
-                }) || "..."
-              }
+              handle={formatUsdPrice(exitPrice) || "..."}
               position="bottom-end"
               renderContent={() => (
                 <Trans>
                   If you have an existing position, the position will be closed at a reference price of{" "}
-                  {formatUsd(entryPrice)}, not accounting for price impact.
+                  {formatUsdPrice(entryPrice)}, not accounting for price impact.
                   <br />
                   <br />
                   This exit price will change with the price of the asset.

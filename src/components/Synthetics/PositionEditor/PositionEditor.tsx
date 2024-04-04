@@ -36,6 +36,7 @@ import {
 import {
   formatLeverage,
   formatLiquidationPrice,
+  formatUsdPrice,
   getLeverage,
   getLiquidationPrice,
   substractMaxLeverageSlippage,
@@ -146,8 +147,6 @@ export function PositionEditor(p: Props) {
 
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
-
-  const indexPriceDecimals = position?.indexToken.priceDecimals || 2;
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
     getSyntheticsCollateralEditAddressKey(chainId, position?.collateralTokenAddress),
@@ -678,24 +677,14 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                <ExchangeInfoRow
-                  label={t`Entry Price`}
-                  value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
-                />
-                <ExchangeInfoRow
-                  label={t`Mark Price`}
-                  value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
-                />
+                <ExchangeInfoRow label={t`Entry Price`} value={formatUsdPrice(position.entryPrice)} />
+                <ExchangeInfoRow label={t`Mark Price`} value={formatUsdPrice(position.markPrice)} />
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
-                      to={
-                        collateralDeltaAmount?.gt(0)
-                          ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
-                          : undefined
-                      }
+                      from={formatLiquidationPrice(position.liquidationPrice)}
+                      to={collateralDeltaAmount?.gt(0) ? formatLiquidationPrice(nextLiqPrice) : undefined}
                     />
                   }
                 />

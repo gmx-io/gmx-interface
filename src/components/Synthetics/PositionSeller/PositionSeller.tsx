@@ -52,6 +52,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  formatUsdPrice,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import { applySlippageToPrice, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
@@ -460,42 +461,19 @@ export function PositionSeller(p: Props) {
     setSelectedTriggerAcceptablePriceImpactBps,
   ]);
 
-  const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
   const triggerPriceRow = (
     <ExchangeInfoRow
       className="SwapBox-info-row"
       label={t`Trigger Price`}
-      value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-        formatUsd(decreaseAmounts?.triggerPrice, {
-          displayDecimals: toToken?.priceDecimals,
-        }) || "-"
-      }`}
+      value={`${decreaseAmounts?.triggerThresholdType || ""} ${formatUsdPrice(decreaseAmounts?.triggerPrice) || "-"}`}
     />
   );
 
-  const markPriceRow = (
-    <ExchangeInfoRow
-      label={t`Mark Price`}
-      value={
-        formatUsd(markPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
-    />
-  );
+  const markPriceRow = <ExchangeInfoRow label={t`Mark Price`} value={formatUsdPrice(markPrice) || "-"} />;
 
-  const entryPriceRow = (
-    <ExchangeInfoRow
-      label={t`Entry Price`}
-      value={
-        formatUsd(position?.entryPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
-    />
-  );
+  const entryPriceRow = <ExchangeInfoRow label={t`Entry Price`} value={formatUsdPrice(position?.entryPrice) || "-"} />;
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -519,9 +497,7 @@ export function PositionSeller(p: Props) {
   if (isStopLoss) {
     acceptablePriceValue = t`NA`;
   } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
-    acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
-      displayDecimals: indexPriceDecimals,
-    });
+    acceptablePriceValue = formatAcceptablePrice(acceptablePrice);
   } else {
     acceptablePriceValue = "-";
   }
@@ -534,18 +510,12 @@ export function PositionSeller(p: Props) {
       label={t`Liq. Price`}
       value={
         <ValueTransition
-          from={
-            formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: indexPriceDecimals,
-            })!
-          }
+          from={formatLiquidationPrice(position.liquidationPrice)!}
           to={
             decreaseAmounts?.isFullClose
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })
+              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice)
               : undefined
           }
         />
