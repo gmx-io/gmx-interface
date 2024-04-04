@@ -118,8 +118,9 @@ export const useTradeboxPoolWarnings = () => {
             className="clickable underline muted "
             onClick={() => setMarketAddress(maxLiquidityMarket!.marketTokenAddress)}
           >
-            Switch to {getMarketPoolName(maxLiquidityMarket)} market pool.
+            Switch to {getMarketPoolName(maxLiquidityMarket)} market pool
           </span>
+          .
         </Trans>
       </AlertInfo>
     );
