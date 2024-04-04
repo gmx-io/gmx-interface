@@ -54,7 +54,7 @@ export default function Modal(props: ModalProps) {
 
   const style = useMemo(() => ({ zIndex }), [zIndex]);
 
-  const stopPropagation = useCallback((e: React.MouseEvent | React.KeyboardEvent) => {
+  const stopPropagation = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
 
