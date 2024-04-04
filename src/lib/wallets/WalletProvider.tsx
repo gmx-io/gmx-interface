@@ -31,7 +31,7 @@ const appLocale2RainbowLocaleMap: Record<string, Locale> = {
   ko: "ko",
   ru: "ru",
   zh: "zh",
-  pseduo: "en",
+  pseudo: "en",
 };
 
 export default function WalletProvider({ children }) {
