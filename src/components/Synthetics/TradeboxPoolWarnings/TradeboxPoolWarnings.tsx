@@ -15,6 +15,8 @@ import { formatPercentage } from "lib/numbers";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
+const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // 0.01%
+
 export const useTradeboxPoolWarnings = () => {
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
@@ -48,6 +50,11 @@ export const useTradeboxPoolWarnings = () => {
   const minPriceImpactMarket = marketsOptions?.minPriceImpactMarket;
   const minPriceImpactBps = marketsOptions?.minPriceImpactBps;
 
+  const betterExecutionPriceBps =
+    minPriceImpactBps &&
+    increaseAmounts?.acceptablePriceDeltaBps &&
+    increaseAmounts.acceptablePriceDeltaBps.sub(minPriceImpactBps);
+
   const showHasExistingPositionWarning =
     !hasExistingPosition && marketWithPosition && !isSelectedMarket(marketWithPosition);
   const showHasNoSufficientLiquidityInAnyMarketWarning = isNoSufficientLiquidityInAnyMarket;
@@ -60,7 +67,8 @@ export const useTradeboxPoolWarnings = () => {
     !marketWithOrder &&
     minPriceImpactMarket &&
     minPriceImpactBps &&
-    !isSelectedMarket(minPriceImpactMarket);
+    !isSelectedMarket(minPriceImpactMarket) &&
+    betterExecutionPriceBps?.gt(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
 
   if (
     !showHasExistingPositionWarning &&
@@ -140,8 +148,8 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact>
         <Trans>
-          You can get a {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps?.sub(minPriceImpactBps))} better
-          execution price in the {getMarketPoolName(minPriceImpactMarket)} market pool.{" "}
+          You can get a {formatPercentage(betterExecutionPriceBps)} better execution price in the{" "}
+          {getMarketPoolName(minPriceImpactMarket)} market pool.{" "}
           <span
             className="clickable underline muted"
             onClick={() => setMarketAddress(minPriceImpactMarket.marketTokenAddress)}
