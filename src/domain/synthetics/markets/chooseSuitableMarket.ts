@@ -111,20 +111,41 @@ export function chooseSuitableMarket({
     };
   }
 
-  let marketTokenAddress: string | undefined;
-  let preferredTradeTypeUnwrapped: TradeType;
-
   if (preferredTradeType === TradeType.Long) {
-    marketTokenAddress = maxLongLiquidityPool.marketTokenAddress;
-    preferredTradeTypeUnwrapped = TradeType.Long;
-  } else {
-    marketTokenAddress = maxShortLiquidityPool.marketTokenAddress;
-    preferredTradeTypeUnwrapped = TradeType.Short;
+    const largestLongPosition =
+      positionsInfo &&
+      getLargestRelatedExistingPosition({
+        chainId,
+        positionsInfo,
+        isLong: true,
+        tokenAddress,
+      });
+
+    const marketTokenAddress =
+      largestLongPosition?.marketInfo.marketTokenAddress ?? maxLongLiquidityPool.marketTokenAddress;
+
+    return {
+      indexTokenAddress: tokenAddressRaw,
+      marketTokenAddress: marketTokenAddress,
+      tradeType: TradeType.Long,
+    };
   }
+
+  const largestShortPosition =
+    positionsInfo &&
+    getLargestRelatedExistingPosition({
+      chainId,
+      positionsInfo,
+      isLong: false,
+      tokenAddress,
+    });
+
+  const marketTokenAddress =
+    largestShortPosition?.marketInfo.marketTokenAddress ?? maxShortLiquidityPool.marketTokenAddress;
 
   return {
     indexTokenAddress: tokenAddressRaw,
-    marketTokenAddress,
-    tradeType: preferredTradeTypeUnwrapped,
+    marketTokenAddress: marketTokenAddress,
+    tradeType: TradeType.Short,
   };
 }
