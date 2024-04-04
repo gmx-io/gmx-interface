@@ -173,14 +173,14 @@ export default function useOrderEntries<T extends OrderEntry>(
           price = getDefaultEntryField(USD_DECIMALS, fieldUpdate);
         }
         size = getDefaultEntryField(sizeDecimals, {
-          value: getSizeBySizeUsdAndPrice(sizeUsd.value, price.value),
+          value: getSizeByPercentage(percentage.value),
         });
         percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
           value: getPercentageBySize(size.value),
         });
       }
 
-      return { ...entry, size, sizeUsd, percentage } as T;
+      return { ...entry, size, sizeUsd, percentage, price } as T;
     },
     [getPercentageBySize, getSizeByPercentage, getSizeBySizeUsdAndPrice, getSizeUsdBySizeAndPrice]
   );
@@ -307,7 +307,11 @@ export default function useOrderEntries<T extends OrderEntry>(
   useEffect(() => {
     if (totalPositionSizeTokenAmount && !totalPositionSizeTokenAmount.eq(prevTotalPositionSizeTokenAmount ?? 0)) {
       setEntries((prevEntries) => {
-        return prevEntries.map((entry) => recalculateEntryByField(entry, sizeDecimals, "size"));
+        return prevEntries.map((entry) => {
+          if (!entry.txnType && !entry.order) return entry;
+
+          return recalculateEntryByField(entry, sizeDecimals, "size");
+        });
       });
     }
   }, [prevTotalPositionSizeTokenAmount, totalPositionSizeTokenAmount, sizeDecimals, recalculateEntryByField]);
