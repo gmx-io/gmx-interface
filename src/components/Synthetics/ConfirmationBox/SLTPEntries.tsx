@@ -60,15 +60,18 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
             entrySizeUsd
           )} at ${formatUsd(entry.price.value ?? undefined)}.`;
 
+        /* eslint-disable react-perf/jsx-no-new-object-as-prop */
         return (
           <div key={entry.id}>
-            <div className="SLTPEntry-row" key={entry.id} style={{position: "relative"}}>
-              <div style={{position: "absolute", right: "100%"}}>
-                {{
-                  keepSize: "ks",
-                  keepPercentage: "kp",
-                  fitPercentage: "fp",
-                }[entry.mode]}
+            <div className="SLTPEntry-row" key={entry.id} style={{ position: "relative" }}>
+              <div style={{ position: "absolute", right: "100%" }}>
+                {
+                  {
+                    keepSize: "ks",
+                    keepPercentage: "kp",
+                    fitPercentage: "fp",
+                  }[entry.mode]
+                }
               </div>
 
               <div className={cx("SLTP-price", { "input-error": priceError })}>
