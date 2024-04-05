@@ -25,12 +25,13 @@ export const useTradeboxPoolWarnings = (
 ) => {
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const { marketInfo, setMarketAddress } = useTradeboxState();
+  const { marketInfo, setMarketAddress, setCollateralAddress } = useTradeboxState();
   const { isLong } = useTradeboxTradeFlags();
   const existingOrder = useTradeboxExistingOrder();
   const selectedPosition = useTradeboxSelectedPosition();
   const hasExistingOrder = Boolean(existingOrder);
   const hasExistingPosition = Boolean(selectedPosition);
+
   const isSelectedMarket = useCallback(
     (market: Market) => {
       return marketInfo && market.marketTokenAddress === marketInfo.marketTokenAddress;
@@ -108,6 +109,7 @@ export const useTradeboxPoolWarnings = (
               className="clickable underline muted"
               onClick={() => {
                 setMarketAddress(marketWithPosition.marketTokenAddress);
+                setCollateralAddress(marketsOptions.collateralWithPosition?.address);
               }}
             >
               Switch to {getMarketPoolName(marketWithPosition)} market pool
@@ -156,6 +158,7 @@ export const useTradeboxPoolWarnings = (
               className="clickable underline muted"
               onClick={() => {
                 setMarketAddress(marketWithOrder.marketTokenAddress);
+                setCollateralAddress(marketsOptions.collateralWithOrder?.address);
               }}
             >
               Switch to {getMarketPoolName(marketWithOrder)} market pool

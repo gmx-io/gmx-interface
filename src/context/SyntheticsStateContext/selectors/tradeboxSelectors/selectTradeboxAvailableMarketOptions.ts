@@ -33,8 +33,14 @@ export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   marketWithPosition?: MarketInfo;
+  /**
+   * Collateral token of the position in `marketWithPosition`
+   */
   collateralWithPosition?: TokenData;
   marketWithOrder?: MarketInfo;
+  /**
+   * Collateral token of the order in `marketWithOrder`
+   */
   collateralWithOrder?: TokenData;
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
