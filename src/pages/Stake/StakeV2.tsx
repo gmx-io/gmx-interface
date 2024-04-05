@@ -19,7 +19,7 @@ import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
@@ -340,7 +340,7 @@ function UnstakeModal(props) {
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
+        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && amount && !amount.gt(maxAmount) && (
           <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
@@ -1093,7 +1093,7 @@ export default function StakeV2({ setPendingTxns }) {
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
   const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState(undefined);
+  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<BigNumber | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1101,20 +1101,24 @@ export default function StakeV2({ setPendingTxns }) {
   const [isVesterDepositModalVisible, setIsVesterDepositModalVisible] = useState(false);
   const [vesterDepositTitle, setVesterDepositTitle] = useState("");
   const [vesterDepositStakeTokenLabel, setVesterDepositStakeTokenLabel] = useState("");
-  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState("");
+  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<BigNumber | undefined | string>("");
   const [vesterDepositBalance, setVesterDepositBalance] = useState("");
-  const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState("");
-  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState("");
-  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState("");
-  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState("");
+  const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState<BigNumber | undefined | string>("");
+  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<BigNumber | undefined | string>("");
+  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<
+    BigNumber | undefined | string
+  >("");
+  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<BigNumber | undefined | string>(
+    ""
+  );
   const [vesterDepositValue, setVesterDepositValue] = useState("");
-  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState("");
+  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<BigNumber | undefined | string>("");
   const [vesterDepositMaxReserveAmount, setVesterDepositMaxReserveAmount] = useState("");
   const [vesterDepositAddress, setVesterDepositAddress] = useState("");
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
   const [isAffiliateVesterWithdrawModalVisible, setIsAffiliateVesterWithdrawModalVisible] = useState(false);
-  const [vesterWithdrawTitle, setVesterWithdrawTitle] = useState(false);
+  const [vesterWithdrawTitle, setVesterWithdrawTitle] = useState("");
   const [vesterWithdrawAddress, setVesterWithdrawAddress] = useState("");
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
@@ -1181,10 +1185,7 @@ export default function StakeV2({ setPendingTxns }) {
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
-    marketsInfoData,
-    marketTokensData,
-  });
+  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
 
   const vestingData = useVestingData(account);
 
@@ -1380,6 +1381,8 @@ export default function StakeV2({ setPendingTxns }) {
   };
 
   const showGmxVesterDepositModal = () => {
+    if (!vestingData) return;
+
     let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.vestedAmount);
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance;
@@ -1401,6 +1404,8 @@ export default function StakeV2({ setPendingTxns }) {
   };
 
   const showGlpVesterDepositModal = () => {
+    if (!vestingData) return;
+
     let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.vestedAmount);
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance;
@@ -1461,7 +1466,9 @@ export default function StakeV2({ setPendingTxns }) {
       maxAmount = maxUnstakeableGmx;
     }
     setUnstakeModalMaxAmount(maxAmount);
-    setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
+    if (vestingData) {
+      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
+    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("GMX");
     setUnstakeMethodName("unstakeGmx");
@@ -1481,7 +1488,9 @@ export default function StakeV2({ setPendingTxns }) {
       maxAmount = maxUnstakeableGmx;
     }
     setUnstakeModalMaxAmount(maxAmount);
-    setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
+    if (vestingData) {
+      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
+    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("esGMX");
     setUnstakeMethodName("unstakeEsGmx");
@@ -1553,7 +1562,7 @@ export default function StakeV2({ setPendingTxns }) {
       <div>
         <Trans>
           You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
-          using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
+          using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, true)} Staked Multiplier Points.
         </Trans>
         <br />
         <br />
@@ -1617,7 +1626,7 @@ export default function StakeV2({ setPendingTxns }) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
     }
     let gmStr;
-    if (userTotalGmInfo.balance && userTotalGmInfo.balance.gt(0)) {
+    if (userTotalGmInfo?.balance && userTotalGmInfo?.balance.gt(0)) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");

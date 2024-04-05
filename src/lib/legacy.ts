@@ -1026,17 +1026,68 @@ export function getDepositBalanceData(depositBalances) {
   return data;
 }
 
-export function getVestingData(vestingInfo) {
+type RawVestingData = {
+  gmxVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  gmxVesterPairAmount: BigNumber;
+  gmxVesterVestedAmount: BigNumber;
+  gmxVesterEscrowedBalance: BigNumber;
+  gmxVesterClaimSum: BigNumber;
+  gmxVesterClaimable: BigNumber;
+  gmxVesterMaxVestableAmount: BigNumber;
+  gmxVesterAverageStakedAmount: BigNumber;
+  glpVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  glpVesterPairAmount: BigNumber;
+  glpVesterVestedAmount: BigNumber;
+  glpVesterEscrowedBalance: BigNumber;
+  glpVesterClaimSum: BigNumber;
+  glpVesterClaimable: BigNumber;
+  glpVesterMaxVestableAmount: BigNumber;
+  glpVesterAverageStakedAmount: BigNumber;
+  affiliateVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  affiliateVesterPairAmount: BigNumber;
+  affiliateVesterVestedAmount: BigNumber;
+  affiliateVesterEscrowedBalance: BigNumber;
+  affiliateVesterClaimSum: BigNumber;
+  affiliateVesterClaimable: BigNumber;
+  affiliateVesterMaxVestableAmount: BigNumber;
+  affiliateVesterAverageStakedAmount: BigNumber;
+};
+
+export function getVestingData(vestingInfo): RawVestingData | undefined {
   if (!vestingInfo || vestingInfo.length === 0) {
-    return;
+    return undefined;
   }
   const propsLength = 7;
-  const data = {};
+  const data: Partial<RawVestingData> = {};
 
-  const keys = ["gmxVester", "glpVester", "affiliateVester"];
+  const keys = ["gmxVester", "glpVester", "affiliateVester"] as const;
 
   for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
+    const key = keys[i] as typeof keys[number];
     data[key] = {
       pairAmount: vestingInfo[i * propsLength],
       vestedAmount: vestingInfo[i * propsLength + 1],
@@ -1047,16 +1098,16 @@ export function getVestingData(vestingInfo) {
       averageStakedAmount: vestingInfo[i * propsLength + 6],
     };
 
-    data[key + "PairAmount"] = data[key].pairAmount;
-    data[key + "VestedAmount"] = data[key].vestedAmount;
-    data[key + "EscrowedBalance"] = data[key].escrowedBalance;
-    data[key + "ClaimSum"] = data[key].claimedAmounts.add(data[key].claimable);
-    data[key + "Claimable"] = data[key].claimable;
-    data[key + "MaxVestableAmount"] = data[key].maxVestableAmount;
-    data[key + "AverageStakedAmount"] = data[key].averageStakedAmount;
+    data[key + "PairAmount"] = data[key]!.pairAmount;
+    data[key + "VestedAmount"] = data[key]!.vestedAmount;
+    data[key + "EscrowedBalance"] = data[key]!.escrowedBalance;
+    data[key + "ClaimSum"] = data[key]!.claimedAmounts.add(data[key]!.claimable);
+    data[key + "Claimable"] = data[key]!.claimable;
+    data[key + "MaxVestableAmount"] = data[key]!.maxVestableAmount;
+    data[key + "AverageStakedAmount"] = data[key]!.averageStakedAmount;
   }
 
-  return data;
+  return data as RawVestingData;
 }
 
 export function getStakingData(stakingInfo) {

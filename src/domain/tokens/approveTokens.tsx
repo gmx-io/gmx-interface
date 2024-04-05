@@ -14,11 +14,11 @@ type Params = {
   tokenAddress: string;
   spender: string;
   chainId: number;
-  onApproveSubmitted: () => void;
+  onApproveSubmitted?: () => void;
   getTokenInfo?: (infoTokens: InfoTokens, tokenAddress: string) => TokenInfo;
-  infoTokens: InfoTokens;
-  pendingTxns: any[];
-  setPendingTxns: (txns: any[]) => void;
+  infoTokens?: InfoTokens;
+  pendingTxns?: any[];
+  setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
 };
 
