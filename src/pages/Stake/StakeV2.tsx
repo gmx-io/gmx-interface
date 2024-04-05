@@ -816,12 +816,12 @@ function CompoundModal(props) {
 
   const recommendStakeGmx = useRecommendStakeGmxAmount(
     {
-      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedGMX: processedData?.totalVesterRewards,
       accumulatedBnGMX: accumulatedBnGMXAmount,
-      accumulatedEsGMX: processedData.totalEsGmxRewards,
-      stakedGMX: processedData.gmxInStakedGmx,
-      stakedBnGMX: processedData.bnGmxInFeeGmx,
-      stakedEsGMX: processedData.esGmxInStakedGmx,
+      accumulatedEsGMX: processedData?.totalEsGmxRewards,
+      stakedGMX: processedData?.gmxInStakedGmx,
+      stakedBnGMX: processedData?.bnGmxInFeeGmx,
+      stakedEsGMX: processedData?.esGmxInStakedGmx,
     },
     {
       shouldStakeGmx,
