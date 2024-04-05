@@ -85,6 +85,7 @@ export default function MarketTokenSelector(props: Props) {
   return (
     <Popover className="MarketTokenSelector">
       {({ open, close }) => {
+        // TODO: remove this setstate in render
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         if (!currentMarketInfo) return <></>;
 
