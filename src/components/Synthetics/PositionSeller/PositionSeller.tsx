@@ -85,12 +85,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./PositionSeller.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
-  shouldDisableValidation: boolean;
 };
 
 const ORDER_OPTION_LABELS = {
@@ -119,6 +119,7 @@ export function PositionSeller(p: Props) {
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const { shouldDisableValidationForTesting } = useSettings();
 
   const isVisible = Boolean(position);
 
@@ -372,7 +373,7 @@ export function PositionSeller(p: Props) {
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: p.shouldDisableValidation,
+        skipSimulation: shouldDisableValidationForTesting,
       },
       {
         setPendingOrder,
@@ -797,7 +798,7 @@ export function PositionSeller(p: Props) {
               <Button
                 className="w-full"
                 variant="primary-action"
-                disabled={Boolean(error) && !p.shouldDisableValidation}
+                disabled={Boolean(error) && !shouldDisableValidationForTesting}
                 onClick={onSubmit}
                 buttonRef={submitButtonRef}
               >

@@ -116,7 +116,6 @@ import "./TradeBox.scss";
 export type Props = {
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
-  shouldDisableValidation?: boolean;
   setIsHigherSlippageAllowed: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
 };
@@ -140,7 +139,7 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const { shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
+  const { allowedSlippage, setPendingTxns } = p;
 
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
 
@@ -163,7 +162,7 @@ export function TradeBox(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { showDebugValues } = useSettings();
+  const { showDebugValues, shouldDisableValidationForTesting } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -1244,7 +1243,7 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="w-full"
       onClick={onSubmit}
-      disabled={isSubmitButtonDisabled && !shouldDisableValidation}
+      disabled={isSubmitButtonDisabled && !shouldDisableValidationForTesting}
     >
       {buttonErrorText || submitButtonText}
     </Button>
@@ -1353,7 +1352,6 @@ export function TradeBox(p: Props) {
       <ConfirmationBox
         isVisible={stage === "confirmation"}
         error={buttonErrorText}
-        shouldDisableValidation={shouldDisableValidation!}
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}

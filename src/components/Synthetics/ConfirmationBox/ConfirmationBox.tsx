@@ -136,14 +136,13 @@ import "./ConfirmationBox.scss";
 export type Props = {
   isVisible: boolean;
   error: string | undefined;
-  shouldDisableValidation: boolean;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function ConfirmationBox(p: Props) {
-  const { error, shouldDisableValidation, onClose, onSubmitted, setPendingTxns } = p;
+  const { error, onClose, onSubmitted, setPendingTxns } = p;
   const tokensData = useTokensData();
   const ordersData = useOrdersInfoData();
 
@@ -196,7 +195,7 @@ export function ConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const { savedAllowedSlippage } = useSettings();
+  const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
   const prevIsVisible = usePrevious(p.isVisible);
 
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -578,7 +577,7 @@ export function ConfirmationBox(p: Props) {
         referralCode: referralCodeForTxn,
         indexToken: marketInfo.indexToken,
         tokensData,
-        skipSimulation: isLimit || shouldDisableValidation,
+        skipSimulation: isLimit || shouldDisableValidationForTesting,
         setPendingTxns: p.setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -604,7 +603,7 @@ export function ConfirmationBox(p: Props) {
           allowedSlippage,
           indexToken: marketInfo.indexToken,
           tokensData,
-          skipSimulation: isLimit || shouldDisableValidation,
+          skipSimulation: isLimit || shouldDisableValidationForTesting,
         };
       })
     );
@@ -1669,7 +1668,7 @@ export function ConfirmationBox(p: Props) {
             className="w-full"
             type="submit"
             onClick={onSubmit}
-            disabled={submitButtonState.disabled && !shouldDisableValidation}
+            disabled={submitButtonState.disabled && !shouldDisableValidationForTesting}
           >
             {submitButtonState.text}
           </Button>

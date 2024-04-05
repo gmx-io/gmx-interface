@@ -316,12 +316,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={settings.isPnlInLeverage}
-                    savedShowPnlAfterFees={settings.showPnlAfterFees}
-                    skipLocalReferralCode={false}
-                    pageType="pools"
-                  >
+                  <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
                     <MarketPoolsPage
                       shouldDisableValidation={settings.shouldDisableValidationForTesting}
                       setPendingTxns={setPendingTxns}
@@ -334,12 +329,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
 
               <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={settings.isPnlInLeverage}
-                    savedShowPnlAfterFees={settings.showPnlAfterFees}
-                    skipLocalReferralCode={false}
-                    pageType="trade"
-                  >
+                  <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
                     <SyntheticsPage
                       setPendingTxns={setPendingTxns}
                       tradePageVersion={tradePageVersion}

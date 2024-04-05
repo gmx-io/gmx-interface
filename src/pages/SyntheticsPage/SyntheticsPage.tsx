@@ -98,12 +98,7 @@ export function SyntheticsPage(p: Props) {
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
-  const {
-    savedAllowedSlippage,
-    shouldShowPositionLines,
-    shouldDisableValidationForTesting,
-    setShouldShowPositionLines,
-  } = useSettings();
+  const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedAllowedSlippage!;
@@ -304,7 +299,6 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox
-              shouldDisableValidation={shouldDisableValidationForTesting}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
@@ -351,14 +345,9 @@ export function SyntheticsPage(p: Props) {
         setPendingTxns={setPendingTxns}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-        shouldDisableValidation={shouldDisableValidationForTesting}
       />
 
-      <PositionEditor
-        allowedSlippage={allowedSlippage}
-        setPendingTxns={setPendingTxns}
-        shouldDisableValidation={shouldDisableValidationForTesting}
-      />
+      <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
 
       <Footer />
     </div>

@@ -89,7 +89,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 export type Props = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
-  shouldDisableValidation: boolean;
 };
 
 enum Operation {
@@ -106,7 +105,7 @@ export function PositionEditor(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const { setPendingTxns, allowedSlippage } = p;
   const { chainId } = useChainId();
-  const { isPnlInLeverage } = useSettings();
+  const { isPnlInLeverage, shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -451,7 +450,7 @@ export function PositionEditor(p: Props) {
         referralCode: userReferralInfo?.referralCodeForTxn,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: p.shouldDisableValidation,
+        skipSimulation: shouldDisableValidationForTesting,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -487,7 +486,7 @@ export function PositionEditor(p: Props) {
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
           tokensData,
-          skipSimulation: p.shouldDisableValidation,
+          skipSimulation: shouldDisableValidationForTesting,
         },
         {
           setPendingTxns,
@@ -556,7 +555,7 @@ export function PositionEditor(p: Props) {
       className="w-full"
       variant="primary-action"
       onClick={onSubmit}
-      disabled={Boolean(error) && !p.shouldDisableValidation}
+      disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
     >
       {error || OPERATION_LABELS[operation]}
