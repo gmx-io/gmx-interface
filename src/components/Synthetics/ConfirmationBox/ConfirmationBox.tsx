@@ -1146,7 +1146,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
-  const tradeboxPoolWarnings = useTradeboxPoolWarnings();
+  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false);
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {

@@ -17,7 +17,9 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // 0.01%
 
-export const useTradeboxPoolWarnings = () => {
+const SPACE = " ";
+
+export const useTradeboxPoolWarnings = (withActions = true) => {
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const { marketInfo, setMarketAddress } = useTradeboxState();
@@ -31,6 +33,17 @@ export const useTradeboxPoolWarnings = () => {
       return marketInfo && market.marketTokenAddress === marketInfo.marketTokenAddress;
     },
     [marketInfo]
+  );
+
+  const WithActon = useCallback(
+    ({ children }: { children: ReactNode }) =>
+      withActions ? (
+        <>
+          {SPACE}
+          {children}
+        </>
+      ) : null,
+    [withActions]
   );
 
   if (!marketInfo) {
@@ -84,18 +97,20 @@ export const useTradeboxPoolWarnings = () => {
 
   if (showHasExistingPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionWarning" type="warning" compact>
+      <AlertInfo key="showHasExistingPositionWarning" type="warning" compact textColor="text-warning">
         <Trans>
-          You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.{" "}
-          <span
-            className="clickable underline muted"
-            onClick={() => {
-              setMarketAddress(marketWithPosition.marketTokenAddress);
-            }}
-          >
-            Switch to {getMarketPoolName(marketWithPosition)} market pool
-          </span>
-          .
+          You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => {
+                setMarketAddress(marketWithPosition.marketTokenAddress);
+              }}
+            >
+              Switch to {getMarketPoolName(marketWithPosition)} market pool
+            </span>
+            .
+          </WithActon>
         </Trans>
       </AlertInfo>
     );
@@ -103,7 +118,7 @@ export const useTradeboxPoolWarnings = () => {
 
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
-      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="warning" compact>
+      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="warning" compact textColor="text-warning">
         <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
       </AlertInfo>
     );
@@ -111,16 +126,18 @@ export const useTradeboxPoolWarnings = () => {
 
   if (showHasInsufficientLiquidityWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityWarning" type="warning" compact>
+      <AlertInfo key="showHasInsufficientLiquidityWarning" type="warning" compact textColor="text-warning">
         <Trans>
-          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. <br />
-          <span
-            className="clickable underline muted "
-            onClick={() => setMarketAddress(maxLiquidityMarket!.marketTokenAddress)}
-          >
-            Switch to {getMarketPoolName(maxLiquidityMarket)} market pool
-          </span>
-          .
+          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted "
+              onClick={() => setMarketAddress(maxLiquidityMarket!.marketTokenAddress)}
+            >
+              Switch to {getMarketPoolName(maxLiquidityMarket)} market pool
+            </span>
+            .
+          </WithActon>
         </Trans>
       </AlertInfo>
     );
@@ -128,18 +145,20 @@ export const useTradeboxPoolWarnings = () => {
 
   if (showHasExistingOrderWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingOrderWarning" type="warning" compact>
+      <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor="text-warning">
         <Trans>
-          You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.{" "}
-          <span
-            className="clickable underline muted"
-            onClick={() => {
-              setMarketAddress(marketWithOrder.marketTokenAddress);
-            }}
-          >
-            Switch to {getMarketPoolName(marketWithOrder)} market pool
-          </span>
-          .
+          You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => {
+                setMarketAddress(marketWithOrder.marketTokenAddress);
+              }}
+            >
+              Switch to {getMarketPoolName(marketWithOrder)} market pool
+            </span>
+            .
+          </WithActon>
         </Trans>
       </AlertInfo>
     );
@@ -147,17 +166,19 @@ export const useTradeboxPoolWarnings = () => {
 
   if (showHasBetterFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact>
+      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor="text-warning">
         <Trans>
           You can get a {formatPercentage(betterExecutionPriceBps)} better execution price in the{" "}
-          {getMarketPoolName(minPriceImpactMarket)} market pool.{" "}
-          <span
-            className="clickable underline muted"
-            onClick={() => setMarketAddress(minPriceImpactMarket.marketTokenAddress)}
-          >
-            Switch to {getMarketPoolName(minPriceImpactMarket)} market pool
-          </span>
-          .
+          {getMarketPoolName(minPriceImpactMarket)} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => setMarketAddress(minPriceImpactMarket.marketTokenAddress)}
+            >
+              Switch to {getMarketPoolName(minPriceImpactMarket)} market pool
+            </span>
+            .
+          </WithActon>
         </Trans>
       </AlertInfo>
     );
