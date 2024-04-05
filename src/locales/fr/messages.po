@@ -706,6 +706,7 @@ msgid "Buy GLP or GMX"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
 
@@ -2678,8 +2679,8 @@ msgid "Insufficient liquidity in any {0}/USD market pools for your order."
 msgstr "Liquidité insuffisante dans tous les pools de marché {0}/USD pour votre ordre."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool</1>."
-msgstr "Liquidité insuffisante dans le pool de marché {0}. <0/><1>Passer au pool de marché {1}</1>."
+msgid "Insufficient liquidity in {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr "Liquidité insuffisante dans le pool de marché {0}.<0><1>Passer au pool de marché {1}</1>.</0>"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -4003,6 +4004,10 @@ msgstr "La page n'a pas été trouvée"
 msgid "Page outdated, please refresh"
 msgstr "Page périmée, veuillez rafraîchir"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Pair"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Partial Liquidation"
 msgstr "Liquidation partielle"
@@ -4764,6 +4769,7 @@ msgid "Sell GLP"
 msgstr "Vendre GLP"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
 
@@ -4991,6 +4997,10 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Single"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -6646,8 +6656,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price in the {1} market pool. <0>Switch to {2} market pool</0>."
-msgstr "Vous pouvez obtenir un {0} meilleur prix d'exécution dans le pool de marché {1}. <0>Passer au pool de marché {2}</0>."
+msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "Vous pouvez obtenir un {0} meilleur prix d'exécution dans le pool de marché {1}.<0><1>Passer au pool de marché {2}</1>.</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -6679,7 +6689,7 @@ msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} 
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
@@ -6687,7 +6697,7 @@ msgid "You have an existing order with {0} as collateral. <0>Switch to {1} colla
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool</0>."
+msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
