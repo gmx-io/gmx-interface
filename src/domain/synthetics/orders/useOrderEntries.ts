@@ -2,13 +2,12 @@ import { uniqueId } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePrevious } from "lib/usePrevious";
 
-export const MAX_PERCENTAGE = BigNumber.from(BASIS_POINTS_DIVISOR); // 100%
-const PERCENTAGE_DECEMALS = 2;
+export const MAX_PERCENTAGE = BigNumber.from(100);
+const PERCENTAGE_DECEMALS = 0;
 
 export type OrderEntryField = {
   input: string;
@@ -47,10 +46,10 @@ export function getDefaultEntryField(
   if (input) {
     nextInput = String(removeTrailingZeros(input));
     if (!error) {
-      nextValue = (decimals && parseValue(input, decimals)) || null;
+      nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
     }
   } else if (value) {
-    nextInput = decimals ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
+    nextInput = decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
     if (!error) {
       nextValue = value;
     }
@@ -276,9 +275,9 @@ export default function useOrderEntries<T extends OrderEntry>(
     [prefix, canAddEntry, isPercentage]
   );
 
-  const prevTotalPositionSizeTokenAmount = usePrevious(totalPositionSizeUsd);
+  const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
   useEffect(() => {
-    if (isPercentage && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeTokenAmount ?? 0)) {
+    if (isPercentage && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeUsd ?? 0)) {
       setEntries((prevEntries) => {
         const recalculatedEntries = prevEntries.map((entry) => {
           if (entry.txnType === "cancel") return entry;
@@ -291,14 +290,14 @@ export default function useOrderEntries<T extends OrderEntry>(
         });
 
         const clampedEntries = recalculatedEntries.map((entry) => {
-          if (entry.txnType === "cancel" || entry.mode !== "fitPercentage") return entry;
+          if (entry.txnType === "cancel" || entry.mode === "keepSize") return entry;
           return clampEntryPercentage(recalculatedEntries, entry);
         });
 
         return clampedEntries;
       });
     }
-  }, [isPercentage, prevTotalPositionSizeTokenAmount, clampEntryPercentage, totalPositionSizeUsd, recalculateEntryByField]);
+  }, [isPercentage, prevTotalPositionSizeUsd, clampEntryPercentage, totalPositionSizeUsd, recalculateEntryByField]);
 
   return {
     entries,
