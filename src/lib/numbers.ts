@@ -123,9 +123,9 @@ export const formatAmount = (
   return amountStr;
 };
 
-export const formatKeyAmount = (
-  map: any,
-  key: string,
+export const formatKeyAmount = <T extends {}>(
+  map: T | undefined,
+  key: keyof T,
   tokenDecimals: number,
   displayDecimals: number,
   useCommas?: boolean
@@ -134,7 +134,7 @@ export const formatKeyAmount = (
     return "...";
   }
 
-  return formatAmount(map[key], tokenDecimals, displayDecimals, useCommas);
+  return formatAmount(map[key] as unknown as BigNumber, tokenDecimals, displayDecimals, useCommas);
 };
 
 export const formatArrayAmount = (

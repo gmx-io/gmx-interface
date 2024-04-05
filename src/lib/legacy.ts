@@ -30,7 +30,6 @@ export const MIN_PROFIT_TIME = 0;
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
-export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
@@ -1133,6 +1132,72 @@ export function getStakingData(stakingInfo) {
   return data;
 }
 
+type ProcessedData = Partial<{
+  gmxBalance: BigNumber;
+  gmxBalanceUsd: BigNumber;
+  gmxSupply: BigNumber;
+  gmxSupplyUsd: BigNumber;
+  stakedGmxSupply: BigNumber;
+  stakedGmxSupplyUsd: BigNumber;
+  gmxInStakedGmx: BigNumber;
+  gmxInStakedGmxUsd: BigNumber;
+  esGmxBalance: BigNumber;
+  esGmxBalanceUsd: BigNumber;
+  stakedGmxTrackerSupply: BigNumber;
+  stakedGmxTrackerSupplyUsd: BigNumber;
+  stakedEsGmxSupply: BigNumber;
+  stakedEsGmxSupplyUsd: BigNumber;
+  esGmxInStakedGmx: BigNumber;
+  esGmxInStakedGmxUsd: BigNumber;
+  bnGmxInFeeGmx: BigNumber;
+  bonusGmxInFeeGmx: BigNumber;
+  feeGmxSupply: BigNumber;
+  feeGmxSupplyUsd: BigNumber;
+  stakedGmxTrackerRewards: BigNumber;
+  stakedGmxTrackerRewardsUsd: BigNumber;
+  feeGmxTrackerRewards: BigNumber;
+  feeGmxTrackerRewardsUsd: BigNumber;
+  boostBasisPoints: BigNumber;
+  stakedGmxTrackerAnnualRewardsUsd: BigNumber;
+  feeGmxTrackerAnnualRewardsUsd: BigNumber;
+  gmxAprTotal: BigNumber;
+  gmxAprTotalWithBoost: BigNumber;
+  totalGmxRewardsUsd: BigNumber;
+  glpSupply: BigNumber;
+  glpPrice: BigNumber;
+  glpSupplyUsd: BigNumber;
+  glpBalance: BigNumber;
+  glpBalanceUsd: BigNumber;
+  stakedGlpTrackerRewards: BigNumber;
+  stakedGlpTrackerRewardsUsd: BigNumber;
+  feeGlpTrackerRewards: BigNumber;
+  feeGlpTrackerRewardsUsd: BigNumber;
+  stakedGlpTrackerAnnualRewardsUsd: BigNumber;
+  glpAprForEsGmx: BigNumber;
+  feeGlpTrackerAnnualRewardsUsd: BigNumber;
+  glpAprForNativeToken: BigNumber;
+  glpAprTotal: BigNumber;
+  totalGlpRewardsUsd: BigNumber;
+  totalEsGmxRewards: BigNumber;
+  totalEsGmxRewardsUsd: BigNumber;
+  gmxVesterRewards: BigNumber;
+  glpVesterRewards: BigNumber;
+  totalVesterRewards: BigNumber;
+  totalVesterRewardsUsd: BigNumber;
+  totalNativeTokenRewards: BigNumber;
+  totalNativeTokenRewardsUsd: BigNumber;
+  totalRewardsUsd: BigNumber;
+  avgBoostAprForNativeToken: BigNumber;
+  avgGMXAprForNativeToken: BigNumber;
+}> & {
+  gmxAprForEsGmx: BigNumber;
+  gmxAprForNativeToken: BigNumber;
+  maxGmxAprForNativeToken: BigNumber;
+  gmxAprForNativeTokenWithBoost: BigNumber;
+  gmxBoostAprForNativeToken?: BigNumber;
+  avgBoostMultiplier?: BigNumber;
+};
+
 export function getProcessedData(
   balanceData,
   supplyData,
@@ -1146,7 +1211,7 @@ export function getProcessedData(
   gmxPrice,
   gmxSupply,
   maxBoostMultiplier
-) {
+): ProcessedData | undefined {
   if (
     !balanceData ||
     !supplyData ||
@@ -1161,7 +1226,7 @@ export function getProcessedData(
     !gmxSupply ||
     !maxBoostMultiplier
   ) {
-    return {};
+    return undefined;
   }
   const data: any = {};
 
