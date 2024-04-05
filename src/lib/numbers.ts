@@ -11,6 +11,10 @@ export const BN_ZERO = BigNumber.from(0);
 export const BN_ONE = BigNumber.from(1);
 export const BN_NEGATIVE_ONE = BigNumber.from(-1);
 
+/**
+ *
+ * @deprecated Use BigNumber.from instead
+ */
 export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);

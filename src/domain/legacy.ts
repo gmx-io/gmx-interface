@@ -24,7 +24,7 @@ import { UI_VERSION, isDevelopment } from "config/env";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
@@ -528,7 +528,7 @@ export function useTotalGmxSupply() {
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
-  let totalStakedGmx = useRef(bigNumberify(0));
+  let totalStakedGmx = useRef(BN_ZERO);
   const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
@@ -560,7 +560,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = bigNumberify(stakedGmxSupplyArbitrum)!.add(stakedGmxSupplyAvax);
+    let total = BigNumber.from(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 
@@ -575,7 +575,7 @@ export function useTotalGmxStaked() {
 export function useTotalGmxInLiquidity() {
   let poolAddressArbitrum = getContract(ARBITRUM, "UniswapGmxEthPool");
   let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
-  let totalGMX = useRef(bigNumberify(0));
+  let totalGMX = useRef(BN_ZERO);
 
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],

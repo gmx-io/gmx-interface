@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
@@ -74,7 +74,7 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = bigNumberify(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
+      cv.openInterest = BigNumber.from(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
       acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
       acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
@@ -92,10 +92,10 @@ function getPositionStats(positionStats) {
 
 function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   if (!fees || !infoTokens) {
-    return bigNumberify(0);
+    return BN_ZERO;
   }
 
-  let currentFeesUsd = bigNumberify(0);
+  let currentFeesUsd = BN_ZERO;
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
@@ -181,8 +181,8 @@ export default function DashboardV2(props) {
   );
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
+  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
   const { data: currentFees } = useSWR(
     infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
@@ -192,7 +192,7 @@ export default function DashboardV2(props) {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
+            contractFetcher(undefined, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
@@ -201,7 +201,7 @@ export default function DashboardV2(props) {
             ])
           )
         ).then((fees) => {
-          return fees.reduce(
+          return fees.reduce<Record<string, BigNumber>>(
             (acc, cv, i) => {
               const feeUSD = getCurrentFeesUsd(
                 getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
@@ -212,7 +212,7 @@ export default function DashboardV2(props) {
               acc.total = acc.total.add(feeUSD);
               return acc;
             },
-            { total: bigNumberify(0) }
+            { total: BN_ZERO }
           );
         });
       },
@@ -225,7 +225,7 @@ export default function DashboardV2(props) {
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const shouldIncludeCurrrentFees =
     feesSummaryByChain[chainId]?.lastUpdatedAt &&
-    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
+    parseInt(String(Date.now() / 1000)) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
@@ -250,7 +250,7 @@ export default function DashboardV2(props) {
     active
   );
 
-  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
 
   let { [AVALANCHE]: avaxStakedGmx, [ARBITRUM]: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
 
@@ -301,7 +301,7 @@ export default function DashboardV2(props) {
     totalTreasuryFundUsd = ethTreasuryFundUsd.add(glpTreasuryFundUsd).add(usdcTreasuryFund);
   }
 
-  let adjustedUsdgSupply = bigNumberify(0);
+  let adjustedUsdgSupply = BN_ZERO;
 
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];
@@ -412,7 +412,7 @@ export default function DashboardV2(props) {
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
 
-  let gmxDistributionData = useMemo(() => {
+  const gmxDistributionData = useMemo(() => {
     let arr = [
       {
         name: t`staked`,
@@ -436,26 +436,32 @@ export default function DashboardV2(props) {
 
   const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
 
-  let stableGlp = 0;
-  let totalGlp = 0;
+  const { glpPool, stableGlp, totalGlp } = useMemo(() => {
+    let stableGlp = 0;
+    let totalGlp = 0;
+    const glpPool = tokenList
+      .map((token) => {
+        const tokenInfo = infoTokens[token.address];
+        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
+          const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+          if (tokenInfo.isStable) {
+            stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          }
+          totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          return {
+            fullname: token.name,
+            name: token.symbol,
+            color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+            value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
+          };
+        }
+        return null;
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+      .filter(<T extends unknown>(x: T): x is NonNullable<T> => Boolean(x));
 
-  const glpPool = tokenList.map((token) => {
-    const tokenInfo = infoTokens[token.address];
-    if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-      if (tokenInfo.isStable) {
-        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-      }
-      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-      return {
-        fullname: token.name,
-        name: token.symbol,
-        color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
-        value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
-      };
-    }
-    return null;
-  });
+    return { glpPool, stableGlp, totalGlp };
+  }, [adjustedUsdgSupply, infoTokens, tokenList]);
 
   let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
 
