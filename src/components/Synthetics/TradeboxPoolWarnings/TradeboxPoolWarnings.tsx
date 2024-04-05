@@ -15,7 +15,7 @@ import { formatPercentage } from "lib/numbers";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
-const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // 0.01%
+const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = -1; // -0.01%
 
 const SPACE = " ";
 
