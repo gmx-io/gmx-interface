@@ -66,7 +66,7 @@ export const useTradeboxPoolWarnings = (
   const minPriceImpactMarket = marketsOptions?.minPriceImpactMarket;
   const minPriceImpactBps = marketsOptions?.minPriceImpactBps;
 
-  const betterExecutionPriceBps =
+  const improvedExecutionPriceDeltaBps =
     minPriceImpactBps &&
     increaseAmounts?.acceptablePriceDeltaBps &&
     increaseAmounts.acceptablePriceDeltaBps.sub(minPriceImpactBps);
@@ -84,7 +84,7 @@ export const useTradeboxPoolWarnings = (
     minPriceImpactMarket &&
     minPriceImpactBps &&
     !isSelectedMarket(minPriceImpactMarket) &&
-    betterExecutionPriceBps?.gt(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
+    improvedExecutionPriceDeltaBps?.lte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
 
   if (
     !showHasExistingPositionWarning &&
@@ -171,7 +171,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          You can get a {formatPercentage(betterExecutionPriceBps)} better execution price in the{" "}
+          You can get a {formatPercentage(improvedExecutionPriceDeltaBps)} better execution price in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
           <WithActon>
             <span
