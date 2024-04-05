@@ -1032,7 +1032,7 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderSwapSpreadWarining() {
+  function renderSwapSpreadWarning() {
     if (!isMarket) {
       return null;
     }
@@ -1146,7 +1146,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
-  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false);
+  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false, "text-gray");
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
@@ -1403,7 +1403,7 @@ export function ConfirmationBox(p: Props) {
         {renderMain()}
 
         <ExchangeInfo.Group>
-          {renderSwapSpreadWarining()}
+          {renderSwapSpreadWarning()}
           {isLimit && renderLimitPriceWarning()}
         </ExchangeInfo.Group>
 

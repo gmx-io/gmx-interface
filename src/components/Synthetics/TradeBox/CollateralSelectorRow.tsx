@@ -118,7 +118,12 @@ export function CollateralSelectorRow(p: Props) {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_1" type="warning" compact>
+          <AlertInfo
+            key="showHasExistingPositionWithDifferentCollateral_1"
+            type="warning"
+            compact
+            textColor="text-warning"
+          >
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
@@ -136,7 +141,12 @@ export function CollateralSelectorRow(p: Props) {
         );
       } else {
         messages.push(
-          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_2" type="warning" compact>
+          <AlertInfo
+            key="showHasExistingPositionWithDifferentCollateral_2"
+            type="warning"
+            compact
+            textColor="text-warning"
+          >
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}

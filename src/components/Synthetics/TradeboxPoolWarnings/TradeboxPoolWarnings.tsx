@@ -19,7 +19,10 @@ const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // 0.01%
 
 const SPACE = " ";
 
-export const useTradeboxPoolWarnings = (withActions = true) => {
+export const useTradeboxPoolWarnings = (
+  withActions = true,
+  textColor: "text-warning" | "text-gray" = "text-warning"
+) => {
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const { marketInfo, setMarketAddress } = useTradeboxState();
@@ -97,7 +100,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   if (showHasExistingPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionWarning" type="warning" compact textColor="text-warning">
+      <AlertInfo key="showHasExistingPositionWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
           <WithActon>
@@ -118,7 +121,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
-      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="warning" compact textColor="text-warning">
+      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="warning" compact textColor={textColor}>
         <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
       </AlertInfo>
     );
@@ -126,7 +129,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   if (showHasInsufficientLiquidityWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityWarning" type="warning" compact textColor="text-warning">
+      <AlertInfo key="showHasInsufficientLiquidityWarning" type="warning" compact textColor={textColor}>
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool.
           <WithActon>
@@ -145,7 +148,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   if (showHasExistingOrderWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor="text-warning">
+      <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
@@ -166,7 +169,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   if (showHasBetterFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor="text-warning">
+      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatPercentage(betterExecutionPriceBps)} better execution price in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
