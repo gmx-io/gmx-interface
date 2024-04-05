@@ -112,7 +112,7 @@ export default function useOrderEntries<T extends OrderEntry>(
 
   const recalculateEntryByField = useCallback(
     (entry: T, field: "sizeUsd" | "percentage" | "price", nextField?: Partial<OrderEntryField>) => {
-      let { sizeUsd, percentage, price} = entry
+      let { sizeUsd, percentage, price } = entry;
 
       if (field === "sizeUsd") {
         if (nextField) {
@@ -142,13 +142,14 @@ export default function useOrderEntries<T extends OrderEntry>(
   const initialState = useMemo(() => {
     if (initialEntries?.length) {
       return initialEntries.map((entry) => {
-        const initialEntry = getDefaultEntry<T>(prefix, {...entry, mode: "keepSize"});
+        const initialEntry = getDefaultEntry<T>(prefix, { ...entry, mode: "keepSize" });
         const calculatedEntry = recalculateEntryByField(initialEntry, "sizeUsd");
         return errorHandler(calculatedEntry);
       });
     }
 
-    if (canAddEntry) return [errorHandler(getDefaultEntry<T>(prefix, { mode: isPercentage ? "fitPercentage" : "keepSize" }))];
+    if (canAddEntry)
+      return [errorHandler(getDefaultEntry<T>(prefix, { mode: isPercentage ? "fitPercentage" : "keepSize" }))];
 
     return [];
   }, [initialEntries, prefix, canAddEntry, isPercentage, errorHandler, recalculateEntryByField]);
@@ -178,14 +179,7 @@ export default function useOrderEntries<T extends OrderEntry>(
       let nextEntry = entry;
 
       if (entry.percentage.value?.gt(maxPercentage) || entry.mode === "fitPercentage") {
-        nextEntry = recalculateEntryByField(
-          entry,
-          "percentage",
-          { value: maxPercentage },
-        );
-      }
-
-      if (nextEntry.percentage.value?.eq(maxPercentage)) {
+        nextEntry = recalculateEntryByField(entry, "percentage", { value: maxPercentage });
         nextEntry.mode = "fitPercentage";
       }
 
@@ -203,8 +197,8 @@ export default function useOrderEntries<T extends OrderEntry>(
         recalculateEntryByField(
           getDefaultEntry<T>(prefix, {
             mode: isPercentage ? "fitPercentage" : "keepSize",
-          }), 
-          "percentage", 
+          }),
+          "percentage",
           { value: leftPercentage }
         ),
       ]);
@@ -229,11 +223,7 @@ export default function useOrderEntries<T extends OrderEntry>(
             }
           }
 
-          const recalculatedEntry = recalculateEntryByField(
-            entry,
-            field,
-            { input: value }
-          );
+          const recalculatedEntry = recalculateEntryByField(entry, field, { input: value });
 
           const clampedEntry = isPercentage ? clampEntryPercentage(prevEntries, recalculatedEntry) : recalculatedEntry;
 
