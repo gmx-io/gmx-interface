@@ -2121,8 +2121,8 @@ msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
 
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
-msgid "Failed to download trade history as CSV"
-msgstr "Failed to download trade history as CSV"
+msgid "Failed to download trade history CSV."
+msgstr "Failed to download trade history CSV."
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"

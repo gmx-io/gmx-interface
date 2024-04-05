@@ -1,7 +1,7 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import dateFnsFormat from "date-fns/format";
-import { useCallback, useState } from "react";
 import { BigNumber } from "ethers";
+import { useCallback, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -16,12 +16,13 @@ import {
 import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
+import { helperToast } from "lib/helperToast";
 import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
-import { helperToast } from "lib/helperToast";
 
 const GRAPHQL_MAX_SIZE = 10_000;
 
@@ -109,8 +110,14 @@ export function useDownloadAsCsv({
         priceImpact: t`Price Impact`,
         explorerUrl: t`Transaction ID`,
       });
-    } catch {
-      helperToast.error(t`Failed to download trade history as CSV`);
+    } catch (error) {
+      helperToast.error(
+        <div>
+          <Trans>Failed to download trade history CSV.</Trans>
+          <br />
+          <ToastifyDebug>{String(error)}</ToastifyDebug>
+        </div>
+      );
     } finally {
       setIsLoading(false);
     }
