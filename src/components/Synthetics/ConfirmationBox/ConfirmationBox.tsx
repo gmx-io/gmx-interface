@@ -1144,7 +1144,7 @@ export function ConfirmationBox(p: Props) {
               <SLTPEntries
                 entriesInfo={entriesInfo}
                 marketInfo={marketInfo}
-                mode={type === "limit" ? "sizeUsd" : "percentage"}
+                displayMode={type === "limit" ? "sizeUsd" : "percentage"}
               />
             </div>
           }

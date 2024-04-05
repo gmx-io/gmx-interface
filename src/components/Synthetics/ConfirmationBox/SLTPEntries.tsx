@@ -17,10 +17,10 @@ const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 type Props = {
   entriesInfo: SLTPInfo;
   marketInfo?: MarketInfo;
-  mode: "percentage" | "sizeUsd";
+  displayMode: "percentage" | "sizeUsd";
 };
 
-function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
+function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
   const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +62,15 @@ function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
 
         return (
           <div key={entry.id}>
-            <div className="SLTPEntry-row" key={entry.id}>
+            <div className="SLTPEntry-row" key={entry.id} style={{position: "relative"}}>
+              <div style={{position: "absolute", right: "100%"}}>
+                {{
+                  keepSize: "ks",
+                  keepPercentage: "kp",
+                  fitPercentage: "fp",
+                }[entry.mode]}
+              </div>
+
               <div className={cx("SLTP-price", { "input-error": priceError })}>
                 <span className="price-symbol">$</span>
 
@@ -77,7 +85,7 @@ function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
                   <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>{priceError}</div>
                 )}
               </div>
-              {mode === "percentage" && (
+              {displayMode === "percentage" && (
                 <div className={cx("SLTP-percentage", { "input-error": !!percentageError })}>
                   <SuggestionInput
                     value={entry.percentage?.input ?? ""}
@@ -104,7 +112,7 @@ function SLTPEntries({ entriesInfo, marketInfo, mode }: Props) {
                   )}
                 </div>
               )}
-              {mode === "sizeUsd" && (
+              {displayMode === "sizeUsd" && (
                 <div className={cx("SLTP-size", { "input-error": !!sizeError })}>
                   <span className="price-symbol">$</span>
                   <NumberInput
