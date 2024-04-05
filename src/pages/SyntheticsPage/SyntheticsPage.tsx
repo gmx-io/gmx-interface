@@ -24,26 +24,22 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import Helmet from "react-helmet";
 
-import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
-import {
-  useClosingPositionKeyState,
-  useMarketsInfoData,
-  usePositionsInfoData,
-  useTokensData,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
-import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
@@ -68,11 +64,7 @@ export function SyntheticsPage(p: Props) {
   const { tradePageVersion, setPendingTxns, setTradePageVersion, openSettings } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const marketsInfoData = useMarketsInfoData();
-  const tokensData = useTokensData();
-  const positionsInfoData = usePositionsInfoData();
-
-  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfo(chainId);
+  const calcSelector = useCalcSelector();
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -99,24 +91,8 @@ export function SyntheticsPage(p: Props) {
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
   const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
   const ordersCount = useSelector(selectOrdersCount);
-  const positionsCount = useMemo(() => {
-    return Object.values(positionsInfoData || {}).length;
-  }, [positionsInfoData]);
-  const hasClaimableFees = useMemo(() => {
-    const markets = Object.values(marketsInfoData ?? {});
-    const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
-    return totalClaimableFundingUsd.gt(0);
-  }, [marketsInfoData]);
-
-  const hasClaimableRebates = useMemo(
-    () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false).gt(0),
-    [claimablePositionPriceImpactFees, tokensData]
-  );
-
-  let totalClaimables = 0;
-
-  if (hasClaimableFees) totalClaimables += 1;
-  if (hasClaimableRebates) totalClaimables += 1;
+  const positionsCount = useSelector((s) => Object.keys(selectPositionsInfoData(s) || {}).length);
+  const totalClaimables = useSelector(selectClaimablesCount);
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
@@ -166,20 +142,23 @@ export function SyntheticsPage(p: Props) {
   }
 
   useEffect(() => {
-    const chartTokenData = getByKey(tokensData, chartToken?.address);
-    if (!chartTokenData) return;
+    if (!chartToken) return;
 
-    const averagePrice = getMidPrice(chartTokenData.prices);
+    const averagePrice = getMidPrice(chartToken.prices);
     const currentTokenPriceStr =
       formatUsd(averagePrice, {
-        displayDecimals: chartTokenData.priceDecimals,
+        displayDecimals: chartToken.priceDecimals,
       }) || "...";
 
-    const title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
+    const title = getPageTitle(
+      currentTokenPriceStr +
+        ` | ${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
+    );
     document.title = title;
-  }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
+  }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
 
   function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
+    const positionsInfoData = calcSelector(selectPositionsInfoData);
     const position = getByKey(positionsInfoData, key);
 
     if (!position) return;
@@ -240,7 +219,6 @@ export function SyntheticsPage(p: Props) {
   function renderClaims() {
     return (
       <Claims
-        positionsInfoData={positionsInfoData}
         shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
@@ -248,8 +226,6 @@ export function SyntheticsPage(p: Props) {
         setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         allowedSlippage={allowedSlippage}
-        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
-        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
     );
   }

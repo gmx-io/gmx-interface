@@ -1,7 +1,11 @@
+import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
+import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
   PositionsConstantsResult,
@@ -14,15 +18,12 @@ import { PositionSellerState, usePositionSellerState } from "domain/synthetics/t
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
-import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { getKeepLeverageKey } from "config/localStorage";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -48,6 +49,10 @@ export type SyntheticsState = {
     gasLimits: ReturnType<typeof useGasLimits>;
     gasPrice: ReturnType<typeof useGasPrice>;
   };
+  claims: {
+    accruedPositionPriceImpactFees: RebateInfoItem[];
+    claimablePositionPriceImpactFees: RebateInfoItem[];
+  };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
@@ -57,6 +62,8 @@ export type SyntheticsState = {
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
+
+let latestState: SyntheticsState | null = null;
 
 export function SyntheticsStateContextProvider({
   children,
@@ -89,6 +96,10 @@ export function SyntheticsStateContextProvider({
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
+    chainId,
+    pageType === "trade"
+  );
 
   const settings = useSettings();
 
@@ -148,6 +159,7 @@ export function SyntheticsStateContextProvider({
         keepLeverage,
         setKeepLeverage,
       },
+      claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
       tradebox: tradeboxState,
@@ -174,6 +186,8 @@ export function SyntheticsStateContextProvider({
     gasPrice,
     keepLeverage,
     setKeepLeverage,
+    accruedPositionPriceImpactFees,
+    claimablePositionPriceImpactFees,
     leaderboard,
     settings,
     tradeboxState,
@@ -181,6 +195,8 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
   ]);
+
+  latestState = state;
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
 }
@@ -191,4 +207,11 @@ export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsSta
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
   return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+}
+
+export function useCalcSelector() {
+  return useCallback(function useCalcSelector<Selected>(selector: (state: SyntheticsState) => Selected) {
+    if (!latestState) throw new Error("Used calcSelector outside of SyntheticsStateContextProvider");
+    return selector(latestState);
+  }, []);
 }
