@@ -1,22 +1,25 @@
+import { BigNumber } from "ethers";
+import mapValues from "lodash/mapValues";
+import pick from "lodash/pick";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+
 import {
   getKeepLeverageKey,
   getLeverageEnabledKey,
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
+import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { useSafeState } from "lib/useSafeState";
 import { MarketInfo, MarketsInfoData } from "../markets";
+import { OrderType } from "../orders/types";
 import { PositionInfo } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { useSafeState } from "lib/useSafeState";
-import { OrderType } from "../orders/types";
-import { BigNumber } from "ethers";
-import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 
 type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
@@ -166,21 +169,8 @@ export function useTradeboxState(
     return unstableRefAvailableIndexTokensAddresses;
   }, [unstableRefAvailableIndexTokensAddresses.sort().join(",")]);
 
-  const unstableRefStrippedMarketInfo = Object.values(marketsInfoData || {}).reduce(
-    (acc, info) => {
-      acc[info.marketTokenAddress] = {
-        longTokenAddress: info.longTokenAddress,
-        shortTokenAddress: info.shortTokenAddress,
-      };
-      return acc;
-    },
-    {} as Record<
-      string,
-      {
-        longTokenAddress: string;
-        shortTokenAddress: string;
-      }
-    >
+  const unstableRefStrippedMarketInfo = mapValues(marketsInfoData || {}, (info) =>
+    pick(info, ["longTokenAddress", "shortTokenAddress"])
   );
 
   const strippedMarketInfo = useMemo(() => {
