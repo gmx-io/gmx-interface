@@ -16,7 +16,6 @@ import BuyGlp from "pages/BuyGlp/BuyGlp";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
-import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Home from "pages/Home/Home";
@@ -91,6 +90,7 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
+import DashboardV2 from "pages/Dashboard/DashboardV2";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -151,10 +151,8 @@ function FullApp({ pendingTxns, setPendingTxns }) {
     setIsSettingsVisible(false);
   };
 
-  const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
-    [chainId, TRADE_LINK_KEY],
-    getIsSyntheticsSupported(chainId) ? 2 : 1
-  );
+  const [tradePageVersion, setTradePageVersion] =
+    useLocalStorageSerializeKey([chainId, TRADE_LINK_KEY], getIsSyntheticsSupported(chainId) ? 2 : 1) ?? 2;
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY, undefined, {
@@ -299,7 +297,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 />
               </Route>
               <Route exact path="/dashboard">
-                <Dashboard tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
+                <DashboardV2 tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />

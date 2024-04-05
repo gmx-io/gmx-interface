@@ -110,7 +110,10 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   return currentFeesUsd;
 }
 
-export default function DashboardV2(props) {
+export default function DashboardV2(props: {
+  tradePageVersion: number;
+  setTradePageVersion: (version: number | undefined) => void;
+}) {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
@@ -281,7 +284,7 @@ export default function DashboardV2(props) {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
   }
 
-  let tvl;
+  let tvl: BigNumber | undefined = undefined;
   if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
     tvl = glpMarketCap
       .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))

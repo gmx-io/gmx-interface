@@ -17,11 +17,11 @@ msgstr ""
 msgid "(up to {0}% of {feesTypeName})"
 msgstr "(up to {0}% of {feesTypeName})"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
@@ -30,7 +30,7 @@ msgstr "06 Jan 2022"
 msgid "1st Place"
 msgstr "1st Place"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24h Volume"
 
@@ -71,7 +71,7 @@ msgstr "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokens
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Claimable Funding Fee.</0>"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr "<0>GM Pools total value ({chainName}).</0>"
 
@@ -128,7 +128,7 @@ msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 
@@ -197,7 +197,7 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "AUM"
 msgstr "AUM"
 
@@ -533,7 +533,7 @@ msgstr "As network fees have increased, an additional execution fee is needed."
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 msgstr "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 
@@ -1427,7 +1427,7 @@ msgstr "Current Pool Amount"
 msgid "Current Reserved"
 msgstr "Current Reserved"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Current Weight"
 msgstr "Current Weight"
 
@@ -1455,7 +1455,7 @@ msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -1678,7 +1678,7 @@ msgstr "Disconnect"
 msgid "Display PnL after fees"
 msgstr "Display PnL after fees"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Distribution"
 msgstr "Distribution"
 
@@ -2189,7 +2189,7 @@ msgstr "Fees may vary depending on which asset you sell GLP for. <0/>Enter the a
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Fees since"
 msgstr "Fees since"
 
@@ -2282,13 +2282,13 @@ msgstr "Funding fees help to balance longs and shorts and are exchanged between 
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GLP Pool"
 msgstr "GLP Pool"
 
@@ -2329,7 +2329,7 @@ msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read mor
 msgid "GM Airdrop"
 msgstr "GM Airdrop"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Markets"
 msgstr "GM Markets"
 
@@ -2337,7 +2337,7 @@ msgstr "GM Markets"
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Pools"
 msgstr "GM Pools"
 
@@ -3114,7 +3114,7 @@ msgid "Long Open Interest"
 msgstr "Long Open Interest"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Long Positions"
 msgstr "Long Positions"
 
@@ -3224,9 +3224,9 @@ msgstr "Mark price for the order."
 msgid "Market"
 msgstr "Market"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Market Cap"
 msgstr "Market Cap"
 
@@ -3365,8 +3365,8 @@ msgstr "Max slippage precision is -0.01%"
 msgid "Max {0}"
 msgstr "Max {0}"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Max {0} Capacity"
 msgstr "Max {0} Capacity"
 
@@ -3742,7 +3742,7 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open Fee"
 msgstr "Open Fee"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
@@ -3948,11 +3948,11 @@ msgstr "Orders <0>({0})</0>"
 msgid "Overall protocol analytics"
 msgstr "Overall protocol analytics"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Overview"
 msgstr "Overview"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "POOL"
 
@@ -3967,7 +3967,7 @@ msgstr "POSITION"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "PRICE"
 msgstr "PRICE"
 
@@ -4036,7 +4036,7 @@ msgstr "Pending Wallet transaction sign"
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Platform, GLP and GM tokens."
 msgstr "Platform, GLP and GM tokens."
 
@@ -4094,14 +4094,14 @@ msgstr "PnL after Fees and Price Impact"
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "Pool"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool Amount"
 msgstr "Pool Amount"
 
@@ -4171,9 +4171,9 @@ msgstr "Prev"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4290,12 +4290,12 @@ msgstr "Price is above Mark Price"
 msgid "Price is below Mark Price"
 msgstr "Price is below Mark Price"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Price on Arbitrum"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
@@ -4360,7 +4360,7 @@ msgstr "Rank"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Read more"
 msgstr "Read more"
 
@@ -4921,7 +4921,7 @@ msgid "Short Open Interest"
 msgstr "Short Open Interest"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Short Positions"
 msgstr "Short Positions"
 
@@ -5005,7 +5005,7 @@ msgstr "Spread"
 msgid "Spreadsheet for position calculations"
 msgstr "Spreadsheet for position calculations"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stablecoin Percentage"
 msgstr "Stablecoin Percentage"
 
@@ -5097,7 +5097,7 @@ msgstr "Start Unrealized PnL"
 msgid "Starts in"
 msgstr "Starts in"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stats"
 msgstr "Stats"
 
@@ -5167,9 +5167,9 @@ msgstr "Submit"
 msgid "Success claimings"
 msgstr "Success claimings"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Supply"
 msgstr "Supply"
 
@@ -5320,7 +5320,7 @@ msgstr "T"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -5355,12 +5355,12 @@ msgstr "Take-Profit PnL"
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Target Min Amount"
 msgstr "Target Min Amount"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Target Weight"
 msgstr "Target Weight"
 
@@ -5694,7 +5694,7 @@ msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "To reduce fees, select a different asset to pay with."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "Tokens"
 
@@ -5728,7 +5728,7 @@ msgstr "Total Assets Migrated"
 msgid "Total Assets Staked"
 msgstr "Total Assets Staked"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Total Fees"
 
@@ -5740,8 +5740,8 @@ msgstr "Total Rebates"
 msgid "Total Rewards"
 msgstr "Total Rewards"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5753,7 +5753,7 @@ msgstr "Total Rewards"
 msgid "Total Staked"
 msgstr "Total Staked"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Total Stats"
 
@@ -5776,13 +5776,13 @@ msgstr "Total Trades"
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Total Users"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Volume"
 msgstr "Total Volume"
 
@@ -5938,7 +5938,7 @@ msgstr "Transfer {nativeTokenSymbol}"
 msgid "Transferring"
 msgstr "Transferring"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Treasury"
 msgstr "Treasury"
 
@@ -6012,7 +6012,7 @@ msgid "USD Value may not be accurate since the data does not contain prices for 
 msgstr "USD Value may not be accurate since the data does not contain prices for {0}"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
@@ -6166,7 +6166,7 @@ msgid "Useful Links"
 msgstr "Useful Links"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Utilization"
 msgstr "Utilization"
 
@@ -6354,7 +6354,7 @@ msgstr "WARNING: This position has a low amount of collateral after deducting bo
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "WEIGHT"
 
@@ -6411,7 +6411,7 @@ msgstr "Wallet total accrued Fees"
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Weight"
 msgstr "Weight"
 
@@ -6778,7 +6778,7 @@ msgstr "fee"
 msgid "hide"
 msgstr "hide"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "in liquidity"
 msgstr "in liquidity"
 
@@ -6790,7 +6790,7 @@ msgstr "limit price"
 msgid "long"
 msgstr "long"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "not staked"
 msgstr "not staked"
 
@@ -6812,7 +6812,7 @@ msgstr "short"
 msgid "size"
 msgstr "size"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "staked"
 msgstr "staked"
 
@@ -6909,11 +6909,11 @@ msgstr "{0} can be used to buy GM for this market up to the specified buying cap
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 
@@ -6979,7 +6979,7 @@ msgstr ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 

@@ -17,11 +17,11 @@ msgstr ""
 msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
@@ -30,7 +30,7 @@ msgstr "06 Jan 2022"
 msgid "1st Place"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24小时数量"
 
@@ -71,7 +71,7 @@ msgstr ""
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
@@ -197,7 +197,7 @@ msgstr "年利率每周三更新一次，具体数量取决于当周收取的费
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "AUM"
 msgstr "管理中的资产"
 
@@ -533,7 +533,7 @@ msgstr ""
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用下方其他选项："
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 msgstr ""
 
@@ -1427,7 +1427,7 @@ msgstr "当前池子里的金额"
 msgid "Current Reserved"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Current Weight"
 msgstr "目前重量"
 
@@ -1455,7 +1455,7 @@ msgid "DEX Aggregator"
 msgstr "DEX 聚合器"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -1678,7 +1678,7 @@ msgstr "连线中断"
 msgid "Display PnL after fees"
 msgstr "收费后显示PnL"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Distribution"
 msgstr ""
 
@@ -2189,7 +2189,7 @@ msgstr "费用决于你出售GLP的资产可能有所不同。<0/>在订单中�
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "费用决于你出售GLP的资产可能有所不同。<0/>在订单中输入你要购买的GLP数量，然后在此查看以比较费用。"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Fees since"
 msgstr "费用來自"
 
@@ -2282,13 +2282,13 @@ msgstr ""
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs 年利率跟踪器和奖励"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GLP Index Composition"
 msgstr "GLP指数构成"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GLP Pool"
 msgstr "GLP池"
 
@@ -2329,7 +2329,7 @@ msgstr ""
 msgid "GM Airdrop"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Markets"
 msgstr ""
 
@@ -2337,7 +2337,7 @@ msgstr ""
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Pools"
 msgstr ""
 
@@ -3111,7 +3111,7 @@ msgid "Long Open Interest"
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Long Positions"
 msgstr "开仓做多"
 
@@ -3221,9 +3221,9 @@ msgstr "标记订单价格。"
 msgid "Market"
 msgstr "市场"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Market Cap"
 msgstr "标记上限"
 
@@ -3362,8 +3362,8 @@ msgstr ""
 msgid "Max {0}"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Max {0} Capacity"
 msgstr "最高{0}上限"
 
@@ -3739,7 +3739,7 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "开启利息"
@@ -3945,11 +3945,11 @@ msgstr ""
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Overview"
 msgstr "总览"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "池子"
 
@@ -3964,7 +3964,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "PRICE"
 msgstr "价钱"
 
@@ -4033,7 +4033,7 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Platform, GLP and GM tokens."
 msgstr ""
 
@@ -4091,14 +4091,14 @@ msgstr "扣除费用和价格影响后的PnL"
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "池子"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool Amount"
 msgstr "池子数量"
 
@@ -4168,9 +4168,9 @@ msgstr "上一页"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4287,12 +4287,12 @@ msgstr "价格高于标价"
 msgid "Price is below Mark Price"
 msgstr "价格低于标价"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Arbitrum上的价格"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Avalanche上的价格"
@@ -4357,7 +4357,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Read more"
 msgstr "了解更多"
 
@@ -4918,7 +4918,7 @@ msgid "Short Open Interest"
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Short Positions"
 msgstr "做空仓位"
 
@@ -5002,7 +5002,7 @@ msgstr "分散"
 msgid "Spreadsheet for position calculations"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stablecoin Percentage"
 msgstr "稳定币百分比"
 
@@ -5094,7 +5094,7 @@ msgstr ""
 msgid "Starts in"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stats"
 msgstr "统计数据"
 
@@ -5164,9 +5164,9 @@ msgstr "送出"
 msgid "Success claimings"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Supply"
 msgstr "供应"
 
@@ -5317,7 +5317,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "TOKEN"
 msgstr "代币"
 
@@ -5352,12 +5352,12 @@ msgstr ""
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "获利和止损订单可以在开仓后设置 <0/><1/>每一行仓位上都会有一个 \"Close/\"按钮, 点击它将会显示设置触发订单的选项 <2/><3/>屏幕截图和更多信息，请参见<4>文档</4>"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Target Min Amount"
 msgstr "目标最低金额"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Target Weight"
 msgstr "目标重量"
 
@@ -5691,7 +5691,7 @@ msgstr ""
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "为了减少费用，请选择不同的资产来支付"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "代币"
 
@@ -5725,7 +5725,7 @@ msgstr "迁移的资产总额"
 msgid "Total Assets Staked"
 msgstr "质押的资产总额"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "费用总额"
 
@@ -5737,8 +5737,8 @@ msgstr "返利总额"
 msgid "Total Rewards"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5750,7 +5750,7 @@ msgstr ""
 msgid "Total Staked"
 msgstr "质押总额"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "总统计表"
 
@@ -5773,13 +5773,13 @@ msgstr ""
 msgid "Total Trading Volume"
 msgstr "总交易量"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "用户总数"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Volume"
 msgstr "总量"
 
@@ -5935,7 +5935,7 @@ msgstr ""
 msgid "Transferring"
 msgstr "转移中"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Treasury"
 msgstr ""
 
@@ -6009,7 +6009,7 @@ msgid "USD Value may not be accurate since the data does not contain prices for 
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "UTILIZATION"
 msgstr "使用方法"
 
@@ -6163,7 +6163,7 @@ msgid "Useful Links"
 msgstr "实用链接"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Utilization"
 msgstr "使用情况"
 
@@ -6351,7 +6351,7 @@ msgstr "警告：该仓位在扣除借款费用后，抵押品数量较少，请
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "重量"
 
@@ -6408,7 +6408,7 @@ msgstr ""
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Weight"
 msgstr "重量"
 
@@ -6775,7 +6775,7 @@ msgstr "费用"
 msgid "hide"
 msgstr "隐藏"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "in liquidity"
 msgstr "流动性中"
 
@@ -6787,7 +6787,7 @@ msgstr ""
 msgid "long"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "not staked"
 msgstr "未质押的"
 
@@ -6809,7 +6809,7 @@ msgstr ""
 msgid "size"
 msgstr "大小"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "staked"
 msgstr "已质押"
 
@@ -6906,11 +6906,11 @@ msgstr ""
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0}高于其目标重量。<0/><1/>获取较低的费用，以<2>交换</2> 代币成 {1}"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}购买GLP</2>，并<3>用{2}交换</3>其他代币"
 
@@ -6973,7 +6973,7 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName}总统计数据从{totalStatsStartDate}开始。<0/>详细统计数据："
 
