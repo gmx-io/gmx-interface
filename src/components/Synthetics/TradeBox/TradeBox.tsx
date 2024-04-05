@@ -1027,7 +1027,6 @@ export function TradeBox(p: Props) {
             {toTokenAddress && (
               <MarketSelector
                 label={tradeTypeLabels[tradeType!]}
-                className="SwapBox-info-dropdown"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
                   toToken && (
