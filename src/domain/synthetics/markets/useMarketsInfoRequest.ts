@@ -467,14 +467,10 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestInTokens,
           longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]).div(marketDivisor),
           shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]).div(marketDivisor),
-          maxLongPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]).div(
-            marketDivisor
-          ),
-          maxShortPoolAmountForDeposit: BigNumber.from(
-            dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]
-          ).div(marketDivisor),
-          maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]).div(marketDivisor),
-          maxShortPoolAmount: BigNumber.from(dataStoreValues.maxShortPoolAmount.returnValues[0]).div(marketDivisor),
+          maxLongPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
+          maxShortPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
+          maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]),
+          maxShortPoolAmount: BigNumber.from(dataStoreValues.maxShortPoolAmount.returnValues[0]),
           longPoolAmountAdjustment: BigNumber.from(dataStoreValues.longPoolAmountAdjustment.returnValues[0]),
           shortPoolAmountAdjustment: BigNumber.from(dataStoreValues.shortPoolAmountAdjustment.returnValues[0]),
           poolValueMin: BigNumber.from(poolValueInfoMin.poolValue),
@@ -485,8 +481,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           openInterestReserveFactorShort: BigNumber.from(
             dataStoreValues.openInterestReserveFactorShort.returnValues[0]
           ),
-          maxOpenInterestLong: BigNumber.from(dataStoreValues.maxOpenInterestLong.returnValues[0]).div(marketDivisor),
-          maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]).div(marketDivisor),
+          maxOpenInterestLong: BigNumber.from(dataStoreValues.maxOpenInterestLong.returnValues[0]),
+          maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]),
           totalBorrowingFees: BigNumber.from(poolValueInfoMax.totalBorrowingFees),
           positionImpactPoolAmount: BigNumber.from(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
           minPositionImpactPoolAmount: BigNumber.from(dataStoreValues.minPositionImpactPoolAmount.returnValues[0]),
@@ -531,11 +527,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           ),
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0]).div(marketDivisor)
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0])
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0]).div(marketDivisor)
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0])
             : undefined,
 
           positionFeeFactorForPositiveImpact: BigNumber.from(
