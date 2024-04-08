@@ -36,6 +36,7 @@ import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
+  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
@@ -65,7 +66,6 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import {
   TradeMode,
   TradeType,
-  getExecutionPriceForDecrease,
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade";
@@ -1188,19 +1188,7 @@ export function TradeBox(p: Props) {
     );
   }
 
-  const executionPriceUsd = useMemo(() => {
-    if (!marketInfo) return null;
-    if (!fees?.positionPriceImpact?.deltaUsd) return null;
-    if (!decreaseAmounts) return null;
-    if (!triggerPrice) return null;
-
-    return getExecutionPriceForDecrease(
-      triggerPrice,
-      fees.positionPriceImpact.deltaUsd,
-      decreaseAmounts.sizeDeltaUsd,
-      isLong
-    );
-  }, [decreaseAmounts, fees?.positionPriceImpact?.deltaUsd, isLong, marketInfo, triggerPrice]);
+  const executionPriceUsd = useSelector(selectTradeboxExecutionPrice);
 
   function renderTriggerOrderInfo() {
     return (

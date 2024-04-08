@@ -24,6 +24,7 @@ import {
   TradeFeesType,
   TradeType,
   getAcceptablePriceByPriceImpact,
+  getExecutionPriceForDecrease,
   getMarkPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
@@ -810,4 +811,24 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
     shortLiquidity,
     isOutPositionLiquidity,
   };
+});
+
+export const selectTradeboxExecutionPrice = createSelector(function selectTradeboxExecutionPrice(q) {
+  const marketInfo = q(selectTradeboxMarketInfo);
+  const fees = q(selectTradeboxFees);
+  const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const { isLong } = q(selectTradeboxTradeFlags);
+
+  if (!marketInfo) return null;
+  if (!fees?.positionPriceImpact?.deltaUsd) return null;
+  if (!decreaseAmounts) return null;
+  if (!triggerPrice) return null;
+
+  return getExecutionPriceForDecrease(
+    triggerPrice,
+    fees.positionPriceImpact.deltaUsd,
+    decreaseAmounts.sizeDeltaUsd,
+    isLong
+  );
 });
