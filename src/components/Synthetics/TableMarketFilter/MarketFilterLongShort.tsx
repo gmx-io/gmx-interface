@@ -9,13 +9,13 @@ import { MarketFilterBase, MarketFilterBaseProps } from "./MarketFilterBase";
 
 import "./MarketFilterLongShort.scss";
 
-type MarketFilterProps = Omit<MarketFilterBaseProps, "beforeContent"> & {
+type MarketFilterProps = Omit<MarketFilterBaseProps, "beforeContent" | "extraIsActive"> & {
   valueIsLong: boolean | undefined;
   onChangeIsLong: (value: boolean | undefined) => void;
 };
 
 type State = "all" | "long" | "short";
-const OPTIONS: State[] = ["long", "all", "short"];
+const OPTIONS: State[] = ["all", "long", "short"];
 const OPTION_LABELS: Record<State, MessageDescriptor> = {
   all: defineMessage({ message: "All", comment: "Filter option for all markets" }),
   long: defineMessage({ message: "Long" }),
@@ -41,6 +41,7 @@ export const MarketFilterLongShort = ({ onChangeIsLong, valueIsLong, ...restProp
   return (
     <MarketFilterBase
       {...restProps}
+      extraIsActive={value !== "all"}
       beforeContent={
         <>
           <div className="MarketFilterLongShort-container">

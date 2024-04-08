@@ -29,6 +29,7 @@ type Props<T> = {
   options: Item<T>[] | Group<T>[];
   popupPlacement?: Placement;
   beforeContent?: ReactNode | undefined;
+  extraIsActive?: boolean;
 } & (
   | {
       multiple?: false;
@@ -55,8 +56,9 @@ export function TableOptionsFilter<T>({
   ItemComponent,
   popupPlacement,
   beforeContent,
+  extraIsActive,
 }: Props<T>) {
-  const isActive = multiple ? Boolean(value?.length) : Boolean(value);
+  const isActive = (multiple ? Boolean(value?.length) : Boolean(value)) || extraIsActive;
 
   const isGrouped = options.length > 0 && "groupName" in options[0] && "items" in options[0];
 

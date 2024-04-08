@@ -24,9 +24,16 @@ export type MarketFilterBaseProps = {
   onChange: (value: string[]) => void;
   excludeSpotOnly?: boolean;
   beforeContent?: ReactNode | undefined;
+  extraIsActive?: boolean;
 };
 
-export function MarketFilterBase({ value, onChange, excludeSpotOnly, beforeContent }: MarketFilterBaseProps) {
+export function MarketFilterBase({
+  value,
+  onChange,
+  excludeSpotOnly,
+  beforeContent,
+  extraIsActive,
+}: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
   const { chainId } = useChainId();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -86,6 +93,7 @@ export function MarketFilterBase({ value, onChange, excludeSpotOnly, beforeConte
       options={marketsOptions}
       ItemComponent={ItemComponent}
       value={value}
+      extraIsActive={extraIsActive}
     />
   );
 }
