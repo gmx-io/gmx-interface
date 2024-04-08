@@ -90,6 +90,7 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
+import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -548,6 +549,7 @@ function App() {
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <SWRConfig value={SWRConfigProp as any}>{app}</SWRConfig>;
+  app = <GlobalStateProvider>{app}</GlobalStateProvider>;
 
   return app;
 }
