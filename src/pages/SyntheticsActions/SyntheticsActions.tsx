@@ -14,12 +14,17 @@ import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { noop } from "lodash";
+import { useCallback } from "react";
 
 export default function SyntheticsActions() {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const checkSummedAccount = useAccount();
   const networkName = getChainName(chainId);
+  const toggleNetwork = useCallback(
+    () => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active),
+    [active, chainId]
+  );
 
   return (
     <div className="default-container page-layout">
@@ -39,10 +44,7 @@ export default function SyntheticsActions() {
                         Check on GMX V1 {networkName}
                       </ExternalLink>{" "}
                       or{" "}
-                      <span
-                        className="underline cursor-pointer"
-                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                      >
+                      <span className="underline cursor-pointer" onClick={toggleNetwork}>
                         switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                       </span>
                       .
@@ -97,10 +99,7 @@ export default function SyntheticsActions() {
                           Check on GMX V1 {networkName}
                         </ExternalLink>{" "}
                         or{" "}
-                        <span
-                          className="underline cursor-pointer"
-                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                        >
+                        <span className="underline cursor-pointer" onClick={toggleNetwork}>
                           switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                         </span>
                         .

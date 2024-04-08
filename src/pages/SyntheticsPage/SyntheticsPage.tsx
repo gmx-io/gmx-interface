@@ -225,6 +225,8 @@ export function SyntheticsPage(p: Props) {
     );
   }
 
+  const handleTabChange = useCallback((section) => setListSection(section), [setListSection]);
+
   return (
     <div className="Exchange page-layout">
       <Helmet>
@@ -246,7 +248,7 @@ export function SyntheticsPage(p: Props) {
                 options={tabOptions}
                 optionLabels={tabLabels}
                 option={listSection}
-                onChange={(section) => setListSection(section)}
+                onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"
               />
@@ -313,7 +315,7 @@ export function SyntheticsPage(p: Props) {
               options={tabOptions}
               optionLabels={tabLabels}
               option={listSection}
-              onChange={(section) => setListSection(section)}
+              onChange={handleTabChange}
               type="inline"
               className="Exchange-list-tabs"
             />
