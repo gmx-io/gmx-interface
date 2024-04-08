@@ -106,7 +106,7 @@ export function SyntheticsPage(p: Props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  function onCancelOrdersClick() {
+  const onCancelOrdersClick = useCallback(() => {
     if (!signer) return;
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
@@ -124,17 +124,28 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
-  }
+  }, [
+    cancelOrdersDetailsMessage,
+    chainId,
+    isLastSubaccountAction,
+    selectedOrdersKeysArr,
+    setPendingTxns,
+    signer,
+    subaccount,
+  ]);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
-  function handlePositionListOrdersClick(key?: string) {
-    setListSection(ListSection.Orders);
-    setSelectedPositionOrderKey(key);
-    if (key) {
-      setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
-    }
-  }
+  const handlePositionListOrdersClick = useCallback(
+    (key?: string) => {
+      setListSection(ListSection.Orders);
+      setSelectedPositionOrderKey(key);
+      if (key) {
+        setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
+      }
+    },
+    [setListSection]
+  );
 
   useEffect(() => {
     if (!chartToken) return;
@@ -152,32 +163,35 @@ export function SyntheticsPage(p: Props) {
     document.title = title;
   }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
 
-  function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
-    const positionsInfoData = calcSelector(selectPositionsInfoData);
-    const position = getByKey(positionsInfoData, key);
+  const onSelectPositionClick = useCallback(
+    (key: string, tradeMode?: TradeMode) => {
+      const positionsInfoData = calcSelector(selectPositionsInfoData);
+      const position = getByKey(positionsInfoData, key);
 
-    if (!position) return;
+      if (!position) return;
 
-    const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
-    const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
-    setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-    const message = (
-      <Trans>
-        {position?.isLong ? "Long" : "Short"}{" "}
-        <div className="inline-flex">
-          <span>{indexName}</span>
-          <span className="subtext gm-toast">[{poolName}]</span>
-        </div>{" "}
-        <span>market selected</span>.
-      </Trans>
-    );
-    helperToast.success(message);
-  }
+      const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
+      const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
+      setActivePosition(getByKey(positionsInfoData, key), tradeMode);
+      const message = (
+        <Trans>
+          {position?.isLong ? "Long" : "Short"}{" "}
+          <div className="inline-flex">
+            <span>{indexName}</span>
+            <span className="subtext gm-toast">[{poolName}]</span>
+          </div>{" "}
+          <span>market selected</span>.
+        </Trans>
+      );
+      helperToast.success(message);
+    },
+    [calcSelector, setActivePosition]
+  );
 
-  function handleSettlePositionFeesClick(positionKey: PositionInfo["key"]) {
+  const handleSettlePositionFeesClick = useCallback((positionKey: PositionInfo["key"]) => {
     setGettingPendingFeePositionKeys((keys) => keys.concat(positionKey).filter((x, i, self) => self.indexOf(x) === i));
     setIsSettling(true);
-  }
+  }, []);
 
   const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {

@@ -719,12 +719,19 @@ export function TradeBox(p: Props) {
     [setTriggerPriceInputValue, toTokenAddress, tradeMode]
   );
 
-  function onSwitchTokens() {
+  const onSwitchTokens = useCallback(() => {
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
     setFromTokenInputValue(toTokenInputValue || "", true);
     setToTokenInputValue(fromTokenInputValue || "", true);
-  }
+  }, [
+    fromTokenInputValue,
+    setFocusedInput,
+    setFromTokenInputValue,
+    setToTokenInputValue,
+    switchTokenAddresses,
+    toTokenInputValue,
+  ]);
 
   function onTradeTypeChange(type: TradeType) {
     onSelectTradeType(type);
