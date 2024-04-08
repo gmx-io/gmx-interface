@@ -41,7 +41,6 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
   redirectPopupTimestamp: number;
-  tradePageVersion: number;
   showRedirectModal: (to: string) => void;
 };
 
@@ -50,7 +49,6 @@ export function Header({
   openSettings,
   redirectPopupTimestamp,
   showRedirectModal,
-  tradePageVersion,
 }: Props) {
   const isMobile = useMedia("(max-width: 1200px)");
 
@@ -125,7 +123,6 @@ export function Header({
                 openSettings={openSettings}
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
-                tradePageVersion={tradePageVersion}
               />
             </div>
           </div>
@@ -154,7 +151,6 @@ export function Header({
                   small
                   redirectPopupTimestamp={redirectPopupTimestamp}
                   showRedirectModal={showRedirectModal}
-                  tradePageVersion={tradePageVersion}
                 />
               </div>
             </div>

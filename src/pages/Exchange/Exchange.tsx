@@ -359,12 +359,10 @@ export const Exchange = forwardRef(
       pendingTxns: string[];
       setPendingTxns: (txns: any) => void;
       openSettings: () => void;
-      tradePageVersion: number;
-      setTradePageVersion: (v: number) => void;
     },
     ref
   ) => {
-    const { pendingTxns, setPendingTxns, tradePageVersion, setTradePageVersion, openSettings } = props;
+    const { pendingTxns, setPendingTxns, openSettings } = props;
     const {
       showPnlAfterFees,
       isPnlInLeverage,
@@ -1010,8 +1008,6 @@ export const Exchange = forwardRef(
           savedShouldShowPositionLines={shouldShowPositionLines}
           orders={orders}
           setToTokenAddress={setToTokenAddress}
-          tradePageVersion={tradePageVersion}
-          setTradePageVersion={setTradePageVersion}
           setSwapOption={setSwapOption}
         />
       );

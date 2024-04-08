@@ -1,8 +1,8 @@
+import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
-import "@wagmi/connectors";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
@@ -22,11 +22,11 @@ import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
-import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,7 +46,7 @@ import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { getContract } from "config/contracts";
-import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
@@ -56,8 +56,11 @@ import { useLocalStorage } from "react-use";
 import { i18n } from "@lingui/core";
 import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
+import { watchNetwork } from "@wagmi/core";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
+import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import {
@@ -68,29 +71,25 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { swrGCMiddleware } from "lib/swrMiddlewares";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
+import useTradeRedirect from "lib/useTradeRedirect";
+import useWallet from "lib/wallets/useWallet";
+import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
-import useWallet from "lib/wallets/useWallet";
-import { swrGCMiddleware } from "lib/swrMiddlewares";
-import useTradeRedirect from "lib/useTradeRedirect";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
-import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
-import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
-import DashboardV2 from "pages/Dashboard/DashboardV2";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -153,10 +152,6 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
     setIsSettingsVisible(false);
   };
 
-  const [tradePageVersionRaw, setTradePageVersion] = useLocalStorageSerializeKey(
-    [chainId, TRADE_LINK_KEY],
-    getIsSyntheticsSupported(chainId) ? 2 : 1
-  );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
@@ -179,7 +174,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
       serializer: (val) => (val ? val.toString() : ""),
     }
   );
-  const tradePageVersion = tradePageVersionRaw ?? 2;
+
   const [selectedToPage, setSelectedToPage] = useState("");
 
   const settings = useSettings();
@@ -204,7 +199,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
     setSelectedToPage(to);
   };
 
-  useTradeRedirect({ chainId, tradePageVersion, setTradePageVersion });
+  useTradeRedirect();
 
   const { wsProvider } = useWebsocketProvider();
 
@@ -264,8 +259,6 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
             // FIXME remove it
             redirectPopupTimestamp={redirectPopupTimestamp ?? 0}
             showRedirectModal={showRedirectModal}
-            // FIXME remove it
-            tradePageVersion={tradePageVersion}
           />
           {isHome && (
             <Switch>
@@ -296,13 +289,11 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
                   ref={exchangeRef}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
-                  tradePageVersion={tradePageVersion}
-                  setTradePageVersion={setTradePageVersion}
                   openSettings={openSettings}
                 />
               </Route>
               <Route exact path="/dashboard">
-                <DashboardV2 tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
+                <DashboardV2 />
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />
@@ -333,12 +324,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
               <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
-                    <SyntheticsPage
-                      setPendingTxns={setPendingTxns}
-                      tradePageVersion={tradePageVersion}
-                      setTradePageVersion={setTradePageVersion}
-                      openSettings={openSettings}
-                    />
+                    <SyntheticsPage setPendingTxns={setPendingTxns} openSettings={openSettings} />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />

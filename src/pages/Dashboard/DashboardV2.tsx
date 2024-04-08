@@ -63,6 +63,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd } from "domain/synthetics/tokens";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 import { groupBy } from "lodash";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -110,10 +111,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   return currentFeesUsd;
 }
 
-export default function DashboardV2(props: {
-  tradePageVersion: number;
-  setTradePageVersion: (version: number | undefined) => void;
-}) {
+export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
@@ -136,9 +134,10 @@ export default function DashboardV2(props: {
       fetcher: arrayURLFetcher,
     }
   );
+  const [tradePageVersion] = useTradePageVersion();
 
-  const isV1 = props.tradePageVersion === 1;
-  const isV2 = props.tradePageVersion === 2;
+  const isV1 = tradePageVersion === 1;
+  const isV2 = tradePageVersion === 2;
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -809,15 +808,9 @@ export default function DashboardV2(props: {
           </div>
           <PageTitle
             title={t`Tokens`}
-            afterTitle={
-              <VersionSwitch
-                className="ml-base"
-                currentVersion={props.tradePageVersion}
-                setCurrentVersion={props.setTradePageVersion}
-              />
-            }
+            afterTitle={<VersionSwitch className="ml-base" />}
             subtitle={
-              props.tradePageVersion === 1 ? (
+              tradePageVersion === 1 ? (
                 <>
                   <Trans>
                     GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,

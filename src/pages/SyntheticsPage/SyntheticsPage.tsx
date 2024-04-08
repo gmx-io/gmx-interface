@@ -48,8 +48,6 @@ import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
   openSettings: () => void;
 };
 
@@ -61,7 +59,7 @@ enum ListSection {
 }
 
 export function SyntheticsPage(p: Props) {
-  const { tradePageVersion, setPendingTxns, setTradePageVersion, openSettings } = p;
+  const { setPendingTxns, openSettings } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const calcSelector = useCalcSelector();
@@ -254,7 +252,7 @@ export function SyntheticsPage(p: Props) {
       </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
-          <TVChart tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
+          <TVChart />
 
           <div className="Exchange-lists large">
             <div className="Exchange-list-tab-container">

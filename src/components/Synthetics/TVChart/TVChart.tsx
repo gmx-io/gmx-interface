@@ -36,14 +36,9 @@ import { useEffect, useMemo, useState } from "react";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import "./TVChart.scss";
 
-export type Props = {
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
-};
-
 const DEFAULT_PERIOD = "5m";
 
-export function TVChart({ tradePageVersion, setTradePageVersion }: Props) {
+export function TVChart() {
   const marketsInfoData = useMarketsInfoData();
   const chartToken = useSelector(selectChartToken);
   const ordersInfo = useOrdersInfoData();
@@ -247,7 +242,7 @@ export function TVChart({ tradePageVersion, setTradePageVersion }: Props) {
           </div>
         </div>
         <div className="ExchangeChart-info VersionSwitch-wrapper">
-          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
+          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
@@ -262,8 +257,6 @@ export function TVChart({ tradePageVersion, setTradePageVersion }: Props) {
             setPeriod={setPeriod}
             chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
           />
         )}
       </div>

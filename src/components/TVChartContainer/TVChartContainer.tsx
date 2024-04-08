@@ -15,6 +15,7 @@ import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../c
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 export type ChartLine = {
   price: number;
@@ -35,8 +36,6 @@ type Props = {
     maxPrice: BigNumber;
   };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
 };
 
 export default function TVChartContainer({
@@ -49,8 +48,6 @@ export default function TVChartContainer({
   setPeriod,
   chartToken,
   supportedResolutions,
-  tradePageVersion,
-  setTradePageVersion,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -126,6 +123,8 @@ export default function TVChartContainer({
       }
     }
   }, [symbol, chartReady, period, chainId]);
+
+  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   useEffect(() => {
     const widgetOptions = {

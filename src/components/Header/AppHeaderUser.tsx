@@ -15,6 +15,7 @@ import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 type Props = {
   openSettings: () => void;
@@ -22,7 +23,6 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
-  tradePageVersion: number;
 };
 
 const NETWORK_OPTIONS = [
@@ -61,12 +61,12 @@ export function AppHeaderUser({
   disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
-  tradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
+  const [tradePageVersion] = useTradePageVersion();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
 
