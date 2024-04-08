@@ -8,7 +8,7 @@ export type SWRGCMiddlewareConfig = {
 };
 
 export const swrGCMiddleware =
-  (useSWRNext) => (key: Key, fetcher: Fetcher, config: { clearUnusedKeys?: boolean; cache: Cache }) => {
+  (useSWRNext) => (key: Key, fetcher: Fetcher | null, config: { clearUnusedKeys?: boolean; cache: Cache }) => {
     const { clearUnusedKeys, cache } = config;
     const keyToWatch = clearUnusedKeys ? unstable_serialize(key) : undefined;
 

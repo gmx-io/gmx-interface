@@ -92,7 +92,9 @@ import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 
+// @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
+  // @ts-ignore
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
@@ -105,10 +107,10 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-function FullApp({ pendingTxns, setPendingTxns }) {
+function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendingTxns: (txns: any[]) => void }) {
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
-  const exchangeRef = useRef();
+  const exchangeRef = useRef<any>();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -151,25 +153,33 @@ function FullApp({ pendingTxns, setPendingTxns }) {
     setIsSettingsVisible(false);
   };
 
-  const [tradePageVersion, setTradePageVersion] =
-    useLocalStorageSerializeKey([chainId, TRADE_LINK_KEY], getIsSyntheticsSupported(chainId) ? 2 : 1) ?? 2;
+  const [tradePageVersionRaw, setTradePageVersion] = useLocalStorageSerializeKey(
+    [chainId, TRADE_LINK_KEY],
+    getIsSyntheticsSupported(chainId) ? 2 : 1
+  );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY, undefined, {
-    deserializer: (val) => {
-      if (!val) {
-        return undefined;
-      }
-      const num = parseInt(val);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
+    REDIRECT_POPUP_TIMESTAMP_KEY,
+    undefined,
+    {
+      raw: false,
+      deserializer: (val) => {
+        if (!val) {
+          return undefined;
+        }
+        const num = parseInt(val);
 
-      if (Number.isNaN(num)) {
-        return undefined;
-      }
+        if (Number.isNaN(num)) {
+          return undefined;
+        }
 
-      return num;
-    },
-    serializer: (val) => (val ? val.toString() : undefined),
-  });
+        return num;
+      },
+      serializer: (val) => (val ? val.toString() : ""),
+    }
+  );
+  const tradePageVersion = tradePageVersionRaw ?? 2;
   const [selectedToPage, setSelectedToPage] = useState("");
 
   const settings = useSettings();
@@ -251,8 +261,10 @@ function FullApp({ pendingTxns, setPendingTxns }) {
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
-            redirectPopupTimestamp={redirectPopupTimestamp}
+            // FIXME remove it
+            redirectPopupTimestamp={redirectPopupTimestamp ?? 0}
             showRedirectModal={showRedirectModal}
+            // FIXME remove it
             tradePageVersion={tradePageVersion}
           />
           {isHome && (
@@ -282,15 +294,8 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/v1/:tradeType?">
                 <Exchange
                   ref={exchangeRef}
-                  savedShowPnlAfterFees={settings.showPnlAfterFees}
-                  savedIsPnlInLeverage={settings.isPnlInLeverage}
-                  setSavedIsPnlInLeverage={settings.setIsPnlInLeverage}
-                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
-                  savedShouldShowPositionLines={settings.shouldShowPositionLines}
-                  setSavedShouldShowPositionLines={settings.setShouldShowPositionLines}
-                  savedShouldDisableValidationForTesting={settings.shouldDisableValidationForTesting}
                   tradePageVersion={tradePageVersion}
                   setTradePageVersion={setTradePageVersion}
                   openSettings={openSettings}
@@ -310,7 +315,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <Stake setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/buy">
-                <Buy savedSlippageAmount={settings.savedAllowedSlippage} setPendingTxns={setPendingTxns} />
+                <Buy />
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
@@ -377,7 +382,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route path="/competitions/:leaderboardPageKey">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
-                    <LeaderboardPage isCompetitions />
+                    <LeaderboardPage />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
@@ -400,34 +405,21 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <Actions />
               </Route>
               <Route exact path="/actions/v1/:account">
-                <Actions
-                  savedIsPnlInLeverage={settings.isPnlInLeverage}
-                  savedShowPnlAfterFees={settings.showPnlAfterFees}
-                />
+                <Actions />
               </Route>
               <Route exact path="/actions">
-                <SyntheticsStateContextProvider
-                  pageType="actions"
-                  skipLocalReferralCode
-                  savedIsPnlInLeverage={settings.isPnlInLeverage}
-                  savedShowPnlAfterFees={settings.showPnlAfterFees}
-                >
+                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode>
                   <SyntheticsActions />
                 </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
-                <SyntheticsStateContextProvider
-                  pageType="actions"
-                  skipLocalReferralCode={false}
-                  savedIsPnlInLeverage={settings.isPnlInLeverage}
-                  savedShowPnlAfterFees={settings.showPnlAfterFees}
-                >
+                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode={false}>
                   <SyntheticsActions />
                 </SyntheticsStateContextProvider>
               </Route>
               <Route path="/actions/v2/:account">
-                {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}
+                {({ match }) => <Redirect to={`/actions/${match?.params.account}`} />}
               </Route>
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
@@ -492,14 +484,14 @@ function App() {
   const { disconnect } = useDisconnect();
   const { signer } = useWallet();
   const { chainId } = useChainId();
-  const [pendingTxns, setPendingTxns] = useState([]);
+  const [pendingTxns, setPendingTxns] = useState<any[]>([]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      const updatedPendingTxns = [];
+      const updatedPendingTxns: any[] = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await signer!.provider!.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
@@ -561,15 +553,15 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  let app = <FullApp pendingTxn={pendingTxns} setPendingTxns={setPendingTxns} />;
+  let app = <FullApp pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
-  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
+  app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
+  app = <SWRConfig value={SWRConfigProp as any}>{app}</SWRConfig>;
 
   return app;
 }

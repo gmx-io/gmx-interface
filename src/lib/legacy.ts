@@ -851,7 +851,7 @@ export function getOrderKey(order) {
   return `${order.type}-${order.account}-${order.index}`;
 }
 
-export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
+export function useAccountOrders(flagOrdersEnabled, overrideAccount?: string) {
   const { signer, account: connectedAccount } = useWallet();
   const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
