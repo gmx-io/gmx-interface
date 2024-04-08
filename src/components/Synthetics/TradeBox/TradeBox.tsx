@@ -1,9 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { useLatest, usePrevious } from "react-use";
+import { useKey, useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -112,6 +112,7 @@ import { helperToast } from "lib/helperToast";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useCursorInside } from "lib/useCursorInside";
 
 export type Props = {
   allowedSlippage: number;
@@ -139,9 +140,11 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const { allowedSlippage, setPendingTxns } = p;
-
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const formRef = useRef<HTMLFormElement>(null);
+  const isCursorInside = useCursorInside(formRef);
+
+  const { allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
@@ -162,7 +165,11 @@ export function TradeBox(p: Props) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { showDebugValues, shouldDisableValidationForTesting } = useSettings();
+  const {
+    showDebugValues,
+    shouldDisableValidationForTesting,
+    shouldDisableValidationForTesting: shouldDisableValidation,
+  } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -863,9 +870,11 @@ export function TradeBox(p: Props) {
   const handleFormSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      onSubmit();
+      if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+        onSubmit();
+      }
     },
-    [onSubmit]
+    [isCursorInside, isSubmitButtonDisabled, onSubmit, shouldDisableValidation]
   );
 
   function renderTokenInputs() {
@@ -1304,6 +1313,17 @@ export function TradeBox(p: Props) {
     );
   }
 
+  useKey(
+    "Enter",
+    () => {
+      if (isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+        onSubmit();
+      }
+    },
+    {},
+    [isSubmitButtonDisabled, shouldDisableValidation, isCursorInside]
+  );
+
   const buttonContent = (
     <Button
       variant="primary-action"
@@ -1319,6 +1339,7 @@ export function TradeBox(p: Props) {
       className="w-full"
       content={tooltipContent}
       handle={buttonContent}
+      isHandlerDisabled
       handleClassName="w-full"
       position="bottom"
     />
@@ -1348,7 +1369,7 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleFormSubmit} ref={formRef}>
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
 
@@ -1399,7 +1420,6 @@ export function TradeBox(p: Props) {
                 )}
               </ExchangeInfo.Group>
             </ExchangeInfo>
-
             <div className="Exchange-swap-button-container">{button}</div>
           </form>
         </div>

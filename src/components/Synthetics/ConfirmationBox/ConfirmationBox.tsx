@@ -470,7 +470,7 @@ export function ConfirmationBox(p: Props) {
       }
     },
     {},
-    [p.isVisible, submitButtonState.disabled]
+    [p.isVisible, submitButtonState.disabled, onSubmit]
   );
 
   const subaccountRequiredBalance =

@@ -314,10 +314,8 @@ export function PositionEditor(p: Props) {
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
       collateralDeltaUsd,
-      nextCollateralUsd,
       nextLeverage,
       nextLiqPrice,
-      minCollateralUsd,
       isDeposit,
       position,
       depositToken: collateralToken,
@@ -351,10 +349,8 @@ export function PositionEditor(p: Props) {
     hasOutdatedUi,
     collateralDeltaAmount,
     collateralDeltaUsd,
-    nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
-    minCollateralUsd,
     isDeposit,
     position,
     collateralToken,
@@ -565,6 +561,7 @@ export function PositionEditor(p: Props) {
     <TooltipWithPortal
       className="w-full"
       renderContent={renderErrorTooltipContent}
+      isHandlerDisabled
       handle={buttonContent}
       handleClassName="w-full"
       position="top"

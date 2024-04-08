@@ -511,6 +511,7 @@ export function OrderEditor(p: Props) {
       handleClassName="w-full"
       portalClassName="PositionEditor-tooltip"
       handle={buttonContent}
+      isHandlerDisabled
       renderContent={() => submitButtonState.tooltip}
     />
   ) : (

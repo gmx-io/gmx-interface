@@ -16,7 +16,7 @@ export function useDebouncedInputValue<T>(defaultState: T, commit: (value: T) =>
     timeoutRef.current = window.setTimeout(() => {
       commit(value);
     }, DEBOUNCE_MS);
-  });
+  }, [commit, value]);
 
   useEffect(() => {
     clearTimeout(timeoutRef.current);

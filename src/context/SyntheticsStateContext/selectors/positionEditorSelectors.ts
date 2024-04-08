@@ -1,11 +1,3 @@
-// export const useMinCollateralFactorForPosition = (positionKey: string | undefined) => {
-//     const selector = useMemo(
-//       () => makeSelectMinCollateralFactorForPosition(positionKey, BigNumber.from(0)),
-//       [positionKey]
-//     );
-//     return useSelector(selector);
-//   };
-
 import { BigNumber } from "ethers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
