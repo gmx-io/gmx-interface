@@ -147,7 +147,7 @@ export function getPositions(
   updatedPositions
 ) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
-  const positions = [];
+  const positions: any[] = [];
   const positionsMap = {};
   if (!positionData) {
     return { positions, positionsMap };
@@ -162,7 +162,7 @@ export function getPositions(
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     }
 
-    const position = {
+    const position: any = {
       key,
       contractKey,
       collateralToken,
@@ -312,9 +312,9 @@ export function getPositions(
 }
 
 export function getPositionQuery(tokens, nativeTokenAddress) {
-  const collateralTokens = [];
-  const indexTokens = [];
-  const isLong = [];
+  const collateralTokens: any[] = [];
+  const indexTokens: any[] = [];
+  const isLong: any[] = [];
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -375,7 +375,7 @@ export const Exchange = forwardRef((props, ref) => {
 
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
-    setBannerHidden(hiddenLimit);
+    setBannerHidden(hiddenLimit as any);
     setShowBanner(false);
   };
 
@@ -440,8 +440,8 @@ export const Exchange = forwardRef((props, ref) => {
   );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
   let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
-  const fromTokenAddress = tokenSelection[swapOption].from;
-  const toTokenAddress = tokenSelection[swapOption].to;
+  const fromTokenAddress = tokenSelection?.[swapOption as any].from;
+  const toTokenAddress = tokenSelection?.[swapOption as any].to;
 
   const setFromTokenAddress = useCallback(
     (selectedSwapOption, address) => {
@@ -823,7 +823,6 @@ export const Exchange = forwardRef((props, ref) => {
     setIsPluginApproving(true);
     return approvePlugin(chainId, orderBookAddress, {
       signer,
-      pendingTxns,
       setPendingTxns,
       sentMsg: t`Enable orders sent.`,
       failMsg: t`Enable orders failed.`,
@@ -840,7 +839,6 @@ export const Exchange = forwardRef((props, ref) => {
     setIsPositionRouterApproving(true);
     return approvePlugin(chainId, positionRouterAddress, {
       signer,
-      pendingTxns,
       setPendingTxns,
       sentMsg,
       failMsg,
@@ -863,7 +861,7 @@ export const Exchange = forwardRef((props, ref) => {
     [POSITIONS]: positions.length ? t`Positions (${positions.length})` : t`Positions`,
     [TRADES]: t`Trades`,
   };
-  if (!LIST_SECTIONS.includes(listSection)) {
+  if (!LIST_SECTIONS.includes(listSection as any)) {
     listSection = LIST_SECTIONS[0];
   }
 
