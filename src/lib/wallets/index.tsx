@@ -56,6 +56,7 @@ export function hasCoinBaseWalletExtension() {
     return false;
   }
 
+  //@ts-ignore
   return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
 }
 
@@ -67,20 +68,20 @@ export function activateInjectedProvider(providerName: string) {
   }
 
   let provider;
-  if (ethereum?.providers) {
-    switch (providerName) {
-      case "CoinBase":
-        provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-        break;
-      case "MetaMask":
-      default:
-        provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
-        break;
-    }
-  }
-  if (provider) {
-    ethereum?.setSelectedProvider?.(provider);
-  }
+  // if (ethereum?.providers) {
+  //   switch (providerName) {
+  //     case "CoinBase":
+  //       provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+  //       break;
+  //     case "MetaMask":
+  //     default:
+  //       provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+  //       break;
+  //   }
+  // }
+  // if (provider) {
+  //   ethereum?.setSelectedProvider?.(provider);
+  // }
 }
 
 export function getInjectedConnector() {
@@ -230,6 +231,7 @@ export const addBscNetwork = async () => {
 };
 
 export const addNetwork = async (metadata: NetworkMetadata) => {
+  //@ts-ignore
   await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
 };
 
@@ -244,6 +246,7 @@ export const switchNetwork = async (chainId: number, active?: boolean) => {
 
   try {
     const chainIdHex = "0x" + chainId.toString(16);
+    //@ts-ignore
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }],
@@ -317,6 +320,7 @@ export async function addTokenToMetamask(token: {
   imageUrl?: string;
 }) {
   try {
+    //@ts-ignore
     const wasAdded = await window.ethereum.request({
       method: "wallet_watchAsset",
       params: {

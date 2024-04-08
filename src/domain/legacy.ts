@@ -853,9 +853,11 @@ export function handleCancelOrder(chainId, library, order, opts) {
 }
 
 export async function cancelMultipleOrders(chainId, library, allIndexes = [], opts) {
+  //@ts-ignore
   const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
   function getIndexes(key) {
     if (!ordersWithTypes[key]) return;
+    //@ts-ignore
     return ordersWithTypes[key].map((d) => d.split("-")[1]);
   }
   // params order => swap, increase, decrease

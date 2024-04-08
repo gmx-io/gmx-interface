@@ -97,9 +97,9 @@ jest.setTimeout(10000);
 describe("executeMulticall", () => {
   const ethTesting = generateTestingUtils({ providerType: "MetaMask" });
 
-  beforeAll(() => {
-    window.ethereum = ethTesting.getProvider();
-  });
+  // beforeAll(() => {
+  //   window.ethereum = ethTesting.getProvider();
+  // });
 
   beforeEach(() => {
     // not log erros in tests

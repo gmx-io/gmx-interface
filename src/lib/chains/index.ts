@@ -4,6 +4,7 @@ import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
 
 export function useChainId() {
   let { chainId } = useWeb3React();
+  //console.log("web 3 chain id", chainId);
 
   if (!chainId) {
     const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);

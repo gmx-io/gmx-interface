@@ -25,6 +25,7 @@ import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
 import { ThemeContext } from "store/theme-provider";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 type Props = {
   openSettings: () => void;
@@ -94,6 +95,7 @@ export function AppHeaderUser({
   const selectorLabel = getChainName(chainId);
 
   const themeContext = useContext(ThemeContext);
+  const imgSrc = themeContext.theme === "light" ? connectWalletImgDrk : connectWalletImglight;
 
   if (!active || !account) {
     return (
@@ -108,7 +110,19 @@ export function AppHeaderUser({
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
-
+        <DynamicWidget
+          variant="modal"
+          buttonClassName="connect-wallet-btn-dynamic"
+          buttonContainerClassName="connect-wallet-btn"
+          innerButtonComponent={
+            <button className="connect-wallet-btn">
+              {/* {imgSrc && <img className="btn-icon" src={imgSrc} alt="Connect Wallet" />} */}
+              <span className="btn-label">
+                <Trans>Connect Wallet</Trans>
+              </span>
+            </button>
+          }
+        />
         {showConnectionOptions ? (
           <>
             <ConnectWalletButton

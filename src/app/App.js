@@ -6,6 +6,10 @@ import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
 import Tour from "reactour";
+import { DynamicContextProvider, DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { EthersExtension } from "@dynamic-labs/ethers-v5";
+
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 
 import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
 
@@ -215,7 +219,6 @@ function FullApp() {
     setActiveStep(2);
   };
 
-
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
   const activateMetaMask = () => {
@@ -281,7 +284,6 @@ function FullApp() {
   const [, setActiveStep] = useState(1);
   const [activeModal, setActiveModal] = useState(null);
 
-  
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -383,7 +385,6 @@ function FullApp() {
     return [];
   }, []);
 
-
   useEffect(() => {
     if (active && account) {
       const checkAndCreateUser = async () => {
@@ -405,7 +406,7 @@ function FullApp() {
 
       checkAndCreateUser();
     }
-  }, [active,account]);
+  }, [active, account]);
 
   useEffect(() => {
     for (let key in infoTokens) {
@@ -824,19 +825,9 @@ function FullApp() {
             </label>
           </div>
           <div className="Modal-content-wrapper">
+            <WalletConnectSection walletIco={metamaskImg} text={`Connect Metamask`} handleClick={activateMetaMask} />
+            <WalletConnectSection walletIco={coinbaseImg} text={`Coinbase wallet`} handleClick={activateCoinBase} />
             <WalletConnectSection
-              walletIco={metamaskImg}
-              text={`Connect Metamask`}
-              handleClick={activateMetaMask}
-            />
-            <WalletConnectSection
-              walletIco={coinbaseImg}
-             
-              text={`Coinbase wallet`}
-              handleClick={activateCoinBase}
-            />
-            <WalletConnectSection
-              
               walletIco={walletConnectImg}
               text={`Wallet Connect`}
               handleClick={activateWalletConnect}
@@ -940,13 +931,21 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
-          <Router>
-            <I18nProvider i18n={i18n}>
-              <ThemeProvider>
-                <FullApp />
-              </ThemeProvider>
-            </I18nProvider>
-          </Router>
+          <DynamicContextProvider
+            settings={{
+              environmentId: "e2b597d3-4634-4d19-9802-301ddcd8bc5a",
+              walletConnectorExtensions: [EthersExtension],
+              walletConnectors: [EthereumWalletConnectors],
+            }}
+          >
+            <Router>
+              <I18nProvider i18n={i18n}>
+                <ThemeProvider>
+                  <FullApp />
+                </ThemeProvider>
+              </I18nProvider>
+            </Router>
+          </DynamicContextProvider>
         </SEO>
       </Web3ReactProvider>
     </SWRConfig>
