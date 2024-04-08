@@ -78,7 +78,11 @@ export const useTradeboxPoolWarnings = (
   const showHasInsufficientLiquidityWarning =
     isOutPositionLiquidity && maxLiquidityMarket && !isSelectedMarket(maxLiquidityMarket);
   const showHasExistingOrderWarning =
-    !marketWithPosition && !hasExistingOrder && marketWithOrder && !isSelectedMarket(marketWithOrder);
+    !hasExistingPosition &&
+    !marketWithPosition &&
+    !hasExistingOrder &&
+    marketWithOrder &&
+    !isSelectedMarket(marketWithOrder);
   const showHasBetterFeesWarning =
     !marketWithPosition &&
     !marketWithOrder &&
