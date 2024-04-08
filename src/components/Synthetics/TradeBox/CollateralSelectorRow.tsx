@@ -167,7 +167,7 @@ export function CollateralSelectorRow(p: Props) {
 
     if (showHasExistingOrderWithDifferentCollateral) {
       messages.push(
-        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="info" compact>
+        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-warning" compact>
           <Trans>
             You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
             <span
