@@ -865,7 +865,7 @@ msgid "Cancel failed"
 msgstr "取消失败"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "取消失败"
 
@@ -874,7 +874,7 @@ msgid "Cancel submitted"
 msgstr "送出取消"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Cancel submitted."
 msgstr "送出取消"
 
@@ -892,7 +892,7 @@ msgid "Chain Icon"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "图表位置"
@@ -1313,7 +1313,7 @@ msgstr "复制地址"
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
 msgstr "无法降低 {0} {longOrShortText}, +{1} USD, 能接受的价钱: {2}"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法降低{tokenSymbol} {longOrShortText} 在可接受的滑点内, 您可在页面右上方的设定中调整可接受滑点"
 
@@ -1329,7 +1329,7 @@ msgstr "无法执行提取{0} {longOrShortText}"
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法增加 {tokenSymbol} {longOrShortText} 在可接受的滑点内, 您可在页面右上方的设定中调整可接受滑点"
 
@@ -1576,7 +1576,7 @@ msgstr ""
 msgid "Decreased"
 msgstr "已减少"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "已减少{tokenSymbol} {longOrShortText}, -{0} USD"
 
@@ -1641,7 +1641,7 @@ msgstr "存取{0} USD 至 {1} {longOrShortText}"
 msgid "Deposited"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "已存取{0} USD 至 {tokenSymbol} {longOrShortText}"
 
@@ -1806,11 +1806,11 @@ msgstr "启用杠杆功能失败"
 msgid "Enable leverage sent."
 msgstr "启用杠杆发送"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders failed."
 msgstr "启用指令失败"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
 msgstr "启用指令发送"
 
@@ -2614,7 +2614,7 @@ msgstr "增加 {0} {longOrShortText}, +{1} USD, {2} 价格: {3} USD"
 msgid "Increased {positionText}, +{0}"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "已增加 {tokenSymbol} {longOrShortText}, +{0} USD"
 
@@ -3090,10 +3090,10 @@ msgstr "加载中..."
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "做多"
@@ -3921,7 +3921,7 @@ msgstr "指令已更新"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3929,11 +3929,11 @@ msgid "Orders"
 msgstr "订单"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Orders ({0})"
 msgstr "订单 ({0})"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "订单取消"
 
@@ -4124,12 +4124,12 @@ msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
 msgstr "仓位"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Positions ({0})"
 msgstr "仓位({0})"
 
@@ -4897,10 +4897,10 @@ msgstr "分享仓位"
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "做空"
@@ -5837,7 +5837,7 @@ msgstr ""
 msgid "Traders Referred on Avalanche Fuji"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "交易"
@@ -5983,7 +5983,7 @@ msgstr "尝试增加 \"Allowed Slippage\", 在右上角设置下方"
 msgid "Tweet"
 msgstr "推特"
 
-#: src/App/App.js
+#: src/App/App.tsx
 msgid "Txn failed. <0>View</0>"
 msgstr "转移失败 <0>查看</0>"
 
@@ -6281,11 +6281,11 @@ msgstr "归属的GMX未被撤回"
 msgid "Vesting Status"
 msgstr ""
 
-#: src/App/App.js
+#: src/App/App.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 msgid "View"
 msgstr "浏览"
 
@@ -6517,7 +6517,7 @@ msgstr ""
 msgid "Withdrawn!"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "从{tokenSymbol}{longOrShortText}提取了{0}美元"
 
@@ -6825,7 +6825,7 @@ msgstr ""
 msgid "view"
 msgstr "查看"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""

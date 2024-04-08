@@ -865,7 +865,7 @@ msgid "Cancel failed"
 msgstr "Cancel failed"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "Cancel failed."
 
@@ -874,7 +874,7 @@ msgid "Cancel submitted"
 msgstr "Cancel submitted"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
@@ -892,7 +892,7 @@ msgid "Chain Icon"
 msgstr "Chain Icon"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "Chart positions"
@@ -1313,7 +1313,7 @@ msgstr "Copy Address"
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
 msgstr "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 
@@ -1329,7 +1329,7 @@ msgstr "Could not execute withdrawal from {0} {longOrShortText}"
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 
@@ -1576,7 +1576,7 @@ msgstr "Decrease {0} Long by {1} at ${2}."
 msgid "Decreased"
 msgstr "Decreased"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 
@@ -1641,7 +1641,7 @@ msgstr "Deposit {0} USD into {1} {longOrShortText}"
 msgid "Deposited"
 msgstr "Deposited"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 
@@ -1806,11 +1806,11 @@ msgstr "Enable leverage failed."
 msgid "Enable leverage sent."
 msgstr "Enable leverage sent."
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders failed."
 msgstr "Enable orders failed."
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
 msgstr "Enable orders sent."
 
@@ -2614,7 +2614,7 @@ msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgid "Increased {positionText}, +{0}"
 msgstr "Increased {positionText}, +{0}"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 
@@ -3093,10 +3093,10 @@ msgstr "Loading..."
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "Long"
@@ -3924,7 +3924,7 @@ msgstr "Order updated!"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3932,11 +3932,11 @@ msgid "Orders"
 msgstr "Orders"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "Orders cancelled."
 
@@ -4127,12 +4127,12 @@ msgid "Position close disabled, pending {0} upgrade"
 msgstr "Position close disabled, pending {0} upgrade"
 
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
 msgstr "Positions"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Positions ({0})"
 msgstr "Positions ({0})"
 
@@ -4900,10 +4900,10 @@ msgstr "Share Position"
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "Short"
@@ -5840,7 +5840,7 @@ msgstr "Traders Referred on Avalanche"
 msgid "Traders Referred on Avalanche Fuji"
 msgstr "Traders Referred on Avalanche Fuji"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Trades"
@@ -5986,7 +5986,7 @@ msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the 
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/App/App.js
+#: src/App/App.tsx
 msgid "Txn failed. <0>View</0>"
 msgstr "Txn failed. <0>View</0>"
 
@@ -6284,11 +6284,11 @@ msgstr "Vested GMX not withdrawn"
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
-#: src/App/App.js
+#: src/App/App.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
+#: src/pages/Exchange/Exchange.tsx
 msgid "View"
 msgstr "View"
 
@@ -6520,7 +6520,7 @@ msgstr "Withdrawn {0} to Main Account"
 msgid "Withdrawn!"
 msgstr "Withdrawn!"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 
@@ -6828,7 +6828,7 @@ msgstr "trigger price"
 msgid "view"
 msgstr "view"
 
-#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
