@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
@@ -51,19 +51,13 @@ export function MarketPoolsPage(p: Props) {
     undefined
   );
 
-  const handleSetSelectedMarketKey = (marketKey: string) => {
-    const currentMode = mode;
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, marketKey));
+  useEffect(() => {
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketKey));
 
-    if (newAvailableModes.includes(currentMode)) {
-      setSelectedMarketKey(marketKey);
-      return;
+    if (!newAvailableModes.includes(mode)) {
+      setMode(newAvailableModes[0]);
     }
-
-    const firstAvailableMode = newAvailableModes[0];
-    setMode(firstAvailableMode);
-    setSelectedMarketKey(marketKey);
-  };
+  }, [marketsInfoData, mode, operation, selectedMarketKey]);
 
   const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
 
@@ -103,7 +97,7 @@ export function MarketPoolsPage(p: Props) {
               shouldDisableValidation={p.shouldDisableValidation}
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
-              onSelectMarket={handleSetSelectedMarketKey}
+              onSelectMarket={setSelectedMarketKey}
               setPendingTxns={p.setPendingTxns}
               operation={operation}
               mode={mode}
