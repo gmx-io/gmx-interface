@@ -588,7 +588,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   });
 
   return {
-    marketsInfoData: data,
+    marketsInfoData: isDepencenciesLoading ? undefined : data,
     tokensData,
     pricesUpdatedAt,
   };

@@ -20,6 +20,7 @@ import { PositionInfo } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { convertTokenAddress } from "config/tokens";
 
 type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
@@ -140,30 +141,48 @@ export function useTradeboxState(
   }
 ): TradeState {
   const { marketsInfoData, tokensData } = p;
+
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
 
-  const [initialValue, saveLocal] = useLocalStorageSerializeKey<StoredTradeOptions>(
-    getSyntheticsTradeOptionsKey(chainId),
-    INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE
-  );
-
   // eslint-disable-next-line react/hook-use-state
-  const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions>(initialValue!);
+  const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions | undefined>(() => {
+    const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
 
-  useEffect(() => {
-    saveLocal(storedOptions);
-  }, [saveLocal, storedOptions]);
+    if (!raw) {
+      localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), "");
+      return undefined;
+    }
+
+    return JSON.parse(raw);
+  });
+
+  const setStoredOptionsOnChain = useCallback(
+    (args: SetStateAction<StoredTradeOptions | undefined>) => {
+      setStoredOptionsWithoutFallbacks((oldState) => {
+        const newState = typeof args === "function" ? args(oldState)! : args!;
+
+        if (newState) {
+          localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
+        }
+
+        return newState;
+      });
+    },
+    [chainId]
+  );
 
   //#region Manual useMemo zone begin
   // This ensures almost no reinitialization of all setters
   /* eslint-disable react-hooks/exhaustive-deps */
   const unstableRefAvailableSwapTokensAddresses = availableTokensOptions.swapTokens.map((t) => t.address);
 
-  const availableSwapToTokenAddresses = useMemo(() => {
+  const availableSwapTokenAddresses = useMemo(() => {
     return unstableRefAvailableSwapTokensAddresses;
   }, [unstableRefAvailableSwapTokensAddresses.sort().join(",")]);
 
-  const unstableRefAvailableIndexTokensAddresses = availableTokensOptions.indexTokens.map((t) => t.address);
+  const unstableRefAvailableIndexTokensAddresses = availableTokensOptions.indexTokens.map((t) =>
+    convertTokenAddress(chainId, t.address, "wrapped")
+  );
 
   const availableIndexTokensAddresses = useMemo(() => {
     return unstableRefAvailableIndexTokensAddresses;
@@ -179,9 +198,63 @@ export function useTradeboxState(
   /* eslint-enable react-hooks/exhaustive-deps */
   //#endregion Manual useMemo zone end
 
+  const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
+  useEffect(
+    function handleChainChange() {
+      if (syncedChainId === chainId) {
+        return;
+      }
+
+      const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
+
+      if (raw) {
+        if (availableIndexTokensAddresses.length === 0) {
+          return;
+        }
+
+        const saved = JSON.parse(raw) as StoredTradeOptions;
+
+        if (saved.tokens.indexTokenAddress && availableIndexTokensAddresses.includes(saved.tokens.indexTokenAddress)) {
+          setStoredOptionsOnChain(saved);
+          setSyncedChainId(chainId);
+          return;
+        }
+      }
+
+      const market = availableTokensOptions.sortedAllMarkets?.at(0);
+
+      if (!market) {
+        return;
+      }
+
+      setStoredOptionsOnChain({
+        ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+        markets: {
+          [market.marketTokenAddress]: {
+            long: market.longTokenAddress,
+            short: market.shortTokenAddress,
+          },
+        },
+        tokens: {
+          indexTokenAddress: market.indexTokenAddress,
+          fromTokenAddress: market.shortTokenAddress,
+        },
+      });
+      setSyncedChainId(chainId);
+    },
+    [
+      syncedChainId,
+      availableIndexTokensAddresses,
+      chainId,
+      setStoredOptionsOnChain,
+      availableTokensOptions.sortedAllMarkets,
+      marketsInfoData,
+    ]
+  );
+
   const setStoredOptions = useCallback(
     (args: SetStateAction<StoredTradeOptions | undefined>) => {
-      setStoredOptionsWithoutFallbacks((oldState) => {
+      setStoredOptionsOnChain((oldState) => {
         let newState = typeof args === "function" ? args(oldState)! : args!;
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
@@ -192,10 +265,10 @@ export function useTradeboxState(
       });
 
       function fallbackPositionTokens(newState: StoredTradeOptions) {
-        const needFromUpdate = !availableSwapToTokenAddresses.find((t) => t === newState!.tokens.fromTokenAddress);
+        const needFromUpdate = !availableSwapTokenAddresses.find((t) => t === newState!.tokens.fromTokenAddress);
         const nextFromTokenAddress =
-          needFromUpdate && availableSwapToTokenAddresses.length
-            ? availableSwapToTokenAddresses[0]
+          needFromUpdate && availableSwapTokenAddresses.length
+            ? availableSwapTokenAddresses[0]
             : newState.tokens.fromTokenAddress;
 
         if (nextFromTokenAddress && nextFromTokenAddress !== newState.tokens.fromTokenAddress) {
@@ -248,7 +321,7 @@ export function useTradeboxState(
         return newState;
       }
     },
-    [availableIndexTokensAddresses, availableSwapToTokenAddresses, setStoredOptionsWithoutFallbacks, strippedMarketInfo]
+    [availableIndexTokensAddresses, availableSwapTokenAddresses, setStoredOptionsOnChain, strippedMarketInfo]
   );
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
@@ -293,8 +366,8 @@ export function useTradeboxState(
   const fromToken = getByKey(tokensData, fromTokenAddress);
 
   const toTokenAddress = tradeFlags.isSwap
-    ? storedOptions!.tokens.swapToTokenAddress
-    : storedOptions!.tokens.indexTokenAddress;
+    ? storedOptions?.tokens.swapToTokenAddress
+    : storedOptions?.tokens.indexTokenAddress;
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const isWrapOrUnwrap = Boolean(
@@ -302,7 +375,7 @@ export function useTradeboxState(
   );
 
   const marketAddress = toTokenAddress
-    ? storedOptions!.markets[toTokenAddress]?.[tradeFlags.isLong ? "long" : "short"]
+    ? storedOptions?.markets[toTokenAddress]?.[tradeFlags.isLong ? "long" : "short"]
     : undefined;
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
