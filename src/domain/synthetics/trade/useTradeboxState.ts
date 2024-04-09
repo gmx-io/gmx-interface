@@ -180,9 +180,7 @@ export function useTradeboxState(
     return unstableRefAvailableSwapTokensAddresses;
   }, [unstableRefAvailableSwapTokensAddresses.sort().join(",")]);
 
-  const unstableRefAvailableIndexTokensAddresses = availableTokensOptions.indexTokens.map((t) =>
-    convertTokenAddress(chainId, t.address, "wrapped")
-  );
+  const unstableRefAvailableIndexTokensAddresses = availableTokensOptions.indexTokens.map((t) => t.address);
 
   const availableIndexTokensAddresses = useMemo(() => {
     return unstableRefAvailableIndexTokensAddresses;
