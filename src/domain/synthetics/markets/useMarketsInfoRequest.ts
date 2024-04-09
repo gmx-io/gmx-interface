@@ -527,11 +527,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           ),
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0])
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0]).div(marketDivisor)
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0])
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0]).div(marketDivisor)
             : undefined,
 
           positionFeeFactorForPositiveImpact: BigNumber.from(
