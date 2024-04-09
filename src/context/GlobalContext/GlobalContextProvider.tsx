@@ -1,9 +1,10 @@
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, memo, useContext, useMemo } from "react";
 import { getIsSyntheticsSupported } from "config/features";
-import { TRADE_LINK_KEY } from "config/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { PendingTransaction, SetPendingTransactions } from "domain/legacy";
+import { useLocalStorage } from "react-use";
 
 type GlobalContextType = null | {
   tradePageVersion: number;
@@ -11,6 +12,9 @@ type GlobalContextType = null | {
 
   pendingTxns: PendingTransaction[];
   setPendingTxns: SetPendingTransactions;
+
+  redirectPopupTimestamp: number | undefined;
+  setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
 };
 
 const context = createContext<GlobalContextType>(null);
@@ -28,9 +32,44 @@ export const GlobalStateProvider = memo(
   }>) => {
     const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
+    const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
+      REDIRECT_POPUP_TIMESTAMP_KEY,
+      undefined,
+      {
+        raw: false,
+        deserializer: (val) => {
+          if (!val) {
+            return undefined;
+          }
+          const num = parseInt(val);
+
+          if (Number.isNaN(num)) {
+            return undefined;
+          }
+
+          return num;
+        },
+        serializer: (val) => (val ? val.toString() : ""),
+      }
+    );
+
     const value = useMemo(
-      () => ({ tradePageVersion, setTradePageVersion, pendingTxns, setPendingTxns }),
-      [tradePageVersion, setTradePageVersion, pendingTxns, setPendingTxns]
+      () => ({
+        tradePageVersion,
+        setTradePageVersion,
+        pendingTxns,
+        setPendingTxns,
+        redirectPopupTimestamp,
+        setRedirectPopupTimestamp,
+      }),
+      [
+        tradePageVersion,
+        setTradePageVersion,
+        pendingTxns,
+        setPendingTxns,
+        redirectPopupTimestamp,
+        setRedirectPopupTimestamp,
+      ]
     );
 
     return <Provider value={value}>{children}</Provider>;

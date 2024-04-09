@@ -21,7 +21,6 @@ type Props = {
   openSettings: () => void;
   small?: boolean;
   disconnectAccountAndCloseSettings: () => void;
-  redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
 
@@ -55,13 +54,7 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({
-  openSettings,
-  small,
-  disconnectAccountAndCloseSettings,
-  redirectPopupTimestamp,
-  showRedirectModal,
-}: Props) {
+export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSettings, showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -76,12 +69,7 @@ export function AppHeaderUser({
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink
-            className="default-btn"
-            to={tradeLink!}
-            redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal}
-          >
+          <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
@@ -110,12 +98,7 @@ export function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className={cx("App-header-trade-link")}>
-        <HeaderLink
-          className="default-btn"
-          to={tradeLink!}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
       </div>

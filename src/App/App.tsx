@@ -46,12 +46,10 @@ import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { getContract } from "config/contracts";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
-import { useLocalStorage } from "react-use";
 
 import { i18n } from "@lingui/core";
 import { Trans } from "@lingui/macro";
@@ -70,11 +68,13 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { PendingTransaction } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
@@ -90,8 +90,6 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { PendingTransaction } from "domain/legacy";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -156,26 +154,6 @@ function FullApp() {
 
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
-    REDIRECT_POPUP_TIMESTAMP_KEY,
-    undefined,
-    {
-      raw: false,
-      deserializer: (val) => {
-        if (!val) {
-          return undefined;
-        }
-        const num = parseInt(val);
-
-        if (Number.isNaN(num)) {
-          return undefined;
-        }
-
-        return num;
-      },
-      serializer: (val) => (val ? val.toString() : ""),
-    }
-  );
 
   const [selectedToPage, setSelectedToPage] = useState("");
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -194,10 +172,10 @@ function FullApp() {
     }
   }
 
-  const showRedirectModal = (to) => {
+  const showRedirectModal = useCallback((to) => {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
-  };
+  }, []);
 
   useTradeRedirect();
 
@@ -256,14 +234,12 @@ function FullApp() {
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
-            // FIXME remove it
-            redirectPopupTimestamp={redirectPopupTimestamp ?? 0}
             showRedirectModal={showRedirectModal}
           />
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+                <Home showRedirectModal={showRedirectModal} />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
@@ -437,7 +413,6 @@ function FullApp() {
         redirectModalVisible={redirectModalVisible}
         setRedirectModalVisible={setRedirectModalVisible}
         appRedirectUrl={appRedirectUrl}
-        setRedirectPopupTimestamp={setRedirectPopupTimestamp}
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
       />

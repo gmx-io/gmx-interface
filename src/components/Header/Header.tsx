@@ -40,16 +40,10 @@ const TRANSITION = { duration: 0.2 };
 type Props = {
   disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
-  redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
 
-export function Header({
-  disconnectAccountAndCloseSettings,
-  openSettings,
-  redirectPopupTimestamp,
-  showRedirectModal,
-}: Props) {
+export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
   const isMobile = useMedia("(max-width: 1200px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -109,19 +103,15 @@ export function Header({
                 <img src={logoSmallImg} className="small" alt="GMX Logo" />
               </Link>
               {isHomeSite() ? (
-                <HomeHeaderLinks
-                  redirectPopupTimestamp={redirectPopupTimestamp}
-                  showRedirectModal={showRedirectModal}
-                />
+                <HomeHeaderLinks showRedirectModal={showRedirectModal} />
               ) : (
-                <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+                <AppHeaderLinks showRedirectModal={showRedirectModal} />
               )}
             </div>
             <div className="App-header-container-right">
               <AppHeaderUser
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}
-                redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
               />
             </div>
@@ -149,7 +139,6 @@ export function Header({
                   disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                   openSettings={openSettings}
                   small
-                  redirectPopupTimestamp={redirectPopupTimestamp}
                   showRedirectModal={showRedirectModal}
                 />
               </div>
@@ -162,7 +151,6 @@ export function Header({
               Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"} $500k) in prizes in{" "}
               <HeaderLink
                 to="/competitions/"
-                redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
                 className="underline inline-block clickable"
               >
@@ -188,7 +176,6 @@ export function Header({
               <HomeHeaderLinks
                 small
                 clickCloseIcon={() => setIsDrawerVisible(false)}
-                redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
               />
             ) : (
@@ -196,7 +183,6 @@ export function Header({
                 small
                 openSettings={openSettings}
                 clickCloseIcon={() => setIsDrawerVisible(false)}
-                redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
               />
             )}

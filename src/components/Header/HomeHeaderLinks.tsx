@@ -10,13 +10,12 @@ import { HeaderLink } from "./HeaderLink";
 type Props = {
   small?: boolean;
   clickCloseIcon?: () => void;
-  redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
 
 type HomeLink = { label: string; link: string; isHomeLink?: boolean | false };
 
-export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp, showRedirectModal }: Props) {
+export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Props) {
   const HOME_MENUS: HomeLink[] = [
     {
       label: t`App`,
@@ -59,11 +58,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp,
         return (
           <div key={label} className="App-header-link-container">
             {isHomeLink ? (
-              <HeaderLink
-                to={link}
-                redirectPopupTimestamp={redirectPopupTimestamp}
-                showRedirectModal={showRedirectModal}
-              >
+              <HeaderLink to={link} showRedirectModal={showRedirectModal}>
                 {label}
               </HeaderLink>
             ) : (

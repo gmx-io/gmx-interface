@@ -27,7 +27,7 @@ import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Home({ showRedirectModal }) {
   const arbV2Stats = useV2Stats(ARBITRUM);
   const avaxV2Stats = useV2Stats(AVALANCHE);
 
@@ -113,12 +113,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   const LaunchExchangeButton = () => {
     return (
-      <HeaderLink
-        className="default-btn"
-        to="/trade"
-        redirectPopupTimestamp={redirectPopupTimestamp}
-        showRedirectModal={showRedirectModal}
-      >
+      <HeaderLink className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
         <Trans>Launch App</Trans>
       </HeaderLink>
     );
@@ -263,7 +258,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
               <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
-          <TokenCard showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+          <TokenCard showRedirectModal={showRedirectModal} />
         </div>
       </div>
 
@@ -307,7 +302,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           </div>
         </div>
       </div> */}
-      <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+      <Footer showRedirectModal={showRedirectModal} />
     </div>
   );
 }

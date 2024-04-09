@@ -34,10 +34,9 @@ function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPR
 
 type Props = {
   showRedirectModal?: (to: string) => void;
-  redirectPopupTimestamp?: number;
 };
 
-export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }: Props) {
+export default function TokenCard({ showRedirectModal }: Props) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
@@ -81,12 +80,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {
       return (
-        <HeaderLink
-          to={to}
-          className={className}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to={to} className={className} showRedirectModal={showRedirectModal}>
           {children}
         </HeaderLink>
       );
