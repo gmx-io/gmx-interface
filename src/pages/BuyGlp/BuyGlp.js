@@ -12,7 +12,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
-export default function BuyGlp(props) {
+export default function BuyGlp() {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
@@ -50,7 +50,7 @@ export default function BuyGlp(props) {
           </div>
         }
       />
-      <GlpSwap {...props} isBuying={isBuying} setIsBuying={setIsBuying} />
+      <GlpSwap isBuying={isBuying} setIsBuying={setIsBuying} />
       <Footer />
     </div>
   );

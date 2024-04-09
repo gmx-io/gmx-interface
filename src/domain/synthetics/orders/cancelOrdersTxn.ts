@@ -6,11 +6,12 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { ReactNode } from "react";
+import { SetPendingTransactions } from "domain/legacy";
 
 export type CancelOrderParams = {
   orderKeys: string[];
   isLastSubaccountAction: boolean;
-  setPendingTxns: (txns: any) => void;
+  setPendingTxns: SetPendingTransactions;
   detailsMsg?: ReactNode;
 };
 

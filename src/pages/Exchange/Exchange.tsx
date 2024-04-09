@@ -56,6 +56,7 @@ import { getIsV1Supported } from "config/features";
 import useWallet from "lib/wallets/useWallet";
 import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePendingTxns } from "lib/usePendingTxns";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -356,13 +357,11 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 export const Exchange = forwardRef(
   (
     props: {
-      pendingTxns: string[];
-      setPendingTxns: (txns: any) => void;
       openSettings: () => void;
     },
     ref
   ) => {
-    const { pendingTxns, setPendingTxns, openSettings } = props;
+    const { openSettings } = props;
     const {
       showPnlAfterFees,
       isPnlInLeverage,
@@ -377,6 +376,7 @@ export const Exchange = forwardRef(
 
     const [pendingPositions, setPendingPositions] = useState({});
     const [updatedPositions, setUpdatedPositions] = useState({});
+    const [pendingTxns, setPendingTxns] = usePendingTxns();
 
     const hideBanner = () => {
       const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);

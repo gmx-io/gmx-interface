@@ -82,6 +82,8 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 const { AddressZero } = ethers.constants;
 
@@ -159,7 +161,9 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
+  const { isBuying, setIsBuying } = props;
+  const { savedSlippageAmount, savedShouldDisableValidationForTesting } = useSettings();
+  const [, setPendingTxns] = usePendingTxns();
   const history = useHistory();
   const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();

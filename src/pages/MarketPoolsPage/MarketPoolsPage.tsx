@@ -18,12 +18,7 @@ import { GmList } from "components/Synthetics/GmList/GmList";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import PageTitle from "components/PageTitle/PageTitle";
 
-type Props = {
-  setPendingTxns: (txns: any) => void;
-  shouldDisableValidation?: boolean;
-};
-
-export function MarketPoolsPage(p: Props) {
+export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
@@ -86,11 +81,9 @@ export function MarketPoolsPage(p: Props) {
             <GmSwapBox
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
-              shouldDisableValidation={p.shouldDisableValidation}
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
-              setPendingTxns={p.setPendingTxns}
               operation={operation}
               mode={mode}
               setMode={setMode}

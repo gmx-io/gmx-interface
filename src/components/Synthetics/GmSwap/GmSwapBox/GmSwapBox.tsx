@@ -61,6 +61,7 @@ import useSearchParams from "lib/useSearchParams";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
 
@@ -89,9 +90,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   onSelectMarket: (marketAddress: string) => void;
-  setPendingTxns: (txns: any) => void;
   operation: Operation;
-  shouldDisableValidation?: boolean;
   mode: Mode;
   setMode: Dispatch<SetStateAction<Mode>>;
   setOperation: Dispatch<SetStateAction<Operation>>;
@@ -108,21 +107,13 @@ const MODE_LABELS = {
 };
 
 export function GmSwapBox(p: Props) {
-  const {
-    operation,
-    mode,
-    setMode,
-    setOperation,
-    onSelectMarket,
-    marketsInfoData,
-    tokensData,
-    shouldDisableValidation,
-  } = p;
+  const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
   const searchParams = useSearchParams<SearchParams>();
   const marketAddress = p.selectedMarketAddress;
+  const { shouldDisableValidationForTesting } = useSettings();
 
   const { chainId } = useChainId();
   const { account } = useWallet();
@@ -448,7 +439,7 @@ export function GmSwapBox(p: Props) {
       return {
         text: error,
         error,
-        isDisabled: !shouldDisableValidation,
+        isDisabled: !shouldDisableValidationForTesting,
         onSubmit,
       };
     }
@@ -478,7 +469,7 @@ export function GmSwapBox(p: Props) {
     openConnectModal,
     shortCollateralLiquidityUsd,
     shortTokenInputState?.token,
-    shouldDisableValidation,
+    shouldDisableValidationForTesting,
   ]);
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
@@ -1113,14 +1104,13 @@ export function GmSwapBox(p: Props) {
         error={submitState.error}
         isDeposit={isDeposit}
         executionFee={executionFee}
-        setPendingTxns={p.setPendingTxns}
         onSubmitted={() => {
           setStage("swap");
         }}
         onClose={() => {
           setStage("swap");
         }}
-        shouldDisableValidation={shouldDisableValidation}
+        shouldDisableValidation={shouldDisableValidationForTesting}
       />
     </div>
   );

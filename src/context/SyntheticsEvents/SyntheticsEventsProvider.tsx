@@ -47,6 +47,7 @@ import {
 import { parseEventLogData } from "./utils";
 import useWallet from "lib/wallets/useWallet";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -69,13 +70,7 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
 }
 
-export function SyntheticsEventsProvider({
-  children,
-  setPendingTxns,
-}: {
-  children: ReactNode;
-  setPendingTxns: (txns: string[]) => void;
-}) {
+export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
@@ -98,6 +93,8 @@ export function SyntheticsEventsProvider({
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
   const eventLogHandlers = useRef({});
+
+  const [, setPendingTxns] = usePendingTxns();
 
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {

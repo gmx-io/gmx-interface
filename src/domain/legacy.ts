@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { BigNumber, ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "abis/OrderBook.json";
@@ -34,6 +34,14 @@ import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
 
 export * from "./prices";
+
+export type PendingTransaction = {
+  hash: string;
+  message: string;
+  messageDetails?: string;
+};
+
+export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
 const { AddressZero } = ethers.constants;
 

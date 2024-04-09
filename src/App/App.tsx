@@ -70,7 +70,7 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
-import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -91,6 +91,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
+import { PendingTransaction } from "domain/legacy";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -107,7 +108,7 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendingTxns: (txns: any[]) => void }) {
+function FullApp() {
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef<any>();
@@ -177,8 +178,6 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
   );
 
   const [selectedToPage, setSelectedToPage] = useState("");
-
-  const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   const openSettings = useCallback(() => {
@@ -286,12 +285,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
                 <PriceImpactRebatesStatsPage />
               </Route>
               <Route exact path="/v1/:tradeType?">
-                <Exchange
-                  ref={exchangeRef}
-                  setPendingTxns={setPendingTxns}
-                  pendingTxns={pendingTxns}
-                  openSettings={openSettings}
-                />
+                <Exchange ref={exchangeRef} openSettings={openSettings} />
               </Route>
               <Route exact path="/dashboard">
                 <DashboardV2 />
@@ -304,7 +298,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
-                <Stake setPendingTxns={setPendingTxns} />
+                <Stake />
               </Route>
               <Route exact path="/buy">
                 <Buy />
@@ -312,10 +306,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-                    <MarketPoolsPage
-                      shouldDisableValidation={settings.shouldDisableValidationForTesting}
-                      setPendingTxns={setPendingTxns}
-                    />
+                    <MarketPoolsPage />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
@@ -325,7 +316,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
               <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
-                    <SyntheticsPage setPendingTxns={setPendingTxns} openSettings={openSettings} />
+                    <SyntheticsPage openSettings={openSettings} />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
@@ -333,11 +324,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
               </Route>
               <Redirect from="/v2" to="/trade" />
               <Route exact path="/buy_glp">
-                <BuyGlp
-                  savedSlippageAmount={settings.savedAllowedSlippage}
-                  setPendingTxns={setPendingTxns}
-                  savedShouldDisableValidationForTesting={settings.shouldDisableValidationForTesting}
-                />
+                <BuyGlp />
               </Route>
               <Route exact path="/jobs">
                 <Jobs />
@@ -376,16 +363,16 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
                 )}
               </Route>
               <Route exact path="/referrals">
-                <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
+                <Referrals />
               </Route>
               <Route exact path="/referrals/:account">
-                <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
+                <Referrals />
               </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
               </Route>
               <Route exact path="/claim_es_gmx">
-                <ClaimEsGmx setPendingTxns={setPendingTxns} />
+                <ClaimEsGmx />
               </Route>
 
               <Route exact path="/actions/v1">
@@ -421,10 +408,10 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
                 <PositionsOverview />
               </Route>
               <Route exact path="/begin_account_transfer">
-                <BeginAccountTransfer setPendingTxns={setPendingTxns} />
+                <BeginAccountTransfer />
               </Route>
               <Route exact path="/complete_account_transfer/:sender/:receiver">
-                <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+                <CompleteAccountTransfer />
               </Route>
 
               <Route path="*">
@@ -455,7 +442,7 @@ function FullApp({ pendingTxns, setPendingTxns }: { pendingTxns: any[]; setPendi
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <SubaccountModal setPendingTxns={setPendingTxns} />
+      <SubaccountModal />
     </>
   );
 }
@@ -471,7 +458,8 @@ function App() {
   const { disconnect } = useDisconnect();
   const { signer } = useWallet();
   const { chainId } = useChainId();
-  const [pendingTxns, setPendingTxns] = useState<any[]>([]);
+
+  const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -540,16 +528,20 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  let app = <FullApp pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />;
+  let app = <FullApp />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
-  app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
+  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <SWRConfig value={SWRConfigProp as any}>{app}</SWRConfig>;
-  app = <GlobalStateProvider>{app}</GlobalStateProvider>;
+  app = (
+    <GlobalStateProvider pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}>
+      {app}
+    </GlobalStateProvider>
+  );
 
   return app;
 }

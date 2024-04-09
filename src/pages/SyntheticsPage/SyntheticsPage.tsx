@@ -45,9 +45,9 @@ import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsP
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 export type Props = {
-  setPendingTxns: (txns: any) => void;
   openSettings: () => void;
 };
 
@@ -59,10 +59,11 @@ enum ListSection {
 }
 
 export function SyntheticsPage(p: Props) {
-  const { setPendingTxns, openSettings } = p;
+  const { openSettings } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const calcSelector = useCalcSelector();
+  const [, setPendingTxns] = usePendingTxns();
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -109,7 +110,7 @@ export function SyntheticsPage(p: Props) {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
-      setPendingTxns: setPendingTxns,
+      setPendingTxns,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     })

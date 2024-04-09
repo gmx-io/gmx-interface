@@ -76,6 +76,7 @@ import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDi
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 const { AddressZero } = ethers.constants;
 
@@ -1073,11 +1074,13 @@ function AffiliateClaimModal(props) {
   );
 }
 
-export default function StakeV2({ setPendingTxns }) {
+export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
+
+  const [, setPendingTxns] = usePendingTxns();
 
   const icons = getIcons(chainId);
   const hasInsurance = true;
