@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, PropsWithChildren } from "react";
+import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
@@ -54,6 +54,10 @@ export default function Modal(props: ModalProps) {
 
   const style = useMemo(() => ({ zIndex }), [zIndex]);
 
+  const stopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
   return (
     // @ts-ignore
     <AnimatePresence>
@@ -72,7 +76,7 @@ export default function Modal(props: ModalProps) {
             style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
           ></div>
-          <div className="Modal-content">
+          <div className="Modal-content" onClick={stopPropagation}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
                 <div className="Modal-title">{props.label}</div>

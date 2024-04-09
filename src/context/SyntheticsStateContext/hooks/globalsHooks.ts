@@ -37,3 +37,7 @@ export const useKeepLeverage = () => {
 
   return [keepLeverage, setKeepLeverage] as const;
 };
+
+export const useTokenInfo = (tokenAddress: string | undefined) => {
+  return useSelector((s) => (tokenAddress ? selectTokensData(s)?.[tokenAddress] : undefined));
+};
