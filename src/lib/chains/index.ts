@@ -1,9 +1,9 @@
-import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
-import { useChainId as useWagmiChainId } from "wagmi";
+import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import useWallet from "lib/wallets/useWallet";
 
 export function useChainId() {
-  let chainId = useWagmiChainId();
+  let { chainId } = useWallet();
 
   if (!chainId) {
     const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
