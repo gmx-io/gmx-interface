@@ -20,7 +20,6 @@ import { PositionInfo } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { convertTokenAddress } from "config/tokens";
 
 type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
