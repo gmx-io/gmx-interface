@@ -139,7 +139,7 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button as={Button} variant="secondary" imgInfo={CALENDAR_ICON_INFO}>
+        <Popover.Button as={Button} variant="secondary" imgInfo={CALENDAR_ICON_INFO} refName="buttonRef">
           {buttonText}
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
