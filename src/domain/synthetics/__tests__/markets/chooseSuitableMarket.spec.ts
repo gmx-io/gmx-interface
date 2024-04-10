@@ -4,8 +4,6 @@ import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMa
 
 type Input = Parameters<typeof chooseSuitableMarket>[0];
 
-const chainId = 1;
-
 describe("chooseSuitableMarket", () => {
   describe("without existing positions", () => {
     it("should should choose market with largest long liquidity pool if long is preferred", () => {
