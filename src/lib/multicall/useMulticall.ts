@@ -46,8 +46,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       performance.mark(`multicall-${name}-start`);
       try {
         // prettier-ignore
-        const request = typeof params.request === "function" 
-            ? params.request(chainId, params.key as CacheKey) 
+        const request = typeof params.request === "function"
+            ? params.request(chainId, params.key as CacheKey)
             : params.request;
 
         if (Object.keys(request).length === 0) {

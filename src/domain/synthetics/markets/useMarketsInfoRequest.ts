@@ -51,6 +51,7 @@ import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 import useWallet from "lib/wallets/useWallet";
+import { BN_ONE } from "lib/numbers";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -406,29 +407,37 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           console.log("market info error", marketAddress, readerErrors, dataStoreErrors, dataStoreValues);
           return acc;
         }
+        const market = getByKey(marketsData, marketAddress)!;
+        const marketDivisor = market.isSameCollaterals ? BigNumber.from(2) : BN_ONE;
 
-        const longInterestUsingLongToken = BigNumber.from(dataStoreValues.longInterestUsingLongToken.returnValues[0]);
-        const longInterestUsingShortToken = BigNumber.from(dataStoreValues.longInterestUsingShortToken.returnValues[0]);
-        const shortInterestUsingLongToken = BigNumber.from(dataStoreValues.shortInterestUsingLongToken.returnValues[0]);
+        const longInterestUsingLongToken = BigNumber.from(
+          dataStoreValues.longInterestUsingLongToken.returnValues[0]
+        ).div(marketDivisor);
+        const longInterestUsingShortToken = BigNumber.from(
+          dataStoreValues.longInterestUsingShortToken.returnValues[0]
+        ).div(marketDivisor);
+        const shortInterestUsingLongToken = BigNumber.from(
+          dataStoreValues.shortInterestUsingLongToken.returnValues[0]
+        ).div(marketDivisor);
         const shortInterestUsingShortToken = BigNumber.from(
           dataStoreValues.shortInterestUsingShortToken.returnValues[0]
-        );
+        ).div(marketDivisor);
 
         const longInterestUsd = longInterestUsingLongToken.add(longInterestUsingShortToken);
         const shortInterestUsd = shortInterestUsingLongToken.add(shortInterestUsingShortToken);
 
         const longInterestInTokensUsingLongToken = BigNumber.from(
           dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]
-        );
+        ).div(marketDivisor);
         const longInterestInTokensUsingShortToken = BigNumber.from(
           dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]
-        );
+        ).div(marketDivisor);
         const shortInterestInTokensUsingLongToken = BigNumber.from(
           dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]
-        );
+        ).div(marketDivisor);
         const shortInterestInTokensUsingShortToken = BigNumber.from(
           dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]
-        );
+        ).div(marketDivisor);
 
         const longInterestInTokens = longInterestInTokensUsingLongToken.add(longInterestInTokensUsingShortToken);
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
@@ -442,7 +451,6 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_priceMax, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues;
 
-        const market = getByKey(marketsData, marketAddress)!;
         const longToken = getByKey(tokensData!, market.longTokenAddress)!;
         const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
         const indexToken = getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))!;
@@ -457,8 +465,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestUsd,
           longInterestInTokens,
           shortInterestInTokens,
-          longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]),
-          shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]),
+          longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]).div(marketDivisor),
+          shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]).div(marketDivisor),
           maxLongPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
           maxShortPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
           maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]),
@@ -519,11 +527,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           ),
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0])
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0]).div(marketDivisor)
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0])
+            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0]).div(marketDivisor)
             : undefined,
 
           positionFeeFactorForPositiveImpact: BigNumber.from(
@@ -580,7 +588,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   });
 
   return {
-    marketsInfoData: data,
+    marketsInfoData: isDepencenciesLoading ? undefined : data,
     tokensData,
     pricesUpdatedAt,
   };

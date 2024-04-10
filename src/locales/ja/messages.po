@@ -132,14 +132,6 @@ msgstr ""
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
-msgstr ""
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -165,9 +157,9 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
-msgstr ""
+msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>マーケットが選択されました</4>"
 
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "A Size percentage is required."
@@ -674,11 +666,6 @@ msgstr "1日あたり借入手数料"
 msgid "Borrow Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Borrowing fees help ensure available liquidity. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgstr ""
@@ -1130,6 +1117,7 @@ msgstr "そのコードは既に使用されています"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -1153,7 +1141,6 @@ msgstr "担保  ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
@@ -2280,11 +2267,6 @@ msgstr "ファンディング手数料"
 msgid "Funding fees"
 msgstr "ファンディング手数料"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTのAPRトラッカーおよび報酬"
@@ -2692,13 +2674,13 @@ msgstr ""
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD market pools for your order."
-msgstr ""
+msgstr "あなたの注文に対して、どの{0}/USDマーケットプールにも十分な流動性がありません。"
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
-msgstr ""
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr "{0}マーケットプールに十分な流動性がありません。<0><1>{1}マーケットプールに切り替える</1>。</0>"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -2813,6 +2795,10 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "LIQUIDITY"
+msgstr "流動性"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "LIVE"
@@ -3035,6 +3021,10 @@ msgstr ""
 msgid "Liquidation price would cross mark price."
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Liquidity"
+msgstr "流動性"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
 msgstr ""
@@ -3080,6 +3070,7 @@ msgstr "ロード中"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -3100,7 +3091,6 @@ msgstr "ロード中"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3145,6 +3135,10 @@ msgstr "ロング {0}"
 msgid "Longing..."
 msgstr "ロング中..."
 
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+msgid "Longs Net Fee / 1h"
+msgstr "ロングの純手数料 / 1時間"
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "シェアできる紹介コードがないようです。<0/> コードをいま作成して紹介報酬を稼ぎましょう!"
@@ -3158,7 +3152,11 @@ msgstr "損失"
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
-msgstr ""
+msgstr "マーケット"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "MARKETS"
+msgstr "マーケット"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.js
@@ -3228,6 +3226,7 @@ msgstr "注文のためのマーク価格"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -3607,6 +3606,10 @@ msgstr ""
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
+msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgstr "純手数料はファンディング手数料と借入手数料を組み合わせますが、オープン、スワップ、インパクト手数料は除外されます。<0/><1/>ファンディング手数料はロングとショートをバランスさせ、両側で交換されます。<2>詳細を読む</2>。<3/><4/>借入手数料は利用可能な流動性を確保します。<5>詳細を読む</5>。"
+
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
 msgstr "ネットワーク手数料"
@@ -3979,10 +3982,6 @@ msgstr "概要"
 msgid "POOL"
 msgstr "プール"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "POOLS"
-msgstr ""
-
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
 msgstr ""
@@ -4111,7 +4110,7 @@ msgstr "手数料と価格インパクトを差し引いた損益"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4120,14 +4119,11 @@ msgstr "プール"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool Amount"
 msgstr "プール額"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Pools"
-msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -4382,6 +4378,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4458,6 +4455,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4724,6 +4722,10 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "Select a pool containing {0} to use it as collateral."
+msgstr "担保として使用する{0}を含むプールを選択してください。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr ""
@@ -4904,6 +4906,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -4924,7 +4927,6 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4968,6 +4970,10 @@ msgstr "{0}をショート"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
 msgstr "ショート中..."
+
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+msgid "Shorts Net Fee / 1h"
+msgstr "ショートのネット手数料 / 1時間"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
@@ -5356,7 +5362,6 @@ msgid "T"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "トークン"
@@ -5378,6 +5383,12 @@ msgstr ""
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "TRADING Airdrop"
 msgstr ""
+
+#. Total Value Locked
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "TVL"
+msgstr "TVL"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
@@ -6292,10 +6303,6 @@ msgstr ""
 msgid "V2 doesn't currently support this network"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "V2 is newly live, and liquidity may be low initially."
-msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr ""
@@ -6648,9 +6655,9 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
-msgstr ""
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "{1}マーケットプールで{0}より良い約定価格を得ることができます。<0><1>{2}マーケットプールに切り替える</1></0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -6681,16 +6688,16 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})を${2}の価格で増額す�
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral.</0>"
+msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -6699,10 +6706,18 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
+msgstr "あなたは{0}を担保として持つ既存のポジションがあります。この注文はそのポジションには有効ではありません。"
+
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
+msgstr "あなたは{0}を担保として持つ既存のポジションがあります。このアクションはそのポジションには適用されません。"
+
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
@@ -6746,8 +6761,8 @@ msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTo
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
-msgstr ""
+msgid "You have selected {collateralTokenSymbol} as collateral; the liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required and available, you can change the collateral type using the \"Collateral In\" option in the trade box."
+msgstr "あなたは担保として{collateralTokenSymbol}を選択しました。担保の価値はその価格によって変動するため、担保としてステーブルコインを使用する場合と比較して、清算価格が高くなります。必要に応じて、トレードボックスの「担保資産」オプションを使用して担保の種類を変更できます。"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."

@@ -89,7 +89,7 @@ export function getWithdrawalAmounts(p: {
     values.marketTokenUsd = values.longTokenUsd.add(values.shortTokenUsd);
     values.swapFeeUsd = applyFactor(values.marketTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
 
-    values.marketTokenUsd = values.marketTokenUsd.sub(values.swapFeeUsd);
+    values.marketTokenUsd = values.marketTokenUsd.add(values.swapFeeUsd);
     values.marketTokenAmount = usdToMarketTokenAmount(marketInfo, marketToken, values.marketTokenUsd)!;
   }
 

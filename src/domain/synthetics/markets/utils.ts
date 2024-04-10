@@ -36,8 +36,15 @@ export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
   return `${longToken.symbol}-${shortToken.symbol}`;
 }
 
-export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string) {
+/**
+ * Apart from usual cases, returns `long` for single token backed markets.
+ */
+export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string): "long" | "short" | undefined {
   const { longToken, shortToken } = marketInfo;
+
+  if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
+    return "long";
+  }
 
   if (tokenAddress === longToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)) {
     return "long";
@@ -175,12 +182,12 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
 
   const minPoolUsd = reservedUsd.mul(PRECISION).div(maxReserveFactor);
 
-  const liqudiity = poolUsd.sub(minPoolUsd);
+  const liquidity = poolUsd.sub(minPoolUsd);
 
-  return liqudiity;
+  return liquidity;
 }
 
-export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
+export function getUsedLiquidity(marketInfo: MarketInfo, isLong: boolean): [BigNumber, BigNumber] {
   if (marketInfo.isSpotOnly) {
     return [BigNumber.from(0), BigNumber.from(0)];
   }
