@@ -602,18 +602,24 @@ export function GmSwapBox(p: Props) {
 
           if (amounts) {
             if (marketInfo.isSameCollaterals) {
-              setFirstTokenInputValue(
-                amounts.longTokenAmount?.gt(0)
-                  ? formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken!.decimals)
-                  : ""
-              );
+              if (longToken) {
+                setFirstTokenInputValue(
+                  amounts.longTokenAmount?.gt(0)
+                    ? formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken.decimals)
+                    : ""
+                );
+              }
             } else {
-              longTokenInputState?.setValue(
-                amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
-              );
-              shortTokenInputState?.setValue(
-                amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals) : ""
-              );
+              if (longToken) {
+                longTokenInputState?.setValue(
+                  amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                );
+              }
+              if (shortToken) {
+                shortTokenInputState?.setValue(
+                  amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+                );
+              }
             }
           }
         } else if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
@@ -634,12 +640,18 @@ export function GmSwapBox(p: Props) {
               amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
             if (marketInfo.isSameCollaterals) {
-              longTokenInputState?.setValue(
-                formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken!.decimals)
-              );
+              if (longToken) {
+                longTokenInputState?.setValue(
+                  formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken.decimals)
+                );
+              }
             } else {
-              longTokenInputState?.setValue(formatAmountFree(amounts.longTokenAmount, longToken!.decimals));
-              shortTokenInputState?.setValue(formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals));
+              if (longToken) {
+                longTokenInputState?.setValue(formatAmountFree(amounts.longTokenAmount, longToken.decimals));
+              }
+              if (shortToken) {
+                shortTokenInputState?.setValue(formatAmountFree(amounts.shortTokenAmount, shortToken.decimals));
+              }
             }
           }
         }
