@@ -366,8 +366,8 @@ export function GmSwapBox(p: Props) {
       marketInfo,
       marketToken,
       marketTokenAmount,
-      longTokenAmount: longTokenAmount,
-      shortTokenAmount: shortTokenAmount,
+      longTokenAmount,
+      shortTokenAmount,
       strategy,
       uiFeeFactor,
     });
