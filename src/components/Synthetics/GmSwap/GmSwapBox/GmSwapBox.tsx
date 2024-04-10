@@ -320,8 +320,8 @@ export function GmSwapBox(p: Props) {
       marketToken,
       longToken: marketInfo.longToken,
       shortToken: marketInfo.shortToken,
-      longTokenAmount: longTokenAmount,
-      shortTokenAmount: shortTokenAmount,
+      longTokenAmount,
+      shortTokenAmount,
       marketTokenAmount,
       includeLongToken: Boolean(longTokenInputState?.address),
       includeShortToken: Boolean(shortTokenInputState?.address),
@@ -605,10 +605,8 @@ export function GmSwapBox(p: Props) {
               setFirstTokenInputValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken!.decimals)
-                  : // formatAmountFree(amounts.longTokenAmount, longToken!.decimals)
-                    ""
+                  : ""
               );
-              // setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
             } else {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
