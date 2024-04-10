@@ -187,7 +187,7 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A Size percentage is required."
 msgstr "A Size percentage is required."
 
@@ -3028,7 +3028,7 @@ msgstr "Limit order creation failed."
 msgid "Limit order submitted!"
 msgstr "Limit order submitted!"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
 msgstr "Limit size is required."
 
@@ -3452,7 +3452,7 @@ msgstr "Max leverage without PnL: {0}x"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4347,7 +4347,7 @@ msgstr "Price Impact Rebates for closing trades are claimable under the Claims t
 msgid "Price Impact not yet acknowledged"
 msgstr "Price Impact not yet acknowledged"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr "Price above Limit Price."
 
@@ -4358,7 +4358,7 @@ msgstr "Price above Limit Price."
 msgid "Price above Liq. Price"
 msgstr "Price above Liq. Price"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."
 msgstr "Price above Liq. Price."
 
@@ -4375,11 +4375,11 @@ msgstr "Price above Liq. Price."
 msgid "Price above Mark Price"
 msgstr "Price above Mark Price"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr "Price above Mark Price."
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
 msgstr "Price below Limit Price."
 
@@ -4390,7 +4390,7 @@ msgstr "Price below Limit Price."
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Liq. Price."
 msgstr "Price below Liq. Price."
 
@@ -4407,7 +4407,7 @@ msgstr "Price below Liq. Price."
 msgid "Price below Mark Price"
 msgstr "Price below Mark Price"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
 msgstr "Price below Mark Price."
 
@@ -6505,6 +6505,8 @@ msgstr "Vesting Status"
 #: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "View"
 msgstr "View"

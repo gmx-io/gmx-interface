@@ -31,7 +31,6 @@ import {
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  isOrderForPosition,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -40,7 +39,6 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
-  getPositionKey,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
@@ -66,14 +64,15 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
-import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import useSLTPEntries, {
-  SLTPEntryValid,
-  LimEntryValid,
-  SLTPEntry,
-  LimEntry,
-  SLTPInfo,
-} from "domain/synthetics/orders/useSLTPEntries";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useSidecarOrders,
+  SidecarOrderEntryGroup,
+  SidecarSlTpOrderEntryValid,
+  SidecarLimitOrderEntryValid,
+  SidecarLimitOrderEntry,
+  SidecarSlTpOrderEntry,
+} from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -103,6 +102,7 @@ import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralToken,
@@ -119,8 +119,7 @@ import {
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
-  selectTradeboxNextPositionValuesForDecrease,
-  selectTradeboxNextPositionValuesForIncrease,
+  selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetKeepLeverage,
@@ -131,6 +130,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxSelectedPositionKey,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
@@ -146,7 +146,6 @@ export type Props = {
 export function ConfirmationBox(p: Props) {
   const { error, onClose, onSubmitted, setPendingTxns } = p;
   const tokensData = useTokensData();
-  const ordersData = useOrdersInfoData();
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -166,8 +165,7 @@ export function ConfirmationBox(p: Props) {
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const nextPositionValuesForIncrease = useSelector(selectTradeboxNextPositionValuesForIncrease);
-  const nextPositionValuesForDecrease = useSelector(selectTradeboxNextPositionValuesForDecrease);
+  const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
@@ -180,10 +178,6 @@ export function ConfirmationBox(p: Props) {
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
   );
-
-  const nextPositionValues = useMemo(() => {
-    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
-  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -232,33 +226,10 @@ export function ConfirmationBox(p: Props) {
     payAmount &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
-  const positionKey = useMemo(() => {
-    if (!account || !marketInfo || !collateralToken) {
-      return undefined;
-    }
+  const positionKey = useSelector(selectTradeboxSelectedPositionKey);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
 
-    return getPositionKey(account, marketInfo.marketTokenAddress, collateralToken.address, isLong);
-  }, [account, collateralToken, isLong, marketInfo]);
-
-  const positionOrders = useMemo(() => {
-    if (!positionKey || !ordersData) {
-      return [];
-    }
-
-    return Object.values(ordersData).filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
-  }, [ordersData, positionKey]);
-
-  const { stopLoss, takeProfit, limit } = useSLTPEntries({
-    marketInfo,
-    tradeFlags,
-    fromToken,
-    collateralToken,
-    increaseAmounts,
-    triggerPrice,
-    positionOrders,
-    nextPositionValues,
-    existingPosition,
-  });
+  const { stopLoss, takeProfit, limit } = useSidecarOrders();
 
   const sltpEntries = useMemo(
     () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
@@ -268,13 +239,17 @@ export function ConfirmationBox(p: Props) {
   const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useMemo(() => {
     const [cancelSltpEntries, createSltpEntries, updateSltpEntries] = sltpEntries.reduce(
       ([cancel, create, update], e) => {
-        if (e.txnType === "cancel") cancel.push(e as SLTPEntryValid | LimEntryValid);
-        if (e.txnType === "create" && !!e.decreaseAmounts) create.push(e as SLTPEntryValid);
+        if (e.txnType === "cancel") cancel.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
+        if (e.txnType === "create" && !!e.decreaseAmounts) create.push(e as SidecarSlTpOrderEntryValid);
         if (e.txnType === "update" && (!!e.decreaseAmounts || !!e.increaseAmounts))
-          update.push(e as SLTPEntryValid | LimEntryValid);
+          update.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
         return [cancel, create, update];
       },
-      [[], [], []] as [(SLTPEntryValid | LimEntryValid)[], SLTPEntryValid[], (SLTPEntryValid | LimEntryValid)[]]
+      [[], [], []] as [
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
+        SidecarSlTpOrderEntryValid[],
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[]
+      ]
     );
 
     return { cancelSltpEntries, createSltpEntries, updateSltpEntries };
@@ -292,7 +267,7 @@ export function ConfirmationBox(p: Props) {
   );
 
   const getExecutionFeeAmountForEntry = useCallback(
-    (entry: SLTPEntry | LimEntry) => {
+    (entry: SidecarSlTpOrderEntry | SidecarLimitOrderEntry) => {
       if (!entry.txnType || entry.txnType === "cancel") return undefined;
       const securedExecutionFee = entry.order?.executionFee || BigNumber.from(0);
 
@@ -1101,7 +1076,7 @@ export function ConfirmationBox(p: Props) {
     const isStopLoss = type === "stopLoss";
     const isLimit = type === "limit";
 
-    const entriesInfo: SLTPInfo = {
+    const entriesInfo: SidecarOrderEntryGroup = {
       stopLoss: stopLoss,
       takeProfit: takeProfit,
       limit: limit,

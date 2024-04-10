@@ -9,13 +9,13 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { MarketInfo } from "domain/synthetics/markets";
 import { t } from "@lingui/macro";
 import { useRef, useMemo } from "react";
-import { SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
+import { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
-  entriesInfo: SLTPInfo;
+  entriesInfo: SidecarOrderEntryGroup;
   marketInfo?: MarketInfo;
   displayMode: "percentage" | "sizeUsd";
 };

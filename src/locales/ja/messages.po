@@ -187,7 +187,7 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>マーケットが選択されました</4>"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A Size percentage is required."
 msgstr ""
 
@@ -3028,7 +3028,7 @@ msgstr "指値注文が作成できませんでした。"
 msgid "Limit order submitted!"
 msgstr "指値注文提出済!"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
 msgstr ""
 
@@ -3449,7 +3449,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4344,7 +4344,7 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr ""
 
@@ -4355,7 +4355,7 @@ msgstr ""
 msgid "Price above Liq. Price"
 msgstr "清算価格を上回る価格"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."
 msgstr ""
 
@@ -4372,11 +4372,11 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr "マーク価格を上回る価格"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
 msgstr ""
 
@@ -4387,7 +4387,7 @@ msgstr ""
 msgid "Price below Liq. Price"
 msgstr "清算価格を下回る価格"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Liq. Price."
 msgstr ""
 
@@ -4404,7 +4404,7 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "マーク価格を下回る価格"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
 msgstr ""
 
@@ -6502,6 +6502,8 @@ msgstr ""
 #: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
+#: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "View"
 msgstr "見る"

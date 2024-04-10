@@ -1,92 +1,30 @@
-import { uniqueId } from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, SetStateAction, Dispatch } from "react";
 import { BigNumber } from "ethers";
-import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
-import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePrevious } from "lib/usePrevious";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  makeSelectConfirmationBoxSidecarOrdersState,
+  makeSelectConfirmationBoxSidecarOrdersTotalPercentage,
+} from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
+import { selectConfirmationBoxSidecarOrdersTotalSizeUsd } from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
+import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntryField, getDefaultEntry } from "./utils";
+import { SidecarOrderEntryBase, EntryField, SidecarOrderEntryGroupBase, GroupPrefix } from "./types";
 
-export const MAX_PERCENTAGE = BigNumber.from(100);
-const PERCENTAGE_DECEMALS = 0;
+export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
+  prefix,
+  errorHandler,
+  initialEntries,
+  canAddEntry = true,
+}: {
+  prefix: GroupPrefix;
+  errorHandler: (entry: T) => T;
+  initialEntries?: (Partial<T> & { price: EntryField; sizeUsd: EntryField })[];
+  canAddEntry?: boolean;
+}): SidecarOrderEntryGroupBase<T> {
+  const totalPositionSizeUsd = useSelector(selectConfirmationBoxSidecarOrdersTotalSizeUsd);
 
-export type OrderEntryField = {
-  input: string;
-  value: BigNumber | null;
-  error: string | null;
-};
-
-export type OrderEntry = {
-  id: string;
-  price: OrderEntryField;
-  sizeUsd: OrderEntryField;
-  percentage: OrderEntryField;
-  txnType: OrderTxnType | null;
-  mode: "keepSize" | "keepPercentage" | "fitPercentage";
-  order: null | PositionOrderInfo;
-};
-
-export type OrderEntriesInfo<T extends OrderEntry> = {
-  entries: T[];
-  canAddEntry: boolean;
-  allowAddEntry: boolean;
-  addEntry: () => void;
-  updateEntry: (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => void;
-  deleteEntry: (id: string) => void;
-  reset: () => void;
-};
-
-export function getDefaultEntryField(
-  decimals: number | undefined,
-  { input, value, error }: Partial<OrderEntryField> = {}
-): OrderEntryField {
-  let nextInput = "";
-  let nextValue: BigNumber | null = null;
-  let nextError = error ?? null;
-
-  if (input) {
-    nextInput = String(removeTrailingZeros(input));
-    if (!error) {
-      nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
-    }
-  } else if (value) {
-    nextInput = decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
-    if (!error) {
-      nextValue = value;
-    }
-  }
-
-  return { input: nextInput, value: nextValue, error: nextError };
-}
-
-function getDefaultEntry<T extends OrderEntry>(prefix: string, override?: Partial<OrderEntry>): T {
-  return {
-    id: uniqueId(prefix),
-    price: getDefaultEntryField(USD_DECIMALS),
-    sizeUsd: getDefaultEntryField(USD_DECIMALS),
-    percentage: getDefaultEntryField(PERCENTAGE_DECEMALS, { value: MAX_PERCENTAGE }),
-    mode: "keepPercentage",
-    order: null,
-    txnType: null,
-    ...override,
-  } as T;
-}
-
-type InitialEntry<T> = Partial<T> & { price: OrderEntryField; sizeUsd: OrderEntryField };
-
-export default function useOrderEntries<T extends OrderEntry>(
-  prefix: string,
-  errorHandler: (entry: T) => T,
-  {
-    initialEntries,
-    canAddEntry = true,
-    totalPositionSizeUsd,
-  }: {
-    initialEntries?: InitialEntry<T>[];
-    canAddEntry?: boolean;
-    totalPositionSizeUsd?: BigNumber;
-  } = {}
-): OrderEntriesInfo<T> {
-  const isPercentage = !!totalPositionSizeUsd;
+  const enablePercentage = Boolean(totalPositionSizeUsd);
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: BigNumber | null) => {
@@ -111,7 +49,7 @@ export default function useOrderEntries<T extends OrderEntry>(
   );
 
   const recalculateEntryByField = useCallback(
-    (entry: T, field: "sizeUsd" | "percentage" | "price", nextField?: Partial<OrderEntryField>) => {
+    (entry: SidecarOrderEntryBase, field: "sizeUsd" | "percentage" | "price", nextField?: Partial<EntryField>) => {
       let { sizeUsd, percentage, price } = entry;
 
       if (field === "sizeUsd") {
@@ -142,31 +80,27 @@ export default function useOrderEntries<T extends OrderEntry>(
   const initialState = useMemo(() => {
     if (initialEntries?.length) {
       return initialEntries.map((entry) => {
-        const initialEntry = getDefaultEntry<T>(prefix, { ...entry, mode: "keepSize" });
+        const initialEntry = getDefaultEntry(prefix, { ...entry, mode: "keepSize" });
         const calculatedEntry = recalculateEntryByField(initialEntry, "sizeUsd");
         return errorHandler(calculatedEntry);
       });
     }
 
-    if (canAddEntry)
-      return [errorHandler(getDefaultEntry<T>(prefix, { mode: isPercentage ? "fitPercentage" : "keepSize" }))];
+    if (canAddEntry) {
+      return [errorHandler(getDefaultEntry(prefix, { mode: enablePercentage ? "fitPercentage" : "keepSize" }))];
+    }
 
     return [];
-  }, [initialEntries, prefix, canAddEntry, isPercentage, errorHandler, recalculateEntryByField]);
+  }, [initialEntries, prefix, canAddEntry, enablePercentage, errorHandler, recalculateEntryByField]);
 
-  const [entries, setEntries] = useState<T[]>(initialState);
+  const ordersState = useSelector(makeSelectConfirmationBoxSidecarOrdersState(prefix));
 
-  const totalPercentage = useMemo(() => {
-    return entries
-      .filter((entry) => entry.txnType !== "cancel")
-      .reduce(
-        (total, entry) => (entry.percentage?.value ? total.add(entry.percentage.value) : total),
-        BigNumber.from(0)
-      );
-  }, [entries]);
+  const [entries, setEntries] = ordersState as any as [T[], Dispatch<SetStateAction<T[]>>];
+
+  const totalPercentage = useSelector(makeSelectConfirmationBoxSidecarOrdersTotalPercentage(prefix));
 
   const clampEntryPercentage = useCallback(
-    (entries: T[], entry: T) => {
+    (entries: SidecarOrderEntryBase[], entry: T) => {
       const totalPercentageExcludingCurrent = entries
         .filter((ent) => ent.txnType !== "cancel")
         .reduce(
@@ -196,14 +130,14 @@ export default function useOrderEntries<T extends OrderEntry>(
         ...prevEntries,
         recalculateEntryByField(
           getDefaultEntry<T>(prefix, {
-            mode: isPercentage ? "fitPercentage" : "keepSize",
+            mode: enablePercentage ? "fitPercentage" : "keepSize",
           }),
           "percentage",
           { value: leftPercentage }
         ),
       ]);
     }
-  }, [totalPercentage, isPercentage, prefix, recalculateEntryByField]);
+  }, [totalPercentage, enablePercentage, prefix, setEntries, recalculateEntryByField]);
 
   const updateEntry = useCallback(
     (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => {
@@ -215,7 +149,7 @@ export default function useOrderEntries<T extends OrderEntry>(
 
           entry.txnType = entry.order ? "update" : "create";
 
-          if (isPercentage) {
+          if (enablePercentage) {
             if (entry.mode === "fitPercentage" && field !== "percentage") {
               entry.mode = "fitPercentage";
             } else {
@@ -225,16 +159,18 @@ export default function useOrderEntries<T extends OrderEntry>(
 
           const recalculatedEntry = recalculateEntryByField(entry, field, { input: value });
 
-          const clampedEntry = isPercentage ? clampEntryPercentage(prevEntries, recalculatedEntry) : recalculatedEntry;
+          const clampedEntry = enablePercentage
+            ? clampEntryPercentage(prevEntries, recalculatedEntry)
+            : recalculatedEntry;
 
-          return errorHandler(clampedEntry);
+          return errorHandler(clampedEntry as T);
         });
       });
     },
-    [isPercentage, clampEntryPercentage, recalculateEntryByField, errorHandler]
+    [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler]
   );
 
-  const reset = useCallback(() => setEntries(initialState), [initialState]);
+  const reset = useCallback(() => setEntries(initialState), [initialState, setEntries]);
 
   const deleteEntry = useCallback(
     (id: string) => {
@@ -247,27 +183,27 @@ export default function useOrderEntries<T extends OrderEntry>(
               acc.push({
                 ...entry,
                 txnType: "cancel",
-              });
+              } as T);
             }
 
             if (isLastEntry && canAddEntry) {
-              acc.push(getDefaultEntry(prefix, { mode: isPercentage ? "fitPercentage" : "keepSize" }));
+              acc.push(getDefaultEntry(prefix, { mode: enablePercentage ? "fitPercentage" : "keepSize" }));
             }
 
             return acc;
           }
 
-          acc.push(entry);
+          acc.push(entry as T);
           return acc;
         }, []);
       });
     },
-    [prefix, canAddEntry, isPercentage]
+    [prefix, canAddEntry, enablePercentage, setEntries]
   );
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
   useEffect(() => {
-    if (isPercentage && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeUsd ?? 0)) {
+    if (enablePercentage && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeUsd ?? 0)) {
       setEntries((prevEntries) => {
         const recalculatedEntries = prevEntries.map((entry) => {
           if (entry.txnType === "cancel") return entry;
@@ -287,7 +223,14 @@ export default function useOrderEntries<T extends OrderEntry>(
         return clampedEntries;
       });
     }
-  }, [isPercentage, prevTotalPositionSizeUsd, clampEntryPercentage, totalPositionSizeUsd, recalculateEntryByField]);
+  }, [
+    enablePercentage,
+    prevTotalPositionSizeUsd,
+    totalPositionSizeUsd,
+    clampEntryPercentage,
+    setEntries,
+    recalculateEntryByField,
+  ]);
 
   return {
     entries,
