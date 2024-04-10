@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
 
-export function ToastifyDebug(props) {
+export function ToastifyDebug(props: PropsWithChildren) {
   const [open, setOpen] = useState(false);
   return (
     <div className="Toastify-debug">

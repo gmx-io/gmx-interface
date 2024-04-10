@@ -600,7 +600,11 @@ function App() {
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
+  app = (
+    <SWRConfig key={chainId} value={SWRConfigProp}>
+      {app}
+    </SWRConfig>
+  );
 
   return app;
 }

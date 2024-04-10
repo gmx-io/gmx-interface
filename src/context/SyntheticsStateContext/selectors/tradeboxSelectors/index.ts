@@ -1,4 +1,4 @@
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsTradeState } from "../../SyntheticsStateContextProvider";
 import {
   selectAccount,
   selectOrdersInfoData,
@@ -6,7 +6,7 @@ import {
   selectSavedIsPnlInLeverage,
   selectTokensData,
   selectUiFeeFactor,
-} from "./globalSelectors";
+} from "../globalSelectors";
 import { getByKey } from "lib/objects";
 import { parseValue } from "lib/numbers";
 import { BigNumber } from "ethers";
@@ -18,13 +18,17 @@ import {
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
   makeSelectTradeRatios,
-} from "./tradeSelectors";
+} from "../tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { createEnhancedSelector, createSelector } from "../utils";
+import { createEnhancedSelector, createSelector } from "../../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { SwapAmounts, TradeType, getSwapAmountsByFromValue, getSwapAmountsByToValue } from "domain/synthetics/trade";
 import { convertToUsd } from "domain/synthetics/tokens";
+
+export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxChooseSuitableMarket";
+export * from "./selectTradeboxAvailableMarketOptions";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsTradeState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -62,6 +66,7 @@ export const selectTradeboxKeepLeverage = (s: SyntheticsTradeState) => s.tradebo
 export const selectTradeboxSetActivePosition = (s: SyntheticsTradeState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsTradeState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsTradeState) => s.tradebox.setTradeConfig;
+export const selectTradeboxSetCollateralAddress = (s: SyntheticsTradeState) => s.tradebox.setCollateralAddress;
 
 export const selectTradeboxSwapRoutes = createEnhancedSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

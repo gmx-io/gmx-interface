@@ -9,7 +9,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
   MarketInfo,
-  getAvailableLiquidity,
+  getUsedLiquidity,
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
@@ -210,8 +210,8 @@ export function SyntheticsStats() {
               const maxReservedUsdLong = getMaxReservedUsd(market, true);
               const maxOpenInterestLong = getMaxOpenInterestUsd(market, true);
 
-              const [liquidityLong, maxLiquidityLong] = getAvailableLiquidity(market, true);
-              const [liquidityShort, maxLiquidityShort] = getAvailableLiquidity(market, false);
+              const [liquidityLong, maxLiquidityLong] = getUsedLiquidity(market, true);
+              const [liquidityShort, maxLiquidityShort] = getUsedLiquidity(market, false);
 
               const reservedUsdShort = getReservedUsd(market, false);
               const maxReservedUsdShort = getMaxReservedUsd(market, false);
@@ -370,7 +370,7 @@ export function SyntheticsStats() {
                         }}
                       />
                     </div>
-                    <ShareBar className="MarketCard-pool-balance-bar" share={longPoolUsd} total={totalPoolUsd} />
+                    <ShareBar className="balance" share={longPoolUsd} total={totalPoolUsd} />
                   </div>
                 );
               }
@@ -596,11 +596,7 @@ export function SyntheticsStats() {
                         )}
                       />
                     </div>
-                    <ShareBar
-                      className="MarketCard-pool-balance-bar"
-                      share={market.longInterestUsd}
-                      total={totalInterestUsd}
-                    />
+                    <ShareBar className="balance" share={market.longInterestUsd} total={totalInterestUsd} />
                   </div>
                 );
               }

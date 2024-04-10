@@ -1,10 +1,11 @@
 import "./MarketCard.scss";
-import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
 import Tooltip from "components/Tooltip/Tooltip";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
   getMarketPoolName,
@@ -12,17 +13,18 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
+  MarketInfo,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatPercentage, formatRatePercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ShareBar } from "components/ShareBar/ShareBar";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useCallback, useMemo } from "react";
-import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import MarketNetFee from "components/Synthetics/MarketNetFee/MarketNetFee";
+import { renderNetFeeHeaderTooltipContent } from "components/Synthetics/MarketsList/NetFeeHeaderTooltipContent";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DOCS_LINKS } from "config/links";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -88,20 +90,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     return (
       <div>
         {currentFeeElement}
-        <div className="divider my-base" />
+        <br />
         {oppositeFeeElement}
-        <div className="divider my-base" />
-        <Trans>
-          Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
-          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
-        </Trans>
-
-        <br />
-        <br />
-        <Trans>
-          Borrowing fees help ensure available liquidity.{" "}
-          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
-        </Trans>
       </div>
     );
   }, [fundingRateLong, fundingRateShort, isLong, borrowingRateLong, borrowingRateShort]);
@@ -173,7 +163,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={netRateHourly?.gt(0) ? t`Net Rebate` : t`Net Fee`}
+          label={
+            netRateHourly?.gt(0) ? (
+              t`Net Rebate`
+            ) : (
+              <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+                <Trans>Net Fee</Trans>
+              </TooltipWithPortal>
+            )
+          }
           value={
             <TooltipWithPortal
               portalClassName="MarketCard-net-fee"

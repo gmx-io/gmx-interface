@@ -19,10 +19,10 @@ export function LeaderboardTopAccountsStructure() {
         <Skeleton />
       </td>
       <td>
-        <Skeleton width={80} />
+        <Skeleton width={100} />
       </td>
       <td>
-        <Skeleton width={80} />
+        <Skeleton width={110} />
       </td>
     </tr>
   );

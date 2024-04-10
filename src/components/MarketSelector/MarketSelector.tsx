@@ -102,8 +102,12 @@ export function MarketSelector({
   }
 
   const _handleKeyDown = (e) => {
-    if (e.key === "Enter" && filteredOptions.length > 0) {
-      onSelectOption(filteredOptions[0]);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (filteredOptions.length > 0) {
+        onSelectOption(filteredOptions[0]);
+      }
     }
   };
 

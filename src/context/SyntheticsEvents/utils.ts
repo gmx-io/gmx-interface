@@ -40,6 +40,17 @@ export function getPendingOrderKey(data: PendingOrderData) {
 }
 
 export function getPendingDepositKey(data: PendingDepositData) {
+  if (data.initialShortTokenAddress === data.initialLongTokenAddress) {
+    return [
+      data.account,
+      data.marketAddress,
+      data.initialLongTokenAddress,
+      data.longTokenSwapPath.join("-"),
+      data.shouldUnwrapNativeToken,
+      data.initialLongTokenAmount.add(data.initialShortTokenAmount).toString(),
+    ].join(":");
+  }
+
   return [
     data.account,
     data.marketAddress,

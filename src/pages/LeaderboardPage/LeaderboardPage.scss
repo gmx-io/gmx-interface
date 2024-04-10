@@ -308,7 +308,6 @@ $tabs-threshold: 990px;
   &__prize-rest {
     margin-left: 0.5rem;
     text-decoration: none;
-    font-family: monospace;
     display: flex;
     align-items: center;
   }
@@ -320,7 +319,6 @@ $tabs-threshold: 990px;
   &__tooltip-winner {
     display: flex;
     text-decoration: none !important;
-    font-family: monospace;
     margin-bottom: 1rem;
     color: white !important;
 
@@ -335,7 +333,6 @@ $tabs-threshold: 990px;
 
   .Tooltip-handle {
     text-decoration: none;
-    font-family: monospace;
     align-items: center;
     top: 0.2rem;
   }
@@ -398,6 +395,10 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__leaderboard-tabs {
   margin-bottom: 1rem;
   margin-top: 3rem;
+
+  &_positions {
+    visibility: hidden;
+  }
 }
 
 .LeaderboardNavigation {
@@ -528,6 +529,9 @@ table.Table.Exchange-list th {
   text-transform: uppercase;
   font-size: var(--font-base);
 }
+.TableHeader.text-right .TableHeaderTitle {
+  justify-content: flex-end;
+}
 
 .TableHeader.sortable .TableHeaderTitle,
 .TableHeader.sorted-asc .TableHeaderTitle,
@@ -580,4 +584,9 @@ table.Table.Exchange-list th {
     padding-right: 0;
     margin-left: var(--default-container-padding);
   }
+}
+
+.Table-SizeTooltip .Tooltip-popup {
+  min-width: 38rem !important;
+  max-width: 38rem !important;
 }

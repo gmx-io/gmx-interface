@@ -100,15 +100,18 @@ export function PoolSelector({
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
-  const marketInfo = marketsOptions.find(
-    (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
-  )?.marketInfo;
+  const marketInfo = useMemo(
+    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress)?.marketInfo,
+    [marketsOptions, selectedMarketAddress]
+  );
 
-  const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-  const filteredOptions = marketsOptions.filter((option) => {
-    const name = option.name.toLowerCase();
-    return name.includes(lowercaseSearchKeyword);
-  });
+  const filteredOptions = useMemo(() => {
+    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
+    return marketsOptions.filter((option) => {
+      const name = option.name.toLowerCase();
+      return name.includes(lowercaseSearchKeyword);
+    });
+  }, [marketsOptions, searchKeyword]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -116,8 +119,12 @@ export function PoolSelector({
   }
 
   const _handleKeyDown = (e) => {
-    if (e.key === "Enter" && filteredOptions.length > 0) {
-      onSelectOption(filteredOptions[0]);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (filteredOptions.length > 0) {
+        onSelectOption(filteredOptions[0]);
+      }
     }
   };
 
@@ -125,7 +132,7 @@ export function PoolSelector({
     if (!marketInfo) return "...";
     const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
 
-    if (filteredOptions?.length > 1) {
+    if (marketsOptions?.length > 1) {
       return (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {name ? name : "..."}

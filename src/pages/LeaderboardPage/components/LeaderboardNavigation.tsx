@@ -1,8 +1,8 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { LeaderboardPageKey } from "domain/synthetics/leaderboard";
+import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
 import { mustNeverExist } from "lib/types";
 import { useMemo } from "react";
@@ -16,6 +16,7 @@ type LeaderboardNavigationItem = {
   isCompetition: boolean;
   chainId?: number;
   href: string;
+  timeframe: LeaderboardTimeframe;
 };
 
 const sortingPoints: Record<LeaderboardNavigationItem["chip"], number> = {
@@ -37,6 +38,22 @@ function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"]
   return "over";
 }
 
+function getLabel(pageKey: LeaderboardPageKey) {
+  switch (pageKey) {
+    case "leaderboard":
+      return t`Global Leaderboard`;
+
+    case "march_13-20_2024":
+      return t`EIP-4844, 13-20 Mar`;
+
+    case "march_20-27_2024":
+      return t`EIP-4844, 20-27 Mar`;
+
+    default:
+      throw mustNeverExist(pageKey);
+  }
+}
+
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
   const navigationItems = useMemo(() => {
@@ -45,15 +62,25 @@ export function LeaderboardNavigation() {
       .map((page) => {
         return {
           key: page.key,
-          label: page.label,
+          label: getLabel(page.key),
           chip: getChip(page.key),
           isSelected: page.key === pageKey,
           isCompetition: page.key !== "leaderboard",
           href: page.href,
           chainId: page.isCompetition ? page.chainId : undefined,
+          timeframe: page.timeframe,
         };
       })
-      .sort((a, b) => sortingPoints[a.chip] - sortingPoints[b.chip]);
+      .sort((a, b) => {
+        const sortingPointA = sortingPoints[a.chip];
+        const sortingPointB = sortingPoints[b.chip];
+
+        if (sortingPointA === sortingPointB) {
+          return b.timeframe.from - a.timeframe.from;
+        }
+
+        return sortingPointA - sortingPointB;
+      });
 
     return items;
   }, [pageKey]);
@@ -74,15 +101,23 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
         return (
           <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_live">
             <span className="LeaderboardNavigation__chip-circle" />
-            LIVE
+            <Trans>LIVE</Trans>
           </div>
         );
 
       case "soon":
-        return <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">SOON</div>;
+        return (
+          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">
+            <Trans>SOON</Trans>
+          </div>
+        );
 
       case "over":
-        return <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">OVER</div>;
+        return (
+          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">
+            <Trans>CONCLUDED</Trans>
+          </div>
+        );
 
       case "none":
         return null;
