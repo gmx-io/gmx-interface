@@ -370,7 +370,7 @@ export function SyntheticsStats() {
                         }}
                       />
                     </div>
-                    <ShareBar className="MarketCard-pool-balance-bar" share={longPoolUsd} total={totalPoolUsd} />
+                    <ShareBar className="balance" share={longPoolUsd} total={totalPoolUsd} />
                   </div>
                 );
               }
@@ -596,11 +596,7 @@ export function SyntheticsStats() {
                         )}
                       />
                     </div>
-                    <ShareBar
-                      className="MarketCard-pool-balance-bar"
-                      share={market.longInterestUsd}
-                      total={totalInterestUsd}
-                    />
+                    <ShareBar className="balance" share={market.longInterestUsd} total={totalInterestUsd} />
                   </div>
                 );
               }

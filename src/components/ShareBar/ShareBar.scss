@@ -57,3 +57,13 @@
 .ShareBar.warning .ShareBar-fill {
   background-color: orange;
 }
+
+.ShareBar.balance {
+  background: var(--error-red);
+  width: 100%;
+  min-width: 10rem;
+
+  .ShareBar-fill {
+    background: var(--green);
+  }
+}
