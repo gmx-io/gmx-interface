@@ -10,6 +10,7 @@ import {
 import { selectConfirmationBoxSidecarOrdersTotalSizeUsd } from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
 import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntryField, getDefaultEntry } from "./utils";
 import { SidecarOrderEntryBase, EntryField, SidecarOrderEntryGroupBase, GroupPrefix } from "./types";
+import useEffectOnce from "lib/useEffectOnce";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -96,6 +97,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const ordersState = useSelector(makeSelectConfirmationBoxSidecarOrdersState(prefix));
 
   const [entries, setEntries] = ordersState as any as [T[], Dispatch<SetStateAction<T[]>>];
+
+  useEffectOnce(() => {
+    setEntries(initialState);
+  });
 
   const totalPercentage = useSelector(makeSelectConfirmationBoxSidecarOrdersTotalPercentage(prefix));
 

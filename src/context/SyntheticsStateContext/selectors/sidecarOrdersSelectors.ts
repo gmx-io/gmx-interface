@@ -41,8 +41,8 @@ export const makeSelectConfirmationBoxSidecarOrdersEntries = createSelectorFacto
 export const makeSelectConfirmationBoxSidecarOrdersSetEntries = createSelectorFactory((group: "tp" | "sl" | "limit") =>
   createSelector(function selectSidecarOrdersEntriesByGroup(q) {
     return {
-      tp: () => q(selectConfirmationBoxSidecarOrdersSetSlEntries),
-      sl: () => q(selectConfirmationBoxSidecarOrdersSetTpEntries),
+      tp: () => q(selectConfirmationBoxSidecarOrdersSetTpEntries),
+      sl: () => q(selectConfirmationBoxSidecarOrdersSetSlEntries),
       limit: () => q(selectConfirmationBoxSidecarOrdersSetLimitEntries),
     }[group]();
   })
