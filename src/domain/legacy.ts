@@ -680,9 +680,26 @@ function useGmxPriceFromArbitrum(library, active) {
   return { data: gmxPrice, mutate };
 }
 
-export async function approvePlugin(chainId, pluginAddress, { library, setPendingTxns, sentMsg, failMsg }) {
+export async function dynamicApprovePlugin(
+  chainId,
+  pluginAddress,
+  { primaryWallet, setPendingTxns, sentMsg, failMsg }
+) {
+  console.log("dynamic approve plugin", primaryWallet);
+  const signer = await primaryWallet.connector.ethers?.getSigner();
   const routerAddress = getContract(chainId, "Router");
-  const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+  const contract = new ethers.Contract(routerAddress, Router.abi, signer);
+  return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
+    sentMsg,
+    failMsg,
+    setPendingTxns,
+  });
+}
+
+export async function approvePlugin(chainId, pluginAddress, { library, setPendingTxns, sentMsg, failMsg }) {
+  console.log("approve plugin", library);
+  const routerAddress = getContract(chainId, "Router");
+  const contract = new ethers.Contract(routerAddress, Router.abi, library);
   return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
     sentMsg,
     failMsg,

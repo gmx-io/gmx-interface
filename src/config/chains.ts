@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { sample } from "lodash";
-import { NetworkMetadata } from "lib/wallets";
+import { DynamicWalletNetworkMetadata, NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
 const { parseEther } = ethers.utils;
@@ -232,6 +232,159 @@ export const FALLBACK_PROVIDERS = {
   [ARBITRUM]: [getAlchemyHttpUrl()],
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
+
+export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
+  {
+    blockExplorerUrls: ["https://bscscan.com"],
+    chainId: MAINNET,
+    iconUrls: ["https://app.dynamic.xyz/assets/networks/eth.svg"],
+    name: "MAINNET",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    networkId: MAINNET,
+    rpcUrls: RPC_PROVIDERS[MAINNET],
+    vanityName: "Mainnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[MAINNET],
+  },
+  {
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+    chainId: TESTNET,
+    iconUrls: [""],
+    name: "BSC Testnet",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    networkId: TESTNET,
+    rpcUrls: RPC_PROVIDERS[TESTNET],
+    vanityName: "BSC Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[TESTNET],
+  },
+  {
+    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
+    chainId: ARBITRUM_TESTNET,
+    iconUrls: [""],
+    name: "Arbitrum Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: ARBITRUM_TESTNET,
+    rpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
+    vanityName: "Arbitrum Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
+    chainId: ARBITRUM,
+    iconUrls: [""],
+    name: "Arbitrum",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: ARBITRUM,
+    rpcUrls: RPC_PROVIDERS[ARBITRUM],
+    vanityName: "Arbitrum",
+    privateCustomerRpcUrls: RPC_PROVIDERS[ARBITRUM],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+    chainId: AVALANCHE,
+    iconUrls: [""],
+    name: "Avalanche",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    networkId: AVALANCHE,
+    rpcUrls: RPC_PROVIDERS[AVALANCHE],
+    vanityName: "Avalanche",
+    privateCustomerRpcUrls: RPC_PROVIDERS[AVALANCHE],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
+    chainId: AVALANCHE_FUJI,
+    iconUrls: [""],
+    name: "Avalanche Fuji",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    networkId: AVALANCHE_FUJI,
+    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
+    vanityName: "Avalanche Fuji",
+    privateCustomerRpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(SEPOLIA_TESTNET)],
+    chainId: SEPOLIA_TESTNET,
+    iconUrls: [""],
+    name: "Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: SEPOLIA_TESTNET,
+    rpcUrls: RPC_PROVIDERS[SEPOLIA_TESTNET],
+    vanityName: "Sepolia",
+    privateCustomerRpcUrls: RPC_PROVIDERS[SEPOLIA_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(OPTIMISM_GOERLI_TESTNET)],
+    chainId: OPTIMISM_GOERLI_TESTNET,
+    iconUrls: [""],
+    name: "Optimism Goreli Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: OPTIMISM_GOERLI_TESTNET,
+    rpcUrls: RPC_PROVIDERS[OPTIMISM_GOERLI_TESTNET],
+    vanityName: "Optimism Goreli Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[OPTIMISM_GOERLI_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(OPTIMISM_MAINNET)],
+    chainId: OPTIMISM_MAINNET,
+    iconUrls: [""],
+    name: "Optimism",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: OPTIMISM_MAINNET,
+    rpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
+    vanityName: "Optimism",
+    privateCustomerRpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
+    chainId: BLAST_SEPOLIA_TESTNET,
+    iconUrls: [""],
+    name: "Blast Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: BLAST_SEPOLIA_TESTNET,
+    rpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
+    vanityName: "Blast Sepolia",
+    privateCustomerRpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
+  },
+];
 
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   [MAINNET]: {

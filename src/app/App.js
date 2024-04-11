@@ -77,7 +77,7 @@ import { Trans, t } from "@lingui/macro";
 
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, DYNAMIC_NETWORK_METADATA, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import {
@@ -934,6 +934,7 @@ function App() {
           <DynamicContextProvider
             settings={{
               environmentId: "e2b597d3-4634-4d19-9802-301ddcd8bc5a",
+              evmNetworks: DYNAMIC_NETWORK_METADATA,
               walletConnectorExtensions: [EthersExtension],
               walletConnectors: [EthereumWalletConnectors],
             }}

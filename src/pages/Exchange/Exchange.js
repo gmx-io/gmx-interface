@@ -22,7 +22,7 @@ import {
   getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import { approvePlugin, useExecutionFee, cancelMultipleOrders } from "domain/legacy";
+import { approvePlugin, useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
@@ -43,15 +43,16 @@ import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
 
 import "./Exchange.css";
-import { contractFetcher } from "lib/contracts";
+import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import { useChainId } from "lib/chains";
+import { useChainId, useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -359,6 +360,7 @@ export const Exchange = forwardRef((props, ref) => {
 
   const [pendingPositions, setPendingPositions] = useState({});
   const [updatedPositions, setUpdatedPositions] = useState({});
+  const [web3Provider, setWeb3Provider] = useState(null);
 
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -379,8 +381,29 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { active, account, library } = useWeb3React();
-  const { chainId } = useChainId();
+  //const { account } = useWeb3React();
+  //console.log("account", account);
+  const [active, setActive] = useState(false);
+  const [account, setAccount] = useState(null);
+  const { primaryWallet } = useDynamicContext();
+  //console.log("primary wallet", primaryWallet);
+  useEffect(() => {
+    const fetchProvider = async () => {
+      if (primaryWallet && primaryWallet.connector) {
+        const provider = await primaryWallet.connector.getSigner();
+        console.log("setting signer", provider);
+        setAccount(primaryWallet.address);
+        setWeb3Provider(provider);
+        setActive(true);
+      }
+    };
+
+    fetchProvider();
+  }, [primaryWallet]);
+
+  //console.log("primary wallet", primaryWallet.netwo);
+  const { chainId } = useDynamicChainId();
+  //console.log("chain id", chainId);
   const currentAccount = account;
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -464,13 +487,13 @@ export const Exchange = forwardRef((props, ref) => {
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+    fetcher: dynamicContractFetcher(web3Provider, Reader, [tokenAddresses]),
   });
 
   const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
-      fetcher: contractFetcher(library, Reader, [
+      fetcher: dynamicContractFetcher(web3Provider, Reader, [
         positionQuery.collateralTokens,
         positionQuery.indexTokens,
         positionQuery.isLong,
@@ -481,18 +504,22 @@ export const Exchange = forwardRef((props, ref) => {
   const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: dynamicContractFetcher(web3Provider, Reader, [
+      vaultAddress,
+      nativeTokenAddress,
+      whitelistedTokenAddresses,
+    ]),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: dynamicContractFetcher(web3Provider, VaultV2),
     }
   );
 
   const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: dynamicContractFetcher(web3Provider, Token),
   });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -500,20 +527,20 @@ export const Exchange = forwardRef((props, ref) => {
   const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
-      fetcher: contractFetcher(library, Router),
+      fetcher: dynamicContractFetcher(web3Provider, Router),
     }
   );
 
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
-      fetcher: contractFetcher(library, Router),
+      fetcher: dynamicContractFetcher(web3Provider, Router),
     }
   );
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(web3Provider, chainId, active, tokenBalances, fundingRateInfo);
   const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
-    library,
+    web3Provider,
     active,
     chainId,
     infoTokens
@@ -710,7 +737,7 @@ export const Exchange = forwardRef((props, ref) => {
     async function () {
       setIsCancelMultipleOrderProcessing(true);
       try {
-        const tx = await cancelMultipleOrders(chainId, library, cancelOrderIdList, {
+        const tx = await cancelMultipleOrders(chainId, web3Provider, cancelOrderIdList, {
           successMsg: t`Orders cancelled.`,
           failMsg: t`Cancel failed.`,
           sentMsg: t`Cancel submitted.`,
@@ -730,7 +757,7 @@ export const Exchange = forwardRef((props, ref) => {
     },
     [
       chainId,
-      library,
+      web3Provider,
       pendingTxns,
       setPendingTxns,
       setCancelOrderIdList,
@@ -741,8 +768,8 @@ export const Exchange = forwardRef((props, ref) => {
 
   const approveOrderBook = () => {
     setIsPluginApproving(true);
-    return approvePlugin(chainId, orderBookAddress, {
-      library,
+    return dynamicApprovePlugin(chainId, orderBookAddress, {
+      primaryWallet,
       pendingTxns,
       setPendingTxns,
       sentMsg: t`Enable orders sent.`,
@@ -758,8 +785,8 @@ export const Exchange = forwardRef((props, ref) => {
 
   const approvePositionRouter = ({ sentMsg, failMsg }) => {
     setIsPositionRouterApproving(true);
-    return approvePlugin(chainId, positionRouterAddress, {
-      library,
+    return dynamicApprovePlugin(chainId, positionRouterAddress, {
+      primaryWallet,
       pendingTxns,
       setPendingTxns,
       sentMsg,
@@ -851,7 +878,7 @@ export const Exchange = forwardRef((props, ref) => {
             infoTokens={infoTokens}
             active={active}
             account={account}
-            library={library}
+            library={web3Provider}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             flagOrdersEnabled={flagOrdersEnabled}
@@ -872,7 +899,7 @@ export const Exchange = forwardRef((props, ref) => {
           <OrdersList
             account={account}
             active={active}
-            library={library}
+            library={web3Provider}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             infoTokens={infoTokens}
@@ -949,7 +976,7 @@ export const Exchange = forwardRef((props, ref) => {
             infoTokens={infoTokens}
             active={active}
             connectWallet={connectWallet}
-            library={library}
+            library={web3Provider}
             account={account}
             positionsMap={positionsMap}
             fromTokenAddress={fromTokenAddress}

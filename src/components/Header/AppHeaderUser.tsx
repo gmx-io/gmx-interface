@@ -125,7 +125,7 @@ export function AppHeaderUser({
         />
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton
+            {/* <ConnectWalletButton
               onClick={() => setWalletModalVisible(true)}
               imgSrc={themeContext.theme === "light" ? connectWalletImgDrk : connectWalletImglight}
             >
@@ -138,7 +138,7 @@ export function AppHeaderUser({
               onNetworkSelect={onNetworkSelect}
               openSettings={openSettings}
               setApprovalsModalVisible={setApprovalsModalVisible}
-            />
+            /> */}
           </>
         ) : (
           <LanguagePopupHome />

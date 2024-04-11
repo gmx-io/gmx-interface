@@ -7,7 +7,7 @@ export function getProvider(library: Web3Provider | undefined, chainId: number) 
   let provider;
 
   if (library) {
-    return library.getSigner();
+    return library;
   }
 
   provider = getRpcUrl(chainId);

@@ -41,6 +41,22 @@ export type NetworkMetadata = {
   blockExplorerUrls: string[];
 };
 
+export type DynamicWalletNetworkMetadata = {
+  blockExplorerUrls: string[];
+  chainId: number;
+  name: string;
+  iconUrls: string[];
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  networkId: number;
+  privateCustomerRpcUrls: string[];
+  rpcUrls: string[];
+  vanityName: string;
+};
+
 const injectedConnector = new InjectedConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
 });
