@@ -552,12 +552,18 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
-    if (longTokenAmount?.gt(longToken?.balance || 0)) {
-      return [t`Insufficient ${longToken?.symbol} balance`];
-    }
+    if (marketInfo.isSameCollaterals) {
+      if (longTokenAmount?.add(shortTokenAmount || 0).gt(longToken?.balance || 0)) {
+        return [t`Insufficient ${longToken?.symbol} balance`];
+      }
+    } else {
+      if (longTokenAmount?.gt(longToken?.balance || 0)) {
+        return [t`Insufficient ${longToken?.symbol} balance`];
+      }
 
-    if (shortTokenAmount?.gt(shortToken?.balance || 0)) {
-      return [t`Insufficient ${shortToken?.symbol} balance`];
+      if (shortTokenAmount?.gt(shortToken?.balance || 0)) {
+        return [t`Insufficient ${shortToken?.symbol} balance`];
+      }
     }
   } else {
     if (marketTokenAmount.gt(marketToken?.balance || 0)) {
