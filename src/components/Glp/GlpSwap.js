@@ -348,7 +348,7 @@ export default function GlpSwap(props) {
     : true;
 
   let isSwapTokenCapReached;
-  if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
+  if (swapTokenInfo && swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
     isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
       adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
     );
