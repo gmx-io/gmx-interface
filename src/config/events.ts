@@ -67,5 +67,9 @@ export const appEventsData: EventData[] = [
     bodyText: [
       "Use only BTC or ETH to provide liquidity to BTC/USD or ETH/USD. Now, you can buy GM without being exposed to stablecoins.",
     ],
+    link: {
+      text: "View GM pools",
+      href: "/#/pools",
+    },
   },
 ];
