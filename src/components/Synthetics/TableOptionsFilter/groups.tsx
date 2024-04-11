@@ -1,12 +1,13 @@
 import isEqual from "lodash/isEqual";
 import { ComponentType, memo, useCallback, useMemo } from "react";
 
+import { definedOrThrow } from "lib/guards";
+
 import Checkbox from "components/Checkbox/Checkbox";
 
 import { FilteredGroup, Group, Item } from "./types";
 
 import { ReactComponent as PartialCheckedIcon } from "img/ic_partial_checked.svg";
-import { definedOrThrow } from "./TableOptionsFilter";
 
 type GroupsProps<T> = {
   filteredGroups: FilteredGroup<T>[];

@@ -3,6 +3,7 @@ import { Trans } from "@lingui/macro";
 import isEqual from "lodash/isEqual";
 import { ChangeEventHandler, ComponentType, KeyboardEvent as ReactKeyboardEvent, useCallback, useState } from "react";
 
+import { defined, definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import { FlatItems, useFilteredFlatItems } from "./flat";
@@ -34,16 +35,6 @@ type Props<T> = {
       onChange: (value: T[]) => void;
     }
 );
-
-export function definedOrThrow<T>(value: T): asserts value is NonNullable<T> {
-  if (value === undefined || value === null) {
-    throw new Error("Item is null or undefined");
-  }
-}
-
-export function defined<T>(value: T): value is NonNullable<T> {
-  return value !== undefined && value !== null;
-}
 
 export function TableOptionsFilter<T>({
   value,

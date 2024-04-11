@@ -1,37 +1,28 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
-  useMarketsInfoData,
   useOrdersInfoData,
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectTradeboxAvailableTokensOptions,
-  selectTradeboxSetToTokenAddress,
-  selectTradeboxTradeType,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
-import { TradeType } from "domain/synthetics/trade";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { helperToast } from "lib/helperToast";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import "./TVChart.scss";
@@ -39,13 +30,11 @@ import "./TVChart.scss";
 const DEFAULT_PERIOD = "5m";
 
 export function TVChart() {
-  const marketsInfoData = useMarketsInfoData();
   const chartToken = useSelector(selectChartToken);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
   const availableTokens = useSelector(selectAvailableChartTokens);
-  const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
 
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -64,7 +53,6 @@ export function TVChart() {
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-  const currentTradeType = useSelector(selectTradeboxTradeType);
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
   const chartLines = useMemo(() => {
@@ -130,30 +118,6 @@ export function TVChart() {
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
-    setToTokenAddress(address, marketTokenAddress, tradeType);
-
-    if (marketTokenAddress) {
-      const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
-      const nextTradeType = tradeType ?? currentTradeType;
-      if (nextTradeType === TradeType.Swap) return;
-      if (marketInfo && nextTradeType) {
-        const indexName = getMarketIndexName(marketInfo);
-        const poolName = getMarketPoolName(marketInfo);
-        helperToast.success(
-          <Trans>
-            <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
-            <div className="inline-flex">
-              <span>{indexName}</span>
-              <span className="subtext gm-toast">[{poolName}]</span>
-            </div>{" "}
-            <span>market selected</span>
-          </Trans>
-        );
-      }
-    }
-  }
-
   function onSelectChartToken(token: Token) {
     setToTokenAddress(token.address);
   }
@@ -191,14 +155,7 @@ export function TVChart() {
       <div className="ExchangeChart-header">
         <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
-            <ChartTokenSelector
-              chainId={chainId}
-              selectedToken={selectedTokenOption}
-              onSelectToken={onSelectTokenOption}
-              options={tokenOptions}
-              avaialbleTokenOptions={avaialbleTokenOptions}
-              positionsInfo={positionsInfo}
-            />
+            <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {

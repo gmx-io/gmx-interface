@@ -1,22 +1,25 @@
 import { Trans } from "@lingui/macro";
-import SEO from "components/Common/SEO";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
-import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
+import { useEffect, useRef, useState } from "react";
+
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
-import { MarketsInfoData, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useRef, useState } from "react";
-
-import { getTokenData } from "domain/synthetics/tokens";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
-import "./MarketPoolsPage.scss";
-import { GmList } from "components/Synthetics/GmList/GmList";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+
+import SEO from "components/Common/SEO";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+import { GmList } from "components/Synthetics/GmList/GmList";
+import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
+import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
+
+import "./MarketPoolsPage.scss";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -37,14 +40,19 @@ export function MarketPoolsPage() {
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
-  if (operation === Operation.Withdrawal) {
-    mode = Mode.Pair;
-  }
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
     undefined
   );
+
+  useEffect(() => {
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketKey));
+
+    if (!newAvailableModes.includes(mode)) {
+      setMode(newAvailableModes[0]);
+    }
+  }, [marketsInfoData, mode, operation, selectedMarketKey]);
 
   const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
 

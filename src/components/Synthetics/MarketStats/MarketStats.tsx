@@ -14,7 +14,7 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
@@ -319,28 +319,56 @@ export function MarketStats(p: Props) {
         />
 
         <div className="App-card-divider" />
-
-        <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
-        <CardRow
-          label={t`Pool Amount`}
-          value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
-        />
-        {shouldShowMoreInfo && (
-          <CardRow label={t`Read more`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
+        {marketInfo?.isSameCollaterals ? (
+          <>
+            <CardRow label={t`Collateral`} value={longToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                longPoolAmount?.add(shortPoolAmount ?? BN_ZERO),
+                longPoolAmountUsd?.add(shortPoolAmountUsd ?? BN_ZERO),
+                longToken?.symbol,
+                longToken?.decimals
+              )}
+            />
+            {shouldShowMoreInfo && (
+              <CardRow
+                label={t`Read more`}
+                value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                longPoolAmount,
+                longPoolAmountUsd,
+                longToken?.symbol,
+                longToken?.decimals
+              )}
+            />
+            {shouldShowMoreInfo && (
+              <CardRow
+                label={t`Read more`}
+                value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
+              />
+            )}
+            <div className="App-card-divider" />
+            <CardRow label={t`Short Collateral`} value={shortToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                shortPoolAmount,
+                shortPoolAmountUsd,
+                shortToken?.symbol,
+                shortToken?.decimals
+              )}
+            />
+          </>
         )}
-
-        <div className="App-card-divider" />
-
-        <CardRow label={t`Short Collateral`} value={shortToken?.symbol || "..."} />
-        <CardRow
-          label={t`Pool Amount`}
-          value={formatTokenAmountWithUsd(
-            shortPoolAmount,
-            shortPoolAmountUsd,
-            shortToken?.symbol,
-            shortToken?.decimals
-          )}
-        />
       </div>
     </div>
   );

@@ -511,7 +511,11 @@ function App() {
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <SWRConfig value={SWRConfigProp as any}>{app}</SWRConfig>;
+  app = (
+    <SWRConfig key={chainId} value={SWRConfigProp as any}>
+      {app}
+    </SWRConfig>
+  );
   app = (
     <GlobalStateProvider pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}>
       {app}

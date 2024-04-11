@@ -132,14 +132,6 @@ msgstr ""
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
-msgstr ""
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Ваш кошелек не подключен к {0}.</0><1/><2>Перейти на {1}</2>"
@@ -165,9 +157,9 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
-msgstr ""
+msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>рынок выбран</4>"
 
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "A Size percentage is required."
@@ -236,7 +228,7 @@ msgstr "Принять, что исполнение ордеров не гара
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "Допустимая цена"
 
@@ -311,8 +303,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Action"
 msgstr "Действие"
 
@@ -344,11 +336,11 @@ msgstr "Добавить в MetaMask"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add {0} to Metamask"
-msgstr ""
+msgstr "Добавить {0} в MetaMask"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
-msgstr ""
+msgstr "Добавить {marketName} в кошелек"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -674,11 +666,6 @@ msgstr "Комиссия за пользование кредитом / день
 msgid "Borrow Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Borrowing fees help ensure available liquidity. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgstr ""
@@ -721,7 +708,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
-msgstr ""
+msgstr "Купить GM"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
@@ -802,11 +789,11 @@ msgstr "Купить с {0}"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
-msgstr ""
+msgstr "Купить {0}"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
-msgstr ""
+msgstr "Купить {nativeTokenSymbol}"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
@@ -1130,6 +1117,7 @@ msgstr "Код уже занят"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -1153,7 +1141,6 @@ msgstr "Залог ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
@@ -1476,7 +1463,7 @@ msgstr "Панели"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Date"
 msgstr "Дата"
@@ -1555,10 +1542,6 @@ msgstr "Снижение актива: {0}, выполнено: {1}, отмен�
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Decrease size"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Decrease the leverage to match the max. allowed leverage."
@@ -2034,7 +2017,7 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
 msgstr "Цена исполнения"
 
@@ -2122,6 +2105,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+msgid "Failed to download trade history CSV."
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
@@ -2255,7 +2242,7 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Full market"
 msgstr ""
 
@@ -2279,11 +2266,6 @@ msgstr "Комиссии за финансирование"
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Комиссии за финансирование"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -2692,13 +2674,13 @@ msgstr ""
 msgid "Insufficient liquidity"
 msgstr "Недостаточная ликвидность"
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD market pools for your order."
-msgstr ""
+msgstr "Недостаточная ликвидность во всех из {0}/USD рыночных пулов для вашего ордера."
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
-msgstr ""
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr "Недостаточная ликвидность в {0} рыночном пуле.<0><1>Переключиться на {1} рыночный пул</1>.</0>"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -2813,6 +2795,10 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "LIQUIDITY"
+msgstr "ЛИКВИДНОСТЬ"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "LIVE"
@@ -3035,6 +3021,10 @@ msgstr ""
 msgid "Liquidation price would cross mark price."
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Liquidity"
+msgstr "Ликвидность"
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
 msgstr ""
@@ -3080,6 +3070,7 @@ msgstr "Загрузка..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -3100,7 +3091,6 @@ msgstr "Загрузка..."
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3145,6 +3135,10 @@ msgstr "Лонг {0}"
 msgid "Longing..."
 msgstr "Лонгин..."
 
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+msgid "Longs Net Fee / 1h"
+msgstr "Чистая коммиссия лонгов / 1ч"
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Похоже, у вас нет реферального кода, которым можно поделиться. <0/> Создайте его сейчас и начните получать возвраты!"
@@ -3158,7 +3152,11 @@ msgstr "Убыток"
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
-msgstr ""
+msgstr "РЫНОК"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "MARKETS"
+msgstr "РЫНКИ"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.js
@@ -3203,7 +3201,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
@@ -3228,6 +3226,7 @@ msgstr "Рыночная цена для ордера."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -3239,8 +3238,8 @@ msgstr "Рыночная цена для ордера."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Market"
 msgstr "Рынок"
 
@@ -3492,10 +3491,6 @@ msgstr "Перенос завершен! <0> Просмотр статуса.</0
 msgid "Min collateral: {0}"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min collateral: {0} USD"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -3556,7 +3551,7 @@ msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "NET FEE / 1 H"
-msgstr ""
+msgstr "ЧИСТАЯ КОМИССИЯ / 1 Ч"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3610,6 +3605,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
+msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgstr "Чистая комиссия объединяет комиссии финансирования и займа, но исключает открытые, обменные или комиссии влияния. <0/><1/> Комиссии финансирования помогают балансировать лонги и шорты и обмениваются между обеими сторонами. <2>Подробнее</2>. <3/><4/> Комиссии за займ помогают обеспечить доступную ликвидность. <5>Подробнее</5>."
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
@@ -3796,11 +3795,11 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
-msgstr ""
+msgstr "Открыть {0} в Coingecko"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
-msgstr ""
+msgstr "Открыть {0} в Explorer"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
@@ -3812,7 +3811,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in Explorer"
-msgstr ""
+msgstr "Открыть {marketName} в Explorer"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3983,10 +3982,6 @@ msgstr "Аннотация"
 msgid "POOL"
 msgstr "ПУЛ"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "POOLS"
-msgstr ""
-
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
 msgstr ""
@@ -4042,7 +4037,7 @@ msgstr "Партнерство и Объединения"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
-msgstr "Оплатит"
+msgstr "Оплатить"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4115,7 +4110,7 @@ msgstr "PnL после уплаты комиссии и влияния цены"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -4124,14 +4119,11 @@ msgstr "Пул"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool Amount"
 msgstr "Сумма Пула"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Pools"
-msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -4208,13 +4200,13 @@ msgstr "Цена"
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Price Impact"
 msgstr "Влияние цены"
 
@@ -4386,6 +4378,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4462,6 +4455,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4728,6 +4722,10 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "Select a pool containing {0} to use it as collateral."
+msgstr "Выберите пул, содержащий {0}, чтобы использовать его в качестве залога."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr ""
@@ -4773,7 +4771,7 @@ msgstr "Продать GLP"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
-msgstr ""
+msgstr "Продать GM"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."
@@ -4908,6 +4906,7 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -4928,7 +4927,6 @@ msgstr "Позиция Акции"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4973,6 +4971,10 @@ msgstr "Шорт {0}"
 msgid "Shorting..."
 msgstr "Шортинг..."
 
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+msgid "Shorts Net Fee / 1h"
+msgstr "Чистая комиссия шортов / 1ч"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
 msgstr ""
@@ -5016,7 +5018,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Size"
 msgstr "Размер"
@@ -5360,7 +5362,6 @@ msgid "T"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "TOKEN"
 msgstr "ТОКЕН"
@@ -5382,6 +5383,12 @@ msgstr ""
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "TRADING Airdrop"
 msgstr ""
+
+#. Total Value Locked
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "TVL"
+msgstr "TVL"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
@@ -5932,7 +5939,7 @@ msgid "Transaction"
 msgstr "Транзакция"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Transaction ID"
 msgstr "ID транзакции"
 
@@ -6016,7 +6023,7 @@ msgstr "Триггерные ордера"
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Trigger Price"
 msgstr "Цена триггера"
 
@@ -6294,10 +6301,6 @@ msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "V2 is newly live, and liquidity may be low initially."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6652,9 +6655,9 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
-msgstr ""
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "Вы можете получить {0} лучшую цену исполнения в пуле рынка {1}. <0><1>Переключиться на пул рынка {2}</1>.</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -6685,16 +6688,16 @@ msgstr "У вас есть активный Лимитный Ордер на у�
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral.</0>"
+msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -6705,8 +6708,16 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
@@ -6750,7 +6761,7 @@ msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTo
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
+msgid "You have selected {collateralTokenSymbol} as collateral; the liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required and available, you can change the collateral type using the \"Collateral In\" option in the trade box."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

@@ -24,6 +24,11 @@ export type TradeFlags = {
   isLong: boolean;
   isShort: boolean;
   isSwap: boolean;
+  /**
+   * ```ts
+   * isLong || isShort
+   * ```
+   */
   isPosition: boolean;
   isIncrease: boolean;
   isTrigger: boolean;

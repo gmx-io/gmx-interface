@@ -6,9 +6,9 @@ import useSWR from "swr";
 
 import { BigNumber, ethers } from "ethers";
 
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -21,49 +21,50 @@ import "./DashboardV2.css";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import PageTitle from "components/PageTitle/PageTitle";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
-import { useInfoTokens } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { formatDate } from "lib/dates";
-import { arrayURLFetcher } from "lib/fetcher";
-import {
-  sumBigNumbers,
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  formatKeyAmount,
-  numberWithCommas,
-  BN_ZERO,
-  formatTokenAmount,
-  formatUsd,
-} from "lib/numbers";
-import AssetDropdown from "./AssetDropdown";
-import useWallet from "lib/wallets/useWallet";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import PageTitle from "components/PageTitle/PageTitle";
-import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import {
   getMarketIndexName,
   getMarketPoolName,
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { EMPTY_OBJECT } from "lib/objects";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { convertToUsd } from "domain/synthetics/tokens";
-import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
-import { groupBy } from "lodash";
+import { useInfoTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { formatDate } from "lib/dates";
+import { arrayURLFetcher } from "lib/fetcher";
+import {
+  BN_ZERO,
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatKeyAmount,
+  formatTokenAmount,
+  formatUsd,
+  numberWithCommas,
+  sumBigNumbers,
+} from "lib/numbers";
+import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
+import useWallet from "lib/wallets/useWallet";
+import { groupBy } from "lodash";
+import AssetDropdown from "./AssetDropdown";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -1186,7 +1187,11 @@ export default function DashboardV2() {
                 </div>
               </>
             )}
-            {isV2 && getIsSyntheticsSupported(chainId) && <MarketsList />}
+            {isV2 && getIsSyntheticsSupported(chainId) && (
+              <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+                <MarketsList />
+              </SyntheticsStateContextProvider>
+            )}
           </div>
         </div>
         <Footer />

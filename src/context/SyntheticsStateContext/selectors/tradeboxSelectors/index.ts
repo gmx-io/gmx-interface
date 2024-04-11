@@ -30,13 +30,10 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
 import {
   selectAccount,
   selectChainId,
@@ -47,8 +44,8 @@ import {
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
-} from "./globalSelectors";
-import { selectIsPnlInLeverage } from "./settingsSelectors";
+} from "../globalSelectors";
+import { BigNumber } from "ethers";
 import {
   createTradeFlags,
   makeSelectDecreasePositionAmounts,
@@ -56,7 +53,14 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
-} from "./tradeSelectors";
+} from "../tradeSelectors";
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
+import { selectIsPnlInLeverage } from "../settingsSelectors";
+
+export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxChooseSuitableMarket";
+export * from "./selectTradeboxAvailableMarketOptions";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -96,6 +100,7 @@ export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebo
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
+export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 
 export const selectTradeboxSwapRoutes = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

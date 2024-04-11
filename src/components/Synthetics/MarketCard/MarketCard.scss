@@ -10,16 +10,6 @@
   }
 }
 
-.MarketCard-pool-balance-bar.ShareBar {
-  background: var(--error-red);
-  width: 100%;
-  min-width: 10rem;
-
-  .ShareBar-fill {
-    background: var(--green);
-  }
-}
-
 .MarketCard,
 .MarketCard-net-fee {
   .Tooltip-popup {

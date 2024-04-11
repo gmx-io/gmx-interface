@@ -51,6 +51,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const useBreakpoint = createBreakpoint({ S: 0, M: 600 });
   const breakpoint = useBreakpoint();
   const marketName = renderMarketName(market);
+  const isSameCollaterals = market?.isSameCollaterals;
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
@@ -81,7 +82,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               marketName={longToken?.assetSymbol ?? longToken?.symbol}
             />
           )}
-          {active && shortToken && connector && (
+          {!isSameCollaterals && active && shortToken && connector && (
             <AddToWalletButton
               active={active}
               connector={connector}
