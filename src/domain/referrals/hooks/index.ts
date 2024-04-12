@@ -17,7 +17,7 @@ import { basisPointsToFloat } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 
 import { getReferralsGraphClient } from "lib/subgraph";
-import { UserReferralInfo } from "../types";
+import { CodeOwnershipInfo, UserReferralInfo } from "../types";
 import { decodeReferralCode, encodeReferralCode } from "../utils";
 
 export * from "./useReferralsData";
@@ -131,7 +131,9 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   };
 }
 
-export function useUserCodesOnAllChain(account) {
+export function useUserCodesOnAllChain(
+  account: string | null | undefined
+): Record<number, Record<string, Required<CodeOwnershipInfo>>> | null {
   const [data, setData] = useState<any>(null);
   const query = gql`
     query referralCodesOnAllChain($account: String!) {

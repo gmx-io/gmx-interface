@@ -243,7 +243,7 @@ export function useReferralsData(account?: string | null) {
         });
     }
 
-    Promise.all(
+    Promise.allSettled(
       SUPPORTED_CHAIN_IDS.map(async (chainId) => {
         try {
           const data = await getChainReferralData(chainId);
@@ -255,36 +255,42 @@ export function useReferralsData(account?: string | null) {
         }
       })
     )
-      .then((res) =>
-        res.reduce(
-          (accumulator, currentValue) => {
-            if (!currentValue) return accumulator;
-            const { chainId } = currentValue;
-            accumulator.chains[chainId] = currentValue;
-            const { affiliateTotalStats, traderReferralTotalStats } = currentValue;
+      .then((allChainResults) =>
+        allChainResults
+          .filter<PromiseFulfilledResult<ReferralsStats>>(
+            (maybeFulfilledChainResult): maybeFulfilledChainResult is PromiseFulfilledResult<ReferralsStats> =>
+              maybeFulfilledChainResult.status === "fulfilled"
+          )
+          .map((fulfilledChainResult) => fulfilledChainResult.value)
+          .reduce(
+            (accumulator, currentValue) => {
+              if (!currentValue) return accumulator;
+              const { chainId } = currentValue;
+              accumulator.chains[chainId] = currentValue;
+              const { affiliateTotalStats, traderReferralTotalStats } = currentValue;
 
-            accumulator.total.registeredReferralsCount += affiliateTotalStats.registeredReferralsCount;
-            accumulator.total.affiliateVolume = accumulator.total.affiliateVolume.add(affiliateTotalStats.volume);
-            accumulator.total.affiliateRebateUsd = accumulator.total.affiliateRebateUsd.add(
-              affiliateTotalStats.affiliateRebateUsd
-            );
+              accumulator.total.registeredReferralsCount += affiliateTotalStats.registeredReferralsCount;
+              accumulator.total.affiliateVolume = accumulator.total.affiliateVolume.add(affiliateTotalStats.volume);
+              accumulator.total.affiliateRebateUsd = accumulator.total.affiliateRebateUsd.add(
+                affiliateTotalStats.affiliateRebateUsd
+              );
 
-            accumulator.total.discountUsd = accumulator.total.discountUsd.add(traderReferralTotalStats.discountUsd);
-            accumulator.total.traderVolume = accumulator.total.traderVolume.add(traderReferralTotalStats.volume);
+              accumulator.total.discountUsd = accumulator.total.discountUsd.add(traderReferralTotalStats.discountUsd);
+              accumulator.total.traderVolume = accumulator.total.traderVolume.add(traderReferralTotalStats.volume);
 
-            return accumulator;
-          },
-          {
-            total: {
-              registeredReferralsCount: 0,
-              affiliateVolume: BigNumber.from(0),
-              affiliateRebateUsd: BigNumber.from(0),
-              discountUsd: BigNumber.from(0),
-              traderVolume: BigNumber.from(0),
+              return accumulator;
             },
-            chains: {},
-          } as TotalReferralsStats
-        )
+            {
+              total: {
+                registeredReferralsCount: 0,
+                affiliateVolume: BigNumber.from(0),
+                affiliateRebateUsd: BigNumber.from(0),
+                discountUsd: BigNumber.from(0),
+                traderVolume: BigNumber.from(0),
+              },
+              chains: {},
+            } as TotalReferralsStats
+          )
       )
       .then(setData)
       // eslint-disable-next-line no-console
