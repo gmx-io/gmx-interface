@@ -245,10 +245,15 @@ export function GmConfirmationBox({
       return Promise.resolve();
     }
 
+    const initialLongTokenAddress = longToken?.address || market.longTokenAddress;
+    const initialShortTokenAddress = market.isSameCollaterals
+      ? initialLongTokenAddress
+      : shortToken?.address || market.shortTokenAddress;
+
     return createDepositTxn(chainId, signer, {
       account,
-      initialLongTokenAddress: longToken?.address || market.longTokenAddress,
-      initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
+      initialLongTokenAddress,
+      initialShortTokenAddress,
       longTokenSwapPath: [],
       shortTokenSwapPath: [],
       longTokenAmount: longTokenAmount || BigNumber.from(0),
