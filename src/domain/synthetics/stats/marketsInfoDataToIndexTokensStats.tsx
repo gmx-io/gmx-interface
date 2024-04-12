@@ -58,9 +58,8 @@ export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoDa
       continue;
     }
 
-    const { indexToken } = marketInfo;
-
-    if (!indexMap[indexToken.address]) {
+    if (!indexMap[marketInfo.indexTokenAddress]) {
+      const indexToken = marketInfo.indexToken;
       const price = getMidPrice(indexToken.prices)!;
 
       indexMap[marketInfo.indexTokenAddress] = {
