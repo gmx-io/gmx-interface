@@ -429,8 +429,8 @@ export function GmSwapBox(p: Props) {
       isDeposit,
       marketInfo,
       marketToken,
-      longToken: marketInfo?.longToken,
-      shortToken: marketInfo?.shortToken,
+      longToken: longTokenInputState?.token,
+      shortToken: shortTokenInputState?.token,
       marketTokenAmount,
       marketTokenUsd: amounts?.marketTokenUsd,
       longTokenAmount: amounts?.longTokenAmount,
@@ -490,6 +490,8 @@ export function GmSwapBox(p: Props) {
     openConnectModal,
     shortCollateralLiquidityUsd,
     shouldDisableValidationForTesting,
+    longTokenInputState?.token,
+    shortTokenInputState?.token,
   ]);
 
   function onFocusedCollateralInputChange(tokenAddress: string) {

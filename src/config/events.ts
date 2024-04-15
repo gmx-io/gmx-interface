@@ -59,4 +59,17 @@ export const appEventsData: EventData[] = [
       newTab: true,
     },
   },
+  {
+    id: "btc-eth-single-token-markets",
+    title: "New BTC/USD and ETH/USD single token GM pools",
+    isActive: true,
+    endDate: "2 May 2024, 23:59",
+    bodyText: [
+      "Use only BTC or ETH to provide liquidity to BTC/USD or ETH/USD. Now, you can buy GM without being exposed to stablecoins.",
+    ],
+    link: {
+      text: "View GM pools",
+      href: "/#/pools",
+    },
+  },
 ];
