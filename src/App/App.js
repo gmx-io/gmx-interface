@@ -1,10 +1,10 @@
+import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
-import "@wagmi/connectors";
 
-import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
@@ -23,11 +23,11 @@ import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
-import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -57,8 +57,11 @@ import { useLocalStorage } from "react-use";
 import { i18n } from "@lingui/core";
 import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
+import { watchAccount } from "@wagmi/core";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
+import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import {
@@ -69,28 +72,27 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { swrGCMiddleware } from "lib/swrMiddlewares";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
+import useTradeRedirect from "lib/useTradeRedirect";
+import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import useWallet from "lib/wallets/useWallet";
+import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
-import useWallet from "lib/wallets/useWallet";
-import { swrGCMiddleware } from "lib/swrMiddlewares";
-import useTradeRedirect from "lib/useTradeRedirect";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
-import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
-import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -582,23 +584,28 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const unwatch = watchNetwork(({ chain, chains }) => {
-      if (!chain || !chains) return;
-      const isValidChain = chains.some((c) => c.id === chain.id);
-      if (!isValidChain) {
-        disconnect();
-      }
+    const unwatch = watchAccount(rainbowKitConfig, {
+      onChange: ({ chainId }) => {
+        const chains = rainbowKitConfig.chains;
+        const chain = chains.find((c) => c.id === chainId);
+        if (!chain || !chains) return;
+        const isValidChain = chains.some((c) => c.id === chain.id);
+        if (!isValidChain) {
+          disconnect();
+        }
+      },
     });
     return () => unwatch();
   }, [disconnect]);
 
   let app = <FullApp pendingTxn={pendingTxns} setPendingTxns={setPendingTxns} />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
-  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
+  app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
+  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = (
     <SWRConfig key={chainId} value={SWRConfigProp}>
