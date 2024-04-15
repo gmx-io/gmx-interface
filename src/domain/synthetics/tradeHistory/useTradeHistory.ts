@@ -278,7 +278,7 @@ export async function fetchTradeActions({
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
-  isLong: boolean | undefined;
+  isLong?: boolean;
 }): Promise<TradeAction[]> {
   const client = getSyntheticsGraphClient(chainId);
   definedOrThrow(client);
