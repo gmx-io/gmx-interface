@@ -19,15 +19,11 @@ export function getDefaultEntryField(
   let nextError = error ?? null;
 
   if (input) {
-    nextInput = String(removeTrailingZeros(input));
-    if (!error) {
-      nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
-    }
+    nextInput = input;
+    nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
   } else if (value) {
     nextInput = decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
-    if (!error) {
-      nextValue = value;
-    }
+    nextValue = value;
   }
 
   return { input: nextInput, value: nextValue, error: nextError };
