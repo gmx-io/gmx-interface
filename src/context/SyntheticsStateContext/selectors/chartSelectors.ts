@@ -1,8 +1,3 @@
-// const { chartToken, availableChartTokens } = useMemo(() => {
-//     if (!fromTokenAddress || !toTokenAddress) {
-//       return {};
-//     }
-
 import { getToken } from "config/tokens";
 import { createSelector } from "../utils";
 import { selectChainId, selectTokensData } from "./globalSelectors";
