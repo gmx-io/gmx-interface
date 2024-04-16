@@ -4,7 +4,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
@@ -54,7 +54,7 @@ import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { i18n } from "@lingui/core";
 import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
-import { watchNetwork } from "@wagmi/core";
+import { watchAccount } from "@wagmi/core";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
@@ -81,8 +81,9 @@ import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useTradeRedirect from "lib/useTradeRedirect";
+import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
-import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
@@ -90,6 +91,8 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
+import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { Provider } from "@ethersproject/providers";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -190,8 +193,8 @@ function FullApp() {
       return;
     }
 
-    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
+    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider as Provider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider as Provider);
 
     const callExchangeRef = (method, ...args) => {
       if (!exchangeRef || !exchangeRef.current) {
@@ -493,23 +496,28 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const unwatch = watchNetwork(({ chain, chains }) => {
-      if (!chain || !chains) return;
-      const isValidChain = chains.some((c) => c.id === chain.id);
-      if (!isValidChain) {
-        disconnect();
-      }
-    });
+    const unwatch = watchAccount(rainbowKitConfig, {
+      onChange: ({ chainId }) => {
+        const chains = rainbowKitConfig.chains;
+        const chain = chains.find((c) => c.id === chainId);
+        if (!chain || !chains) return;
+        const isValidChain = chains.some((c) => c.id === chain.id);
+        if (!isValidChain) {
+          disconnect();
+        }
+      },
+    } as any);
     return () => unwatch();
   }, [disconnect]);
 
   let app = <FullApp />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
-  app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
+  app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
+  app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = (
     <SWRConfig key={chainId} value={SWRConfigProp as any}>
