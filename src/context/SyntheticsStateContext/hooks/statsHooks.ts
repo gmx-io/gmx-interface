@@ -1,4 +1,5 @@
-import { selectStatsMarketsInfoDataToIndexTokens } from "../selectors/statsSelectors";
+import { selectOrderedStatsMarketsInfoDataToIndexTokenStats } from "../selectors/statsSelectors";
 import { useSelector } from "../utils";
 
-export const useMarketsInfoDataToIndexTokensStats = () => useSelector(selectStatsMarketsInfoDataToIndexTokens);
+export const useMarketsInfoDataToIndexTokensStats = () =>
+  useSelector(selectOrderedStatsMarketsInfoDataToIndexTokenStats);

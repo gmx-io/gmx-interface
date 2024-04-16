@@ -359,12 +359,19 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
   return result;
 }
 
-export function formatRatePercentage(rate?: BigNumber, displayDecimals?: number) {
+/**
+ *
+ * @param opts.signed - Default `true`. whether to display a plus sign for positive numbers.
+ */
+export function formatRatePercentage(rate?: BigNumber, opts?: { displayDecimals?: number; signed?: boolean }) {
   if (!rate) {
     return "-";
   }
 
-  return `${getPlusOrMinusSymbol(rate)}${formatAmount(rate.mul(100).abs(), 30, displayDecimals ?? 4)}%`;
+  const signed = opts?.signed ?? true;
+  const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
+
+  return `${plurOrMinus}${formatAmount(rate.mul(100).abs(), 30, opts?.displayDecimals ?? 4)}%`;
 }
 
 export function basisPointsToFloat(basisPoints: BigNumber) {

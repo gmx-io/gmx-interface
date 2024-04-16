@@ -11,11 +11,17 @@ import {
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
-import { formatPercentage } from "lib/numbers";
+import { formatPercentage, formatRatePercentage } from "lib/numbers";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectStatsMarketsInfoDataToIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { BigNumber } from "ethers";
+import { getByKey } from "lib/objects";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = -1; // -0.01%
+const SHOW_HAS_BETTER_NET_FEES_WARNING_THRESHOLD_RATE = BigNumber.from(10).pow(26); // +0.01%
 
 const SPACE = " ";
 
@@ -23,6 +29,7 @@ export const useTradeboxPoolWarnings = (
   withActions = true,
   textColor: "text-warning" | "text-gray" = "text-warning"
 ) => {
+  const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const { marketInfo, setMarketAddress, setCollateralAddress } = useTradeboxState();
@@ -31,6 +38,7 @@ export const useTradeboxPoolWarnings = (
   const selectedPosition = useTradeboxSelectedPosition();
   const hasExistingOrder = Boolean(existingOrder);
   const hasExistingPosition = Boolean(selectedPosition);
+  const marketStatsMap = useSelector(selectStatsMarketsInfoDataToIndexTokenStatsMap);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -66,11 +74,27 @@ export const useTradeboxPoolWarnings = (
   const marketWithOrder = marketsOptions?.marketWithOrder;
   const minPriceImpactMarket = marketsOptions?.minPriceImpactMarket;
   const minPriceImpactBps = marketsOptions?.minPriceImpactBps;
-
-  const improvedExecutionPriceDeltaBps =
+  const improvedExecutionFeeDeltaBps =
     minPriceImpactBps &&
     increaseAmounts?.acceptablePriceDeltaBps &&
     increaseAmounts.acceptablePriceDeltaBps.sub(minPriceImpactBps);
+  const indexTokenStat = marketStatsMap.indexMap[marketInfo.indexTokenAddress];
+  const currentMarketStat = indexTokenStat?.marketsStats.find(
+    (stat) => stat.marketInfo.marketTokenAddress === marketInfo?.marketTokenAddress
+  );
+  const bestMarketStat = indexTokenStat?.marketsStats.find(
+    (stat) =>
+      stat.marketInfo.marketTokenAddress ===
+      (isLong ? indexTokenStat.bestNetFeeLongMarketAddress : indexTokenStat.bestNetFeeShortMarketAddress)
+  );
+  const bestNetFee = isLong ? indexTokenStat?.bestNetFeeLong : indexTokenStat?.bestNetFeeShort;
+  const currentNetFee = isLong ? currentMarketStat?.netFeeLong : currentMarketStat?.netFeeShort;
+  const improvedNetFeeAbsDeltaRate =
+    bestMarketStat && currentMarketStat && bestNetFee && currentNetFee && bestNetFee.sub(currentNetFee).abs();
+  const bestNetFeeMarket = getByKey(
+    marketsInfoData,
+    isLong ? indexTokenStat?.bestNetFeeLongMarketAddress : indexTokenStat?.bestNetFeeShortMarketAddress
+  );
 
   const showHasExistingPositionWarning =
     !hasExistingPosition && marketWithPosition && !isSelectedMarket(marketWithPosition);
@@ -83,20 +107,38 @@ export const useTradeboxPoolWarnings = (
     !hasExistingOrder &&
     marketWithOrder &&
     !isSelectedMarket(marketWithOrder);
-  const showHasBetterFeesWarning =
-    !marketWithPosition &&
-    !marketWithOrder &&
+
+  const canShowHasBetterExecutionFeesWarning =
     minPriceImpactMarket &&
     minPriceImpactBps &&
     !isSelectedMarket(minPriceImpactMarket) &&
-    improvedExecutionPriceDeltaBps?.lte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
+    improvedExecutionFeeDeltaBps?.lte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
+  const canShowHasBetterNetFeesWarning =
+    bestNetFeeMarket &&
+    marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
+    improvedNetFeeAbsDeltaRate?.gte(SHOW_HAS_BETTER_NET_FEES_WARNING_THRESHOLD_RATE);
+  const showHasBetterExecutionFeesAndNetFeesWarning =
+    canShowHasBetterExecutionFeesWarning &&
+    canShowHasBetterNetFeesWarning &&
+    bestNetFeeMarket.marketTokenAddress === minPriceImpactMarket.marketTokenAddress;
+  const showHasBetterExecutionFeesWarning =
+    !marketWithPosition &&
+    !marketWithOrder &&
+    canShowHasBetterExecutionFeesWarning &&
+    !showHasBetterExecutionFeesAndNetFeesWarning;
+  const showHasBetterNetFeesWarning =
+    !marketWithPosition &&
+    !marketWithOrder &&
+    canShowHasBetterNetFeesWarning &&
+    !showHasBetterExecutionFeesAndNetFeesWarning;
 
   if (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
     !showHasInsufficientLiquidityWarning &&
     !showHasExistingOrderWarning &&
-    !showHasBetterFeesWarning
+    !showHasBetterExecutionFeesWarning &&
+    !showHasBetterNetFeesWarning
   ) {
     return null;
   }
@@ -140,7 +182,7 @@ export const useTradeboxPoolWarnings = (
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool.
           <WithActon>
             <span
-              className="clickable underline muted "
+              className="clickable underline muted"
               onClick={() => setMarketAddress(maxLiquidityMarket!.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(maxLiquidityMarket)} market pool
@@ -174,11 +216,52 @@ export const useTradeboxPoolWarnings = (
     );
   }
 
-  if (showHasBetterFeesWarning) {
+  if (showHasBetterExecutionFeesWarning) {
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          You can get a {formatPercentage(improvedExecutionPriceDeltaBps)} better execution price in the{" "}
+          You can get a {formatPercentage(improvedExecutionFeeDeltaBps)} better execution price in the{" "}
+          {getMarketPoolName(minPriceImpactMarket)} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => setMarketAddress(minPriceImpactMarket.marketTokenAddress)}
+            >
+              Switch to {getMarketPoolName(minPriceImpactMarket)} market pool
+            </span>
+            .
+          </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasBetterNetFeesWarning) {
+    warning.push(
+      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
+        <Trans>
+          You can get a {formatRatePercentage(improvedNetFeeAbsDeltaRate, { signed: false })} better net fee in the{" "}
+          {getMarketPoolName(bestNetFeeMarket)} market pool.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => setMarketAddress(bestNetFeeMarket.marketTokenAddress)}
+            >
+              Switch to {getMarketPoolName(bestNetFeeMarket)} market pool
+            </span>
+            .
+          </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasBetterExecutionFeesAndNetFeesWarning) {
+    warning.push(
+      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
+        <Trans>
+          You can get a {formatPercentage(improvedExecutionFeeDeltaBps)} better execution price and a{" "}
+          {formatRatePercentage(improvedNetFeeAbsDeltaRate, { signed: false })} better net fee in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
           <WithActon>
             <span
