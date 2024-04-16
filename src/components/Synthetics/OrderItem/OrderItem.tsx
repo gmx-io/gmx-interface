@@ -24,15 +24,15 @@ import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legac
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import "./OrderItem.scss";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useChainId } from "lib/chains";
 import { getWrappedToken } from "config/tokens";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 
 type Props = {
   order: OrderInfo;
   onSelectOrder?: () => void;
-  onEditOrder?: () => void;
   onCancelOrder?: () => void;
   isSelected?: boolean;
   isCanceling?: boolean;
@@ -57,6 +57,11 @@ export function OrderItem(p: Props) {
   const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
   const wrappedToken = getWrappedToken(chainId);
+  const [, setEditingOrderKeyWithArg] = useEditingOrderKeyState();
+
+  const setEditingOrderKey = useCallback(() => {
+    setEditingOrderKeyWithArg(p.order.key);
+  }, [p.order.key, setEditingOrderKeyWithArg]);
 
   const isCollateralSwap = initialCollateralToken.address !== targetCollateralToken.address;
 
@@ -283,7 +288,6 @@ export function OrderItem(p: Props) {
       const toAmount = minOutputAmount;
       const toToken = targetCollateralToken;
       const toAmountText = formatTokenAmount(toAmount, toToken?.decimals, toToken?.symbol);
-
       const { swapRatioText } = getSwapRatioText();
 
       return (
@@ -387,13 +391,11 @@ export function OrderItem(p: Props) {
         <td>{renderMarkPrice()}</td>
         {!p.hideActions && (
           <>
-            {p.onEditOrder && (
-              <td>
-                <button className="Exchange-list-action" onClick={p.onEditOrder}>
-                  <Trans>Edit</Trans>
-                </button>
-              </td>
-            )}
+            <td>
+              <button className="Exchange-list-action" onClick={setEditingOrderKey}>
+                <Trans>Edit</Trans>
+              </button>
+            </td>
             {p.onCancelOrder && (
               <td>
                 <button className="Exchange-list-action" onClick={p.onCancelOrder} disabled={p.isCanceling}>
@@ -447,11 +449,9 @@ export function OrderItem(p: Props) {
           <div className="App-card-actions">
             <div className="App-card-divider"></div>
             <div className="remove-top-margin">
-              {p.onEditOrder && (
-                <Button variant="secondary" className="mr-md mt-md" onClick={p.onEditOrder}>
-                  <Trans>Edit</Trans>
-                </Button>
-              )}
+              <Button variant="secondary" className="mr-md mt-md" onClick={setEditingOrderKey}>
+                <Trans>Edit</Trans>
+              </Button>
 
               {p.onCancelOrder && (
                 <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>

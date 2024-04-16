@@ -1,5 +1,4 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   TradeFlags,
   TradeMode,
@@ -9,7 +8,6 @@ import {
   getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
-  getMarkPrice,
   getMarketsGraph,
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
@@ -18,7 +16,7 @@ import {
 } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
-import { createSelector, createSelectorFactory } from "../utils";
+import { createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -35,7 +33,7 @@ export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 // dont swap addresses here
 export const makeSelectSwapRoutes = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) =>
-    createSelector([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
+    createSelectorDeprecated([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
       const wrappedToken = getWrappedToken(chainId);
 
       const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
@@ -181,7 +179,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectTokensData,
         selectMarketsInfoData,
@@ -291,7 +289,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     fixedAcceptablePriceImpactBps: BigNumber | undefined;
     keepLeverage: boolean | undefined;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionsInfoData,
         selectTokensData,
@@ -338,85 +336,6 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     )
 );
 
-export const makeSelectMarkPrice = createSelectorFactory(
-  ({
-    toTokenAddress,
-    tradeMode,
-    tradeType,
-  }: {
-    toTokenAddress: string | undefined;
-    tradeType: TradeType;
-    tradeMode: TradeMode;
-  }) =>
-    createSelector([selectTokensData], (tokensData) => {
-      const tradeFlags = createTradeFlags(tradeType, tradeMode);
-      const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-
-      if (!toToken) {
-        return undefined;
-      }
-
-      if (tradeFlags.isSwap) {
-        return toToken.prices.minPrice;
-      }
-
-      return getMarkPrice({ prices: toToken.prices, isIncrease: tradeFlags.isIncrease, isLong: tradeFlags.isLong });
-    })
-);
-
-export const makeSelectTradeRatios = createSelectorFactory(
-  ({
-    fromTokenAddress,
-    toTokenAddress,
-    tradeType,
-    tradeMode,
-    triggerRatioValue,
-  }: {
-    fromTokenAddress: string | undefined;
-    toTokenAddress: string | undefined;
-    tradeType: TradeType;
-    tradeMode: TradeMode;
-    triggerRatioValue: BigNumber | undefined;
-  }) =>
-    createSelector(
-      [
-        selectTokensData,
-        makeSelectMarkPrice({
-          toTokenAddress,
-          tradeMode,
-          tradeType,
-        }),
-      ],
-      (tokensData, markPrice) => {
-        const tradeFlags = createTradeFlags(tradeType, tradeMode);
-        const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-        const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-        const fromTokenPrice = fromToken?.prices.minPrice;
-        if (!tradeFlags.isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
-          return {};
-        }
-        const markRatio = getTokensRatioByPrice({
-          fromToken,
-          toToken,
-          fromPrice: fromTokenPrice,
-          toPrice: markPrice,
-        });
-        if (!triggerRatioValue) {
-          return { markRatio };
-        }
-        const triggerRatio: TokensRatio = {
-          ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
-          largestToken: markRatio.largestToken,
-          smallestToken: markRatio.smallestToken,
-        };
-        return {
-          markRatio,
-          triggerRatio,
-        };
-      }
-    )
-);
-
 export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
   ({
     collateralTokenAddress,
@@ -451,7 +370,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionConstants,
         selectMarketsInfoData,
@@ -529,7 +448,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     triggerPrice: BigNumber | undefined;
     isPnlInLeverage: boolean;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionConstants,
         selectMarketsInfoData,

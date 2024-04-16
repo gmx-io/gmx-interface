@@ -16,7 +16,7 @@ type Props = {
     avgBoostMultiplier?: BigNumber;
   };
   nativeTokenSymbol: string;
-  isUserConnected: boolean;
+  isUserConnected?: boolean;
   recommendStakeGmx?: BigNumber;
 };
 

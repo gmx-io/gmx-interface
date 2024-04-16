@@ -6,7 +6,6 @@ type Props = {
   data: {
     name: string;
     value: number;
-    symbol: string;
     color: string;
   }[];
   label: string;

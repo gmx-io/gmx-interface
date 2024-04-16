@@ -82,6 +82,8 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 const { AddressZero } = ethers.constants;
 
@@ -159,7 +161,9 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
+  const { isBuying, setIsBuying } = props;
+  const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
+  const [, setPendingTxns] = usePendingTxns();
   const history = useHistory();
   const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -344,7 +348,7 @@ export default function GlpSwap(props) {
     : true;
 
   let isSwapTokenCapReached;
-  if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
+  if (swapTokenInfo && swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
     isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
       adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
     );
@@ -598,7 +602,7 @@ export default function GlpSwap(props) {
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (
-        !savedShouldDisableValidationForTesting &&
+        !shouldDisableValidationForTesting &&
         swapTokenInfo &&
         swapTokenInfo.balance &&
         swapAmount &&
@@ -720,7 +724,7 @@ export default function GlpSwap(props) {
   const buyGlp = () => {
     setIsSubmitting(true);
 
-    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
@@ -746,7 +750,7 @@ export default function GlpSwap(props) {
   const sellGlp = () => {
     setIsSubmitting(true);
 
-    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";

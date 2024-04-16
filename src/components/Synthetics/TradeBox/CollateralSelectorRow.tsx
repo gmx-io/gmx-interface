@@ -1,10 +1,16 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxMarketInfo, useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { AvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingPosition,
+  selectTradeboxMarketInfo,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
 import { TokenInfo } from "domain/tokens";
@@ -15,27 +21,14 @@ import React, { useMemo } from "react";
 export type Props = {
   selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
-  marketsOptions?: AvailableMarketsOptions;
-
-  hasExistingPosition?: boolean;
-  hasExistingOrder?: boolean;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
-  const {
-    selectedCollateralAddress,
-    selectedMarketAddress,
-    marketsOptions,
-    hasExistingOrder,
-    hasExistingPosition,
-    // availableCollaterals,
-    onSelectCollateralAddress,
-    isMarket,
-  } = p;
+  const { selectedCollateralAddress, selectedMarketAddress, onSelectCollateralAddress, isMarket } = p;
   const marketsInfo = useMarketsInfoData();
-  const marketInfo = useTradeboxMarketInfo();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { isLong } = useTradeboxTradeFlags();
 
   const { allRelatedTokensArr, allRelatedTokensMap, getTokenState } = useMemo(() => {
@@ -94,6 +87,9 @@ export function CollateralSelectorRow(p: Props) {
     return { allRelatedTokensMap, allRelatedTokensArr, getTokenState };
   }, [isLong, marketInfo, marketsInfo]);
 
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const { chainId } = useChainId();

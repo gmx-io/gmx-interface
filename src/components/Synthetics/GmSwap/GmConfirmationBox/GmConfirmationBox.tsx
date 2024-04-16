@@ -26,6 +26,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { usePendingTxns } from "lib/usePendingTxns";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
@@ -45,7 +46,6 @@ type Props = {
   executionFee?: ExecutionFee;
   onSubmitted: () => void;
   onClose: () => void;
-  setPendingTxns: (txns: any) => void;
   shouldDisableValidation?: boolean;
 };
 
@@ -66,7 +66,6 @@ export function GmConfirmationBox({
   executionFee,
   onSubmitted,
   onClose,
-  setPendingTxns,
   shouldDisableValidation,
 }: Props) {
   const { signer, account } = useWallet();
@@ -75,6 +74,7 @@ export function GmConfirmationBox({
   const { tokensData } = useTokensDataRequest(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setPendingTxns] = usePendingTxns();
 
   const market = getByKey(marketsInfoData, marketToken?.address);
 

@@ -1,4 +1,3 @@
-import { createEnhancedSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -6,6 +5,7 @@ import { BN_ZERO } from "lib/numbers";
 import groupBy from "lodash/groupBy";
 import maxBy from "lodash/maxBy";
 import { selectTradeboxAvailableTokensOptions } from ".";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 
 export type TokenOption = {
   maxLongLiquidity: BigNumber;
@@ -18,9 +18,9 @@ export function bnClampMin(value: BigNumber, min: BigNumber) {
   return value.lt(min) ? min : value;
 }
 
-const selectSortedAllMarkets = createEnhancedSelector((q) => q(selectTradeboxAvailableTokensOptions).sortedAllMarkets);
+const selectSortedAllMarkets = createSelector((q) => q(selectTradeboxAvailableTokensOptions).sortedAllMarkets);
 
-export const selectTradeboxGetMaxLongShortLiquidityPool = createEnhancedSelector((q) => {
+export const selectTradeboxGetMaxLongShortLiquidityPool = createSelector((q) => {
   const sortedAllMarkets = q(selectSortedAllMarkets);
 
   const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {

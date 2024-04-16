@@ -6,8 +6,9 @@ import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePendingTxns } from "lib/usePendingTxns";
 
-function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
+function JoinReferralCode({ active }) {
   const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
@@ -19,7 +20,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
       </p>
       <div className="card-action">
         {active ? (
-          <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
+          <ReferralCodeForm />
         ) : (
           <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
@@ -30,19 +31,14 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
   );
 }
 
-export function ReferralCodeForm({
-  setPendingTxns,
-  pendingTxns,
-  callAfterSuccess,
-  userReferralCodeString = "",
-  type = "join",
-}) {
+export function ReferralCodeForm({ callAfterSuccess, userReferralCodeString = "", type = "join" }) {
   const { account, signer, chainId } = useWallet();
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef("");
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
+  const [pendingTxns, setPendingTxns] = usePendingTxns();
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
   function getPrimaryText() {

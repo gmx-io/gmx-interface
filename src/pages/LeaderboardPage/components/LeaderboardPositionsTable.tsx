@@ -13,7 +13,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { useMarketInfo, useTokenInfo } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
   selectPositionConstants,
   selectUserReferralInfo,
@@ -27,6 +26,8 @@ import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatTokenAmountWithUsd } from "lib/numbers";
+import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;

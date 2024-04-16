@@ -28,19 +28,14 @@ import { useLocalStorage } from "react-use";
 import "./Referrals.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
-function Referrals({
-  setPendingTxns,
-  pendingTxns,
-}: {
-  setPendingTxns: (pendingTxns: string[]) => void;
-  pendingTxns: string[];
-}) {
+function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
@@ -65,6 +60,7 @@ function Referrals({
   const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(signer, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
+  const [pendingTxns] = usePendingTxns();
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -106,15 +102,13 @@ function Referrals({
   function renderTradersTab() {
     if (loading) return <Loader />;
     if (isHashZero(userReferralCode) || !account || !userReferralCode) {
-      return <JoinReferralCode active={active} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />;
+      return <JoinReferralCode active={active} />;
     }
     return (
       <TradersStats
         userReferralCodeString={userReferralCodeString}
         chainId={chainId}
         referralsData={referralsData}
-        setPendingTxns={setPendingTxns}
-        pendingTxns={pendingTxns}
         traderTier={traderTier}
         discountShare={discountShare}
       />

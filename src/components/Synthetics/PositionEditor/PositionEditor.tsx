@@ -4,12 +4,15 @@ import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
@@ -17,6 +20,11 @@ import { NATIVE_TOKEN_ADDRESS, getToken } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import {
+  usePositionsConstants,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -24,8 +32,6 @@ import {
   getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
-  useGasLimits,
-  useGasPrice,
 } from "domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
@@ -43,8 +49,11 @@ import {
 } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
+import { getMinResidualAmount } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
+import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -61,35 +70,25 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import { getMinResidualAmount } from "domain/tokens";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import {
-  usePositionsConstants,
-  useSavedIsPnlInLeverage,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { bigNumberBinarySearch } from "lib/binarySearch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
-import "./PositionEditor.scss";
-import { useKey } from "react-use";
 import {
   usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useKey } from "react-use";
+import "./PositionEditor.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
-  shouldDisableValidation: boolean;
 };
 
 enum Operation {
@@ -106,14 +105,12 @@ export function PositionEditor(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const { setPendingTxns, allowedSlippage } = p;
   const { chainId } = useChainId();
-  const showPnlInLeverage = useSavedIsPnlInLeverage();
+  const { isPnlInLeverage, shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -179,6 +176,9 @@ export function PositionEditor(p: Props) {
   const [collateralInputValue, setCollateralInputValue] = useState("");
   const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
   const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
+
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
 
   const needCollateralApproval =
     isDeposit &&
@@ -266,7 +266,7 @@ export function PositionEditor(p: Props) {
       collateralUsd: nextCollateralUsd,
       pendingBorrowingFeesUsd: BigNumber.from(0),
       pendingFundingFeesUsd: BigNumber.from(0),
-      pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
+      pnl: isPnlInLeverage ? position.pnl : BigNumber.from(0),
     });
 
     const nextLiqPrice = getLiquidationPrice({
@@ -298,7 +298,7 @@ export function PositionEditor(p: Props) {
     isDeposit,
     minCollateralUsd,
     position,
-    showPnlInLeverage,
+    isPnlInLeverage,
     userReferralInfo,
   ]);
 
@@ -446,7 +446,7 @@ export function PositionEditor(p: Props) {
         referralCode: userReferralInfo?.referralCodeForTxn,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: p.shouldDisableValidation,
+        skipSimulation: shouldDisableValidationForTesting,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -482,7 +482,7 @@ export function PositionEditor(p: Props) {
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
           tokensData,
-          skipSimulation: p.shouldDisableValidation,
+          skipSimulation: shouldDisableValidationForTesting,
         },
         {
           setPendingTxns,
@@ -551,7 +551,7 @@ export function PositionEditor(p: Props) {
       className="w-full"
       variant="primary-action"
       onClick={onSubmit}
-      disabled={Boolean(error) && !p.shouldDisableValidation}
+      disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
     >
       {error || OPERATION_LABELS[operation]}

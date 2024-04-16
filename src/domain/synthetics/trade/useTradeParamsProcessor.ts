@@ -1,13 +1,19 @@
-import { useEffect, useRef } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { MarketInfo, getMarketPoolName } from "../markets";
 import { getTokenBySymbolSafe, isTokenInList } from "config/tokens";
+import {
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxSetTradeConfig,
+  selectTradeboxTradeMode,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
-import { TradeSearchParams, TradeMode, TradeType } from "./types";
 import useSearchParams from "lib/useSearchParams";
 import { isMatch } from "lodash";
-import { AvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useEffect, useRef } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { getMarketPoolName } from "../markets";
+import { TradeMode, TradeSearchParams, TradeType } from "./types";
 
 type TradeOptions = {
   fromTokenAddress?: string;
@@ -18,23 +24,13 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-type Props = {
-  setTradeConfig: ({
-    tradeType,
-    tradeMode,
-    fromTokenAddress,
-    toTokenAddress,
-    marketAddress,
-    collateralAddress,
-  }: TradeOptions) => void;
-  availableTokensOptions: AvailableTokenOptions;
-  markets: MarketInfo[];
-  tradeType?: TradeType;
-  tradeMode?: TradeMode;
-};
+export function useTradeParamsProcessor() {
+  const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
+  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const markets = availableTokensOptions.sortedAllMarkets;
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const tradeType = useSelector(selectTradeboxTradeType);
 
-export function useTradeParamsProcessor(props: Props) {
-  const { markets, setTradeConfig, availableTokensOptions, tradeType, tradeMode } = props;
   const { chainId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();

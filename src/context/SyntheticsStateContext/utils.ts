@@ -1,22 +1,25 @@
-import { createSelector as createSelectorCommon } from "lib/selectors";
+import { createSelector as createSelectorCommon } from "reselect";
 import { EnhancedSelector, createSelectionContext } from "@taskworld.com/rereselect";
-import { SyntheticsTradeState } from "./SyntheticsStateContextProvider";
 import { Selector } from "reselect";
 import { BigNumber } from "@ethersproject/bignumber";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { LRUCache } from "./LruCache";
+import { SyntheticsState } from "./SyntheticsStateContextProvider";
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
-export const createSelector = createSelectorCommon.withTypes<SyntheticsTradeState>();
-const context = createSelectionContext<SyntheticsTradeState>();
+/**
+ * @deprecated use createSelector instead
+ */
+export const createSelectorDeprecated = createSelectorCommon.withTypes<SyntheticsState>();
+const context = createSelectionContext<SyntheticsState>();
 
-export const createEnhancedSelector = context.makeSelector;
+export const createSelector = context.makeSelector;
 
 type Arg = boolean | string | BigNumber | undefined | null | number | TradeMode | TradeType | OrderOption;
 type SupportedArg = Arg | Record<string, Arg>;
 
-type CachedSelector<T> = EnhancedSelector<SyntheticsTradeState, T> | Selector<SyntheticsTradeState, T>;
+type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;
 
 export function createSelectorFactory<SelectionResult, Args extends SupportedArg[]>(
   factory: (...args: Args) => CachedSelector<SelectionResult>

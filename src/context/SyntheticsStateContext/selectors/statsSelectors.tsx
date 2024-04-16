@@ -1,9 +1,9 @@
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { createEnhancedSelector } from "context/SyntheticsStateContext/utils";
 import { marketsInfoDataToIndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { EMPTY_ARRAY } from "lib/objects";
+import { createSelector } from "../utils";
 
-export const selectStatsMarketsInfoDataToIndexTokens = createEnhancedSelector((q) => {
+export const selectStatsMarketsInfoDataToIndexTokens = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
 
   if (!marketsInfoData) {

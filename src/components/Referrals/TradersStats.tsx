@@ -29,20 +29,10 @@ type Props = {
   traderTier?: BigNumber;
   chainId: number;
   userReferralCodeString?: string;
-  setPendingTxns: (txns: string[]) => void;
-  pendingTxns: string[];
   discountShare: BigNumber | undefined;
 };
 
-function TradersStats({
-  referralsData,
-  traderTier,
-  chainId,
-  userReferralCodeString,
-  setPendingTxns,
-  pendingTxns,
-  discountShare,
-}: Props) {
+function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, discountShare }: Props) {
   const { signer } = useWallet();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
@@ -195,8 +185,6 @@ function TradersStats({
           <div className="edit-referral-modal">
             <ReferralCodeForm
               userReferralCodeString={userReferralCodeString}
-              setPendingTxns={setPendingTxns}
-              pendingTxns={pendingTxns}
               type="edit"
               callAfterSuccess={() => setIsEditModalOpen(false)}
             />

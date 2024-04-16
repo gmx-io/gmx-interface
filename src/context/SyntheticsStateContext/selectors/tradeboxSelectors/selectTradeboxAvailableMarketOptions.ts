@@ -11,7 +11,7 @@ import {
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { createEnhancedSelector } from "context/SyntheticsStateContext/utils";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
@@ -48,7 +48,7 @@ export type AvailableMarketsOptions = {
   isNoSufficientLiquidityInAnyMarket?: boolean;
 };
 
-export const selectTradeboxAvailableMarketOptions = createEnhancedSelector((q) => {
+export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
   const tokensData = q(selectTokensData);
