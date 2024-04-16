@@ -1,4 +1,4 @@
-import "./SLTPEntries.scss";
+import "./SidecarEntries.scss";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -20,14 +20,14 @@ type Props = {
   displayMode: "percentage" | "sizeUsd";
 };
 
-function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
+function SidecarEntries({ entriesInfo, marketInfo, displayMode }: Props) {
   const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
-  const sltpRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   function handleAddEntry() {
     addEntry();
     setTimeout(() => {
-      const inputs = sltpRef.current?.querySelectorAll(".SLTP-price input");
+      const inputs = containerRef.current?.querySelectorAll(".Sidecar-price input");
       (inputs && (inputs[inputs.length - 1] as HTMLInputElement))?.focus();
     });
   }
@@ -38,7 +38,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
   );
 
   return (
-    <div className="SLTPEntries-wrapper" ref={sltpRef}>
+    <div className="SidecarEntries-wrapper" ref={containerRef}>
       {displayableEntries?.map((entry) => {
         const indexToken = marketInfo?.indexToken;
         const entrySizeUsd = entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd;
@@ -63,7 +63,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
         /* eslint-disable react-perf/jsx-no-new-object-as-prop */
         return (
           <div key={entry.id}>
-            <div className="SLTPEntry-row" key={entry.id} style={{ position: "relative" }}>
+            <div className="SidecarEntry-row" key={entry.id} style={{ position: "relative" }}>
               <div style={{ position: "absolute", right: "100%" }}>
                 {
                   {
@@ -74,7 +74,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                 }
               </div>
 
-              <div className={cx("SLTP-price", { "input-error": priceError })}>
+              <div className={cx("Sidecar-price", { "input-error": priceError })}>
                 <span className="price-symbol">$</span>
 
                 <NumberInput
@@ -85,11 +85,13 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                 />
 
                 {priceError && (
-                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>{priceError}</div>
+                  <div className={cx("Sidecar-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>
+                    {priceError}
+                  </div>
                 )}
               </div>
               {displayMode === "percentage" && (
-                <div className={cx("SLTP-percentage", { "input-error": !!percentageError })}>
+                <div className={cx("Sidecar-percentage", { "input-error": !!percentageError })}>
                   <SuggestionInput
                     value={entry.percentage?.input ?? ""}
                     setValue={(value) => {
@@ -102,12 +104,12 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                     symbol="%"
                   />
                   {percentageError && (
-                    <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
+                    <div className={cx("Sidecar-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
                       {percentageError}
                     </div>
                   )}
                   {entrySizeUsd && priceTooltipMsg ? (
-                    <div className={cx("SLTP-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
+                    <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
                       {priceTooltipMsg}
                     </div>
                   ) : (
@@ -116,7 +118,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                 </div>
               )}
               {displayMode === "sizeUsd" && (
-                <div className={cx("SLTP-size", { "input-error": !!sizeError })}>
+                <div className={cx("Sidecar-size", { "input-error": !!sizeError })}>
                   <span className="price-symbol">$</span>
                   <NumberInput
                     value={entry.sizeUsd.input ?? ""}
@@ -125,10 +127,12 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                     className="size-input"
                   />
                   {sizeError && (
-                    <div className={cx("SLTP-size-error", "Tooltip-popup", "z-index-1001", "top-end")}>{sizeError}</div>
+                    <div className={cx("Sidecar-size-error", "Tooltip-popup", "z-index-1001", "top-end")}>
+                      {sizeError}
+                    </div>
                   )}
                   {entrySizeUsd && priceTooltipMsg ? (
-                    <div className={cx("SLTP-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
+                    <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
                       {priceTooltipMsg}
                     </div>
                   ) : (
@@ -136,7 +140,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                   )}
                 </div>
               )}
-              <div className="SLTP-actions">
+              <div className="Sidecar-actions">
                 {canAddEntry && (
                   <TooltipWithPortal
                     handle={
@@ -144,7 +148,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                         <FaPlus color="#5EC989" />
                       </button>
                     }
-                    portalClassName="SLTP-helper-text"
+                    portalClassName="Sidecar-helper-text"
                     handleClassName="mr-xs"
                     position="right"
                     renderContent={() => <span>Add Row</span>}
@@ -161,7 +165,7 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                       <FaPlus color="#E74E5D" className="rotate-45" />
                     </button>
                   }
-                  portalClassName="SLTP-helper-text"
+                  portalClassName="Sidecar-helper-text"
                   position="right"
                   renderContent={() => <span>Remove Row</span>}
                   openDelay={1500}
@@ -175,4 +179,4 @@ function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
   );
 }
 
-export default SLTPEntries;
+export default SidecarEntries;

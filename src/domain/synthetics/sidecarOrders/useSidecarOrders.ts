@@ -197,21 +197,20 @@ export function useSidecarOrders() {
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
       if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error) return;
 
-      const size = convertToTokenAmount(sizeUsd.value, order?.indexToken.decimals, increaseAmounts?.indexPrice);
-
-      if (!marketInfo || !collateralToken || !mockPositionInfo || !swapRoute || !order) {
+      if (!marketInfo || !mockPositionInfo || !swapRoute || !order) {
         return;
       }
+
+      const size = convertToTokenAmount(sizeUsd.value, order.indexToken.decimals, price.value);
 
       return getIncreasePositionAmounts({
         marketInfo,
         indexToken: order.indexToken,
+        collateralToken: order.targetCollateralToken,
+        isLong: order.isLong,
         initialCollateralToken: order.initialCollateralToken,
-        collateralToken,
-        isLong,
         initialCollateralAmount: order.initialCollateralDeltaAmount,
         indexTokenAmount: size,
-        leverage: mockPositionInfo?.leverage,
         triggerPrice: price.value,
         position: mockPositionInfo,
         findSwapPath: swapRoute.findSwapPath,
@@ -220,7 +219,7 @@ export function useSidecarOrders() {
         strategy: "independent",
       });
     },
-    [collateralToken, increaseAmounts, isLong, marketInfo, mockPositionInfo, swapRoute, uiFeeFactor, userReferralInfo]
+    [marketInfo, mockPositionInfo, swapRoute, uiFeeFactor, userReferralInfo]
   );
 
   const limit = useMemo(() => {

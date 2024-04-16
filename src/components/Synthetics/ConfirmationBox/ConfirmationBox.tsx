@@ -97,7 +97,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import SLTPEntries from "./SLTPEntries";
+import SLTPEntries from "./SidecarEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
@@ -1072,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadInfo]);
 
-  function renderSLTP(type: "stopLoss" | "takeProfit" | "limit") {
+  function renderSidecar(type: "stopLoss" | "takeProfit" | "limit") {
     const isStopLoss = type === "stopLoss";
     const isLimit = type === "limit";
 
@@ -1217,11 +1217,11 @@ export function ConfirmationBox(p: Props) {
           {renderDifferentTokensWarning()}
         </ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSLTP("limit")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSidecar("limit")}</ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSLTP("takeProfit")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSidecar("takeProfit")}</ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSLTP("stopLoss")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSidecar("stopLoss")}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
