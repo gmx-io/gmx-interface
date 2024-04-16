@@ -42,7 +42,7 @@ export function CollateralSelectorRow(p: Props) {
     allRelatedTokensMap[marketInfo.longTokenAddress] = marketInfo.longToken;
     allRelatedTokensMap[marketInfo.shortTokenAddress] = marketInfo.shortToken;
 
-    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexToken.address === marketInfo.indexToken.address);
+    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexTokenAddress === marketInfo.indexTokenAddress);
 
     Object.values(relatedMarkets).forEach((market) => {
       if (!allRelatedTokensMap[market.longTokenAddress]) {
