@@ -90,14 +90,19 @@ export function GmStatusNotification({
         );
       }
 
-      const tokensText = [longToken, shortToken]
-        .filter(Boolean)
-        .map((token) => token?.symbol)
-        .join(" and ");
-
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+
+      let tokensText = "";
+      if (marketInfo?.isSameCollaterals) {
+        tokensText = longToken?.symbol ?? "";
+      } else {
+        tokensText = [longToken, shortToken]
+          .filter(Boolean)
+          .map((token) => token?.symbol)
+          .join(" and ");
+      }
 
       return (
         <Trans>
