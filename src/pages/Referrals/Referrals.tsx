@@ -29,7 +29,6 @@ import "./Referrals.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
 import { usePendingTxns } from "lib/usePendingTxns";
-import { EMPTY_OBJECT } from "lib/objects";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -72,9 +71,7 @@ function Referrals() {
   }
 
   function renderAffiliatesTab() {
-    const hasChainCode = Object.values(referralsData?.chains || EMPTY_OBJECT)
-      .map((chainReferralData) => chainReferralData.codes.length)
-      .some(Boolean);
+    const hasChainCode = Boolean(referralsData?.chains?.[chainId]);
     const hasRecentCode = Boolean(recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length);
     const isSomeReferralCodeAvailable = hasChainCode || hasRecentCode;
 

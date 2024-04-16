@@ -20,7 +20,8 @@ const SUBGRAPH_URLS = {
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
-    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
+    referrals:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/version/master-240415215829-f6877d6/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
     leaderboard: "https://squid.subsquid.io/gmx-synthetics-avalanche/graphql/v11",
   },

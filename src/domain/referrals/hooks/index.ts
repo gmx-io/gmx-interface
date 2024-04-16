@@ -22,8 +22,8 @@ import { decodeReferralCode, encodeReferralCode } from "../utils";
 
 export * from "./useReferralsData";
 
-async function getCodeOwnersData(network, account, codes = []) {
-  if (codes.length === 0 || !account || !network) {
+async function getCodeOwnersData(chainId: number, account: string | null | undefined, codes: string[] = []) {
+  if (codes.length === 0 || !account || !chainId) {
     return undefined;
   }
   const query = gql`
@@ -34,7 +34,7 @@ async function getCodeOwnersData(network, account, codes = []) {
       }
     }
   `;
-  return getReferralsGraphClient(network)
+  return getReferralsGraphClient(chainId)
     .query({ query, variables: { codes } })
     .then(({ data }) => {
       const { referralCodes } = data;
