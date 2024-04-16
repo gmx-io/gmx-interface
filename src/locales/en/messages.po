@@ -6684,8 +6684,16 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get a {0} better execution price and a {1} better net fee in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgstr "You can get a {0} better execution price and a {1} better net fee in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 msgstr "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get a {0} better net fee in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "You can get a {0} better net fee in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
