@@ -28,7 +28,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionSeller,
-  usePositionSellerDecreaseAmount,
+  usePositionSellerDecreaseAmounts,
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
   usePositionSellerNextPositionValuesForDecrease,
@@ -60,7 +60,6 @@ import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecu
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
-import { getIsEquivalentTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
@@ -178,7 +177,7 @@ export function PositionSeller(p: Props) {
 
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
-  const decreaseAmounts = usePositionSellerDecreaseAmount();
+  const decreaseAmounts = usePositionSellerDecreaseAmounts();
 
   const acceptablePrice = useMemo(() => {
     if (!position || !decreaseAmounts?.acceptablePrice) {
@@ -203,7 +202,7 @@ export function PositionSeller(p: Props) {
     isLong: position?.isLong,
   });
 
-  const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
+  const shouldSwap = position && receiveToken && decreaseAmounts?.decreaseSwapType !== DecreasePositionSwapType.NoSwap;
 
   const swapAmounts = useMemo(() => {
     if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {

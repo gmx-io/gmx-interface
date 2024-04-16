@@ -280,6 +280,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     closeSizeUsd,
     keepLeverage,
     fixedAcceptablePriceImpactBps,
+    receiveTokenAddress,
   }: {
     positionKey: string | undefined;
     tradeMode: TradeMode;
@@ -290,6 +291,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     closeSizeUsd: BigNumber | undefined;
     fixedAcceptablePriceImpactBps: BigNumber | undefined;
     keepLeverage: boolean | undefined;
+    receiveTokenAddress: string | undefined;
   }) =>
     createSelector(
       [
@@ -314,6 +316,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
+        const receiveToken = collateralTokenAddress ? getByKey(tokensData, receiveTokenAddress) : undefined;
 
         if (!closeSizeUsd || !marketInfo || !collateralToken || !minCollateralUsd || !minPositionSizeUsd) {
           return undefined;
@@ -333,6 +336,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,
+          receiveToken,
         });
       }
     )
@@ -517,6 +521,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeType,
     triggerPrice,
     isPnlInLeverage,
+    receiveTokenAddress,
   }: {
     closeSizeUsd: BigNumber | undefined;
     collateralTokenAddress: string | undefined;
@@ -528,6 +533,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeType: TradeType;
     triggerPrice: BigNumber | undefined;
     isPnlInLeverage: boolean;
+    receiveTokenAddress: string | undefined;
   }) =>
     createSelector(
       [
@@ -544,6 +550,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           tradeMode,
           tradeType,
           triggerPrice,
+          receiveTokenAddress,
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,

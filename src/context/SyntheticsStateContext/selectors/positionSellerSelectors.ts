@@ -58,6 +58,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
   const marketAddress = position.marketInfo.marketTokenAddress;
   const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
+  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -73,6 +74,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
     triggerPrice,
     closeSizeUsd,
     isPnlInLeverage,
+    receiveTokenAddress,
   };
 });
 

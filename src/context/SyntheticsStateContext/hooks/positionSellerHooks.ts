@@ -15,7 +15,7 @@ export const usePositionSellerPosition = () => useSelector(selectPositionSellerP
 export const usePositionSellerNextPositionValuesForDecrease = () =>
   useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
-export const usePositionSellerDecreaseAmount = () => useSelector(selectPositionSellerDecreaseAmounts);
+export const usePositionSellerDecreaseAmounts = () => useSelector(selectPositionSellerDecreaseAmounts);
 
 export const usePositionSellerKeepLeverage = () => useSelector(selectPositionSellerKeepLeverage);
 export const usePositionSellerLeverageDisabledByCollateral = () =>
