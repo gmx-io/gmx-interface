@@ -32,6 +32,32 @@ describe("marketsInfoDataToIndexTokensStats", () => {
 
     const result = marketsInfoDataToIndexTokensStats(input);
 
-    expect(result).toMatchSnapshot();
+    // wipe entity fields
+    mapValues(result.indexMap, (value: any) => {
+      value.__TEST__tokenAddress = value.token.address;
+      value.__TEST__tokenSymbol = value.token.symbol;
+      delete value.token;
+
+      value.marketsStats.forEach((marketStat: any) => {
+        marketStat.__TEST__marketTokenAddress = marketStat.marketInfo.marketTokenAddress;
+        marketStat.__TEST__marketName = marketStat.marketInfo.name;
+        delete marketStat.marketInfo;
+      });
+    });
+
+    // Make the snapshot more readable
+    const prettyResult = JSON.parse(
+      JSON.stringify(result, (key, value) => {
+        if (value && typeof value === "object" && "type" in value && value.type === "BigNumber") {
+          return BigNumber.from(value.hex).toBigInt().toLocaleString("en-US", {
+            maximumFractionDigits: 4,
+            notation: "scientific",
+          });
+        }
+        return value;
+      })
+    );
+
+    expect(prettyResult).toMatchSnapshot();
   });
 });
