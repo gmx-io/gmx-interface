@@ -16,7 +16,7 @@ const BigNumber = ethers.BigNumber;
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {
   BTC_USD: "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
-  ETH_USD: "0xE62B71cf983019BFf55bC83B48601ce8419650CC".toLowerCase(),
+  ETH_USD: "0xe62b71cf983019bff55bc83b48601ce8419650cc",
   BNB_USD: "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
   LINK_USD: "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
   UNI_USD: "0x68577f915131087199fe48913d8b416b3984fd38",

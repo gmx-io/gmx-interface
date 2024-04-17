@@ -17,13 +17,15 @@ import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
 
 function getConfigurationData(supportedResolutions): DatafeedConfiguration {
-  return {
-    supported_resolutions: Object.keys(supportedResolutions),
+  const config: DatafeedConfiguration = {
+    supported_resolutions: Object.keys(supportedResolutions) as ResolutionString[],
     supports_marks: false,
     supports_timescale_marks: false,
     supports_time: true,
     reset_cache_timeout: 100,
-  } as unknown as DatafeedConfiguration;
+  };
+
+  return config;
 }
 
 type Props = {
@@ -108,7 +110,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   }, [chainId, stableTokens, supportedResolutions]);
 }
 
-export function buildFeeder({
+function buildFeeder({
   chainId,
   stableTokens,
   supportedResolutions,
@@ -256,10 +258,11 @@ export function subscribeBars({
   const handleInterval = () => {
     if (missingBarsInfoRef.current.isFetching || !feedDataRef.current) return;
     if (missingBarsInfoRef.current.bars?.length > 0) {
-      let processedBarTimes: FromOldToNewArray<number> = [];
+      const processedBarTimes: FromOldToNewArray<number> = [];
       missingBarsInfoRef.current.bars.forEach((bar: Bar, index) => {
         if (processedBarTimes.includes(bar.time)) return;
         if (index !== 0 && bar.time < processedBarTimes.at(-1)!) {
+          // eslint-disable-next-line no-console
           console.error(
             "missingBarsInfoRef bars order is violating TradingView api schema. See https://www.tradingview.com/charting-library-docs/latest/connecting_data/Datafeed-API#subscribebars"
           );
@@ -274,7 +277,8 @@ export function subscribeBars({
         if (
           bar &&
           bar.ticker === tvDataProviderRef.current?.currentTicker &&
-          bar.period === tvDataProviderRef.current?.currentPeriod
+          bar.period === tvDataProviderRef.current?.currentPeriod &&
+          bar.time >= lastBarTimeRef.current
         ) {
           lastBarTimeRef.current = bar.time;
           onRealtimeCallback(formatTimeInBarToMs(bar));
