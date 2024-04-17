@@ -70,6 +70,7 @@ export function useSidecarOrders() {
     errorHandler: handleLimitErrors,
     initialEntries: existingLimitOrderEntries,
     canAddEntry: false,
+    enablePercentage: false,
   });
 
   const [maxLimitTrigerPrice, minLimitTrigerPrice] = useMemo(() => {
@@ -138,11 +139,13 @@ export function useSidecarOrders() {
     prefix: "tp",
     errorHandler: handleTPErrors,
     initialEntries: existingTpOrderEntries,
+    enablePercentage: true,
   });
   const stopLossEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "sl",
     errorHandler: handleSLErrors,
     initialEntries: existingSlOrderEntries,
+    enablePercentage: true,
   });
 
   const mockPositionInfo = useSelector(selectConfirmationBoxMockPosition);

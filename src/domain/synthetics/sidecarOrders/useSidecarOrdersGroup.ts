@@ -17,15 +17,15 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   errorHandler,
   initialEntries,
   canAddEntry = true,
+  enablePercentage = true,
 }: {
   prefix: GroupPrefix;
   errorHandler: (entry: T) => T;
   initialEntries?: (Partial<T> & { price: EntryField; sizeUsd: EntryField })[];
   canAddEntry?: boolean;
+  enablePercentage?: boolean;
 }): SidecarOrderEntryGroupBase<T> {
   const totalPositionSizeUsd = useSelector(selectConfirmationBoxSidecarOrdersTotalSizeUsd);
-
-  const enablePercentage = Boolean(totalPositionSizeUsd);
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: BigNumber | null) => {

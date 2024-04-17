@@ -7200,7 +7200,7 @@ msgstr ""
 #~ msgid "{0} {1} {2} by {3} at ${4}."
 #~ msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
 msgid "{0} {1} {2} by {3} at {4}."
 msgstr ""
 

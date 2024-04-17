@@ -18,11 +18,14 @@ export function getDefaultEntryField(
   let nextValue: BigNumber | null = null;
   let nextError = error ?? null;
 
+  const displayPercentage = Math.min(2, decimals ?? 0);
+
   if (input) {
     nextInput = input;
     nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
   } else if (value) {
-    nextInput = decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, decimals))) : "";
+    nextInput =
+      decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, displayPercentage))) : "";
     nextValue = value;
   }
 
