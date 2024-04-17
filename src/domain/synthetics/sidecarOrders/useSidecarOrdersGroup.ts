@@ -65,7 +65,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
           percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, nextField);
         }
         sizeUsd = getDefaultEntryField(USD_DECIMALS, {
-          value: getSizeUsdByPercentage(sizeUsd.value),
+          value: getSizeUsdByPercentage(percentage.value),
         });
       } else if (field === "price") {
         if (nextField) {

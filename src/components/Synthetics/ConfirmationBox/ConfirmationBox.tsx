@@ -97,7 +97,8 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import SLTPEntries from "./SidecarEntries";
+import SidecarEntries from "./SidecarEntries";
+import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
@@ -1099,7 +1100,7 @@ export function ConfirmationBox(p: Props) {
           label={label}
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries
+              <SidecarEntries
                 entriesInfo={entriesInfo}
                 marketInfo={marketInfo}
                 displayMode={type === "limit" ? "sizeUsd" : "percentage"}
@@ -1121,10 +1122,11 @@ export function ConfirmationBox(p: Props) {
                 className="SLTP-pnl-tooltip"
                 renderContent={() =>
                   entriesInfo?.entries?.map((entry, index) => {
-                    if (!entry || entry.txnType === "cancel") return;
+                    if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
 
                     const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, 2);
-                    const percentage = entry.percentage?.value && formatAmount(entry.percentage.value, 2, 0);
+                    const percentage =
+                      entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 
                     return (
                       <div className="space-between mb-xs" key={index}>

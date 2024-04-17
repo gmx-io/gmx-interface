@@ -247,7 +247,11 @@ export function useSidecarOrders() {
     };
   }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
 
-  const canCalculatePnL = !limit.entries.length;
+  const canCalculatePnL = useMemo(() => {
+    const displayableEntries = limit.entries.filter((e) => e.txnType !== "cancel");
+
+    return !displayableEntries.length;
+  }, [limit]);
 
   const stopLoss = useMemo(() => {
     const entries = stopLossEntriesInfo.entries.map((entry) => {
