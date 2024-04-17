@@ -1,8 +1,12 @@
 import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 import { useEffect, useMemo, useRef } from "react";
 import { matchPath, useHistory, useLocation } from "react-router-dom";
+import { useTradePageVersion } from "./useTradePageVersion";
+import { useChainId } from "./chains";
 
-export default function useTradeRedirect({ chainId, setTradePageVersion, tradePageVersion }) {
+export default function useTradeRedirect() {
+  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
+  const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
 

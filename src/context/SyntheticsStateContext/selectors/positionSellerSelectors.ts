@@ -2,38 +2,46 @@ import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
-import { createEnhancedSelector } from "../utils";
-import { selectClosingPositionKey, selectPositionsInfoData, selectSavedIsPnlInLeverage } from "./globalSelectors";
-import { makeSelectDecreasePositionAmounts, makeSelectNextPositionValuesForDecrease } from "./tradeSelectors";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector } from "../utils";
+import {
+  selectClosingPositionKey,
+  selectPositionsInfoData,
+  selectTokensData,
+  selectUiFeeFactor,
+} from "./globalSelectors";
+import {
+  makeSelectDecreasePositionAmounts,
+  makeSelectNextPositionValuesForDecrease,
+  makeSelectSwapRoutes,
+} from "./tradeSelectors";
 import {
   getMinCollateralFactorForPosition,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
+import { selectIsPnlInLeverage } from "./settingsSelectors";
+import { applySlippageToPrice, getSwapAmountsByFromValue } from "domain/synthetics/trade";
+import { mustNeverExist } from "lib/types";
+import { getByKey } from "lib/objects";
+import { getIsEquivalentTokens } from "domain/tokens";
 
-export const selectPositionSeller = (state: SyntheticsTradeState) => state.positionSeller;
-
-export const selectPositionSellerOrderOption = (state: SyntheticsTradeState) => state.positionSeller.orderOption;
-export const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsTradeState) =>
+export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
+export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
+export const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsState) =>
   state.positionSeller.triggerPriceInputValue;
-export const selectPositionSellerKeepLeverageRaw = (state: SyntheticsTradeState) => state.positionSeller.keepLeverage;
-export const selectPositionSellerDefaultTriggerAcceptablePriceImpactBps = (state: SyntheticsTradeState) =>
-  state.positionSeller.defaultTriggerAcceptablePriceImpactBps;
-export const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsTradeState) =>
+export const selectPositionSellerKeepLeverageRaw = (state: SyntheticsState) => state.positionSeller.keepLeverage;
+export const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsState) =>
   state.positionSeller.selectedTriggerAcceptablePriceImpactBps;
-export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsTradeState) =>
+export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =>
   state.positionSeller.closeUsdInputValue;
-export const selectPositionSellerReceiveTokenAddress = (state: SyntheticsTradeState) =>
-  state.positionSeller.receiveTokenAddress;
-export const selectPositionSellerAllowedSlippage = (state: SyntheticsTradeState) =>
-  state.positionSeller.allowedSlippage;
-export const selectPositionSellerIsSubmitting = (state: SyntheticsTradeState) => state.positionSeller.isSubmitting;
-export const selectPositionSellerPosition = createEnhancedSelector((q) => {
+const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
+export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
+export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
 });
 
-export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedSelector((q) => {
+export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -45,7 +53,7 @@ export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedS
   return q(selector);
 });
 
-const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
+const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return undefined;
@@ -61,7 +69,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-  const isPnlInLeverage = q(selectSavedIsPnlInLeverage);
+  const isPnlInLeverage = q(selectIsPnlInLeverage);
 
   return {
     collateralTokenAddress,
@@ -76,7 +84,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
   };
 });
 
-export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) => {
+export const selectPositionSellerDecreaseAmounts = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -89,8 +97,7 @@ export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) =>
   return q(selector);
 });
 
-// temporary not used
-export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createEnhancedSelector((q) => {
+const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 
   if (!decreaseAmountArgs) return undefined;
@@ -100,7 +107,7 @@ export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createEnhance
   return q(selector);
 });
 
-export const selectPositionSellerKeepLeverage = createEnhancedSelector((q) => {
+export const selectPositionSellerKeepLeverage = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return false;
@@ -114,7 +121,7 @@ export const selectPositionSellerKeepLeverage = createEnhancedSelector((q) => {
   return !disabledByCollateral;
 });
 
-export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSelector((q) => {
+export const selectPositionSellerLeverageDisabledByCollateral = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return false;
@@ -139,4 +146,71 @@ export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSe
     minCollateralFactor,
     decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
   );
+});
+
+export const selectPositionSellerAcceptablePrice = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+
+  if (!position || !decreaseAmounts?.acceptablePrice) {
+    return undefined;
+  }
+
+  const orderOption = q(selectPositionSellerOrderOption);
+  const allowedSlippage = q(selectPositionSellerAllowedSlippage);
+
+  if (orderOption === OrderOption.Market) {
+    return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
+  } else if (orderOption === OrderOption.Trigger) {
+    return decreaseAmounts.acceptablePrice;
+  } else {
+    mustNeverExist(orderOption);
+  }
+});
+
+export const selectPositionSellerReceiveToken = createSelector((q) => {
+  const orderOption = q(selectPositionSellerOrderOption);
+  const position = q(selectPositionSellerPosition);
+  const isTrigger = orderOption === OrderOption.Trigger;
+  const tokensData = q(selectTokensData);
+  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+});
+
+export const selectPositionSellerShouldSwap = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const receiveToken = q(selectPositionSellerReceiveToken);
+
+  return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
+});
+
+export const selectPositionSellerSwapRoutes = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+
+  const selectSwapRoutes = makeSelectSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
+  return q(selectSwapRoutes);
+});
+
+export const selectPositionSellerSwapAmounts = createSelector((q) => {
+  const shouldSwap = q(selectPositionSellerShouldSwap);
+  const receiveToken = q(selectPositionSellerReceiveToken);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const position = q(selectPositionSellerPosition);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
+    return undefined;
+  }
+
+  const findSwapPath = q(selectPositionSellerSwapRoutes).findSwapPath;
+
+  return getSwapAmountsByFromValue({
+    tokenIn: position.collateralToken,
+    tokenOut: receiveToken,
+    amountIn: decreaseAmounts.receiveTokenAmount,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor,
+  });
 });

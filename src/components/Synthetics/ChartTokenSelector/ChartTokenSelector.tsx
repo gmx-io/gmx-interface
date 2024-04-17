@@ -7,7 +7,6 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
-  useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -19,6 +18,8 @@ import { getByKey } from "lib/objects";
 import { useCallback, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -26,10 +27,9 @@ type Props = {
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken } = props;
-
-  const { isSwap } = useTradeboxTradeFlags();
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const { options, selectedToken } = props;
 
   const filteredTokens: Token[] | undefined = options?.filter((item) => {
     return (

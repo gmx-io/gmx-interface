@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -21,50 +21,50 @@ import "./DashboardV2.css";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import PageTitle from "components/PageTitle/PageTitle";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
-import { useInfoTokens } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { formatDate } from "lib/dates";
-import { arrayURLFetcher } from "lib/fetcher";
-import {
-  sumBigNumbers,
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  formatKeyAmount,
-  numberWithCommas,
-  BN_ZERO,
-  formatTokenAmount,
-  formatUsd,
-} from "lib/numbers";
-import AssetDropdown from "./AssetDropdown";
-import useWallet from "lib/wallets/useWallet";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import PageTitle from "components/PageTitle/PageTitle";
-import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import {
   getMarketIndexName,
   getMarketPoolName,
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { EMPTY_OBJECT } from "lib/objects";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { convertToUsd } from "domain/synthetics/tokens";
-import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { useInfoTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { formatDate } from "lib/dates";
+import { arrayURLFetcher } from "lib/fetcher";
+import {
+  BN_ZERO,
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatKeyAmount,
+  formatTokenAmount,
+  formatUsd,
+  numberWithCommas,
+  sumBigNumbers,
+} from "lib/numbers";
+import { EMPTY_OBJECT } from "lib/objects";
+import { useTradePageVersion } from "lib/useTradePageVersion";
+import useWallet from "lib/wallets/useWallet";
 import { groupBy } from "lodash";
+import AssetDropdown from "./AssetDropdown";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -76,7 +76,7 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = bigNumberify(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
+      cv.openInterest = BigNumber.from(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
       acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
       acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
@@ -94,10 +94,10 @@ function getPositionStats(positionStats) {
 
 function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   if (!fees || !infoTokens) {
-    return bigNumberify(0);
+    return BN_ZERO;
   }
 
-  let currentFeesUsd = bigNumberify(0);
+  let currentFeesUsd = BN_ZERO;
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
@@ -112,10 +112,9 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   return currentFeesUsd;
 }
 
-export default function DashboardV2(props) {
+export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
-  const settings = useSettings();
   const totalVolume = useTotalVolume();
   const arbitrumOverview = useV2Stats(ARBITRUM);
   const avalancheOverview = useV2Stats(AVALANCHE);
@@ -136,9 +135,10 @@ export default function DashboardV2(props) {
       fetcher: arrayURLFetcher,
     }
   );
+  const [tradePageVersion] = useTradePageVersion();
 
-  const isV1 = props.tradePageVersion === 1;
-  const isV2 = props.tradePageVersion === 2;
+  const isV1 = tradePageVersion === 1;
+  const isV2 = tradePageVersion === 2;
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -184,8 +184,8 @@ export default function DashboardV2(props) {
   );
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
+  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
   const { data: currentFees } = useSWR(
     infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
@@ -195,7 +195,7 @@ export default function DashboardV2(props) {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
+            contractFetcher(undefined, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
@@ -204,7 +204,7 @@ export default function DashboardV2(props) {
             ])
           )
         ).then((fees) => {
-          return fees.reduce(
+          return fees.reduce<Record<string, BigNumber>>(
             (acc, cv, i) => {
               const feeUSD = getCurrentFeesUsd(
                 getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
@@ -215,7 +215,7 @@ export default function DashboardV2(props) {
               acc.total = acc.total.add(feeUSD);
               return acc;
             },
-            { total: bigNumberify(0) }
+            { total: BN_ZERO }
           );
         });
       },
@@ -228,7 +228,7 @@ export default function DashboardV2(props) {
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const shouldIncludeCurrrentFees =
     feesSummaryByChain[chainId]?.lastUpdatedAt &&
-    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
+    parseInt(String(Date.now() / 1000)) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
@@ -253,7 +253,7 @@ export default function DashboardV2(props) {
     active
   );
 
-  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
 
   let { [AVALANCHE]: avaxStakedGmx, [ARBITRUM]: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
 
@@ -284,7 +284,7 @@ export default function DashboardV2(props) {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
   }
 
-  let tvl;
+  let tvl: BigNumber | undefined = undefined;
   if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
     tvl = glpMarketCap
       .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
@@ -304,7 +304,7 @@ export default function DashboardV2(props) {
     totalTreasuryFundUsd = ethTreasuryFundUsd.add(glpTreasuryFundUsd).add(usdcTreasuryFund);
   }
 
-  let adjustedUsdgSupply = bigNumberify(0);
+  let adjustedUsdgSupply = BN_ZERO;
 
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];
@@ -415,7 +415,7 @@ export default function DashboardV2(props) {
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
 
-  let gmxDistributionData = useMemo(() => {
+  const gmxDistributionData = useMemo(() => {
     let arr = [
       {
         name: t`staked`,
@@ -439,26 +439,32 @@ export default function DashboardV2(props) {
 
   const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
 
-  let stableGlp = 0;
-  let totalGlp = 0;
+  const { glpPool, stableGlp, totalGlp } = useMemo(() => {
+    let stableGlp = 0;
+    let totalGlp = 0;
+    const glpPool = tokenList
+      .map((token) => {
+        const tokenInfo = infoTokens[token.address];
+        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
+          const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+          if (tokenInfo.isStable) {
+            stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          }
+          totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          return {
+            fullname: token.name,
+            name: token.symbol,
+            color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+            value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
+          };
+        }
+        return null;
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+      .filter(<T extends unknown>(x: T): x is NonNullable<T> => Boolean(x));
 
-  const glpPool = tokenList.map((token) => {
-    const tokenInfo = infoTokens[token.address];
-    if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-      if (tokenInfo.isStable) {
-        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-      }
-      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-      return {
-        fullname: token.name,
-        name: token.symbol,
-        color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
-        value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
-      };
-    }
-    return null;
-  });
+    return { glpPool, stableGlp, totalGlp };
+  }, [adjustedUsdgSupply, infoTokens, tokenList]);
 
   let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
 
@@ -803,15 +809,9 @@ export default function DashboardV2(props) {
           </div>
           <PageTitle
             title={t`Tokens`}
-            afterTitle={
-              <VersionSwitch
-                className="ml-base"
-                currentVersion={props.tradePageVersion}
-                setCurrentVersion={props.setTradePageVersion}
-              />
-            }
+            afterTitle={<VersionSwitch className="ml-base" />}
             subtitle={
-              props.tradePageVersion === 1 ? (
+              tradePageVersion === 1 ? (
                 <>
                   <Trans>
                     GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
@@ -1188,12 +1188,7 @@ export default function DashboardV2(props) {
               </>
             )}
             {isV2 && getIsSyntheticsSupported(chainId) && (
-              <SyntheticsStateContextProvider
-                savedIsPnlInLeverage={settings.isPnlInLeverage}
-                savedShowPnlAfterFees={settings.showPnlAfterFees}
-                skipLocalReferralCode={false}
-                pageType="pools"
-              >
+              <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
                 <MarketsList />
               </SyntheticsStateContextProvider>
             )}

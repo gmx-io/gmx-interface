@@ -1,6 +1,6 @@
 import CustomErrors from "abis/CustomErrors.json";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
-import { PublicClient, createPublicClient, http } from "viem";
+import { createPublicClient, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -114,7 +114,7 @@ export class Multicall {
     });
   }
 
-  viemClient: PublicClient;
+  viemClient: ReturnType<typeof Multicall.getViemClient>;
 
   constructor(public chainId: number, public rpcUrl: string) {
     this.viemClient = Multicall.getViemClient(chainId, rpcUrl);

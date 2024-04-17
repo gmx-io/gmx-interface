@@ -31,6 +31,7 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import { getExplorerUrl } from "config/chains";
+import { SetPendingTransactions } from "domain/legacy";
 
 type Props = {
   toastTimestamp: number;
@@ -234,7 +235,7 @@ export function OrdersStatusNotificiation({
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   toastTimestamp: number;
-  setPendingTxns: (txns: string[]) => void;
+  setPendingTxns: SetPendingTransactions;
 }) {
   const [isCancelOrderProcessing, setIsCancelOrderProcessing] = useState(false);
   const { chainId } = useChainId();

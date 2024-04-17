@@ -97,8 +97,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     null
   );
 
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
+  const gasLimits = useGasLimits(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
 
   // fee that is used as a approx basis to calculate

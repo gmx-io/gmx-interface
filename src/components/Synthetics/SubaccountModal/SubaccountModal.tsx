@@ -53,22 +53,23 @@ import { SubaccountNotification } from "../StatusNotification/SubaccountNotifica
 import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 export type FormState = "empty" | "inactive" | "activated";
 
-export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
+export function SubaccountModal() {
   const [isVisible, setIsVisible] = useSubaccountModalOpen();
 
   return (
     <Modal label={t`One-Click Trading`} isVisible={isVisible} setIsVisible={setIsVisible}>
       <div className="SubaccountModal-content">
-        <MainView setPendingTxns={setPendingTxns} />
+        <MainView />
       </div>
     </Modal>
   );
 }
 
-const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void }) => {
+const MainView = memo(() => {
   const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
@@ -86,6 +87,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
+  const [, setPendingTxns] = usePendingTxns();
 
   const maxAllowedActionsInputRef = useRef<HTMLInputElement>(null);
   const topUpInputRef = useRef<HTMLInputElement>(null);
@@ -507,7 +509,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     ]
   );
 
-  const { gasPrice } = useGasPrice(chainId);
+  const gasPrice = useGasPrice(chainId);
 
   const subaccount = useSubaccount(null, 1);
 

@@ -32,11 +32,11 @@ export type RebatesInfoResult = {
   claimablePositionPriceImpactFees: RebateInfoItem[];
 };
 
-export function useRebatesInfo(chainId: number): RebatesInfoResult {
+export function useRebatesInfoRequest(chainId: number, enabled: boolean): RebatesInfoResult {
   const { account } = useWallet();
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = chainId && client && account ? [chainId, "useRebatesInfo", account] : null;
+  const key = enabled && chainId && client && account ? [chainId, "useRebatesInfo", account] : null;
 
   const { data } = useSWR<RawClaimableCollateral[]>(key, {
     fetcher: async () => {

@@ -22,7 +22,8 @@ export type TooltipPosition =
 
 type Props = {
   handle: ReactNode;
-  renderContent: () => ReactNode;
+  renderContent?: () => ReactNode;
+  content?: ReactNode | undefined | null;
   position?: TooltipPosition;
   trigger?: string;
   className?: string;
@@ -37,6 +38,7 @@ type Props = {
 export default function Tooltip({
   handle,
   renderContent,
+  content,
   position = DEFAULT_TOOLTIP_POSITION,
   trigger = "hover",
   className,
@@ -157,7 +159,7 @@ export default function Tooltip({
       </span>
       {visible && (
         <div ref={popupRef} className={cx(["Tooltip-popup", computedPlacement])}>
-          {renderContent()}
+          {content ?? renderContent?.()}
         </div>
       )}
     </span>

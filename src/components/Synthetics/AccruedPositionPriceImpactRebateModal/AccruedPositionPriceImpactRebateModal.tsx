@@ -2,6 +2,11 @@ import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  selectClaimsPriceImpactAccruedTotal,
+  selectClaimsGroupedPositionPriceImpactAccruedFees,
+} from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
@@ -9,68 +14,42 @@ import { BigNumber } from "ethers";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
-import { calcTotalRebateUsd } from "../Claims/utils";
 
-export function AccruedPositionPriceImpactRebateModal({
-  isVisible,
-  onClose,
-  accruedPositionPriceImpactFees,
-}: {
-  isVisible: boolean;
-  onClose: () => void;
-  accruedPositionPriceImpactFees: RebateInfoItem[];
-}) {
-  const tokensData = useTokensData();
-  const totalUsd = useMemo(
-    () => formatDeltaUsd(calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true)),
-    [accruedPositionPriceImpactFees, tokensData]
-  );
-  const reducedByMarketItemGroups = useMemo(() => {
-    const groupedMarkets: Record<string, number> = {};
-    return accruedPositionPriceImpactFees.reduce((acc, rebateItem) => {
-      const key = rebateItem.marketAddress;
+export const AccruedPositionPriceImpactRebateModal = memo(
+  ({ isVisible, onClose }: { isVisible: boolean; onClose: () => void }) => {
+    const totalUsd = useSelector(selectClaimsPriceImpactAccruedTotal);
+    const groups = useSelector(selectClaimsGroupedPositionPriceImpactAccruedFees);
 
-      if (typeof groupedMarkets[key] === "number") {
-        const index = groupedMarkets[key];
-        acc[index].push(rebateItem);
-      } else {
-        groupedMarkets[key] = acc.length;
-        acc.push([rebateItem]);
-      }
-
-      return acc;
-    }, [] as RebateInfoItem[][]);
-  }, [accruedPositionPriceImpactFees]);
-
-  return (
-    <Modal
-      label={t`Accrued Price Impact Rebates`}
-      className="Confirmation-box ClaimableModal"
-      setIsVisible={onClose}
-      isVisible={isVisible}
-    >
-      <div className="ConfirmationBox-main">
-        <div className="text-center">Total {totalUsd}</div>
-      </div>
-      <div className="">
-        <div className="App-card-content">
-          <div className="App-card-divider" />
-          <div className="ClaimSettleModal-header">
-            <div>
-              <Trans>MARKET</Trans>
-            </div>
-            <div className="ClaimSettleModal-header-right">
-              <Trans>REBATE</Trans>
-            </div>
-          </div>
-          {reducedByMarketItemGroups.map((rebateItems) => (
-            <Row key={rebateItems[0].marketAddress} rebateItems={rebateItems} />
-          ))}
+    return (
+      <Modal
+        label={t`Accrued Price Impact Rebates`}
+        className="Confirmation-box ClaimableModal"
+        setIsVisible={onClose}
+        isVisible={isVisible}
+      >
+        <div className="ConfirmationBox-main">
+          <div className="text-center">Total {formatDeltaUsd(totalUsd)}</div>
         </div>
-      </div>
-    </Modal>
-  );
-}
+        <div className="">
+          <div className="App-card-content">
+            <div className="App-card-divider" />
+            <div className="ClaimSettleModal-header">
+              <div>
+                <Trans>MARKET</Trans>
+              </div>
+              <div className="ClaimSettleModal-header-right">
+                <Trans>REBATE</Trans>
+              </div>
+            </div>
+            {groups.map((rebateItems) => (
+              <Row key={rebateItems[0].marketAddress} rebateItems={rebateItems} />
+            ))}
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+);
 
 const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
   const marketsInfoData = useMarketsInfoData();

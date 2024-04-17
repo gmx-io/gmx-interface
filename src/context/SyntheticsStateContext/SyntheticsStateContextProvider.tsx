@@ -1,7 +1,11 @@
+import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
+import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
   PositionsConstantsResult,
@@ -9,20 +13,21 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
+import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { TradeState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
-export type SyntheticsTradeState = {
+export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
     chainId: number;
@@ -34,33 +39,40 @@ export type SyntheticsTradeState = {
     positionsConstants: PositionsConstantsResult;
     uiFeeFactor: BigNumber;
     userReferralInfo: UserReferralInfo | undefined;
-    savedIsPnlInLeverage: boolean;
-    savedShowPnlAfterFees: boolean;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
+
+    keepLeverage: boolean | undefined;
+    setKeepLeverage: (value: boolean) => void;
+
+    gasLimits: ReturnType<typeof useGasLimits>;
+    gasPrice: ReturnType<typeof useGasPrice>;
+  };
+  claims: {
+    accruedPositionPriceImpactFees: RebateInfoItem[];
+    claimablePositionPriceImpactFees: RebateInfoItem[];
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
-  tradebox: TradeState;
+  tradebox: TradeboxState;
+  orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
 };
 
-const StateCtx = createContext<SyntheticsTradeState | null>(null);
+const StateCtx = createContext<SyntheticsState | null>(null);
+
+let latestState: SyntheticsState | null = null;
 
 export function SyntheticsStateContextProvider({
   children,
-  savedIsPnlInLeverage,
-  savedShowPnlAfterFees,
   skipLocalReferralCode,
   pageType,
 }: {
   children: ReactNode;
-  savedIsPnlInLeverage: boolean;
-  savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: SyntheticsTradeState["pageType"];
+  pageType: SyntheticsState["pageType"];
 }) {
   const { chainId: selectedChainId } = useChainId();
 
@@ -84,10 +96,16 @@ export function SyntheticsStateContextProvider({
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
+    chainId,
+    pageType === "trade"
+  );
+
+  const settings = useSettings();
 
   const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
     account,
-    showPnlInLeverage: savedIsPnlInLeverage,
+    showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
     pricesUpdatedAt: marketsInfo.pricesUpdatedAt,
     skipLocalReferralCode,
@@ -99,18 +117,24 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
-  const settings = useSettings();
 
   const tradeboxState = useTradeboxState(chainId, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
 
+  const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
+
   const positionSellerState = usePositionSellerState(chainId);
   const positionEditorState = usePositionEditorState(chainId);
 
+  const gasLimits = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
+
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+
   const state = useMemo(() => {
-    const s: SyntheticsTradeState = {
+    const s: SyntheticsState = {
       pageType,
       globals: {
         chainId,
@@ -126,15 +150,20 @@ export function SyntheticsStateContextProvider({
         uiFeeFactor,
         userReferralInfo,
 
-        savedIsPnlInLeverage,
-        savedShowPnlAfterFees,
-
         closingPositionKey,
         setClosingPositionKey,
+
+        gasLimits,
+        gasPrice,
+
+        keepLeverage,
+        setKeepLeverage,
       },
+      claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
       tradebox: tradeboxState,
+      orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
     };
@@ -152,24 +181,37 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
-    savedIsPnlInLeverage,
-    savedShowPnlAfterFees,
     closingPositionKey,
+    gasLimits,
+    gasPrice,
+    keepLeverage,
+    setKeepLeverage,
+    accruedPositionPriceImpactFees,
+    claimablePositionPriceImpactFees,
     leaderboard,
     settings,
     tradeboxState,
+    orderEditor,
     positionSellerState,
     positionEditorState,
   ]);
 
+  latestState = state;
+
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
 }
 
-export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsTradeState) => Selected) {
+export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
   const value = useContext(StateCtx);
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
+  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+}
 
-  return useContextSelector(StateCtx as Context<SyntheticsTradeState>, selector) as Selected;
+export function useCalcSelector() {
+  return useCallback(function useCalcSelector<Selected>(selector: (state: SyntheticsState) => Selected) {
+    if (!latestState) throw new Error("Used calcSelector outside of SyntheticsStateContextProvider");
+    return selector(latestState);
+  }, []);
 }

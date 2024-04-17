@@ -22,7 +22,8 @@ type Props = PropsWithChildren<{
    * Takes precedence over `children`
    */
   handle?: React.ReactNode;
-  renderContent: () => React.ReactNode;
+  renderContent?: () => React.ReactNode;
+  content?: React.ReactNode | undefined | null;
   position?: TooltipPosition;
   trigger?: string;
   className?: string;
@@ -49,6 +50,7 @@ type Coords = {
 export default function TooltipWithPortal({
   handle,
   renderContent,
+  content,
   position = DEFAULT_TOOLTIP_POSITION,
   trigger = "hover",
   className,
@@ -205,7 +207,7 @@ export default function TooltipWithPortal({
         <Portal>
           <div style={portalStyle} className={portalClassName}>
             <div ref={popupRef} className={cx(["Tooltip-popup z-index-1001", computedPlacement])} style={popupStyle}>
-              {renderContent()}
+              {content ?? renderContent?.()}
             </div>
           </div>
         </Portal>

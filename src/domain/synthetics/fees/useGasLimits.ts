@@ -14,11 +14,7 @@ import {
 import { GasLimitsConfig } from "./types";
 import { BigNumber } from "ethers";
 
-type GasLimitsResult = {
-  gasLimits?: GasLimitsConfig;
-};
-
-export function useGasLimits(chainId: number): GasLimitsResult {
+export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
 
@@ -85,7 +81,5 @@ export function useGasLimits(chainId: number): GasLimitsResult {
     },
   });
 
-  return {
-    gasLimits: data,
-  };
+  return data;
 }

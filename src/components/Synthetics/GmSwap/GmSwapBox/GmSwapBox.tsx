@@ -58,6 +58,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import Tab from "components/Tab/Tab";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -92,9 +93,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   onSelectMarket: (marketAddress: string) => void;
-  setPendingTxns: (txns: any) => void;
   operation: Operation;
-  shouldDisableValidation?: boolean;
   mode: Mode;
   setMode: Dispatch<SetStateAction<Mode>>;
   setOperation: Dispatch<SetStateAction<Operation>>;
@@ -111,22 +110,14 @@ const MODE_LABELS = {
 };
 
 export function GmSwapBox(p: Props) {
-  const {
-    operation,
-    mode,
-    setMode,
-    setOperation,
-    onSelectMarket,
-    marketsInfoData,
-    tokensData,
-    shouldDisableValidation,
-  } = p;
+  const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
   const { i18n } = useLingui();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
   const searchParams = useSearchParams<SearchParams>();
   const marketAddress = p.selectedMarketAddress;
+  const { shouldDisableValidationForTesting } = useSettings();
 
   const { chainId } = useChainId();
   const { account } = useWallet();
@@ -136,8 +127,8 @@ export function GmSwapBox(p: Props) {
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
+  const gasLimits = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -470,7 +461,7 @@ export function GmSwapBox(p: Props) {
       return {
         text: error,
         error,
-        isDisabled: !shouldDisableValidation,
+        isDisabled: !shouldDisableValidationForTesting,
         onSubmit,
       };
     }
@@ -498,7 +489,7 @@ export function GmSwapBox(p: Props) {
     marketTokenAmount,
     openConnectModal,
     shortCollateralLiquidityUsd,
-    shouldDisableValidation,
+    shouldDisableValidationForTesting,
     longTokenInputState?.token,
     shortTokenInputState?.token,
   ]);
@@ -1128,14 +1119,13 @@ export function GmSwapBox(p: Props) {
         error={submitState.error}
         isDeposit={isDeposit}
         executionFee={executionFee}
-        setPendingTxns={p.setPendingTxns}
         onSubmitted={() => {
           setStage("swap");
         }}
         onClose={() => {
           setStage("swap");
         }}
-        shouldDisableValidation={shouldDisableValidation}
+        shouldDisableValidation={shouldDisableValidationForTesting}
       />
     </div>
   );
