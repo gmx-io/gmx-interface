@@ -1,4 +1,5 @@
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { convertTokenAddress } from "config/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -597,27 +598,39 @@ export const selectTradeboxSelectedPosition = createSelectorDeprecated(
   (selectedPositionKey, positionsInfoData) => getByKey(positionsInfoData, selectedPositionKey)
 );
 
-export const selectTradeboxExistingOrder = createSelectorDeprecated(
-  [selectTradeboxSelectedPositionKey, selectOrdersInfoData],
-  (selectedPositionKey, ordersInfoData) => {
-    if (!selectedPositionKey) {
-      return undefined;
-    }
+export const selectTradeboxExistingOrder = createSelector((q) => {
+  const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
 
-    return Object.values(ordersInfoData || {})
-      .filter((order) => !isSwapOrderType(order.orderType))
-      .find((order) => {
-        if (isSwapOrderType(order.orderType)) {
-          return false;
-        }
-
-        return (
-          getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong) ===
-          selectedPositionKey
-        );
-      });
+  if (!selectedPositionKey) {
+    return undefined;
   }
-);
+
+  const chainId = q(selectChainId);
+  const ordersInfoData = q(selectOrdersInfoData);
+
+  return Object.values(ordersInfoData || {})
+    .filter((order) => !isSwapOrderType(order.orderType))
+    .find((order) => {
+      if (isSwapOrderType(order.orderType)) {
+        return false;
+      }
+
+      const positionKey = getPositionKey(
+        order.account,
+        order.marketAddress,
+        order.shouldUnwrapNativeToken
+          ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
+          : order.targetCollateralToken.address,
+        order.isLong,
+        order.shouldUnwrapNativeToken
+          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
+            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
+          : undefined
+      );
+
+      return positionKey === selectedPositionKey;
+    });
+});
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -626,6 +639,7 @@ export type AvailableMarketsOptions = {
   collateralWithPosition?: TokenData;
   marketWithOrder?: MarketInfo;
   collateralWithOrder?: TokenData;
+  collateralWithOrderShouldUnwrapNativeToken?: boolean;
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: BigNumber;
@@ -704,6 +718,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector(function sel
     if (availableOrder) {
       result.marketWithOrder = getByKey(marketsInfoData, availableOrder.marketAddress);
       result.collateralWithOrder = availableOrder.targetCollateralToken;
+      result.collateralWithOrderShouldUnwrapNativeToken = availableOrder.shouldUnwrapNativeToken;
     }
   }
 

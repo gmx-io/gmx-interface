@@ -6726,7 +6726,7 @@ msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} mar
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing order with {0} as collateral. <0>Switch to {1} collateral</0>."
+msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
