@@ -602,7 +602,7 @@ export function ConfirmationBox(p: Props) {
       marketAddress: marketInfo.marketTokenAddress,
       swapPath: [],
       allowedSlippage,
-      initialCollateralAddress: fromToken?.address,
+      initialCollateralAddress: collateralToken.address,
       receiveTokenAddress: collateralToken.address,
       isLong,
       indexToken: marketInfo.indexToken,
