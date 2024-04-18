@@ -6733,6 +6733,10 @@ msgid "You have an existing order with {symbol} as collateral. <0>Switch to {sym
 msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
+msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 
