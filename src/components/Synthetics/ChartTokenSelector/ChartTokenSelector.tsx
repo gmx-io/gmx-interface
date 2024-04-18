@@ -8,6 +8,8 @@ import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { TradeType } from "domain/synthetics/trade";
@@ -18,8 +20,6 @@ import { getByKey } from "lib/objects";
 import { useCallback, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -27,9 +27,12 @@ type Props = {
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
-  const [searchKeyword, setSearchKeyword] = useState("");
   const { options, selectedToken } = props;
+
+  const tradeType = useSelector(selectTradeboxTradeType);
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const isSwap = tradeType === TradeType.Swap;
 
   const filteredTokens: Token[] | undefined = options?.filter((item) => {
     return (
@@ -44,7 +47,7 @@ export default function ChartTokenSelector(props: Props) {
   const handleMarketSelect = useCallback(
     (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
       setSearchKeyword("");
-      const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType);
+      const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
 
       if (chosenMarket?.marketTokenAddress && chosenMarket.tradeType !== TradeType.Swap) {
         const marketInfo = getByKey(marketsInfoData, chosenMarket.marketTokenAddress);
@@ -65,7 +68,7 @@ export default function ChartTokenSelector(props: Props) {
         }
       }
     },
-    [chooseSuitableMarket, marketsInfoData]
+    [chooseSuitableMarket, marketsInfoData, tradeType]
   );
 
   const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();

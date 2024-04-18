@@ -44,6 +44,7 @@ export function chooseSuitableMarket({
   isSwap,
   positionsInfo,
   preferredTradeType,
+  currentTradeType,
 }: {
   indexTokenAddress: string;
   maxLongLiquidityPool: TokenOption;
@@ -51,6 +52,7 @@ export function chooseSuitableMarket({
   isSwap?: boolean;
   positionsInfo?: PositionsInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
+  currentTradeType?: TradeType;
 }):
   | { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType; collateralTokenAddress?: string }
   | undefined {
@@ -75,10 +77,15 @@ export function chooseSuitableMarket({
     });
 
     if (!largestLongPosition && !largestShortPosition) {
+      let marketTokenAddress =
+        currentTradeType === TradeType.Short
+          ? maxShortLiquidityPool.marketTokenAddress
+          : maxLongLiquidityPool.marketTokenAddress;
+
       return {
         indexTokenAddress,
-        marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
-        tradeType: TradeType.Long,
+        marketTokenAddress: marketTokenAddress,
+        tradeType: currentTradeType ?? TradeType.Long,
       };
     }
 

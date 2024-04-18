@@ -17,10 +17,18 @@ import { getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { MarketsInfoData } from "../markets";
 import { OrderType } from "../orders/types";
-import { PositionInfo } from "../positions";
+import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  createGetMaxLongShortLiquidityPool,
+  selectTradeboxGetMaxLongShortLiquidityPool,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type TradeStage = "trade" | "confirmation" | "processing";
 
@@ -69,10 +77,11 @@ export function useTradeboxState(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
+    positionsInfoData?: PositionsInfoData;
     tokensData?: TokensData;
   }
 ) {
-  const { marketsInfoData, tokensData } = p;
+  const { marketsInfoData, tokensData, positionsInfoData } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
 
@@ -263,9 +272,9 @@ export function useTradeboxState(
           } else if (!marketInfo.isLongTokenStable && marketInfo.isShortTokenStable) {
             collateralAddress = marketInfo.shortTokenAddress;
           } else if (newState.tradeType === TradeType.Long) {
-            collateralAddress = marketInfo.shortTokenAddress;
-          } else if (newState.tradeType === TradeType.Short) {
             collateralAddress = marketInfo.longTokenAddress;
+          } else if (newState.tradeType === TradeType.Short) {
+            collateralAddress = marketInfo.shortTokenAddress;
           }
 
           set(newState, ["collaterals", marketAddress, longOrShort], collateralAddress);
@@ -334,16 +343,51 @@ export function useTradeboxState(
   const collateralAddress = marketAddress && get(storedOptions, ["collaterals", marketAddress, longOrShort]);
   const collateralToken = getByKey(tokensData, collateralAddress);
 
+  const getMaxLongShortLiquidityPool = useMemo(
+    () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || []),
+    [availableTokensOptions.sortedAllMarkets]
+  );
   const setTradeType = useCallback(
     (tradeType: TradeType) => {
       setStoredOptions((oldState) => {
-        return {
-          ...oldState!,
-          tradeType,
-        };
+        const tokenAddress = oldState?.tokens.indexTokenAddress;
+        if (!tokenAddress) {
+          return oldState;
+        }
+        const token = getByKey(tokensData, tokenAddress);
+
+        if (!token) return;
+
+        const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
+        const patch = chooseSuitableMarket({
+          indexTokenAddress: tokenAddress,
+          maxLongLiquidityPool,
+          maxShortLiquidityPool,
+          isSwap: tradeType === TradeType.Swap,
+          positionsInfo: positionsInfoData,
+          preferredTradeType: tradeType,
+          currentTradeType: oldState?.tradeType,
+        });
+
+        if (!patch) {
+          return oldState;
+        }
+
+        // Noop: as index token is the same
+        set(oldState, ["tokens", "indexTokenAddress"], patch.indexTokenAddress);
+        set(oldState, ["tradeType"], tradeType);
+        const longOrShort = tradeType === TradeType.Long ? "long" : "short";
+
+        if (patch.marketTokenAddress) {
+          set(oldState, ["markets", patch.indexTokenAddress, longOrShort], patch.marketTokenAddress);
+          set(oldState, ["collaterals", patch.marketTokenAddress, longOrShort], patch.collateralTokenAddress);
+        }
+
+        return oldState;
       });
     },
-    [setStoredOptions]
+    [getMaxLongShortLiquidityPool, positionsInfoData, setStoredOptions, tokensData]
   );
 
   const setTradeMode = useCallback(

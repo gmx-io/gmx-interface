@@ -1,4 +1,4 @@
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BN_ZERO } from "lib/numbers";
@@ -23,6 +23,10 @@ const selectSortedAllMarkets = createSelector((q) => q(selectTradeboxAvailableTo
 export const selectTradeboxGetMaxLongShortLiquidityPool = createSelector((q) => {
   const sortedAllMarkets = q(selectSortedAllMarkets);
 
+  return createGetMaxLongShortLiquidityPool(sortedAllMarkets);
+});
+
+export function createGetMaxLongShortLiquidityPool(sortedAllMarkets: MarketInfo[]) {
   const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {
     const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
     const maxShortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
@@ -51,4 +55,4 @@ export const selectTradeboxGetMaxLongShortLiquidityPool = createSelector((q) => 
       maxShortLiquidityPool,
     };
   };
-});
+}

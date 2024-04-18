@@ -13,7 +13,11 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   const tokensData = q(selectTokensData);
   const setTradeConfig = q(selectTradeboxSetTradeConfig);
 
-  const chooseSuitableMarketWrapped = (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy) => {
+  const chooseSuitableMarketWrapped = (
+    tokenAddress: string,
+    preferredTradeType?: PreferredTradeTypePickStrategy,
+    currentTradeType?: TradeType
+  ) => {
     const token = getByKey(tokensData, tokenAddress);
 
     if (!token) return;
@@ -27,6 +31,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
       isSwap: tradeType === TradeType.Swap,
       positionsInfo,
       preferredTradeType: preferredTradeType ?? tradeType,
+      currentTradeType,
     });
 
     if (!suitableParams) return;
