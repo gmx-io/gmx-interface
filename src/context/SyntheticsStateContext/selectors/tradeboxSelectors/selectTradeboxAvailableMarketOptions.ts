@@ -1,3 +1,6 @@
+import { QueryFunction } from "@taskworld.com/rereselect";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -5,19 +8,32 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectTradeboxCollateralTokenAddress,
   selectTradeboxExistingOrder,
+  selectTradeboxFocusedInput,
+  selectTradeboxFromTokenAddress,
+  selectTradeboxFromTokenInputValue,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsLeverageEnabled,
+  selectTradeboxLeverageOption,
   selectTradeboxSelectedPosition,
+  selectTradeboxSelectedPositionKey,
+  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxToTokenAddress,
+  selectTradeboxToTokenInputValue,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
+  selectTradeboxTradeType,
+  selectTradeboxTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getFeeItem } from "domain/synthetics/fees/utils";
 import {
+  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
   isMarketIndexToken,
-  MarketInfo,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
@@ -26,8 +42,9 @@ import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -45,6 +62,7 @@ export type AvailableMarketsOptions = {
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: BigNumber;
+  minPriceImpactPositionFeeBps?: BigNumber;
   isNoSufficientLiquidityInAnyMarket?: boolean;
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
@@ -56,7 +74,8 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
   const positionsInfo = q(selectPositionsInfoData);
   const ordersInfo = q(selectOrdersInfoData);
-  const increaseSizeUsd = q(selectTradeboxIncreasePositionAmounts)?.sizeDeltaUsd;
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const increaseSizeUsd = increaseAmounts?.sizeDeltaUsd;
   const hasExistingPosition = Boolean(q(selectTradeboxSelectedPosition));
   const hasExistingOrder = Boolean(q(selectTradeboxExistingOrder));
 
@@ -152,8 +171,61 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
 
       result.minPriceImpactMarket = bestMarket;
       result.minPriceImpactBps = acceptablePriceDeltaBps;
+
+      const bestMarketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, bestMarket.marketTokenAddress)!;
+
+      const positionFeeBeforeDiscount = getFeeItem(
+        bestMarketIncreasePositionAmounts.positionFeeUsd.add(bestMarketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+        bestMarketIncreasePositionAmounts.sizeDeltaUsd
+      );
+
+      result.minPriceImpactPositionFeeBps = positionFeeBeforeDiscount?.bps;
     }
   }
 
   return result;
 });
+
+function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
+  const tokensData = q(selectTokensData);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+  const leverageOption = q(selectTradeboxLeverageOption);
+  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const focusedInput = q(selectTradeboxFocusedInput);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const positionKey = q(selectTradeboxSelectedPositionKey);
+
+  const selector = makeSelectIncreasePositionAmounts({
+    collateralTokenAddress,
+    fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+    indexTokenAddress: toTokenAddress,
+    indexTokenAmount: toTokenAmount,
+    initialCollateralAmount: fromTokenAmount,
+    initialCollateralTokenAddress: fromTokenAddress,
+    leverage,
+    marketAddress,
+    positionKey,
+    strategy: isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent",
+    tradeMode,
+    tradeType,
+    triggerPrice,
+    tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
+  });
+
+  return q(selector);
+}
