@@ -192,7 +192,7 @@ export const useUserEarnings = (chainId: number) => {
           if (!balance || balance.eq(0)) return;
 
           const price = token.prices.maxPrice;
-          const expected365d = apr.mul(balance).mul(price).div(expandDecimals(1, 22));
+          const expected365d = apr.mul(balance).mul(price).div(expandDecimals(1, 50));
           result.allMarkets.expected365d = result.allMarkets.expected365d.add(expected365d);
         }
       });

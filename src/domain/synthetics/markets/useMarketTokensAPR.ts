@@ -14,9 +14,12 @@ import { useMarketTokensData } from "./useMarketTokensData";
 import { getByKey } from "lib/objects";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import useIncentiveStats from "../common/useIncentiveStats";
+import { getBorrowingFactorPerPeriod } from "../fees";
+import { CHART_PERIODS } from "lib/legacy";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
+  cumulativeBorrowingFeeUsdPerPoolValue: string;
 };
 
 type MarketTokensAPRResult = {
@@ -124,7 +127,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
         const incomePercentageForPeriod = x2.sub(x1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
-        const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
+        const apr = incomePercentageForPeriod.mul(yearMultiplier).mul(100);
 
         acc[marketAddress] = apr;
 
@@ -156,6 +159,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const marketAddresses = useMarketAddresses(chainId);
+  // FIXME
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const client = getSubsquidGraphClient(chainId);
 
@@ -164,9 +169,11 @@ export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
 
   const daysConsidered = useDaysConsideredInMarketsApr();
 
+  console.log(">>>>>>>>>>>");
   const { data } = useSWR<SwrResult>(key, {
     fetcher: async (): Promise<SwrResult> => {
       const marketFeesQuery = (marketAddress: string) => {
+        console.log("Xxxx");
         return `
             _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
                 orderBy:timestampGroup_DESC
@@ -178,6 +185,7 @@ export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
                 limit: 1
             ) {
                 cumulativeFeeUsdPerPoolValue
+                cumulativeBorrowingFeeUsdPerPoolValue
             }
 
             _${marketAddress}_recent: collectedMarketFeesInfos(
@@ -189,6 +197,7 @@ export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
               limit: 1
           ) {
               cumulativeFeeUsdPerPoolValue
+              cumulativeBorrowingFeeUsdPerPoolValue
           }
         `;
       };
@@ -211,14 +220,23 @@ export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
 
       const response = responseOrNull;
 
-      console.log({ response });
-
       const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
         const recentFees = response[`_${marketAddress}_recent`];
 
-        const x1 = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2 = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const marketInfo = getByKey(marketsInfoData, marketAddress);
+        if (!marketInfo) return acc;
+
+        const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1y"]).add(
+          getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1y"])
+        );
+
+        const x1total = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x1borrowing = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x2total = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2borrowing = BigNumber.from(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x1 = x1total.sub(x1borrowing);
+        const x2 = x2total.sub(x2borrowing);
 
         if (x2.eq(0)) {
           acc[marketAddress] = BigNumber.from(0);
@@ -227,9 +245,10 @@ export function useMarketTokensAPR2(chainId: number): MarketTokensAPRResult {
 
         const incomePercentageForPeriod = x2.sub(x1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
-        const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
+        const aprByFees = incomePercentageForPeriod.mul(yearMultiplier).mul(100);
+        const aprByBorrowingFee = borrowingFactorPerYear.mul(100);
 
-        acc[marketAddress] = apr;
+        acc[marketAddress] = aprByFees.add(aprByBorrowingFee);
 
         return acc;
       }, {} as MarketTokensAPRData);
