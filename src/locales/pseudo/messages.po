@@ -6681,15 +6681,15 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price and a {1} better net fee in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgid "You can get a {0} better net rate in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgid "You can get a {0} better open fees and a {1} better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better net fee in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgid "You can get a {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
