@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "3.5.6",
     "@binance/w3w-utils": "1.1.4",
+    "@apollo/client": "3.5.6",
     "@davatar/react": "1.8.1",
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
     "@ethersproject/providers": "5.5.1",
