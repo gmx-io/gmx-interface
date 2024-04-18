@@ -214,7 +214,9 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasInsufficientLiquidityWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool.
+          Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
+          different pool for this market. Choosing a different pool would open a new position different from the
+          existing one.
           <WithActon>
             <span
               className="clickable underline muted"
