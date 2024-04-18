@@ -11,24 +11,18 @@ import {
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { MarketsInfoData } from "../markets";
+import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrderType } from "../orders/types";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import {
-  createGetMaxLongShortLiquidityPool,
-  selectTradeboxGetMaxLongShortLiquidityPool,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
-import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type TradeStage = "trade" | "confirmation" | "processing";
 
