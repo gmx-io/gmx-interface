@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/macro";
+import { BigNumber } from "ethers";
 import { ReactNode, useCallback } from "react";
 
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   useTradeboxAvailableMarketsOptions,
   useTradeboxExistingOrder,
@@ -9,19 +11,17 @@ import {
   useTradeboxState,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectStatsMarketsInfoDataToIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { formatPercentage, formatRatePercentage } from "lib/numbers";
-
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectStatsMarketsInfoDataToIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = -1; // -0.01%
-const SHOW_HAS_BETTER_NET_FEES_WARNING_THRESHOLD_RATE = BigNumber.from(10).pow(26); // +0.01%
+const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigNumber.from(10).pow(25); // +0.001%
 
 const SPACE = " ";
 
@@ -74,7 +74,7 @@ export const useTradeboxPoolWarnings = (
   const marketWithOrder = marketsOptions?.marketWithOrder;
   const minPriceImpactMarket = marketsOptions?.minPriceImpactMarket;
   const minPriceImpactBps = marketsOptions?.minPriceImpactBps;
-  const improvedExecutionFeeDeltaBps =
+  const improvedOpenFeeDeltaBps =
     minPriceImpactBps &&
     increaseAmounts?.acceptablePriceDeltaBps &&
     increaseAmounts.acceptablePriceDeltaBps.sub(minPriceImpactBps);
@@ -89,7 +89,7 @@ export const useTradeboxPoolWarnings = (
   );
   const bestNetFee = isLong ? indexTokenStat?.bestNetFeeLong : indexTokenStat?.bestNetFeeShort;
   const currentNetFee = isLong ? currentMarketStat?.netFeeLong : currentMarketStat?.netFeeShort;
-  const improvedNetFeeAbsDeltaRate =
+  const improvedNetRateAbsDelta =
     bestMarketStat && currentMarketStat && bestNetFee && currentNetFee && bestNetFee.sub(currentNetFee).abs();
   const bestNetFeeMarket = getByKey(
     marketsInfoData,
@@ -112,11 +112,11 @@ export const useTradeboxPoolWarnings = (
     minPriceImpactMarket &&
     minPriceImpactBps &&
     !isSelectedMarket(minPriceImpactMarket) &&
-    improvedExecutionFeeDeltaBps?.lte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
+    improvedOpenFeeDeltaBps?.lte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
   const canShowHasBetterNetFeesWarning =
     bestNetFeeMarket &&
     marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
-    improvedNetFeeAbsDeltaRate?.gte(SHOW_HAS_BETTER_NET_FEES_WARNING_THRESHOLD_RATE);
+    improvedNetRateAbsDelta?.gte(SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD);
   const showHasBetterExecutionFeesAndNetFeesWarning =
     canShowHasBetterExecutionFeesWarning &&
     canShowHasBetterNetFeesWarning &&
@@ -220,7 +220,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          You can get a {formatPercentage(improvedExecutionFeeDeltaBps)} better execution price in the{" "}
+          You can get a {formatPercentage(improvedOpenFeeDeltaBps)} better open fees in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
           <WithActon>
             <span
@@ -240,7 +240,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          You can get a {formatRatePercentage(improvedNetFeeAbsDeltaRate, { signed: false })} better net fee in the{" "}
+          You can get a {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} better net rate in the{" "}
           {getMarketPoolName(bestNetFeeMarket)} market pool.
           <WithActon>
             <span
@@ -260,8 +260,8 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
-          You can get a {formatPercentage(improvedExecutionFeeDeltaBps)} better execution price and a{" "}
-          {formatRatePercentage(improvedNetFeeAbsDeltaRate, { signed: false })} better net fee in the{" "}
+          You can get a {formatPercentage(improvedOpenFeeDeltaBps)} better open fees and a{" "}
+          {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} better net rate in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
           <WithActon>
             <span
