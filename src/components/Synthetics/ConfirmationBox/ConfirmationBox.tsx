@@ -232,13 +232,13 @@ export function ConfirmationBox(p: Props) {
 
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
 
-  const sltpEntries = useMemo(
+  const sidecarEntries = useMemo(
     () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
     [stopLoss, takeProfit, limit]
   );
 
   const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useMemo(() => {
-    const [cancelSltpEntries, createSltpEntries, updateSltpEntries] = sltpEntries.reduce(
+    const [cancelSltpEntries, createSltpEntries, updateSltpEntries] = sidecarEntries.reduce(
       ([cancel, create, update], e) => {
         if (e.txnType === "cancel") cancel.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
         if (e.txnType === "create" && !!e.decreaseAmounts) create.push(e as SidecarSlTpOrderEntryValid);
@@ -254,7 +254,7 @@ export function ConfirmationBox(p: Props) {
     );
 
     return { cancelSltpEntries, createSltpEntries, updateSltpEntries };
-  }, [sltpEntries]);
+  }, [sidecarEntries]);
 
   const getOrderExecutionFee = useCallback(
     (swapsCount?: number) => {
@@ -447,10 +447,12 @@ export function ConfirmationBox(p: Props) {
       text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
-    if (sltpEntries.length > 0) {
-      const isError = sltpEntries.some(
-        (entry) => entry.sizeUsd?.error || entry.percentage?.error || entry.price?.error
-      );
+    if (sidecarEntries.length > 0) {
+      const isError = sidecarEntries.some((e) => {
+        if (e.txnType === "cancel") return false;
+
+        return e.sizeUsd?.error || e.percentage?.error || e.price?.error;
+      });
 
       return {
         text,
@@ -478,7 +480,7 @@ export function ConfirmationBox(p: Props) {
     isSwap,
     isLong,
     fixedTriggerOrderType,
-    sltpEntries,
+    sidecarEntries,
     stopLoss,
     takeProfit,
   ]);
@@ -505,7 +507,7 @@ export function ConfirmationBox(p: Props) {
     let summaryFeeUsd = feeUsd ?? BigNumber.from(0);
     let summaryFeeTokenAmount = feeTokenAmount ?? BigNumber.from(0);
 
-    sltpEntries.forEach((entry) => {
+    sidecarEntries.forEach((entry) => {
       const entryFee = getExecutionFeeAmountForEntry(entry) ?? BigNumber.from(0);
 
       summaryFeeTokenAmount = summaryFeeTokenAmount.add(entryFee);
@@ -520,12 +522,12 @@ export function ConfirmationBox(p: Props) {
       feeToken,
       warning,
     };
-  }, [executionFee, sltpEntries, getExecutionFeeAmountForEntry, tokensData]);
+  }, [executionFee, sidecarEntries, getExecutionFeeAmountForEntry, tokensData]);
 
   const isAdditionOrdersMsg =
     summaryExecutionFee && executionFee && summaryExecutionFee.feeTokenAmount.gt(executionFee.feeTokenAmount);
 
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, 1 + sltpEntries.length);
+  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, 1 + sidecarEntries.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(summaryExecutionFee?.feeTokenAmount, 1);
 
   function onCancelOrderClick(key: string): void {
@@ -786,7 +788,7 @@ export function ConfirmationBox(p: Props) {
         isNativeToken={fromToken?.isNative || toToken?.isNative}
         isWrapOrUnwrap={isWrapOrUnwrap}
         tradeFlags={tradeFlags}
-        requiredActions={1 + sltpEntries.length}
+        requiredActions={1 + sidecarEntries.length}
       />
     );
   }
