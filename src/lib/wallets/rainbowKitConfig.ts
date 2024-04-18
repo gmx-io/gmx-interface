@@ -39,7 +39,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [...(isInBinance() ? [binanceWallet] : []), coinbaseWallet, trustWallet, coreWallet, okxWallet],
+    wallets: [binanceWallet, coinbaseWallet, trustWallet, coreWallet, okxWallet],
   },
 ];
 
