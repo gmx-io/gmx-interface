@@ -83,6 +83,7 @@ import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./PositionSeller.scss";
+import { getIsEquivalentTokens } from "domain/tokens";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -202,7 +203,7 @@ export function PositionSeller(p: Props) {
     isLong: position?.isLong,
   });
 
-  const shouldSwap = position && receiveToken && decreaseAmounts?.decreaseSwapType !== DecreasePositionSwapType.NoSwap;
+  const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
   const swapAmounts = useMemo(() => {
     if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
