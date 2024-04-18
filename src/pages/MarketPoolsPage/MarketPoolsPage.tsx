@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { useMarketTokensAPR, useMarketTokensAPR2 } from "domain/synthetics/markets/useMarketTokensAPR";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
@@ -20,6 +20,7 @@ import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapB
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 
 import "./MarketPoolsPage.scss";
+import { mapValues } from "lodash";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -37,6 +38,7 @@ export function MarketPoolsPage() {
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
+  const { marketsTokensAPRData: marketsTokensAPRData2 } = useMarketTokensAPR2(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
@@ -78,6 +80,7 @@ export function MarketPoolsPage() {
         <div className="MarketPoolsPage-content">
           <MarketStats
             marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensAPRData2={marketsTokensAPRData2}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
@@ -107,6 +110,7 @@ export function MarketPoolsPage() {
         </div>
         <GmList
           marketsTokensAPRData={marketsTokensAPRData}
+          marketsTokensAPRData2={marketsTokensAPRData2}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}

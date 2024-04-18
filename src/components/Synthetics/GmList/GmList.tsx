@@ -39,6 +39,7 @@ type Props = {
   tokensData?: TokensData;
   marketTokensData?: TokensData;
   marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensAPRData2?: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
@@ -50,6 +51,7 @@ export function GmList({
   marketsInfoData,
   tokensData,
   marketsTokensAPRData,
+  marketsTokensAPRData2,
   marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
@@ -61,7 +63,7 @@ export function GmList({
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
-  const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
+  const isLpIncentiveActive = false;
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -153,6 +155,7 @@ export function GmList({
                   const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
                   const apr = getByKey(marketsTokensAPRData, token?.address);
+                  const apr2 = getByKey(marketsTokensAPRData2, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
                   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -177,6 +180,7 @@ export function GmList({
                           <div className="App-card-title-info-text">
                             <div className="App-card-info-title">
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+
                               <div className="Asset-dropdown-container">
                                 <GmAssetDropdown
                                   token={token}
@@ -190,6 +194,7 @@ export function GmList({
                             </div>
                           </div>
                         </div>
+                        <span style={{ fontSize: 5 }}>{market.marketTokenAddress}</span>
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
@@ -225,7 +230,8 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        old: <AprInfo apr={apr} incentiveApr={undefined} isIncentiveActive={false} /> <br />
+                        new: <AprInfo apr={apr2} incentiveApr={undefined} isIncentiveActive={false} />
                       </td>
 
                       <td className="GmList-actions">
@@ -266,7 +272,8 @@ export function GmList({
           <div className="token-grid">
             {sortedMarketsByIndexToken.map((token, index) => {
               const apr = marketsTokensAPRData?.[token.address];
-              const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const apr2 = marketsTokensAPRData2?.[token.address];
+              const incentiveApr = undefined;
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
@@ -380,7 +387,8 @@ export function GmList({
                         <Trans>APR</Trans>
                       </div>
                       <div>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        old: <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        new: <AprInfo apr={apr2} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </div>
                     </div>
 
