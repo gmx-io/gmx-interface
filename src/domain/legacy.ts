@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { BigNumber, ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "abis/OrderBook.json";
@@ -24,7 +24,7 @@ import { UI_VERSION, isDevelopment } from "config/env";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
@@ -34,6 +34,14 @@ import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
 
 export * from "./prices";
+
+export type PendingTransaction = {
+  hash: string;
+  message: string;
+  messageDetails?: string;
+};
+
+export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
 const { AddressZero } = ethers.constants;
 
@@ -528,7 +536,7 @@ export function useTotalGmxSupply() {
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
-  let totalStakedGmx = useRef(bigNumberify(0));
+  let totalStakedGmx = useRef(BN_ZERO);
   const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
@@ -560,7 +568,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = bigNumberify(stakedGmxSupplyArbitrum)!.add(stakedGmxSupplyAvax);
+    let total = BigNumber.from(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 
@@ -575,7 +583,7 @@ export function useTotalGmxStaked() {
 export function useTotalGmxInLiquidity() {
   let poolAddressArbitrum = getContract(ARBITRUM, "UniswapGmxEthPool");
   let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
-  let totalGMX = useRef(bigNumberify(0));
+  let totalGMX = useRef(BN_ZERO);
 
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],

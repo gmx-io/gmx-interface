@@ -1,14 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
@@ -25,57 +25,49 @@ import { MAX_METAMASK_MOBILE_DECIMALS, V2_LEVERAGE_SLIDER_MARKS } from "config/u
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useMarketsInfoData,
+  usePositionsConstants,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxAvailableMarketsOptions,
-  useTradeboxChooseSuitableMarket,
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxExistingOrder,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxLeverage,
-  useTradeboxNextLeverageWithoutPnl,
-  useTradeboxNextPositionValues,
-  useTradeboxSelectedPosition,
-  useTradeboxState,
-  useTradeboxSwapAmounts,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectTradeboxSwapRoutes } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxExecutionFee,
+  selectTradeboxExecutionPrice,
+  selectTradeboxFees,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxLeverage,
+  selectTradeboxLiquidity,
+  selectTradeboxMarkPrice,
+  selectTradeboxNextLeverageWithoutPnl,
+  selectTradeboxNextPositionValues,
+  selectTradeboxSelectedPosition,
+  selectTradeboxState,
+  selectTradeboxSwapAmounts,
+  selectTradeboxSwapRoutes,
+  selectTradeboxTradeFeesType,
+  selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
+  selectTradeboxTriggerPrice,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
   substractMaxLeverageSlippage,
-  usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
-  AvailableTokenOptions,
-  TradeFeesType,
   TradeMode,
   TradeType,
-  getExecutionPriceForDecrease,
   getIncreasePositionAmounts,
-  getMarkPrice,
   getNextPositionValuesForIncreaseTrade,
-  getTradeFees,
 } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
@@ -83,15 +75,14 @@ import {
   getCommonError,
   getDecreaseError,
   getIncreaseError,
-  getSwapError,
   getIsMaxLeverageExceeded,
+  getSwapError,
 } from "domain/synthetics/trade/utils/validation";
-import { getMinResidualAmount } from "domain/tokens";
+import { Token, getMinResidualAmount } from "domain/tokens";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { numericBinarySearch } from "lib/binarySearch";
-import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
   formatAmount,
@@ -109,25 +100,25 @@ import { mustNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import "./TradeBox.scss";
-import { useHistory } from "react-router-dom";
+import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { helperToast } from "lib/helperToast";
 import { useCursorInside } from "lib/useCursorInside";
+import { useHistory } from "react-router-dom";
+import "./TradeBox.scss";
 
 export type Props = {
-  avaialbleTokenOptions: AvailableTokenOptions;
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
-  shouldDisableValidation?: boolean;
   setIsHigherSlippageAllowed: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
 };
@@ -151,10 +142,11 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
+  const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
-  const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
+  const { allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
@@ -162,21 +154,25 @@ export function TradeBox(p: Props) {
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
 
-  const tradeFlags = useTradeboxTradeFlags();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
-  const { showDebugValues } = useSettings();
+  const {
+    showDebugValues,
+    shouldDisableValidationForTesting,
+    shouldDisableValidationForTesting: shouldDisableValidation,
+  } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-
-  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+  const minResidualAmount = useMemo(
+    () => getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice),
+    [nativeToken?.decimals, nativeToken?.prices.maxPrice]
+  );
   const {
     fromTokenInputValue,
     setFromTokenInputValue: setFromTokenInputValueRaw,
@@ -194,7 +190,6 @@ export function TradeBox(p: Props) {
     setFocusedInput,
     fixedTriggerThresholdType,
     setFixedTriggerThresholdType,
-    fixedTriggerOrderType,
     setFixedTriggerOrderType,
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
@@ -222,7 +217,7 @@ export function TradeBox(p: Props) {
     marketInfo,
     toTokenAddress,
     avaialbleTradeModes: availalbleTradeModes,
-  } = useTradeboxState();
+  } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -235,136 +230,27 @@ export function TradeBox(p: Props) {
     !fromToken.balance.eq(fromTokenAmount) &&
     (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
-  const nextLeverageWithoutPnl = useTradeboxNextLeverageWithoutPnl();
-
-  const markPrice = useMemo(() => {
-    if (!toToken) {
-      return undefined;
-    }
-
-    if (isSwap) {
-      return toToken.prices.minPrice;
-    }
-
-    return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
-  }, [isIncrease, isLong, isSwap, toToken]);
-
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
 
   const uiFeeFactor = useUiFeeFactor();
 
-  const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
-  const swapAmounts = useTradeboxSwapAmounts();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const selectedPosition = useTradeboxSelectedPosition();
-  const existingOrder = useTradeboxExistingOrder();
-  const leverage = useTradeboxLeverage();
-
-  const nextPositionValues = useTradeboxNextPositionValues();
-
-  const { fees, feesType, executionFee } = useMemo(() => {
-    if (!gasLimits || !gasPrice || !tokensData) {
-      return {};
-    }
-
-    if (isSwap && swapAmounts?.swapPathStats) {
-      const estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapsCount: swapAmounts.swapPathStats.swapPath.length,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: false,
-          initialCollateralUsd: swapAmounts.usdIn,
-          sizeDeltaUsd: BigNumber.from(0),
-          swapSteps: swapAmounts.swapPathStats.swapSteps,
-          positionFeeUsd: BigNumber.from(0),
-          swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
-          positionPriceImpactDeltaUsd: BigNumber.from(0),
-          priceImpactDiffUsd: BigNumber.from(0),
-          borrowingFeeUsd: BigNumber.from(0),
-          fundingFeeUsd: BigNumber.from(0),
-          feeDiscountUsd: BigNumber.from(0),
-          swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "swap" as TradeFeesType,
-      };
-    }
-
-    if (isIncrease && increaseAmounts) {
-      const estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-        swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: true,
-          initialCollateralUsd: increaseAmounts.initialCollateralUsd,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
-          positionFeeUsd: increaseAmounts.positionFeeUsd,
-          swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
-          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          priceImpactDiffUsd: BigNumber.from(0),
-          borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-          fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
-          feeDiscountUsd: increaseAmounts.feeDiscountUsd,
-          swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "increase" as TradeFeesType,
-      };
-    }
-
-    if (isTrigger && decreaseAmounts) {
-      const swapsCount = decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
-      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapsCount,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: false,
-          initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          swapSteps: [],
-          positionFeeUsd: decreaseAmounts.positionFeeUsd,
-          swapPriceImpactDeltaUsd: BigNumber.from(0),
-          positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-          priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
-          borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
-          fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
-          feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
-          swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "decrease" as TradeFeesType,
-      };
-    }
-
-    return {};
-  }, [
-    gasLimits,
-    gasPrice,
-    tokensData,
-    isSwap,
-    swapAmounts,
-    isIncrease,
-    increaseAmounts,
-    isTrigger,
-    decreaseAmounts,
-    uiFeeFactor,
-    chainId,
-    selectedPosition?.pendingBorrowingFeesUsd,
-    selectedPosition?.pendingFundingFeesUsd,
-    selectedPosition?.collateralUsd,
-  ]);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
+  const nextLeverageWithoutPnl = useSelector(selectTradeboxNextLeverageWithoutPnl);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const leverage = useSelector(selectTradeboxLeverage);
+  const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const fees = useSelector(selectTradeboxFees);
+  const feesType = useSelector(selectTradeboxTradeFeesType);
+  const executionFee = useSelector(selectTradeboxExecutionFee);
+  const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
+  const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
+  const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -397,41 +283,9 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const marketsOptions = useTradeboxAvailableMarketsOptions();
-  const { availableMarkets } = marketsOptions;
+  const swapOutLiquidity = swapRoutes.maxSwapLiquidity;
 
-  const swapOutLiquidity = swapRoute.maxSwapLiquidity;
-  const triggerRatioValue = useMemo(() => parseValue(triggerRatioInputValue, USD_DECIMALS), [triggerRatioInputValue]);
-
-  const { markRatio, triggerRatio } = useTradeRatios({
-    fromTokenAddress,
-    toTokenAddress,
-    tradeMode,
-    tradeType,
-    triggerRatioValue,
-  });
-
-  const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useMemo(() => {
-    if (!marketInfo || !isIncrease) {
-      return {};
-    }
-    const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-    const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
-
-    const isOutPositionLiquidity = isLong
-      ? longLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0)
-      : shortLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0);
-
-    return {
-      longLiquidity,
-      shortLiquidity,
-      isOutPositionLiquidity,
-    };
-  }, [increaseAmounts, isIncrease, isLong, marketInfo]);
-
-  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const userReferralInfo = useUserReferralInfo();
-  const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
@@ -680,14 +534,7 @@ export function TradeBox(p: Props) {
     detectAndSetAvailableMaxLeverage,
   ]);
 
-  const isSubmitButtonDisabled = useMemo(() => {
-    if (!account) {
-      return false;
-    }
-    if (buttonErrorText) {
-      return true;
-    }
-  }, [buttonErrorText, account]);
+  const isSubmitButtonDisabled = account ? Boolean(buttonErrorText) : false;
 
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
@@ -716,7 +563,7 @@ export function TradeBox(p: Props) {
     tradeType,
   ]);
 
-  function onSubmit() {
+  const onSubmit = useCallback(() => {
     if (!account) {
       openConnectModal?.();
       return;
@@ -740,7 +587,23 @@ export function TradeBox(p: Props) {
     }
 
     setStage("confirmation");
-  }
+  }, [
+    account,
+    decreaseAmounts?.acceptablePrice,
+    decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
+    decreaseAmounts?.triggerOrderType,
+    decreaseAmounts?.triggerThresholdType,
+    increaseAmounts?.acceptablePrice,
+    increaseAmounts?.acceptablePriceDeltaBps,
+    isLimit,
+    isTrigger,
+    openConnectModal,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    setFixedTriggerOrderType,
+    setFixedTriggerThresholdType,
+    setSelectedAcceptablePriceImpactBps,
+    setStage,
+  ]);
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -827,13 +690,9 @@ export function TradeBox(p: Props) {
       }
     },
     [
-      availableMarkets,
-      chainId,
-      isLong,
       isPosition,
       marketAddress,
       marketsOptions.availableMarkets,
-      marketsOptions.collateralWithPosition,
       marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
@@ -862,12 +721,19 @@ export function TradeBox(p: Props) {
     [setTriggerPriceInputValue, toTokenAddress, tradeMode]
   );
 
-  function onSwitchTokens() {
+  const onSwitchTokens = useCallback(() => {
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
     setFromTokenInputValue(toTokenInputValue || "", true);
     setToTokenInputValue(fromTokenInputValue || "", true);
-  }
+  }, [
+    fromTokenInputValue,
+    setFocusedInput,
+    setFromTokenInputValue,
+    setToTokenInputValue,
+    switchTokenAddresses,
+    toTokenInputValue,
+  ]);
 
   function onTradeTypeChange(type: TradeType) {
     onSelectTradeType(type);
@@ -913,7 +779,7 @@ export function TradeBox(p: Props) {
     }
   }
 
-  function onMaxClick() {
+  const onMaxClick = useCallback(() => {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken?.isNative
         ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
@@ -930,7 +796,83 @@ export function TradeBox(p: Props) {
         : formattedAmount;
       setFromTokenInputValue(finalAmount, true);
     }
-  }
+  }, [
+    fromToken?.balance,
+    fromToken?.decimals,
+    fromToken?.isNative,
+    isMetamaskMobile,
+    minResidualAmount,
+    setFocusedInput,
+    setFromTokenInputValue,
+  ]);
+
+  const handleFromInputTokenChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setFocusedInput("from");
+      setFromTokenInputValue(event.target.value, true);
+    },
+    [setFocusedInput, setFromTokenInputValue]
+  );
+  const handleToInputTokenChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setFocusedInput("to");
+      setToTokenInputValue(event.target.value, true);
+    },
+    [setFocusedInput, setToTokenInputValue]
+  );
+  const handleSelectFromTokenAddress = useCallback(
+    (token: Token) => onSelectFromTokenAddress(token.address),
+    [onSelectFromTokenAddress]
+  );
+  const handleSelectToTokenAddress = useCallback(
+    (token: Token) => onSelectToTokenAddress(token.address),
+    [onSelectToTokenAddress]
+  );
+  const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
+  const setMaxCloseSize = useCallback(
+    () => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2)),
+    [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
+  );
+  const handleClosePercentageChange = useCallback(
+    (percent) =>
+      setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2)),
+    [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
+  );
+
+  const handleTriggerPriceInputChange = useCallback(
+    (e) => setTriggerPriceInputValue(e.target.value),
+    [setTriggerPriceInputValue]
+  );
+  const setMarkPriceAsTriggerPrice = useCallback(
+    () => setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2)),
+    [markPrice, setTriggerPriceInputValue, toToken?.priceDecimals]
+  );
+
+  const handleTriggerMarkPriceClick = useCallback(
+    () => setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10)),
+    [markRatio?.ratio, setTriggerRatioInputValue]
+  );
+  const handleTriggerRatioInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTriggerRatioInputValue(e.target.value);
+    },
+    [setTriggerRatioInputValue]
+  );
+
+  const handleSelectMarket = useCallback(
+    (indexName: string, marketInfo: MarketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address),
+    [onSelectToTokenAddress]
+  );
+
+  const handleFormSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+        onSubmit();
+      }
+    },
+    [isCursorInside, isSubmitButtonDisabled, onSubmit, shouldDisableValidation]
+  );
 
   function renderTokenInputs() {
     return (
@@ -944,10 +886,7 @@ export function TradeBox(p: Props) {
           })}
           onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
-          onInputValueChange={(e) => {
-            setFocusedInput("from");
-            setFromTokenInputValue(e.target.value, true);
-          }}
+          onInputValueChange={handleFromInputTokenChange}
           showMaxButton={isNotMatchAvailableBalance}
           onClickMax={onMaxClick}
         >
@@ -956,7 +895,7 @@ export function TradeBox(p: Props) {
               label={t`Pay`}
               chainId={chainId}
               tokenAddress={fromTokenAddress}
-              onSelectToken={(token) => onSelectFromTokenAddress(token.address)}
+              onSelectToken={handleSelectFromTokenAddress}
               tokens={swapTokens}
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
@@ -982,10 +921,7 @@ export function TradeBox(p: Props) {
               useCommas: true,
             })}
             inputValue={toTokenInputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput("to");
-              setToTokenInputValue(e.target.value, true);
-            }}
+            onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}
             preventFocusOnLabelClick="right"
           >
@@ -994,7 +930,7 @@ export function TradeBox(p: Props) {
                 label={t`Receive`}
                 chainId={chainId}
                 tokenAddress={toTokenAddress}
-                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
+                onSelectToken={handleSelectToTokenAddress}
                 tokens={swapTokens}
                 infoTokens={infoTokens}
                 className="GlpSwap-from-token"
@@ -1018,10 +954,7 @@ export function TradeBox(p: Props) {
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput("to");
-              setToTokenInputValue(e.target.value, true);
-            }}
+            onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}
           >
             {toTokenAddress && (
@@ -1056,14 +989,12 @@ export function TradeBox(p: Props) {
         topRightLabel={selectedPosition?.sizeInUsd ? `Max` : undefined}
         topRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
-        onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
-        onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        onInputValueChange={handleCloseInputChange}
+        onClickTopRightLabel={setMaxCloseSize}
         showMaxButton={selectedPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(selectedPosition.sizeInUsd)}
-        onClickMax={() => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        onClickMax={setMaxCloseSize}
         showPercentSelector={selectedPosition?.sizeInUsd.gt(0)}
-        onPercentChange={(percent) =>
-          setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2))
-        }
+        onPercentChange={handleClosePercentageChange}
       >
         USD
       </BuyInputSection>
@@ -1078,13 +1009,9 @@ export function TradeBox(p: Props) {
         topRightValue={formatUsd(markPrice, {
           displayDecimals: toToken?.priceDecimals,
         })}
-        onClickTopRightLabel={() => {
-          setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
-        }}
+        onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
-        onInputValueChange={(e) => {
-          setTriggerPriceInputValue(e.target.value);
-        }}
+        onInputValueChange={handleTriggerPriceInputChange}
       >
         USD
       </BuyInputSection>
@@ -1097,13 +1024,9 @@ export function TradeBox(p: Props) {
         topLeftLabel={t`Price`}
         topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
-        onClickTopRightLabel={() => {
-          setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
-        }}
+        onClickTopRightLabel={handleTriggerMarkPriceClick}
         inputValue={triggerRatioInputValue}
-        onInputValueChange={(e) => {
-          setTriggerRatioInputValue(e.target.value);
-        }}
+        onInputValueChange={handleTriggerRatioInputChange}
       >
         {markRatio && (
           <>
@@ -1151,7 +1074,7 @@ export function TradeBox(p: Props) {
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu
-                onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+                onSelectMarket={handleSelectMarket}
               />
             }
           />
@@ -1160,9 +1083,6 @@ export function TradeBox(p: Props) {
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
           indexToken={toToken}
-          marketsOptions={marketsOptions}
-          hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(selectedPosition)}
           isOutPositionLiquidity={isOutPositionLiquidity}
           currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
           onSelectMarketAddress={onSelectMarketAddress}
@@ -1171,9 +1091,6 @@ export function TradeBox(p: Props) {
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
-          marketsOptions={marketsOptions}
-          hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(selectedPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />
@@ -1288,19 +1205,7 @@ export function TradeBox(p: Props) {
     );
   }
 
-  const executionPriceUsd = useMemo(() => {
-    if (!marketInfo) return null;
-    if (!fees?.positionPriceImpact?.deltaUsd) return null;
-    if (!decreaseAmounts) return null;
-    if (!triggerPrice) return null;
-
-    return getExecutionPriceForDecrease(
-      triggerPrice,
-      fees.positionPriceImpact.deltaUsd,
-      decreaseAmounts.sizeDeltaUsd,
-      isLong
-    );
-  }, [decreaseAmounts, fees?.positionPriceImpact?.deltaUsd, isLong, marketInfo, triggerPrice]);
+  const executionPriceUsd = useSelector(selectTradeboxExecutionPrice);
 
   function renderTriggerOrderInfo() {
     return (
@@ -1425,7 +1330,7 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="w-full"
       onClick={onSubmit}
-      disabled={isSubmitButtonDisabled && !shouldDisableValidation}
+      disabled={isSubmitButtonDisabled && !shouldDisableValidationForTesting}
     >
       {buttonErrorText || submitButtonText}
     </Button>
@@ -1433,7 +1338,7 @@ export function TradeBox(p: Props) {
   const button = tooltipContent ? (
     <Tooltip
       className="w-full"
-      renderContent={() => tooltipContent}
+      content={tooltipContent}
       handle={buttonContent}
       isHandlerDisabled
       handleClassName="w-full"
@@ -1465,15 +1370,7 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
-                onSubmit();
-              }
-            }}
-            ref={formRef}
-          >
+          <form onSubmit={handleFormSubmit} ref={formRef}>
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
 
@@ -1536,25 +1433,10 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        triggerRatioValue={triggerRatioValue}
-        triggerPrice={triggerPrice}
-        fixedTriggerThresholdType={fixedTriggerThresholdType}
-        fixedTriggerOrderType={fixedTriggerOrderType}
-        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
-        setSelectedTriggerAcceptablePriceImpactBps={setSelectedAcceptablePriceImpactBps}
-        marketsOptions={marketsOptions}
-        swapLiquidityUsd={swapOutLiquidity}
-        longLiquidityUsd={longLiquidity}
-        shortLiquidityUsd={shortLiquidity}
-        fees={fees}
-        executionFee={executionFee}
         error={buttonErrorText}
-        existingPosition={selectedPosition}
-        shouldDisableValidation={shouldDisableValidation!}
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
-        markPrice={markPrice}
       />
     </>
   );

@@ -24,6 +24,7 @@ import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
 import Checkbox from "components/Checkbox/Checkbox";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -37,11 +38,10 @@ function ValidationRow({ isValid, children }) {
   );
 }
 
-export default function BeginAccountTransfer(props) {
-  const { setPendingTxns } = props;
+export default function BeginAccountTransfer() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-
+  const [, setPendingTxns] = usePendingTxns();
   const [receiver, setReceiver] = useState("");
   const [isTransferring, setIsTransferring] = useState(false);
   const [isApproving, setIsApproving] = useState(false);

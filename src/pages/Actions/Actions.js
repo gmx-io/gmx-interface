@@ -31,10 +31,12 @@ import Footer from "components/Footer/Footer";
 import { getIsSyntheticsSupported } from "config/features";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 const USD_DECIMALS = 30;
 
-export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees }) {
+export default function Actions() {
+  const { isPnlInLeverage: savedIsPnlInLeverage, showPnlAfterFees: savedShowPnlAfterFees } = useSettings();
   const { account } = useParams();
   const { active, signer } = useWallet();
 

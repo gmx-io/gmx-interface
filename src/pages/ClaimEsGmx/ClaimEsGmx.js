@@ -23,6 +23,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -126,12 +127,13 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
   };
 }
 
-export default function ClaimEsGmx({ setPendingTxns }) {
+export default function ClaimEsGmx() {
   const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);
   const [value, setValue] = useState("");
+  const [, setPendingTxns] = usePendingTxns();
 
   const isArbitrum = chainId === ARBITRUM;
 

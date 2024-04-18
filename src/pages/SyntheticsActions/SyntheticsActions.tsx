@@ -9,25 +9,22 @@ import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsV1Supported } from "config/features";
-import {
-  useAccount,
-  useIsOrdersLoading,
-  useIsPositionsLoading,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { noop } from "lodash";
+import { useCallback } from "react";
 
 export default function SyntheticsActions() {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const checkSummedAccount = useAccount();
-  const isPositionsLoading = useIsPositionsLoading();
-  const isOrdersLoading = useIsOrdersLoading();
-  const availableTokensOptions = useTradeboxAvailableTokensOptions();
-
   const networkName = getChainName(chainId);
+  const toggleNetwork = useCallback(
+    () => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active),
+    [active, chainId]
+  );
 
   return (
     <div className="default-container page-layout">
@@ -47,10 +44,7 @@ export default function SyntheticsActions() {
                         Check on GMX V1 {networkName}
                       </ExternalLink>{" "}
                       or{" "}
-                      <span
-                        className="underline cursor-pointer"
-                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                      >
+                      <span className="underline cursor-pointer" onClick={toggleNetwork}>
                         switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                       </span>
                       .
@@ -69,12 +63,11 @@ export default function SyntheticsActions() {
             <Trans>Positions</Trans>
           </div>
           <PositionList
-            isLoading={isPositionsLoading}
-            onOrdersClick={() => null}
-            onSelectPositionClick={() => null}
-            onClosePositionClick={() => null}
-            onSettlePositionFeesClick={() => null}
-            openSettings={() => null}
+            onOrdersClick={noop}
+            onSelectPositionClick={noop}
+            onClosePositionClick={noop}
+            onSettlePositionFeesClick={noop}
+            openSettings={noop}
             hideActions
           />
         </div>
@@ -84,13 +77,7 @@ export default function SyntheticsActions() {
           <div className="Actions-title">
             <Trans>Orders</Trans>
           </div>
-          <OrderList
-            setSelectedOrdersKeys={() => null}
-            isLoading={isOrdersLoading}
-            setPendingTxns={() => null}
-            hideActions
-            availableTokensOptions={availableTokensOptions}
-          />
+          <OrderList setSelectedOrdersKeys={noop} setPendingTxns={noop} hideActions />
         </div>
       )}
       <div className="Actions-section">
@@ -112,10 +99,7 @@ export default function SyntheticsActions() {
                           Check on GMX V1 {networkName}
                         </ExternalLink>{" "}
                         or{" "}
-                        <span
-                          className="underline cursor-pointer"
-                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                        >
+                        <span className="underline cursor-pointer" onClick={toggleNetwork}>
                           switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                         </span>
                         .

@@ -30,7 +30,6 @@ export const MIN_PROFIT_TIME = 0;
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
-export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
@@ -852,7 +851,7 @@ export function getOrderKey(order) {
   return `${order.type}-${order.account}-${order.index}`;
 }
 
-export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
+export function useAccountOrders(flagOrdersEnabled, overrideAccount?: string) {
   const { signer, account: connectedAccount } = useWallet();
   const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
@@ -1026,17 +1025,68 @@ export function getDepositBalanceData(depositBalances) {
   return data;
 }
 
-export function getVestingData(vestingInfo) {
+type RawVestingData = {
+  gmxVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  gmxVesterPairAmount: BigNumber;
+  gmxVesterVestedAmount: BigNumber;
+  gmxVesterEscrowedBalance: BigNumber;
+  gmxVesterClaimSum: BigNumber;
+  gmxVesterClaimable: BigNumber;
+  gmxVesterMaxVestableAmount: BigNumber;
+  gmxVesterAverageStakedAmount: BigNumber;
+  glpVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  glpVesterPairAmount: BigNumber;
+  glpVesterVestedAmount: BigNumber;
+  glpVesterEscrowedBalance: BigNumber;
+  glpVesterClaimSum: BigNumber;
+  glpVesterClaimable: BigNumber;
+  glpVesterMaxVestableAmount: BigNumber;
+  glpVesterAverageStakedAmount: BigNumber;
+  affiliateVester: {
+    pairAmount: BigNumber;
+    vestedAmount: BigNumber;
+    escrowedBalance: BigNumber;
+    claimedAmounts: BigNumber;
+    claimable: BigNumber;
+    maxVestableAmount: BigNumber;
+    averageStakedAmount: BigNumber;
+  };
+  affiliateVesterPairAmount: BigNumber;
+  affiliateVesterVestedAmount: BigNumber;
+  affiliateVesterEscrowedBalance: BigNumber;
+  affiliateVesterClaimSum: BigNumber;
+  affiliateVesterClaimable: BigNumber;
+  affiliateVesterMaxVestableAmount: BigNumber;
+  affiliateVesterAverageStakedAmount: BigNumber;
+};
+
+export function getVestingData(vestingInfo): RawVestingData | undefined {
   if (!vestingInfo || vestingInfo.length === 0) {
-    return;
+    return undefined;
   }
   const propsLength = 7;
-  const data = {};
+  const data: Partial<RawVestingData> = {};
 
-  const keys = ["gmxVester", "glpVester", "affiliateVester"];
+  const keys = ["gmxVester", "glpVester", "affiliateVester"] as const;
 
   for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
+    const key = keys[i] as typeof keys[number];
     data[key] = {
       pairAmount: vestingInfo[i * propsLength],
       vestedAmount: vestingInfo[i * propsLength + 1],
@@ -1047,16 +1097,16 @@ export function getVestingData(vestingInfo) {
       averageStakedAmount: vestingInfo[i * propsLength + 6],
     };
 
-    data[key + "PairAmount"] = data[key].pairAmount;
-    data[key + "VestedAmount"] = data[key].vestedAmount;
-    data[key + "EscrowedBalance"] = data[key].escrowedBalance;
-    data[key + "ClaimSum"] = data[key].claimedAmounts.add(data[key].claimable);
-    data[key + "Claimable"] = data[key].claimable;
-    data[key + "MaxVestableAmount"] = data[key].maxVestableAmount;
-    data[key + "AverageStakedAmount"] = data[key].averageStakedAmount;
+    data[key + "PairAmount"] = data[key]!.pairAmount;
+    data[key + "VestedAmount"] = data[key]!.vestedAmount;
+    data[key + "EscrowedBalance"] = data[key]!.escrowedBalance;
+    data[key + "ClaimSum"] = data[key]!.claimedAmounts.add(data[key]!.claimable);
+    data[key + "Claimable"] = data[key]!.claimable;
+    data[key + "MaxVestableAmount"] = data[key]!.maxVestableAmount;
+    data[key + "AverageStakedAmount"] = data[key]!.averageStakedAmount;
   }
 
-  return data;
+  return data as RawVestingData;
 }
 
 export function getStakingData(stakingInfo) {
@@ -1082,6 +1132,72 @@ export function getStakingData(stakingInfo) {
   return data;
 }
 
+type ProcessedData = Partial<{
+  gmxBalance: BigNumber;
+  gmxBalanceUsd: BigNumber;
+  gmxSupply: BigNumber;
+  gmxSupplyUsd: BigNumber;
+  stakedGmxSupply: BigNumber;
+  stakedGmxSupplyUsd: BigNumber;
+  gmxInStakedGmx: BigNumber;
+  gmxInStakedGmxUsd: BigNumber;
+  esGmxBalance: BigNumber;
+  esGmxBalanceUsd: BigNumber;
+  stakedGmxTrackerSupply: BigNumber;
+  stakedGmxTrackerSupplyUsd: BigNumber;
+  stakedEsGmxSupply: BigNumber;
+  stakedEsGmxSupplyUsd: BigNumber;
+  esGmxInStakedGmx: BigNumber;
+  esGmxInStakedGmxUsd: BigNumber;
+  bnGmxInFeeGmx: BigNumber;
+  bonusGmxInFeeGmx: BigNumber;
+  feeGmxSupply: BigNumber;
+  feeGmxSupplyUsd: BigNumber;
+  stakedGmxTrackerRewards: BigNumber;
+  stakedGmxTrackerRewardsUsd: BigNumber;
+  feeGmxTrackerRewards: BigNumber;
+  feeGmxTrackerRewardsUsd: BigNumber;
+  boostBasisPoints: BigNumber;
+  stakedGmxTrackerAnnualRewardsUsd: BigNumber;
+  feeGmxTrackerAnnualRewardsUsd: BigNumber;
+  gmxAprTotal: BigNumber;
+  gmxAprTotalWithBoost: BigNumber;
+  totalGmxRewardsUsd: BigNumber;
+  glpSupply: BigNumber;
+  glpPrice: BigNumber;
+  glpSupplyUsd: BigNumber;
+  glpBalance: BigNumber;
+  glpBalanceUsd: BigNumber;
+  stakedGlpTrackerRewards: BigNumber;
+  stakedGlpTrackerRewardsUsd: BigNumber;
+  feeGlpTrackerRewards: BigNumber;
+  feeGlpTrackerRewardsUsd: BigNumber;
+  stakedGlpTrackerAnnualRewardsUsd: BigNumber;
+  glpAprForEsGmx: BigNumber;
+  feeGlpTrackerAnnualRewardsUsd: BigNumber;
+  glpAprForNativeToken: BigNumber;
+  glpAprTotal: BigNumber;
+  totalGlpRewardsUsd: BigNumber;
+  totalEsGmxRewards: BigNumber;
+  totalEsGmxRewardsUsd: BigNumber;
+  gmxVesterRewards: BigNumber;
+  glpVesterRewards: BigNumber;
+  totalVesterRewards: BigNumber;
+  totalVesterRewardsUsd: BigNumber;
+  totalNativeTokenRewards: BigNumber;
+  totalNativeTokenRewardsUsd: BigNumber;
+  totalRewardsUsd: BigNumber;
+  avgBoostAprForNativeToken: BigNumber;
+  avgGMXAprForNativeToken: BigNumber;
+}> & {
+  gmxAprForEsGmx: BigNumber;
+  gmxAprForNativeToken: BigNumber;
+  maxGmxAprForNativeToken: BigNumber;
+  gmxAprForNativeTokenWithBoost: BigNumber;
+  gmxBoostAprForNativeToken?: BigNumber;
+  avgBoostMultiplier?: BigNumber;
+};
+
 export function getProcessedData(
   balanceData,
   supplyData,
@@ -1095,7 +1211,7 @@ export function getProcessedData(
   gmxPrice,
   gmxSupply,
   maxBoostMultiplier
-) {
+): ProcessedData | undefined {
   if (
     !balanceData ||
     !supplyData ||
@@ -1110,7 +1226,7 @@ export function getProcessedData(
     !gmxSupply ||
     !maxBoostMultiplier
   ) {
-    return {};
+    return undefined;
   }
   const data: any = {};
 

@@ -5,15 +5,15 @@ import {
   isOrderForPosition,
   sortPositionOrders,
 } from "domain/synthetics/orders";
-import { createEnhancedSelector, createSelectorFactory } from "../utils";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { createSelector, createSelectorFactory } from "../utils";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
 import { makeSelectSwapRoutes } from "./tradeSelectors";
 
-const selectOrdersInfoData = (s: SyntheticsTradeState) => s.globals.ordersInfo.ordersInfoData;
+const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 
 export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: string | undefined) =>
-  createEnhancedSelector(function selectOrderErrorByOrderId(q): OrderErrors {
+  createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
     const orderInfo = q((s) => (orderId ? selectOrdersInfoData(s)?.[orderId] : undefined));
     const positionsInfoData = q(selectPositionsInfoData);
     const marketsInfoData = q(selectMarketsInfoData);
@@ -39,7 +39,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
 );
 
 export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
-  createEnhancedSelector(function selectOrdersByPositionKey(q) {
+  createSelector(function selectOrdersByPositionKey(q) {
     if (!positionKey) {
       q(() => null);
       return [];
@@ -59,7 +59,7 @@ export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((po
   })
 );
 
-export const selectOrderErrorsByOrderKeyMap = createEnhancedSelector(function selectOrderErrorByOrderKeyMap(q) {
+export const selectOrderErrorsByOrderKeyMap = createSelector(function selectOrderErrorByOrderKeyMap(q) {
   const ordersInfoData = q(selectOrdersInfoData);
   const res: Record<string, OrderErrors> = {};
 
@@ -71,7 +71,7 @@ export const selectOrderErrorsByOrderKeyMap = createEnhancedSelector(function se
   return res;
 });
 
-export const selectOrderErrorsCount = createEnhancedSelector(function selectOrderErrorsCount(q) {
+export const selectOrderErrorsCount = createSelector(function selectOrderErrorsCount(q) {
   const ordersInfoData = q(selectOrdersInfoData);
   const orders = Object.values(ordersInfoData || {});
   const res = {
@@ -90,7 +90,7 @@ export const selectOrderErrorsCount = createEnhancedSelector(function selectOrde
   return res;
 });
 
-export const selectOrdersCount = createEnhancedSelector(function selectOrdersCount(q) {
+export const selectOrdersCount = createSelector(function selectOrdersCount(q) {
   const ordersInfoData = q(selectOrdersInfoData);
   return Object.keys(ordersInfoData || {}).length;
 });

@@ -55,5 +55,5 @@ export function useGasPrice(chainId: number) {
     }
   );
 
-  return { gasPrice };
+  return gasPrice;
 }

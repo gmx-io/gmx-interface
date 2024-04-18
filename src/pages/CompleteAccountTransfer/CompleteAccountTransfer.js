@@ -18,12 +18,13 @@ import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "lib/usePendingTxns";
 
-export default function CompleteAccountTransfer(props) {
+export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const isSenderAndReceiverValid = ethers.utils.isAddress(sender) && ethers.utils.isAddress(receiver);
-  const { setPendingTxns } = props;
+  const [, setPendingTxns] = usePendingTxns();
   const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 

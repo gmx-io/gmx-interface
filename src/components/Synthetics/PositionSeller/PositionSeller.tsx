@@ -28,24 +28,11 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionSeller,
-  usePositionSellerDecreaseAmounts,
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
-  usePositionSellerNextPositionValuesForDecrease,
-  usePositionSellerPosition,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
@@ -54,7 +41,7 @@ import {
   formatLiquidationPrice,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
-import { applySlippageToPrice, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
+import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -71,8 +58,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { mustNeverExist } from "lib/types";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -82,14 +68,29 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectPositionSellerAcceptablePrice,
+  selectPositionSellerDecreaseAmounts,
+  selectPositionSellerNextPositionValuesForDecrease,
+  selectPositionSellerPosition,
+  selectPositionSellerReceiveToken,
+  selectPositionSellerShouldSwap,
+  selectPositionSellerSwapAmounts,
+  selectPositionSellerSwapRoutes,
+} from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
+import {
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./PositionSeller.scss";
-import { getIsEquivalentTokens } from "domain/tokens";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
-  shouldDisableValidation: boolean;
 };
 
 const ORDER_OPTION_LABELS = {
@@ -104,20 +105,21 @@ export function PositionSeller(p: Props) {
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
   }, [setClosingPositionKey]);
-  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const tokensData = useTokensData();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const tradeFlags = useTradeboxTradeFlags();
-  const position = usePositionSellerPosition();
+  const position = useSelector(selectPositionSellerPosition);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const { shouldDisableValidationForTesting } = useSettings();
 
   const isVisible = Boolean(position);
 
@@ -161,7 +163,7 @@ export function PositionSeller(p: Props) {
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
 
-  const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+  const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
   useEffect(() => {
     if (!isVisible) {
@@ -176,23 +178,9 @@ export function PositionSeller(p: Props) {
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
     : undefined;
 
-  const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
-
-  const decreaseAmounts = usePositionSellerDecreaseAmounts();
-
-  const acceptablePrice = useMemo(() => {
-    if (!position || !decreaseAmounts?.acceptablePrice) {
-      return undefined;
-    }
-
-    if (orderOption === OrderOption.Market) {
-      return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
-    } else if (orderOption === OrderOption.Trigger) {
-      return decreaseAmounts.acceptablePrice;
-    } else {
-      mustNeverExist(orderOption);
-    }
-  }, [allowedSlippage, decreaseAmounts?.acceptablePrice, orderOption, position]);
+  const { maxSwapLiquidity } = useSelector(selectPositionSellerSwapRoutes);
+  const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
+  const acceptablePrice = useSelector(selectPositionSellerAcceptablePrice);
 
   useDebugExecutionPrice(chainId, {
     skip: true,
@@ -203,27 +191,13 @@ export function PositionSeller(p: Props) {
     isLong: position?.isLong,
   });
 
-  const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
-
-  const swapAmounts = useMemo(() => {
-    if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
-      return undefined;
-    }
-
-    return getSwapAmountsByFromValue({
-      tokenIn: position.collateralToken,
-      tokenOut: receiveToken,
-      amountIn: decreaseAmounts.receiveTokenAmount,
-      isLimit: false,
-      findSwapPath,
-      uiFeeFactor,
-    });
-  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap, uiFeeFactor]);
+  const shouldSwap = useSelector(selectPositionSellerShouldSwap);
+  const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
-  const nextPositionValues = usePositionSellerNextPositionValuesForDecrease();
+  const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
@@ -281,7 +255,6 @@ export function PositionSeller(p: Props) {
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
-
   const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
@@ -400,7 +373,7 @@ export function PositionSeller(p: Props) {
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: p.shouldDisableValidation,
+        skipSimulation: shouldDisableValidationForTesting,
       },
       {
         setPendingOrder,
@@ -825,7 +798,7 @@ export function PositionSeller(p: Props) {
               <Button
                 className="w-full"
                 variant="primary-action"
-                disabled={Boolean(error) && !p.shouldDisableValidation}
+                disabled={Boolean(error) && !shouldDisableValidationForTesting}
                 onClick={onSubmit}
                 buttonRef={submitButtonRef}
               >

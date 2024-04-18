@@ -2,15 +2,15 @@ import cx from "classnames";
 import "./VersionSwitch.scss";
 import { useChainId } from "lib/chains";
 import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 type Props = {
-  currentVersion: number;
-  setCurrentVersion: (version: number) => void;
   className?: string;
 };
 
-export function VersionSwitch({ currentVersion, setCurrentVersion, className }: Props) {
+export function VersionSwitch({ className }: Props) {
   const { chainId } = useChainId();
+  const [currentVersion, setCurrentVersion] = useTradePageVersion();
 
   return (
     <div className={cx("VersionSwitch", className)}>

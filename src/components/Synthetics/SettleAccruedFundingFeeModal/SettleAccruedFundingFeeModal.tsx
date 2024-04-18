@@ -50,8 +50,8 @@ export function SettleAccruedFundingFeeModal({
   const { chainId } = useChainId();
   const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
+  const gasLimits = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
   const positionsInfoData = usePositionsInfoData();
 
   const positiveFeePositions = useMemo(

@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import mapValues from "lodash/mapValues";
 import pick from "lodash/pick";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getKeepLeverageKey,
@@ -14,15 +14,13 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
-import { MarketInfo, MarketsInfoData } from "../markets";
+import { MarketsInfoData } from "../markets";
 import { OrderType } from "../orders/types";
 import { PositionInfo } from "../positions";
-import { TokenData, TokensData } from "../tokens";
+import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
-import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 
-type ReactSetState<T> = Dispatch<SetStateAction<T>>;
-type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
 type TradeStage = "trade" | "confirmation" | "processing";
 
 type TradeOptions = {
@@ -34,78 +32,7 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-export type TradeState = {
-  tradeType: TradeType;
-  tradeMode: TradeMode;
-  isWrapOrUnwrap: boolean;
-  fromTokenAddress?: string;
-  toTokenAddress?: string;
-  marketAddress?: string;
-  marketInfo?: MarketInfo;
-  collateralAddress?: string;
-  collateralToken?: TokenData;
-  avaialbleTradeModes: TradeMode[];
-  availableTokensOptions: AvailableTokenOptions;
-
-  setActivePosition: (position?: PositionInfo, tradeMode?: TradeMode) => void;
-  setTradeType: (tradeType: TradeType) => void;
-  setTradeMode: (tradeMode: TradeMode) => void;
-  setFromTokenAddress: (tokenAddress?: string) => void;
-  setToTokenAddress: (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
-  setMarketAddress: (marketAddress?: string) => void;
-  setCollateralAddress: (tokenAddress?: string) => void;
-  switchTokenAddresses: () => void;
-  setTradeConfig: ({
-    tradeType,
-    tradeMode,
-    fromTokenAddress,
-    toTokenAddress,
-    marketAddress,
-    collateralAddress,
-  }: TradeOptions) => void;
-
-  fromTokenInputValue: string;
-  setFromTokenInputValue: ReactSetState<string>;
-
-  toTokenInputValue: string;
-  setToTokenInputValue: ReactSetState<string>;
-
-  stage: TradeStage;
-  setStage: ReactSetState<TradeStage>;
-
-  focusedInput: "from" | "to" | undefined;
-  setFocusedInput: ReactSetState<"from" | "to" | undefined>;
-
-  fixedTriggerThresholdType: TriggerThresholdType | undefined;
-  setFixedTriggerThresholdType: ReactSetState<TriggerThresholdType | undefined>;
-
-  fixedTriggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined;
-  setFixedTriggerOrderType: ReactSetState<OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined>;
-
-  defaultTriggerAcceptablePriceImpactBps: BigNumber | undefined;
-  setDefaultTriggerAcceptablePriceImpactBps: ReactSetState<BigNumber | undefined>;
-
-  selectedTriggerAcceptablePriceImpactBps: BigNumber | undefined;
-  setSelectedAcceptablePriceImpactBps: ReactSetState<BigNumber | undefined>;
-
-  closeSizeInputValue: string;
-  setCloseSizeInputValue: ReactSetState<string>;
-
-  triggerPriceInputValue: string;
-  setTriggerPriceInputValue: ReactSetState<string>;
-
-  triggerRatioInputValue: string;
-  setTriggerRatioInputValue: ReactSetState<string>;
-
-  leverageOption: number | undefined;
-  setLeverageOption: LocalStorageSetState<number>;
-
-  isLeverageEnabled: boolean | undefined;
-  setIsLeverageEnabled: LocalStorageSetState<boolean>;
-
-  keepLeverage: boolean | undefined;
-  setKeepLeverage: LocalStorageSetState<boolean>;
-};
+export type TradeboxState = ReturnType<typeof useTradeboxState>;
 
 type StoredTradeOptions = {
   tradeType: TradeType;
@@ -138,7 +65,7 @@ export function useTradeboxState(
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
   }
-): TradeState {
+) {
   const { marketsInfoData, tokensData } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });

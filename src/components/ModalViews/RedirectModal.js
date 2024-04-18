@@ -4,15 +4,16 @@ import Checkbox from "../Checkbox/Checkbox";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 export function RedirectPopupModal({
   redirectModalVisible,
   setRedirectModalVisible,
   appRedirectUrl,
-  setRedirectPopupTimestamp,
   setShouldHideRedirectModal,
   shouldHideRedirectModal,
 }) {
+  const [, setRedirectPopupTimestamp] = useRedirectPopupTimestamp();
   const onClickAgree = () => {
     if (shouldHideRedirectModal) {
       setRedirectPopupTimestamp(Date.now());
