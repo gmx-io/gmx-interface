@@ -46,6 +46,7 @@ export type AvailableMarketsOptions = {
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: BigNumber;
   isNoSufficientLiquidityInAnyMarket?: boolean;
+  isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
 
 export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
@@ -100,6 +101,12 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
       if (availablePosition) {
         result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
         result.collateralWithPosition = availablePosition.collateralToken;
+        if (increaseSizeUsd) {
+          result.isNoSufficientLiquidityInMarketWithPosition = !getAvailableUsdLiquidityForPosition(
+            result.marketWithPosition!,
+            isLong
+          ).gt(increaseSizeUsd);
+        }
       }
     }
   }

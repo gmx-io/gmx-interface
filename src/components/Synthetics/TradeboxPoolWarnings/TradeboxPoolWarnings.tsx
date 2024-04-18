@@ -65,6 +65,7 @@ export const useTradeboxPoolWarnings = (
   const indexToken = marketInfo.indexToken;
   const marketWithPosition = marketsOptions?.marketWithPosition;
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
+  const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
   const maxLiquidityMarket = marketsOptions?.maxLiquidityMarket;
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
@@ -96,8 +97,17 @@ export const useTradeboxPoolWarnings = (
     isLong ? indexTokenStat?.bestNetFeeLongMarketAddress : indexTokenStat?.bestNetFeeShortMarketAddress
   );
 
+  const showHasExistingPositionButNotEnoughLiquidityWarning =
+    !hasExistingPosition &&
+    marketWithPosition &&
+    !isSelectedMarket(marketWithPosition) &&
+    isNoSufficientLiquidityInMarketWithPosition;
   const showHasExistingPositionWarning =
-    !hasExistingPosition && marketWithPosition && !isSelectedMarket(marketWithPosition);
+    !showHasExistingPositionButNotEnoughLiquidityWarning &&
+    !hasExistingPosition &&
+    marketWithPosition &&
+    !isSelectedMarket(marketWithPosition);
+
   const showHasNoSufficientLiquidityInAnyMarketWarning = isNoSufficientLiquidityInAnyMarket;
   const showHasInsufficientLiquidityWarning =
     isOutPositionLiquidity && maxLiquidityMarket && !isSelectedMarket(maxLiquidityMarket);
@@ -138,7 +148,9 @@ export const useTradeboxPoolWarnings = (
     !showHasInsufficientLiquidityWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterExecutionFeesWarning &&
-    !showHasBetterNetFeesWarning
+    !showHasBetterNetFeesWarning &&
+    !showHasBetterExecutionFeesAndNetFeesWarning &&
+    !showHasExistingPositionButNotEnoughLiquidityWarning
   ) {
     return null;
   }
@@ -159,6 +171,29 @@ export const useTradeboxPoolWarnings = (
               }}
             >
               Switch to {getMarketPoolName(marketWithPosition)} market pool
+            </span>
+            .
+          </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasExistingPositionButNotEnoughLiquidityWarning) {
+    warning.push(
+      <AlertInfo key="showHasExistingPositionButNotEnoughLiquidityWarning" type="warning" compact textColor={textColor}>
+        <Trans>
+          You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool, but it lacks
+          liquidity for this order.
+          <WithActon>
+            <span
+              className="clickable underline muted"
+              onClick={() => {
+                setMarketAddress(marketWithPosition.marketTokenAddress);
+                setCollateralAddress(marketsOptions.collateralWithPosition?.address);
+              }}
+            >
+              Switch anyway to {getMarketPoolName(marketWithPosition)} market pool
             </span>
             .
           </WithActon>
@@ -218,7 +253,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterExecutionFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterExecutionFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatPercentage(improvedOpenFeeDeltaBps)} better open fees in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
@@ -238,7 +273,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterNetFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterNetFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
           {getMarketPoolName(bestNetFeeMarket)} market pool.
@@ -258,7 +293,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterExecutionFeesAndNetFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterExecutionFeesAndNetFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatPercentage(improvedOpenFeeDeltaBps)} better open fees and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
