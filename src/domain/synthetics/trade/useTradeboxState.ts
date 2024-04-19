@@ -375,7 +375,10 @@ export function useTradeboxState(
 
         if (patch.marketTokenAddress) {
           set(oldState, ["markets", patch.indexTokenAddress, longOrShort], patch.marketTokenAddress);
-          set(oldState, ["collaterals", patch.marketTokenAddress, longOrShort], patch.collateralTokenAddress);
+
+          if (patch.collateralTokenAddress) {
+            set(oldState, ["collaterals", patch.marketTokenAddress, longOrShort], patch.collateralTokenAddress);
+          }
         }
 
         return oldState;
