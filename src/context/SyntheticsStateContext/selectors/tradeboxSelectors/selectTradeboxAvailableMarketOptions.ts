@@ -181,7 +181,10 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
   }
 
   for (const liquidMarket of liquidMarkets) {
-    const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress)!;
+    const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
+    if (!marketIncreasePositionAmounts) {
+      continue;
+    }
 
     const positionFeeBeforeDiscount = getFeeItem(
       marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),

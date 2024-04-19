@@ -180,7 +180,6 @@ export function TradeBox(p: Props) {
     setMarketAddress: onSelectMarketAddress,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
-    // setToTokenAddress,
     setTradeType: onSelectTradeType,
     setTradeMode: onSelectTradeMode,
     stage,
