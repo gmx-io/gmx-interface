@@ -668,53 +668,6 @@ export function TradeBox(p: Props) {
   );
 
   useEffect(
-    function updatePositionMarket() {
-      if (!isPosition || !marketsOptions.availableMarkets) {
-        return;
-      }
-
-      const needUpdateMarket =
-        !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
-
-      if (needUpdateMarket && marketsOptions.marketWithPosition) {
-        onSelectMarketAddress(marketsOptions.marketWithPosition.marketTokenAddress);
-        return;
-      }
-
-      const optimalMarket =
-        marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
-
-      if (needUpdateMarket && optimalMarket) {
-        onSelectMarketAddress(optimalMarket.marketTokenAddress);
-        return;
-      }
-    },
-    [
-      isPosition,
-      marketAddress,
-      marketsOptions.availableMarkets,
-      marketsOptions.marketWithPosition,
-      marketsOptions.maxLiquidityMarket,
-      marketsOptions.minPriceImpactMarket,
-      onSelectMarketAddress,
-    ]
-  );
-
-  const prevMarketAddress = usePrevious(marketAddress);
-  useEffect(
-    function updatePositionCollateral() {
-      if (!isPosition) {
-        return;
-      }
-
-      if (marketAddress && prevMarketAddress !== marketAddress && marketsOptions.collateralWithPosition) {
-        onSelectCollateralAddress(marketsOptions.collateralWithPosition.address);
-      }
-    },
-    [isPosition, marketAddress, marketsOptions.collateralWithPosition, onSelectCollateralAddress, prevMarketAddress]
-  );
-
-  useEffect(
     function resetTriggerPrice() {
       setTriggerPriceInputValue("");
     },
