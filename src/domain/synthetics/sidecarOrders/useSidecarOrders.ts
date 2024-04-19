@@ -79,13 +79,17 @@ export function useSidecarOrders() {
       []
     );
 
+    if (isLimit && triggerPrice) {
+      prices.push(triggerPrice);
+    }
+
     if (!prices.length) return [undefined, undefined];
 
     return prices.reduce(
       ([min, max], num) => [num.lt(min) ? num : min, num.gt(max) ? num : max],
       [prices[0], prices[0]]
     );
-  }, [limitEntriesInfo.entries]);
+  }, [limitEntriesInfo.entries, isLimit, triggerPrice]);
 
   const handleSLErrors = useCallback(
     (entry: SidecarSlTpOrderEntry) =>
