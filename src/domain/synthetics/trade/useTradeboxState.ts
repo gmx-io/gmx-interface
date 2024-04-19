@@ -95,18 +95,18 @@ export function useTradeboxState(
     return unstableRefAvailableIndexTokensAddresses;
   }, [unstableRefAvailableIndexTokensAddresses.sort().join(",")]);
 
-  const unstableRefAvailableIndexTokensAddressMarketMap =
+  const unstableRefAvailableMarketAddressIndexTokenMap =
     availableTokensOptions.sortedAllMarkets &&
     mapValues(
       keyBy(availableTokensOptions.sortedAllMarkets, (market) => market.marketTokenAddress),
-      (market) => market.indexTokenAddress
+      (market) => market.indexToken.address
     );
 
   const marketAddressIndexTokenMap: {
     [marketAddress: string]: string;
   } = useMemo(() => {
-    return unstableRefAvailableIndexTokensAddressMarketMap || EMPTY_OBJECT;
-  }, [JSON.stringify(unstableRefAvailableIndexTokensAddressMarketMap)]);
+    return unstableRefAvailableMarketAddressIndexTokenMap || EMPTY_OBJECT;
+  }, [JSON.stringify(unstableRefAvailableMarketAddressIndexTokenMap)]);
 
   const unstableRefStrippedMarketInfo = mapValues(marketsInfoData || {}, (info) => ({
     longTokenAddress: info.longTokenAddress,
@@ -681,7 +681,7 @@ function fallbackPositionTokens(
 
   const validPoolIndexTokenCombination = entries(indexTokensAddressMarketMap).some(
     ([availableMarketAddress, availableIndexTokenAddress]) =>
-      availableIndexTokenAddress === newState.tokens.indexTokenAddress && availableMarketAddress === marketAddress
+      availableIndexTokenAddress === indexTokenAddress && availableMarketAddress === marketAddress
   );
 
   if (!validPoolIndexTokenCombination && values(indexTokensAddressMarketMap).length > 0) {
