@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`marketsInfoDataToIndexTokensStats matches snapshot 1`] = `
+exports[`marketsInfoData2IndexTokenStatsMap matches snapshot 1`] = `
 Object {
   "indexMap": Object {
     "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C": Object {
