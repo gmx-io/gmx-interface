@@ -34,7 +34,7 @@ export const useTradeboxPoolWarnings = (
   const marketsOptions = useTradeboxAvailableMarketsOptions();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const { marketInfo, setMarketAddress, setCollateralAddress } = useTradeboxState();
-  const { isLong } = useTradeboxTradeFlags();
+  const { isLong, isIncrease } = useTradeboxTradeFlags();
   const existingOrder = useTradeboxExistingOrder();
   const selectedPosition = useTradeboxSelectedPosition();
   const hasExistingOrder = Boolean(existingOrder);
@@ -133,11 +133,13 @@ export const useTradeboxPoolWarnings = (
     !isSelectedMarket(marketWithOrder);
 
   const canShowHasBetterExecutionFeesWarning =
+    isIncrease &&
     minPriceImpactMarket &&
     minPriceImpactBps &&
     !isSelectedMarket(minPriceImpactMarket) &&
     improvedOpenFeesDeltaBps?.gte(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS);
   const canShowHasBetterNetFeesWarning =
+    isIncrease &&
     bestNetFeeMarket &&
     marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
     improvedNetRateAbsDelta?.gte(SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD);
@@ -152,6 +154,7 @@ export const useTradeboxPoolWarnings = (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
     !showHasInsufficientLiquidityAndPositionWarning &&
+    !showHasInsufficientLiquidityAndNoPositionWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
     !showHasBetterNetFeesWarning &&
