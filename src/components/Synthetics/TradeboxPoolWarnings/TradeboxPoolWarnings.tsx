@@ -43,7 +43,7 @@ export const useTradeboxPoolWarnings = (
 
   const currentMarketStat =
     marketInfo &&
-    allMarketStats.indexMap[marketInfo.indexTokenAddress].marketsStats.find(
+    allMarketStats.indexMap[marketInfo.indexTokenAddress]?.marketsStats.find(
       (marketStat) => marketStat.marketInfo.marketTokenAddress === marketInfo.marketTokenAddress
     );
 

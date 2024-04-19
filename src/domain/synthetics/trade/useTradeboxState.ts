@@ -16,7 +16,7 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
-import { entries, identity, pickBy, values } from "lodash";
+import { entries, identity, keyBy, pickBy, values } from "lodash";
 import { MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrderType } from "../orders/types";
@@ -96,7 +96,11 @@ export function useTradeboxState(
   }, [unstableRefAvailableIndexTokensAddresses.sort().join(",")]);
 
   const unstableRefAvailableIndexTokensAddressMarketMap =
-    marketsInfoData && mapValues(marketsInfoData, (market) => market.indexTokenAddress);
+    availableTokensOptions.sortedAllMarkets &&
+    mapValues(
+      keyBy(availableTokensOptions.sortedAllMarkets, (market) => market.marketTokenAddress),
+      (market) => market.indexTokenAddress
+    );
 
   const marketAddressIndexTokenMap: {
     [marketAddress: string]: string;
@@ -192,12 +196,11 @@ export function useTradeboxState(
       setSyncedChainId(chainId);
     },
     [
-      syncedChainId,
       availableIndexTokensAddresses,
+      availableTokensOptions.sortedAllMarkets,
       chainId,
       setStoredOptionsOnChain,
-      availableTokensOptions.sortedAllMarkets,
-      marketsInfoData,
+      syncedChainId,
     ]
   );
 

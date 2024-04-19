@@ -12,7 +12,7 @@ export const selectOrderedStatsMarketsInfoDataToIndexTokenStats = createSelector
 
   const stats = q(selectStatsMarketsInfoDataToIndexTokenStatsMap);
 
-  return stats.sortedByTotalPoolValue.map((address) => stats.indexMap[address]);
+  return stats.sortedByTotalPoolValue.map((address) => stats.indexMap[address]!);
 });
 
 const FALLBACK: ReturnType<typeof marketsInfoDataToIndexTokensStats> = {

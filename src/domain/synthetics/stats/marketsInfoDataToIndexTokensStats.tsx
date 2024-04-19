@@ -49,7 +49,7 @@ export function bnMax(...args: BigNumber[]): BigNumber {
 }
 
 export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoData): {
-  indexMap: Record<string, IndexTokenStat>;
+  indexMap: Partial<Record<string, IndexTokenStat>>;
   sortedByTotalPoolValue: string[];
 } {
   const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
