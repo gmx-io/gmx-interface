@@ -214,5 +214,6 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    debug: true,
   });
 });

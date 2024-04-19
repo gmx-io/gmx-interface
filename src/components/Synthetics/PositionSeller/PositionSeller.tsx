@@ -326,6 +326,9 @@ export function PositionSeller(p: Props) {
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
 
+  const [swapType, setSwapType] = React.useState<DecreasePositionSwapType>(DecreasePositionSwapType.NoSwap);
+  const [emptySwapPath, setEmptySwapPath] = React.useState<boolean>(false);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -349,38 +352,36 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    const txnPromise = createDecreaseOrderTxn(
-      chainId,
-      signer,
-      subaccount,
-      {
-        account,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
-        receiveTokenAddress: receiveToken.address,
-        swapPath: swapAmounts?.swapPathStats?.swapPath || [],
-        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-        isLong: position.isLong,
-        acceptablePrice: decreaseAmounts.acceptablePrice,
-        triggerPrice: isTrigger ? triggerPrice : undefined,
-        minOutputUsd: BigNumber.from(0),
-        decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-        orderType,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: shouldDisableValidationForTesting,
-      },
-      {
-        setPendingOrder,
-        setPendingTxns,
-        setPendingPosition,
-      }
-    );
+    const params = {
+      account,
+      marketAddress: position.marketAddress,
+      initialCollateralAddress: position.collateralTokenAddress,
+      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+      receiveTokenAddress: receiveToken.address,
+      swapPath: emptySwapPath ? [] : swapAmounts?.swapPathStats?.swapPath || [],
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+      isLong: position.isLong,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
+      triggerPrice: isTrigger ? triggerPrice : undefined,
+      minOutputUsd: BigNumber.from(0),
+      decreasePositionSwapType: swapType,
+      orderType,
+      referralCode: userReferralInfo?.referralCodeForTxn,
+      executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
+      indexToken: position.indexToken,
+      tokensData,
+      skipSimulation: shouldDisableValidationForTesting,
+    };
+
+    console.log("txn", params);
+
+    const txnPromise = createDecreaseOrderTxn(chainId, signer, subaccount, params as any, {
+      setPendingOrder,
+      setPendingTxns,
+      setPendingPosition,
+    });
 
     if (subaccount) {
       onClose();
@@ -656,6 +657,33 @@ export function PositionSeller(p: Props) {
     }
   }
 
+  const handleSwapTypeButtonClick = () => {
+    if (swapType === DecreasePositionSwapType.NoSwap) {
+      setSwapType(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+    } else if (swapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+      setSwapType(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
+    } else {
+      setSwapType(DecreasePositionSwapType.NoSwap);
+    }
+  };
+
+  const swapTypeButtonText = (() => {
+    if (swapType === DecreasePositionSwapType.NoSwap) {
+      return t`No swap`;
+    } else if (swapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+      return t`Swap Collateral to PnL Token`;
+    } else {
+      return t`Swap PnL Token to Collateral`;
+    }
+  })();
+
+  const handleSwapPathButtonClick = () => {
+    setEmptySwapPath(!emptySwapPath);
+  };
+
+  const swapPathButtonText =
+    `swapPath = ` + (emptySwapPath ? t`[] (overrided)` : JSON.stringify(swapAmounts?.swapPathStats?.swapPath) ?? "[]");
+
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
@@ -795,6 +823,12 @@ export function PositionSeller(p: Props) {
               )}
             </ExchangeInfo>
             <div className="Exchange-swap-button-container">
+              <button onClick={handleSwapTypeButtonClick}>{swapTypeButtonText}</button>
+              <br />
+              <br />
+              <button onClick={handleSwapPathButtonClick}>{swapPathButtonText}</button>
+              <br />
+              <br />
               <Button
                 className="w-full"
                 variant="primary-action"

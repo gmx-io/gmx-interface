@@ -646,7 +646,9 @@ export function PositionItem(p: Props) {
               <div onClick={() => p.onSelectPositionClick?.()}>
                 <div className="items-top">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">{poolName && `[${poolName}]`}</span>
+                  <span className="subtext">
+                    {poolName && `[${poolName}]`} {p.position.marketInfo.marketTokenAddress}
+                  </span>
                 </div>
               </div>
             </div>

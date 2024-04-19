@@ -1,5 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
 import {
+  FindSwapPath,
   TradeFlags,
   TradeMode,
   TradeType,
@@ -105,7 +106,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         return { maxLiquidity, maxLiquidityPath };
       })();
 
-      const findSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => {
+      const findSwapPath: FindSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }, debug?: boolean) => {
         if (!allRoutes?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
           return undefined;
         }
@@ -130,6 +131,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
           shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
           shouldApplyPriceImpact: true,
           usdIn,
+          debug,
         });
 
         if (!swapPathStats) {

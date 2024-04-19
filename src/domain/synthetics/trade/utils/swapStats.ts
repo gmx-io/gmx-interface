@@ -122,6 +122,7 @@ export function getSwapPathStats(p: {
   usdIn: BigNumber;
   shouldUnwrapNativeToken: boolean;
   shouldApplyPriceImpact: boolean;
+  debug?: boolean;
 }): SwapPathStats | undefined {
   const {
     marketsInfoData,
@@ -131,6 +132,7 @@ export function getSwapPathStats(p: {
     shouldUnwrapNativeToken,
     shouldApplyPriceImpact,
     wrappedNativeTokenAddress,
+    debug,
   } = p;
 
   if (swapPath.length === 0) {

@@ -13,8 +13,9 @@ export function getSwapAmountsByFromValue(p: {
   isLimit: boolean;
   findSwapPath: FindSwapPath;
   uiFeeFactor: BigNumber;
+  debug?: boolean;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor, debug } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -57,7 +58,10 @@ export function getSwapAmountsByFromValue(p: {
     };
   }
 
-  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit });
+  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit }, debug);
+  // if (debug) {
+  //   console.log("found swap path stats", swapPathStats?.swapPath);
+  // }
 
   const totalSwapVolume = getTotalSwapVolumeFromSwapStats(swapPathStats?.swapSteps);
   const swapUiFeeUsd = applyFactor(totalSwapVolume, uiFeeFactor);
