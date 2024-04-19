@@ -16,6 +16,7 @@ export const SEPOLIA_TESTNET = 11155111;
 export const OPTIMISM_GOERLI_TESTNET = 420;
 export const OPTIMISM_MAINNET = 10;
 export const BLAST_SEPOLIA_TESTNET = 168587773;
+export const MORPH_L2 = 2710;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
@@ -29,7 +30,8 @@ if (isDevelopment()) {
     AVALANCHE_FUJI,
     SEPOLIA_TESTNET,
     OPTIMISM_GOERLI_TESTNET,
-    BLAST_SEPOLIA_TESTNET
+    BLAST_SEPOLIA_TESTNET,
+    MORPH_L2
   );
 }
 
@@ -40,6 +42,7 @@ export const IS_NETWORK_DISABLED = {
   [AVALANCHE]: false,
   [OPTIMISM_MAINNET]: false,
   [BLAST_SEPOLIA_TESTNET]: false,
+  [MORPH_L2]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -53,6 +56,7 @@ export const CHAIN_NAMES_MAP = {
   [OPTIMISM_GOERLI_TESTNET]: "Optimism Goerli",
   [OPTIMISM_MAINNET]: "Optimism Mainnet",
   [BLAST_SEPOLIA_TESTNET]: "Blast Testnet",
+  [MORPH_L2]: "Morph L2",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -196,6 +200,19 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
+  [MORPH_L2]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: false,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["t3.money", "app.t3.money"];
@@ -226,6 +243,7 @@ export const RPC_PROVIDERS = {
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
   [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"],
   [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"],
+  [MORPH_L2]: ["https://rpc-testnet.morphl2.io"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -344,6 +362,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
     blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
   },
+  [MORPH_L2]: {
+    chainId: "0x" + MORPH_L2.toString(16),
+    chainName: "Morph L2",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[MORPH_L2],
+    blockExplorerUrls: [getExplorerUrl(MORPH_L2)],
+  },
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -414,6 +443,8 @@ export function getExplorerUrl(chainId) {
       return "https://optimistic.etherscan.io/";
     case BLAST_SEPOLIA_TESTNET:
       return "https://testnet.blastscan.io/";
+    case MORPH_L2:
+      return "https://explorer-testnet.morphl2.io";
     default:
       return "https://etherscan.io/";
   }

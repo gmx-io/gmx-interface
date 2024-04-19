@@ -5,6 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
@@ -55,8 +56,13 @@ const ICONS = {
     gmx: tmxImg,
     glp: tlpImg,
   },
-  [OPTIMISM_MAINNET]: { network: optimismIcn, gmx: tmxImg,  glp: tlpImg },
+  [OPTIMISM_MAINNET]: { network: optimismIcn, gmx: tmxImg, glp: tlpImg },
   common: {
+    gmx: tmxImg,
+    glp: tlpImg,
+  },
+  [MORPH_L2]: {
+    network: sepoliaTesnet,
     gmx: tmxImg,
     glp: tlpImg,
   },
