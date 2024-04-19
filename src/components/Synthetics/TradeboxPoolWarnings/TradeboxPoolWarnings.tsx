@@ -138,29 +138,21 @@ export const useTradeboxPoolWarnings = (
     bestNetFeeMarket &&
     marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
     improvedNetRateAbsDelta?.gte(SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD);
-  const showHasBetterExecutionFeesAndNetFeesWarning =
+  const showHasBetterOpenFeesAndNetFeesWarning =
     canShowHasBetterExecutionFeesWarning &&
     canShowHasBetterNetFeesWarning &&
     bestNetFeeMarket.marketTokenAddress === minPriceImpactMarket.marketTokenAddress;
-  const showHasBetterExecutionFeesWarning =
-    !marketWithPosition &&
-    !marketWithOrder &&
-    canShowHasBetterExecutionFeesWarning &&
-    !showHasBetterExecutionFeesAndNetFeesWarning;
-  const showHasBetterNetFeesWarning =
-    !marketWithPosition &&
-    !marketWithOrder &&
-    canShowHasBetterNetFeesWarning &&
-    !showHasBetterExecutionFeesAndNetFeesWarning;
+  const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
+  const showHasBetterNetFeesWarning = canShowHasBetterNetFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
 
   if (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
     !showHasInsufficientLiquidityWarning &&
     !showHasExistingOrderWarning &&
-    !showHasBetterExecutionFeesWarning &&
+    !showHasBetterOpenFeesWarning &&
     !showHasBetterNetFeesWarning &&
-    !showHasBetterExecutionFeesAndNetFeesWarning &&
+    !showHasBetterOpenFeesAndNetFeesWarning &&
     !showHasExistingPositionButNotEnoughLiquidityWarning
   ) {
     return null;
@@ -264,9 +256,9 @@ export const useTradeboxPoolWarnings = (
     );
   }
 
-  if (showHasBetterExecutionFeesWarning) {
+  if (showHasBetterOpenFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterExecutionFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterOpenFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatPercentage(improvedOpenFeesDeltaBps)} better open fees in the{" "}
           {getMarketPoolName(minPriceImpactMarket)} market pool.
@@ -304,9 +296,9 @@ export const useTradeboxPoolWarnings = (
     );
   }
 
-  if (showHasBetterExecutionFeesAndNetFeesWarning) {
+  if (showHasBetterOpenFeesAndNetFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterExecutionFeesAndNetFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="warning" compact textColor={textColor}>
         <Trans>
           You can get a {formatPercentage(improvedOpenFeesDeltaBps)} better open fees and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
