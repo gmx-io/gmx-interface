@@ -15,8 +15,7 @@ import {
 } from "domain/synthetics/positions";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { TradeboxState } from "domain/synthetics/trade/useTradeboxState";
-import { useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";

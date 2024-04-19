@@ -4,22 +4,22 @@ import { ReactNode, useCallback } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxAvailableMarketsOptions,
   useTradeboxExistingOrder,
   useTradeboxIncreasePositionAmounts,
   useTradeboxSelectedPosition,
   useTradeboxState,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { getFeeItem } from "domain/synthetics/fees/utils";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectStatsMarketsInfoDataToIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigNumber.from(10).pow(25); // +0.001%
@@ -31,7 +31,7 @@ export const useTradeboxPoolWarnings = (
   textColor: "text-warning" | "text-gray" = "text-warning"
 ) => {
   const marketsInfoData = useMarketsInfoData();
-  const marketsOptions = useTradeboxAvailableMarketsOptions();
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const { marketInfo, setMarketAddress, setCollateralAddress } = useTradeboxState();
   const { isLong, isIncrease } = useTradeboxTradeFlags();
@@ -39,7 +39,7 @@ export const useTradeboxPoolWarnings = (
   const selectedPosition = useTradeboxSelectedPosition();
   const hasExistingOrder = Boolean(existingOrder);
   const hasExistingPosition = Boolean(selectedPosition);
-  const allMarketStats = useSelector(selectStatsMarketsInfoDataToIndexTokenStatsMap);
+  const allMarketStats = useSelector(selectIndexTokenStatsMap);
 
   const currentMarketStat =
     marketInfo &&

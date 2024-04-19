@@ -47,7 +47,7 @@ import { getByKey } from "lib/objects";
 import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import {
   IndexTokenStat,
-  marketsInfoDataToIndexTokensStats,
+  marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { keyBy, values } from "lodash";
 
@@ -65,6 +65,7 @@ export type AvailableMarketsOptions = {
    * Collateral token of the order in `marketWithOrder`
    */
   collateralWithOrder?: TokenData;
+  collateralWithOrderShouldUnwrapNativeToken?: boolean;
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: BigNumber;
@@ -75,7 +76,7 @@ export type AvailableMarketsOptions = {
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
 
-export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
+export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
   const tokensData = q(selectTokensData);
@@ -108,7 +109,7 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
     : availableMarkets;
 
   const availableIndexTokenStat = values(
-    marketsInfoDataToIndexTokensStats(keyBy(liquidMarkets, "marketTokenAddress")).indexMap
+    marketsInfoData2IndexTokenStatsMap(keyBy(liquidMarkets, "marketTokenAddress")).indexMap
   )[0];
 
   const result: AvailableMarketsOptions = { allMarkets, availableMarkets, availableIndexTokenStat };
@@ -154,6 +155,7 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
     if (availableOrder) {
       result.marketWithOrder = getByKey(marketsInfoData, availableOrder.marketAddress);
       result.collateralWithOrder = availableOrder.targetCollateralToken;
+      result.collateralWithOrderShouldUnwrapNativeToken = availableOrder.shouldUnwrapNativeToken;
     }
   }
 

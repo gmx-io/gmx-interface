@@ -361,7 +361,7 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
 
 /**
  *
- * @param opts.signed - Default `true`. whether to display a plus sign for positive numbers.
+ * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */
 export function formatRatePercentage(rate?: BigNumber, opts?: { displayDecimals?: number; signed?: boolean }) {
   if (!rate) {

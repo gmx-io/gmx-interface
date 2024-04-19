@@ -217,7 +217,7 @@ export function useTradeboxState(
         return newState;
       });
     },
-    [marketAddressIndexTokenMap, availableSwapTokenAddresses, setStoredOptionsOnChain, strippedMarketInfo]
+    [availableSwapTokenAddresses, marketAddressIndexTokenMap, setStoredOptionsOnChain, strippedMarketInfo]
   );
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
@@ -531,7 +531,7 @@ export function useTradeboxState(
 
       setStoredOptions(identity);
     },
-    [marketAddressIndexTokenMap, availableSwapTokenAddresses, setStoredOptions, strippedMarketInfo]
+    [availableSwapTokenAddresses.length, marketAddressIndexTokenMap, setStoredOptions, strippedMarketInfo]
   );
 
   useEffect(
@@ -657,7 +657,7 @@ function setToTokenAddressUpdaterBuilder(
 function fallbackPositionTokens(
   newState: StoredTradeOptions,
   availableSwapTokenAddresses: string[],
-  indexTokensAddressMarketMap: { [marketAddress: string]: string }
+  marketAddressIndexTokenMap: { [marketAddress: string]: string }
 ): StoredTradeOptions {
   const needFromUpdate = !availableSwapTokenAddresses.find((t) => t === newState!.tokens.fromTokenAddress);
   const nextFromTokenAddress =
@@ -679,16 +679,16 @@ function fallbackPositionTokens(
   const longOrShort = newState.tradeType === TradeType.Long ? "long" : "short";
   const marketAddress = indexTokenAddress && newState.markets[indexTokenAddress]?.[longOrShort];
 
-  const validPoolIndexTokenCombination = entries(indexTokensAddressMarketMap).some(
+  const validPoolIndexTokenCombination = entries(marketAddressIndexTokenMap).some(
     ([availableMarketAddress, availableIndexTokenAddress]) =>
       availableIndexTokenAddress === indexTokenAddress && availableMarketAddress === marketAddress
   );
 
-  if (!validPoolIndexTokenCombination && values(indexTokensAddressMarketMap).length > 0) {
-    const possibleMarkets = pickBy(indexTokensAddressMarketMap, (v) => v === indexTokenAddress);
+  if (!validPoolIndexTokenCombination && values(marketAddressIndexTokenMap).length > 0) {
+    const possibleMarkets = pickBy(marketAddressIndexTokenMap, (v) => v === indexTokenAddress);
 
     if (values(possibleMarkets).length === 0) {
-      const [marketAddress, indexTokenAddress] = entries(indexTokensAddressMarketMap)[0];
+      const [marketAddress, indexTokenAddress] = entries(marketAddressIndexTokenMap)[0];
       const updater = setToTokenAddressUpdaterBuilder(newState.tradeType, indexTokenAddress, marketAddress);
 
       newState = updater(newState);

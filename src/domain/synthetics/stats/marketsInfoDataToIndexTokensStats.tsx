@@ -48,7 +48,7 @@ export function bnMax(...args: BigNumber[]): BigNumber {
   return max;
 }
 
-export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoData): {
+export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoData): {
   indexMap: Partial<Record<string, IndexTokenStat>>;
   sortedByTotalPoolValue: string[];
 } {

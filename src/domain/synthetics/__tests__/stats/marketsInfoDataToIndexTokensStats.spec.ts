@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
-import { marketsInfoDataToIndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { bigNumberify } from "lib/numbers";
 
 import mockData from "./marketsInfoDataToIndexTokensStats.data.json";
@@ -26,11 +26,11 @@ const prepare = <T>(raw: any): T => {
   return prepareHelper(raw) as T;
 };
 
-describe("marketsInfoDataToIndexTokensStats", () => {
+describe("marketsInfoData2IndexTokenStatsMap", () => {
   it("matches snapshot", () => {
     const input = prepare<MarketsInfoData>(mockData);
 
-    const result = marketsInfoDataToIndexTokensStats(input);
+    const result = marketsInfoData2IndexTokenStatsMap(input);
 
     // wipe entity fields
     mapValues(result.indexMap, (value: any) => {
