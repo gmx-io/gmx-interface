@@ -213,7 +213,6 @@ export function TradeBox(p: Props) {
     collateralAddress,
     collateralToken,
     fromTokenAddress,
-    marketAddress,
     marketInfo,
     toTokenAddress,
     avaialbleTradeModes: availalbleTradeModes,
@@ -247,7 +246,6 @@ export function TradeBox(p: Props) {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
-  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
