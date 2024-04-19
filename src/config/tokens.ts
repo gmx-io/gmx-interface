@@ -11,6 +11,7 @@ import {
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
 } from "./chains";
 import { Token } from "domain/tokens";
 
@@ -658,6 +659,69 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
     },
   ],
+  [MORPH_L2]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
+    {
+      name: "Wrapped Ethereum (WETH)",
+      symbol: "WETH",
+      address: "0x81c045fb4359D95eE2BEa9f62373b368462BaC4d",
+      isWrapped: true,
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295",
+    },
+    {
+      name: "DAI",
+      symbol: "DAI",
+      address: "0xe6Af0120D82550722C62a19BA29777EbD9C2DDd7",
+      decimals: 18,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
+    },
+    {
+      name: "Wrapped Bitcoin",
+      symbol: "WBTC",
+      address: "0xe9877FdEb54Ce53426Ce8640f9451548f81024f0",
+      decimals: 8,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Link",
+      symbol: "LINK",
+      address: "0xc834Dc66b25E7b5825208F488A9da39F8872BE51",
+      decimals: 18,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0x416e2FCA077296782128A3DE0eF6De7C241f148D",
+      isStable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png",
+    },
+    {
+      name: "USD Tether",
+      symbol: "USDT",
+      address: "0xC0e269bA0c9A571E26658C09D4f3D42F67f41b66",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+    },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -745,6 +809,28 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(BLAST_SEPOLIA_TESTNET, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
+  [MORPH_L2]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(MORPH_L2, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(MORPH_L2, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(MORPH_L2, "GLP"),
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -859,6 +945,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "GLP",
       decimals: 18,
       address: getContract(BLAST_SEPOLIA_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+  [MORPH_L2]: {
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(MORPH_L2, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(MORPH_L2, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
@@ -1090,6 +1192,28 @@ export const ICONLINKS = {
       reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
     },
   },
+  [MORPH_L2]: {
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    USDT: {
+      coingecko: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    TMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    TLP: {
+      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+    },
+  },
 };
 
 export const GLP_POOL_COLORS = {
@@ -1123,6 +1247,7 @@ const CHAIN_IDS = [
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
 ];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {

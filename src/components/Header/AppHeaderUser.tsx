@@ -13,6 +13,7 @@ import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import {
   BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
@@ -60,6 +61,12 @@ if (isDevelopment()) {
     label: getChainName(BLAST_SEPOLIA_TESTNET),
     value: BLAST_SEPOLIA_TESTNET,
     icon: getIcon(BLAST_SEPOLIA_TESTNET, "network"),
+    color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(MORPH_L2),
+    value: MORPH_L2,
+    icon: getIcon(MORPH_L2, "network"),
     color: "#264f79",
   });
 }
@@ -137,7 +144,7 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      {chainId === OPTIMISM_GOERLI_TESTNET || chainId === SEPOLIA_TESTNET || chainId === BLAST_SEPOLIA_TESTNET ? (
+      {chainId === OPTIMISM_GOERLI_TESTNET || chainId === SEPOLIA_TESTNET || chainId === BLAST_SEPOLIA_TESTNET || chainId === MORPH_L2? (
         <div className="App-header-faucet">
           <FaucetDropdown />
         </div>
