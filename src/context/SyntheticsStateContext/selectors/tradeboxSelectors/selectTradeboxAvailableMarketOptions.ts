@@ -27,7 +27,7 @@ import {
   selectTradeboxTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { getFeeItem } from "domain/synthetics/fees/utils";
+import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees/utils";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -69,6 +69,8 @@ export type AvailableMarketsOptions = {
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: BigNumber;
   minPriceImpactPositionFeeBps?: BigNumber;
+  minOpenFeesAvailableMarketAddress?: string;
+  minOpenFeesBps?: BigNumber;
   isNoSufficientLiquidityInAnyMarket?: boolean;
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
@@ -175,15 +177,36 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
 
       result.minPriceImpactMarket = bestMarket;
       result.minPriceImpactBps = acceptablePriceDeltaBps;
+    }
+  }
 
-      const bestMarketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, bestMarket.marketTokenAddress)!;
+  for (const liquidMarket of liquidMarkets) {
+    const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress)!;
 
-      const positionFeeBeforeDiscount = getFeeItem(
-        bestMarketIncreasePositionAmounts.positionFeeUsd.add(bestMarketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
-        bestMarketIncreasePositionAmounts.sizeDeltaUsd
-      );
+    const positionFeeBeforeDiscount = getFeeItem(
+      marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+      marketIncreasePositionAmounts.sizeDeltaUsd
+    );
 
-      result.minPriceImpactPositionFeeBps = positionFeeBeforeDiscount?.bps;
+    const priceImpactDeltaUsd = getCappedPositionImpactUsd(
+      liquidMarket,
+      marketIncreasePositionAmounts.sizeDeltaUsd,
+      isLong
+    );
+
+    const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
+      isIncrease: true,
+      isLong,
+      indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+      priceImpactDeltaUsd: priceImpactDeltaUsd,
+      sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
+    });
+
+    const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+
+    if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
+      result.minOpenFeesBps = openFees;
+      result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
     }
   }
 
