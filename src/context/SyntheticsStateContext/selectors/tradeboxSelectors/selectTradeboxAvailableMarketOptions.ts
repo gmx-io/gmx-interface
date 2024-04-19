@@ -145,13 +145,7 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
     }
   }
 
-  if (
-    increaseSizeUsd &&
-    !hasExistingPosition &&
-    !hasExistingOrder &&
-    !result.marketWithPosition &&
-    !result.marketWithOrder
-  ) {
+  if (increaseSizeUsd) {
     const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
       liquidMarkets,
       indexToken.address,
