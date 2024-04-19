@@ -32,7 +32,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
-  selectTradeboxAvailableMarketsOptions,
   selectTradeboxAvailableTokensOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
