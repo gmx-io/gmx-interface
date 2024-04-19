@@ -2690,6 +2690,10 @@ msgstr "あなたの注文に対して、どの{0}/USDマーケットプール�
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr ""
