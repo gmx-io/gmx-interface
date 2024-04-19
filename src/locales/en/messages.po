@@ -6692,12 +6692,12 @@ msgid "You can get a {0} / 1h better net rate in the {1} market pool.<0><1>Switc
 msgstr "You can get a {0} / 1h better net rate in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
-msgstr "You can get a {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgid "You can get {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgstr "You can get {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get a {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-msgstr "You can get a {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgid "You can get {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "You can get {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
