@@ -45,10 +45,16 @@ import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
+import {
+  IndexTokenStat,
+  marketsInfoDataToIndexTokensStats,
+} from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { keyBy, values } from "lodash";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
+  availableIndexTokenStat?: IndexTokenStat;
   marketWithPosition?: MarketInfo;
   /**
    * Collateral token of the position in `marketWithPosition`
@@ -99,7 +105,11 @@ export const selectTradeboxAvailableMarketOptions = createSelector((q) => {
       })
     : availableMarkets;
 
-  const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
+  const availableIndexTokenStat = values(
+    marketsInfoDataToIndexTokensStats(keyBy(liquidMarkets, "marketTokenAddress")).indexMap
+  )[0];
+
+  const result: AvailableMarketsOptions = { allMarkets, availableMarkets, availableIndexTokenStat };
 
   if (isIncrease && liquidMarkets.length === 0) {
     result.isNoSufficientLiquidityInAnyMarket = true;

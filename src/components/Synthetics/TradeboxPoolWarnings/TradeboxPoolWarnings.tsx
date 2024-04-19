@@ -11,8 +11,6 @@ import {
   useTradeboxState,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectStatsMarketsInfoDataToIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
@@ -39,7 +37,6 @@ export const useTradeboxPoolWarnings = (
   const selectedPosition = useTradeboxSelectedPosition();
   const hasExistingOrder = Boolean(existingOrder);
   const hasExistingPosition = Boolean(selectedPosition);
-  const marketStatsMap = useSelector(selectStatsMarketsInfoDataToIndexTokenStatsMap);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -90,22 +87,20 @@ export const useTradeboxPoolWarnings = (
       .sub(minPriceImpactBps.add(minPriceImpactPositionFeeBps || BN_ZERO))
       .abs();
 
-  const indexTokenStat = marketStatsMap.indexMap[marketInfo.indexTokenAddress];
-  const currentMarketStat = indexTokenStat?.marketsStats.find(
+  const availableIndexTokenStat = marketsOptions.availableIndexTokenStat;
+  const currentMarketStat = availableIndexTokenStat?.marketsStats.find(
     (stat) => stat.marketInfo.marketTokenAddress === marketInfo?.marketTokenAddress
   );
-  const bestMarketStat = indexTokenStat?.marketsStats.find(
-    (stat) =>
-      stat.marketInfo.marketTokenAddress ===
-      (isLong ? indexTokenStat.bestNetFeeLongMarketAddress : indexTokenStat.bestNetFeeShortMarketAddress)
-  );
-  const bestNetFee = isLong ? indexTokenStat?.bestNetFeeLong : indexTokenStat?.bestNetFeeShort;
+
+  const bestNetFee = isLong ? availableIndexTokenStat?.bestNetFeeLong : availableIndexTokenStat?.bestNetFeeShort;
   const currentNetFee = isLong ? currentMarketStat?.netFeeLong : currentMarketStat?.netFeeShort;
   const improvedNetRateAbsDelta =
-    bestMarketStat && currentMarketStat && bestNetFee && currentNetFee && bestNetFee.sub(currentNetFee).abs();
+    currentMarketStat && bestNetFee && currentNetFee && bestNetFee.sub(currentNetFee).abs();
   const bestNetFeeMarket = getByKey(
     marketsInfoData,
-    isLong ? indexTokenStat?.bestNetFeeLongMarketAddress : indexTokenStat?.bestNetFeeShortMarketAddress
+    isLong
+      ? availableIndexTokenStat?.bestNetFeeLongMarketAddress
+      : availableIndexTokenStat?.bestNetFeeShortMarketAddress
   );
 
   const showHasExistingPositionButNotEnoughLiquidityWarning =
@@ -118,7 +113,6 @@ export const useTradeboxPoolWarnings = (
     !hasExistingPosition &&
     marketWithPosition &&
     !isSelectedMarket(marketWithPosition);
-
   const showHasNoSufficientLiquidityInAnyMarketWarning = isNoSufficientLiquidityInAnyMarket;
   const showHasInsufficientLiquidityAndPositionWarning =
     isOutPositionLiquidity && maxLiquidityMarket && !isSelectedMarket(maxLiquidityMarket) && hasExistingPosition;
@@ -142,8 +136,7 @@ export const useTradeboxPoolWarnings = (
     isIncrease &&
     bestNetFeeMarket &&
     marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
-    improvedNetRateAbsDelta?.gte(SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD) &&
-    !isNoSufficientLiquidityInAnyMarket;
+    improvedNetRateAbsDelta?.gte(SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD);
   const showHasBetterOpenFeesAndNetFeesWarning =
     canShowHasBetterExecutionFeesWarning &&
     canShowHasBetterNetFeesWarning &&
