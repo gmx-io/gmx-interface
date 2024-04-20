@@ -14,6 +14,7 @@ import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
 import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
+import morphico from 'img/ic_morph_l2.svg';
 
 import optimismIcn from "img/icn_opt_24.svg";
 import tmxImg from "img/ic_tmx.svg";
@@ -62,7 +63,7 @@ const ICONS = {
     glp: tlpImg,
   },
   [MORPH_L2]: {
-    network: sepoliaTesnet,
+    network: morphico,
     gmx: tmxImg,
     glp: tlpImg,
   },
