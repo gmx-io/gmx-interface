@@ -123,14 +123,17 @@ export function GmList({
                       <p className="text-white">
                         <Trans>
                           <p>
-                            APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as
-                            actual Fees are auto-compounded into the pool in real-time.
-                          </p>
-                          <p>
-                            Check Pools performance against other LP Positions in{" "}
-                            <ExternalLink newTab href="https://dune.com/gmx-io/gmx-analytics">
-                              GMX Dune Dashboard
+                            APR is based on the fees collected for the past {daysConsidered} days while extrapolating
+                            the current borrowing fee.{" "}
+                            <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+                              Read more about GM token pricing
                             </ExternalLink>
+                            .
+                          </p>
+                          <p>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</p>
+                          <p>
+                            Check GM pools' performance against other LP Positions in the{" "}
+                            <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>
                             .
                           </p>
                         </Trans>
