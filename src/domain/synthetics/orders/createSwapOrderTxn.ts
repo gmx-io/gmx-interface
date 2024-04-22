@@ -72,7 +72,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       createOrderMulticallPayload: simulationEncodedPayload,
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,

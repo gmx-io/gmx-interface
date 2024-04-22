@@ -77,7 +77,6 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
