@@ -31,7 +31,6 @@ type Props = {
   marketInfo?: MarketInfo;
   marketToken?: TokenData;
   marketsTokensAPRData: MarketTokensAPRData | undefined;
-  marketsTokensAPRData2?: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
 };
 
@@ -40,7 +39,6 @@ export function MarketStats(p: Props) {
     marketInfo,
     marketToken,
     marketsTokensAPRData,
-    marketsTokensAPRData2,
     marketsInfoData,
     marketTokensData,
     marketsTokensIncentiveAprData,
@@ -75,7 +73,6 @@ export function MarketStats(p: Props) {
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
-  const apr2 = getByKey(marketsTokensAPRData2, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
   const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
   const indexName = marketInfo && getMarketIndexName(marketInfo);
@@ -199,12 +196,7 @@ export function MarketStats(p: Props) {
 
         <CardRow
           label={t`APR`}
-          value={
-            <>
-              old: <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
-              new: <AprInfo apr={apr2} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
-            </>
-          }
+          value={<AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />}
         />
 
         <CardRow
