@@ -1,14 +1,12 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
-import { CHART_PERIODS, PRECISION } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfoRequest } from ".";
-import { getBorrowingFactorPerPeriod } from "../fees";
-import { MarketInfo, MarketTokensAPRData } from "./types";
+import { MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
 
@@ -121,19 +119,19 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFee[];
         const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFee[];
-        const poolValue = BigNumber.from(
-          (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
-        );
+        // const poolValue = BigNumber.from(
+        //   (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
+        // );
 
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         if (!marketInfo) return acc;
 
         const x1total = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x1borrowing = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        // const x1borrowing = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
         const x2total = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2borrowing = BigNumber.from(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
-        const x1 = x1total.sub(x1borrowing);
-        const x2 = x2total.sub(x2borrowing);
+        // const x2borrowing = BigNumber.from(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x1 = x1total; // .sub(x1borrowing);
+        const x2 = x2total; // .sub(x2borrowing);
 
         if (x2.eq(0)) {
           acc[marketAddress] = BigNumber.from(0);
@@ -143,9 +141,9 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const incomePercentageForPeriod = x2.sub(x1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
         const aprByFees = incomePercentageForPeriod.mul(yearMultiplier).mul(100);
-        const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
+        // const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
 
-        acc[marketAddress] = aprByFees.add(aprByBorrowingFee);
+        acc[marketAddress] = aprByFees; //.add(aprByBorrowingFee);
 
         return acc;
       }, {} as MarketTokensAPRData);
@@ -172,19 +170,19 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   };
 }
 
-function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
-  const longOi = marketInfo.longInterestUsd;
-  const shortOi = marketInfo.shortInterestUsd;
-  const isLongPayingBorrowingFee = longOi.gt(shortOi) ? true : false;
-  const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
+// function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
+//   const longOi = marketInfo.longInterestUsd;
+//   const shortOi = marketInfo.shortInterestUsd;
+//   const isLongPayingBorrowingFee = longOi.gt(shortOi) ? true : false;
+//   const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
 
-  const borrowingFeeUsdForPoolPerYear = borrowingFactorPerYear
-    .mul(isLongPayingBorrowingFee ? longOi : shortOi)
-    .mul(63)
-    .div(PRECISION)
-    .div(100);
+//   const borrowingFeeUsdForPoolPerYear = borrowingFactorPerYear
+//     .mul(isLongPayingBorrowingFee ? longOi : shortOi)
+//     .mul(63)
+//     .div(PRECISION)
+//     .div(100);
 
-  const borrowingFeeUsdPerPoolValuePerYear = borrowingFeeUsdForPoolPerYear.mul(PRECISION).div(poolValue);
+//   const borrowingFeeUsdPerPoolValuePerYear = borrowingFeeUsdForPoolPerYear.mul(PRECISION).div(poolValue);
 
-  return borrowingFeeUsdPerPoolValuePerYear.mul(100);
-}
+//   return borrowingFeeUsdPerPoolValuePerYear.mul(100);
+// }
