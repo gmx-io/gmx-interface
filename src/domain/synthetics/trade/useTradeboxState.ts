@@ -390,8 +390,8 @@ export function useTradeboxState(
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
       setStoredOptions((oldState) => {
-        const toTokenAddress = oldState?.tokens.indexTokenAddress;
-        const isLong = oldState?.tradeType === TradeType.Long;
+        const toTokenAddress = oldState.tokens.indexTokenAddress;
+        const isLong = oldState.tradeType === TradeType.Long;
         if (!toTokenAddress) {
           return oldState;
         }
@@ -614,10 +614,10 @@ function setToTokenAddressUpdaterBuilder(
   tradeType: TradeType | undefined,
   tokenAddress: string,
   marketTokenAddress: string | undefined
-): (oldState: StoredTradeOptions | undefined) => StoredTradeOptions {
-  return function setToTokenAddressUpdater(oldState: StoredTradeOptions | undefined): StoredTradeOptions {
-    const isSwap = oldState?.tradeType === TradeType.Swap;
-    const newState = JSON.parse(JSON.stringify(oldState)) as StoredTradeOptions;
+): (oldState: StoredTradeOptions) => StoredTradeOptions {
+  return function setToTokenAddressUpdater(oldState: StoredTradeOptions): StoredTradeOptions {
+    const isSwap = oldState.tradeType === TradeType.Swap;
+    const newState = copy(oldState);
     if (!newState) {
       return newState;
     }
