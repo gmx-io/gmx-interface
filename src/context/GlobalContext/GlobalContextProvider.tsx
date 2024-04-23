@@ -18,8 +18,8 @@ import { useLocalStorage } from "react-use";
 import { matchPath, useHistory, useLocation } from "react-router-dom";
 
 type GlobalContextType = null | {
-  tradePageVersion: any;
-  setTradePageVersion: any;
+  tradePageVersion: number;
+  setTradePageVersion: (version: number) => void;
 
   pendingTxns: PendingTransaction[];
   setPendingTxns: SetPendingTransactions;
