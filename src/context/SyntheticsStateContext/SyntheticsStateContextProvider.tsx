@@ -121,6 +121,7 @@ export function SyntheticsStateContextProvider({
   const tradeboxState = useTradeboxState(chainId, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
+    positionsInfoData,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);

@@ -1,5 +1,4 @@
 import {
-  selectTradeboxAvailableMarketOptions,
   selectTradeboxAvailableTokensOptions,
   selectTradeboxChooseSuitableMarket,
   selectTradeboxCollateralTokenAddress,
@@ -57,4 +56,3 @@ export const useTradeboxNextPositionValues = () => useSelector(selectTradeboxNex
 export const useTradeboxNextLeverageWithoutPnl = () => useSelector(selectTradeboxNextLeverageWithoutPnl);
 export const useTradeboxChooseSuitableMarket = () => useSelector(selectTradeboxChooseSuitableMarket);
 export const useTradeboxGetMaxLongShortLiquidityPool = () => useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
-export const useTradeboxAvailableMarketsOptions = () => useSelector(selectTradeboxAvailableMarketOptions);

@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
+import get from "lodash/get";
 import mapValues from "lodash/mapValues";
-import pick from "lodash/pick";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -10,13 +10,16 @@ import {
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
+import { entries, identity, keyBy, pickBy, set, values } from "lodash";
 import { MarketsInfoData } from "../markets";
+import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrderType } from "../orders/types";
-import { PositionInfo } from "../positions";
+import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
@@ -48,7 +51,12 @@ type StoredTradeOptions = {
       short: string;
     };
   };
-  collateralAddress?: string;
+  collaterals?: {
+    [marketAddress: string]: {
+      long?: string;
+      short?: string;
+    };
+  };
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -56,46 +64,20 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
   tradeMode: TradeMode.Market,
   tokens: {},
   markets: {},
-  collateralAddress: undefined,
+  collaterals: {},
 };
 
 export function useTradeboxState(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
+    positionsInfoData?: PositionsInfoData;
     tokensData?: TokensData;
   }
 ) {
-  const { marketsInfoData, tokensData } = p;
+  const { marketsInfoData, tokensData, positionsInfoData } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
-
-  // eslint-disable-next-line react/hook-use-state
-  const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions | undefined>(() => {
-    const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
-
-    if (!raw) {
-      localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), "");
-      return undefined;
-    }
-
-    return JSON.parse(raw);
-  });
-
-  const setStoredOptionsOnChain = useCallback(
-    (args: SetStateAction<StoredTradeOptions | undefined>) => {
-      setStoredOptionsWithoutFallbacks((oldState) => {
-        const newState = typeof args === "function" ? args(oldState)! : args!;
-
-        if (newState) {
-          localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
-        }
-
-        return newState;
-      });
-    },
-    [chainId]
-  );
 
   //#region Manual useMemo zone begin
   // This ensures almost no reinitialization of all setters
@@ -112,15 +94,59 @@ export function useTradeboxState(
     return unstableRefAvailableIndexTokensAddresses;
   }, [unstableRefAvailableIndexTokensAddresses.sort().join(",")]);
 
-  const unstableRefStrippedMarketInfo = mapValues(marketsInfoData || {}, (info) =>
-    pick(info, ["longTokenAddress", "shortTokenAddress"])
-  );
+  const unstableRefAvailableMarketAddressIndexTokenMap =
+    availableTokensOptions.sortedAllMarkets &&
+    mapValues(
+      keyBy(availableTokensOptions.sortedAllMarkets, (market) => market.marketTokenAddress),
+      (market) => market.indexToken.address
+    );
+
+  const marketAddressIndexTokenMap: {
+    [marketAddress: string]: string;
+  } = useMemo(() => {
+    return unstableRefAvailableMarketAddressIndexTokenMap || EMPTY_OBJECT;
+  }, [JSON.stringify(unstableRefAvailableMarketAddressIndexTokenMap)]);
+
+  const unstableRefStrippedMarketInfo = mapValues(marketsInfoData || {}, (info) => ({
+    longTokenAddress: info.longTokenAddress,
+    shortTokenAddress: info.shortTokenAddress,
+    isLongTokenStable: Boolean(info.longToken.isStable),
+    isShortTokenStable: Boolean(info.shortToken.isStable),
+  }));
 
   const strippedMarketInfo = useMemo(() => {
     return unstableRefStrippedMarketInfo;
   }, [JSON.stringify(unstableRefStrippedMarketInfo)]);
   /* eslint-enable react-hooks/exhaustive-deps */
   //#endregion Manual useMemo zone end
+
+  // eslint-disable-next-line react/hook-use-state
+  const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions>(() => {
+    const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
+
+    if (!raw) {
+      localStorage.setItem(
+        JSON.stringify(getSyntheticsTradeOptionsKey(chainId)),
+        JSON.stringify(INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE)
+      );
+      return INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE;
+    }
+
+    return JSON.parse(raw) as StoredTradeOptions;
+  });
+
+  const setStoredOptionsOnChain = useCallback(
+    (args: SetStateAction<StoredTradeOptions>) => {
+      setStoredOptionsWithoutFallbacks((oldState) => {
+        const newState = copy(typeof args === "function" ? args(oldState) : args);
+
+        localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
+
+        return newState;
+      });
+    },
+    [chainId]
+  );
 
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   useEffect(
@@ -167,85 +193,28 @@ export function useTradeboxState(
       setSyncedChainId(chainId);
     },
     [
-      syncedChainId,
       availableIndexTokensAddresses,
+      availableTokensOptions.sortedAllMarkets,
       chainId,
       setStoredOptionsOnChain,
-      availableTokensOptions.sortedAllMarkets,
-      marketsInfoData,
+      syncedChainId,
     ]
   );
 
   const setStoredOptions = useCallback(
-    (args: SetStateAction<StoredTradeOptions | undefined>) => {
+    (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsOnChain((oldState) => {
-        let newState = typeof args === "function" ? args(oldState)! : args!;
+        let newState = copy(typeof args === "function" ? args(oldState) : args);
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
-          newState = fallbackPositionTokens(newState);
+          newState = fallbackPositionTokens(newState, availableSwapTokenAddresses, marketAddressIndexTokenMap);
+          fallbackCollateralTokens(newState, strippedMarketInfo);
         }
 
         return newState;
       });
-
-      function fallbackPositionTokens(newState: StoredTradeOptions) {
-        const needFromUpdate = !availableSwapTokenAddresses.find((t) => t === newState!.tokens.fromTokenAddress);
-        const nextFromTokenAddress =
-          needFromUpdate && availableSwapTokenAddresses.length
-            ? availableSwapTokenAddresses[0]
-            : newState.tokens.fromTokenAddress;
-
-        if (nextFromTokenAddress && nextFromTokenAddress !== newState.tokens.fromTokenAddress) {
-          newState = {
-            ...newState,
-            tokens: {
-              ...newState.tokens,
-              fromTokenAddress: nextFromTokenAddress,
-            },
-          };
-        }
-
-        const needIndexUpdateByAvailableTokens = !availableIndexTokensAddresses.find(
-          (t) => t === newState!.tokens.indexTokenAddress
-        );
-
-        if (needIndexUpdateByAvailableTokens && availableIndexTokensAddresses.length) {
-          const updater = setToTokenAddressUpdaterBuilder(
-            newState.tradeType,
-            availableIndexTokensAddresses[0],
-            undefined
-          );
-
-          newState = updater(newState);
-        }
-
-        const toTokenAddress =
-          newState.tradeType === TradeType.Swap
-            ? newState.tokens.swapToTokenAddress
-            : newState.tokens.indexTokenAddress;
-        const marketAddress = toTokenAddress
-          ? newState!.markets[toTokenAddress]?.[newState.tradeType === TradeType.Long ? "long" : "short"]
-          : undefined;
-        const marketInfo = getByKey(strippedMarketInfo, marketAddress);
-
-        const currentCollateralIncludedInCurrentMarket =
-          marketInfo &&
-          (marketInfo.longTokenAddress === newState.collateralAddress ||
-            marketInfo.shortTokenAddress === newState.collateralAddress);
-
-        const needCollateralUpdate = !newState.collateralAddress || !currentCollateralIncludedInCurrentMarket;
-
-        if (needCollateralUpdate && marketInfo) {
-          newState = {
-            ...newState,
-            collateralAddress: marketInfo.shortTokenAddress,
-          };
-        }
-
-        return newState;
-      }
     },
-    [availableIndexTokensAddresses, availableSwapTokenAddresses, setStoredOptionsOnChain, strippedMarketInfo]
+    [availableSwapTokenAddresses, marketAddressIndexTokenMap, setStoredOptionsOnChain, strippedMarketInfo]
   );
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
@@ -283,7 +252,7 @@ export function useTradeboxState(
     }[tradeType];
   }, [tradeType]);
 
-  const tradeFlags = useMemo(() => createTradeFlags(tradeType!, tradeMode!), [tradeType, tradeMode]);
+  const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
@@ -298,31 +267,69 @@ export function useTradeboxState(
     isSwap && fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
 
-  const marketAddress = toTokenAddress
-    ? storedOptions?.markets[toTokenAddress]?.[tradeFlags.isLong ? "long" : "short"]
-    : undefined;
+  const longOrShort = tradeFlags.isLong ? "long" : "short";
+  const marketAddress = toTokenAddress ? storedOptions?.markets[toTokenAddress]?.[longOrShort] : undefined;
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
-  const collateralAddress = storedOptions?.collateralAddress;
+  const collateralAddress = marketAddress && get(storedOptions, ["collaterals", marketAddress, longOrShort]);
   const collateralToken = getByKey(tokensData, collateralAddress);
 
+  const getMaxLongShortLiquidityPool = useMemo(
+    () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || []),
+    [availableTokensOptions.sortedAllMarkets]
+  );
   const setTradeType = useCallback(
     (tradeType: TradeType) => {
       setStoredOptions((oldState) => {
-        return {
-          ...oldState!,
-          tradeType,
-        };
+        const newState = copy(oldState);
+        const tokenAddress = newState.tokens.indexTokenAddress;
+        if (!tokenAddress) {
+          return newState;
+        }
+        const token = getByKey(tokensData, tokenAddress);
+
+        if (!token) return newState;
+
+        const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
+        const patch = chooseSuitableMarket({
+          indexTokenAddress: tokenAddress,
+          maxLongLiquidityPool,
+          maxShortLiquidityPool,
+          isSwap: tradeType === TradeType.Swap,
+          positionsInfo: positionsInfoData,
+          preferredTradeType: tradeType,
+          currentTradeType: newState.tradeType,
+        });
+
+        if (!patch) {
+          return newState;
+        }
+
+        // Noop: as index token is the same
+        set(newState, ["tokens", "indexTokenAddress"], patch.indexTokenAddress);
+        set(newState, ["tradeType"], tradeType);
+        const longOrShort = tradeType === TradeType.Long ? "long" : "short";
+
+        if (patch.marketTokenAddress) {
+          set(newState, ["markets", patch.indexTokenAddress, longOrShort], patch.marketTokenAddress);
+
+          if (patch.collateralTokenAddress) {
+            set(newState, ["collaterals", patch.marketTokenAddress, longOrShort], patch.collateralTokenAddress);
+          }
+        }
+
+        return newState;
       });
     },
-    [setStoredOptions]
+    [getMaxLongShortLiquidityPool, positionsInfoData, setStoredOptions, tokensData]
   );
 
   const setTradeMode = useCallback(
     (tradeMode: TradeMode) => {
       setStoredOptions((oldState) => {
         return {
-          ...oldState!,
+          ...oldState,
           tradeMode,
         };
       });
@@ -334,9 +341,9 @@ export function useTradeboxState(
     (tokenAddress?: string) => {
       setStoredOptions((oldState) => {
         return {
-          ...oldState!,
+          ...oldState,
           tokens: {
-            ...oldState!.tokens,
+            ...oldState.tokens,
             fromTokenAddress: tokenAddress,
           },
         };
@@ -354,15 +361,15 @@ export function useTradeboxState(
 
   const switchTokenAddresses = useCallback(() => {
     setStoredOptions((oldState) => {
-      const isSwap = oldState?.tradeType === TradeType.Swap;
-      const fromTokenAddress = oldState?.tokens.fromTokenAddress;
-      const toTokenAddress = oldState?.tokens.indexTokenAddress;
+      const isSwap = oldState.tradeType === TradeType.Swap;
+      const fromTokenAddress = oldState.tokens.fromTokenAddress;
+      const toTokenAddress = oldState.tokens.indexTokenAddress;
 
       if (isSwap) {
         return {
-          ...oldState!,
+          ...oldState,
           tokens: {
-            ...oldState!.tokens,
+            ...oldState.tokens,
             fromTokenAddress: toTokenAddress,
             swapToTokenAddress: fromTokenAddress,
           },
@@ -370,9 +377,9 @@ export function useTradeboxState(
       }
 
       return {
-        ...oldState!,
+        ...oldState,
         tokens: {
-          ...oldState!.tokens,
+          ...oldState.tokens,
           fromTokenAddress: toTokenAddress,
           indexTokenAddress: fromTokenAddress,
         },
@@ -383,18 +390,18 @@ export function useTradeboxState(
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
       setStoredOptions((oldState) => {
-        const toTokenAddress = oldState?.tokens.indexTokenAddress;
-        const isLong = oldState?.tradeType === TradeType.Long;
+        const toTokenAddress = oldState.tokens.indexTokenAddress;
+        const isLong = oldState.tradeType === TradeType.Long;
         if (!toTokenAddress) {
           return oldState;
         }
 
         return {
-          ...oldState!,
+          ...oldState,
           markets: {
-            ...oldState!.markets,
+            ...oldState.markets,
             [toTokenAddress]: {
-              ...oldState!.markets[toTokenAddress],
+              ...oldState.markets[toTokenAddress],
               [isLong ? "long" : "short"]: marketAddress,
             },
           },
@@ -411,7 +418,7 @@ export function useTradeboxState(
           return oldState;
         }
 
-        const newState: StoredTradeOptions = JSON.parse(JSON.stringify(oldState));
+        const newState: StoredTradeOptions = copy(oldState);
 
         if (tradeMode) {
           newState.tradeMode = tradeMode;
@@ -422,7 +429,11 @@ export function useTradeboxState(
         newState.tokens.indexTokenAddress = newIndexTokenAddress;
         newState.markets[newIndexTokenAddress] = newState.markets[newIndexTokenAddress] || {};
         newState.markets[newIndexTokenAddress][position.isLong ? "long" : "short"] = position.marketAddress;
-        newState.collateralAddress = position.collateralTokenAddress;
+        set(
+          newState,
+          ["collaterals", position.marketAddress, position.isLong ? "long" : "short"],
+          position.collateralTokenAddress
+        );
 
         return newState;
       });
@@ -432,13 +443,19 @@ export function useTradeboxState(
 
   const setCollateralAddress = useCallback(
     function setCollateralAddressCallback(tokenAddress?: string) {
-      setStoredOptions(function setCollateralAddressUpdater(
-        oldState: StoredTradeOptions | undefined
-      ): StoredTradeOptions {
-        return {
-          ...oldState!,
-          collateralAddress: tokenAddress,
-        };
+      setStoredOptions(function setCollateralAddressUpdater(oldState: StoredTradeOptions): StoredTradeOptions {
+        const newState = copy(oldState);
+
+        if (!newState.tokens.indexTokenAddress) {
+          return newState;
+        }
+
+        const longOrShort = newState.tradeType === TradeType.Long ? "long" : "short";
+        const currentMarket = newState.markets[newState.tokens.indexTokenAddress][longOrShort];
+
+        set(newState, ["collaterals", currentMarket, longOrShort], tokenAddress);
+
+        return newState;
       });
     },
     [setStoredOptions]
@@ -446,7 +463,7 @@ export function useTradeboxState(
 
   const setTradeConfig = useCallback(
     function setTradeConfigCallback(tradeOptions: TradeOptions) {
-      setStoredOptions(function setTradeConfigUpdater(oldState: StoredTradeOptions | undefined) {
+      setStoredOptions(function setTradeConfigUpdater(oldState: StoredTradeOptions) {
         const { tradeType, tradeMode, fromTokenAddress, toTokenAddress, marketAddress, collateralAddress } =
           tradeOptions;
 
@@ -454,7 +471,7 @@ export function useTradeboxState(
           return oldState;
         }
 
-        const newState = JSON.parse(JSON.stringify(oldState)) as StoredTradeOptions;
+        const newState = copy(oldState);
 
         if (tradeType) {
           newState.tradeType = tradeType;
@@ -484,14 +501,31 @@ export function useTradeboxState(
           }
         }
 
-        if (collateralAddress) {
-          newState.collateralAddress = collateralAddress;
+        if (collateralAddress && marketAddress) {
+          const longOrShort = tradeType === TradeType.Long ? "long" : "short";
+
+          set(newState, ["collaterals", marketAddress, longOrShort], collateralAddress);
         }
 
         return newState;
       });
     },
     [setStoredOptions]
+  );
+
+  useEffect(
+    function fallbackStoredOptions() {
+      if (availableSwapTokenAddresses.length === 0 && values(marketAddressIndexTokenMap).length === 0) {
+        return;
+      }
+
+      if (values(strippedMarketInfo).length === 0) {
+        return;
+      }
+
+      setStoredOptions(identity);
+    },
+    [availableSwapTokenAddresses.length, marketAddressIndexTokenMap, setStoredOptions, strippedMarketInfo]
   );
 
   useEffect(
@@ -525,8 +559,8 @@ export function useTradeboxState(
   );
 
   return {
-    tradeType: tradeType!,
-    tradeMode: tradeMode!,
+    tradeType,
+    tradeMode,
     isWrapOrUnwrap,
     fromTokenAddress,
     toTokenAddress,
@@ -580,10 +614,10 @@ function setToTokenAddressUpdaterBuilder(
   tradeType: TradeType | undefined,
   tokenAddress: string,
   marketTokenAddress: string | undefined
-): (oldState: StoredTradeOptions | undefined) => StoredTradeOptions {
-  return function setToTokenAddressUpdater(oldState: StoredTradeOptions | undefined): StoredTradeOptions {
-    const isSwap = oldState?.tradeType === TradeType.Swap;
-    const newState = JSON.parse(JSON.stringify(oldState)) as StoredTradeOptions;
+): (oldState: StoredTradeOptions) => StoredTradeOptions {
+  return function setToTokenAddressUpdater(oldState: StoredTradeOptions): StoredTradeOptions {
+    const isSwap = oldState.tradeType === TradeType.Swap;
+    const newState = copy(oldState);
     if (!newState) {
       return newState;
     }
@@ -608,4 +642,105 @@ function setToTokenAddressUpdaterBuilder(
 
     return newState;
   };
+}
+
+/**
+ * This function does not care about user's positions, fees, sizes, etc.
+ * It must set any suitable token and market addresses combination in case it is not correct.
+ */
+function fallbackPositionTokens(
+  newState: StoredTradeOptions,
+  availableSwapTokenAddresses: string[],
+  marketAddressIndexTokenMap: { [marketAddress: string]: string }
+): StoredTradeOptions {
+  const needFromUpdate = !availableSwapTokenAddresses.find((t) => t === newState.tokens.fromTokenAddress);
+  const nextFromTokenAddress =
+    needFromUpdate && availableSwapTokenAddresses.length
+      ? availableSwapTokenAddresses[0]
+      : newState.tokens.fromTokenAddress;
+
+  if (nextFromTokenAddress && nextFromTokenAddress !== newState.tokens.fromTokenAddress) {
+    newState = {
+      ...newState,
+      tokens: {
+        ...newState.tokens,
+        fromTokenAddress: nextFromTokenAddress,
+      },
+    };
+  }
+
+  const indexTokenAddress = newState.tokens.indexTokenAddress;
+  const longOrShort = newState.tradeType === TradeType.Long ? "long" : "short";
+  const marketAddress = indexTokenAddress && newState.markets[indexTokenAddress]?.[longOrShort];
+
+  const validPoolIndexTokenCombination = entries(marketAddressIndexTokenMap).some(
+    ([availableMarketAddress, availableIndexTokenAddress]) =>
+      availableIndexTokenAddress === indexTokenAddress && availableMarketAddress === marketAddress
+  );
+
+  if (!validPoolIndexTokenCombination && values(marketAddressIndexTokenMap).length > 0) {
+    const possibleMarkets = pickBy(marketAddressIndexTokenMap, (v) => v === indexTokenAddress);
+
+    if (values(possibleMarkets).length === 0) {
+      const [marketAddress, indexTokenAddress] = entries(marketAddressIndexTokenMap)[0];
+      const updater = setToTokenAddressUpdaterBuilder(newState.tradeType, indexTokenAddress, marketAddress);
+
+      newState = updater(newState);
+    } else {
+      const [marketAddress, indexTokenAddress] = entries(possibleMarkets)[0];
+      const updater = setToTokenAddressUpdaterBuilder(newState.tradeType, indexTokenAddress, marketAddress);
+
+      newState = updater(newState);
+    }
+  }
+
+  return newState;
+}
+
+function fallbackCollateralTokens(
+  newState: StoredTradeOptions,
+  strippedMarketInfo: Record<
+    string,
+    { longTokenAddress: string; shortTokenAddress: string; isLongTokenStable: boolean; isShortTokenStable: boolean }
+  >
+): void {
+  const longOrShort = newState.tradeType === TradeType.Long ? "long" : "short";
+  const toTokenAddress =
+    newState.tradeType === TradeType.Swap ? newState.tokens.swapToTokenAddress : newState.tokens.indexTokenAddress;
+  const marketAddress = toTokenAddress ? newState.markets[toTokenAddress]?.[longOrShort] : undefined;
+
+  if (!marketAddress) {
+    return;
+  }
+
+  const marketInfo = getByKey(strippedMarketInfo, marketAddress);
+  const collateralUserCache = get(newState, ["collaterals", marketAddress, longOrShort]);
+
+  const currentCollateralIncludedInCurrentMarket =
+    marketInfo &&
+    (marketInfo.longTokenAddress === collateralUserCache || marketInfo.shortTokenAddress === collateralUserCache);
+
+  const needCollateralUpdate = !collateralUserCache || !currentCollateralIncludedInCurrentMarket;
+
+  if (needCollateralUpdate && marketInfo) {
+    let collateralAddress: string | undefined;
+
+    if (marketInfo.longTokenAddress === marketInfo.shortTokenAddress) {
+      collateralAddress = marketInfo.shortTokenAddress;
+    } else if (marketInfo.isLongTokenStable && !marketInfo.isShortTokenStable) {
+      collateralAddress = marketInfo.longTokenAddress;
+    } else if (!marketInfo.isLongTokenStable && marketInfo.isShortTokenStable) {
+      collateralAddress = marketInfo.shortTokenAddress;
+    } else if (newState.tradeType === TradeType.Long) {
+      collateralAddress = marketInfo.longTokenAddress;
+    } else if (newState.tradeType === TradeType.Short) {
+      collateralAddress = marketInfo.shortTokenAddress;
+    }
+
+    set(newState, ["collaterals", marketAddress, longOrShort], collateralAddress);
+  }
+}
+
+function copy<T extends object>(obj: T): T {
+  return { ...obj };
 }

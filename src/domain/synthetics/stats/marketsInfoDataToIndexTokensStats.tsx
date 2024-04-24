@@ -29,6 +29,8 @@ export type IndexTokenStat = {
    * Sorted by poolValueUsd descending
    */
   marketsStats: MarketStat[];
+  bestNetFeeLongMarketAddress: string;
+  bestNetFeeShortMarketAddress: string;
 };
 
 export type IndexTokensStats = {
@@ -46,7 +48,10 @@ export function bnMax(...args: BigNumber[]): BigNumber {
   return max;
 }
 
-export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoData): IndexTokenStat[] {
+export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoData): {
+  indexMap: Partial<Record<string, IndexTokenStat>>;
+  sortedByTotalPoolValue: string[];
+} {
   const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
     return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
   });
@@ -72,6 +77,8 @@ export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoDa
         marketsStats: [],
         bestNetFeeLong: constants.MinInt256,
         bestNetFeeShort: constants.MinInt256,
+        bestNetFeeLongMarketAddress: marketInfo.marketTokenAddress,
+        bestNetFeeShortMarketAddress: marketInfo.marketTokenAddress,
       };
     }
 
@@ -101,8 +108,14 @@ export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoDa
     indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
     indexTokenStats.totalUsedLiquidity = indexTokenStats.totalUsedLiquidity.add(usedLiquidity);
     indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity.add(maxLiquidity);
-    indexTokenStats.bestNetFeeLong = bnMax(indexTokenStats.bestNetFeeLong, netFeeLong);
-    indexTokenStats.bestNetFeeShort = bnMax(indexTokenStats.bestNetFeeShort, netFeeShort);
+    if (netFeeLong.gt(indexTokenStats.bestNetFeeLong)) {
+      indexTokenStats.bestNetFeeLong = netFeeLong;
+      indexTokenStats.bestNetFeeLongMarketAddress = marketInfo.marketTokenAddress;
+    }
+    if (netFeeShort.gt(indexTokenStats.bestNetFeeShort)) {
+      indexTokenStats.bestNetFeeShort = netFeeShort;
+      indexTokenStats.bestNetFeeShortMarketAddress = marketInfo.marketTokenAddress;
+    }
     indexTokenStats.marketsStats.push({
       marketInfo,
       utilization,
@@ -124,7 +137,12 @@ export function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoDa
     });
   }
 
-  return Object.values(indexMap).sort((a, b) => {
-    return b.totalPoolValue.gt(a.totalPoolValue) ? 1 : -1;
+  const sortedByTotalPoolValue = Object.keys(indexMap).sort((a, b) => {
+    return indexMap[b].totalPoolValue.gt(indexMap[a].totalPoolValue) ? 1 : -1;
   });
+
+  return {
+    indexMap,
+    sortedByTotalPoolValue,
+  };
 }

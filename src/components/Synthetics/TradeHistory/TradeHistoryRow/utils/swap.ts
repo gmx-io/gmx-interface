@@ -5,7 +5,7 @@ import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/type
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData, adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
-import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory/types";
 import type { Token, TokenInfo } from "domain/tokens/types";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";

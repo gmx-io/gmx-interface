@@ -32,7 +32,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
-  selectTradeboxAvailableMarketsOptions,
   selectTradeboxAvailableTokensOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
@@ -181,7 +180,6 @@ export function TradeBox(p: Props) {
     setMarketAddress: onSelectMarketAddress,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
-    // setToTokenAddress,
     setTradeType: onSelectTradeType,
     setTradeMode: onSelectTradeMode,
     stage,
@@ -213,7 +211,6 @@ export function TradeBox(p: Props) {
     collateralAddress,
     collateralToken,
     fromTokenAddress,
-    marketAddress,
     marketInfo,
     toTokenAddress,
     avaialbleTradeModes: availalbleTradeModes,
@@ -247,7 +244,6 @@ export function TradeBox(p: Props) {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
-  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
@@ -665,53 +661,6 @@ export function TradeBox(p: Props) {
       swapAmounts,
       toToken,
     ]
-  );
-
-  useEffect(
-    function updatePositionMarket() {
-      if (!isPosition || !marketsOptions.availableMarkets) {
-        return;
-      }
-
-      const needUpdateMarket =
-        !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
-
-      if (needUpdateMarket && marketsOptions.marketWithPosition) {
-        onSelectMarketAddress(marketsOptions.marketWithPosition.marketTokenAddress);
-        return;
-      }
-
-      const optimalMarket =
-        marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
-
-      if (needUpdateMarket && optimalMarket) {
-        onSelectMarketAddress(optimalMarket.marketTokenAddress);
-        return;
-      }
-    },
-    [
-      isPosition,
-      marketAddress,
-      marketsOptions.availableMarkets,
-      marketsOptions.marketWithPosition,
-      marketsOptions.maxLiquidityMarket,
-      marketsOptions.minPriceImpactMarket,
-      onSelectMarketAddress,
-    ]
-  );
-
-  const prevMarketAddress = usePrevious(marketAddress);
-  useEffect(
-    function updatePositionCollateral() {
-      if (!isPosition) {
-        return;
-      }
-
-      if (marketAddress && prevMarketAddress !== marketAddress && marketsOptions.collateralWithPosition) {
-        onSelectCollateralAddress(marketsOptions.collateralWithPosition.address);
-      }
-    },
-    [isPosition, marketAddress, marketsOptions.collateralWithPosition, onSelectCollateralAddress, prevMarketAddress]
   );
 
   useEffect(
