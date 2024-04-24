@@ -80,7 +80,6 @@ import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import useTradeRedirect from "lib/useTradeRedirect";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
@@ -179,8 +178,6 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   }, []);
-
-  useTradeRedirect();
 
   const { wsProvider } = useWebsocketProvider();
 
@@ -514,7 +511,6 @@ function App() {
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
-  app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
@@ -529,6 +525,7 @@ function App() {
       {app}
     </GlobalStateProvider>
   );
+  app = <Router>{app}</Router>;
 
   return app;
 }

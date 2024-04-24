@@ -1,22 +1,22 @@
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import { Bar } from "domain/tradingview/types";
+import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import { sleep } from "lib/sleep";
-import { OracleKeeperFetcher } from "../tokens/useOracleKeeperFetcher";
+import { OracleFetcher } from "../tokens/useOracleKeeperFetcher";
 
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
-  oracleKeeperFetcher: OracleKeeperFetcher;
+  oracleKeeperFetcher: OracleFetcher;
 
-  constructor(p: { resolutions: { [key: number]: string }; oracleKeeperFetcher: OracleKeeperFetcher }) {
-    super(p);
-    this.oracleKeeperFetcher = p.oracleKeeperFetcher;
+  constructor(params: { resolutions: { [key: number]: string }; oracleFetcher: OracleFetcher }) {
+    super(params);
+    this.oracleKeeperFetcher = params.oracleFetcher;
   }
 
-  override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+  override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<FromOldToNewArray<Bar>> {
     const limit = 5000;
 
-    const bars = await Promise.race([
+    const bars: FromOldToNewArray<Bar> = await Promise.race([
       this.oracleKeeperFetcher.fetchOracleCandles(ticker, period, limit).then((bars) => bars.reverse()),
       sleep(this.candlesTimeout).then(() => Promise.reject(`Oracle candles timeout`)),
     ])
@@ -24,20 +24,27 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
         return Promise.race([
-          getChainlinkChartPricesFromGraph(ticker, period) as Promise<Bar[]>,
+          getChainlinkChartPricesFromGraph(ticker, period),
           sleep(this.candlesTimeout).then(() => Promise.reject(`Chainlink candles timeout`)),
         ]);
       })
       .catch((ex) => {
         // eslint-disable-next-line no-console
         console.warn("Load history candles failed", ex);
-        return [] as Bar[];
+        return [];
       });
 
     return bars;
   }
 
-  override async getLimitBars(chainId: number, ticker: string, period: string, limit: number) {
-    return this.oracleKeeperFetcher.fetchOracleCandles(ticker, period, limit);
+  override async getLimitBars(
+    _chainId: number,
+    ticker: string,
+    period: string,
+    limit: number
+  ): Promise<FromOldToNewArray<Bar>> {
+    const limitBars = (await this.oracleKeeperFetcher.fetchOracleCandles(ticker, period, limit)).reverse();
+
+    return limitBars;
   }
 }

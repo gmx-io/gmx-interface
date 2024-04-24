@@ -46,7 +46,9 @@ export default function MarketNetFee(props: Props) {
             <li key={period.label}>
               <span className="net-fee__period">{period.label}:</span>
               <span className={getPositiveOrNegativeClass(netFee)}>
-                {formatRatePercentage(netFee, period.decimals)}
+                {formatRatePercentage(netFee, {
+                  displayDecimals: period.decimals,
+                })}
               </span>
             </li>
           );

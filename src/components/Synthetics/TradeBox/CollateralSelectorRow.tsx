@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import { convertTokenAddress } from "config/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import {
@@ -42,7 +43,7 @@ export function CollateralSelectorRow(p: Props) {
     allRelatedTokensMap[marketInfo.longTokenAddress] = marketInfo.longToken;
     allRelatedTokensMap[marketInfo.shortTokenAddress] = marketInfo.shortToken;
 
-    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexToken.address === marketInfo.indexToken.address);
+    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexTokenAddress === marketInfo.indexTokenAddress);
 
     Object.values(relatedMarkets).forEach((market) => {
       if (!allRelatedTokensMap[market.longTokenAddress]) {
@@ -90,7 +91,13 @@ export function CollateralSelectorRow(p: Props) {
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
-  const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
+  const {
+    collateralWithOrder,
+    marketWithOrder,
+    marketWithPosition,
+    collateralWithPosition,
+    collateralWithOrderShouldUnwrapNativeToken,
+  } = marketsOptions || {};
 
   const { chainId } = useChainId();
 
@@ -162,17 +169,21 @@ export function CollateralSelectorRow(p: Props) {
     }
 
     if (showHasExistingOrderWithDifferentCollateral) {
+      const symbol = collateralWithOrder.symbol;
+      const address = collateralWithOrderShouldUnwrapNativeToken
+        ? convertTokenAddress(chainId, collateralWithOrder.address, "wrapped")
+        : collateralWithOrder.address;
       messages.push(
         <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-warning" compact>
           <Trans>
-            You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
+            You have an existing order with {symbol} as collateral.{" "}
             <span
               className="clickable underline muted"
               onClick={() => {
-                onSelectCollateralAddress(collateralWithOrder.address);
+                onSelectCollateralAddress(address);
               }}
             >
-              Switch to {collateralWithOrder.symbol} collateral
+              Switch to {symbol} collateral
             </span>
             .
           </Trans>
@@ -190,6 +201,8 @@ export function CollateralSelectorRow(p: Props) {
     onSelectCollateralAddress,
     collateralWithOrder?.symbol,
     collateralWithOrder?.address,
+    collateralWithOrderShouldUnwrapNativeToken,
+    chainId,
   ]);
 
   return (

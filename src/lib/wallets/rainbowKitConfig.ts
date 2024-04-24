@@ -1,4 +1,3 @@
-import { isInBinance } from "@binance/w3w-utils";
 import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
@@ -39,7 +38,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [...(isInBinance() ? [binanceWallet] : []), coinbaseWallet, trustWallet, coreWallet, okxWallet],
+    wallets: [binanceWallet, coinbaseWallet, trustWallet, coreWallet, okxWallet],
   },
 ];
 
