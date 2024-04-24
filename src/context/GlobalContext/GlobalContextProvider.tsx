@@ -101,6 +101,7 @@ function useTradePageVersion() {
   const location = useLocation();
   const history = useHistory();
 
+  const isV2Matched = useMemo(() => matchPath(location.pathname, { path: "/trade/:tradeType?" }), [location.pathname]);
   const isV1Matched = useMemo(() => matchPath(location.pathname, { path: "/v1/:tradeType?" }), [location.pathname]);
   const defaultVersion = !isV1Matched && getIsSyntheticsSupported(chainId) ? 2 : 1;
   const [savedTradePageVersion, setSavedTradePageVersion] = useLocalStorageSerializeKey(
@@ -108,29 +109,29 @@ function useTradePageVersion() {
     defaultVersion
   );
 
-  const tradePageVersion = isV1Matched ? 1 : 2;
+  const tradePageVersion = savedTradePageVersion ?? defaultVersion;
 
   // manual switch
   const setTradePageVersion = useCallback(
     (version: number) => {
       setSavedTradePageVersion(version);
-      if (version === 1) {
+      if (version === 1 && isV2Matched) {
         history.replace("/v1");
-      } else if (version === 2) {
+      } else if (version === 2 && isV1Matched) {
         history.replace("/trade");
       }
     },
-    [history, setSavedTradePageVersion]
+    [history, setSavedTradePageVersion, isV1Matched, isV2Matched]
   );
 
   // chainId changes -> switch to prev selected version
   useEffect(() => {
-    if (savedTradePageVersion === 1) {
+    if (savedTradePageVersion === 1 && isV2Matched) {
       history.replace("/v1");
-    } else if (savedTradePageVersion === 2) {
+    } else if (savedTradePageVersion === 2 && isV1Matched) {
       history.replace("/trade");
     }
-  }, [chainId, savedTradePageVersion, history]);
+  }, [chainId, savedTradePageVersion, history, isV1Matched, isV2Matched]);
 
   return [tradePageVersion, setTradePageVersion] as const;
 }
