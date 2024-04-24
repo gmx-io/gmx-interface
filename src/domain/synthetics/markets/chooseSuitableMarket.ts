@@ -47,8 +47,8 @@ export function chooseSuitableMarket({
   currentTradeType,
 }: {
   indexTokenAddress: string;
-  maxLongLiquidityPool: TokenOption;
-  maxShortLiquidityPool: TokenOption;
+  maxLongLiquidityPool?: TokenOption;
+  maxShortLiquidityPool?: TokenOption;
   isSwap?: boolean;
   positionsInfo?: PositionsInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
@@ -62,25 +62,27 @@ export function chooseSuitableMarket({
       tradeType: TradeType.Swap,
     };
   }
+  const maxLiquidtyPool = preferredTradeType === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
-    let largestLongPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
+    let largestLongPosition = getLargestRelatedExistingPosition({
       positionsInfo,
       isLong: true,
       indexTokenAddress,
     });
 
-    let largestShortPosition: PositionInfo | undefined = getLargestRelatedExistingPosition({
+    let largestShortPosition = getLargestRelatedExistingPosition({
       positionsInfo,
       isLong: false,
       indexTokenAddress,
     });
 
     if (!largestLongPosition && !largestShortPosition) {
-      let marketTokenAddress =
-        currentTradeType === TradeType.Short
-          ? maxShortLiquidityPool.marketTokenAddress
-          : maxLongLiquidityPool.marketTokenAddress;
+      let marketTokenAddress = maxLiquidtyPool?.marketTokenAddress;
+
+      if (!marketTokenAddress) {
+        return undefined;
+      }
 
       return {
         indexTokenAddress,
@@ -89,15 +91,16 @@ export function chooseSuitableMarket({
       };
     }
 
-    let largestPosition: PositionInfo;
+    let largestPosition: PositionInfo | undefined = undefined;
     if (largestLongPosition && largestShortPosition) {
       largestPosition = largestLongPosition.sizeInUsd.gt(largestShortPosition.sizeInUsd)
         ? largestLongPosition
         : largestShortPosition;
     } else {
-      largestPosition = largestLongPosition! || largestShortPosition!;
+      largestPosition = (largestLongPosition || largestShortPosition) as PositionInfo;
     }
-    const largestPositionTradeType = largestPosition?.isLong ? TradeType.Long : TradeType.Short;
+
+    const largestPositionTradeType = largestPosition.isLong ? TradeType.Long : TradeType.Short;
 
     return {
       indexTokenAddress,
@@ -106,6 +109,10 @@ export function chooseSuitableMarket({
       collateralTokenAddress: largestPosition.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
+    if (!maxLongLiquidityPool) {
+      return undefined;
+    }
+
     return {
       indexTokenAddress,
       marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
@@ -113,41 +120,24 @@ export function chooseSuitableMarket({
     };
   }
 
-  if (preferredTradeType === TradeType.Long) {
-    const largestLongPosition =
-      positionsInfo &&
-      getLargestRelatedExistingPosition({
-        positionsInfo,
-        isLong: true,
-        indexTokenAddress,
-      });
-
-    const marketTokenAddress =
-      largestLongPosition?.marketInfo.marketTokenAddress ?? maxLongLiquidityPool.marketTokenAddress;
-
-    return {
-      indexTokenAddress,
-      marketTokenAddress: marketTokenAddress,
-      tradeType: TradeType.Long,
-      collateralTokenAddress: largestLongPosition?.collateralTokenAddress,
-    };
-  }
-
-  const largestShortPosition =
+  const largestPosition =
     positionsInfo &&
     getLargestRelatedExistingPosition({
       positionsInfo,
-      isLong: false,
+      isLong: preferredTradeType === TradeType.Long,
       indexTokenAddress,
     });
 
-  const marketTokenAddress =
-    largestShortPosition?.marketInfo.marketTokenAddress ?? maxShortLiquidityPool.marketTokenAddress;
+  const marketAddress = largestPosition?.marketInfo.marketTokenAddress ?? maxLiquidtyPool?.marketTokenAddress;
+
+  if (!marketAddress) {
+    return undefined;
+  }
 
   return {
     indexTokenAddress,
-    marketTokenAddress,
-    tradeType: TradeType.Short,
-    collateralTokenAddress: largestShortPosition?.collateralTokenAddress,
+    marketTokenAddress: marketAddress,
+    tradeType: preferredTradeType,
+    collateralTokenAddress: largestPosition?.collateralTokenAddress,
   };
 }
