@@ -859,6 +859,7 @@ export interface DatafeedConfiguration {
   supports_time?: boolean;
   supports_timescale_marks?: boolean;
   symbols_types?: DatafeedSymbolType[];
+  reset_cache_timeout?: number;
 }
 export interface DatafeedQuoteValues {
   ch?: number;

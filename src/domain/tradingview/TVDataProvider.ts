@@ -1,7 +1,7 @@
 import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
-import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
+import { getLimitChartPricesFromStats, TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { CHART_PERIODS } from "lib/legacy";
-import { Bar } from "./types";
+import { Bar, FromOldToNewArray } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
@@ -40,7 +40,7 @@ export class TVDataProvider {
   };
   shouldResetCache = false;
 
-  constructor({ resolutions }) {
+  constructor({ resolutions }: { resolutions: { [key: number]: string } }) {
     const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
@@ -54,16 +54,21 @@ export class TVDataProvider {
     this.shouldResetCache = true;
   }
 
-  async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
+  async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<FromOldToNewArray<Bar>> {
     const prices = await getLimitChartPricesFromStats(chainId, ticker, period, limit);
     return prices;
   }
 
-  async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
+  async getTokenLastBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    limit: number
+  ): Promise<FromOldToNewArray<Bar>> {
     return this.getLimitBars(chainId, ticker, period, limit);
   }
 
-  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<FromOldToNewArray<Bar>> {
     return getTokenChartPrice(chainId, ticker, period);
   }
 
@@ -72,7 +77,7 @@ export class TVDataProvider {
     ticker: string,
     period: string,
     periodParams: PeriodParams
-  ): Promise<Bar[]> {
+  ): Promise<FromOldToNewArray<Bar>> {
     const barsInfo = this.barsInfo;
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
@@ -96,8 +101,8 @@ export class TVDataProvider {
     }
 
     const { from, to, countBack } = periodParams;
-    const toWithOffset = to + timezoneOffset;
-    const fromWithOffset = from + timezoneOffset;
+    const toWithOffset = to + TIMEZONE_OFFSET_SEC;
+    const fromWithOffset = from + TIMEZONE_OFFSET_SEC;
 
     const bars = barsInfo.data.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset);
 
@@ -115,22 +120,33 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-  async getBars(chainId: number, ticker: string, resolution: string, isStable: boolean, periodParams: PeriodParams) {
+  async getBars(
+    chainId: number,
+    ticker: string,
+    resolution: string,
+    isStable: boolean,
+    periodParams: PeriodParams
+  ): Promise<FromOldToNewArray<Bar>> {
     const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
 
     try {
-      const bars = isStable
+      const bars: FromOldToNewArray<Bar> = isStable
         ? getStableCoinPrice(period, from, to)
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
 
-      return bars.map(formatTimeInBarToMs);
+      return bars.map(formatTimeInBarToMs) as FromOldToNewArray<Bar>;
     } catch {
       throw new Error("Failed to get history bars");
     }
   }
 
-  async getMissingBars(chainId: number, ticker: string, period: string, from: number) {
+  async getMissingBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    from: number
+  ): Promise<FromOldToNewArray<Bar> | undefined> {
     if (!ticker || !period || !chainId || !from) return;
     const barsInfo = this.barsInfo;
     const periodSeconds = CHART_PERIODS[period];
@@ -144,11 +160,12 @@ export class TVDataProvider {
         this.lastBar = bars[bars.length - 1];
         this.currentBar = null;
       }
-      return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time);
+
+      return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time) as FromOldToNewArray<Bar>;
     }
   }
 
-  async getLastBar(chainId: number, ticker: string, period: string) {
+  async getLastBar(chainId: number, ticker: string, period: string): Promise<Bar | null> {
     if (!ticker || !period || !chainId) {
       throw new Error("Invalid input. Ticker, period, and chainId are required parameters.");
     }
@@ -165,11 +182,11 @@ export class TVDataProvider {
       this.lastBar?.period !== period ||
       this.chartTokenInfo.ticker !== this.barsInfo.ticker
     ) {
-      const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
+      const prices: FromOldToNewArray<Bar> = await this.getTokenLastBars(chainId, ticker, period, 1);
       const currentPrice = this.chartTokenInfo.ticker === this.barsInfo.ticker && this.chartTokenInfo.price;
 
       if (prices?.length && currentPrice) {
-        const lastBar = prices[0];
+        const lastBar = prices.at(-1)!;
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
 
@@ -197,7 +214,7 @@ export class TVDataProvider {
     return this.lastBar;
   }
 
-  async getLiveBar(chainId: number, ticker: string, period: string) {
+  async getLiveBar(chainId: number, ticker: string, period: string): Promise<Bar | undefined> {
     if (!ticker || !period || !chainId) return;
     const barsInfo = this.barsInfo;
     const currentCandleTime = getCurrentCandleTime(period);
