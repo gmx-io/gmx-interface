@@ -349,6 +349,12 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
+    // TODO findSwapPath considering decreasePositionSwapType?
+    const swapPath =
+      decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
+        ? []
+        : swapAmounts?.swapPathStats?.swapPath || [];
+
     const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
@@ -359,7 +365,7 @@ export function PositionSeller(p: Props) {
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
         receiveTokenAddress: receiveToken.address,
-        swapPath: swapAmounts?.swapPathStats?.swapPath || [],
+        swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
         isLong: position.isLong,
