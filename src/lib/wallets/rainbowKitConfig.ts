@@ -1,4 +1,3 @@
-import { isInBinance } from "@binance/w3w-utils";
 import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
