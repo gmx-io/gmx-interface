@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import React, { useContext, useEffect, useState } from "react";
+
 import cx from "classnames";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -16,7 +16,7 @@ import Reader from "abis/Reader.json";
 import Token from "abis/Token.json";
 import GmxMigrator from "abis/GmxMigrator.json";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
-import { contractFetcher } from "lib/contracts";
+import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useEagerConnect, useInactiveListener } from "lib/wallets";
 import { approveTokens } from "domain/tokens";
@@ -30,6 +30,7 @@ import {
 } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
@@ -316,16 +317,20 @@ export default function Migration() {
   const [migrationIndex, setMigrationIndex] = useState(0);
   const [migrationValue, setMigrationValue] = useState("");
 
-  const { connector, activate, active, account, library } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  const {  library } = useWeb3React();
   const [activatingConnector, setActivatingConnector] = useState();
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector]);
+  // useEffect(() => {
+  //   if (activatingConnector && activatingConnector === connector) {
+  //     setActivatingConnector(undefined);
+  //   }
+  // }, [activatingConnector, connector]);
   const triedEager = useEagerConnect();
   useInactiveListener(!triedEager || !!activatingConnector);
-  const connectWallet = getConnectWalletHandler(activate);
+  //const connectWallet = getConnectWalletHandler(activate);
 
   const tokenAddresses = tokens.map((token) => token.address);
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
@@ -333,21 +338,21 @@ export default function Migration() {
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
     ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [iouTokenAddresses]),
+      fetcher: dynamicContractFetcher(signer, Reader, [iouTokenAddresses]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+      fetcher: dynamicContractFetcher(signer, Reader, [tokenAddresses]),
     }
   );
 
   const { data: migratedAmounts, mutate: updateMigratedAmounts } = useSWR(
     ["Migration:migratedAmounts", CHAIN_ID, gmxMigratorAddress, "getTokenAmounts"],
     {
-      fetcher: contractFetcher(library, GmxMigrator, [tokenAddresses]),
+      fetcher: dynamicContractFetcher(signer, GmxMigrator, [tokenAddresses]),
     }
   );
 
@@ -367,18 +372,18 @@ export default function Migration() {
     totalMigratedUsd = totalMigratedGmx.mul(gmxPrice);
   }
 
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateBalances(undefined, true);
-        updateIouBalances(undefined, true);
-        updateMigratedAmounts(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateBalances, updateIouBalances, updateMigratedAmounts]);
+  // useEffect(() => {
+  //   if (active) {
+  //     library.on("block", () => {
+  //       updateBalances(undefined, true);
+  //       updateIouBalances(undefined, true);
+  //       updateMigratedAmounts(undefined, true);
+  //     });
+  //     return () => {
+  //       library.removeAllListeners("block");
+  //     };
+  //   }
+  // }, [active, updateBalances, updateIouBalances, updateMigratedAmounts]);
 
   const showMigrationModal = (index) => {
     setIsPendingApproval(false);
@@ -452,7 +457,7 @@ export default function Migration() {
                     </div>
                   )}
                 </div>
-                <div className="App-card-options">
+                {/* <div className="App-card-options">
                   {!active && (
                     <button className="App-button-option App-card-option" onClick={connectWallet}>
                       <Trans>Connect Wallet</Trans>
@@ -463,7 +468,7 @@ export default function Migration() {
                       <Trans>Migrate</Trans>
                     </button>
                   )}
-                </div>
+                </div> */}
               </div>
             </div>
           );

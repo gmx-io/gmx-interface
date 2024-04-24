@@ -1,8 +1,7 @@
 import "./Referrals.css";
-import React from "react";
+import React, { useContext } from "react";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SEO from "components/Common/SEO";
 import Tab from "components/Tab/Tab";
@@ -24,16 +23,21 @@ import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "componen
 import { ethers } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, account: walletAccount, library } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const walletAccount = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
   const { account: queryAccount } = useParams();
   let account;
   if (queryAccount && ethers.utils.isAddress(queryAccount)) {
@@ -41,19 +45,19 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   } else {
     account = walletAccount;
   }
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainId, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
   });
-  const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
-  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
-  const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
+  const { userReferralCode, userReferralCodeString } = useUserReferralCode(signer, chainId, account);
+  const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
+  const { referrerTier: traderTier } = useReferrerTier(signer, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
-    return registerReferralCode(chainId, referralCode, library, {
+    return registerReferralCode(chainId, referralCode, signer, {
       sentMsg: t`Referral code submitted!`,
       failMsg: t`Referral code creation failed.`,
       pendingTxns,

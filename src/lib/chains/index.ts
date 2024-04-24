@@ -1,11 +1,16 @@
-import { useWeb3React } from "@web3-react/core";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useContext } from "react";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export function useDynamicChainId() {
   const { primaryWallet } = useDynamicContext();
-  if (primaryWallet && primaryWallet.connected && primaryWallet.network) return { chainId: primaryWallet.network };
+  const walletContext = useContext(DynamicWalletContext);
+  
+  if (primaryWallet && primaryWallet.connected && walletContext.chainId) {
+    return { chainId: walletContext.chainId };
+  }
 
   let chainId;
   const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
@@ -24,7 +29,7 @@ export function useDynamicChainId() {
 }
 
 export function useChainId() {
-  let { chainId } = useWeb3React();
+  let { chainId } = useDynamicChainId();
   //console.log("web 3 chain id", chainId);
 
   if (!chainId) {

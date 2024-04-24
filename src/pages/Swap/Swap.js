@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle, useContext } from "react";
 import { Trans, t, Plural } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import cx from "classnames";
@@ -22,7 +21,7 @@ import {
   getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import { approvePlugin, useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
+import { useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
@@ -43,16 +42,17 @@ import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
 
 import "./Swap.css";
-import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import { useChainId, useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -381,23 +381,27 @@ export const SwapBox = forwardRef((props, ref) => {
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
   const { chainId } = useDynamicChainId();
-  const [active, setActive] = useState(false);
-  const [account, setAccount] = useState(null);
-  const { primaryWallet } = useDynamicContext();
-  const [web3Provider, setWeb3Provider] = useState(null);
-  useEffect(() => {
-    const fetchProvider = async () => {
-      if (primaryWallet && primaryWallet.connector) {
-        const provider = await primaryWallet.connector.getSigner();
-        //console.log("setting signer", provider);
-        setAccount(primaryWallet.address);
-        setWeb3Provider(provider);
-        setActive(true);
-      }
-    };
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  // const [active, setActive] = useState(false);
+  // const [account, setAccount] = useState(null);
+   const { primaryWallet } = useDynamicContext();
+  // const [web3Provider, setWeb3Provider] = useState(null);
+  // useEffect(() => {
+  //   const fetchProvider = async () => {
+  //     if (primaryWallet && primaryWallet.connector) {
+  //       const provider = await primaryWallet.connector.getSigner();
+  //       //console.log("setting signer", provider);
+  //       setAccount(primaryWallet.address);
+  //       setWeb3Provider(provider);
+  //       setActive(true);
+  //     }
+  //   };
 
-    fetchProvider();
-  }, [primaryWallet]);
+  //   fetchProvider();
+  // }, [primaryWallet]);
 
   const currentAccount = account;
 
@@ -481,13 +485,13 @@ export const SwapBox = forwardRef((props, ref) => {
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: dynamicContractFetcher(web3Provider, Reader, [tokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [tokenAddresses]),
   });
 
   const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
-      fetcher: contractFetcher(web3Provider, Reader, [
+      fetcher: dynamicContractFetcher(signer, Reader, [
         positionQuery.collateralTokens,
         positionQuery.indexTokens,
         positionQuery.isLong,
@@ -498,18 +502,18 @@ export const SwapBox = forwardRef((props, ref) => {
   const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(web3Provider, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(web3Provider, VaultV2),
+      fetcher: dynamicContractFetcher(signer, VaultV2),
     }
   );
 
   const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-    fetcher: contractFetcher(web3Provider, Token),
+    fetcher: dynamicContractFetcher(signer, Token),
   });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -517,20 +521,20 @@ export const SwapBox = forwardRef((props, ref) => {
   const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
-      fetcher: contractFetcher(web3Provider, Router),
+      fetcher: dynamicContractFetcher(signer, Router),
     }
   );
 
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
-      fetcher: contractFetcher(web3Provider, Router),
+      fetcher: dynamicContractFetcher(signer, Router),
     }
   );
 
-  const { infoTokens } = useInfoTokens(web3Provider, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
   const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
-    web3Provider,
+    signer,
     active,
     chainId,
     infoTokens
@@ -727,7 +731,7 @@ export const SwapBox = forwardRef((props, ref) => {
     async function () {
       setIsCancelMultipleOrderProcessing(true);
       try {
-        const tx = await cancelMultipleOrders(chainId, web3Provider, cancelOrderIdList, {
+        const tx = await cancelMultipleOrders(chainId, signer, cancelOrderIdList, {
           successMsg: t`Orders cancelled.`,
           failMsg: t`Cancel failed.`,
           sentMsg: t`Cancel submitted.`,
@@ -747,7 +751,7 @@ export const SwapBox = forwardRef((props, ref) => {
     },
     [
       chainId,
-      web3Provider,
+      signer,
       pendingTxns,
       setPendingTxns,
       setCancelOrderIdList,
@@ -759,7 +763,7 @@ export const SwapBox = forwardRef((props, ref) => {
   const approveOrderBook = () => {
     setIsPluginApproving(true);
     return dynamicApprovePlugin(chainId, orderBookAddress, {
-      web3Provider,
+      primaryWallet,
       pendingTxns,
       setPendingTxns,
       sentMsg: t`Enable orders sent.`,
@@ -776,7 +780,7 @@ export const SwapBox = forwardRef((props, ref) => {
   const approvePositionRouter = ({ sentMsg, failMsg }) => {
     setIsPositionRouterApproving(true);
     return dynamicApprovePlugin(chainId, positionRouterAddress, {
-      web3Provider,
+      primaryWallet,
       pendingTxns,
       setPendingTxns,
       sentMsg,
@@ -868,7 +872,7 @@ export const SwapBox = forwardRef((props, ref) => {
             infoTokens={infoTokens}
             active={active}
             account={account}
-            library={web3Provider}
+            library={signer}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             flagOrdersEnabled={flagOrdersEnabled}
@@ -889,7 +893,7 @@ export const SwapBox = forwardRef((props, ref) => {
           <OrdersList
             account={account}
             active={active}
-            library={web3Provider}
+            library={signer}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             infoTokens={infoTokens}
@@ -946,7 +950,7 @@ export const SwapBox = forwardRef((props, ref) => {
             infoTokens={infoTokens}
             active={active}
             connectWallet={connectWallet}
-            library={web3Provider}
+            library={signer}
             account={account}
             positionsMap={positionsMap}
             fromTokenAddress={fromTokenAddress}

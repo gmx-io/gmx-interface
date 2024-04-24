@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "config/contracts";
@@ -16,17 +15,22 @@ import "./CompleteAccountTransfer.css";
 import { Trans, t } from "@lingui/macro";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import Button from "components/Button/Button";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const { setPendingTxns } = props;
-  const { library, account } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
 
   const [isConfirming, setIsConfirming] = useState(false);
   const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
@@ -64,7 +68,7 @@ export default function CompleteAccountTransfer(props) {
   const onClickPrimary = () => {
     setIsConfirming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
       sentMsg: t`Transfer submitted!`,

@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { useWeb3React } from "@web3-react/core";
+
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -23,11 +23,14 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export default function BuyGMX() {
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const isArbitrum = chainId === ARBITRUM;
-  const { active } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+ 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
 

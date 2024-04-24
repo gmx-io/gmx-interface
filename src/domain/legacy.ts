@@ -32,7 +32,7 @@ import { groupBy } from "lodash";
 import { UI_VERSION } from "config/env";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract, contractFetcher, dynamicContractFetcher } from "lib/contracts";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import { getProvider } from "lib/rpc";
@@ -169,9 +169,9 @@ export function useAllPositions(chainId, library) {
   const key = res ? `allPositions${count}__` : null;
 
   const { data: positions = [] } = useSWR(key, async () => {
-    const provider = getProvider(library, chainId);
+   // const provider = getProvider(library, chainId);
     const vaultAddress = getContract(chainId, "Vault");
-    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
+    const contract = new ethers.Contract(vaultAddress, Vault.abi, library);
     const ret = await Promise.all(
       res.data.aggregatedTradeOpens.map(async (dataItem) => {
         try {
@@ -229,9 +229,9 @@ export function useAllOrders(chainId, library) {
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
   const { data: orders = [] } = useSWR(key, () => {
-    const provider = getProvider(library, chainId);
+   // const provider = getProvider(library, chainId);
     const orderBookAddress = getContract(chainId, "OrderBook");
-    const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
+    const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
     return Promise.all(
       res.data.orders.map(async (order) => {
         try {
@@ -264,9 +264,9 @@ export function useAllOrders(chainId, library) {
 export function usePositionsForOrders(chainId, library, orders) {
   const key = orders ? orders.map((order) => getOrderKey(order) + "____") : null;
   const { data: positions = {} } = useSWR(key, async () => {
-    const provider = getProvider(library, chainId);
+    //const provider = getProvider(library, chainId);
     const vaultAddress = getContract(chainId, "Vault");
-    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
+    const contract = new ethers.Contract(vaultAddress, Vault.abi, library);
     const data = await Promise.all(
       orders.map(async (order) => {
         try {
@@ -367,7 +367,7 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(library, PositionRouter),
+    fetcher: dynamicContractFetcher(library, PositionRouter),
   });
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
@@ -532,7 +532,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
@@ -544,7 +544,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
 
@@ -574,13 +574,13 @@ export function useTotalGmxInLiquidity() {
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
   const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
   const mutate = useCallback(() => {
@@ -604,7 +604,7 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    fetcher: contractFetcher(undefined, UniswapV2),
+    fetcher: dynamicContractFetcher(undefined, UniswapV2),
   });
   const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
 
@@ -613,7 +613,7 @@ function useGmxPriceFromAvalanche() {
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
-      fetcher: contractFetcher(undefined, Vault),
+      fetcher: dynamicContractFetcher(undefined, Vault),
     }
   );
 
@@ -636,7 +636,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
-      fetcher: contractFetcher(library, UniPool),
+      fetcher: dynamicContractFetcher(library, UniPool),
     }
   );
 
@@ -645,7 +645,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(library, Vault),
+      fetcher: dynamicContractFetcher(library, Vault),
     }
   );
 
@@ -685,7 +685,7 @@ export async function dynamicApprovePlugin(
   pluginAddress,
   { primaryWallet, setPendingTxns, sentMsg, failMsg }
 ) {
-  console.log("dynamic approve plugin", primaryWallet);
+  //("dynamic approve plugin", primaryWallet);
   const signer = await primaryWallet.connector.ethers?.getSigner();
   const routerAddress = getContract(chainId, "Router");
   const contract = new ethers.Contract(routerAddress, Router.abi, signer);
@@ -697,7 +697,7 @@ export async function dynamicApprovePlugin(
 }
 
 export async function approvePlugin(chainId, pluginAddress, { library, setPendingTxns, sentMsg, failMsg }) {
-  console.log("approve plugin", library);
+  //console.log("approve plugin", library);
   const routerAddress = getContract(chainId, "Router");
   const contract = new ethers.Contract(routerAddress, Router.abi, library);
   return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
@@ -881,7 +881,7 @@ export async function cancelMultipleOrders(chainId, library, allIndexes = [], op
   const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
   const method = "cancelMultiple";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
   return callContract(chainId, contract, method, params, opts);
 }
 

@@ -1,7 +1,0 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-yarn lingui:generate
-yarn lint-staged
-yarn test:ci
-yarn tscheck

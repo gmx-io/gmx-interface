@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./ApproveTokens.css";
 import { Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
+
 import ApproveTokenInput from "components/ApproveTokenInput/ApproveTokenInput";
 import Button from "components/Button/Button";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export default function ApproveTokens(props) {
   const { chainId, pendingTxns, setPendingTxns, nonZeroBalanceTokens, closeApprovalsModal } = props;
-  const { library } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
 
   return (
     <div className="Approve-tokens-modal-body">
@@ -21,7 +24,7 @@ export default function ApproveTokens(props) {
         <ApproveTokenInput
           key={index}
           tokenInfo={tokenInfo}
-          library={library}
+          library={signer}
           chainId={chainId}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}

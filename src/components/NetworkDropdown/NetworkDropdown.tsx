@@ -9,7 +9,7 @@ import "./NetworkDropdown.css";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
-import { useChainId } from "lib/chains";
+import { useChainId, useDynamicChainId } from "lib/chains";
 import { getIcon } from "config/icons";
 import { FaChevronDown } from "react-icons/fa";
 
@@ -83,7 +83,7 @@ export default function NetworkDropdown(props) {
   );
 }
 function NavIcons({ selectorLabel }) {
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const icon = getIcon(chainId, "network");
   return (
     <button className="App-cta small transparent address-btn">

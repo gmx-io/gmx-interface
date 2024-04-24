@@ -13,7 +13,7 @@ export default function useAccountType() {
   useEffect(() => {
     if (!active) return;
     (async function () {
-      const code = await library.getCode(account);
+      const code = await library.getCode(account); //todo.
       const type = code === "0x" ? AccountType.EOA : AccountType.CONTRACT;
       setContractType(type);
     })();

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 
@@ -18,13 +18,14 @@ import metamaskImg from "img/metamask.png";
 import coingeckoImg from "img/coingecko.png";
 import bscscanImg from "img/bscscan.png";
 import { getServerUrl } from "config/backend";
-import { contractFetcher } from "lib/contracts";
+import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenUrl } from "domain/tokens/utils";
 import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
-import { useChainId } from "lib/chains";
+import { useChainId, useDynamicChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);
@@ -232,8 +233,11 @@ function getFeeData(fees, tokenSymbols) {
 }
 
 export default function DashboardV1() {
-  const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats");
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
@@ -298,28 +302,28 @@ export default function DashboardV1() {
   const { data: pairInfo, mutate: updatePairInfo } = useSWR(
     [false, chainId, readerAddress, "getPairInfo", ammFactoryAddressV2],
     {
-      fetcher: contractFetcher(library, Reader, [[gmtAddress, usdgAddress, xgmtAddress, usdgAddress]]),
+      fetcher: dynamicContractFetcher(signer, Reader, [[gmtAddress, usdgAddress, xgmtAddress, usdgAddress]]),
     }
   );
 
   const { data: usdgSupply, mutate: updateUsdgSupply } = useSWR(
     ["Dashboard:usdgSupply", chainId, usdgAddress, "totalSupply"],
     {
-      fetcher: contractFetcher(library, YieldToken),
+      fetcher: dynamicContractFetcher(signer, YieldToken),
     }
   );
 
   const { data: xgmtSupply, mutate: updateXgmtSupply } = useSWR(
     ["Dashboard:xgmtSupply", chainId, readerAddress, "getTokenSupply", xgmtAddress],
     {
-      fetcher: contractFetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
+      fetcher: dynamicContractFetcher(signer, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
     }
   );
 
   const { data: fees, mutate: updateFees } = useSWR(
     ["Dashboard:fees", chainId, readerAddress, "getFees", vaultAddress],
     {
-      fetcher: contractFetcher(library, Reader, [whitelistedTokens]),
+      fetcher: dynamicContractFetcher(signer, Reader, [whitelistedTokens]),
     }
   );
 

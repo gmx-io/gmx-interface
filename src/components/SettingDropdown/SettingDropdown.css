@@ -13,6 +13,17 @@
   margin-left: 0;
 }
 
+#light .menu-items {
+  background: #ffffff;  
+}
+
+.menu-items{
+  background: #1e1e1e;
+  position: absolute;
+  top : 4rem;
+  right : 0rem;
+}
+
 .setting-dropdown {
   display: inline-flex;
 }

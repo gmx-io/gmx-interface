@@ -6,12 +6,14 @@ export const dynamicContractFetcher =
   <T>(signer: Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
   (...args: any): Promise<T> => {
     const [id, chainId, arg0, arg1, ...params] = args;
-    //const provider = getProvider(library, chainId);
+
+    //console.log("signer from dynamic", signer);
+    const provider = getProvider(signer, chainId);
 
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
     const contractCall = getContractCall({
-      provider: signer,
+      provider,
       contractInfo,
       arg0,
       arg1,
@@ -20,6 +22,7 @@ export const dynamicContractFetcher =
       additionalArgs,
     });
 
+    //console.log("contract call", contractCall);
     let shouldCallFallback = true;
 
     const handleFallback = async (resolve, reject, error) => {
@@ -64,7 +67,7 @@ export const dynamicContractFetcher =
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
-          console.error("fetcher error", id, contractInfo.contractName, method, e);
+
           handleFallback(resolve, reject, e);
         });
 
@@ -149,7 +152,9 @@ export const contractFetcher =
 
 function getContractCall({ provider, contractInfo, arg0, arg1, method, params, additionalArgs }) {
   if (ethers.utils.isAddress(arg0)) {
+   // console.log("creating new ethers contract");
     const address = arg0;
+
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
 
     if (additionalArgs) {

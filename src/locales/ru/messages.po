@@ -928,8 +928,8 @@ msgid "Confirm Swap"
 msgstr "Подтвердить Обмен"
 
 #: src/components/Header/AppHeaderUser.tsx
-msgid "Connect"
-msgstr "Подключение"
+#~ msgid "Connect"
+#~ msgstr "Подключение"
 
 #: src/app/App.js
 #~ msgid "Connect Metamask"
@@ -938,7 +938,6 @@ msgstr "Подключение"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js

@@ -12,7 +12,7 @@ export const MAX_TIMEOUT = 2000;
 
 export async function executeMulticall(
   chainId: number,
-  library: Web3Provider | undefined,
+  library: Web3Provider | undefined | any,
   request: MulticallRequestConfig<any>
 ) {
   // Try to use rpc provider of the connected wallet

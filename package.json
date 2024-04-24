@@ -78,12 +78,12 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
-    "start": "PORT=3011 NODE_OPTIONS=--openssl-legacy-provider craco start",
+    "start": "PORT=3010 NODE_OPTIONS=--openssl-legacy-provider craco start",
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home craco start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app craco start",
     "start-win": "set PORT=3010&craco start",
     "serve": "serve -s build",
-    "build": "INLINE_RUNTIME_CHUNK=false yarn test:ci && craco build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider && INLINE_RUNTIME_CHUNK=false yarn test:ci && CI=false && craco build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
     "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci && react-scripts build",
     "test": "react-scripts test",

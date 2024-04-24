@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./ApproveTokenInput.css";
 import { ethers } from "ethers";
 import { formatAmount } from "lib/numbers";
@@ -7,9 +7,11 @@ import { getContract } from "config/contracts";
 import { getTokenInfo } from "domain/tokens/utils";
 import Button from "components/Button/Button";
 import useSWR from "swr";
-import { useWeb3React } from "@web3-react/core";
-import { contractFetcher } from "lib/contracts";
+
+
 import Token from "abis/Token.json";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { dynamicApprovePlugin } from "domain/legacy";
 
 export default function ApproveTokenInput(props) {
   const { tokenInfo, library, chainId, infoTokens, pendingTxns, setPendingTxns } = props;
@@ -19,7 +21,10 @@ export default function ApproveTokenInput(props) {
   const [tokenAllowance, setTokenAllowance] = useState(ethers.BigNumber.from(0));
   const routerAddress = getContract(chainId, "Router");
   const { AddressZero } = ethers.constants;
-  const { active, account } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+ // const { active, account } = useWeb3React();
 
   const onApproveValueChange = (e) => {
     const inputValue = e.target.value;
@@ -73,7 +78,7 @@ export default function ApproveTokenInput(props) {
   };
 
   useSWR(active && [active, chainId, tokenInfo.address, "allowance", account, routerAddress], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: dynamicApprovePlugin(library, Token),
     onSuccess: (data) => setTokenAllowance(data),
   });
 

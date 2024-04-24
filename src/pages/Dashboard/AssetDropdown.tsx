@@ -4,16 +4,16 @@ import "./AssetDropdown.css";
 import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
-import { useWeb3React } from "@web3-react/core";
-
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import { Token } from "domain/tokens";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { useContext } from "react";
 
 const avalancheIcon = getIcon(AVALANCHE, "network");
 const arbitrumIcon = getIcon(ARBITRUM, "network");
@@ -24,8 +24,11 @@ type Props = {
 };
 
 function AssetDropdown({ assetSymbol, assetInfo }: Props) {
-  const { active } = useWeb3React();
-  const { chainId } = useChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+
+  // const { active } = useWeb3React();
+  const { chainId } = useDynamicChainId();
   if (!chainId || !assetSymbol) return null;
   let { coingecko, arbitrum, avalanche, reserves } = ICONLINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =

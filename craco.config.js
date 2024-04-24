@@ -1,9 +1,9 @@
 module.exports = {
   babel: {
     plugins: [
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-transform-shorthand-properties',
+      "@babel/plugin-proposal-nullish-coalescing-operator",
+      "@babel/plugin-proposal-optional-chaining",
+      "@babel/plugin-transform-shorthand-properties",
       "@babel/plugin-proposal-logical-assignment-operators",
     ],
   },
@@ -12,7 +12,7 @@ module.exports = {
       module: {
         rules: [
           {
-            type: 'javascript/auto',
+            type: "javascript/auto",
             test: /\.mjs$/,
             use: [],
           },
@@ -20,24 +20,25 @@ module.exports = {
       },
     },
   },
-//   eslint: {
-//     configure: {
-//       rules: {
-//         'no-unused-vars': 'off',
-//       },
-//     },
-//   },
-//   plugins: [
-//     {
-//       plugin: CracoLessPlugin,
-//       options: {
-//         lessLoaderOptions: {
-//           lessOptions: {
-//             modifyVars: { '@primary-color': '#2abdd2' },
-//             javascriptEnabled: true,
-//           },
-//         },
-//       },
-//     },
-//   ],
+  eslint: null,
+  //   eslint: {
+  //     configure: {
+  //       rules: {
+  //         'no-unused-vars': 'off',
+  //       },
+  //     },
+  //   },
+  //   plugins: [
+  //     {
+  //       plugin: CracoLessPlugin,
+  //       options: {
+  //         lessLoaderOptions: {
+  //           lessOptions: {
+  //             modifyVars: { '@primary-color': '#2abdd2' },
+  //             javascriptEnabled: true,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   ],
 };

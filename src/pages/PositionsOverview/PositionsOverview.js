@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
 import { useAllPositions } from "domain/legacy";
@@ -7,14 +6,19 @@ import { USD_DECIMALS } from "lib/legacy";
 
 import "./PositionsOverview.css";
 import { formatAmount } from "lib/numbers";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { useContext } from "react";
 
 export default function PositionsOverview() {
-  const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+ 
+  const signer = dynamicContext.signer;
+ // const { library } = useWeb3React();
 
-  const positions = useAllPositions(chainId, library);
+  const positions = useAllPositions(chainId, signer);
 
   return (
     <div className="Positions-overview">

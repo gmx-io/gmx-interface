@@ -9,7 +9,7 @@ import { t, Trans } from "@lingui/macro";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
-  library: Web3Provider;
+  library: Web3Provider | any;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -35,7 +35,7 @@ export function approveTokens({
   includeMessage,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner());
+  const contract = new ethers.Contract(tokenAddress, Token.abi, library);
   contract
     .approve(spender, ethers.constants.MaxUint256)
     .then(async (res) => {

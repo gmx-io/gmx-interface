@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useContext, useEffect, useState } from "react";
+
 import { BigNumber, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
@@ -11,13 +11,13 @@ import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains"
 import { getServerBaseUrl } from "config/backend";
 import { getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
-import { getProvider } from "./rpc";
 import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "config/tokens";
-import { useChainId } from "./chains";
+import {  useDynamicChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
 import { isLocal } from "config/env";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const { AddressZero } = ethers.constants;
 
@@ -1040,11 +1040,15 @@ export function getOrderKey(order) {
 }
 
 export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
-  const { library, account: connectedAccount } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+//  const active = dynamicContext.active;
+  const account = overrideAccount || dynamicContext.account;
+  const signer = dynamicContext.signer;
+ // const { library, account: connectedAccount } = useWeb3React();
   const active = true; // this is used in Actions.js so set active to always be true
-  const account = overrideAccount || connectedAccount;
+ // const account = overrideAccount || connectedAccount;
 
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const shouldRequest = active && account && flagOrdersEnabled;
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -1057,9 +1061,9 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   } = useSWR(key, {
     dedupingInterval: 5000,
     fetcher: async (active, chainId, orderBookAddress, account) => {
-      const provider = getProvider(library, chainId);
-      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
-      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider);
+      //const provider = getProvider(library, chainId);
+      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, signer);
 
       const fetchIndexesFromServer = () => {
         const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`;

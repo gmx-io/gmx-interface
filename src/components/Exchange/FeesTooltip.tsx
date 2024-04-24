@@ -5,7 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getConstant } from "config/chains";
 import { BigNumber } from "ethers";
-import { useChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree } from "lib/numbers";
 
@@ -98,7 +98,7 @@ function FeesTooltip({
   isOpening = true,
   titleText = "",
 }: Props) {
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const executionFee = executionFees?.fee;
   const executionFeeUsd = executionFees?.feeUsd;
   const formattedFees = {

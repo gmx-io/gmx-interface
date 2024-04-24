@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle, useContext } from "react";
 import { Trans, t, Plural } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
+
 import useSWR from "swr";
 import { ethers } from "ethers";
 import cx from "classnames";
@@ -22,7 +22,7 @@ import {
   getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import { approvePlugin, useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
+import {  useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
@@ -43,16 +43,17 @@ import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
 
 import "./Exchange.css";
-import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import { useChainId, useDynamicChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -360,7 +361,6 @@ export const Exchange = forwardRef((props, ref) => {
 
   const [pendingPositions, setPendingPositions] = useState({});
   const [updatedPositions, setUpdatedPositions] = useState({});
-  const [web3Provider, setWeb3Provider] = useState(null);
 
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -381,28 +381,33 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  //const { account } = useWeb3React();
-  //console.log("account", account);
-  const [active, setActive] = useState(false);
-  const [account, setAccount] = useState(null);
-  const { primaryWallet } = useDynamicContext();
-  //console.log("primary wallet", primaryWallet);
-  useEffect(() => {
-    const fetchProvider = async () => {
-      if (primaryWallet && primaryWallet.connector) {
-        const provider = await primaryWallet.connector.getSigner();
-        console.log("setting signer", provider);
-        setAccount(primaryWallet.address);
-        setWeb3Provider(provider);
-        setActive(true);
-      }
-    };
+  const { chainId } = useDynamicChainId();
+  const walletContext = useContext(DynamicWalletContext);
+  const active = walletContext.active;
+  const account = walletContext.account;
+  const web3Provider = walletContext.signer;
 
-    fetchProvider();
-  }, [primaryWallet]);
+  //const [active, setActive] = useState(false);
+  // const [account, setAccount] = useState(null);
+  const { primaryWallet } = useDynamicContext();
+  //const [web3Provider, setWeb3Provider] = useState(null);
+  //console.log("primary wallet", primaryWallet);
+  // useEffect(() => {
+  //   const fetchProvider = async () => {
+  //     if (primaryWallet && primaryWallet.connector) {
+  //       const provider = await primaryWallet.connector.getSigner();
+  //       console.log("setting signer", provider);
+  //       setAccount(primaryWallet.address);
+  //       setWeb3Provider(provider);
+  //       setActive(true);
+  //     }
+  //   };
+
+  //   fetchProvider();
+  // }, [primaryWallet]);
 
   //console.log("primary wallet", primaryWallet.netwo);
-  const { chainId } = useDynamicChainId();
+
   //console.log("chain id", chainId);
   const currentAccount = account;
 
@@ -469,6 +474,7 @@ export const Exchange = forwardRef((props, ref) => {
     [tokenSelection, setTokenSelection]
   );
 
+  
   const setMarket = (selectedSwapOption, toTokenAddress) => {
     setSwapOption(selectedSwapOption);
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));

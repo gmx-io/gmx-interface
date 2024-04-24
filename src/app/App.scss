@@ -396,6 +396,24 @@
   color: #000000;
 }
 
+.dynamic-shadow-dom{
+  --dynamic-font-family-primary : tektur;
+  --dynamic-font-family-numbers : tektur;
+  --dynamic-modal-width : ;
+  --dynamic-button-primary-font-size : 14px;
+  margin-left: 10px;
+}
+
+#light .dynamic-widget-inline-controls {
+  background-color: transparent;
+}
+
+.button--padding-large {
+  padding:1.1rem 1.25rem;
+}
+
+
+
 .Wallet-btn:hover {
   background: var(--dark-blue-hover);
   border-color: var(--dark-blue-border);
@@ -1678,11 +1696,29 @@ button.App-button {
   font-weight: 400;
 }
 
-
+.dynamic-widget-inline-controls{
+  max-height: none;
+}
 
 .connect-button {
   background: transparent !important;
 }
+
+
+// .dynamic-shadow-dom {
+//   --dynamic-connect-button-background: transparent;
+//   --dynamic-connect-button-color: #000;
+//   --dynamic-text-primary: #000;
+//   height: 20px;
+// }
+
+// .dynamic-shadow-dom:hover {
+//   --dynamic-connect-button-background-hover: grey;
+//   --dynamic-connect-button-color: #000;
+//   --dynamic-text-primary: #000;
+// }
+
+//--dynamic-connect-button-background-hover
 
 .Email-input-section button {
   width: 100%;

@@ -3,6 +3,14 @@ import { sample } from "lodash";
 import { DynamicWalletNetworkMetadata, NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
+import arbitrum from "img/ic_arbitrum_24.svg";
+import avalanche from "img/ic_avalanche_24.svg";
+import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
+
+import optimismIcn from "img/icn_opt_24.svg";
+import blastIcn from "img/icn_blast.svg";
+
 const { parseEther } = ethers.utils;
 
 export const MAINNET = 56;
@@ -267,7 +275,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
     chainId: ARBITRUM_TESTNET,
-    iconUrls: [""],
+    iconUrls: [arbitrum],
     name: "Arbitrum Testnet",
     nativeCurrency: {
       name: "ETH",
@@ -282,7 +290,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
     chainId: ARBITRUM,
-    iconUrls: [""],
+    iconUrls: [arbitrum],
     name: "Arbitrum",
     nativeCurrency: {
       name: "ETH",
@@ -297,7 +305,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
     chainId: AVALANCHE,
-    iconUrls: [""],
+    iconUrls: [avalanche],
     name: "Avalanche",
     nativeCurrency: {
       name: "AVAX",
@@ -312,7 +320,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
     chainId: AVALANCHE_FUJI,
-    iconUrls: [""],
+    iconUrls: [avalancheTestnet],
     name: "Avalanche Fuji",
     nativeCurrency: {
       name: "AVAX",
@@ -327,7 +335,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(SEPOLIA_TESTNET)],
     chainId: SEPOLIA_TESTNET,
-    iconUrls: [""],
+    iconUrls: [sepoliaTesnet],
     name: "Sepolia",
     nativeCurrency: {
       name: "ETH",
@@ -342,7 +350,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(OPTIMISM_GOERLI_TESTNET)],
     chainId: OPTIMISM_GOERLI_TESTNET,
-    iconUrls: [""],
+    iconUrls: [optimismIcn],
     name: "Optimism Goreli Testnet",
     nativeCurrency: {
       name: "ETH",
@@ -357,7 +365,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(OPTIMISM_MAINNET)],
     chainId: OPTIMISM_MAINNET,
-    iconUrls: [""],
+    iconUrls: [optimismIcn],
     name: "Optimism",
     nativeCurrency: {
       name: "ETH",
@@ -372,7 +380,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
   {
     blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
     chainId: BLAST_SEPOLIA_TESTNET,
-    iconUrls: [""],
+    iconUrls: [blastIcn],
     name: "Blast Sepolia",
     nativeCurrency: {
       name: "ETH",
@@ -498,6 +506,16 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
   },
 };
+
+export function getDynamicChain(chainNames: number[]) {
+  const networksForDynamicWallet: DynamicWalletNetworkMetadata[] = [];
+
+  chainNames.forEach((chain) => {
+    const filteredNetwork = DYNAMIC_NETWORK_METADATA.filter((network) => network.chainId === chain);
+    if (filteredNetwork.length > 0) networksForDynamicWallet.push(filteredNetwork[0]);
+  });
+  return networksForDynamicWallet;
+}
 
 export const getConstant = (chainId: number, key: string) => {
   if (!constants[chainId]) {
