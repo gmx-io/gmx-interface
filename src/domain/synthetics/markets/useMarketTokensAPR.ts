@@ -11,6 +11,11 @@ import { getBorrowingFactorPerPeriod } from "../fees";
 import { MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
+import useIncentiveStats from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
+import { getTokenBySymbol } from "config/tokens";
+import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
+import { expandDecimals } from "lib/numbers";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -41,16 +46,50 @@ function useMarketAddresses(chainId: number) {
 }
 
 function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
+  const rawIncentivesStats = useIncentiveStats(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   return useMemo(() => {
+    let arbTokenAddress: null | string = null;
+    try {
+      arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
+    } catch (err) {
+      // ignore
+    }
+    let arbTokenPrice = BigNumber.from(0);
+
+    if (arbTokenAddress && tokensData) {
+      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
+    }
+
+    const shouldCalcBonusApr =
+      arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) && rawIncentivesStats?.lp.isActive;
+
     return marketAddresses.reduce((acc, marketAddress) => {
+      if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)
+        return { ...acc, [marketAddress]: BigNumber.from(0) };
+
+      const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
+      const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
+      const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
+      let incentivesApr = BigNumber.from(0);
+
+      if (poolValue?.gt(0)) {
+        incentivesApr = arbTokensAmount
+          .mul(arbTokenPrice)
+          .div(poolValue)
+          .mul(yearMultiplier)
+          .div(expandDecimals(1, 14));
+      }
+
       return {
         ...acc,
-        [marketAddress]: BigNumber.from(0),
+        [marketAddress]: incentivesApr,
       };
     }, {} as MarketTokensAPRData);
-  }, [marketAddresses]);
+  }, [chainId, marketAddresses, marketsInfoData, rawIncentivesStats, tokensData]);
 }
 
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
