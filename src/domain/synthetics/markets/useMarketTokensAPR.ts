@@ -181,7 +181,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
         const incomePercentageForPeriod = x2.sub(x1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
-        const aprByFees = incomePercentageForPeriod.mul(yearMultiplier).mul(100);
+        const aprByFees = incomePercentageForPeriod.mul(yearMultiplier);
         const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
 
         acc[marketAddress] = aprByFees.add(aprByBorrowingFee);
@@ -214,7 +214,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
   const longOi = marketInfo.longInterestUsd;
   const shortOi = marketInfo.shortInterestUsd;
-  const isLongPayingBorrowingFee = longOi.gt(shortOi) ? true : false;
+  const isLongPayingBorrowingFee = longOi.gt(shortOi);
   const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
 
   const borrowingFeeUsdForPoolPerYear = borrowingFactorPerYear
@@ -225,5 +225,5 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
 
   const borrowingFeeUsdPerPoolValuePerYear = borrowingFeeUsdForPoolPerYear.mul(PRECISION).div(poolValue);
 
-  return borrowingFeeUsdPerPoolValuePerYear.mul(100);
+  return borrowingFeeUsdPerPoolValuePerYear;
 }

@@ -10,6 +10,7 @@ import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -192,7 +193,10 @@ export const useUserEarnings = (chainId: number) => {
           if (!balance || balance.eq(0)) return;
 
           const price = token.prices.maxPrice;
-          const expected365d = apr.mul(balance).mul(price).div(expandDecimals(1, 50));
+          const expected365d = apr
+            .mul(balance)
+            .mul(price)
+            .div(expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
           result.allMarkets.expected365d = result.allMarkets.expected365d.add(expected365d);
         }
       });
