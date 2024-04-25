@@ -65,7 +65,7 @@ import swapImg from "img/swap.svg";
 import { useUserReferralCode } from "domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import {
   approveTokens,
   getMostAbundantStableToken,
@@ -309,7 +309,7 @@ export default function SwapTab(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: dynamicContractFetcher(library, Token),
     }
   );
 

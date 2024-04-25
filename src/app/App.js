@@ -506,11 +506,11 @@ function FullApp() {
       selector: '[data-tour="step-1"]',
       content: ({ goTo, inDOM }) => (
         <div>
-          <div class="tour-title">Trade (Step 1/4)</div>
+          <div className="tour-title">Trade (Step 1/4)</div>
           <br />
-          <div class="tour-content">Trade and exchange currencies optionally with leverage.</div>
+          <div className="tour-content">Trade and exchange currencies optionally with leverage.</div>
           <br />
-          <div class="tour-control">
+          <div className="tour-control">
             <a href="#" onClick={() => setIsTourOpen(false)}>
               Close
             </a>
@@ -531,11 +531,11 @@ function FullApp() {
       selector: '[data-tour="step-2"]',
       content: ({ goTo, inDOM }) => (
         <div>
-          <div class="tour-title">Earn (Step 2/4)</div>
+          <div className="tour-title">Earn (Step 2/4)</div>
           <br />
-          <div class="tour-content">Stake TMX and TLP to earn rewards.</div>
+          <div className="tour-content">Stake TMX and TLP to earn rewards.</div>
           <br />
-          <div class="tour-control">
+          <div className="tour-control">
             <a href="#" onClick={() => setIsTourOpen(false)}>
               Close
             </a>
@@ -556,11 +556,11 @@ function FullApp() {
       selector: ".third-step",
       content: ({ goTo, inDOM }) => (
         <div>
-          <div class="tour-title">Settings (Step 3/4)</div>
+          <div className="tour-title">Settings (Step 3/4)</div>
           <br />
-          <div class="tour-content">Manage Trade settings here.</div>
+          <div className="tour-content">Manage Trade settings here.</div>
           <br />
-          <div class="tour-control">
+          <div className="tour-control">
             <a href="#" onClick={() => setIsTourOpen(false)}>
               Close
             </a>
@@ -586,14 +586,14 @@ function FullApp() {
       },
       content: ({ goTo, inDOM }) => (
         <div>
-          <div class="tour-title">Email Notifications</div>
+          <div className="tour-title">Email Notifications</div>
           <br />
-          <div class="tour-content">
+          <div className="tour-content">
             Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
             and light/dark mode here.
           </div>
           <br />
-          <div class="tour-control">
+          <div className="tour-control">
             <a
               href="#"
               onClick={() => {

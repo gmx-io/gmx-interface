@@ -162,7 +162,7 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            dynamicContractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),

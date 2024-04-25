@@ -149,10 +149,10 @@ function FaucetDropdown() {
       <div>
         <>
           <Menu.Items as="div" className="menu">
-            {tokens?.map((token) => (
-              <>
+            {tokens?.map((token,index) => (
+              <div key={index}> 
                 {!token.isNative && (
-                  <Menu.Item>
+                  <Menu.Item key={index}>
                     <div
                       key={token.symbol}
                       className="menu-item"
@@ -167,7 +167,7 @@ function FaucetDropdown() {
                     </div>
                   </Menu.Item>
                 )}
-              </>
+              </div>
             ))}
           </Menu.Items>
         </>

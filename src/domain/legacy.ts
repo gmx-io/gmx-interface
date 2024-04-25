@@ -32,7 +32,7 @@ import { groupBy } from "lodash";
 import { UI_VERSION } from "config/env";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import { callContract, contractFetcher, dynamicContractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import { getProvider } from "lib/rpc";
@@ -439,7 +439,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: arbData, mutate: arbMutate } = useSWR<any>(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: dynamicContractFetcher(library, Token),
     }
   );
 
@@ -449,7 +449,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
 
