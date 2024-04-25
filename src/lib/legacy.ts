@@ -967,6 +967,7 @@ export const CHART_PERIODS = {
   "1h": 60 * 60,
   "4h": 60 * 60 * 4,
   "1d": 60 * 60 * 24,
+  "1y": 60 * 60 * 24 * 365,
 };
 
 export function getTotalVolumeSum(volumes) {
