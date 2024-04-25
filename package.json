@@ -83,7 +83,7 @@
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app craco start",
     "start-win": "set PORT=3010&craco start",
     "serve": "serve -s build",
-    "build": "NODE_OPTIONS=--max-old-space-size=6144 &&NODE_OPTIONS=--openssl-legacy-provider && INLINE_RUNTIME_CHUNK=false yarn test:ci && CI=false && craco build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider && INLINE_RUNTIME_CHUNK=false yarn test:ci && CI=false && craco --max_old_space_size=4096 build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
     "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci && react-scripts build",
     "test": "react-scripts test",
