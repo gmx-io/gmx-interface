@@ -78,7 +78,7 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
-    "start": "PORT=3010  && NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env craco start",
+    "start": "PORT=3010 && NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env craco start",
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home craco start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app craco start",
     "start-win": "set PORT=3010&craco start",
@@ -109,9 +109,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",
