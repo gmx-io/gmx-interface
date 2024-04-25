@@ -32,6 +32,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 type Props = {
   hideTitle?: boolean;
@@ -43,6 +44,8 @@ type Props = {
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
 };
+
+const tokenAddressStyle = { fontSize: 5 };
 
 export function GmList({
   hideTitle,
@@ -62,6 +65,7 @@ export function GmList({
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
+  const { showDebugValues } = useSettings();
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -194,7 +198,7 @@ export function GmList({
                             </div>
                           </div>
                         </div>
-                        {/* <span style={{ fontSize: 5 }}>{market.marketTokenAddress}</span> */}
+                        {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
