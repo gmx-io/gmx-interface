@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useContext } from "react";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export enum AccountType {
   CONTRACT = "contract",
@@ -7,17 +8,22 @@ export enum AccountType {
 }
 
 export default function useAccountType() {
-  const { active, account, library } = useWeb3React();
+  //const { active, account, library } = useWeb3React();
+  const walletContext = useContext(DynamicWalletContext);
+
+  const account = walletContext.account;
+  const signer = walletContext.signer;
+  const active = walletContext.active;
   const [contractType, setContractType] = useState<AccountType | null>(null);
 
   useEffect(() => {
     if (!active) return;
     (async function () {
-      const code = await library.getCode(account); //todo.
+      const code = await signer.getCode(account); //todo.
       const type = code === "0x" ? AccountType.EOA : AccountType.CONTRACT;
       setContractType(type);
     })();
-  }, [account, library, active]);
+  }, [account, signer, active]);
 
   return contractType;
 }
