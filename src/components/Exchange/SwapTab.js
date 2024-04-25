@@ -1240,7 +1240,7 @@ export default function SwapTab(props) {
   const wrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library);
     callContract(chainId, contract, "deposit", {
       value: fromAmount,
       sentMsg: t`Swap submitted.`,
@@ -1259,7 +1259,7 @@ export default function SwapTab(props) {
   const unwrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library);
     callContract(chainId, contract, "withdraw", [fromAmount], {
       sentMsg: t`Swap submitted!`,
       failMsg: t`Swap failed.`,
@@ -1368,7 +1368,7 @@ export default function SwapTab(props) {
       value = fromAmount;
       params = [path, minOut, account];
     }
-    contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+    contract = new ethers.Contract(routerAddress, Router.abi, library);
 
     callContract(chainId, contract, method, params, {
       value,
@@ -1536,7 +1536,7 @@ export default function SwapTab(props) {
     }
 
     const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library);
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
     const longOrShortText = isLong ? t`Long` : t`Short`;
