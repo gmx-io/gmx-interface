@@ -26,13 +26,7 @@ import {
 import { selectConfirmationBoxMockPosition } from "context/SyntheticsStateContext/selectors/confirmationBoxSelectors";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { handleEntryError, getCommonError } from "./utils";
-import {
-  SidecarOrderEntry,
-  SidecarLimitOrderEntryValid,
-  SidecarSlTpOrderEntryValid,
-  SidecarLimitOrderEntry,
-  SidecarSlTpOrderEntry,
-} from "./types";
+import { SidecarOrderEntry, SidecarSlTpOrderEntryValid, SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "./types";
 
 export * from "./types";
 
@@ -154,52 +148,6 @@ export function useSidecarOrders() {
 
   const mockPositionInfo = useSelector(selectConfirmationBoxMockPosition);
 
-  const getDecreaseAmountsFromEntry = useCallback(
-    ({ sizeUsd, price }: SidecarOrderEntry) => {
-      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
-
-      if (
-        !increaseAmounts ||
-        !collateralToken ||
-        !mockPositionInfo ||
-        !minPositionSizeUsd ||
-        !minCollateralUsd ||
-        !sizeUsd?.value
-      ) {
-        return;
-      }
-
-      return getDecreasePositionAmounts({
-        marketInfo,
-        collateralToken,
-        isLong,
-        position: mockPositionInfo,
-        closeSizeUsd: sizeUsd.value,
-        keepLeverage: true,
-        triggerPrice: price.value,
-        userReferralInfo,
-        minCollateralUsd,
-        minPositionSizeUsd,
-        uiFeeFactor,
-        isLimit,
-        limitPrice: triggerPrice,
-      });
-    },
-    [
-      collateralToken,
-      mockPositionInfo,
-      increaseAmounts,
-      isLong,
-      isLimit,
-      marketInfo,
-      triggerPrice,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor,
-      userReferralInfo,
-    ]
-  );
-
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
       if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error) return;
@@ -238,16 +186,11 @@ export function useSidecarOrders() {
       };
     });
 
-    const displayableEntries = entries.filter(
-      (e): e is SidecarLimitOrderEntryValid => e.txnType !== "cancel" && !!e.increaseAmounts
-    );
-
     return {
       ...limitEntriesInfo,
       entries,
       totalPnL: BigNumber.from(0),
       totalPnLPercentage: BigNumber.from(0),
-      error: getCommonError(displayableEntries),
     };
   }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
 
@@ -256,6 +199,77 @@ export function useSidecarOrders() {
 
     return !displayableEntries.length;
   }, [limit]);
+
+  const mockPositionInfoWithLimits = useMemo(() => {
+    if (!mockPositionInfo || !limit.entries.length) return mockPositionInfo;
+
+    const [limitSummaryCollateralDeltaAmount, limitSummarySizeDeltaInTokens, limitSummarySizeDeltaUsd] =
+      limit.entries.reduce(
+        ([collateral, tokens, usd], entry) => [
+          collateral.add(entry.increaseAmounts?.collateralDeltaAmount || 0),
+          tokens.add(entry.increaseAmounts?.sizeDeltaInTokens || 0),
+          usd.add(entry.increaseAmounts?.sizeDeltaUsd || 0),
+        ],
+        [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)]
+      );
+
+    return {
+      ...mockPositionInfo,
+      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? BigNumber.from(0)).add(limitSummarySizeDeltaUsd ?? BigNumber.from(0)),
+      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? BigNumber.from(0)).add(
+        limitSummarySizeDeltaInTokens ?? BigNumber.from(0)
+      ),
+      collateralAmount: (mockPositionInfo?.collateralAmount ?? BigNumber.from(0)).add(
+        limitSummaryCollateralDeltaAmount ?? BigNumber.from(0)
+      ),
+    };
+  }, [mockPositionInfo, limit.entries]);
+
+  const getDecreaseAmountsFromEntry = useCallback(
+    ({ sizeUsd, price }: SidecarOrderEntry) => {
+      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
+
+      if (
+        !increaseAmounts ||
+        !collateralToken ||
+        !mockPositionInfoWithLimits ||
+        !minPositionSizeUsd ||
+        !minCollateralUsd ||
+        !sizeUsd?.value
+      ) {
+        return;
+      }
+
+      return getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken,
+        isLong,
+        position: mockPositionInfoWithLimits,
+        closeSizeUsd: sizeUsd.value,
+        keepLeverage: true,
+        triggerPrice: price.value,
+        userReferralInfo,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor,
+        isLimit,
+        limitPrice: triggerPrice,
+      });
+    },
+    [
+      collateralToken,
+      mockPositionInfoWithLimits,
+      increaseAmounts,
+      isLong,
+      isLimit,
+      marketInfo,
+      triggerPrice,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      userReferralInfo,
+    ]
+  );
 
   const stopLoss = useMemo(() => {
     const entries = stopLossEntriesInfo.entries.map((entry) => {

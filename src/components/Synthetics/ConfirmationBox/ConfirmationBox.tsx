@@ -670,7 +670,7 @@ export function ConfirmationBox(p: Props) {
         orderKey: entry.order!.key,
         orderType: entry.order!.orderType,
         sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
-        acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.sizeDeltaUsd)!,
+        acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
         triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
         executionFee: getExecutionFeeAmountForEntry(entry) ?? BigNumber.from(0),
         minOutputAmount: BigNumber.from(0),
