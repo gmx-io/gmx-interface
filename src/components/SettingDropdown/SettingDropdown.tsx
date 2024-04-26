@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Menu, Switch } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t, Trans } from "@lingui/macro";
@@ -11,7 +11,6 @@ import emailIcon from "img/ic_email.svg";
 import emailSuccess from "img/email_success.svg";
 import settingsIcon from "img/ic_setting.svg";
 import languageIcon from "img/ic_language.svg";
-import informationIcon from "img/ic_information.svg";
 import darkModeIcon from "img/ic_dark_mode.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
@@ -56,13 +55,13 @@ export default function SettingDropdown(props) {
           setIsVisible: () => props.setActiveModal(null),
           label: t`Settings`,
         };
-      case EMAIL_NOTIFICATION_MODAL_KEY:
-        return {
-          className: "notification-popup",
-          isVisible: props.activeModal === EMAIL_NOTIFICATION_MODAL_KEY,
-          setIsVisible: () => props.setActiveModal(null),
-          label: t`Enable email notification`,
-        };
+      // case EMAIL_NOTIFICATION_MODAL_KEY:
+      //   return {
+      //     className: "notification-popup",
+      //     isVisible: props.activeModal === EMAIL_NOTIFICATION_MODAL_KEY,
+      //     setIsVisible: () => props.setActiveModal(null),
+      //     label: t`Enable email notification`,
+      //   };
       default:
         return {};
     }
@@ -100,13 +99,9 @@ function NavIcons() {
 function DesktopDropdown({ setActiveModal, openSettings }) {
   const themeToggle = useContext(ThemeContext);
   // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
-  const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
+  //const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
-  const enableNotificationhandler = (status) => {
-    setEnabledEmailNotification(status);
-    if (status) setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY);
-  };
 
   return (
     <div className="App-header-setting">
@@ -159,7 +154,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
               </Switch>
             </div>
           </Menu.Item>
-          <Menu.Item>
+          {/* <Menu.Item>
             <div
               className="setting-dropdown-menu-item menu-item"
               onClick={() => setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY)}
@@ -182,7 +177,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
                 <span className={`${enabledEmailNotification ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
               </Switch>
             </div>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item>
             <div className="setting-dropdown-menu-item menu-item" onClick={openSettings}>
               <div className="menu-item-group">
@@ -237,7 +232,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
 
 function SettingModalContent({ setActiveModal, openSettings }) {
   const themeToggle = useContext(ThemeContext);
-  const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
+  //const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
   return (
@@ -269,7 +264,7 @@ function SettingModalContent({ setActiveModal, openSettings }) {
             <span className={`${enabledOneTrading ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
           </Switch>
         </div>
-        <div
+        {/* <div
           className="setting-option"
           onClick={() => {
             setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY);
@@ -288,7 +283,7 @@ function SettingModalContent({ setActiveModal, openSettings }) {
             <span className="sr-only">Enable Email Notification</span>
             <span className={`${enabledEmailNotification ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
           </Switch>
-        </div>
+        </div> */}
         <div
           className="setting-option"
           onClick={() => {

@@ -37,7 +37,7 @@ import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getServerUrl } from "config/backend";
-import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";

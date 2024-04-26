@@ -26,7 +26,7 @@ import { DynamicWalletContext } from "store/dynamicwalletprovider";
 type Props = {
   openSettings: () => void;
   small?: boolean;
-  setWalletModalVisible: (visible: boolean) => void;
+
   setApprovalsModalVisible: (visible: boolean) => void;
   setDoesUserHaveEmail: (visible: boolean) => void;
   disconnectAccountAndCloseSettings: () => void;
@@ -64,7 +64,7 @@ if (isDevelopment()) {
 export function AppHeaderUser({
   openSettings,
   small,
-  setWalletModalVisible,
+
   setApprovalsModalVisible,
   setDoesUserHaveEmail,
   disconnectAccountAndCloseSettings,

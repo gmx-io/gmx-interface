@@ -4,8 +4,6 @@ import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 
 import useScrollToTop from "lib/useScrollToTop";
-import Tour from "reactour";
-
 import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
 
 import {
@@ -100,8 +98,6 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
-
-
 const Zoom = cssTransition({
   enter: "zoomIn",
   exit: "zoomOut",
@@ -143,7 +139,6 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   useEventToast();
-  
 
   // useEffect(() => {
   //   if (activatingConnector && activatingConnector === connector) {
@@ -250,23 +245,22 @@ function FullApp() {
   //   attemptActivateWallet("CoinBase");
   // };
 
-  const [walletModalVisible, setWalletModalVisible] = useState(false);
-  const [authFlowModal, setAuthFlowModalVisible] = useState(false);
+  //const [walletModalVisible, setWalletModalVisible] = useState(false);
+  //const [authFlowModal, setAuthFlowModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
-  
-  
+
   const [, setHasTokens] = useState(false);
 
   const [, setDoesUserHaveEmail] = useState(false);
   const [, setActiveStep] = useState(1);
-  const [ ,setNewUser] = useState(false);
+  const [, setNewUser] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
 
-  const connectWallet = () => setWalletModalVisible(true);
+  const connectWallet = () => {};
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
@@ -382,8 +376,8 @@ function FullApp() {
           // eslint-disable-next-line no-console
         }
 
-        setWalletModalVisible(false);
-        setAuthFlowModalVisible(true);
+        // setWalletModalVisible(false);
+        // setAuthFlowModalVisible(true);
       };
 
       checkAndCreateUser();
@@ -499,132 +493,132 @@ function FullApp() {
   }, [active, chainId, vaultAddress, positionRouterAddress]);
   const themeContext = useContext(ThemeContext);
 
-  const [isTourOpen, setIsTourOpen] = useState(true);
+  // const [isTourOpen, setIsTourOpen] = useState(true);
 
-  const steps = [
-    {
-      selector: '[data-tour="step-1"]',
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div className="tour-title">Trade (Step 1/4)</div>
-          <br />
-          <div className="tour-content">Trade and exchange currencies optionally with leverage.</div>
-          <br />
-          <div className="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(1)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "172px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: '[data-tour="step-2"]',
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div className="tour-title">Earn (Step 2/4)</div>
-          <br />
-          <div className="tour-content">Stake TMX and TLP to earn rewards.</div>
-          <br />
-          <div className="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(2)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "180px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: ".third-step",
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div className="tour-title">Settings (Step 3/4)</div>
-          <br />
-          <div className="tour-content">Manage Trade settings here.</div>
-          <br />
-          <div className="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(3)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "172px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: ".fourth-step",
-      title: "Email Notifications",
-      // eslint-disable-next-line no-dupe-keys
-      action: (node) => {
-        setActiveModal("SETTINGS");
-      },
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div className="tour-title">Email Notifications</div>
-          <br />
-          <div className="tour-content">
-            Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
-            and light/dark mode here.
-          </div>
-          <br />
-          <div className="tour-control">
-            <a
-              href="#"
-              onClick={() => {
-                setIsTourOpen(false);
-                setActiveModal(null);
-              }}
-            >
-              Close
-            </a>
-            <button
-              onClick={() => {
-                setIsTourOpen(false);
-                setActiveModal(null);
-              }}
-            >
-              Got it
-            </button>
-          </div>
-        </div>
-      ),
-      position: "left",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "220px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    // ...
-  ];
+  // const steps = [
+  //   {
+  //     selector: '[data-tour="step-1"]',
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Trade (Step 1/4)</div>
+  //         <br />
+  //         <div className="tour-content">Trade and exchange currencies optionally with leverage.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(1)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "172px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: '[data-tour="step-2"]',
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Earn (Step 2/4)</div>
+  //         <br />
+  //         <div className="tour-content">Stake TMX and TLP to earn rewards.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(2)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "180px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: ".third-step",
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Settings (Step 3/4)</div>
+  //         <br />
+  //         <div className="tour-content">Manage Trade settings here.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(3)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "172px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: ".fourth-step",
+  //     title: "Email Notifications",
+  //     // eslint-disable-next-line no-dupe-keys
+  //     action: (node) => {
+  //       setActiveModal("SETTINGS");
+  //     },
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Email Notifications</div>
+  //         <br />
+  //         <div className="tour-content">
+  //           Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
+  //           and light/dark mode here.
+  //         </div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a
+  //             href="#"
+  //             onClick={() => {
+  //               setIsTourOpen(false);
+  //               setActiveModal(null);
+  //             }}
+  //           >
+  //             Close
+  //           </a>
+  //           <button
+  //             onClick={() => {
+  //               setIsTourOpen(false);
+  //               setActiveModal(null);
+  //             }}
+  //           >
+  //             Got it
+  //           </button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "left",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "220px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   // ...
+  // ];
 
   return (
     <>
@@ -634,7 +628,7 @@ function FullApp() {
             <Header
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}
-              setWalletModalVisible={setWalletModalVisible}
+              // setWalletModalVisible={setWalletModalVisible}
               setApprovalsModalVisible={setApprovalsModalVisible}
               setDoesUserHaveEmail={setDoesUserHaveEmail}
               redirectPopupTimestamp={redirectPopupTimestamp}
@@ -817,7 +811,7 @@ function FullApp() {
             nonZeroBalanceTokens={nonZeroBalanceTokens}
             closeApprovalsModal={() => {
               setApprovalsModalVisible(false);
-              setWalletModalVisible(true);
+              // setWalletModalVisible(true);
               setActiveStep(3);
             }}
           />
@@ -876,7 +870,7 @@ function FullApp() {
           </Button>
         </Modal>
       </div>
-      <Tour
+      {/* <Tour
         steps={steps}
         isOpen={isTourOpen && active && account && !walletModalVisible && !authFlowModal}
         showCloseButton={false}
@@ -884,7 +878,7 @@ function FullApp() {
         showNavigation={false}
         showNavigationNumber={false}
         showButtons={false}
-      />
+      /> */}
     </>
   );
 }
