@@ -41,24 +41,35 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: Props) {
     <div className="SidecarEntries-wrapper" ref={containerRef}>
       {displayableEntries?.map((entry) => {
         const indexToken = marketInfo?.indexToken;
-        const entrySizeUsd = entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd;
 
         const percentageError = entriesInfo.error?.percentage || entry.percentage?.error;
-        const sizeError = entry.sizeUsd?.error;
         const priceError = entriesInfo.error?.price || entry.price?.error;
+        const sizeError = displayMode === "percentage" ? percentageError : entry.sizeUsd?.error;
 
         const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);
         const isLong = entry.order?.isLong;
 
         const priceTooltipMsg =
-          !percentageError &&
-          !priceError &&
-          entry.price &&
           indexToken &&
-          entrySizeUsd &&
+          entry.price?.value &&
+          entry.sizeUsd?.value &&
           t`${isIncrease ? "Increase" : "Decrease"} ${indexToken?.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
-            entrySizeUsd
+            entry.sizeUsd.value
           )} at ${formatUsd(entry.price.value ?? undefined)}.`;
+
+        const sizeTooltipMsg =
+          sizeError || priceTooltipMsg ? (
+            <>
+              {sizeError}
+              {sizeError && priceTooltipMsg && (
+                <>
+                  <br />
+                  <br />
+                </>
+              )}
+              {priceTooltipMsg}
+            </>
+          ) : null;
 
         /* eslint-disable react-perf/jsx-no-new-object-as-prop */
         return (
@@ -103,17 +114,10 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                     suggestionList={SUGGESTION_PERCENTAGE_LIST}
                     symbol="%"
                   />
-                  {percentageError && (
-                    <div className={cx("Sidecar-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
-                      {percentageError}
-                    </div>
-                  )}
-                  {entrySizeUsd && priceTooltipMsg ? (
+                  {sizeTooltipMsg && (
                     <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
-                      {priceTooltipMsg}
+                      {sizeTooltipMsg}
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
               )}
@@ -126,17 +130,10 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: Props) {
                     placeholder="Size"
                     className="size-input"
                   />
-                  {sizeError && (
-                    <div className={cx("Sidecar-size-error", "Tooltip-popup", "z-index-1001", "top-end")}>
-                      {sizeError}
-                    </div>
-                  )}
-                  {entrySizeUsd && priceTooltipMsg ? (
+                  {sizeTooltipMsg && (
                     <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
-                      {priceTooltipMsg}
+                      {sizeTooltipMsg}
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
               )}

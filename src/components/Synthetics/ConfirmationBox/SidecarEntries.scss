@@ -116,19 +116,6 @@
           display: block;
         }
       }
-      .Sidecar-percent-error {
-        display: none;
-        &.Tooltip-popup {
-          min-width: 0;
-          width: max-content;
-        }
-      }
-
-      &:hover {
-        .Sidecar-percent-error {
-          display: block;
-        }
-      }
     }
   }
   .error {
