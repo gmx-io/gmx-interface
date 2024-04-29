@@ -95,7 +95,7 @@ const SWAP_ICONS = {
   [SWAP]: swapImg,
 };
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
@@ -297,7 +297,7 @@ export default function SwapBox(props) {
   }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval]);
 
   const routerAddress = getContract(chainId, "Router");
-  const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
+  const tokenAllowanceAddress = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
@@ -362,7 +362,7 @@ export default function SwapBox(props) {
   const isPotentialWrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative);
   const isWrapOrUnwrap = isSwap && isPotentialWrap;
   const needApproval =
-    fromTokenAddress !== AddressZero &&
+    fromTokenAddress !== ZeroAddress &&
     tokenAllowance &&
     fromAmount &&
     fromAmount.gt(tokenAllowance) &&
@@ -374,7 +374,7 @@ export default function SwapBox(props) {
   const fromUsdMin = getUsd(fromAmount, fromTokenAddress, false, infoTokens);
   const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderOption, triggerPriceUsd);
 
-  const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
+  const indexTokenAddress = toTokenAddress === ZeroAddress ? nativeTokenAddress : toTokenAddress;
   const collateralTokenAddress = isLong ? indexTokenAddress : shortCollateralAddress;
   const collateralToken = getToken(chainId, collateralTokenAddress);
 
@@ -1317,13 +1317,13 @@ export default function SwapBox(props) {
     path = replaceNativeTokenAddress(path, nativeTokenAddress);
     method = "swap";
     value = bigNumberify(0);
-    if (toTokenAddress === AddressZero) {
+    if (toTokenAddress === ZeroAddress) {
       method = "swapTokensToETH";
     }
 
     minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
     params = [path, fromAmount, minOut, account];
-    if (fromTokenAddress === AddressZero) {
+    if (fromTokenAddress === ZeroAddress) {
       method = "swapETHToTokens";
       value = fromAmount;
       params = [path, minOut, account];
@@ -1405,18 +1405,18 @@ export default function SwapBox(props) {
 
   const increasePosition = async () => {
     setIsSubmitting(true);
-    const tokenAddress0 = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
-    const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
+    const tokenAddress0 = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
+    const indexTokenAddress = toTokenAddress === ZeroAddress ? nativeTokenAddress : toTokenAddress;
     let path = [indexTokenAddress]; // assume long
     if (toTokenAddress !== fromTokenAddress) {
       path = [tokenAddress0, indexTokenAddress];
     }
 
-    if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
+    if (fromTokenAddress === ZeroAddress && toTokenAddress === nativeTokenAddress) {
       path = [nativeTokenAddress];
     }
 
-    if (fromTokenAddress === nativeTokenAddress && toTokenAddress === AddressZero) {
+    if (fromTokenAddress === nativeTokenAddress && toTokenAddress === ZeroAddress) {
       path = [nativeTokenAddress];
     }
 
@@ -1465,12 +1465,12 @@ export default function SwapBox(props) {
       priceLimit, // _acceptablePrice
       minExecutionFee, // _executionFee
       referralCode, // _referralCode
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     let method = "createIncreasePosition";
     let value = minExecutionFee;
-    if (fromTokenAddress === AddressZero) {
+    if (fromTokenAddress === ZeroAddress) {
       method = "createIncreasePositionETH";
       value = boundedFromAmount.add(minExecutionFee);
       params = [
@@ -1482,7 +1482,7 @@ export default function SwapBox(props) {
         priceLimit, // _acceptablePrice
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
-        AddressZero, // _callbackTarget
+        ZeroAddress, // _callbackTarget
       ];
     }
 
@@ -1646,12 +1646,12 @@ export default function SwapBox(props) {
     }
 
     if (isSwap) {
-      if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
+      if (fromTokenAddress === ZeroAddress && toTokenAddress === nativeTokenAddress) {
         wrap();
         return;
       }
 
-      if (fromTokenAddress === nativeTokenAddress && toTokenAddress === AddressZero) {
+      if (fromTokenAddress === nativeTokenAddress && toTokenAddress === ZeroAddress) {
         unwrap();
         return;
       }

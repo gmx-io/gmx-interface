@@ -16,7 +16,7 @@ import {
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export function getTokenUrl(chainId: number, address: string) {
   if (!address) {
@@ -136,7 +136,7 @@ export function getTokenInfo(
   nativeTokenAddress?: string
 ) {
   if (replaceNative && tokenAddress === nativeTokenAddress) {
-    return infoTokens[AddressZero];
+    return infoTokens[ZeroAddress];
   }
 
   return infoTokens[tokenAddress];
@@ -230,7 +230,7 @@ export function shouldRaiseGasError(token: TokenInfo, amount?: BigNumber) {
   if (!amount) {
     return false;
   }
-  if (token.address !== AddressZero) {
+  if (token.address !== ZeroAddress) {
     return false;
   }
   if (!token.balance) {
@@ -254,7 +254,7 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 
   for (let i = 0; i < path.length; i++) {
     let address = path[i];
-    if (address === AddressZero) {
+    if (address === ZeroAddress) {
       address = nativeTokenAddress;
     }
     updatedPath.push(address);

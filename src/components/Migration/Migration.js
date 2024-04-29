@@ -30,7 +30,7 @@ import { t, Trans } from "@lingui/macro";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
-const { MaxUint256, AddressZero } = ethers.constants;
+const { MaxUint256, ZeroAddress } = ethers;
 
 const precision = 1000000;
 const decimals = 6;
@@ -321,14 +321,14 @@ export default function Migration() {
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
 
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
-    ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [iouTokenAddresses]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
-    ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
     }

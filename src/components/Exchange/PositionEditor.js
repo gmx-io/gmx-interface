@@ -37,7 +37,7 @@ const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 const EDIT_OPTIONS_LABELS = {
   [DEPOSIT]: t`Deposit`,
@@ -329,10 +329,10 @@ export default function PositionEditor(props) {
 
   const depositCollateral = async () => {
     setIsSwapping(true);
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
     const path = [tokenAddress0];
     const indexTokenAddress =
-      position.indexToken.address === AddressZero ? nativeTokenAddress : position.indexToken.address;
+      position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
 
     const priceBasisPoints = position.isLong ? 11000 : 9000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
@@ -348,12 +348,12 @@ export default function PositionEditor(props) {
       priceLimit, // _acceptablePrice
       minExecutionFee, // _executionFee
       referralCode, // _referralCode
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     let method = "createIncreasePosition";
     let value = minExecutionFee;
-    if (collateralTokenAddress === AddressZero) {
+    if (collateralTokenAddress === ZeroAddress) {
       method = "createIncreasePositionETH";
       value = fromAmount.add(minExecutionFee);
       params = [
@@ -365,7 +365,7 @@ export default function PositionEditor(props) {
         priceLimit, // _acceptablePrice
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
-        AddressZero, // _callbackTarget
+        ZeroAddress, // _callbackTarget
       ];
     }
 
@@ -406,16 +406,16 @@ export default function PositionEditor(props) {
 
   const withdrawCollateral = async () => {
     setIsSwapping(true);
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
     const indexTokenAddress =
-      position.indexToken.address === AddressZero ? nativeTokenAddress : position.indexToken.address;
+      position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
     const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
 
     const withdrawETH =
-      !isContractAccount && (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress);
+      !isContractAccount && (collateralTokenAddress === ZeroAddress || collateralTokenAddress === nativeTokenAddress);
 
     const params = [
       [tokenAddress0], // _path
@@ -428,7 +428,7 @@ export default function PositionEditor(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     const method = "createDecreasePosition";

@@ -68,7 +68,7 @@ import AssetDropdown from "./AssetDropdown";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -170,7 +170,7 @@ export default function DashboardV2() {
   });
 
   const { data: totalSupplies } = useSWR(
-    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
+    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", ZeroAddress],
     {
       fetcher: contractFetcher(signer, ReaderV2, [tokensForSupplyQuery]),
     }
@@ -188,7 +188,7 @@ export default function DashboardV2() {
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
   const { data: currentFees } = useSWR(
-    infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
+    infoTokensArbitrum[ZeroAddress].contractMinPrice && infoTokensAvax[ZeroAddress].contractMinPrice
       ? "Dashboard:currentFees"
       : null,
     {

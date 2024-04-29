@@ -17,7 +17,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { BigNumber, ethers } from "ethers";
+import { AbiCoder, BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -419,7 +419,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
+      const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [currentAccount]);
 
       const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
       const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");

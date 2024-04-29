@@ -16,7 +16,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { DecreaseOrderParams, createDecreaseEncodedPayload, getPendingOrderFromParams } from "./createDecreaseOrderTxn";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type IncreaseOrderParams = {
   account: string;
@@ -230,7 +230,7 @@ function createOrderParams({
     addresses: {
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
-      callbackContract: AddressZero,
+      callbackContract: ZeroAddress,
       market: p.marketAddress,
       swapPath: p.swapPath,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,

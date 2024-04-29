@@ -57,7 +57,7 @@ import useWallet from "lib/wallets/useWallet";
 import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
@@ -105,7 +105,7 @@ function pushErrorNotification(chainId, message, e) {
 }
 
 const getTokenAddress = (token, nativeTokenAddress) => {
-  if (token.address === AddressZero) {
+  if (token.address === ZeroAddress) {
     return nativeTokenAddress;
   }
   return token.address;
@@ -417,16 +417,16 @@ export const Exchange = forwardRef(
     const defaultTokenSelection = useMemo(
       () => ({
         [SWAP]: {
-          from: AddressZero,
+          from: ZeroAddress,
           to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
         },
         [LONG]: {
-          from: AddressZero,
-          to: AddressZero,
+          from: ZeroAddress,
+          to: ZeroAddress,
         },
         [SHORT]: {
           from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
-          to: AddressZero,
+          to: ZeroAddress,
         },
       }),
       [chainId, defaultCollateralSymbol]

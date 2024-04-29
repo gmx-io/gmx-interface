@@ -8,7 +8,7 @@ import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type Props = {
   swapToken: Token;
@@ -73,9 +73,9 @@ export default function SwapErrorModal({
   }
 
   const nativeToken = getNativeToken(chainId);
-  const inputCurrency = swapToken.address === AddressZero ? nativeToken.symbol : swapToken.address;
+  const inputCurrency = swapToken.address === ZeroAddress ? nativeToken.symbol : swapToken.address;
   const outputCurrency =
-    lowestFeeToken?.token.address === AddressZero ? nativeToken.symbol : lowestFeeToken?.token.address;
+    lowestFeeToken?.token.address === ZeroAddress ? nativeToken.symbol : lowestFeeToken?.token.address;
   const oneInchUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
 
   return (

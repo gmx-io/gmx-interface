@@ -27,7 +27,7 @@ import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
   const symbol = indexToken ? (indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol) : "";
@@ -459,8 +459,8 @@ export default function TradeHistory(props) {
       if (tradeData.action === "ExecuteSwapOrder") {
         const order = deserialize(params.order);
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
-        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? ZeroAddress : order.path[0]);
+        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? ZeroAddress : order.path[order.path.length - 1]);
         if (!fromToken || !toToken) {
           return defaultMsg;
         }
@@ -476,8 +476,8 @@ export default function TradeHistory(props) {
       if (["CreateSwapOrder", "UpdateSwapOrder", "CancelSwapOrder"].includes(tradeData.action)) {
         const order = deserialize(params.order);
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
-        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? ZeroAddress : order.path[0]);
+        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? ZeroAddress : order.path[order.path.length - 1]);
         if (!fromToken || !toToken) {
           return defaultMsg;
         }

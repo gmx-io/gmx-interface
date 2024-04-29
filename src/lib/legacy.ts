@@ -20,7 +20,7 @@ import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useWallet from "./wallets/useWallet";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -704,8 +704,8 @@ export function getPositionKey(
   isLong: boolean,
   nativeTokenAddress?: string
 ) {
-  const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
-  const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
+  const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
+  const tokenAddress1 = indexTokenAddress === ZeroAddress ? nativeTokenAddress : indexTokenAddress;
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
@@ -767,7 +767,7 @@ function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLeng
       .slice(addressPropsLength * i, addressPropsLength * (i + 1))
       .concat(uintProps.slice(uintPropsLength * i, uintPropsLength * (i + 1)));
 
-    if (sliced[0] === AddressZero && sliced[1] === AddressZero) {
+    if (sliced[0] === ZeroAddress && sliced[1] === ZeroAddress) {
       continue;
     }
 
@@ -833,7 +833,7 @@ function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
     const shouldUnwrap = sliced[7].toString() === "1";
 
     return {
-      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== AddressZero),
+      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== ZeroAddress),
       amountIn: sliced[3],
       minOut: sliced[4],
       triggerRatio: sliced[5],

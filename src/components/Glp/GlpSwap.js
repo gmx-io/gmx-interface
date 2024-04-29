@@ -85,7 +85,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getNextWednesdayUTC() {
   const now = new Date();
@@ -183,7 +183,7 @@ export default function GlpSwap(props) {
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
     chainId,
     `${swapLabel}-swap-token-address`,
-    AddressZero
+    ZeroAddress
   );
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
@@ -254,7 +254,7 @@ export default function GlpSwap(props) {
     }
   );
 
-  const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress;
+  const tokenAllowanceAddress = swapTokenAddress === ZeroAddress ? nativeTokenAddress : swapTokenAddress;
   const { data: tokenAllowance } = useSWR(
     [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
     {
@@ -328,7 +328,7 @@ export default function GlpSwap(props) {
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
-  const nativeTokenInfo = getTokenInfo(infoTokens, AddressZero);
+  const nativeTokenInfo = getTokenInfo(infoTokens, ZeroAddress);
 
   const swapTokenBalance = swapTokenInfo && swapTokenInfo.balance ? swapTokenInfo.balance : bigNumberify(0);
 
@@ -336,7 +336,7 @@ export default function GlpSwap(props) {
   const glpAmount = parseValue(glpValue, GLP_DECIMALS);
 
   const needApproval =
-    isBuying && swapTokenAddress !== AddressZero && tokenAllowance && swapAmount && swapAmount.gt(tokenAllowance);
+    isBuying && swapTokenAddress !== ZeroAddress && tokenAllowance && swapAmount && swapAmount.gt(tokenAllowance);
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
@@ -369,7 +369,7 @@ export default function GlpSwap(props) {
     setIsWaitingForApproval(false);
   };
 
-  const nativeToken = getTokenInfo(infoTokens, AddressZero);
+  const nativeToken = getTokenInfo(infoTokens, ZeroAddress);
 
   let totalApr = bigNumberify(0);
 
@@ -727,9 +727,9 @@ export default function GlpSwap(props) {
     const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
-    const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
-    const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
-    const value = swapTokenAddress === AddressZero ? swapAmount : 0;
+    const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
+    const params = swapTokenAddress === ZeroAddress ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
+    const value = swapTokenAddress === ZeroAddress ? swapAmount : 0;
 
     callContract(chainId, contract, method, params, {
       value,
@@ -753,9 +753,9 @@ export default function GlpSwap(props) {
     const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
-    const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
+    const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
-      swapTokenAddress === AddressZero ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
+      swapTokenAddress === ZeroAddress ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
 
     callContract(chainId, contract, method, params, {
       sentMsg: t`Sell submitted!`,

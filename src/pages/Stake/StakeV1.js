@@ -31,7 +31,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getBalanceAndSupplyData(balances) {
   if (!balances || balances.length === 0) {
@@ -620,14 +620,14 @@ export default function StakeV1() {
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
-    ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [tokens]),
     }
   );
 
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
-    [active, chainId, readerAddress, "getStakingInfo", account || AddressZero],
+    [active, chainId, readerAddress, "getStakingInfo", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [yieldTrackers]),
     }

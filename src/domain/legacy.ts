@@ -43,7 +43,7 @@ export type PendingTransaction = {
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{
@@ -244,7 +244,7 @@ export function useAllOrders(chainId, signer) {
             ret[key] = val;
           }
           if (order.type === "swap") {
-            ret.path = [ret.path0, ret.path1, ret.path2].filter((address) => address !== AddressZero);
+            ret.path = [ret.path0, ret.path1, ret.path2].filter((address) => address !== ZeroAddress);
           }
           ret.type = type;
           ret.index = order.index;
@@ -720,11 +720,11 @@ export async function createSwapOrder(
   let shouldUnwrap = false;
   opts.value = executionFee;
 
-  if (path[0] === AddressZero) {
+  if (path[0] === ZeroAddress) {
     shouldWrap = true;
     opts.value = opts.value.add(amountIn);
   }
-  if (path[path.length - 1] === AddressZero) {
+  if (path[path.length - 1] === ZeroAddress) {
     shouldUnwrap = true;
   }
   path = replaceNativeTokenAddress(path, nativeTokenAddress);
@@ -752,10 +752,10 @@ export async function createIncreaseOrder(
   opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
-  invariant(indexTokenAddress !== AddressZero, "indexToken is 0");
-  invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0");
+  invariant(indexTokenAddress !== ZeroAddress, "indexToken is 0");
+  invariant(collateralTokenAddress !== ZeroAddress, "collateralToken is 0");
 
-  const fromETH = path[0] === AddressZero;
+  const fromETH = path[0] === ZeroAddress;
 
   path = replaceNativeTokenAddress(path, nativeTokenAddress);
   const shouldWrap = fromETH;
@@ -799,8 +799,8 @@ export async function createDecreaseOrder(
   opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
-  invariant(indexTokenAddress !== AddressZero, "indexToken is 0");
-  invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0");
+  invariant(indexTokenAddress !== ZeroAddress, "indexToken is 0");
+  invariant(collateralTokenAddress !== ZeroAddress, "collateralToken is 0");
 
   const executionFee = getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE");
 

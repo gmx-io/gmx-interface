@@ -78,7 +78,7 @@ import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function StakeModal(props) {
   const {
@@ -112,7 +112,7 @@ function StakeModal(props) {
   );
 
   let amount = parseValue(value, 18);
-  const needApproval = farmAddress !== AddressZero && tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount && amount.gt(tokenAllowance);
 
   const getError = () => {
     if (!amount || amount.eq(0)) {
@@ -1376,7 +1376,7 @@ export default function StakeV2() {
     setStakeValue("");
     setStakingTokenSymbol("esGMX");
     setStakingTokenAddress(esGmxAddress);
-    setStakingFarmAddress(AddressZero);
+    setStakingFarmAddress(ZeroAddress);
     setStakeMethodName("stakeEsGmx");
   };
 

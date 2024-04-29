@@ -68,7 +68,7 @@ import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
@@ -893,11 +893,11 @@ export default function PositionSeller(props) {
       }
     }
 
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
 
     const path = [tokenAddress0];
 
-    const isUnwrap = receiveToken.address === AddressZero;
+    const isUnwrap = receiveToken.address === ZeroAddress;
     const isSwap = receiveToken.address !== tokenAddress0;
 
     if (isSwap) {
@@ -921,7 +921,7 @@ export default function PositionSeller(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;

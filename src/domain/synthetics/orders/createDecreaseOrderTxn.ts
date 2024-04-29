@@ -16,7 +16,7 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export type DecreaseOrderParams = {
   account: string;
@@ -211,7 +211,7 @@ export function createDecreaseEncodedPayload({
         addresses: {
           receiver: p.account,
           initialCollateralToken: initialCollateralTokenAddress,
-          callbackContract: AddressZero,
+          callbackContract: ZeroAddress,
           market: p.marketAddress,
           swapPath: p.swapPath,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,

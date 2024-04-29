@@ -14,7 +14,7 @@ import { t } from "@lingui/macro";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {
   account: string;
@@ -52,7 +52,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 
   const swapOrder = {
     account: p.account,
-    marketAddress: AddressZero,
+    marketAddress: ZeroAddress,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.fromTokenAmount,
     swapPath: p.swapPath,
@@ -118,8 +118,8 @@ async function getParams(
     addresses: {
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
-      callbackContract: AddressZero,
-      market: AddressZero,
+      callbackContract: ZeroAddress,
+      market: ZeroAddress,
       swapPath: p.swapPath,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
