@@ -1,7 +1,7 @@
 import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
-import { Market, MarketInfo } from "domain/synthetics/markets";
+import { MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -42,6 +42,8 @@ export function getDecreasePositionAmounts(p: {
   isLimit?: boolean;
   limitPrice?: BigNumber;
   triggerOrderType?: DecreasePositionAmounts["triggerOrderType"];
+
+  receiveToken?: TokenData;
 }) {
   const {
     marketInfo,
@@ -60,8 +62,11 @@ export function getDecreasePositionAmounts(p: {
     isLimit,
     limitPrice,
     triggerOrderType: orderType,
+    receiveToken: receiveTokenArg,
   } = p;
+
   const { indexToken } = marketInfo;
+  const receiveToken = receiveTokenArg ?? collateralToken;
 
   const values: DecreasePositionAmounts = {
     isFullClose: false,
@@ -106,9 +111,7 @@ export function getDecreasePositionAmounts(p: {
 
   const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
 
-  values.decreaseSwapType = getIsEquivalentTokens(pnlToken, collateralToken)
-    ? DecreasePositionSwapType.NoSwap
-    : DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
+  values.decreaseSwapType = getDecreaseSwapType(pnlToken, collateralToken, receiveToken);
 
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
   const isTrigger = Boolean(triggerPrice?.gt(0));
@@ -554,18 +557,6 @@ export function estimateCollateralCost(baseUsd: BigNumber, collateralToken: Toke
   };
 }
 
-export function getDecreaseSwapType(p: { market: Market; collateralTokenAddress: string; isLong: boolean }) {
-  const { market, collateralTokenAddress, isLong } = p;
-
-  const pnlTokenAddress = isLong ? market.longTokenAddress : market.shortTokenAddress;
-
-  if (pnlTokenAddress !== collateralTokenAddress) {
-    return DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
-  }
-
-  return DecreasePositionSwapType.NoSwap;
-}
-
 export function getNextPositionValuesForDecreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
@@ -669,4 +660,14 @@ export function getExecutionPriceForDecrease(
   const adjustedPriceImpactUsd = isLong ? priceImpactUsd : priceImpactUsd.mul(-1);
   const adjustment = triggerPrice.mul(adjustedPriceImpactUsd).div(sizeDeltaUsd);
   return triggerPrice.add(adjustment);
+}
+
+function getDecreaseSwapType(pnlToken: TokenData, collateralToken: TokenData, receiveToken: TokenData) {
+  if (getIsEquivalentTokens(pnlToken, collateralToken)) {
+    return DecreasePositionSwapType.NoSwap;
+  } else if (getIsEquivalentTokens(pnlToken, receiveToken)) {
+    return DecreasePositionSwapType.SwapCollateralTokenToPnlToken;
+  } else {
+    return DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
+  }
 }

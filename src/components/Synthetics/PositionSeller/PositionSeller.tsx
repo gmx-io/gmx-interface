@@ -68,6 +68,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionSellerAcceptablePrice,
@@ -85,7 +86,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./PositionSeller.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -349,6 +349,12 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
+    // TODO findSwapPath considering decreasePositionSwapType?
+    const swapPath =
+      decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
+        ? []
+        : swapAmounts?.swapPathStats?.swapPath || [];
+
     const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
@@ -359,7 +365,7 @@ export function PositionSeller(p: Props) {
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
         receiveTokenAddress: receiveToken.address,
-        swapPath: swapAmounts?.swapPathStats?.swapPath || [],
+        swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
         isLong: position.isLong,
