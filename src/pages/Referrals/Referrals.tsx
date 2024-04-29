@@ -71,9 +71,10 @@ function Referrals() {
   }
 
   function renderAffiliatesTab() {
-    const hasChainCode = Boolean(referralsData?.chains?.[chainId]);
+    const ownsSomeChainCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
+
     const hasRecentCode = recentlyAddedCodes?.some(isRecentReferralCodeNotExpired);
-    const isSomeReferralCodeAvailable = hasChainCode || hasRecentCode;
+    const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
 
     if (loading) return <Loader />;
     if (account && isSomeReferralCodeAvailable) {

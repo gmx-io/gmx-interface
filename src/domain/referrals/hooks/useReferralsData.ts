@@ -1,13 +1,14 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
-import { bigNumberify } from "lib/numbers";
+import { BN_ZERO } from "lib/numbers";
 import { useEffect, useState } from "react";
-import { useUserCodesOnAllChain } from ".";
+import { getCodeOwnersData } from "./useUserCodesOnAllChain";
 import { gql } from "@apollo/client";
 import { SUPPORTED_CHAIN_IDS } from "config/chains";
 import { decodeReferralCode } from "../utils";
 import { getReferralsGraphClient } from "lib/subgraph";
 import {
   AffiliateTotalStats,
+  CodeOwnershipInfo,
   RebateDistribution,
   RebateDistributionType,
   ReferralCodeStats,
@@ -15,11 +16,77 @@ import {
   TotalReferralsStats,
   TraderReferralTotalStats,
 } from "../types";
+import { EMPTY_ARRAY } from "lib/objects";
+
+const REFERRALS_GQL = gql`
+  query referralData($typeIds: [String!]!, $account: String!, $referralTotalStatsId: String!) {
+    distributions(
+      first: 1000
+      orderBy: timestamp
+      orderDirection: desc
+      where: { receiver: $account, typeId_in: $typeIds }
+    ) {
+      receiver
+      typeId
+      receiver
+      markets
+      tokens
+      amounts
+      amountsInUsd
+      transactionHash
+      timestamp
+      id
+    }
+    affiliateStats: affiliateStats(
+      first: 1000
+      orderBy: volume
+      orderDirection: desc
+      where: { period: total, affiliate: $account }
+    ) {
+      referralCode
+      trades
+      tradedReferralsCount
+      registeredReferralsCount
+      volume
+      totalRebateUsd
+      discountUsd
+      v1Data {
+        volume
+        discountUsd
+        totalRebateUsd
+      }
+      v2Data {
+        volume
+        totalRebateUsd
+        discountUsd
+      }
+    }
+    referralCodes(first: 1000, where: { owner: $account }) {
+      code
+    }
+    referralTotalStats: referralStat(id: $referralTotalStatsId) {
+      volume
+      discountUsd
+      v1Data {
+        volume
+        discountUsd
+      }
+      v2Data {
+        volume
+        discountUsd
+      }
+    }
+    affiliateTierInfo: affiliate(id: $account) {
+      tierId
+      id
+      discountShare
+    }
+  }
+`;
 
 export function useReferralsData(account?: string | null) {
   const [data, setData] = useState<TotalReferralsStats>();
   const [loading, setLoading] = useState(true);
-  const ownerOnOtherChain = useUserCodesOnAllChain(account);
 
   useEffect(() => {
     if (!account) {
@@ -27,71 +94,6 @@ export function useReferralsData(account?: string | null) {
       return;
     }
 
-    const query = gql`
-      query referralData($typeIds: [String!]!, $account: String!, $referralTotalStatsId: String!) {
-        distributions(
-          first: 1000
-          orderBy: timestamp
-          orderDirection: desc
-          where: { receiver: $account, typeId_in: $typeIds }
-        ) {
-          receiver
-          typeId
-          receiver
-          markets
-          tokens
-          amounts
-          amountsInUsd
-          transactionHash
-          timestamp
-          id
-        }
-        affiliateStats: affiliateStats(
-          first: 1000
-          orderBy: volume
-          orderDirection: desc
-          where: { period: total, affiliate: $account }
-        ) {
-          referralCode
-          trades
-          tradedReferralsCount
-          registeredReferralsCount
-          volume
-          totalRebateUsd
-          discountUsd
-          v1Data {
-            volume
-            discountUsd
-            totalRebateUsd
-          }
-          v2Data {
-            volume
-            totalRebateUsd
-            discountUsd
-          }
-        }
-        referralCodes(first: 1000, where: { owner: $account }) {
-          code
-        }
-        referralTotalStats: referralStat(id: $referralTotalStatsId) {
-          volume
-          discountUsd
-          v1Data {
-            volume
-            discountUsd
-          }
-          v2Data {
-            volume
-            discountUsd
-          }
-        }
-        affiliateTierInfo: affiliate(id: $account) {
-          tierId
-          id
-          discountShare
-        }
-      }
-    `;
     setLoading(true);
 
     async function getChainReferralData(chainId: number): Promise<ReferralsStats | undefined> {
@@ -100,7 +102,7 @@ export function useReferralsData(account?: string | null) {
 
       return getReferralsGraphClient(chainId)
         .query({
-          query,
+          query: REFERRALS_GQL,
           variables: {
             typeIds: Object.values(RebateDistributionType),
             account: (account || "").toLowerCase(),
@@ -108,7 +110,7 @@ export function useReferralsData(account?: string | null) {
           },
           fetchPolicy: "no-cache",
         })
-        .then((res) => {
+        .then(async (res) => {
           const affiliateDistributions: RebateDistribution[] = [];
           const traderDistributions: RebateDistribution[] = [];
 
@@ -118,8 +120,8 @@ export function useReferralsData(account?: string | null) {
               receiver: ethers.utils.getAddress(d.receiver),
               markets: d.markets.map((market) => ethers.utils.getAddress(market)),
               tokens: d.tokens.map((token) => ethers.utils.getAddress(token)),
-              amounts: d.amounts.map((a) => bigNumberify(a)!),
-              amountsInUsd: d.amountsInUsd.map((a) => bigNumberify(a)!),
+              amounts: d.amounts.map((a) => BigNumber.from(a)!),
+              amountsInUsd: d.amountsInUsd.map((a) => BigNumber.from(a)!),
               timestamp: parseInt(d.timestamp),
               transactionHash: d.transactionHash,
               id: d.id,
@@ -132,32 +134,72 @@ export function useReferralsData(account?: string | null) {
           });
 
           function getAffiliateRebateUsd(data: { totalRebateUsd: BigNumberish; discountUsd: BigNumberish }) {
-            return bigNumberify(data.totalRebateUsd)!.sub(data.discountUsd);
+            return BigNumber.from(data.totalRebateUsd).sub(data.discountUsd);
           }
 
-          const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats.map((e) => ({
-            referralCode: decodeReferralCode(e.referralCode),
-            trades: parseInt(e.trades),
-            tradedReferralsCount: parseInt(e.tradedReferralsCount),
-            registeredReferralsCount: parseInt(e.registeredReferralsCount),
-            ownerOnOtherChain: ownerOnOtherChain?.[chainId]?.[e.referralCode],
-            volume: bigNumberify(e.volume),
-            totalRebateUsd: bigNumberify(e.totalRebateUsd),
-            affiliateRebateUsd: getAffiliateRebateUsd(e),
-            discountUsd: bigNumberify(e.discountUsd),
-            v1Data: {
-              volume: bigNumberify(e.v1Data.volume),
-              totalRebateUsd: bigNumberify(e.v1Data.totalRebateUsd),
-              discountUsd: bigNumberify(e.v1Data.discountUsd),
-              affiliateRebateUsd: getAffiliateRebateUsd(e.v1Data),
-            },
-            v2Data: {
-              volume: bigNumberify(e.v2Data.volume),
-              totalRebateUsd: bigNumberify(e.v2Data.totalRebateUsd),
-              discountUsd: bigNumberify(e.v2Data.discountUsd),
-              affiliateRebateUsd: getAffiliateRebateUsd(e.v2Data),
-            },
-          }));
+          //#region Code Ownership Info
+          // Getting all owners of the referral codes on other chains
+
+          const referralCodes = res.data.affiliateStats.map((e) => e.referralCode);
+          const allCodesOwnersOnOtherChains = await Promise.allSettled(
+            SUPPORTED_CHAIN_IDS.filter((otherChainId) => otherChainId !== chainId).map(async (otherChainId) => ({
+              chainId: otherChainId,
+              data: await getCodeOwnersData(otherChainId, account, referralCodes),
+            }))
+          ).then((allChainsResult) =>
+            allChainsResult
+              .filter(
+                (
+                  chainResult
+                ): chainResult is PromiseFulfilledResult<{
+                  chainId: number;
+                  data: CodeOwnershipInfo[] | undefined;
+                }> => chainResult.status === "fulfilled"
+              )
+              .map((r) => r.value)
+          );
+
+          const allOwnersOnOtherChainsMap: {
+            [code: string]: {
+              [chainId: number]: CodeOwnershipInfo;
+            };
+          } = {};
+          for (const chainCodesOwners of allCodesOwnersOnOtherChains) {
+            for (const codeOwnershipInfo of chainCodesOwners.data || EMPTY_ARRAY) {
+              if (!allOwnersOnOtherChainsMap[codeOwnershipInfo.code]) {
+                allOwnersOnOtherChainsMap[codeOwnershipInfo.code] = {};
+              }
+
+              allOwnersOnOtherChainsMap[codeOwnershipInfo.code][chainCodesOwners.chainId] = codeOwnershipInfo;
+            }
+          }
+          //#endregion
+
+          const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats.map(
+            (e): ReferralCodeStats => ({
+              referralCode: decodeReferralCode(e.referralCode),
+              trades: parseInt(e.trades),
+              tradedReferralsCount: parseInt(e.tradedReferralsCount),
+              registeredReferralsCount: parseInt(e.registeredReferralsCount),
+              allOwnersOnOtherChains: allOwnersOnOtherChainsMap[e.referralCode],
+              volume: BigNumber.from(e.volume),
+              totalRebateUsd: BigNumber.from(e.totalRebateUsd),
+              affiliateRebateUsd: getAffiliateRebateUsd(e),
+              discountUsd: BigNumber.from(e.discountUsd),
+              v1Data: {
+                volume: BigNumber.from(e.v1Data.volume),
+                totalRebateUsd: BigNumber.from(e.v1Data.totalRebateUsd),
+                discountUsd: BigNumber.from(e.v1Data.discountUsd),
+                affiliateRebateUsd: getAffiliateRebateUsd(e.v1Data),
+              },
+              v2Data: {
+                volume: BigNumber.from(e.v2Data.volume),
+                totalRebateUsd: BigNumber.from(e.v2Data.totalRebateUsd),
+                discountUsd: BigNumber.from(e.v2Data.discountUsd),
+                affiliateRebateUsd: getAffiliateRebateUsd(e.v2Data),
+              },
+            })
+          );
 
           const affiliateTotalStats: AffiliateTotalStats = res.data.affiliateStats.reduce(
             (acc: AffiliateTotalStats, cv) => {
@@ -185,48 +227,48 @@ export function useReferralsData(account?: string | null) {
               trades: 0,
               tradedReferralsCount: 0,
               registeredReferralsCount: 0,
-              volume: bigNumberify(0),
-              totalRebateUsd: bigNumberify(0),
-              affiliateRebateUsd: bigNumberify(0),
-              discountUsd: bigNumberify(0),
+              volume: BN_ZERO,
+              totalRebateUsd: BN_ZERO,
+              affiliateRebateUsd: BN_ZERO,
+              discountUsd: BN_ZERO,
               v1Data: {
-                volume: bigNumberify(0),
-                totalRebateUsd: bigNumberify(0),
-                affiliateRebateUsd: bigNumberify(0),
-                discountUsd: bigNumberify(0),
+                volume: BN_ZERO,
+                totalRebateUsd: BN_ZERO,
+                affiliateRebateUsd: BN_ZERO,
+                discountUsd: BN_ZERO,
               },
               v2Data: {
-                volume: bigNumberify(0),
-                totalRebateUsd: bigNumberify(0),
-                affiliateRebateUsd: bigNumberify(0),
-                discountUsd: bigNumberify(0),
+                volume: BN_ZERO,
+                totalRebateUsd: BN_ZERO,
+                affiliateRebateUsd: BN_ZERO,
+                discountUsd: BN_ZERO,
               },
             } as AffiliateTotalStats
           );
 
           const traderReferralTotalStats: TraderReferralTotalStats = res.data.referralTotalStats
             ? {
-                volume: bigNumberify(res.data.referralTotalStats.volume)!,
-                discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd)!,
+                volume: BigNumber.from(res.data.referralTotalStats.volume)!,
+                discountUsd: BigNumber.from(res.data.referralTotalStats.discountUsd)!,
                 v1Data: {
-                  volume: bigNumberify(res.data.referralTotalStats.v1Data.volume)!,
-                  discountUsd: bigNumberify(res.data.referralTotalStats.v1Data.discountUsd)!,
+                  volume: BigNumber.from(res.data.referralTotalStats.v1Data.volume)!,
+                  discountUsd: BigNumber.from(res.data.referralTotalStats.v1Data.discountUsd)!,
                 },
                 v2Data: {
-                  volume: bigNumberify(res.data.referralTotalStats.v2Data.volume)!,
-                  discountUsd: bigNumberify(res.data.referralTotalStats.v2Data.discountUsd)!,
+                  volume: BigNumber.from(res.data.referralTotalStats.v2Data.volume)!,
+                  discountUsd: BigNumber.from(res.data.referralTotalStats.v2Data.discountUsd)!,
                 },
               }
             : {
-                volume: bigNumberify(0)!,
-                discountUsd: bigNumberify(0)!,
+                volume: BN_ZERO,
+                discountUsd: BN_ZERO,
                 v1Data: {
-                  volume: bigNumberify(0)!,
-                  discountUsd: bigNumberify(0)!,
+                  volume: BN_ZERO,
+                  discountUsd: BN_ZERO,
                 },
                 v2Data: {
-                  volume: bigNumberify(0)!,
-                  discountUsd: bigNumberify(0)!,
+                  volume: BN_ZERO,
+                  discountUsd: BN_ZERO,
                 },
               };
 
@@ -283,10 +325,10 @@ export function useReferralsData(account?: string | null) {
             {
               total: {
                 registeredReferralsCount: 0,
-                affiliateVolume: BigNumber.from(0),
-                affiliateRebateUsd: BigNumber.from(0),
-                discountUsd: BigNumber.from(0),
-                traderVolume: BigNumber.from(0),
+                affiliateVolume: BN_ZERO,
+                affiliateRebateUsd: BN_ZERO,
+                discountUsd: BN_ZERO,
+                traderVolume: BN_ZERO,
               },
               chains: {},
             } as TotalReferralsStats
@@ -298,7 +340,7 @@ export function useReferralsData(account?: string | null) {
       .finally(() => {
         setLoading(false);
       });
-  }, [setData, account, ownerOnOtherChain]);
+  }, [setData, account]);
 
   return {
     data: data,

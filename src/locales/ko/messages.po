@@ -5710,13 +5710,13 @@ msgstr ""
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
-msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되었습니다. {1}에서는 해당 코드를 통해 트레이더로부터의 소개 보수는 받을 수 없습니다."
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from traders using this code on {takenNetworkNames}."
+msgstr "이 코드는 다른 사람에 의해 {takenNetworkNames}에서 사용되었습니다. {takenNetworkNames}에서 이 코드를 사용하는 트레이더로부터 소개 보수를 받을 수 없습니다."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr "이 코드는 아직 {nonTakenNetworkNames}에 등록되지 않았습니다. 여기서는 소개 보수를 받을 수 없습니다.<0/><1/>이 코드를 {nonTakenNetworkNames}에 등록하려면 네트워크를 전환하세요."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."

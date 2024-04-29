@@ -5710,13 +5710,13 @@ msgstr ""
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
-msgstr "このコードは{0}上で他の人がすでに取得済です。このコードを使用した場合、{1}上のトレーダーからの紹介報酬は受け取れません。"
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from traders using this code on {takenNetworkNames}."
+msgstr "このコードは{takenNetworkNames}で他の誰かに取られています。{takenNetworkNames}でこのコードを使用しているトレーダーからリベートを受け取ることはできません。"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr "このコードはまだ{nonTakenNetworkNames}に登録されていません。そこではリベートを受け取ることはできません。<0/><1/>ネットワークを切り替えて{nonTakenNetworkNames}でこのコードを作成してください。"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
