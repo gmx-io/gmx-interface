@@ -1,0 +1,15 @@
+.MarketFilterLongShort-container {
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.MarketFilterLongShort-container .Tab-option {
+  padding: 6px 10px !important;
+  flex: 1;
+  line-height: 1;
+}
+
+.MarketFilterLongShort-tabs {
+  grid-template-columns: 1fr 1fr 1fr !important;
+}
