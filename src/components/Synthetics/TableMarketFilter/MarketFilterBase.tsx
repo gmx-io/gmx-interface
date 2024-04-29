@@ -24,7 +24,10 @@ export type MarketFilterBaseProps = {
   onChange: (value: string[]) => void;
   excludeSpotOnly?: boolean;
   beforeContent?: ReactNode | undefined;
-  extraIsActive?: boolean;
+  /**
+   * If `true`, the filter will be active regardless of the selected value
+   */
+  forceIsActive?: boolean;
 };
 
 export function MarketFilterBase({
@@ -32,7 +35,7 @@ export function MarketFilterBase({
   onChange,
   excludeSpotOnly,
   beforeContent,
-  extraIsActive,
+  forceIsActive,
 }: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
   const { chainId } = useChainId();
@@ -93,7 +96,7 @@ export function MarketFilterBase({
       options={marketsOptions}
       ItemComponent={ItemComponent}
       value={value}
-      extraIsActive={extraIsActive}
+      forceIsActive={forceIsActive}
     />
   );
 }

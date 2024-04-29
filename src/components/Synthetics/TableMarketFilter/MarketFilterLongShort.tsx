@@ -9,14 +9,14 @@ import { MarketFilterBase, MarketFilterBaseProps } from "./MarketFilterBase";
 
 import "./MarketFilterLongShort.scss";
 
-type MarketFilterProps = Omit<MarketFilterBaseProps, "beforeContent" | "extraIsActive"> & {
+type MarketFilterProps = Omit<MarketFilterBaseProps, "beforeContent" | "forceIsActive"> & {
   valueIsLong: boolean | undefined;
   onChangeIsLong: (value: boolean | undefined) => void;
 };
 
-type State = "all" | "long" | "short";
-const OPTIONS: State[] = ["all", "long", "short"];
-const OPTION_LABELS: Record<State, MessageDescriptor> = {
+type Option = "all" | "long" | "short";
+const OPTIONS: Option[] = ["all", "long", "short"];
+const OPTION_LABELS: Record<Option, MessageDescriptor> = {
   all: defineMessage({ message: "All", comment: "Filter option for all markets" }),
   long: defineMessage({ message: "Long" }),
   short: defineMessage({ message: "Short" }),
@@ -26,7 +26,7 @@ export const MarketFilterLongShort = ({ onChangeIsLong, valueIsLong, ...restProp
   const { i18n } = useLingui();
   const localizedOptionLabels = useMemo(() => mapValues(OPTION_LABELS, (label) => i18n._(label)), [i18n]);
   const onChange = useCallback(
-    (option: State) => {
+    (option: Option) => {
       if (option === "all") {
         onChangeIsLong(undefined);
       } else {
@@ -36,12 +36,12 @@ export const MarketFilterLongShort = ({ onChangeIsLong, valueIsLong, ...restProp
     [onChangeIsLong]
   );
 
-  const value: State = valueIsLong === undefined ? "all" : valueIsLong ? "long" : "short";
+  const value: Option = valueIsLong === undefined ? "all" : valueIsLong ? "long" : "short";
 
   return (
     <MarketFilterBase
       {...restProps}
-      extraIsActive={value !== "all"}
+      forceIsActive={value !== "all"}
       beforeContent={
         <>
           <div className="MarketFilterLongShort-container">
