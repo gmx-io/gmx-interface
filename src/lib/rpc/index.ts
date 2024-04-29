@@ -1,4 +1,4 @@
-import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
@@ -12,40 +12,42 @@ import {
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
-export function getProvider(signer: undefined, chainId: number): ethers.providers.StaticJsonRpcProvider;
+export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
 export function getProvider(signer: Signer | undefined, chainId: number);
 export function getProvider(signer: Signer | undefined, chainId: number) {
-  let provider;
+  let url;
 
   if (signer) {
     return signer;
   }
 
-  provider = getRpcUrl(chainId);
+  url = getRpcUrl(chainId);
 
-  return new ethers.providers.StaticJsonRpcProvider(
-    provider,
-    // @ts-ignore incorrect Network param types
-    { chainId }
-  );
+  const network = Network.from(chainId);
+
+  return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
 }
 
 export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvider | undefined {
+  const network = Network.from(chainId);
+
   if (chainId === ARBITRUM) {
-    return new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
+    return new ethers.WebSocketProvider(getAlchemyWsUrl(), network, { staticNetwork: network });
   }
 
   if (chainId === AVALANCHE) {
-    return new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
+    return new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, { staticNetwork: network });
   }
 
   if (chainId === ARBITRUM_GOERLI) {
-    return new ethers.providers.WebSocketProvider("wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j");
+    return new ethers.WebSocketProvider("wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j", network, {
+      staticNetwork: network,
+    });
   }
 
   if (chainId === AVALANCHE_FUJI) {
-    const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
+    const provider = new ethers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI), network, { staticNetwork: network });
     provider.pollingInterval = 2000;
     return provider;
   }
@@ -58,11 +60,9 @@ export function getFallbackProvider(chainId: number) {
 
   const provider = getFallbackRpcUrl(chainId);
 
-  return new ethers.providers.StaticJsonRpcProvider(
-    provider,
-    // @ts-ignore incorrect Network param types
-    { chainId }
-  );
+  return new ethers.JsonRpcProvider(provider, chainId, {
+    staticNetwork: Network.from(chainId),
+  });
 }
 
 export function useJsonRpcProvider(chainId: number) {
@@ -74,9 +74,11 @@ export function useJsonRpcProvider(chainId: number) {
 
       if (!rpcUrl) return;
 
-      const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
 
-      await provider.ready;
+      console.log("CHECK ME: should have CHECK 2");
+      await provider._waitUntilReady();
+      console.log("CHECKED!");
 
       setProvider(provider);
     }

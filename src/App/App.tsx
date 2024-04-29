@@ -91,7 +91,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import { Provider } from "@ethersproject/providers";
+import { Provider } from "ethers";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {

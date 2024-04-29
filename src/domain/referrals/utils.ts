@@ -4,7 +4,7 @@ import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
 export function decodeReferralCode(hexCode?: string) {
   if (!hexCode || hexCode === ethers.ZeroHash) return "";
   try {
-    return ethers.utils.parseBytes32String(hexCode);
+    return ethers.decodeBytes32String(hexCode);
   } catch (ex) {
     let code = "";
     hexCode = hexCode.substring(2);
@@ -20,5 +20,5 @@ export function encodeReferralCode(code) {
   if (final.length > MAX_REFERRAL_CODE_LENGTH) {
     return ethers.ZeroHash;
   }
-  return ethers.utils.formatBytes32String(final);
+  return ethers.encodeBytes32String(final);
 }

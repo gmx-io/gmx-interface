@@ -1,4 +1,4 @@
-import { Provider } from "@ethersproject/providers";
+import { Provider } from "ethers";
 import { BigNumber, Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
 import { bigNumberify } from "../numbers";

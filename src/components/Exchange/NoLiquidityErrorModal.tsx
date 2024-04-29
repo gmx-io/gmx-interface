@@ -6,7 +6,7 @@ import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const { AddressZero } = ethers.constants;
+const { AddressZero } = ethers;
 
 type Props = {
   chainId: number;
