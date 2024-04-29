@@ -47,7 +47,7 @@ export default function BeginAccountTransfer() {
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
-  let parsedReceiver = ethers.constants.AddressZero;
+  let parsedReceiver = ethers.ZeroAddress;
   if (ethers.utils.isAddress(receiver)) {
     parsedReceiver = receiver;
   }
@@ -136,7 +136,7 @@ export default function BeginAccountTransfer() {
   const hasStakedGlp =
     (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
     (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0));
-  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
+  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.ZeroAddress;
 
   const getError = () => {
     if (!account) {

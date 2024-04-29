@@ -70,7 +70,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
       params: [
         {
           receiver: p.account,
-          callbackContract: ethers.constants.AddressZero,
+          callbackContract: ethers.ZeroAddress,
           market: p.marketTokenAddress,
           initialLongToken: initialLongTokenAddress,
           initialShortToken: initialShortTokenAddress,
@@ -80,7 +80,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],
     },

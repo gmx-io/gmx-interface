@@ -337,7 +337,7 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 11000 : 9000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    const referralCode = ethers.constants.HashZero;
+    const referralCode = ethers.ZeroHash;
     let params = [
       path, // _path
       indexTokenAddress, // _indexToken

@@ -184,7 +184,7 @@ export function PositionEditor(p: Props) {
     isDeposit &&
     tokenAllowance &&
     collateralDeltaAmount &&
-    selectedCollateralAddress !== ethers.constants.AddressZero &&
+    selectedCollateralAddress !== ethers.ZeroAddress &&
     collateralDeltaAmount.gt(tokenAllowance);
 
   const maxWithdrawAmount = useMemo(() => {

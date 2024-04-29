@@ -90,7 +90,7 @@ export function usePositions(
               keysAndPrices!.contractPositionsKeys,
               keysAndPrices!.marketsPrices,
               // uiFeeReceiver
-              ethers.constants.AddressZero,
+              ethers.ZeroAddress,
             ],
           },
         },

@@ -229,7 +229,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     let attachedOnChain = false;
     let userReferralCode: string | undefined = undefined;
     let userReferralCodeString: string | undefined = undefined;
-    let referralCodeForTxn = ethers.constants.HashZero;
+    let referralCodeForTxn = ethers.ZeroHash;
 
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;

@@ -51,7 +51,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
       params: [
         {
           receiver: p.account,
-          callbackContract: ethers.constants.AddressZero,
+          callbackContract: ethers.ZeroAddress,
           market: p.marketTokenAddress,
           initialLongToken: initialLongTokenAddress,
           initialShortToken: initialShortTokenAddress,
@@ -63,7 +63,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],
     },

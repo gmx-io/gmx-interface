@@ -233,7 +233,7 @@ function createOrderParams({
       callbackContract: AddressZero,
       market: p.marketAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
@@ -248,6 +248,6 @@ function createOrderParams({
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
-    referralCode: p.referralCode || ethers.constants.HashZero,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 }

@@ -121,7 +121,7 @@ async function getParams(
       callbackContract: AddressZero,
       market: AddressZero,
       swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
       sizeDeltaUsd: BigNumber.from(0),
@@ -136,7 +136,7 @@ async function getParams(
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
     shouldUnwrapNativeToken: isNativeReceive,
-    referralCode: p.referralCode || ethers.constants.HashZero,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 
   const multicall = [

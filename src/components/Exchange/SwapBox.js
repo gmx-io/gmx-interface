@@ -1398,7 +1398,7 @@ export default function SwapBox(props) {
       });
   };
 
-  let referralCode = ethers.constants.HashZero;
+  let referralCode = ethers.ZeroHash;
   if (!attachedOnChain && userReferralCode) {
     referralCode = userReferralCode;
   }

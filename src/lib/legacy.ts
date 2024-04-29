@@ -1358,10 +1358,10 @@ export function getPageTitle(data) {
 }
 
 export function isHashZero(value) {
-  return value === ethers.constants.HashZero;
+  return value === ethers.ZeroHash;
 }
 export function isAddressZero(value) {
-  return value === ethers.constants.AddressZero;
+  return value === ethers.ZeroAddress;
 }
 
 export function getHomeUrl() {

@@ -69,7 +69,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
       from: p.account,
     });
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
     let msg: any = undefined;
 

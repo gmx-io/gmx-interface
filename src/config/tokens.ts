@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
 
-export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
+export const NATIVE_TOKEN_ADDRESS = ethers.ZeroAddress;
 
 export const TOKENS: { [chainId: number]: Token[] } = {
   [ARBITRUM]: [
@@ -11,7 +11,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -296,7 +296,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
@@ -510,7 +510,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -701,7 +701,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",

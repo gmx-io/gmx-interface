@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
 
 export function decodeReferralCode(hexCode?: string) {
-  if (!hexCode || hexCode === ethers.constants.HashZero) return "";
+  if (!hexCode || hexCode === ethers.ZeroHash) return "";
   try {
     return ethers.utils.parseBytes32String(hexCode);
   } catch (ex) {
@@ -18,7 +18,7 @@ export function decodeReferralCode(hexCode?: string) {
 export function encodeReferralCode(code) {
   let final = code.replace(/[^\w_]/g, ""); // replace everything other than numbers, string  and underscor to ''
   if (final.length > MAX_REFERRAL_CODE_LENGTH) {
-    return ethers.constants.HashZero;
+    return ethers.ZeroHash;
   }
   return ethers.utils.formatBytes32String(final);
 }

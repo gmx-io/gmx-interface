@@ -152,7 +152,7 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
 export function tryGetError(
   reasonBytes: ethers.utils.Bytes

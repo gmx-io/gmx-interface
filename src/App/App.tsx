@@ -134,7 +134,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodedReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.ZeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
@@ -167,7 +167,7 @@ function FullApp() {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl + selectedToPage;
-  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.constants.HashZero) {
+  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.ZeroHash) {
     const decodedRefCode = decodeReferralCode(localStorageCode);
     if (decodedRefCode) {
       appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;

@@ -86,10 +86,10 @@ export function SyntheticsStats() {
     if (a.indexTokenAddress === b.indexTokenAddress) {
       return 0;
     }
-    if (a.indexTokenAddress === ethers.constants.AddressZero) {
+    if (a.indexTokenAddress === ethers.ZeroAddress) {
       return 1;
     }
-    if (b.indexTokenAddress === ethers.constants.AddressZero) {
+    if (b.indexTokenAddress === ethers.ZeroAddress) {
       return -1;
     }
     return 0;
@@ -238,7 +238,7 @@ export function SyntheticsStats() {
                               label="Virtual Market Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualMarketId !== ethers.constants.HashZero ? market.virtualMarketId : "-"}
+                                  {market.virtualMarketId !== ethers.ZeroHash ? market.virtualMarketId : "-"}
                                 </div>
                               }
                               showDollar={false}
@@ -248,9 +248,7 @@ export function SyntheticsStats() {
                               label="Virtual Long Token Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualLongTokenId !== ethers.constants.HashZero
-                                    ? market.virtualLongTokenId
-                                    : "-"}
+                                  {market.virtualLongTokenId !== ethers.ZeroHash ? market.virtualLongTokenId : "-"}
                                 </div>
                               }
                               showDollar={false}
@@ -260,9 +258,7 @@ export function SyntheticsStats() {
                               label="Virtual Short Token Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualShortTokenId !== ethers.constants.HashZero
-                                    ? market.virtualShortTokenId
-                                    : "-"}
+                                  {market.virtualShortTokenId !== ethers.ZeroHash ? market.virtualShortTokenId : "-"}
                                 </div>
                               }
                               showDollar={false}
