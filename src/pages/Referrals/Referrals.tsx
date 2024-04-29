@@ -72,7 +72,7 @@ function Referrals() {
 
   function renderAffiliatesTab() {
     const hasChainCode = Boolean(referralsData?.chains?.[chainId]);
-    const hasRecentCode = Boolean(recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length);
+    const hasRecentCode = recentlyAddedCodes?.some(isRecentReferralCodeNotExpired);
     const isSomeReferralCodeAvailable = hasChainCode || hasRecentCode;
 
     if (loading) return <Loader />;
