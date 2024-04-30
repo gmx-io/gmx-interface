@@ -22,7 +22,7 @@ import { getByKey } from "lib/objects";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
-const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigNumber.from(10).pow(25); // +0.001%
+const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigInt(10).pow(25); // +0.001%
 
 const SPACE = " ";
 

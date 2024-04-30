@@ -277,10 +277,10 @@ export function useReferralsData(account?: string | null) {
           {
             total: {
               registeredReferralsCount: 0,
-              affiliateVolume: BigNumber.from(0),
-              affiliateRebateUsd: BigNumber.from(0),
-              discountUsd: BigNumber.from(0),
-              traderVolume: BigNumber.from(0),
+              affiliateVolume: BigInt(0),
+              affiliateRebateUsd: BigInt(0),
+              discountUsd: BigInt(0),
+              traderVolume: BigInt(0),
             },
             chains: {},
           } as TotalReferralsStats

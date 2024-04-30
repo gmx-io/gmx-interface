@@ -161,7 +161,7 @@ export function PositionSeller(p: Props) {
   const isTrigger = orderOption === OrderOption.Trigger;
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
-  const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
+  const maxCloseSize = position?.sizeInUsd || BigInt(0);
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
@@ -219,7 +219,7 @@ export function PositionSeller(p: Props) {
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
+        swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigInt(0),
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
@@ -357,7 +357,7 @@ export function PositionSeller(p: Props) {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigInt(0),
         receiveTokenAddress: receiveToken.address,
         swapPath: swapAmounts?.swapPathStats?.swapPath || [],
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -365,7 +365,7 @@ export function PositionSeller(p: Props) {
         isLong: position.isLong,
         acceptablePrice: decreaseAmounts.acceptablePrice,
         triggerPrice: isTrigger ? triggerPrice : undefined,
-        minOutputUsd: BigNumber.from(0),
+        minOutputUsd: BigInt(0),
         decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
         orderType,
         referralCode: userReferralInfo?.referralCodeForTxn,

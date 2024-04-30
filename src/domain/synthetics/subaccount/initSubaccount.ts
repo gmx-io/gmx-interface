@@ -4,7 +4,7 @@ import { SUBACCOUNT_ORDER_ACTION } from "./constants";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 import { SubaccountParams } from "./types";
 
-const ZERO = BigNumber.from(0);
+const ZERO = BigInt(0);
 
 export async function initSubaccount(
   chainId: number,

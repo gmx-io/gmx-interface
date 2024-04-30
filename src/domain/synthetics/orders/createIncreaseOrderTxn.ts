@@ -56,7 +56,7 @@ export async function createIncreaseOrderTxn(
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigInt(0);
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
@@ -73,7 +73,7 @@ export async function createIncreaseOrderTxn(
     initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath: p.swapPath,
     sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: BigNumber.from(0),
+    minOutputAmount: BigInt(0),
     isLong: p.isLong,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
@@ -165,7 +165,7 @@ export async function createIncreaseOrderTxn(
       sizeDeltaUsd: p.sizeDeltaUsd,
       sizeDeltaInTokens: p.sizeDeltaInTokens,
       updatedAt: txnCreatedAt,
-      updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+      updatedAtBlock: BigInt(txnCreatedAtBlock),
     });
   }
 }
@@ -237,12 +237,12 @@ function createOrderParams({
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigNumber.from(0),
-      triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigInt(0),
+      triggerPrice: convertToContractPrice(p.triggerPrice || BigInt(0), p.indexToken.decimals),
       acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
       executionFee: p.executionFee,
-      callbackGasLimit: BigNumber.from(0),
-      minOutputAmount: BigNumber.from(0),
+      callbackGasLimit: BigInt(0),
+      minOutputAmount: BigInt(0),
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,

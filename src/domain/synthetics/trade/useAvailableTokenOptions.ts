@@ -71,20 +71,20 @@ export function useAvailableTokenOptions(
         getMidPrice(marketInfo.shortToken.prices)
       )!;
 
-      longTokensWithPoolValue[longToken.address] = (
-        longTokensWithPoolValue[longToken.address] || BigNumber.from(0)
-      ).add(longPoolAmountUsd);
+      longTokensWithPoolValue[longToken.address] = (longTokensWithPoolValue[longToken.address] || BigInt(0)).add(
+        longPoolAmountUsd
+      );
 
-      shortTokensWithPoolValue[shortToken.address] = (
-        shortTokensWithPoolValue[shortToken.address] || BigNumber.from(0)
-      ).add(shortPoolAmountUsd);
+      shortTokensWithPoolValue[shortToken.address] = (shortTokensWithPoolValue[shortToken.address] || BigInt(0)).add(
+        shortPoolAmountUsd
+      );
 
       if (!marketInfo.isSpotOnly) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
-        indexTokensWithPoolValue[indexToken.address] = (
-          indexTokensWithPoolValue[indexToken.address] || BigNumber.from(0)
-        ).add(marketInfo.poolValueMax);
+        indexTokensWithPoolValue[indexToken.address] = (indexTokensWithPoolValue[indexToken.address] || BigInt(0)).add(
+          marketInfo.poolValueMax
+        );
       }
     }
 

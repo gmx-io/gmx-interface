@@ -224,7 +224,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                       } catch {
                         token = getNativeToken(chainId);
                       }
-                      acc[token.address] = acc[token.address] || BigNumber.from(0);
+                      acc[token.address] = acc[token.address] || BigInt(0);
                       acc[token.address] = acc[token.address].add(rebate.amounts[i]);
                       return acc;
                     }, {} as { [address: string]: BigNumber });
@@ -236,7 +236,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                       }
 
                       return acc.add(amount);
-                    }, BigNumber.from(0));
+                    }, BigInt(0));
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (

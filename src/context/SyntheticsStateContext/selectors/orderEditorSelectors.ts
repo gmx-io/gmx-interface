@@ -157,7 +157,7 @@ const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) =>
     fixedAcceptablePriceImpactBps: undefined,
     indexTokenAddress: positionIndexToken?.address,
     indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigInt(0),
     initialCollateralTokenAddress: fromToken?.address,
     leverage: existingPosition?.leverage,
     marketAddress: positionOrder?.marketAddress,

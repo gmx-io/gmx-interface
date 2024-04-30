@@ -556,7 +556,7 @@ export default function GlpSwap(props) {
       setAnchorOnSwapAmount(true);
       let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
       if (maxAvailableAmount?.isNegative()) {
-        maxAvailableAmount = BigNumber.from(0);
+        maxAvailableAmount = BigInt(0);
       }
 
       const formattedAmount = formatAmountFree(maxAvailableAmount, swapToken.decimals, swapToken.decimals);
@@ -842,7 +842,7 @@ export default function GlpSwap(props) {
   function renderMigrationIncentive() {
     if (!incentiveStats?.migration?.isActive) return;
 
-    const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
+    const feeFactor = basisPointsToFloat(BigInt(feeBasisPoints));
     const glpUsdMaxNegative = glpUsdMax?.mul(-1);
     const feeItem =
       glpUsdMax &&
@@ -850,7 +850,7 @@ export default function GlpSwap(props) {
         shouldRoundUp: true,
       });
     const rebateBasisPoints = basisPointsToFloat(
-      BigNumber.from(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
+      BigInt(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
     );
     const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
     const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });

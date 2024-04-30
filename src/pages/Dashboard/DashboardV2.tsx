@@ -76,7 +76,7 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = BigNumber.from(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
+      cv.openInterest = BigInt(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
       acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
       acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);

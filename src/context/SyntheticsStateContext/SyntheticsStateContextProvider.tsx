@@ -16,7 +16,7 @@ import {
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
@@ -37,7 +37,7 @@ export type SyntheticsState = {
     account: string | undefined;
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult;
-    uiFeeFactor: BigNumber;
+    uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
 
     closingPositionKey: string | undefined;

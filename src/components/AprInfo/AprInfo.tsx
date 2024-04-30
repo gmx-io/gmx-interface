@@ -17,7 +17,7 @@ export function AprInfo({
   isIncentiveActive?: boolean;
   showTooltip?: boolean;
 }) {
-  const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
+  const totalApr = apr?.add(incentiveApr ?? 0) ?? BigInt(0);
   const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {

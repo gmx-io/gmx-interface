@@ -39,8 +39,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           }
 
           result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigNumber.from(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigNumber.from(priceItem.maxPrice), tokenConfig.decimals),
+            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
           };
         });
 

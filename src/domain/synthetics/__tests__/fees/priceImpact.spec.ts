@@ -43,7 +43,7 @@ describe("applyImpactFactor", () => {
         ethers.parseUnits(String(exponentFactor), 30)
       );
 
-      const _expected = BigNumber.from(expected);
+      const _expected = BigInt(expected);
 
       expect(
         _expected.eq(0)

@@ -61,35 +61,35 @@ export function getIncreasePositionAmounts(p: {
   } = p;
 
   const values: IncreasePositionAmounts = {
-    initialCollateralAmount: BigNumber.from(0),
-    initialCollateralUsd: BigNumber.from(0),
+    initialCollateralAmount: BigInt(0),
+    initialCollateralUsd: BigInt(0),
 
-    collateralDeltaAmount: BigNumber.from(0),
-    collateralDeltaUsd: BigNumber.from(0),
+    collateralDeltaAmount: BigInt(0),
+    collateralDeltaUsd: BigInt(0),
 
     swapPathStats: undefined,
 
-    indexTokenAmount: BigNumber.from(0),
+    indexTokenAmount: BigInt(0),
 
-    sizeDeltaUsd: BigNumber.from(0),
-    sizeDeltaInTokens: BigNumber.from(0),
+    sizeDeltaUsd: BigInt(0),
+    sizeDeltaInTokens: BigInt(0),
 
-    estimatedLeverage: BigNumber.from(0),
+    estimatedLeverage: BigInt(0),
 
-    indexPrice: BigNumber.from(0),
-    initialCollateralPrice: BigNumber.from(0),
-    collateralPrice: BigNumber.from(0),
-    triggerPrice: BigNumber.from(0),
-    acceptablePrice: BigNumber.from(0),
-    acceptablePriceDeltaBps: BigNumber.from(0),
+    indexPrice: BigInt(0),
+    initialCollateralPrice: BigInt(0),
+    collateralPrice: BigInt(0),
+    triggerPrice: BigInt(0),
+    acceptablePrice: BigInt(0),
+    acceptablePriceDeltaBps: BigInt(0),
 
-    positionFeeUsd: BigNumber.from(0),
-    uiFeeUsd: BigNumber.from(0),
-    swapUiFeeUsd: BigNumber.from(0),
-    feeDiscountUsd: BigNumber.from(0),
-    borrowingFeeUsd: BigNumber.from(0),
-    fundingFeeUsd: BigNumber.from(0),
-    positionPriceImpactDeltaUsd: BigNumber.from(0),
+    positionFeeUsd: BigInt(0),
+    uiFeeUsd: BigInt(0),
+    swapUiFeeUsd: BigInt(0),
+    feeDiscountUsd: BigInt(0),
+    borrowingFeeUsd: BigInt(0),
+    fundingFeeUsd: BigInt(0),
+    positionPriceImpactDeltaUsd: BigInt(0),
   };
 
   const isLimit = triggerPrice?.gt(0);
@@ -113,8 +113,8 @@ export function getIncreasePositionAmounts(p: {
     values.collateralPrice = collateralToken.prices.minPrice;
   }
 
-  values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || BigNumber.from(0);
-  values.fundingFeeUsd = position?.pendingFundingFeesUsd || BigNumber.from(0);
+  values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || BigInt(0);
+  values.fundingFeeUsd = position?.pendingFundingFeesUsd || BigInt(0);
 
   if (!values.indexPrice.gt(0) || !values.initialCollateralPrice.gt(0) || !values.collateralPrice.gt(0)) {
     return values;
@@ -302,9 +302,9 @@ export function getIncreasePositionAmounts(p: {
     values.estimatedLeverage = getLeverage({
       sizeInUsd: values.sizeDeltaUsd,
       collateralUsd: values.collateralDeltaUsd,
-      pnl: BigNumber.from(0),
-      pendingBorrowingFeesUsd: BigNumber.from(0),
-      pendingFundingFeesUsd: BigNumber.from(0),
+      pnl: BigInt(0),
+      pendingBorrowingFeesUsd: BigInt(0),
+      pendingFundingFeesUsd: BigInt(0),
     });
   }
 
@@ -346,7 +346,7 @@ export function getIncreasePositionAmounts(p: {
     values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
   }
 
-  let priceImpactAmount = BigNumber.from(0);
+  let priceImpactAmount = BigInt(0);
 
   if (values.positionPriceImpactDeltaUsd.gt(0)) {
     const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.maxPrice;
@@ -428,8 +428,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: showPnlInLeverage ? nextPnl : undefined,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+    pendingBorrowingFeesUsd: BigInt(0), // deducted on order
+    pendingFundingFeesUsd: BigInt(0), // deducted on order
   });
 
   const nextLiqPrice = getLiquidationPrice({
@@ -440,8 +440,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     collateralUsd: nextCollateralUsd,
     collateralAmount: nextCollateralAmount,
     minCollateralUsd,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+    pendingBorrowingFeesUsd: BigInt(0), // deducted on order
+    pendingFundingFeesUsd: BigInt(0), // deducted on order
     isLong: isLong,
     userReferralInfo,
   });

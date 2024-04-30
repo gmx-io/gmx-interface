@@ -37,7 +37,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
 }
 
 function getFeesStr(fees: BigNumber | undefined): string {
-  if (!fees || !BigNumber.from(fees).gt(0)) {
+  if (!fees || !BigInt(fees).gt(0)) {
     return "";
   }
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
@@ -72,7 +72,7 @@ function getTotalFees(fees: (BigNumber | undefined)[]) {
       return acc;
     }
     return acc.add(fee);
-  }, BigNumber.from(0));
+  }, BigInt(0));
 }
 
 type Props = {

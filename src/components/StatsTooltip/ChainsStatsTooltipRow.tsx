@@ -19,8 +19,8 @@ export default function ChainsStatsTooltipRow({
   symbol,
   shouldFormat = true,
 }: Props) {
-  const validEntries = Object.entries(entries).filter(([, value]) => Boolean(value) && !BigNumber.from(value).isZero());
-  const total = validEntries.reduce((acc, [, value]) => acc.add(value ?? BigNumber.from(0)), BigNumber.from(0));
+  const validEntries = Object.entries(entries).filter(([, value]) => Boolean(value) && !BigInt(value).isZero());
+  const total = validEntries.reduce((acc, [, value]) => acc.add(value ?? BigInt(0)), BigInt(0));
 
   if (validEntries.length === 0) {
     return null;

@@ -17,10 +17,10 @@ export function ShareBar(p: Props) {
   const { share, total, className, warningThreshold, showPercentage } = p;
 
   const progress = useMemo(() => {
-    if (!share || !total || BigNumber.from(total)?.eq(0)) {
+    if (!share || !total || BigInt(total)?.eq(0)) {
       return null;
     }
-    const calculatedProgress = BigNumber.from(share)!.mul(100).div(total).toNumber();
+    const calculatedProgress = BigInt(share)!.mul(100).div(total).toNumber();
     return Math.min(calculatedProgress, 100);
   }, [share, total]);
 

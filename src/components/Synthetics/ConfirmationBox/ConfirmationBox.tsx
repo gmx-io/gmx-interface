@@ -299,7 +299,7 @@ export function ConfirmationBox(p: Props) {
   }, [existingPosition, existingTriggerOrders, markPrice]);
 
   const swapSpreadInfo = useMemo(() => {
-    let spread = BigNumber.from(0);
+    let spread = BigInt(0);
 
     if (isSwap && fromToken && toToken) {
       const fromSpread = getSpread(fromToken.prices);
@@ -476,10 +476,7 @@ export function ConfirmationBox(p: Props) {
 
   const subaccountRequiredBalance =
     executionFee?.feeTokenAmount.add(
-      sltpAmounts.reduce(
-        (acc, amount) => acc.add(getDecreaseExecutionFee(amount)?.feeTokenAmount || 0),
-        BigNumber.from(0)
-      )
+      sltpAmounts.reduce((acc, amount) => acc.add(getDecreaseExecutionFee(amount)?.feeTokenAmount || 0), BigInt(0))
     ) ?? null;
   const subaccount = useSubaccount(subaccountRequiredBalance, 1 + sltpAmounts.length);
   const isLastSubaccountAction = useIsLastSubaccountAction(1 + sltpAmounts.length);
@@ -588,7 +585,7 @@ export function ConfirmationBox(p: Props) {
           account,
           marketAddress: marketInfo.marketTokenAddress,
           initialCollateralAddress: collateralToken?.address,
-          initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
+          initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigInt(0),
           receiveTokenAddress: collateralToken.address,
           swapPath: [],
           sizeDeltaUsd: entry.sizeDeltaUsd,
@@ -596,11 +593,11 @@ export function ConfirmationBox(p: Props) {
           isLong,
           acceptablePrice: entry.acceptablePrice,
           triggerPrice: entry.triggerPrice,
-          minOutputUsd: BigNumber.from(0),
+          minOutputUsd: BigInt(0),
           decreasePositionSwapType: entry.decreaseSwapType,
           orderType: entry.triggerOrderType!,
           referralCode: referralCodeForTxn,
-          executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
+          executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigInt(0),
           allowedSlippage,
           indexToken: marketInfo.indexToken,
           tokensData,
@@ -643,7 +640,7 @@ export function ConfirmationBox(p: Props) {
         acceptablePrice: decreaseAmounts.acceptablePrice,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-        minOutputUsd: BigNumber.from(0),
+        minOutputUsd: BigInt(0),
         isLong,
         decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
         orderType: fixedTriggerOrderType,

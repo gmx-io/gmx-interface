@@ -62,7 +62,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
-          callbackGasLimit: BigNumber.from(0),
+          callbackGasLimit: BigInt(0),
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],

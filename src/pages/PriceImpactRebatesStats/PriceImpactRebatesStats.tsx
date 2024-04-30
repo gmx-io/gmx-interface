@@ -115,14 +115,14 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
   const [accountsShown, setAccountsShown] = useState(false);
   const handleExpandClick = useCallback(() => setAccountsShown((shown) => !shown), []);
   const total = useMemo(() => {
-    return rebateGroup.userRebates.reduce((sum, rebateItem) => sum.add(rebateItem.value), BigNumber.from(0));
+    return rebateGroup.userRebates.reduce((sum, rebateItem) => sum.add(rebateItem.value), BigInt(0));
   }, [rebateGroup.userRebates]);
   const usd = useMemo(() => {
     return rebateGroup.userRebates.reduce((sum, rebateItem) => {
       const price = rebateItem.tokenData?.prices.maxPrice;
       const decimals = rebateItem.tokenData?.decimals;
       return price && decimals ? sum.add(rebateItem.value.mul(price).div(expandDecimals(1, decimals))) : sum;
-    }, BigNumber.from(0));
+    }, BigInt(0));
   }, [rebateGroup.userRebates]);
 
   return (

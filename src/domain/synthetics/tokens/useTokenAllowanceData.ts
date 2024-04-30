@@ -46,7 +46,7 @@ export function useTokensAllowanceData(
 
     parseResponse: (res) =>
       Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
-        tokenAllowance[address] = BigNumber.from(res.data[address].allowance.returnValues[0]);
+        tokenAllowance[address] = BigInt(res.data[address].allowance.returnValues[0]);
 
         return tokenAllowance;
       }, {} as TokensAllowanceData),

@@ -83,7 +83,7 @@ export function getSwapError(p: {
     return [t`Enter a  price`];
   }
 
-  if (fromTokenAmount.gt(fromToken.balance || BigNumber.from(0))) {
+  if (fromTokenAmount.gt(fromToken.balance || BigInt(0))) {
     return [t`Insufficient ${fromToken?.symbol} balance`];
   }
 
@@ -186,7 +186,7 @@ export function getIncreaseError(p: {
     return [t`Enter an amount`];
   }
 
-  if (initialCollateralAmount.gt(initialCollateralToken.balance || BigNumber.from(0))) {
+  if (initialCollateralAmount.gt(initialCollateralToken.balance || BigInt(0))) {
     return [t`Insufficient ${initialCollateralToken?.symbol} balance`];
   }
 
@@ -198,7 +198,7 @@ export function getIncreaseError(p: {
     }
 
     if (!isLimit) {
-      if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || BigNumber.from(0))) {
+      if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || BigInt(0))) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }
@@ -448,9 +448,9 @@ export function getEditCollateralError(p: {
     const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,
-      BigNumber.from(0),
+      BigInt(0),
       minCollateralFactor,
-      BigNumber.from(0)
+      BigInt(0)
     );
 
     if (!isPositionCollateralSufficient) {
@@ -522,7 +522,7 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
-    const totalCollateralUsd = BigNumber.from(0)
+    const totalCollateralUsd = BigInt(0)
       .add(longTokenUsd || 0)
       .add(shortTokenUsd || 0);
 
@@ -539,7 +539,7 @@ export function getGmSwapError(p: {
     if (shortTokenAmount?.gt(mintableInfo.shortDepositCapacityAmount)) {
       return [t`Max ${shortToken?.symbol} amount exceeded`];
     }
-  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))) {
+  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigInt(0))) {
     return [t`Fees exceed Pay amount`];
   }
 

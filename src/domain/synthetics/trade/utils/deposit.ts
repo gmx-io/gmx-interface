@@ -36,15 +36,15 @@ export function getDepositAmounts(p: {
   const shortTokenPrice = getMidPrice(shortToken.prices);
 
   const values: DepositAmounts = {
-    longTokenAmount: BigNumber.from(0),
-    longTokenUsd: BigNumber.from(0),
-    shortTokenAmount: BigNumber.from(0),
-    shortTokenUsd: BigNumber.from(0),
-    marketTokenAmount: BigNumber.from(0),
-    marketTokenUsd: BigNumber.from(0),
-    swapFeeUsd: BigNumber.from(0),
-    uiFeeUsd: BigNumber.from(0),
-    swapPriceImpactDeltaUsd: BigNumber.from(0),
+    longTokenAmount: BigInt(0),
+    longTokenUsd: BigInt(0),
+    shortTokenAmount: BigInt(0),
+    shortTokenUsd: BigInt(0),
+    marketTokenAmount: BigInt(0),
+    marketTokenUsd: BigInt(0),
+    swapFeeUsd: BigInt(0),
+    uiFeeUsd: BigInt(0),
+    swapPriceImpactDeltaUsd: BigInt(0),
   };
 
   if (strategy === "byCollaterals") {
@@ -190,7 +190,7 @@ function getMarketTokenAmountByCollateral(p: {
   const uiFeeAmount = convertToTokenAmount(uiFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
 
   let amountInAfterFees = amount.sub(swapFeeAmount).sub(uiFeeAmount);
-  let mintAmount = BigNumber.from(0);
+  let mintAmount = BigInt(0);
 
   if (priceImpactDeltaUsd.gt(0)) {
     const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);

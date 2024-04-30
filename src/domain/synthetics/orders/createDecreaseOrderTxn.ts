@@ -60,7 +60,7 @@ export async function createDecreaseOrderTxn(
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
+  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigInt(0));
   const account = ps[0].account;
   const encodedPayload = createDecreaseEncodedPayload({
     router,
@@ -173,7 +173,7 @@ function getPendingPositionFromParams(
     sizeDeltaUsd: p.sizeDeltaUsd,
     sizeDeltaInTokens: p.sizeDeltaInTokens,
     updatedAt: txnCreatedAt,
-    updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+    updatedAtBlock: BigInt(txnCreatedAtBlock),
   };
 }
 
@@ -219,10 +219,10 @@ export function createDecreaseEncodedPayload({
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,
           initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-          triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+          triggerPrice: convertToContractPrice(p.triggerPrice || BigInt(0), p.indexToken.decimals),
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
-          callbackGasLimit: BigNumber.from(0),
+          callbackGasLimit: BigInt(0),
           minOutputAmount,
         },
         orderType: p.orderType,

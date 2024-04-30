@@ -187,8 +187,8 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Wallet`}
           value={formatTokenAmountWithUsd(
-            marketBalance || BigNumber.from(0),
-            marketBalanceUsd || BigNumber.from(0),
+            marketBalance || BigInt(0),
+            marketBalanceUsd || BigInt(0),
             "GM",
             marketToken?.decimals ?? 18
           )}

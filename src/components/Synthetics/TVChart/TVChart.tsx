@@ -146,8 +146,8 @@ export function TVChart() {
           }
         : {
             symbol: "",
-            minPrice: BigNumber.from(0),
-            maxPrice: BigNumber.from(0),
+            minPrice: BigInt(0),
+            maxPrice: BigInt(0),
           },
     [chartToken]
   );

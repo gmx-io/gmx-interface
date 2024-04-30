@@ -21,9 +21,9 @@ export function getSwapAmountsByFromValue(p: {
 
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
-  let amountOut = BigNumber.from(0);
-  let usdOut = BigNumber.from(0);
-  let minOutputAmount = BigNumber.from(0);
+  let amountOut = BigInt(0);
+  let usdOut = BigInt(0);
+  let minOutputAmount = BigInt(0);
 
   const defaultAmounts: SwapAmounts = {
     amountIn,
@@ -94,9 +94,9 @@ export function getSwapAmountsByFromValue(p: {
   }
 
   if (amountOut.lt(0)) {
-    amountOut = BigNumber.from(0);
-    usdOut = BigNumber.from(0);
-    minOutputAmount = BigNumber.from(0);
+    amountOut = BigInt(0);
+    usdOut = BigInt(0);
+    minOutputAmount = BigInt(0);
   }
 
   return {
@@ -130,8 +130,8 @@ export function getSwapAmountsByToValue(p: {
 
   const minOutputAmount = amountOut;
 
-  let amountIn = BigNumber.from(0);
-  let usdIn = BigNumber.from(0);
+  let amountIn = BigInt(0);
+  let usdIn = BigInt(0);
 
   const defaultAmounts: SwapAmounts = {
     amountIn,
@@ -188,17 +188,15 @@ export function getSwapAmountsByToValue(p: {
     usdIn = usdIn.add(swapPathStats.totalSwapFeeUsd).add(uiFeeUsd).sub(swapPathStats.totalSwapPriceImpactDeltaUsd);
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
-    const adjustedUsdIn = swapPathStats.usdOut.gt(0)
-      ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut)
-      : BigNumber.from(0);
+    const adjustedUsdIn = swapPathStats.usdOut.gt(0) ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut) : BigInt(0);
 
     usdIn = adjustedUsdIn.add(uiFeeUsd);
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 
   if (amountIn.lt(0)) {
-    amountIn = BigNumber.from(0);
-    usdIn = BigNumber.from(0);
+    amountIn = BigInt(0);
+    usdIn = BigInt(0);
   }
 
   return {

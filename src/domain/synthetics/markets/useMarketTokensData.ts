@@ -114,8 +114,8 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
 
         const tokenConfig = getTokenBySymbol(chainId, "GM");
 
-        const minPrice = BigNumber.from(pricesData?.minPrice.returnValues[0]);
-        const maxPrice = BigNumber.from(pricesData?.maxPrice.returnValues[0]);
+        const minPrice = BigInt(pricesData?.minPrice.returnValues[0]);
+        const maxPrice = BigInt(pricesData?.maxPrice.returnValues[0]);
 
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
@@ -124,11 +124,8 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
             minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
             maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
-          totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
-          balance:
-            account && tokenData.balance?.returnValues
-              ? BigNumber.from(tokenData?.balance?.returnValues[0])
-              : undefined,
+          totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
+          balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 

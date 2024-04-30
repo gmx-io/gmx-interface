@@ -34,7 +34,7 @@ export function bigNumberBinarySearch<T>(
   delta: BigNumber,
   validator: (x: BigNumber) => { isValid: boolean; returnValue: T }
 ) {
-  if (delta.lte(0)) delta = BigNumber.from(1);
+  if (delta.lte(0)) delta = BigInt(1);
 
   to = to.add(1);
 

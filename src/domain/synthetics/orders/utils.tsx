@@ -557,11 +557,11 @@ export function getIsMaxLeverageError(
   if (!collateralDeltaUsd) return false;
 
   const leverage = getLeverage({
-    sizeInUsd: order.sizeDeltaUsd.add(position?.sizeInUsd ?? BigNumber.from(0)),
-    collateralUsd: collateralDeltaUsd.add(position?.collateralUsd ?? BigNumber.from(0)),
+    sizeInUsd: order.sizeDeltaUsd.add(position?.sizeInUsd ?? BigInt(0)),
+    collateralUsd: collateralDeltaUsd.add(position?.collateralUsd ?? BigInt(0)),
     pnl: undefined,
-    pendingBorrowingFeesUsd: BigNumber.from(0),
-    pendingFundingFeesUsd: BigNumber.from(0),
+    pendingBorrowingFeesUsd: BigInt(0),
+    pendingFundingFeesUsd: BigInt(0),
   });
 
   if (!leverage) return false;

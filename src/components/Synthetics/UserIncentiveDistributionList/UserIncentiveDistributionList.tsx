@@ -39,13 +39,13 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
     const tokenInfo = tokens.find((token) => token.address.toLowerCase() === tokenAddress);
     return {
       tokenInfo,
-      tokenAmount: BigNumber.from(incentive.amounts[index]),
-      tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
+      tokenAmount: BigInt(incentive.amounts[index]),
+      tokenUsd: BigInt(incentive.amountsInUsd[index]),
       id: `${incentive.id}-${tokenAddress}`,
     };
   });
 
-  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigNumber.from(0));
+  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigInt(0));
 
   return {
     ...incentive,

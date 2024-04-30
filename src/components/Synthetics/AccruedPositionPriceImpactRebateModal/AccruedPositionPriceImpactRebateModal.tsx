@@ -101,7 +101,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
   }, [market?.longTokenAddress, market?.shortTokenAddress, rebateItems]);
 
   const usd = useMemo(() => {
-    let total = BigNumber.from(0);
+    let total = BigInt(0);
 
     rebateItems.forEach((rebateItem) => {
       const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);

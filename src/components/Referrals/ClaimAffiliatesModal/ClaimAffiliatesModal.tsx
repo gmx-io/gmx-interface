@@ -37,7 +37,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const totalClaimableFundingUsd =
     marketsInfoData && affiliateRewardsData
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
-      : BigNumber.from(0);
+      : BigInt(0);
 
   function renderRewardSection(reward: AffiliateReward) {
     const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
@@ -54,7 +54,7 @@ export function ClaimAffiliatesModal(p: Props) {
     const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
     const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
 
-    const totalReward = BigNumber.from(0).add(longRewardUsd).add(shortRewardUsd);
+    const totalReward = BigInt(0).add(longRewardUsd).add(shortRewardUsd);
 
     if (!totalReward.gt(0)) {
       return null;

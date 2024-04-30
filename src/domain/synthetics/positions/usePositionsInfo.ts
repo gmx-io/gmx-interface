@@ -116,7 +116,7 @@ export function usePositionsInfoRequest(
       );
 
       const closingFeeUsd = positionFeeInfo.positionFeeUsd;
-      const uiFeeUsd = positionFeeInfo.uiFeeUsd || BigNumber.from(0);
+      const uiFeeUsd = positionFeeInfo.uiFeeUsd || BigInt(0);
 
       const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
@@ -136,8 +136,7 @@ export function usePositionsInfoRequest(
         isLong: position.isLong,
       });
 
-      const pnlPercentage =
-        collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigNumber.from(0);
+      const pnlPercentage = collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigInt(0);
 
       const netValue = getPositionNetValue({
         collateralUsd: collateralUsd,
@@ -151,7 +150,7 @@ export function usePositionsInfoRequest(
       const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd).sub(uiFeeUsd);
       const pnlAfterFeesPercentage = !collateralUsd.eq(0)
         ? getBasisPoints(pnlAfterFees, collateralUsd.add(closingFeeUsd))
-        : BigNumber.from(0);
+        : BigInt(0);
 
       const leverage = getLeverage({
         sizeInUsd: position.sizeInUsd,

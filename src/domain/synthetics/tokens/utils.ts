@@ -95,7 +95,7 @@ export function getTokensRatioByAmounts(p: {
     ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
     : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 
-  const ratio = smallestAmount.gt(0) ? largestAmount.mul(PRECISION).div(smallestAmount) : BigNumber.from(0);
+  const ratio = smallestAmount.gt(0) ? largestAmount.mul(PRECISION).div(smallestAmount) : BigInt(0);
 
   return { ratio, largestToken, smallestToken };
 }

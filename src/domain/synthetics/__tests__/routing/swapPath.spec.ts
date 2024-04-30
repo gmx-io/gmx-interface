@@ -20,7 +20,7 @@ const marketsInfoData = mockMarketsInfoData(tokensData, marketsKeys);
 
 const graph = getMarketsGraph(Object.values(marketsInfoData) as MarketInfo[]);
 
-const BASE_FEE = BigNumber.from(-1);
+const BASE_FEE = BigInt(-1);
 
 describe("swapPath", () => {
   describe("basic graph traversal", () => {
@@ -147,7 +147,7 @@ describe("swapPath", () => {
         from: "AVAX",
         to: "DAI",
         expected: ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
-        expectedFee: BigNumber.from(-2),
+        expectedFee: BigInt(-2),
         expectedPaths: [
           ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
           ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
@@ -179,7 +179,7 @@ describe("swapPath", () => {
         let pathResult: string[] | undefined = undefined;
 
         if (allRoutes) {
-          const result = getBestSwapPath(allRoutes, BigNumber.from(5), mockEstimator);
+          const result = getBestSwapPath(allRoutes, BigInt(5), mockEstimator);
           pathResult = result;
         }
 

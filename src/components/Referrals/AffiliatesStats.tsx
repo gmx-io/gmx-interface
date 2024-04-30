@@ -110,11 +110,11 @@ function AffiliatesStats({
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(signer, chainId, tierId);
-  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
+  const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare || 0), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {
-      return BigNumber.from(0);
+      return BigInt(0);
     }
 
     return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
@@ -454,7 +454,7 @@ function AffiliatesStats({
                       } catch {
                         token = getNativeToken(chainId);
                       }
-                      acc[token.address] = acc[token.address] || BigNumber.from(0);
+                      acc[token.address] = acc[token.address] || BigInt(0);
                       acc[token.address] = acc[token.address].add(rebate.amounts[i]);
                       return acc;
                     }, {} as { [address: string]: BigNumber });
@@ -467,7 +467,7 @@ function AffiliatesStats({
                       }
 
                       return acc.add(usdAmount);
-                    }, BigNumber.from(0));
+                    }, BigInt(0));
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (

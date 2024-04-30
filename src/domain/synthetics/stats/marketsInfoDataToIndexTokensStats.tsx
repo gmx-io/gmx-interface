@@ -98,9 +98,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     const usedLiquidity = longUsedLiquidity.add(shortUsedLiquidity);
     const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
 
-    const utilization = maxLiquidity.gt(0)
-      ? usedLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity)
-      : BigNumber.from(0);
+    const utilization = maxLiquidity.gt(0) ? usedLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity) : BigInt(0);
 
     const netFeeLong = borrowingRateLong.add(fundingRateLong);
     const netFeeShort = borrowingRateShort.add(fundingRateShort);
@@ -130,7 +128,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
   for (const indexTokenStats of Object.values(indexMap)) {
     indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
       ? indexTokenStats.totalUsedLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
-      : BigNumber.from(0);
+      : BigInt(0);
 
     indexTokenStats.marketsStats.sort((a, b) => {
       return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;

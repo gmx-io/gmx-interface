@@ -315,7 +315,7 @@ export function OrderEditor(p: Props) {
       // "10 *" means we do 1..50 search but with 0.1x step
       (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
       (lev) => {
-        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
+        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
           findSwapPath: swapRoute.findSwapPath,

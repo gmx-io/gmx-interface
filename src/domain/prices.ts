@@ -293,7 +293,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
 
     let _prices = [...prices];
     if (currentAveragePriceString && prices.length) {
-      _prices = appendCurrentAveragePrice(_prices, BigNumber.from(currentAveragePriceString), period);
+      _prices = appendCurrentAveragePrice(_prices, BigInt(currentAveragePriceString), period);
     }
 
     return fillGaps(_prices, CHART_PERIODS[period]);

@@ -49,7 +49,7 @@ export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fu
     return;
   }
 
-  const totalFees = calculateTotalFees(size, fundingFee || BigNumber.from("0"));
+  const totalFees = calculateTotalFees(size, fundingFee || BigInt("0"));
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmount: totalFees,
     size,

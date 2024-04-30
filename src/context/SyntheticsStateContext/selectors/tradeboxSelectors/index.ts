@@ -119,10 +119,10 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigInt(0);
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigInt(0);
+  const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const positionKey = q(selectTradeboxSelectedPositionKey);
 
@@ -190,9 +190,9 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
 
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigInt(0);
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigInt(0);
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
 
@@ -257,7 +257,7 @@ export const selectTradeboxTradeFlags = createSelectorDeprecated(
 );
 
 export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
-  BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
+  BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
 
 export const selectTradeboxTradeFeesType = createSelector(function selectTradeboxTradeFeesType(
@@ -366,16 +366,16 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       return getTradeFees({
         isIncrease: false,
         initialCollateralUsd: swapAmounts.usdIn,
-        sizeDeltaUsd: BigNumber.from(0),
+        sizeDeltaUsd: BigInt(0),
         swapSteps: swapAmounts.swapPathStats.swapSteps,
-        positionFeeUsd: BigNumber.from(0),
+        positionFeeUsd: BigInt(0),
         swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
-        positionPriceImpactDeltaUsd: BigNumber.from(0),
-        priceImpactDiffUsd: BigNumber.from(0),
-        borrowingFeeUsd: BigNumber.from(0),
-        fundingFeeUsd: BigNumber.from(0),
-        feeDiscountUsd: BigNumber.from(0),
-        swapProfitFeeUsd: BigNumber.from(0),
+        positionPriceImpactDeltaUsd: BigInt(0),
+        priceImpactDiffUsd: BigInt(0),
+        borrowingFeeUsd: BigInt(0),
+        fundingFeeUsd: BigInt(0),
+        feeDiscountUsd: BigInt(0),
+        swapProfitFeeUsd: BigInt(0),
         uiFeeFactor,
       });
     }
@@ -392,13 +392,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
         positionFeeUsd: increaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
+        swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigInt(0),
         positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-        priceImpactDiffUsd: BigNumber.from(0),
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+        priceImpactDiffUsd: BigInt(0),
+        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigInt(0),
+        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigInt(0),
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
-        swapProfitFeeUsd: BigNumber.from(0),
+        swapProfitFeeUsd: BigInt(0),
         uiFeeFactor,
       });
     }
@@ -411,11 +411,11 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       return getTradeFees({
         isIncrease: false,
-        initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
+        initialCollateralUsd: selectedPosition?.collateralUsd || BigInt(0),
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: BigNumber.from(0),
+        swapPriceImpactDeltaUsd: BigInt(0),
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
@@ -452,10 +452,10 @@ const selectNextValuesForIncrease = createSelector(
 
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigInt(0);
     const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-    const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigInt(0);
+    const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
     const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 

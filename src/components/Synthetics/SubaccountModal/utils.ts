@@ -5,7 +5,7 @@ import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { FormState } from "./SubaccountModal";
 
-const ZERO = BigNumber.from(0);
+const ZERO = BigInt(0);
 
 export function getButtonState({
   topUp,
@@ -127,7 +127,7 @@ export function getApproxSubaccountActionsCountByBalance(
   currentAutoTopUpAmount: BigNumber
 ) {
   if (executionFee.gt(subAccNativeTokenBalance)) {
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 
   if (!executionFee || executionFee.lte(0)) {
@@ -140,12 +140,12 @@ export function getApproxSubaccountActionsCountByBalance(
   // execution fee is fully reduced, calculating sum(countByMainAccBalance, subAccNativeTokenBalance / executionFee)
   if (reducedCost.lte(0)) {
     // how many times we can transfer executionFee + how many times we can perform without topUp
-    const countByMainAccBalance = topUp.lte(0) ? BigNumber.from(0) : mainAccWrappedTokenBalance.div(topUp);
+    const countByMainAccBalance = topUp.lte(0) ? BigInt(0) : mainAccWrappedTokenBalance.div(topUp);
     return countByMainAccBalance.add(subAccNativeTokenBalance.div(executionFee));
   }
 
   const operationsWithReducedCost = subAccNativeTokenBalance.div(reducedCost);
-  const operationsBackedByMainAccBalance = topUp.eq(0) ? BigNumber.from(0) : mainAccWrappedTokenBalance.div(topUp);
+  const operationsBackedByMainAccBalance = topUp.eq(0) ? BigInt(0) : mainAccWrappedTokenBalance.div(topUp);
 
   if (operationsWithReducedCost.lte(operationsBackedByMainAccBalance)) {
     return subAccNativeTokenBalance.sub(executionFee).div(reducedCost).add(1);
@@ -167,7 +167,7 @@ export function getDefaultValues(tokenData: TokenData) {
     wntForAutoTopUps: notNullOrThrow(
       convertToTokenAmount(expandDecimals(20, 30), tokenData.decimals, tokenData.prices.maxPrice)
     ),
-    maxAllowedActions: notNullOrThrow(BigNumber.from(10)),
+    maxAllowedActions: notNullOrThrow(BigInt(10)),
   };
 }
 

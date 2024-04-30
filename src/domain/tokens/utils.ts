@@ -275,7 +275,7 @@ export function getMidPrice(prices: TokenPrices) {
 // calculates the minimum amount of native currency that should be left to be used as gas fees
 export function getMinResidualAmount(decimals?: number, price?: BigNumber) {
   if (!decimals || !price) {
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 
   const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);

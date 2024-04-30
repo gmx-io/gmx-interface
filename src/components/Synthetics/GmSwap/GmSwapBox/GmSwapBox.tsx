@@ -381,10 +381,10 @@ export function GmSwapBox(p: Props) {
     }
 
     const basisUsd = isDeposit
-      ? BigNumber.from(0)
+      ? BigInt(0)
           .add(amounts?.longTokenUsd || 0)
           .add(amounts?.shortTokenUsd || 0)
-      : amounts?.marketTokenUsd || BigNumber.from(0);
+      : amounts?.marketTokenUsd || BigInt(0);
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
@@ -826,7 +826,7 @@ export function GmSwapBox(p: Props) {
         : firstToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigNumber.from(0);
+        maxAvailableAmount = BigInt(0);
       }
 
       const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
@@ -846,7 +846,7 @@ export function GmSwapBox(p: Props) {
         : secondToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigNumber.from(0);
+        maxAvailableAmount = BigInt(0);
       }
 
       const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
@@ -1109,8 +1109,8 @@ export function GmSwapBox(p: Props) {
         marketToken={marketToken!}
         longToken={longTokenInputState?.token}
         shortToken={shortTokenInputState?.token}
-        marketTokenAmount={amounts?.marketTokenAmount ?? BigNumber.from(0)}
-        marketTokenUsd={amounts?.marketTokenUsd ?? BigNumber.from(0)}
+        marketTokenAmount={amounts?.marketTokenAmount ?? BigInt(0)}
+        marketTokenUsd={amounts?.marketTokenUsd ?? BigInt(0)}
         longTokenAmount={amounts?.longTokenAmount}
         longTokenUsd={amounts?.longTokenUsd}
         shortTokenAmount={amounts?.shortTokenAmount}

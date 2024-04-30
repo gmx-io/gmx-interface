@@ -22,13 +22,13 @@ describe("numericBinarySearch", () => {
 });
 
 describe("bigNumberBinarySearch", () => {
-  const ONE = BigNumber.from(1);
-  const FIFTY = BigNumber.from(50);
+  const ONE = BigInt(1);
+  const FIFTY = BigInt(50);
 
   it(`1..50 check`, () => {
     const cases = Array.from({ length: 50 }).map((_, i) => i + 1);
     cases.forEach((correctAnswerRaw) => {
-      const correctAnswer = BigNumber.from(correctAnswerRaw);
+      const correctAnswer = BigInt(correctAnswerRaw);
       const { result } = bigNumberBinarySearch(ONE, FIFTY, ONE, (x) => {
         return { isValid: x.lte(correctAnswer), returnValue: null };
       });
@@ -46,9 +46,9 @@ describe("bigNumberBinarySearch", () => {
 
   it("1..1e30..1e32", () => {
     const correctAnswer = expandDecimals(1, 30);
-    const from = BigNumber.from(1);
-    const to = BigNumber.from(10).pow(32);
-    const delta = BigNumber.from(10).pow(15);
+    const from = BigInt(1);
+    const to = BigInt(10).pow(32);
+    const delta = BigInt(10).pow(15);
     const { result } = bigNumberBinarySearch(from, to, delta, (x) => {
       return { isValid: x.lte(correctAnswer), returnValue: null };
     });
@@ -57,10 +57,10 @@ describe("bigNumberBinarySearch", () => {
   });
 
   it("1..250..1000", () => {
-    const correctAnswer = BigNumber.from(250);
-    const from = BigNumber.from(1);
-    const to = BigNumber.from(1000);
-    const delta = BigNumber.from(1);
+    const correctAnswer = BigInt(250);
+    const from = BigInt(1);
+    const to = BigInt(1000);
+    const delta = BigInt(1);
 
     const { result } = bigNumberBinarySearch(from, to, delta, (x) => {
       return { isValid: x.lte(correctAnswer), returnValue: null };

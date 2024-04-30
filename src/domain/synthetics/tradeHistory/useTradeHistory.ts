@@ -207,23 +207,23 @@ function createRawTradeActionTransformer(
           : undefined,
 
         indexTokenPriceMin: rawAction.indexTokenPriceMin
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMin), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMin), indexToken.decimals)
           : undefined,
         indexTokenPriceMax: rawAction.indexTokenPriceMax
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMax), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMax), indexToken.decimals)
           : undefined,
 
         orderType,
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
-        pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
-        basePnlUsd: rawAction.basePnlUsd ? BigNumber.from(rawAction.basePnlUsd) : undefined,
+        pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
+        basePnlUsd: rawAction.basePnlUsd ? BigInt(rawAction.basePnlUsd) : undefined,
 
-        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
-        priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
-        positionFeeAmount: rawAction.positionFeeAmount ? BigNumber.from(rawAction.positionFeeAmount) : undefined,
-        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigNumber.from(rawAction.borrowingFeeAmount) : undefined,
-        fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
+        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
+        priceImpactUsd: rawAction.priceImpactUsd ? BigInt(rawAction.priceImpactUsd) : undefined,
+        positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
+        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
+        fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
 
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,

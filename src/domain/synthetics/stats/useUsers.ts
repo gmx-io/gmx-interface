@@ -21,13 +21,13 @@ export default function useUsers(chainId: number) {
       });
       const { userStats } = data;
       return {
-        totalUsers: BigNumber.from(userStats[0].uniqueUsers),
+        totalUsers: BigInt(userStats[0].uniqueUsers),
       };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching usersInfo data for chain ${chainId}:`, error);
       return {
-        totalUsers: BigNumber.from(0),
+        totalUsers: BigInt(0),
       };
     }
   }
@@ -42,7 +42,7 @@ export default function useUsers(chainId: number) {
       // eslint-disable-next-line no-console
       console.error("Error fetching usersInfo data:", error);
       return {
-        totalUsers: BigNumber.from(0),
+        totalUsers: BigInt(0),
       };
     }
   }

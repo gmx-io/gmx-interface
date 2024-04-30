@@ -120,7 +120,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     });
 
     const executionFee =
-      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? BigNumber.from(0);
+      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? BigInt(0);
     return [executionFee, networkFee];
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
@@ -187,9 +187,9 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     },
     parseResponse: (res) => {
       const isSubaccountActive = Boolean(res.data.dataStore.isSubaccountActive.returnValues[0]);
-      const maxAllowedActions = BigNumber.from(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
-      const currentActionsCount = BigNumber.from(res.data.dataStore.currentActionsCount.returnValues[0]);
-      const currentAutoTopUpAmount = BigNumber.from(res.data.dataStore.currentAutoTopUpAmount.returnValues[0]);
+      const maxAllowedActions = BigInt(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
+      const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
+      const currentAutoTopUpAmount = BigInt(res.data.dataStore.currentAutoTopUpAmount.returnValues[0]);
 
       return { isSubaccountActive, maxAllowedActions, currentActionsCount, currentAutoTopUpAmount };
     },
@@ -281,11 +281,11 @@ export function useIsSubaccountActive() {
 }
 
 export function useSubaccountDefaultExecutionFee() {
-  return useSubaccountSelector((s) => s.defaultExecutionFee) ?? BigNumber.from(0);
+  return useSubaccountSelector((s) => s.defaultExecutionFee) ?? BigInt(0);
 }
 
 function useSubaccountDefaultNetworkFee() {
-  return useSubaccountSelector((s) => s.defaultNetworkFee) ?? BigNumber.from(0);
+  return useSubaccountSelector((s) => s.defaultNetworkFee) ?? BigInt(0);
 }
 
 export function useSubaccount(requiredBalance: BigNumber | null, requiredActions = 1) {
@@ -324,7 +324,7 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
   const isSubaccountActive = useIsSubaccountActive();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
   const networkFee = useSubaccountDefaultNetworkFee();
-  const required = (requiredBalance ?? defaultExecutionFee ?? BigNumber.from(0)).add(networkFee);
+  const required = (requiredBalance ?? defaultExecutionFee ?? BigInt(0)).add(networkFee);
 
   if (!isSubaccountActive) return false;
   if (!nativeTokenBalance) return false;

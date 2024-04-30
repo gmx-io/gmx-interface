@@ -78,7 +78,7 @@ export function getMaxSwapPathLiquidity(p: {
   const { marketsInfoData, swapPath, initialCollateralAddress } = p;
 
   if (swapPath.length === 0) {
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 
   let minMarketLiquidity = ethers.constants.MaxUint256;
@@ -88,13 +88,13 @@ export function getMaxSwapPathLiquidity(p: {
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
     if (!marketInfo) {
-      return BigNumber.from(0);
+      return BigInt(0);
     }
 
     const tokenOut = getOppositeCollateral(marketInfo, tokenInAddress);
 
     if (!tokenOut) {
-      return BigNumber.from(0);
+      return BigInt(0);
     }
 
     const isTokenOutLong = getTokenPoolType(marketInfo, tokenOut.address) === "long";
@@ -108,7 +108,7 @@ export function getMaxSwapPathLiquidity(p: {
   }
 
   if (minMarketLiquidity.eq(ethers.constants.MaxUint256)) {
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 
   return minMarketLiquidity;
@@ -144,8 +144,8 @@ export function getSwapPathStats(p: {
   let tokenInAddress = initialCollateralAddress;
   let tokenOutAddress = initialCollateralAddress;
 
-  let totalSwapPriceImpactDeltaUsd = BigNumber.from(0);
-  let totalSwapFeeUsd = BigNumber.from(0);
+  let totalSwapPriceImpactDeltaUsd = BigInt(0);
+  let totalSwapFeeUsd = BigInt(0);
 
   for (let i = 0; i < swapPath.length; i++) {
     const marketAddress = swapPath[i];
@@ -178,7 +178,7 @@ export function getSwapPathStats(p: {
   const targetMarketAddress = lastStep.marketAddress;
   const amountOut = lastStep.amountOut;
 
-  const totalFeesDeltaUsd = BigNumber.from(0).sub(totalSwapFeeUsd).add(totalSwapPriceImpactDeltaUsd);
+  const totalFeesDeltaUsd = BigInt(0).sub(totalSwapFeeUsd).add(totalSwapPriceImpactDeltaUsd);
 
   return {
     swapPath,
@@ -223,19 +223,19 @@ export function getSwapStats(p: {
     priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn.mul(-1));
   } catch (e) {
     return {
-      swapFeeUsd: BigNumber.from(0),
-      swapFeeAmount: BigNumber.from(0),
+      swapFeeUsd: BigInt(0),
+      swapFeeAmount: BigInt(0),
       isWrap,
       isUnwrap,
       marketAddress: marketInfo.marketTokenAddress,
       tokenInAddress,
       tokenOutAddress,
-      priceImpactDeltaUsd: BigNumber.from(0),
+      priceImpactDeltaUsd: BigInt(0),
       amountIn,
       amountInAfterFees: amountIn,
       usdIn,
-      amountOut: BigNumber.from(0),
-      usdOut: BigNumber.from(0),
+      amountOut: BigInt(0),
+      usdOut: BigInt(0),
       isOutLiquidity: true,
     };
   }
@@ -264,7 +264,7 @@ export function getSwapStats(p: {
   }
 
   if (usdOut.lt(0)) {
-    usdOut = BigNumber.from(0);
+    usdOut = BigInt(0);
   }
 
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;

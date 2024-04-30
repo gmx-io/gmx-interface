@@ -256,13 +256,13 @@ const TableRow = memo(
       return getLiquidationPrice({
         marketInfo,
         collateralToken,
-        sizeInUsd: BigNumber.from(position.sizeInUsd),
-        sizeInTokens: BigNumber.from(position.sizeInTokens),
-        collateralUsd: BigNumber.from(position.collateralUsd),
-        collateralAmount: BigNumber.from(position.collateralAmount),
+        sizeInUsd: BigInt(position.sizeInUsd),
+        sizeInTokens: BigInt(position.sizeInTokens),
+        collateralUsd: BigInt(position.collateralUsd),
+        collateralAmount: BigInt(position.collateralAmount),
         minCollateralUsd,
-        pendingBorrowingFeesUsd: BigNumber.from(position.unrealizedFees).sub(position.closingFeeUsd),
-        pendingFundingFeesUsd: BigNumber.from(0),
+        pendingBorrowingFeesUsd: BigInt(position.unrealizedFees).sub(position.closingFeeUsd),
+        pendingFundingFeesUsd: BigInt(0),
         isLong: position.isLong,
         userReferralInfo,
       })?.toBigInt();
@@ -302,8 +302,8 @@ const TableRow = memo(
             label={t`Collateral`}
             showDollar={false}
             value={formatTokenAmountWithUsd(
-              BigNumber.from(position.collateralAmount),
-              BigNumber.from(position.collateralUsd),
+              BigInt(position.collateralAmount),
+              BigInt(position.collateralUsd),
               collateralToken?.symbol,
               collateralToken?.decimals
             )}

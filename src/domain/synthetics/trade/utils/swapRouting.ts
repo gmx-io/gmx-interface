@@ -58,7 +58,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
 
     if (!usdOut || isOutLiquidity) {
       return {
-        usdOut: BigNumber.from(0),
+        usdOut: BigInt(0),
       };
     }
 
@@ -74,7 +74,7 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator
   }
 
   let bestPath = routes[0].path;
-  let bestUsdOut = BigNumber.from(0);
+  let bestUsdOut = BigInt(0);
 
   for (const route of routes) {
     try {

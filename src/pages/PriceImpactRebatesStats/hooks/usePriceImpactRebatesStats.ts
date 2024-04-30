@@ -99,15 +99,15 @@ export const usePriceImpactRebateGroups = (
 
       const rebateGroups = data.claimableCollateralGroups.map(
         (group: RawRebateGroup): RebateGroup => ({
-          factor: BigNumber.from(group.factor),
+          factor: BigInt(group.factor),
           id: group.id,
           marketInfo: getByKey(marketsInfoDataLatest.current, getAddress(group.marketAddress)),
           tokenData: getByKey(tokensDataLatest.current, getAddress(group.tokenAddress)),
           timeKey: group.timeKey,
           userRebates: group.claimables.map((userRebate) => ({
             account: userRebate.account,
-            value: BigNumber.from(userRebate.value),
-            factor: BigNumber.from(userRebate.factor),
+            value: BigInt(userRebate.value),
+            factor: BigInt(userRebate.factor),
             tokenData: getByKey(tokensDataLatest.current, getAddress(group.tokenAddress)),
             marketInfo: getByKey(marketsInfoDataLatest.current, getAddress(group.marketAddress)),
             timeKey: group.timeKey,

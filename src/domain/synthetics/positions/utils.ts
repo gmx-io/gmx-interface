@@ -135,7 +135,7 @@ export function getLiquidationPrice(p: {
 
   const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
 
-  let priceImpactDeltaUsd: BigNumber = BigNumber.from(0);
+  let priceImpactDeltaUsd: BigNumber = BigInt(0);
 
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
@@ -148,7 +148,7 @@ export function getLiquidationPrice(p: {
 
     // Ignore positive price impact
     if (priceImpactDeltaUsd.gt(0)) {
-      priceImpactDeltaUsd = BigNumber.from(0);
+      priceImpactDeltaUsd = BigInt(0);
     }
   }
 
@@ -283,7 +283,7 @@ export function getEstimatedLiquidationTimeInHours(
 
   // Ignore positive price impact
   if (priceImpactDeltaUsd.gt(0)) {
-    priceImpactDeltaUsd = BigNumber.from(0);
+    priceImpactDeltaUsd = BigInt(0);
   }
 
   const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);

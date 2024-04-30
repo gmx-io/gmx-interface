@@ -51,10 +51,10 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
     } catch (err) {
       // ignore
     }
-    let arbTokenPrice = BigNumber.from(0);
+    let arbTokenPrice = BigInt(0);
 
     if (arbTokenAddress && tokensData) {
-      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
+      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigInt(0);
     }
 
     const shouldCalcBonusApr =
@@ -62,12 +62,12 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
 
     return marketAddresses.reduce((acc, marketAddress) => {
       if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)
-        return { ...acc, [marketAddress]: BigNumber.from(0) };
+        return { ...acc, [marketAddress]: BigInt(0) };
 
-      const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
+      const arbTokensAmount = BigInt(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
       const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
-      let incentivesApr = BigNumber.from(0);
+      let incentivesApr = BigInt(0);
 
       if (poolValue?.gt(0)) {
         incentivesApr = arbTokensAmount
@@ -138,7 +138,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       if (!responseOrNull) {
         return {
           marketsTokensAPRData: {},
-          avgMarketsAPR: BigNumber.from(0),
+          avgMarketsAPR: BigInt(0),
         };
       }
 
@@ -148,11 +148,11 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
         const recentFees = response[`_${marketAddress}_recent`];
 
-        const x1 = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2 = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x1 = BigInt(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2 = BigInt(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
 
         if (x2.eq(0)) {
-          acc[marketAddress] = BigNumber.from(0);
+          acc[marketAddress] = BigInt(0);
           return acc;
         }
 
@@ -168,7 +168,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const avgMarketsAPR = Object.values(marketsTokensAPRData)
         .reduce((acc, apr) => {
           return acc.add(apr);
-        }, BigNumber.from(0))
+        }, BigInt(0))
         .div(marketAddresses.length);
 
       return {

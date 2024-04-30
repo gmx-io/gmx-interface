@@ -67,14 +67,14 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
     } = { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] };
 
     data?.forEach((rawRebateInfo) => {
-      let factor = BigNumber.from(rawRebateInfo.factor);
-      const factorByTime = BigNumber.from(rawRebateInfo.factorByTime);
+      let factor = BigInt(rawRebateInfo.factor);
+      const factorByTime = BigInt(rawRebateInfo.factorByTime);
 
       if (factorByTime.gt(factor)) {
         factor = factorByTime;
       }
 
-      const value = BigNumber.from(rawRebateInfo.value);
+      const value = BigInt(rawRebateInfo.value);
       const valueByFactor = value.mul(factor).div(expandDecimals(1, 30));
 
       const rebateInfo: RebateInfoItem = {

@@ -9,7 +9,7 @@ export function calcTotalRebateUsd(
   ignoreFactor: boolean
 ) {
   if (!tokensData) {
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 
   return rebates.reduce((total, rebate) => {
@@ -24,5 +24,5 @@ export function calcTotalRebateUsd(
     const rebateUsd = value.mul(price).div(expandDecimals(1, token.decimals));
 
     return total.add(rebateUsd);
-  }, BigNumber.from(0));
+  }, BigInt(0));
 }

@@ -52,7 +52,7 @@ export const useTradingIncentives = () => {
     ["trading-incentives", chainId, incentiveStats?.trading.isActive ? "on" : "off"],
     {
       fetcher: async (): Promise<BigNumber> => {
-        if (!incentiveStats?.trading.isActive) return BigNumber.from(0);
+        if (!incentiveStats?.trading.isActive) return BigInt(0);
 
         const client = getSyntheticsGraphClient(chainId);
         const res = (
@@ -69,10 +69,10 @@ export const useTradingIncentives = () => {
         ).data as RawResponse;
 
         if (!res || !res.tradingIncentivesStat || !res.tradingIncentivesStat.eligibleFeesInArb) {
-          return BigNumber.from(0);
+          return BigInt(0);
         }
 
-        return BigNumber.from(res.tradingIncentivesStat.eligibleFeesInArb);
+        return BigInt(res.tradingIncentivesStat.eligibleFeesInArb);
       },
     }
   );
@@ -83,10 +83,10 @@ export const useTradingIncentives = () => {
       return null;
     }
 
-    const rebatePercent = BigNumber.from(raw.rebatePercent);
+    const rebatePercent = BigInt(raw.rebatePercent);
     if (rebatePercent.eq(0)) return null;
 
-    const allocation = BigNumber.from(raw.allocation);
+    const allocation = BigInt(raw.allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
 
     return {

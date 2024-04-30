@@ -50,7 +50,7 @@ export function ClaimModal(p: Props) {
     const fundingLongUsd = convertToUsd(fundingLongAmount, longToken?.decimals, longToken?.prices?.minPrice);
     const fundingShortUsd = convertToUsd(fundingShortAmount, shortToken?.decimals, shortToken?.prices?.minPrice);
 
-    const totalFundingUsd = BigNumber.from(0)
+    const totalFundingUsd = BigInt(0)
       .add(fundingLongUsd || 0)
       ?.add(fundingShortUsd || 0);
 

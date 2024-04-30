@@ -28,7 +28,7 @@ export async function getCurrentMaxActionsCount({
     },
   });
   if (response) {
-    return BigNumber.from(response.data.dataStore.currentActionsCount.returnValues[0]);
+    return BigInt(response.data.dataStore.currentActionsCount.returnValues[0]);
   }
 
   return null;

@@ -33,8 +33,8 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
     },
     parseResponse: (res) => {
       return {
-        minCollateralUsd: BigNumber.from(res.data.dataStore.minCollateralUsd.returnValues[0]),
-        minPositionSizeUsd: BigNumber.from(res.data.dataStore.minPositionSizeUsd.returnValues[0]),
+        minCollateralUsd: BigInt(res.data.dataStore.minCollateralUsd.returnValues[0]),
+        minPositionSizeUsd: BigInt(res.data.dataStore.minPositionSizeUsd.returnValues[0]),
       };
     },
   });

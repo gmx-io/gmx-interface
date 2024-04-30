@@ -76,9 +76,9 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
-  [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
-  [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
-  [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
+  [ARBITRUM]: BigInt(10).pow(29).mul(5),
+  [AVALANCHE]: BigInt(10).pow(29).mul(35),
+  [AVALANCHE_FUJI]: BigInt(10).pow(29).mul(2),
 } as const;
 
 export const EXECUTION_FEE_CONFIG_V2: {

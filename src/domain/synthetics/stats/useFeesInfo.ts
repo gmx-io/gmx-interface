@@ -51,21 +51,19 @@ export default function useFeesInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
 
-      const totalPositionFees = BigNumber.from(totalFeesInfo.position.totalBorrowingFeeUsd).add(
+      const totalPositionFees = BigInt(totalFeesInfo.position.totalBorrowingFeeUsd).add(
         totalFeesInfo.position.totalPositionFeeUsd
       );
 
-      const totalSwapFees = BigNumber.from(totalFeesInfo.swap.totalFeeReceiverUsd).add(
-        totalFeesInfo.swap.totalFeeUsdForPool
-      );
+      const totalSwapFees = BigInt(totalFeesInfo.swap.totalFeeReceiverUsd).add(totalFeesInfo.swap.totalFeeUsdForPool);
 
       const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
         return acc.add(fee.totalBorrowingFeeUsd).add(fee.totalPositionFeeUsd);
-      }, BigNumber.from(0));
+      }, BigInt(0));
 
       const weeklySwapFees = weeklyFeesInfo.swap.reduce((acc, fee) => {
         return acc.add(fee.totalFeeReceiverUsd).add(fee.totalFeeUsdForPool);
-      }, BigNumber.from(0));
+      }, BigInt(0));
 
       return {
         weeklyFees: weeklyPositionFees.add(weeklySwapFees),
@@ -75,8 +73,8 @@ export default function useFeesInfo(chainId: number) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
       return {
-        weeklyFees: BigNumber.from(0),
-        totalFees: BigNumber.from(0),
+        weeklyFees: BigInt(0),
+        totalFees: BigInt(0),
       };
     }
   }

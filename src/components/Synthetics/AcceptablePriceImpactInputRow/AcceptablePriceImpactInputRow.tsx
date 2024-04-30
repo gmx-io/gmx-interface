@@ -31,7 +31,7 @@ function AcceptablePriceImpactInputRowImpl({
 }: Props) {
   const setValue = useCallback(
     (value: number | undefined) => {
-      setAcceptablePriceImpactBps(BigNumber.from(value));
+      setAcceptablePriceImpactBps(BigInt(value));
     },
     [setAcceptablePriceImpactBps]
   );
@@ -65,7 +65,7 @@ function AcceptablePriceImpactInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigNumber.from(recommendedValue).mul(-1), { signed: true })}
+        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue).mul(-1), { signed: true })}
       </span>
       .
     </Trans>

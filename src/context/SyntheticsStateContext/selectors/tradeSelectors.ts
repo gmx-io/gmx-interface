@@ -82,7 +82,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
       })();
 
       const { maxLiquidity, maxLiquidityPath } = (() => {
-        let maxLiquidity = BigNumber.from(0);
+        let maxLiquidity = BigInt(0);
         let maxLiquidityPath: string[] | undefined = undefined;
 
         if (!allRoutes || !marketsInfoData || !wrappedFromAddress) {

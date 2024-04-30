@@ -29,10 +29,10 @@ export function getPositionFee(
     : marketInfo.positionFeeFactorForNegativeImpact;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
-  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || BigNumber.from(0));
+  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || BigInt(0));
 
   if (!referralInfo) {
-    return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
+    return { positionFeeUsd, discountUsd: BigInt(0), totalRebateUsd: BigInt(0) };
   }
 
   const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
@@ -61,9 +61,7 @@ export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolea
     const largerInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
     const smallerInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
 
-    const ratio = smallerInterestUsd.gt(0)
-      ? largerInterestUsd.mul(PRECISION).div(smallerInterestUsd)
-      : BigNumber.from(0);
+    const ratio = smallerInterestUsd.gt(0) ? largerInterestUsd.mul(PRECISION).div(smallerInterestUsd) : BigInt(0);
 
     factorPerSecond = applyFactor(ratio, fundingFactorPerSecond);
   }
@@ -116,14 +114,14 @@ export function getFeeItem(
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : BigNumber.from(0),
+    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : BigInt(0),
   };
 }
 
 export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   const totalFeeItem: FeeItem = {
-    deltaUsd: BigNumber.from(0),
-    bps: BigNumber.from(0),
+    deltaUsd: BigInt(0),
+    bps: BigInt(0),
   };
 
   (feeItems.filter(Boolean) as FeeItem[]).forEach((feeItem) => {
@@ -135,9 +133,9 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
 }
 
 export function getTotalSwapVolumeFromSwapStats(swapSteps?: SwapStats[]) {
-  if (!swapSteps) return BigNumber.from(0);
+  if (!swapSteps) return BigInt(0);
 
   return swapSteps.reduce((acc, curr) => {
     return acc.add(curr.usdIn);
-  }, BigNumber.from(0));
+  }, BigInt(0));
 }

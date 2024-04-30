@@ -245,8 +245,8 @@ function getNextOpenInterestForVirtualInventory(p: {
 }) {
   const { virtualInventory, usdDelta, isLong } = p;
 
-  let currentLongUsd = BigNumber.from(0);
-  let currentShortUsd = BigNumber.from(0);
+  let currentLongUsd = BigInt(0);
+  let currentShortUsd = BigInt(0);
 
   if (virtualInventory.gt(0)) {
     currentShortUsd = virtualInventory;
@@ -341,7 +341,7 @@ export function getPriceImpactUsd(p: {
 
   if (nextLongUsd.lt(0) || nextShortUsd.lt(0)) {
     if (p.fallbackToZero) {
-      return BigNumber.from(0);
+      return BigInt(0);
     } else {
       throw new Error("Negative pool amount");
     }
@@ -395,7 +395,7 @@ export function calculateImpactForSameSideRebalance(p: {
 
   const deltaDiff = currentImpact.sub(nextImpact).abs();
 
-  return hasPositiveImpact ? deltaDiff : BigNumber.from(0).sub(deltaDiff);
+  return hasPositiveImpact ? deltaDiff : BigInt(0).sub(deltaDiff);
 }
 
 /**
@@ -415,7 +415,7 @@ export function calculateImpactForCrossoverRebalance(p: {
 
   const deltaDiffUsd = positiveImpact.sub(negativeImpactUsd).abs();
 
-  return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
+  return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigInt(0).sub(deltaDiffUsd);
 }
 
 export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: BigNumber) {

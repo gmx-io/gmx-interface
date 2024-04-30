@@ -568,7 +568,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = BigNumber.from(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    let total = BigInt(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 

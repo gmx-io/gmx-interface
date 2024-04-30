@@ -86,8 +86,8 @@ export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}):
       decimals: 30,
       symbol: "SPOT",
       prices: {
-        minPrice: BigNumber.from(1),
-        maxPrice: BigNumber.from(1),
+        minPrice: BigInt(1),
+        maxPrice: BigInt(1),
       },
       ...((overrides.SPOT || {}) as any),
     },
@@ -202,32 +202,32 @@ export function mockMarketsInfoData(
       swapImpactExponentFactor: expandDecimals(2, 30),
 
       // MarketInfo
-      borrowingFactorPerSecondForLongs: BigNumber.from(0),
-      borrowingFactorPerSecondForShorts: BigNumber.from(0),
+      borrowingFactorPerSecondForLongs: BigInt(0),
+      borrowingFactorPerSecondForShorts: BigInt(0),
 
-      borrowingExponentFactorLong: BigNumber.from(0),
-      borrowingExponentFactorShort: BigNumber.from(0),
-      fundingFactor: BigNumber.from(0),
-      fundingExponentFactor: BigNumber.from(0),
-      fundingIncreaseFactorPerSecond: BigNumber.from(0),
-      fundingDecreaseFactorPerSecond: BigNumber.from(0),
-      maxFundingFactorPerSecond: BigNumber.from(0),
-      minFundingFactorPerSecond: BigNumber.from(0),
-      thresholdForDecreaseFunding: BigNumber.from(0),
-      thresholdForStableFunding: BigNumber.from(0),
+      borrowingExponentFactorLong: BigInt(0),
+      borrowingExponentFactorShort: BigInt(0),
+      fundingFactor: BigInt(0),
+      fundingExponentFactor: BigInt(0),
+      fundingIncreaseFactorPerSecond: BigInt(0),
+      fundingDecreaseFactorPerSecond: BigInt(0),
+      maxFundingFactorPerSecond: BigInt(0),
+      minFundingFactorPerSecond: BigInt(0),
+      thresholdForDecreaseFunding: BigInt(0),
+      thresholdForStableFunding: BigInt(0),
 
-      totalBorrowingFees: BigNumber.from(0),
-      minCollateralFactor: BigNumber.from(0),
+      totalBorrowingFees: BigInt(0),
+      minCollateralFactor: BigInt(0),
 
-      minCollateralFactorForOpenInterestLong: BigNumber.from(0),
-      minCollateralFactorForOpenInterestShort: BigNumber.from(0),
+      minCollateralFactorForOpenInterestLong: BigInt(0),
+      minCollateralFactorForOpenInterestShort: BigInt(0),
 
-      longPoolAmountAdjustment: BigNumber.from(0),
-      shortPoolAmountAdjustment: BigNumber.from(0),
-      borrowingFactorLong: BigNumber.from(0),
-      borrowingFactorShort: BigNumber.from(0),
+      longPoolAmountAdjustment: BigInt(0),
+      shortPoolAmountAdjustment: BigInt(0),
+      borrowingFactorLong: BigInt(0),
+      borrowingFactorShort: BigInt(0),
 
-      fundingFactorPerSecond: BigNumber.from(0),
+      fundingFactorPerSecond: BigInt(0),
       longsPayShorts: false,
 
       longInterestUsd: expandDecimals(500, USD_DECIMALS),
@@ -240,9 +240,9 @@ export function mockMarketsInfoData(
 
       data: "",
 
-      virtualPoolAmountForLongToken: BigNumber.from(0),
-      virtualPoolAmountForShortToken: BigNumber.from(0),
-      virtualInventoryForPositions: BigNumber.from(0),
+      virtualPoolAmountForLongToken: BigInt(0),
+      virtualPoolAmountForShortToken: BigInt(0),
+      virtualInventoryForPositions: BigInt(0),
 
       ...(overrides[key] || {}),
     };

@@ -105,7 +105,7 @@ export function usePositions(
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigNumber.from(numbers.increasedAtBlock).eq(0)) {
+        if (BigInt(numbers.increasedAtBlock).eq(0)) {
           return positionsMap;
         }
 
@@ -118,16 +118,16 @@ export function usePositions(
           account,
           marketAddress,
           collateralTokenAddress,
-          sizeInUsd: BigNumber.from(numbers.sizeInUsd),
-          sizeInTokens: BigNumber.from(numbers.sizeInTokens),
-          collateralAmount: BigNumber.from(numbers.collateralAmount),
-          increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
-          decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
+          sizeInUsd: BigInt(numbers.sizeInUsd),
+          sizeInTokens: BigInt(numbers.sizeInTokens),
+          collateralAmount: BigInt(numbers.collateralAmount),
+          increasedAtBlock: BigInt(numbers.increasedAtBlock),
+          decreasedAtBlock: BigInt(numbers.decreasedAtBlock),
           isLong: flags.isLong,
-          pendingBorrowingFeesUsd: BigNumber.from(fees.borrowing.borrowingFeeUsd),
-          fundingFeeAmount: BigNumber.from(fees.funding.fundingFeeAmount),
-          claimableLongTokenAmount: BigNumber.from(fees.funding.claimableLongTokenAmount),
-          claimableShortTokenAmount: BigNumber.from(fees.funding.claimableShortTokenAmount),
+          pendingBorrowingFeesUsd: BigInt(fees.borrowing.borrowingFeeUsd),
+          fundingFeeAmount: BigInt(fees.funding.fundingFeeAmount),
+          claimableLongTokenAmount: BigInt(fees.funding.claimableLongTokenAmount),
+          claimableShortTokenAmount: BigInt(fees.funding.claimableShortTokenAmount),
           data,
         };
 
@@ -267,10 +267,10 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.sizeInUsd = event.sizeInUsd;
   nextPosition.sizeInTokens = event.sizeInTokens;
   nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.pendingBorrowingFeesUsd = BigNumber.from(0);
-  nextPosition.fundingFeeAmount = BigNumber.from(0);
-  nextPosition.claimableLongTokenAmount = BigNumber.from(0);
-  nextPosition.claimableShortTokenAmount = BigNumber.from(0);
+  nextPosition.pendingBorrowingFeesUsd = BigInt(0);
+  nextPosition.fundingFeeAmount = BigInt(0);
+  nextPosition.claimableLongTokenAmount = BigInt(0);
+  nextPosition.claimableShortTokenAmount = BigInt(0);
   nextPosition.pendingUpdate = undefined;
   nextPosition.isOpening = false;
 
@@ -295,15 +295,15 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     marketAddress,
     collateralTokenAddress: collateralAddress,
     isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
-    collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
+    sizeInUsd: pendingUpdate.sizeDeltaUsd || BigInt(0),
+    collateralAmount: pendingUpdate.collateralDeltaAmount || BigInt(0),
+    sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigInt(0),
     increasedAtBlock: pendingUpdate.updatedAtBlock,
-    decreasedAtBlock: BigNumber.from(0),
-    pendingBorrowingFeesUsd: BigNumber.from(0),
-    fundingFeeAmount: BigNumber.from(0),
-    claimableLongTokenAmount: BigNumber.from(0),
-    claimableShortTokenAmount: BigNumber.from(0),
+    decreasedAtBlock: BigInt(0),
+    pendingBorrowingFeesUsd: BigInt(0),
+    fundingFeeAmount: BigInt(0),
+    claimableLongTokenAmount: BigInt(0),
+    claimableShortTokenAmount: BigInt(0),
     data: "0x",
 
     isOpening: true,

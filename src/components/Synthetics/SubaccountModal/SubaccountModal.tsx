@@ -389,7 +389,7 @@ const MainView = memo(() => {
             chainId,
             signer,
             subaccountAddress: address,
-          })) ?? BigNumber.from(0);
+          })) ?? BigInt(0);
       }
 
       if (!address) {

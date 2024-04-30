@@ -31,7 +31,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   } = p;
 
   if (priceImpactDeltaUsd.gt(0)) {
-    return BigNumber.from(acceptablePriceImapctBuffer);
+    return BigInt(acceptablePriceImapctBuffer);
   }
 
   const baseAcceptablePriceValues = getAcceptablePriceByPriceImpact({
@@ -46,7 +46,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
     return baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
   }
 
-  return BigNumber.from(acceptablePriceImapctBuffer);
+  return BigInt(acceptablePriceImapctBuffer);
 }
 
 export function getAcceptablePriceByPriceImpact(p: {
@@ -61,8 +61,8 @@ export function getAcceptablePriceByPriceImpact(p: {
   if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {
     return {
       acceptablePrice: indexPrice,
-      acceptablePriceDeltaBps: BigNumber.from(0),
-      priceDelta: BigNumber.from(0),
+      acceptablePriceDeltaBps: BigInt(0),
+      priceDelta: BigInt(0),
     };
   }
 
@@ -92,11 +92,11 @@ export function getAcceptablePriceInfo(p: {
   const { indexToken } = marketInfo;
 
   const values = {
-    acceptablePrice: BigNumber.from(0),
-    acceptablePriceDeltaBps: BigNumber.from(0),
-    priceImpactDeltaAmount: BigNumber.from(0),
-    priceImpactDeltaUsd: BigNumber.from(0),
-    priceImpactDiffUsd: BigNumber.from(0),
+    acceptablePrice: BigInt(0),
+    acceptablePriceDeltaBps: BigInt(0),
+    priceImpactDeltaAmount: BigInt(0),
+    priceImpactDeltaUsd: BigInt(0),
+    priceImpactDiffUsd: BigInt(0),
   };
 
   if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {

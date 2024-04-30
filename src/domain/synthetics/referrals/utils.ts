@@ -19,5 +19,5 @@ export function getTotalClaimableAffiliateRewardsUsd(
     acc = acc.add(convertToUsd(rewardItem.shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!);
 
     return acc;
-  }, BigNumber.from(0));
+  }, BigInt(0));
 }

@@ -18,5 +18,5 @@ export const selectPositionEditorPosition = createSelector((q) => {
 export const selectPositionEditorMinCollateralFactor = createSelector((q) => {
   const position = q(selectPositionEditorPosition);
   if (!position) return undefined;
-  return getMinCollateralFactorForPosition(position, BigNumber.from(0));
+  return getMinCollateralFactorForPosition(position, BigInt(0));
 });

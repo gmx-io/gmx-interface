@@ -134,9 +134,9 @@ export const useUserEarnings = (chainId: number) => {
       const result: UserEarningsData = {
         byMarketAddress: {},
         allMarkets: {
-          total: BigNumber.from(0),
-          recent: BigNumber.from(0),
-          expected365d: BigNumber.from(0),
+          total: BigInt(0),
+          recent: BigInt(0),
+          expected365d: BigInt(0),
         },
       };
 
@@ -169,7 +169,7 @@ export const useUserEarnings = (chainId: number) => {
         if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
         if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
 
-        const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
+        const latestFeeUsdPerGmToken = BigInt(feesRecent.cumulativeFeeUsdPerGmToken);
 
         const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
         const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
@@ -207,7 +207,7 @@ function calcEndOfPeriodIncome(
   latestBalanceChange: BalanceChange,
   latestCumulativeFeeUsdPerGmToken: BigNumber
 ): BigNumber {
-  if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
+  if (latestBalanceChange.tokensBalance.eq(0)) return BigInt(0);
 
   const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
 
@@ -215,7 +215,7 @@ function calcEndOfPeriodIncome(
 }
 
 function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
-  let cumulativeIncome = BigNumber.from(0);
+  let cumulativeIncome = BigInt(0);
 
   for (let i = 1; i < balanceChanges.length; i++) {
     const prevChange = balanceChanges[i - 1];
@@ -234,8 +234,8 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
 
 function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
   return {
-    cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
-    cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
-    tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
+    cumulativeFeeUsdPerGmToken: BigInt(rawBalanceChange.cumulativeFeeUsdPerGmToken),
+    cumulativeIncome: BigInt(rawBalanceChange.cumulativeIncome),
+    tokensBalance: BigInt(rawBalanceChange.tokensBalance),
   };
 }

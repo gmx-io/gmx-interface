@@ -79,11 +79,11 @@ export default function useSLTPEntries({
     return getPendingMockPosition({
       isIncrease: true,
       positionKey,
-      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd || BigNumber.from(0),
-      sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens || BigNumber.from(0),
-      collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount || BigNumber.from(0),
+      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd || BigInt(0),
+      sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens || BigInt(0),
+      collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount || BigInt(0),
       updatedAt: Date.now(),
-      updatedAtBlock: BigNumber.from(0),
+      updatedAtBlock: BigInt(0),
     });
   }, [positionKey, collateralToken, increaseAmounts, marketInfo]);
 
@@ -107,14 +107,14 @@ export default function useSLTPEntries({
       hasLowCollateral: false,
       leverage: nextPositionValues.nextLeverage,
       leverageWithPnl: nextPositionValues.nextLeverage,
-      pnl: BigNumber.from(0),
-      pnlPercentage: BigNumber.from(0),
-      pnlAfterFees: BigNumber.from(0),
-      pnlAfterFeesPercentage: BigNumber.from(0),
-      closingFeeUsd: BigNumber.from(0),
-      uiFeeUsd: BigNumber.from(0),
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pendingClaimableFundingFeesUsd: BigNumber.from(0),
+      pnl: BigInt(0),
+      pnlPercentage: BigInt(0),
+      pnlAfterFees: BigInt(0),
+      pnlAfterFeesPercentage: BigInt(0),
+      closingFeeUsd: BigInt(0),
+      uiFeeUsd: BigInt(0),
+      pendingFundingFeesUsd: BigInt(0),
+      pendingClaimableFundingFeesUsd: BigInt(0),
     };
   }, [
     collateralToken,
@@ -187,10 +187,10 @@ export default function useSLTPEntries({
       };
     });
 
-    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigNumber.from(0));
+    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigInt(0));
     const totalPnLPercentage = entries.reduce(
       (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
-      BigNumber.from(0)
+      BigInt(0)
     );
 
     return {
@@ -209,10 +209,10 @@ export default function useSLTPEntries({
       };
     });
 
-    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigNumber.from(0));
+    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigInt(0));
     const totalPnLPercentage = entries.reduce(
       (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
-      BigNumber.from(0)
+      BigInt(0)
     );
 
     return {

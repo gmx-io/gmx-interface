@@ -70,15 +70,15 @@ export function MarketSelector({
         const option = optionsByIndexName[indexName];
 
         if (option) {
-          option.balance = option.balance.add(gmBalance || BigNumber.from(0));
-          option.balanceUsd = option.balanceUsd.add(gmBalanceUsd || BigNumber.from(0));
+          option.balance = option.balance.add(gmBalance || BigInt(0));
+          option.balanceUsd = option.balanceUsd.add(gmBalanceUsd || BigInt(0));
         }
 
         optionsByIndexName[indexName] = optionsByIndexName[indexName] || {
           indexName,
           marketInfo,
-          balance: gmBalance || BigNumber.from(0),
-          balanceUsd: gmBalanceUsd || BigNumber.from(0),
+          balance: gmBalance || BigInt(0),
+          balanceUsd: gmBalanceUsd || BigInt(0),
           state,
         };
       });

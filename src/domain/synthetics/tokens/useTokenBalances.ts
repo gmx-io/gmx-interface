@@ -52,7 +52,7 @@ export function useTokenBalances(chainId: number, overrideAccount?: string | und
       }, {}),
     parseResponse: (res) =>
       Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = BigNumber.from(res.data[tokenAddress].balance.returnValues[0]);
+        tokenBalances[tokenAddress] = BigInt(res.data[tokenAddress].balance.returnValues[0]);
 
         return tokenBalances;
       }, {} as TokenBalancesData),

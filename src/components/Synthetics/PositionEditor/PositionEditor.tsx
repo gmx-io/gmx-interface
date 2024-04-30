@@ -188,9 +188,9 @@ export function PositionEditor(p: Props) {
     collateralDeltaAmount.gt(tokenAllowance);
 
   const maxWithdrawAmount = useMemo(() => {
-    if (!position) return BigNumber.from(0);
+    if (!position) return BigInt(0);
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigInt(0));
     let _minCollateralUsd = minCollateralUsdForLeverage;
 
     if (minCollateralUsd?.gt(_minCollateralUsd)) {
@@ -202,7 +202,7 @@ export function PositionEditor(p: Props) {
       .add(position?.pendingFundingFeesUsd || 0);
 
     if (position.collateralUsd.lt(_minCollateralUsd)) {
-      return BigNumber.from(0);
+      return BigInt(0);
     }
 
     const maxWithdrawUsd = position.collateralUsd.sub(_minCollateralUsd);
@@ -217,7 +217,7 @@ export function PositionEditor(p: Props) {
     }
 
     const collateralBasisUsd = isDeposit
-      ? position.collateralUsd.add(collateralDeltaUsd || BigNumber.from(0))
+      ? position.collateralUsd.add(collateralDeltaUsd || BigInt(0))
       : position.collateralUsd;
 
     const fundingFee = getFeeItem(position.pendingFundingFeesUsd.mul(-1), collateralBasisUsd);
@@ -258,15 +258,15 @@ export function PositionEditor(p: Props) {
 
     const nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
 
-    const receiveUsd = isDeposit ? BigNumber.from(0) : collateralDeltaUsd;
+    const receiveUsd = isDeposit ? BigInt(0) : collateralDeltaUsd;
     const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
     const nextLeverage = getLeverage({
       sizeInUsd: position.sizeInUsd,
       collateralUsd: nextCollateralUsd,
-      pendingBorrowingFeesUsd: BigNumber.from(0),
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pnl: isPnlInLeverage ? position.pnl : BigNumber.from(0),
+      pendingBorrowingFeesUsd: BigInt(0),
+      pendingFundingFeesUsd: BigInt(0),
+      pnl: isPnlInLeverage ? position.pnl : BigInt(0),
     });
 
     const nextLiqPrice = getLiquidationPrice({
@@ -277,8 +277,8 @@ export function PositionEditor(p: Props) {
       collateralToken: position.collateralToken,
       marketInfo: position.marketInfo,
       userReferralInfo,
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pendingBorrowingFeesUsd: BigNumber.from(0),
+      pendingFundingFeesUsd: BigInt(0),
+      pendingBorrowingFeesUsd: BigInt(0),
       isLong: position.isLong,
       minCollateralUsd,
     });
@@ -367,16 +367,16 @@ export function PositionEditor(p: Props) {
     if (!minCollateralFactor) return;
 
     const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigNumber.from(1),
+      BigInt(1),
       maxWithdrawAmount,
       expandDecimals(1, Math.ceil(collateralToken.decimals / 3)),
       (x) => {
         const isValid = willPositionCollateralBeSufficientForPosition(
           position,
           x,
-          BigNumber.from(0),
+          BigInt(0),
           minCollateralFactor,
-          BigNumber.from(0)
+          BigInt(0)
         );
         return { isValid, returnValue: null };
       }
@@ -435,8 +435,8 @@ export function PositionEditor(p: Props) {
         targetCollateralAddress: position.collateralTokenAddress,
         collateralDeltaAmount,
         swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
+        sizeDeltaUsd: BigInt(0),
+        sizeDeltaInTokens: BigInt(0),
         acceptablePrice: markPrice,
         triggerPrice: undefined,
         orderType: OrderType.MarketIncrease,
@@ -469,8 +469,8 @@ export function PositionEditor(p: Props) {
           initialCollateralDeltaAmount: collateralDeltaAmount,
           receiveTokenAddress: selectedCollateralAddress,
           swapPath: [],
-          sizeDeltaUsd: BigNumber.from(0),
-          sizeDeltaInTokens: BigNumber.from(0),
+          sizeDeltaUsd: BigInt(0),
+          sizeDeltaInTokens: BigInt(0),
           acceptablePrice: markPrice,
           triggerPrice: undefined,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -628,11 +628,11 @@ export function PositionEditor(p: Props) {
               }}
               onClickMax={() => {
                 let maxDepositAmount = collateralToken?.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
+                  ? collateralToken!.balance!.sub(BigInt(minResidualAmount || 0))
                   : collateralToken!.balance!;
 
                 if (maxDepositAmount.isNegative()) {
-                  maxDepositAmount = BigNumber.from(0);
+                  maxDepositAmount = BigInt(0);
                 }
 
                 const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);

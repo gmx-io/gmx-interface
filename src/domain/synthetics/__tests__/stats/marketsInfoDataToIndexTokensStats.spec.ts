@@ -49,7 +49,7 @@ describe("marketsInfoData2IndexTokenStatsMap", () => {
     const prettyResult = JSON.parse(
       JSON.stringify(result, (key, value) => {
         if (value && typeof value === "object" && "type" in value && value.type === "BigNumber") {
-          return BigNumber.from(value.hex).toBigInt().toLocaleString("en-US", {
+          return BigInt(value.hex).toBigInt().toLocaleString("en-US", {
             maximumFractionDigits: 4,
             notation: "scientific",
           });

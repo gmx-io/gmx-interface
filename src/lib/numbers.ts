@@ -7,17 +7,17 @@ import { getPlusOrMinusSymbol } from "./utils";
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
-export const BN_ZERO = BigNumber.from(0);
-export const BN_ONE = BigNumber.from(1);
-export const BN_NEGATIVE_ONE = BigNumber.from(-1);
+export const BN_ZERO = BigInt(0);
+export const BN_ONE = BigInt(1);
+export const BN_NEGATIVE_ONE = BigInt(-1);
 
 /**
  *
- * @deprecated Use BigNumber.from instead
+ * @deprecated Use BigInt instead
  */
 export function bigNumberify(n?: BigNumberish) {
   try {
-    return BigNumber.from(n);
+    return BigInt(n);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error("bigNumberify error", e);
@@ -174,7 +174,7 @@ export function formatUsd(
 
   if (!usd) {
     if (fallbackToZero) {
-      usd = BigNumber.from(0);
+      usd = BigInt(0);
     } else {
       return undefined;
     }
@@ -196,7 +196,7 @@ export function formatDeltaUsd(
 ) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
-      return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
+      return `${formatUsd(BigInt(0))} (${formatAmount(BigInt(0), 2, 2)}%)`;
     }
 
     return undefined;
@@ -217,7 +217,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
 
   if (!percentage) {
     if (fallbackToZero) {
-      return `${formatAmount(BigNumber.from(0), 2, 2)}%`;
+      return `${formatAmount(BigInt(0), 2, 2)}%`;
     }
 
     return undefined;
@@ -255,7 +255,7 @@ export function formatTokenAmount(
 
   if (!amount || !tokenDecimals) {
     if (fallbackToZero) {
-      amount = BigNumber.from(0);
+      amount = BigInt(0);
       tokenDecimals = displayDecimals;
     } else {
       return undefined;
@@ -383,7 +383,7 @@ export function roundToTwoDecimals(n) {
 }
 
 export function sumBigNumbers(...args) {
-  return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigNumber.from(0));
+  return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigInt(0));
 }
 
 export function removeTrailingZeros(amount: string | number) {

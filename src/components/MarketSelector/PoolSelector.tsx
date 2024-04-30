@@ -77,8 +77,8 @@ export function PoolSelector({
           poolName,
           name: marketInfo.name,
           marketInfo,
-          balance: gmBalance || BigNumber.from(0),
-          balanceUsd: gmBalanceUsd || BigNumber.from(0),
+          balance: gmBalance || BigInt(0),
+          balanceUsd: gmBalanceUsd || BigInt(0),
           state,
         };
       });

@@ -29,12 +29,12 @@ function stringToNumber(value: string, decimals: number) {
   fraction = (fraction ?? "").slice(0, decimals);
 
   const fractionLength = fraction.length;
-  const multiplier = BigNumber.from(10).pow(fractionLength);
+  const multiplier = BigInt(10).pow(fractionLength);
   try {
-    return BigNumber.from(int || 0)
+    return BigInt(int || 0)
       .mul(multiplier)
-      .add(BigNumber.from(fraction || 0))
-      .mul(BigNumber.from(10).pow(decimals - fractionLength));
+      .add(BigInt(fraction || 0))
+      .mul(BigInt(10).pow(decimals - fractionLength));
   } catch (e) {
     return null;
   }

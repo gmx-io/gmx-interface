@@ -236,7 +236,7 @@ function FullApp() {
             openSettings={openSettings}
             showRedirectModal={showRedirectModal}
           />
-          {isHome && (
+          {/* {isHome && (
             <Switch>
               <Route exact path="/">
                 <Home showRedirectModal={showRedirectModal} />
@@ -251,10 +251,10 @@ function FullApp() {
                 <PageNotFound />
               </Route>
             </Switch>
-          )}
+          )} */}
           {!isHome && (
             <Switch>
-              <Route exact path="/">
+              {/* <Route exact path="/">
                 <Redirect to="/trade" />
               </Route>
               <Route exact path="/price_impact_rebates_stats">
@@ -287,7 +287,7 @@ function FullApp() {
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
-              </Route>
+              </Route> */}
 
               <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
@@ -298,7 +298,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              <Redirect from="/v2" to="/trade" />
+              {/* <Redirect from="/v2" to="/trade" />
               <Route exact path="/buy_glp">
                 <BuyGlp />
               </Route>
@@ -392,7 +392,7 @@ function FullApp() {
 
               <Route path="*">
                 <PageNotFound />
-              </Route>
+              </Route> */}
             </Switch>
           )}
         </div>

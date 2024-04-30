@@ -218,8 +218,8 @@ export function TradeBox(p: Props) {
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigInt(0);
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigInt(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
   const isNotMatchAvailableBalance =
@@ -291,7 +291,7 @@ export function TradeBox(p: Props) {
       // "10 *" means we do 1..50 search but with 0.1x step
       (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
       (lev) => {
-        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
+        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
           findSwapPath: swapRoutes.findSwapPath,
@@ -731,11 +731,11 @@ export function TradeBox(p: Props) {
   const onMaxClick = useCallback(() => {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken?.isNative
-        ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
+        ? fromToken.balance.sub(BigInt(minResidualAmount || 0))
         : fromToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigNumber.from(0);
+        maxAvailableAmount = BigInt(0);
       }
 
       setFocusedInput("from");
