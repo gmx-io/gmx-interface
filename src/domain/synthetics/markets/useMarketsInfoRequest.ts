@@ -442,14 +442,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
         const longInterestInTokens = longInterestInTokensUsingLongToken.add(longInterestInTokensUsingShortToken);
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_priceMin, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
+        const [, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_priceMax, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues;
+        const [, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues;
 
         const longToken = getByKey(tokensData!, market.longTokenAddress)!;
         const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
