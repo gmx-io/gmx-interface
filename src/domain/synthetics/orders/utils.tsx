@@ -524,7 +524,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
   });
 }
 
-export function getIsMaxLeverageError(
+function getIsMaxLeverageError(
   order: PositionOrderInfo,
   position: PositionInfo | undefined,
   findSwapPath: FindSwapPath,
@@ -550,8 +550,8 @@ export function getIsMaxLeverageError(
   const collateralDeltaAmount = swapAmounts.amountOut;
   const collateralDeltaUsd = convertToUsd(
     collateralDeltaAmount,
-    order.initialCollateralToken.decimals,
-    order.initialCollateralToken.prices.minPrice
+    order.targetCollateralToken.decimals,
+    order.targetCollateralToken.prices.minPrice
   );
 
   if (!collateralDeltaUsd) return false;
