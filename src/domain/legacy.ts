@@ -735,7 +735,7 @@ export async function createSwapOrder(
   const params = [path, amountIn, minOut, triggerRatio, triggerAboveThreshold, executionFee, shouldWrap, shouldUnwrap];
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, "createSwapOrder", params, opts);
 }
@@ -784,7 +784,7 @@ export async function createIncreaseOrder(
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, "createIncreaseOrder", params, opts);
 }
@@ -818,7 +818,7 @@ export async function createDecreaseOrder(
   ];
   opts.value = executionFee;
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, "createDecreaseOrder", params, opts);
 }
@@ -827,7 +827,7 @@ export async function cancelSwapOrder(chainId, library, index, opts) {
   const params = [index];
   const method = "cancelSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -836,7 +836,7 @@ export async function cancelDecreaseOrder(chainId, library, index, opts) {
   const params = [index];
   const method = "cancelDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -845,7 +845,7 @@ export async function cancelIncreaseOrder(chainId, library, index, opts) {
   const params = [index];
   const method = "cancelIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -898,7 +898,7 @@ export async function updateDecreaseOrder(
   const params = [index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -915,7 +915,7 @@ export async function updateIncreaseOrder(
   const params = [index, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -924,7 +924,7 @@ export async function updateSwapOrder(chainId, library, index, minOut, triggerRa
   const params = [index, minOut, triggerRatio, triggerAboveThreshold];
   const method = "updateSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -932,7 +932,7 @@ export async function updateSwapOrder(chainId, library, index, minOut, triggerRa
 export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
   const positionManagerAddress = getContract(chainId, "PositionManager");
-  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, library.getSigner());
+  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, library);
   return callContract(chainId, contract, method, params, opts);
 }
 
