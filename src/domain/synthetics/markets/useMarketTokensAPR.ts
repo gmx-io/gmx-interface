@@ -1,22 +1,29 @@
 import { gql } from "@apollo/client";
-import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
-import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { getByKey } from "lib/objects";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfoRequest } from ".";
-import { useTokensDataRequest } from "../tokens";
-import { MarketTokensAPRData } from "./types";
-import { useMarketTokensData } from "./useMarketTokensData";
-import { getByKey } from "lib/objects";
+import { getBorrowingFactorPerPeriod } from "../fees";
+import { MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
+import { useMarketTokensData } from "./useMarketTokensData";
 import useIncentiveStats from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
+import { getTokenBySymbol } from "config/tokens";
+import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
+import { expandDecimals } from "lib/numbers";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
+  cumulativeBorrowingFeeUsdPerPoolValue: string;
+};
+
+type RawPoolValue = {
+  poolValue: string;
 };
 
 type MarketTokensAPRResult = {
@@ -88,10 +95,12 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const marketAddresses = useMarketAddresses(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
 
-  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr").join(",") : null;
+  const key =
+    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr-subsquid").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
 
@@ -100,34 +109,38 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const marketFeesQuery = (marketAddress: string) => {
         return `
             _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
-                orderBy:timestampGroup
-                orderDirection:desc
+                orderBy:timestampGroup_DESC
                 where: {
-                  marketAddress: "${marketAddress.toLowerCase()}"
-                  period: "1h"
+                  marketAddress_eq: "${marketAddress}"
+                  period_eq: "1h"
                   timestampGroup_lte: ${Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000)}
                 },
-                first: 1
+                limit: 1
             ) {
                 cumulativeFeeUsdPerPoolValue
+                cumulativeBorrowingFeeUsdPerPoolValue
             }
 
             _${marketAddress}_recent: collectedMarketFeesInfos(
-              orderBy: timestampGroup
-              orderDirection: desc
+              orderBy:timestampGroup_DESC
               where: {
-                marketAddress: "${marketAddress.toLowerCase()}"
-                period: "1h"
+                marketAddress_eq: "${marketAddress}"
+                period_eq: "1h"
               },
-              first: 1
+              limit: 1
           ) {
               cumulativeFeeUsdPerPoolValue
+              cumulativeBorrowingFeeUsdPerPoolValue
+          }
+
+          _${marketAddress}_poolValue: poolValues(where: { marketAddress_eq: "${marketAddress}" }) {
+            poolValue
           }
         `;
       };
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
-      let responseOrNull: Record<string, [RawCollectedFee]> | null = null;
+      let responseOrNull: Record<string, [RawCollectedFee | RawPoolValue]> | null = null;
       try {
         responseOrNull = (await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" })).data;
       } catch (err) {
@@ -145,11 +158,21 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const response = responseOrNull;
 
       const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
-        const recentFees = response[`_${marketAddress}_recent`];
+        const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFee[];
+        const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFee[];
+        const poolValue = BigNumber.from(
+          (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
+        );
 
-        const x1 = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2 = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const marketInfo = getByKey(marketsInfoData, marketAddress);
+        if (!marketInfo) return acc;
+
+        const x1total = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x1borrowing = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x2total = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2borrowing = BigNumber.from(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x1 = x1total.sub(x1borrowing);
+        const x2 = x2total.sub(x2borrowing);
 
         if (x2.eq(0)) {
           acc[marketAddress] = BigNumber.from(0);
@@ -158,9 +181,10 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
         const incomePercentageForPeriod = x2.sub(x1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
-        const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
+        const aprByFees = incomePercentageForPeriod.mul(yearMultiplier);
+        const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
 
-        acc[marketAddress] = apr;
+        acc[marketAddress] = aprByFees.add(aprByBorrowingFee);
 
         return acc;
       }, {} as MarketTokensAPRData);
@@ -185,4 +209,21 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     marketsTokensAPRData: data?.marketsTokensAPRData,
     avgMarketsAPR: data?.avgMarketsAPR,
   };
+}
+
+function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
+  const longOi = marketInfo.longInterestUsd;
+  const shortOi = marketInfo.shortInterestUsd;
+  const isLongPayingBorrowingFee = longOi.gt(shortOi);
+  const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
+
+  const borrowingFeeUsdForPoolPerYear = borrowingFactorPerYear
+    .mul(isLongPayingBorrowingFee ? longOi : shortOi)
+    .mul(63)
+    .div(PRECISION)
+    .div(100);
+
+  const borrowingFeeUsdPerPoolValuePerYear = borrowingFeeUsdForPoolPerYear.mul(PRECISION).div(poolValue);
+
+  return borrowingFeeUsdPerPoolValuePerYear;
 }

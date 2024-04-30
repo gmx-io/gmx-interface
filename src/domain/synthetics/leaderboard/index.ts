@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { getLeaderboardGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { expandDecimals } from "lib/numbers";
@@ -152,7 +152,7 @@ const fetchAccounts = async (
   chainId: number,
   p: { account?: string; from?: number; to?: number }
 ): Promise<LeaderboardAccountBase[] | undefined> => {
-  const client = getLeaderboardGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
     console.error("no client");
@@ -288,7 +288,7 @@ const fetchPositions = async (
   chainId: number,
   snapshotTimestamp: number | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
-  const client = getLeaderboardGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
     console.error("no endpoint");
