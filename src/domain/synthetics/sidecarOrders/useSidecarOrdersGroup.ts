@@ -106,6 +106,8 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const clampEntryPercentage = useCallback(
     (entries: SidecarOrderEntryBase[], entry: T) => {
+      if (entry.mode !== "fitPercentage") return entry;
+
       const totalPercentageExcludingCurrent = entries
         .filter((ent) => ent.txnType !== "cancel")
         .reduce(
@@ -113,16 +115,11 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
           BigNumber.from(0)
         );
 
-      const maxPercentage = MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent);
+      const remainingPercentage = MAX_PERCENTAGE.gt(totalPercentageExcludingCurrent)
+        ? MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent)
+        : BigNumber.from(0);
 
-      let nextEntry = entry;
-
-      if (entry.percentage.value?.gt(maxPercentage) || entry.mode === "fitPercentage") {
-        nextEntry = recalculateEntryByField(entry, "percentage", { value: maxPercentage });
-        nextEntry.mode = "fitPercentage";
-      }
-
-      return nextEntry;
+      return recalculateEntryByField(entry, "percentage", { value: remainingPercentage });
     },
     [recalculateEntryByField]
   );
