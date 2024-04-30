@@ -24,7 +24,7 @@ function getLimitedDisplay(
 ) {
   const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
   const max = expandDecimals(Number(maxThreshold), tokenDecimals);
-  const min = ethers.utils.parseUnits(minThreshold, tokenDecimals).toBigInt();
+  const min = ethers.parseUnits(minThreshold, tokenDecimals);
   const absAmount = abs(amount);
 
   if (absAmount === 0n) {
@@ -92,7 +92,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(amount, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);

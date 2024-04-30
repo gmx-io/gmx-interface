@@ -48,7 +48,7 @@ export default function BeginAccountTransfer() {
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
   let parsedReceiver = ethers.ZeroAddress;
-  if (ethers.utils.isAddress(receiver)) {
+  if (ethers.isAddress(receiver)) {
     parsedReceiver = receiver;
   }
 
@@ -151,7 +151,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
     }
-    if (!ethers.utils.isAddress(receiver)) {
+    if (!ethers.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
 

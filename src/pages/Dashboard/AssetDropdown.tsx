@@ -89,7 +89,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && !token.isNative && !token.isSynthetic && ethers.utils.isAddress(token.address) && (
+            {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
               <div
                 onClick={() => {
                   if (walletClient?.watchAsset && token) {

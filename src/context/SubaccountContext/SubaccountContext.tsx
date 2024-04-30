@@ -131,7 +131,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
     if (!signature) return null;
 
-    const pk = ethers.utils.keccak256(signature);
+    const pk = ethers.keccak256(signature);
     const subWallet = new ethers.Wallet(pk);
 
     const encrypted = cryptoJs.AES.encrypt(pk, account);

@@ -81,8 +81,8 @@ export function SyntheticsStateContextProvider({
 
   let checkSummedAccount: string | undefined;
 
-  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
-    checkSummedAccount = ethers.utils.getAddress(paramsAccount);
+  if (paramsAccount && ethers.isAddress(paramsAccount)) {
+    checkSummedAccount = ethers.getAddress(paramsAccount);
   }
 
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;

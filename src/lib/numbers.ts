@@ -37,7 +37,7 @@ function getLimitedDisplay(
 ) {
   const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
   const max = expandDecimals(maxThreshold, tokenDecimals);
-  const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
+  const min = ethers.parseUnits(minThreshold, tokenDecimals);
   const absAmount = amount.abs();
 
   if (absAmount.eq(0)) {
@@ -112,7 +112,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(amount, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
@@ -155,7 +155,7 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   if (!amount) {
     return "...";
   }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(amount, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   return trimZeroDecimals(amountStr);
 };
@@ -316,7 +316,7 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
   value = limitDecimals(value, tokenDecimals);
-  const amount = ethers.utils.parseUnits(value, tokenDecimals);
+  const amount = ethers.parseUnits(value, tokenDecimals);
   return bigNumberify(amount);
 };
 

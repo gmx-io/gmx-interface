@@ -39,8 +39,8 @@ function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
-  if (queryAccount && ethers.utils.isAddress(queryAccount)) {
-    account = ethers.utils.getAddress(queryAccount);
+  if (queryAccount && ethers.isAddress(queryAccount)) {
+    account = ethers.getAddress(queryAccount);
   } else {
     account = walletAccount;
   }

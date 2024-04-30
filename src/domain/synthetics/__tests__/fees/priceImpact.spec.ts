@@ -38,9 +38,9 @@ describe("applyImpactFactor", () => {
   ]) {
     it(`should keep difference >1/1e10 from the contract value: ${expected}`, () => {
       const result = applyImpactFactor(
-        ethers.utils.parseUnits(String(diffUsd), 30),
-        ethers.utils.parseUnits(String(impactFactor), 30),
-        ethers.utils.parseUnits(String(exponentFactor), 30)
+        ethers.parseUnits(String(diffUsd), 30),
+        ethers.parseUnits(String(impactFactor), 30),
+        ethers.parseUnits(String(exponentFactor), 30)
       );
 
       const _expected = BigNumber.from(expected);

@@ -710,7 +710,7 @@ export function getPositionKey(
 }
 
 export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
-  return ethers.utils.solidityKeccak256(
+  return ethers.solidityPackedKeccak256(
     ["address", "address", "address", "bool"],
     [account, collateralToken, indexToken, isLong]
   );

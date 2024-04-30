@@ -4,7 +4,7 @@ import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
 import dateEn from "date-fns/locale/en-US";
@@ -154,9 +154,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-export function tryGetError(
-  reasonBytes: ethers.utils.Bytes
-): ReturnType<typeof customErrors.interface.parseError> | undefined {
+export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
   let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
 
   try {

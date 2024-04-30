@@ -98,10 +98,10 @@ export default function useReferralsData(account) {
               const item = {
                 timestamp: parseInt(d.timestamp),
                 transactionHash: d.transactionHash,
-                receiver: ethers.utils.getAddress(d.receiver),
+                receiver: ethers.getAddress(d.receiver),
                 amount: bigNumberify(amount),
                 typeId: d.typeId,
-                token: ethers.utils.getAddress(d.tokens[i]),
+                token: ethers.getAddress(d.tokens[i]),
               };
               if (d.typeId === DISTRIBUTION_TYPE_REBATES) {
                 rebateDistributions.push(item);

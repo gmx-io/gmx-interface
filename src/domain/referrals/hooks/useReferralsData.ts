@@ -115,9 +115,9 @@ export function useReferralsData(account?: string | null) {
           res.data.distributions.forEach((d) => {
             const item = {
               typeId: d.typeId,
-              receiver: ethers.utils.getAddress(d.receiver),
-              markets: d.markets.map((market) => ethers.utils.getAddress(market)),
-              tokens: d.tokens.map((token) => ethers.utils.getAddress(token)),
+              receiver: ethers.getAddress(d.receiver),
+              markets: d.markets.map((market) => ethers.getAddress(market)),
+              tokens: d.tokens.map((token) => ethers.getAddress(token)),
               amounts: d.amounts.map((a) => bigNumberify(a)!),
               amountsInUsd: d.amountsInUsd.map((a) => bigNumberify(a)!),
               timestamp: parseInt(d.timestamp),

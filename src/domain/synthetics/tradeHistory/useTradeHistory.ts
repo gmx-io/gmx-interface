@@ -118,8 +118,8 @@ function createRawTradeActionTransformer(
     const orderType = Number(rawAction.orderType);
 
     if (isSwapOrderType(orderType)) {
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
 
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
@@ -157,11 +157,11 @@ function createRawTradeActionTransformer(
 
       return tradeAction;
     } else {
-      const marketAddress = ethers.utils.getAddress(rawAction.marketAddress!);
+      const marketAddress = ethers.getAddress(rawAction.marketAddress!);
       const marketInfo = getByKey(marketsInfoData, marketAddress);
       const indexToken = marketInfo?.indexToken;
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
         swapPath,

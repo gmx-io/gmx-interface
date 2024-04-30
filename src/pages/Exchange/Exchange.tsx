@@ -66,7 +66,7 @@ const notifications = {};
 
 function pushSuccessNotification(chainId, message, e) {
   const { transactionHash } = e;
-  const id = ethers.utils.id(message + transactionHash);
+  const id = ethers.id(message + transactionHash);
   if (notifications[id]) {
     return;
   }
@@ -86,7 +86,7 @@ function pushSuccessNotification(chainId, message, e) {
 
 function pushErrorNotification(chainId, message, e) {
   const { transactionHash } = e;
-  const id = ethers.utils.id(message + transactionHash);
+  const id = ethers.id(message + transactionHash);
   if (notifications[id]) {
     return;
   }
