@@ -397,7 +397,7 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
         }
 
         try {
-          const gasPrice = await provider.getGasPrice();
+          const gasPrice = (await provider.getFeeData()).gasPrice;
           resolve(gasPrice);
         } catch (e) {
           // eslint-disable-next-line no-console

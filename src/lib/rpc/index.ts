@@ -90,7 +90,7 @@ export function useJsonRpcProvider(chainId: number) {
 }
 
 export function isWebsocketProvider(provider: any): provider is WebSocketProvider {
-  return Boolean(provider?._websocket);
+  return Boolean(provider?.websocket);
 }
 
 export enum WSReadyState {
@@ -101,7 +101,7 @@ export enum WSReadyState {
 }
 
 export function isProviderInClosedState(wsProvider: WebSocketProvider) {
-  return [WSReadyState.CLOSED, WSReadyState.CLOSING].includes(wsProvider._websocket.readyState);
+  return [WSReadyState.CLOSED, WSReadyState.CLOSING].includes(wsProvider.websocket.readyState);
 }
 
 export function closeWsConnection(wsProvider: WebSocketProvider) {
@@ -110,5 +110,5 @@ export function closeWsConnection(wsProvider: WebSocketProvider) {
   }
 
   wsProvider.removeAllListeners();
-  wsProvider._websocket.close();
+  wsProvider.websocket.close();
 }
