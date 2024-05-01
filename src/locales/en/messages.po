@@ -4348,6 +4348,10 @@ msgid "Price Impact not yet acknowledged"
 msgstr "Price Impact not yet acknowledged"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above Entry Price."
+msgstr "Price above Entry Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr "Price above Limit Price."
 
@@ -4378,6 +4382,10 @@ msgstr "Price above Mark Price"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr "Price above Mark Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below Entry Price."
+msgstr "Price below Entry Price."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."

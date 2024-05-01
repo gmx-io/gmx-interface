@@ -15,6 +15,7 @@ import {
   selectTradeboxCollateralToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxTriggerPrice,
+  selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxNextPositionValues,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -41,6 +42,7 @@ export function useSidecarOrders() {
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
 
@@ -53,10 +55,11 @@ export function useSidecarOrders() {
       handleEntryError(entry, "limit", {
         liqPrice: nextPositionValues?.nextLiqPrice,
         entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        markPrice,
         isLong,
         isLimit,
       }),
-    [isLong, isLimit, triggerPrice, nextPositionValues]
+    [isLong, isLimit, markPrice, triggerPrice, nextPositionValues]
   );
 
   const limitEntriesInfo = useSidecarOrdersGroup<SidecarLimitOrderEntry>({
@@ -90,6 +93,7 @@ export function useSidecarOrders() {
       handleEntryError(entry, "sl", {
         liqPrice: nextPositionValues?.nextLiqPrice,
         entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        markPrice,
         isLong,
         isLimit,
         isAnyLimits: !!limitEntriesInfo.entries.length || isLimit,
@@ -101,6 +105,7 @@ export function useSidecarOrders() {
       isLong,
       isLimit,
       triggerPrice,
+      markPrice,
       existingPosition,
       nextPositionValues,
       maxLimitTrigerPrice,
@@ -114,6 +119,7 @@ export function useSidecarOrders() {
       handleEntryError(entry, "tp", {
         liqPrice: nextPositionValues?.nextLiqPrice,
         entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        markPrice,
         isLong,
         isLimit,
         isAnyLimits: !!limitEntriesInfo.entries.length || isLimit,
@@ -125,6 +131,7 @@ export function useSidecarOrders() {
       isLong,
       isLimit,
       triggerPrice,
+      markPrice,
       existingPosition,
       nextPositionValues,
       maxLimitTrigerPrice,

@@ -82,6 +82,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   {
     liqPrice,
     entryPrice,
+    markPrice,
     isLong,
     isLimit,
     isAnyLimits,
@@ -91,6 +92,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   }: {
     liqPrice?: BigNumber;
     entryPrice?: BigNumber;
+    markPrice?: BigNumber;
     isLong?: boolean;
     isLimit?: boolean;
     isAnyLimits?: boolean;
@@ -103,23 +105,25 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   let priceError: string | null = null;
   let percentageError: string | null = null;
 
-  if (liqPrice && entryPrice && entry.price?.value?.gt(0)) {
+  if (liqPrice && entryPrice && markPrice && entry.price?.value?.gt(0)) {
     const inputPrice = entry.price.value;
 
     const isExistingOrder = !!entry.order;
-    const isPriceAboveMark = inputPrice?.gte(entryPrice);
-    const isPriceBelowMark = inputPrice?.lte(entryPrice);
+    const isPriceAboveEntry = inputPrice?.gte(entryPrice);
+    const isPriceBelowEntry = inputPrice?.lte(entryPrice);
+    const isPriceAboveMark = inputPrice?.gte(markPrice);
+    const isPriceBelowMark = inputPrice?.lte(markPrice);
     const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
-    const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Mark Price.`;
-    const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
+    const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Entry Price.`;
+    const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Entry Price.`;
 
     if (type === "sl") {
       if (!isLimit || isExistingPosition) {
-        if (isPriceAboveMark && !isExistingOrder && isLong) {
+        if (isPriceAboveEntry && !isExistingOrder && isLong) {
           priceError = priceAboveMsg;
         }
 
-        if (isPriceBelowMark && !isExistingOrder && !isLong) {
+        if (isPriceBelowEntry && !isExistingOrder && !isLong) {
           priceError = priceBelowMsg;
         }
 
@@ -146,11 +150,11 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
     if (type === "tp") {
       if (!isLimit || isExistingPosition) {
-        if (isPriceBelowMark && isLong) {
+        if (isPriceBelowEntry && isLong) {
           priceError = priceBelowMsg;
         }
 
-        if (isPriceAboveMark && !isLong) {
+        if (isPriceAboveEntry && !isLong) {
           priceError = priceAboveMsg;
         }
       } else {
@@ -167,14 +171,12 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     }
 
     if (type === "limit") {
-      if (!isLimit || isExistingPosition) {
-        if (isPriceAboveMark && isLong) {
-          priceError = priceAboveMsg;
-        }
+      if (isPriceAboveMark && isLong) {
+        priceError = t`Price above Mark Price.`;
+      }
 
-        if (isPriceBelowMark && !isLong) {
-          priceError = priceBelowMsg;
-        }
+      if (isPriceBelowMark && !isLong) {
+        priceError = t`Price below Mark Price.`;
       }
 
       if (!entry.sizeUsd?.value || entry.sizeUsd.value?.eq(0)) {
