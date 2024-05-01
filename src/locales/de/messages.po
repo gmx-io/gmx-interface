@@ -401,6 +401,11 @@ msgstr "Nach dem Scannen erscheint eine Verbindungsaufforderung, um dein Wallet 
 msgid "Agree"
 msgstr "Zustimmen"
 
+#. Filter option for all markets
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "All"
+msgstr "Alle"
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
@@ -3114,6 +3119,7 @@ msgstr "Melde dich in deiner Binance-App an und tippe auf [Wallets]. Gehe zu [We
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3255,7 +3261,7 @@ msgstr "Marktpreis für die Order."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4717,7 +4723,7 @@ msgstr "Token suchen"
 msgid "Search action"
 msgstr "Aktion suchen"
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 msgid "Search market"
 msgstr "Markt suchen"
 
@@ -4958,6 +4964,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx

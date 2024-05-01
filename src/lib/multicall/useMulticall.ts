@@ -3,6 +3,7 @@ import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./ty
 import { executeMulticall } from "./utils";
 import { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 import useWallet from "lib/wallets/useWallet";
+import { useRef } from "react";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -40,6 +41,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     swrOpts.refreshInterval = params.refreshInterval || undefined;
   }
 
+  const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
+
   const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
@@ -54,7 +57,13 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           throw new Error(`Multicall request is empty`);
         }
 
-        const response = await executeMulticall(chainId, signer, request);
+        const responseOrFailure = await executeMulticall(chainId, signer, request);
+
+        if (responseOrFailure?.success) {
+          successDataByChainIdRef.current[chainId] = responseOrFailure;
+        }
+
+        const response = successDataByChainIdRef.current[chainId];
 
         if (!response) {
           throw new Error(`Multicall response is empty`);
