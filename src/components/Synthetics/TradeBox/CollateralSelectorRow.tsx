@@ -1,23 +1,27 @@
 import { Trans, t } from "@lingui/macro";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import TokenSelector from "components/TokenSelector/TokenSelector";
 import { convertTokenAddress } from "config/tokens";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
+  selectTradeboxCollateralTokenAddress,
   selectTradeboxHasExistingOrder,
   selectTradeboxHasExistingPosition,
+  selectTradeboxMarketAddress,
   selectTradeboxMarketInfo,
+  selectTradeboxSetCollateralAddress,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
-import { TokenData } from "domain/synthetics/tokens";
-import { TokenInfo } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import pickBy from "lodash/pickBy";
+import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+
+import { filter, flatMap, pickBy, uniqBy, values } from "lodash";
 import React, { useMemo } from "react";
+import { NewCollateralSelector } from "./NewCollateralSelector/NewCollateralSelector";
 
 export type Props = {
   selectedCollateralAddress?: string;
@@ -26,69 +30,101 @@ export type Props = {
   isMarket: boolean;
 };
 
-export function CollateralSelectorRow(p: Props) {
-  const { selectedCollateralAddress, selectedMarketAddress, onSelectCollateralAddress, isMarket } = p;
-  const marketsInfo = useMarketsInfoData();
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const { isLong } = useTradeboxTradeFlags();
+const selectSelectedCollateralTokenSymbol = createSelector((q) => {
+  const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
+  const tokensData = q(selectTokensData);
+  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
 
-  const { allRelatedTokensArr, allRelatedTokensMap, getTokenState } = useMemo(() => {
-    if (!marketInfo) {
-      return { allRelatedTokensArr: [], allRelatedTokensMap: {} };
+  return symbol;
+});
+
+const selectAvailableAndDisabledTokens = createSelector((q) => {
+  const marketsInfo = q(selectMarketsInfoData);
+
+  if (!marketsInfo) {
+    return {
+      availableTokens: [],
+      disabledTokens: [],
+    };
+  }
+
+  const currentMarket = q(selectTradeboxMarketInfo);
+
+  if (!currentMarket) {
+    return {
+      availableTokens: [],
+      disabledTokens: [],
+    };
+  }
+
+  const availableTokens = currentMarket.isSameCollaterals
+    ? [currentMarket.longToken]
+    : [currentMarket.longToken, currentMarket.shortToken];
+
+  const disabledTokens = filter(
+    uniqBy(
+      flatMap(
+        values(pickBy(marketsInfo, (market) => market.indexTokenAddress === currentMarket.indexTokenAddress)),
+        (market) => [market.longToken, market.shortToken]
+      ),
+      (token) => token.address
+    ),
+    (token) => token.address !== currentMarket.longToken.address && token.address !== currentMarket.shortToken.address
+  ).sort((a, b) => {
+    if (a.isStable && !b.isStable) {
+      return -1;
     }
 
-    const allRelatedTokensMap: Record<string, TokenData> = {};
-    const otherPoolsFlagMap: Record<string, boolean | undefined> = {};
+    if (!a.isStable && b.isStable) {
+      return 1;
+    }
 
-    allRelatedTokensMap[marketInfo.longTokenAddress] = marketInfo.longToken;
-    allRelatedTokensMap[marketInfo.shortTokenAddress] = marketInfo.shortToken;
+    return 0;
+  });
 
-    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexTokenAddress === marketInfo.indexTokenAddress);
+  return {
+    availableTokens: availableTokens,
+    disabledTokens: disabledTokens,
+  };
+});
 
-    Object.values(relatedMarkets).forEach((market) => {
-      if (!allRelatedTokensMap[market.longTokenAddress]) {
-        allRelatedTokensMap[market.longTokenAddress] = market.longToken;
-        otherPoolsFlagMap[market.longTokenAddress] = true;
-      }
-      if (!allRelatedTokensMap[market.shortTokenAddress]) {
-        allRelatedTokensMap[market.shortTokenAddress] = market.shortToken;
-        otherPoolsFlagMap[market.shortTokenAddress] = true;
-      }
-    });
+export function CollateralSelectorRow(p: Props) {
+  const { selectedCollateralAddress, onSelectCollateralAddress } = p;
+  const selectedTokenName = useSelector(selectSelectedCollateralTokenSymbol);
 
-    const allRelatedTokensArr = Object.values(allRelatedTokensMap).sort((a, b) => {
-      if (otherPoolsFlagMap[a.address] && !otherPoolsFlagMap[b.address]) {
-        return 1;
-      }
+  const { availableTokens, disabledTokens } = useSelector(selectAvailableAndDisabledTokens);
 
-      if (!otherPoolsFlagMap[a.address] && otherPoolsFlagMap[b.address]) {
-        return -1;
-      }
+  const warnings = useCollateralWarnings();
 
-      if (a.isStable && !b.isStable) {
-        return -1;
-      }
+  return (
+    <>
+      <ExchangeInfoRow
+        label={t`Collateral In`}
+        className="SwapBox-info-row"
+        value={
+          <NewCollateralSelector
+            onSelect={onSelectCollateralAddress}
+            options={availableTokens}
+            disabledOptions={disabledTokens}
+            selectedTokenAddress={selectedCollateralAddress}
+            selectedTokenSymbol={selectedTokenName}
+          />
+        }
+      />
+      {warnings}
+    </>
+  );
+}
 
-      if (!a.isStable && b.isStable) {
-        return 1;
-      }
-
-      const aLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
-      const bLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
-
-      return aLiquidity.gte(bLiquidity) ? -1 : 1;
-    });
-
-    const getTokenState = (info: TokenInfo) => {
-      if (otherPoolsFlagMap[info.address]) {
-        return { disabled: true, message: t`Select a pool containing ${info.symbol} to use it as collateral.` };
-      }
-    };
-
-    return { allRelatedTokensMap, allRelatedTokensArr, getTokenState };
-  }, [isLong, marketInfo, marketsInfo]);
+function useCollateralWarnings() {
+  const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
+  const { isMarket } = useSelector(selectTradeboxTradeFlags);
+  const onSelectCollateralAddress = useSelector(selectTradeboxSetCollateralAddress);
+  const chainId = useSelector(selectChainId);
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+
   const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const {
@@ -98,8 +134,6 @@ export function CollateralSelectorRow(p: Props) {
     collateralWithPosition,
     collateralWithOrderShouldUnwrapNativeToken,
   } = marketsOptions || {};
-
-  const { chainId } = useChainId();
 
   const showHasExistingPositionWithDifferentCollateral =
     !hasExistingPosition &&
@@ -205,31 +239,5 @@ export function CollateralSelectorRow(p: Props) {
     chainId,
   ]);
 
-  return (
-    <>
-      <ExchangeInfoRow
-        label={t`Collateral In`}
-        className="SwapBox-info-row"
-        value={
-          selectedCollateralAddress &&
-          allRelatedTokensArr.length !== 0 && (
-            <TokenSelector
-              label={t`Collateral In`}
-              className="GlpSwap-from-token SwapBox-info-dropdown"
-              chainId={chainId}
-              tokenAddress={selectedCollateralAddress}
-              onSelectToken={(token) => {
-                onSelectCollateralAddress(token.address);
-              }}
-              tokens={allRelatedTokensArr}
-              infoTokens={allRelatedTokensMap}
-              showTokenImgInDropdown={true}
-              getTokenState={getTokenState}
-            />
-          )
-        }
-      />
-      {messages}
-    </>
-  );
+  return messages;
 }

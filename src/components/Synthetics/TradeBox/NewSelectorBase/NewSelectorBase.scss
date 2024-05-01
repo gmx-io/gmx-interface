@@ -1,0 +1,85 @@
+.NewSelectorBase {
+  &-button {
+    appearance: none;
+    border: unset;
+    background-color: unset;
+    padding: unset;
+    margin: unset;
+
+    color: inherit;
+  }
+
+  &-panel {
+    position: relative;
+    z-index: 1000;
+
+    font-size: var(--font-base);
+
+    border-radius: var(--border-radius-sm);
+    background-color: var(--dark-blue-bg);
+    border: 1px solid #32344c;
+  }
+}
+
+.NewSelectorBaseUtils {
+  &-row {
+    cursor: pointer;
+
+    &:hover,
+    &-selected,
+    &:active {
+      background: rgba(180, 187, 255, 0.1);
+      box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+    }
+
+    &-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    td {
+      padding: 0.5rem;
+
+      &:first-child {
+        padding-left: 1.4rem;
+      }
+
+      &:last-child {
+        padding-right: 1.4rem;
+      }
+    }
+  }
+
+  &-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &-mobile-row {
+    appearance: none;
+    border: unset;
+    background-color: unset;
+    padding: unset;
+    margin: unset;
+    text-align: unset;
+
+    color: inherit;
+
+    border: 1px solid #ffffff29;
+    border-radius: 4px;
+    padding: 1.4rem;
+
+    &:hover,
+    &-selected,
+    &:active {
+      background: rgba(180, 187, 255, 0.1);
+      box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+    }
+
+    &-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}

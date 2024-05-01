@@ -105,7 +105,6 @@ const Zoom = cssTransition({
   appendPosition: false,
   collapse: true,
   collapseDuration: 200,
-  duration: 200,
 });
 
 function FullApp() {

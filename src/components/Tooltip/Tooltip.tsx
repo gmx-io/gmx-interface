@@ -1,5 +1,15 @@
 import cx from "classnames";
-import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  ComponentType,
+  PropsWithChildren,
+  ReactHTML,
+} from "react";
 import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import { computePosition, flip, size } from "@floating-ui/dom";
@@ -20,8 +30,8 @@ export type TooltipPosition =
   | "left-start"
   | "left-end";
 
-type Props = {
-  handle: ReactNode;
+type Props<T extends PropsWithChildren> = {
+  handle?: ReactNode;
   renderContent?: () => ReactNode;
   content?: ReactNode | undefined | null;
   position?: TooltipPosition;
@@ -33,9 +43,10 @@ type Props = {
   openDelay?: number;
   closeDelay?: number;
   maxAllowedWidth?: number;
-};
+  as?: ComponentType<T> | keyof ReactHTML;
+} & T;
 
-export default function Tooltip({
+export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>({
   handle,
   renderContent,
   content,
@@ -48,7 +59,9 @@ export default function Tooltip({
   openDelay = TOOLTIP_OPEN_DELAY,
   closeDelay = TOOLTIP_CLOSE_DELAY,
   maxAllowedWidth, // in px
-}: Props) {
+  as,
+  ...containerProps
+}: Props<T>) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
@@ -142,8 +155,29 @@ export default function Tooltip({
     event.preventDefault();
   }, []);
 
+  if (as) {
+    const Container = as;
+    return (
+      <Container
+        {...(containerProps as T)}
+        className={cx("Tooltip", className)}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onClick={onMouseClick}
+      >
+        {containerProps.children}
+        {visible && (
+          <div ref={popupRef} className={cx(["Tooltip-popup", computedPlacement])}>
+            {content ?? renderContent?.()}
+          </div>
+        )}
+      </Container>
+    );
+  }
+
   return (
     <span
+      {...containerProps}
       className={cx("Tooltip", className)}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

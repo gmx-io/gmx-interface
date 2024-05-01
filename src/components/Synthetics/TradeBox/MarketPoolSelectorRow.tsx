@@ -10,7 +10,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
-import { NewPoolSelector } from "./NewPoolSelector";
+import { NewPoolSelector } from "./NewPoolSelector/NewPoolSelector";
 
 export type Props = {
   indexToken?: Token;

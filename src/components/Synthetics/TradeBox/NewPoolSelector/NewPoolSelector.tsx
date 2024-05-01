@@ -1,22 +1,24 @@
-import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+/* eslint-disable react/no-unused-prop-types */
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import { AnimatePresence, Variants, motion } from "framer-motion";
-import React, { startTransition, useCallback, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import React, { useCallback } from "react";
 import { useMedia } from "react-use";
 
+import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
 import { formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
 
-import { numberToState } from "../TradeHistory/TradeHistoryRow/utils/shared";
-
-import Modal from "components/Modal/Modal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import {
+  NewSelectorBase,
+  NewSelectorBaseDesktopRow,
+  NewSelectorBaseMobileButton,
+  NewSelectorBaseMobileList,
+  useNewSelectorClose,
+} from "../NewSelectorBase/NewSelectorBase";
 
 import "./NewPoolSelector.scss";
 
@@ -31,99 +33,50 @@ type Props = {
 export function NewPoolSelector(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
-  if (isMobile) {
-    return <NewPoolSelectorMobile {...props} />;
-  }
-
-  return <NewPoolSelectorDesktop {...props} />;
+  return (
+    <NewSelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`}>
+      {isMobile ? <NewPoolSelectorMobile {...props} /> : <NewPoolSelectorDesktop {...props} />}
+    </NewSelectorBase>
+  );
 }
 
-const FADE_VARIANTS: Variants = {
-  hidden: { opacity: 0, pointerEvents: "none" },
-  visible: { opacity: 1, pointerEvents: "auto" },
-};
-
-const TRANSITION = { duration: 0.1 };
-
 function NewPoolSelectorDesktop(props: Props) {
-  const { refs, floatingStyles } = useFloating({
-    middleware: [offset(), flip(), shift()],
-    placement: "bottom-end",
-    whileElementsMounted: autoUpdate,
-  });
-
-  const suppressPointerDown = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  }, []);
+  const close = useNewSelectorClose();
 
   return (
-    <Popover className="SwapBox-info-dropdown">
-      {(popoverProps) => (
-        <>
-          <Popover.Button as="button" className="NewPoolSelector-button" ref={refs.setReference}>
-            {props.selectedPoolName}
-            <BiChevronDown className="TokenSelector-caret" />
-          </Popover.Button>
-          <FloatingPortal>
-            {/* @ts-ignore */}
-            <AnimatePresence>
-              {popoverProps.open && (
-                <Popover.Panel
-                  static
-                  className="NewPoolSelector-panel"
-                  as={motion.div}
-                  ref={refs.setFloating}
-                  style={floatingStyles}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={FADE_VARIANTS}
-                  transition={TRANSITION}
-                  onPointerDown={suppressPointerDown}
-                >
-                  <table className="NewPoolSelector-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <Trans>Pool</Trans>
-                        </th>
-                        <th>
-                          <Trans>Liquidity</Trans>
-                        </th>
-                        <th>
-                          <Trans>Net rate</Trans>
-                        </th>
-                        <th>
-                          <Trans>Open fees</Trans>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {props.options?.map((option) => (
-                        <PoolListItemDesktop
-                          key={option.marketInfo.marketTokenAddress}
-                          marketStat={option}
-                          tradeType={props.tradeType}
-                          openFees={props.openFees[option.marketInfo.marketTokenAddress]}
-                          isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
-                          onSelect={() => {
-                            props.onSelect(option.marketInfo.marketTokenAddress);
-                            startTransition(() => {
-                              popoverProps.close();
-                            });
-                          }}
-                        />
-                      ))}
-                    </tbody>
-                  </table>
-                </Popover.Panel>
-              )}
-            </AnimatePresence>
-          </FloatingPortal>
-        </>
-      )}
-    </Popover>
+    <table className="NewPoolSelector-table">
+      <thead>
+        <tr>
+          <th>
+            <Trans>Pool</Trans>
+          </th>
+          <th>
+            <Trans>Liquidity</Trans>
+          </th>
+          <th>
+            <Trans>Net rate</Trans>
+          </th>
+          <th>
+            <Trans>Open fees</Trans>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {props.options?.map((option) => (
+          <PoolListItemDesktop
+            key={option.marketInfo.marketTokenAddress}
+            marketStat={option}
+            tradeType={props.tradeType}
+            openFees={props.openFees[option.marketInfo.marketTokenAddress]}
+            isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
+            onSelect={() => {
+              props.onSelect(option.marketInfo.marketTokenAddress);
+              close();
+            }}
+          />
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -160,12 +113,7 @@ function PoolListItemDesktop({
   );
 
   return (
-    <tr
-      className={cx("NewPoolSelector-row", {
-        "NewPoolSelector-row-selected": isSelected,
-      })}
-      onClick={handleClick}
-    >
+    <NewSelectorBaseDesktopRow onClick={handleClick} isSelected={isSelected}>
       <td className="NewPoolSelector-column-pool">
         <div className="NewPoolSelector-collateral-logos">
           <>
@@ -204,43 +152,29 @@ function PoolListItemDesktop({
       >
         {formattedOpenFees}
       </td>
-    </tr>
+    </NewSelectorBaseDesktopRow>
   );
 }
 
 function NewPoolSelectorMobile(props: Props) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const toggleVisibility = useCallback(() => {
-    setIsVisible((prev) => !prev);
-  }, []);
+  const close = useNewSelectorClose();
 
   return (
-    <>
-      <button className="SwapBox-info-dropdown NewPoolSelector-button" onClick={toggleVisibility}>
-        {props.selectedPoolName}
-        <BiChevronDown className="TokenSelector-caret" />
-      </button>
-      <Modal setIsVisible={setIsVisible} isVisible={isVisible} label={<Trans>Select pool</Trans>}>
-        <div className="NewPoolSelector-mobile-list">
-          {props.options?.map((option) => (
-            <PoolListItemMobile
-              key={option.marketInfo.marketTokenAddress}
-              marketStat={option}
-              tradeType={props.tradeType}
-              openFees={props.openFees[option.marketInfo.marketTokenAddress]}
-              isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
-              onSelect={() => {
-                props.onSelect(option.marketInfo.marketTokenAddress);
-                startTransition(() => {
-                  setIsVisible(false);
-                });
-              }}
-            />
-          ))}
-        </div>
-      </Modal>
-    </>
+    <NewSelectorBaseMobileList>
+      {props.options?.map((option) => (
+        <PoolListItemMobile
+          key={option.marketInfo.marketTokenAddress}
+          marketStat={option}
+          tradeType={props.tradeType}
+          openFees={props.openFees[option.marketInfo.marketTokenAddress]}
+          isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
+          onSelect={() => {
+            props.onSelect(option.marketInfo.marketTokenAddress);
+            close();
+          }}
+        />
+      ))}
+    </NewSelectorBaseMobileList>
   );
 }
 
@@ -269,12 +203,10 @@ function PoolListItemMobile({
   const openFeesState = numberToState(openFees);
 
   return (
-    <button
+    <NewSelectorBaseMobileButton
       key={marketStat.marketInfo.marketTokenAddress}
-      className={cx("NewPoolSelector-mobile-row", {
-        "NewPoolSelector-mobile-row-selected": isSelected,
-      })}
-      onClick={onSelect}
+      isSelected={isSelected}
+      onSelect={onSelect}
     >
       <div className="NewPoolSelector-column-pool">
         <div className="NewPoolSelector-collateral-logos">
@@ -325,6 +257,6 @@ function PoolListItemMobile({
           {formattedOpenFees}
         </dd>
       </dl>
-    </button>
+    </NewSelectorBaseMobileButton>
   );
 }
