@@ -55,6 +55,7 @@ export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   availableIndexTokenStat?: IndexTokenStat;
+  availableMarketsOpenFees?: { [marketTokenAddress: string]: BigNumber };
   marketWithPosition?: MarketInfo;
   /**
    * Collateral token of the position in `marketWithPosition`
@@ -112,7 +113,12 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     marketsInfoData2IndexTokenStatsMap(keyBy(liquidMarkets, "marketTokenAddress")).indexMap
   )[0];
 
-  const result: AvailableMarketsOptions = { allMarkets, availableMarkets, availableIndexTokenStat };
+  const result: AvailableMarketsOptions = {
+    allMarkets,
+    availableMarkets,
+    availableIndexTokenStat,
+    availableMarketsOpenFees: {},
+  };
 
   if (isIncrease && liquidMarkets.length === 0) {
     result.isNoSufficientLiquidityInAnyMarket = true;
@@ -208,6 +214,8 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     });
 
     const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+
+    result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
 
     if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
       result.minOpenFeesBps = openFees;
