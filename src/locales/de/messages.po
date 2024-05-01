@@ -4377,6 +4377,7 @@ msgid "Price above Mark Price"
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr ""
 
@@ -4412,6 +4413,7 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "Preis unter Mark Preis"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
 msgstr ""

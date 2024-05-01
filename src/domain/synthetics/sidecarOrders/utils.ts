@@ -105,72 +105,26 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   let priceError: string | null = null;
   let percentageError: string | null = null;
 
-  if (liqPrice && entryPrice && markPrice && entry.price?.value?.gt(0)) {
+  if (entryPrice && markPrice && entry.price?.value?.gt(0)) {
     const inputPrice = entry.price.value;
 
-    const isExistingOrder = !!entry.order;
+    const isNewOrder = !entry.order;
     const isPriceAboveEntry = inputPrice?.gte(entryPrice);
     const isPriceBelowEntry = inputPrice?.lte(entryPrice);
     const isPriceAboveMark = inputPrice?.gte(markPrice);
     const isPriceBelowMark = inputPrice?.lte(markPrice);
-    const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
     const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Entry Price.`;
     const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Entry Price.`;
 
-    if (type === "sl") {
-      if (!isLimit || isExistingPosition) {
-        if (isPriceAboveEntry && !isExistingOrder && isLong) {
-          priceError = priceAboveMsg;
-        }
-
-        if (isPriceBelowEntry && !isExistingOrder && !isLong) {
-          priceError = priceBelowMsg;
-        }
-
-        if (!isAnyLimits) {
-          if (inputPrice?.lte(liqPrice) && isLong) {
-            priceError = priceLiqError;
-          }
-          if (inputPrice?.gte(liqPrice) && !isLong) {
-            priceError = priceLiqError;
-          }
-        }
-      } else {
-        if (isAnyLimits) {
-          if (maxLimitTrigerPrice && inputPrice?.gte(maxLimitTrigerPrice) && isLong) {
-            priceError = priceAboveMsg;
-          }
-
-          if (minLimitTrigerPrice && inputPrice?.lte(minLimitTrigerPrice) && !isLong) {
-            priceError = priceBelowMsg;
-          }
-        }
-      }
-    }
-
     if (type === "tp") {
-      if (!isLimit || isExistingPosition) {
-        if (isPriceBelowEntry && isLong) {
-          priceError = priceBelowMsg;
-        }
-
-        if (isPriceAboveEntry && !isLong) {
-          priceError = priceAboveMsg;
-        }
-      } else {
-        if (isAnyLimits) {
-          if (maxLimitTrigerPrice && inputPrice?.lte(maxLimitTrigerPrice) && isLong) {
-            priceError = priceBelowMsg;
-          }
-
-          if (minLimitTrigerPrice && inputPrice?.gte(minLimitTrigerPrice) && !isLong) {
-            priceError = priceAboveMsg;
-          }
-        }
+      if (isPriceBelowMark && isLong) {
+        priceError = t`Price below Mark Price.`;
       }
-    }
 
-    if (type === "limit") {
+      if (isPriceAboveMark && !isLong) {
+        priceError = t`Price above Mark Price.`;
+      }
+    } else {
       if (isPriceAboveMark && isLong) {
         priceError = t`Price above Mark Price.`;
       }
@@ -178,7 +132,60 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (isPriceBelowMark && !isLong) {
         priceError = t`Price below Mark Price.`;
       }
+    }
 
+    if (type === "sl") {
+      if (!isLimit || isNewOrder) {
+        if (isPriceAboveEntry && isLong) {
+          priceError = priceAboveMsg;
+        }
+
+        if (isPriceBelowEntry && !isLong) {
+          priceError = priceBelowMsg;
+        }
+      }
+
+      if (!isExistingPosition && isAnyLimits) {
+        if (maxLimitTrigerPrice && inputPrice?.gte(maxLimitTrigerPrice) && isLong) {
+          priceError = priceAboveMsg;
+        }
+
+        if (minLimitTrigerPrice && inputPrice?.lte(minLimitTrigerPrice) && !isLong) {
+          priceError = priceBelowMsg;
+        }
+      }
+
+      if (!isAnyLimits && liqPrice) {
+        if (inputPrice?.lte(liqPrice) && isLong) {
+          priceError = t`Price below Liq. Price.`;
+        }
+        if (inputPrice?.gte(liqPrice) && !isLong) {
+          priceError = t`Price above Liq. Price.`;
+        }
+      }
+    }
+
+    if (type === "tp") {
+      if (isPriceBelowEntry && isLong) {
+        priceError = priceBelowMsg;
+      }
+
+      if (isPriceAboveEntry && !isLong) {
+        priceError = priceAboveMsg;
+      }
+
+      if (!isExistingPosition && isAnyLimits) {
+        if (maxLimitTrigerPrice && inputPrice?.lte(maxLimitTrigerPrice) && isLong) {
+          priceError = priceBelowMsg;
+        }
+
+        if (minLimitTrigerPrice && inputPrice?.gte(minLimitTrigerPrice) && !isLong) {
+          priceError = priceAboveMsg;
+        }
+      }
+    }
+
+    if (type === "limit") {
       if (!entry.sizeUsd?.value || entry.sizeUsd.value?.eq(0)) {
         sizeError = t`Limit size is required.`;
       }
@@ -186,9 +193,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (entry?.increaseAmounts?.estimatedLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
         sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
       }
-    }
-
-    if (type !== "limit") {
+    } else {
       if (!entry.percentage?.value || entry.percentage.value?.eq(0)) {
         percentageError = t`A Size percentage is required.`;
       }
