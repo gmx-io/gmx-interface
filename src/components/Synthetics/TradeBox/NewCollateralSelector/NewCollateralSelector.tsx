@@ -104,7 +104,7 @@ function CollateralListItemDesktop({
       <NewSelectorBaseDesktopRow
         isSelected={isSelected}
         disabled
-        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>}
+        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
         <td className="NewCollateralSelector-column-pool">
           <TokenIcon
@@ -170,7 +170,7 @@ function CollateralListItemMobile({
 }) {
   const handleSelect = useCallback(() => {
     if (disabled) {
-      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>, {
+      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>, {
         toastId: `error-collateral-${tokenData.symbol}`,
       });
       return;

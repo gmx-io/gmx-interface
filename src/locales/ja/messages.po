@@ -1155,7 +1155,6 @@ msgstr "担保  ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "担保の種類"
 
@@ -3044,6 +3043,8 @@ msgid "Liquidation price would cross mark price."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 msgid "Liquidity"
 msgstr "流動性"
 
@@ -3637,6 +3638,11 @@ msgstr ""
 msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
 msgstr "純手数料はファンディング手数料と借入手数料を組み合わせますが、オープン、スワップ、インパクト手数料は除外されます。<0/><1/>ファンディング手数料はロングとショートをバランスさせ、両側で交換されます。<2>詳細を読む</2>。<3/><4/>借入手数料は利用可能な流動性を確保します。<5>詳細を読む</5>。"
 
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Net rate"
+msgstr ""
+
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
 msgstr "ネットワーク手数料"
@@ -3811,6 +3817,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
 msgstr "ポジションを開く"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Open fees"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -4143,7 +4154,7 @@ msgstr "手数料と価格インパクトを差し引いた損益"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "プール"
@@ -4757,7 +4768,8 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "担保として使用する{0}を含むプールを選択してください。"
 
@@ -4769,6 +4781,10 @@ msgstr ""
 msgid "Select an option"
 msgstr "選択肢を選ぶ"
 
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+msgid "Select collateral"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -4776,6 +4792,10 @@ msgstr "選択肢を選ぶ"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select different tokens"
 msgstr "別のトークンを選択"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Select pool"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
@@ -5789,6 +5809,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "手数料を削減するには別のアセットを支払いに使用してください。"
+
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+msgid "Token"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
@@ -7122,6 +7146,10 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "{formattedNetRate} / 1h"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts

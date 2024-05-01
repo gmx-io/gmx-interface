@@ -1155,7 +1155,6 @@ msgstr "Collateral ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "Collateral In"
 
@@ -3047,6 +3046,8 @@ msgid "Liquidation price would cross mark price."
 msgstr "Liquidation price would cross mark price."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 msgid "Liquidity"
 msgstr "Liquidity"
 
@@ -3640,6 +3641,11 @@ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee 
 msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
 msgstr "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
 
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Net rate"
+msgstr "Net rate"
+
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
 msgstr "Network Fee"
@@ -3814,6 +3820,11 @@ msgstr "Open Interest Balance"
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
 msgstr "Open a position"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Open fees"
+msgstr "Open fees"
 
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -4146,7 +4157,7 @@ msgstr "PnL after Fees and Price Impact"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "Pool"
@@ -4760,7 +4771,8 @@ msgstr "Select a collateral"
 msgid "Select a market"
 msgstr "Select a market"
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "Select a pool containing {0} to use it as collateral."
 
@@ -4772,6 +4784,10 @@ msgstr "Select a token"
 msgid "Select an option"
 msgstr "Select an option"
 
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+msgid "Select collateral"
+msgstr "Select collateral"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -4779,6 +4795,10 @@ msgstr "Select an option"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select different tokens"
 msgstr "Select different tokens"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Select pool"
+msgstr "Select pool"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
@@ -5792,6 +5812,10 @@ msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "To reduce fees, select a different asset to pay with."
+
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+msgid "Token"
+msgstr "Token"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
@@ -7128,6 +7152,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "{formattedNetRate} / 1h"
+msgstr "{formattedNetRate} / 1h"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
