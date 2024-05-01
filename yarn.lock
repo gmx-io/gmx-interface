@@ -11249,7 +11249,7 @@ __metadata:
     react-scripts: 5.0.1
     react-select: 5.2.1
     react-tabs: 3.2.3
-    react-toastify: latest
+    react-toastify: 10.0.5
     react-use: 17.3.1
     recharts: 2.1.8
     reselect: 5.1.0
@@ -17474,7 +17474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-toastify@npm:latest":
+"react-toastify@npm:10.0.5":
   version: 10.0.5
   resolution: "react-toastify@npm:10.0.5"
   dependencies:
