@@ -38,6 +38,11 @@
       display: grid;
 
       grid-template-columns: 1fr 1fr;
+
+      dd {
+        margin: 0;
+        text-align: right;
+      }
     }
   }
 }
