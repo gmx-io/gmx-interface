@@ -2,7 +2,6 @@ import { getByKey } from "lib/objects";
 import { MarketsInfoData } from "../markets";
 import { AffiliateRewardsData } from "./types";
 import { convertToUsd } from "../tokens";
-import { BigNumber } from "ethers";
 
 export function getTotalClaimableAffiliateRewardsUsd(
   marketsInfoData: MarketsInfoData,
@@ -15,9 +14,9 @@ export function getTotalClaimableAffiliateRewardsUsd(
     }
     const { longToken, shortToken } = marketInfo;
 
-    acc = acc.add(convertToUsd(rewardItem.longTokenAmount, longToken.decimals, longToken.prices.minPrice)!);
-    acc = acc.add(convertToUsd(rewardItem.shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!);
+    acc = acc + convertToUsd(rewardItem.longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
+    acc = acc + convertToUsd(rewardItem.shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
 
     return acc;
-  }, BigInt(0));
+  }, 0n);
 }

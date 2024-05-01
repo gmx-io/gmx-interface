@@ -535,7 +535,7 @@ export function PositionItem(p: Props) {
                   className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
                     positive: displayedPnl.gt(0),
                     negative: displayedPnl.lt(0),
-                    muted: displayedPnl.eq(0),
+                    muted: displayedPnl== 0n,
                   })}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
@@ -576,7 +576,7 @@ export function PositionItem(p: Props) {
             <button
               className="Exchange-list-action"
               onClick={p.onClosePositionClick}
-              disabled={p.position.sizeInUsd.eq(0)}
+              disabled={p.position.sizeInUsd== 0n}
             >
               <Trans>Close</Trans>
             </button>
@@ -665,7 +665,7 @@ export function PositionItem(p: Props) {
                   className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
                     positive: displayedPnl?.gt(0),
                     negative: displayedPnl?.lt(0),
-                    muted: displayedPnl?.eq(0),
+                    muted: displayedPnl?== 0n,
                   })}
                   onClick={p.openSettings}
                 >
@@ -730,15 +730,15 @@ export function PositionItem(p: Props) {
               <div className="App-card-divider" />
               <div className="Position-item-action">
                 <div className="Position-item-buttons">
-                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd== 0n} onClick={p.onClosePositionClick}>
                     <Trans>Close</Trans>
                   </Button>
-                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd== 0n} onClick={p.onEditCollateralClick}>
                     <Trans>Edit Collateral</Trans>
                   </Button>
                   <Button
                     variant="secondary"
-                    disabled={p.position.sizeInUsd.eq(0)}
+                    disabled={p.position.sizeInUsd== 0n}
                     onClick={() => {
                       // TODO: remove after adding trigger functionality to Modal
                       window.scrollTo({ top: isMobile ? 500 : 0 });

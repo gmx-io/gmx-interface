@@ -1,8 +1,7 @@
 import { gql } from "@apollo/client";
 import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
-import { getAddress } from "ethers/lib/utils.js";
+import { getAddress } from "ethers";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -17,8 +16,8 @@ type RawRebateGroup = {
   factor: string;
   claimables: {
     account: string;
-    value: BigNumber;
-    factor: BigNumber;
+    value: bigint;
+    factor: bigint;
     id: string;
   }[];
 };
@@ -28,14 +27,14 @@ export type RebateGroup = {
   timeKey: string;
   marketInfo: MarketInfo | undefined;
   tokenData: TokenData | undefined;
-  factor: BigNumber;
+  factor: bigint;
   userRebates: UserRebate[];
 };
 
 export type UserRebate = {
   account: string;
-  value: BigNumber;
-  factor: BigNumber;
+  value: bigint;
+  factor: bigint;
   tokenData: TokenData | undefined;
   marketInfo: MarketInfo | undefined;
   timeKey: string;

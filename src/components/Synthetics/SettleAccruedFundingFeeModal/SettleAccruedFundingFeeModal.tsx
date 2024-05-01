@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -55,7 +54,7 @@ export function SettleAccruedFundingFeeModal({
   const positionsInfoData = usePositionsInfoData();
 
   const positiveFeePositions = useMemo(
-    () => Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd.gt(0)),
+    () => Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0),
     [positionsInfoData]
   );
   const selectedPositions = useMemo(
@@ -115,14 +114,15 @@ export function SettleAccruedFundingFeeModal({
           initialCollateralDeltaAmount: BigInt(1), // FIXME ?
           receiveTokenAddress: position.collateralToken.address,
           swapPath: [],
-          sizeDeltaUsd: BigInt(0),
-          sizeDeltaInTokens: BigInt(0),
-          acceptablePrice: position.isLong ? BigInt(2).pow(256).sub(1) : BigInt(0),
+          sizeDeltaUsd: 0n,
+          sizeDeltaInTokens: 0n,
+          // acceptablePrice: position.isLong ? BigInt(2).pow(256).sub(1) : 0n,
+          acceptablePrice: position.isLong ? 2n ** 256n - 1n : 0n,
           triggerPrice: undefined,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           orderType: OrderType.MarketDecrease,
           isLong: position.isLong,
-          minOutputUsd: BigInt(0),
+          minOutputUsd: 0n,
           executionFee,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,

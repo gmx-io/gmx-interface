@@ -12,7 +12,6 @@ import {
   withdrawalGasLimitKey,
 } from "config/dataStore";
 import { GasLimitsConfig } from "./types";
-import { BigNumber } from "ethers";
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {

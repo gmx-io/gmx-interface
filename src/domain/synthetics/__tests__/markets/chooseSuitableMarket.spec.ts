@@ -1,5 +1,4 @@
 import { TradeType } from "domain/synthetics/trade/types";
-import { BigNumber } from "ethers";
 import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 
 type Input = Parameters<typeof chooseSuitableMarket>[0];

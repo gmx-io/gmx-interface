@@ -20,7 +20,7 @@ import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
@@ -139,7 +139,7 @@ export default function PositionEditor(props) {
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
-      maxAmount = collateralToken ? collateralToken.balance : bigNumberify(0);
+      maxAmount = collateralToken ? collateralToken.balance : 0n;
       maxAmountFormatted = formatAmount(maxAmount, collateralToken.decimals, 4, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, collateralToken.decimals, 8);
       if (fromAmount) {
@@ -151,7 +151,7 @@ export default function PositionEditor(props) {
 
       maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD).gt(0)
         ? position.collateralAfterFee.sub(MIN_ORDER_USD)
-        : bigNumberify(0);
+        : 0n;
 
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
@@ -412,7 +412,7 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
+    const withdrawAmount = fromAmount.add(fundingFee || 0n);
 
     const withdrawETH =
       !isContractAccount && (collateralTokenAddress === ZeroAddress || collateralTokenAddress === nativeTokenAddress);

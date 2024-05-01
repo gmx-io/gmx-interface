@@ -6,7 +6,7 @@ export async function removeSubaccount(chainId: number, signer: Signer, subaccou
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
-    value: BigInt(0),
+    value: 0n,
     hideSentMsg: true,
     hideSuccessMsg: true,
   });

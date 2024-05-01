@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
-import { BigNumber } from "ethers";
 import { isIncreaseOrderType, isSwapOrderType } from "./utils";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
@@ -70,12 +69,12 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
 
 function useAcceptablePrice(
   order: OrderInfo | undefined,
-  triggerPrice: BigNumber | undefined
+  triggerPrice: bigint | undefined
 ): {
-  acceptablePrice: BigNumber;
-  initialAcceptablePriceImpactBps: BigNumber;
-  acceptablePriceImpactBps: BigNumber;
-  setAcceptablePriceImpactBps: (bps: BigNumber) => void;
+  acceptablePrice: bigint;
+  initialAcceptablePriceImpactBps: bigint;
+  acceptablePriceImpactBps: bigint;
+  setAcceptablePriceImpactBps: (bps: bigint) => void;
 } {
   const isSwapOrder = order ? isSwapOrderType(order.orderType) : false;
 

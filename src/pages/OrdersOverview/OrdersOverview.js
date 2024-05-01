@@ -255,7 +255,7 @@ export default function OrdersOverview() {
                     error = t`No position`;
                   } else if (order.sizeDelta.gt(position[0])) {
                     error = t`Order size exceeds position`;
-                  } else if (order.sizeDelta.eq(0)) {
+                  } else if (order.sizeDelta == 0n) {
                     error = t`Order size is 0`;
                   }
                 }

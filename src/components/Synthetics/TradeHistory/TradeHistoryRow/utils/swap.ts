@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -169,7 +168,7 @@ export const formatSwapMessage = (
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
-    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
       outputAmount &&
       getTokensRatioByAmounts({
@@ -220,7 +219,7 @@ export const formatSwapMessage = (
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
-    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
       outputAmount &&
       getTokensRatioByAmounts({

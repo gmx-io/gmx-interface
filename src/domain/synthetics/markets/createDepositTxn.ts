@@ -17,10 +17,10 @@ type Params = {
   longTokenSwapPath: string[];
   shortTokenSwapPath: string[];
   marketTokenAddress: string;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  minMarketTokens: BigNumber;
-  executionFee: BigNumber;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  minMarketTokens: bigint;
+  executionFee: bigint;
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
@@ -35,7 +35,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   const isNativeLongDeposit = p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount?.gt(0);
   const isNativeShortDeposit = p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount?.gt(0);
 
-  let wntDeposit = BigInt(0);
+  let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {
     wntDeposit = wntDeposit.add(p.longTokenAmount!);
@@ -79,7 +79,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           minMarketTokens: minMarketTokens,
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
-          callbackGasLimit: BigInt(0),
+          callbackGasLimit: 0n,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],

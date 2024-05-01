@@ -3,11 +3,11 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatAmount } from "lib/numbers";
 
 type GetLeverageParams = {
-  size: BigNumber;
-  collateral: BigNumber;
-  fundingFee?: BigNumber;
+  size: bigint;
+  collateral: bigint;
+  fundingFee?: bigint;
   hasProfit?: boolean;
-  delta?: BigNumber;
+  delta?: bigint;
   includeDelta?: boolean;
 };
 
@@ -34,7 +34,7 @@ export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, in
     }
   }
 
-  if (remainingCollateral.eq(0)) {
+  if (remainingCollateral == 0n) {
     return;
   }
   return size.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);

@@ -193,7 +193,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Request deposit into {indexToken.symbol} {longOrShortText}
@@ -221,7 +221,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Request withdrawal from {indexToken.symbol} {longOrShortText}
@@ -249,7 +249,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Could not execute deposit into {indexToken.symbol} {longOrShortText}
@@ -282,7 +282,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Could not execute withdrawal from {indexToken.symbol} {longOrShortText}
@@ -319,7 +319,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Deposit {formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into {indexToken.symbol}{" "}
@@ -350,7 +350,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta)== 0n) {
           return (
             <Trans>
               Withdraw {formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from {indexToken.symbol}

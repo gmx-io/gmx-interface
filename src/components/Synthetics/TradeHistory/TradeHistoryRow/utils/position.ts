@@ -1,6 +1,5 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import { BigNumber, constants as ethersConstants } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -32,10 +31,11 @@ import {
   numberToState,
   tryGetError,
 } from "./shared";
+import { MaxInt256 } from "ethers";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
-  minCollateralUsd: BigNumber,
+  minCollateralUsd: bigint,
   relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
@@ -418,7 +418,7 @@ export const formatPositionMessage = (
       triggerPriceInequality + formatUsd(tradeAction.triggerPrice, { displayDecimals: priceDecimals })!;
 
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(MaxInt256);
 
     const priceComment = isAcceptablePriceUseful
       ? lines(
@@ -435,7 +435,7 @@ export const formatPositionMessage = (
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(MaxInt256);
 
     result = {
       priceComment: lines(
@@ -457,7 +457,7 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(MaxInt256);
 
     result = {
       actionComment:
@@ -487,7 +487,7 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
+    const maxLeverage = PRECISION / tradeAction.marketInfo.minCollateralFactor;
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
@@ -531,7 +531,7 @@ export const formatPositionMessage = (
     const formattedPositionFee = formatUsd(positionFeeUsd?.mul(-1))!;
 
     let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactor);
-    if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+    if (liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }
 

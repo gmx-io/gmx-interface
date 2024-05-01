@@ -3,11 +3,11 @@ import { LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS } from "../legacy";
 import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE } from "config/factors";
 
 type GetLiquidationParams = {
-  size: BigNumber;
-  collateral: BigNumber;
-  averagePrice: BigNumber;
+  size: bigint;
+  collateral: bigint;
+  averagePrice: bigint;
   isLong: boolean;
-  fundingFee?: BigNumber;
+  fundingFee?: bigint;
 };
 
 export function getLiquidationPriceFromDelta({
@@ -17,13 +17,13 @@ export function getLiquidationPriceFromDelta({
   averagePrice,
   isLong,
 }: {
-  liquidationAmount: BigNumber;
-  size: BigNumber;
-  collateral: BigNumber;
-  averagePrice: BigNumber;
+  liquidationAmount: bigint;
+  size: bigint;
+  collateral: bigint;
+  averagePrice: bigint;
   isLong: boolean;
 }) {
-  if (!size || size.eq(0)) {
+  if (!size || size == 0n) {
     return;
   }
 
@@ -40,7 +40,7 @@ export function getLiquidationPriceFromDelta({
   return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
 
-function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
+function calculateTotalFees(size: bigint, fundingFees: BigNumber): BigNumber {
   return size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(fundingFees).add(LIQUIDATION_FEE);
 }
 

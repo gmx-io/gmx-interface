@@ -32,14 +32,14 @@ export function getIncreasePositionAmounts(p: {
   initialCollateralAmount: BigNumber | undefined;
   position: PositionInfo | undefined;
   indexTokenAmount: BigNumber | undefined;
-  leverage?: BigNumber;
-  triggerPrice?: BigNumber;
-  fixedAcceptablePriceImpactBps?: BigNumber;
+  leverage?: bigint;
+  triggerPrice?: bigint;
+  fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
-  uiFeeFactor: BigNumber;
+  uiFeeFactor: bigint;
 }): IncreasePositionAmounts {
   const {
     marketInfo,
@@ -61,35 +61,35 @@ export function getIncreasePositionAmounts(p: {
   } = p;
 
   const values: IncreasePositionAmounts = {
-    initialCollateralAmount: BigInt(0),
-    initialCollateralUsd: BigInt(0),
+    initialCollateralAmount: 0n,
+    initialCollateralUsd: 0n,
 
-    collateralDeltaAmount: BigInt(0),
-    collateralDeltaUsd: BigInt(0),
+    collateralDeltaAmount: 0n,
+    collateralDeltaUsd: 0n,
 
     swapPathStats: undefined,
 
-    indexTokenAmount: BigInt(0),
+    indexTokenAmount: 0n,
 
-    sizeDeltaUsd: BigInt(0),
-    sizeDeltaInTokens: BigInt(0),
+    sizeDeltaUsd: 0n,
+    sizeDeltaInTokens: 0n,
 
-    estimatedLeverage: BigInt(0),
+    estimatedLeverage: 0n,
 
-    indexPrice: BigInt(0),
-    initialCollateralPrice: BigInt(0),
-    collateralPrice: BigInt(0),
-    triggerPrice: BigInt(0),
-    acceptablePrice: BigInt(0),
-    acceptablePriceDeltaBps: BigInt(0),
+    indexPrice: 0n,
+    initialCollateralPrice: 0n,
+    collateralPrice: 0n,
+    triggerPrice: 0n,
+    acceptablePrice: 0n,
+    acceptablePriceDeltaBps: 0n,
 
-    positionFeeUsd: BigInt(0),
-    uiFeeUsd: BigInt(0),
-    swapUiFeeUsd: BigInt(0),
-    feeDiscountUsd: BigInt(0),
-    borrowingFeeUsd: BigInt(0),
-    fundingFeeUsd: BigInt(0),
-    positionPriceImpactDeltaUsd: BigInt(0),
+    positionFeeUsd: 0n,
+    uiFeeUsd: 0n,
+    swapUiFeeUsd: 0n,
+    feeDiscountUsd: 0n,
+    borrowingFeeUsd: 0n,
+    fundingFeeUsd: 0n,
+    positionPriceImpactDeltaUsd: 0n,
   };
 
   const isLimit = triggerPrice?.gt(0);
@@ -113,8 +113,8 @@ export function getIncreasePositionAmounts(p: {
     values.collateralPrice = collateralToken.prices.minPrice;
   }
 
-  values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || BigInt(0);
-  values.fundingFeeUsd = position?.pendingFundingFeesUsd || BigInt(0);
+  values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
+  values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
 
   if (!values.indexPrice.gt(0) || !values.initialCollateralPrice.gt(0) || !values.collateralPrice.gt(0)) {
     return values;
@@ -302,9 +302,9 @@ export function getIncreasePositionAmounts(p: {
     values.estimatedLeverage = getLeverage({
       sizeInUsd: values.sizeDeltaUsd,
       collateralUsd: values.collateralDeltaUsd,
-      pnl: BigInt(0),
-      pendingBorrowingFeesUsd: BigInt(0),
-      pendingFundingFeesUsd: BigInt(0),
+      pnl: 0n,
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
     });
   }
 
@@ -346,7 +346,7 @@ export function getIncreasePositionAmounts(p: {
     values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
   }
 
-  let priceImpactAmount = BigInt(0);
+  let priceImpactAmount = 0n;
 
   if (values.positionPriceImpactDeltaUsd.gt(0)) {
     const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.maxPrice;
@@ -371,14 +371,14 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
   collateralToken: TokenData;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  collateralDeltaUsd: BigNumber;
-  collateralDeltaAmount: BigNumber;
-  indexPrice: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralDeltaUsd: bigint;
+  collateralDeltaAmount: bigint;
+  indexPrice: bigint;
   isLong: boolean;
   showPnlInLeverage: boolean;
-  minCollateralUsd: BigNumber;
+  minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
 }): NextPositionValues {
   const {
@@ -428,8 +428,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: showPnlInLeverage ? nextPnl : undefined,
-    pendingBorrowingFeesUsd: BigInt(0), // deducted on order
-    pendingFundingFeesUsd: BigInt(0), // deducted on order
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
   });
 
   const nextLiqPrice = getLiquidationPrice({
@@ -440,8 +440,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     collateralUsd: nextCollateralUsd,
     collateralAmount: nextCollateralAmount,
     minCollateralUsd,
-    pendingBorrowingFeesUsd: BigInt(0), // deducted on order
-    pendingFundingFeesUsd: BigInt(0), // deducted on order
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
     isLong: isLong,
     userReferralInfo,
   });

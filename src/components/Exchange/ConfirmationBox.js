@@ -243,7 +243,7 @@ export default function ConfirmationBox(props) {
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition);
-      if (hasProfit && delta.eq(0)) {
+      if (hasProfit && delta == 0n) {
         return t`Invalid price, see warning`;
       }
     }
@@ -273,7 +273,7 @@ export default function ConfirmationBox(props) {
         isMarketOrder &&
         MIN_PROFIT_TIME > 0 &&
         hasExistingPosition &&
-        existingPosition.delta.eq(0) &&
+        existingPosition.delta == 0n &&
         existingPosition.pendingDelta.gt(0)
       ) {
         return isLong ? t`Forfeit profit and ${action}` : t`Forfeit profit and Short`;
@@ -394,7 +394,7 @@ export default function ConfirmationBox(props) {
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption]);
 
   const hasPendingProfit =
-    MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0);
+    MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta == 0n && existingPosition.pendingDelta.gt(0);
 
   const renderExistingOrderWarning = useCallback(() => {
     if (isSwap || !existingOrder) {
@@ -670,7 +670,7 @@ export default function ConfirmationBox(props) {
             )}
             {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
             {!toAmount && leverage && leverage.gt(0) && `-`}
-            {leverage && leverage.eq(0) && `-`}
+            {leverage && leverage == 0n && `-`}
           </ExchangeInfoRow>
           {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
           {showCollateralSpread && (

@@ -26,7 +26,6 @@ import {
   getSwapPathOutputAddresses,
   getTradeFlagsForOrder,
 } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -157,7 +156,7 @@ const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) =>
     fixedAcceptablePriceImpactBps: undefined,
     indexTokenAddress: positionIndexToken?.address,
     indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigInt(0),
+    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? 0n,
     initialCollateralTokenAddress: fromToken?.address,
     leverage: existingPosition?.leverage,
     marketAddress: positionOrder?.marketAddress,
@@ -289,7 +288,7 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
   const tokensRatio: TokensRatio = {
-    ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
+    ratio: ratio && ratio > 0 ? ratio : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -339,7 +338,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       order.targetCollateralToken.prices.minPrice
     );
 
-    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
+    minOutputAmount = minOutputAmount + (priceImpactAmount || 0n) - (swapFeeAmount || 0n);
   }
 
   return minOutputAmount;
@@ -392,7 +391,7 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
 
   const chainId = q(selectChainId);
 
-  let estimatedGas: BigNumber | undefined;
+  let estimatedGas: bigint | undefined;
 
   if (isSwapOrderType(order.orderType)) {
     estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {

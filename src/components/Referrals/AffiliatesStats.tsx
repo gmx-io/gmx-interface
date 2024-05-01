@@ -11,7 +11,6 @@ import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTier
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
@@ -114,7 +113,7 @@ function AffiliatesStats({
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {
-      return BigInt(0);
+      return 0n;
     }
 
     return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
@@ -236,11 +235,12 @@ function AffiliatesStats({
         >
           <div className="AffiliateStats-claimable-rewards-container">
             ${getUSDValue(totalClaimableRewardsUsd, 4)}
-            {totalClaimableRewardsUsd.gt(0) && (
+            {(totalClaimableRewardsUsd > 0 && (
               <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
                 Claim
               </div>
-            )}
+            )) ||
+              null}
           </div>
         </ReferralInfoCard>
       </div>
@@ -454,20 +454,20 @@ function AffiliatesStats({
                       } catch {
                         token = getNativeToken(chainId);
                       }
-                      acc[token.address] = acc[token.address] || BigInt(0);
-                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
+                      acc[token.address] = acc[token.address] ?? 0n;
+                      acc[token.address] = acc[token.address] + rebate.amounts[i];
                       return acc;
-                    }, {} as { [address: string]: BigNumber });
+                    }, {} as { [address: string]: bigint });
 
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
-                      if (usdAmount.eq(0) && !rebate.amounts[i].eq(0)) {
+                      if (usdAmount == 0n && rebate.amounts[i] !== 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
                       return acc.add(usdAmount);
-                    }, BigInt(0));
+                    }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (

@@ -2,7 +2,6 @@ import Token from "abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokensAllowanceData } from "./types";
-import { BigNumber } from "ethers";
 import useWallet from "lib/wallets/useWallet";
 
 type TokenAllowanceResult = {

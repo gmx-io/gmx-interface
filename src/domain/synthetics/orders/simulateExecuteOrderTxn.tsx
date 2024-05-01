@@ -24,7 +24,7 @@ type SimulateExecuteOrderParams = {
   secondaryPriceOverrides: PriceOverrides;
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
-  value: BigNumber;
+  value: bigint;
   method?: string;
   errorTitle?: string;
 };
@@ -142,8 +142,8 @@ function getSimulationPrices(
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];
-  const primaryPrices: { min: BigNumber; max: BigNumber }[] = [];
-  const secondaryPrices: { min: BigNumber; max: BigNumber }[] = [];
+  const primaryPrices: { min: bigint; max: BigNumber }[] = [];
+  const secondaryPrices: { min: bigint; max: BigNumber }[] = [];
 
   for (const address of tokenAddresses) {
     const token = getTokenData(tokensData, address);

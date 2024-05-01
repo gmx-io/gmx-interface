@@ -6,7 +6,6 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chai
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
-import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
@@ -26,10 +25,10 @@ import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   referralsData?: TotalReferralsStats;
-  traderTier?: BigNumber;
+  traderTier?: bigint;
   chainId: number;
   userReferralCodeString?: string;
-  discountShare: BigNumber | undefined;
+  discountShare: bigint | undefined;
 };
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, discountShare }: Props) {
@@ -65,12 +64,12 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               <span>{userReferralCodeString}</span>
               <BiEditAlt onClick={open} />
             </div>
-            {traderTier && (
+            {traderTier !== undefined ? (
               <div className="tier">
                 <Tooltip
                   handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
                   position="bottom"
-                  className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
+                  className={(discountShare ?? 0) > 0 ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
@@ -80,7 +79,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                         For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
                         discounts are applied automatically and will reduce your fees when you make a trade.
                       </Trans>
-                      {discountShare?.gt(0) && (
+                      {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
                           <br />
@@ -89,12 +88,13 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                             of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
-                      )}
+                      )) ||
+                        null}
                     </p>
                   )}
                 />
               </div>
-            )}
+            ) : null}
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
@@ -224,19 +224,19 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                       } catch {
                         token = getNativeToken(chainId);
                       }
-                      acc[token.address] = acc[token.address] || BigInt(0);
-                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
+                      acc[token.address] = acc[token.address] ?? 0n;
+                      acc[token.address] = acc[token.address] + rebate.amounts[i];
                       return acc;
-                    }, {} as { [address: string]: BigNumber });
+                    }, {} as { [address: string]: bigint });
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
-                      if (amount.eq(0) && !rebate.amounts[i].eq(0)) {
+                      if (amount == 0n && rebate.amounts[i] !== 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
                       return acc.add(amount);
-                    }, BigInt(0));
+                    }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (

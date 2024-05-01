@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import dateFnsFormat from "date-fns/format";
-import { BigNumber } from "ethers";
 import { useCallback, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -48,7 +47,7 @@ export function useDownloadAsCsv({
       }[]
     | undefined;
 
-  minCollateralUsd?: BigNumber;
+  minCollateralUsd?: bigint;
 }): [boolean, () => Promise<void>] {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();

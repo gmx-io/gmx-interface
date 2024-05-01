@@ -1,8 +1,7 @@
 import { PositionTradeAction, SwapTradeAction } from "domain/synthetics/tradeHistory";
-import { BigNumber } from "ethers";
 import { bigNumberify } from "lib/numbers";
 
-const big = (hex: string) => bigNumberify(hex) as BigNumber;
+const big = (hex: string) => bigNumberify(hex)!;
 const mapValues = <T, U>(obj: Record<string, T>, fn: (value: T) => U) => {
   return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, fn(value)])) as Record<string, U>;
 };

@@ -8,23 +8,23 @@ import { BN_ZERO } from "lib/numbers";
 
 export type MarketStat = {
   marketInfo: MarketInfo;
-  poolValueUsd: BigNumber;
-  usedLiquidity: BigNumber;
-  maxLiquidity: BigNumber;
-  netFeeLong: BigNumber;
-  netFeeShort: BigNumber;
-  utilization: BigNumber;
+  poolValueUsd: bigint;
+  usedLiquidity: bigint;
+  maxLiquidity: bigint;
+  netFeeLong: bigint;
+  netFeeShort: bigint;
+  utilization: bigint;
 };
 
 export type IndexTokenStat = {
   token: TokenData;
-  price: BigNumber;
-  totalPoolValue: BigNumber;
-  totalUtilization: BigNumber;
-  totalUsedLiquidity: BigNumber;
-  totalMaxLiquidity: BigNumber;
-  bestNetFeeLong: BigNumber;
-  bestNetFeeShort: BigNumber;
+  price: bigint;
+  totalPoolValue: bigint;
+  totalUtilization: bigint;
+  totalUsedLiquidity: bigint;
+  totalMaxLiquidity: bigint;
+  bestNetFeeLong: bigint;
+  bestNetFeeShort: bigint;
   /**
    * Sorted by poolValueUsd descending
    */
@@ -98,7 +98,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     const usedLiquidity = longUsedLiquidity.add(shortUsedLiquidity);
     const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
 
-    const utilization = maxLiquidity.gt(0) ? usedLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity) : BigInt(0);
+    const utilization = maxLiquidity.gt(0) ? usedLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity) : 0n;
 
     const netFeeLong = borrowingRateLong.add(fundingRateLong);
     const netFeeShort = borrowingRateShort.add(fundingRateShort);
@@ -128,7 +128,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
   for (const indexTokenStats of Object.values(indexMap)) {
     indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
       ? indexTokenStats.totalUsedLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
-      : BigInt(0);
+      : 0n;
 
     indexTokenStats.marketsStats.sort((a, b) => {
       return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;

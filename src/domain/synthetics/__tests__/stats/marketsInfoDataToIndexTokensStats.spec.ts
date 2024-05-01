@@ -1,12 +1,10 @@
-import { BigNumber } from "ethers";
-
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { bigNumberify } from "lib/numbers";
 
 import mockData from "./marketsInfoDataToIndexTokensStats.data.json";
 
-const big = (hex: string) => bigNumberify(hex) as BigNumber;
+const big = (hex: string) => bigNumberify(hex) as bigint;
 const mapValues = <T, U>(obj: Record<string, T>, fn: (value: T) => U) => {
   return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, fn(value)])) as Record<string, U>;
 };
@@ -49,7 +47,7 @@ describe("marketsInfoData2IndexTokenStatsMap", () => {
     const prettyResult = JSON.parse(
       JSON.stringify(result, (key, value) => {
         if (value && typeof value === "object" && "type" in value && value.type === "BigNumber") {
-          return BigInt(value.hex).toBigInt().toLocaleString("en-US", {
+          return BigInt(value.hex).toLocaleString("en-US", {
             maximumFractionDigits: 4,
             notation: "scientific",
           });

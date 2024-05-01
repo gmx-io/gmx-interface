@@ -213,7 +213,7 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
   };
 
   if (userReferralInfoBigNumber) {
-    const { totalRebateFactor, discountFactor } = userReferralInfoBigNumber;
+    const { totalRebateFactor, discountFactor } = userReferralInfobigint;
     userReferralInfo.totalRebateFactor = totalRebateFactor.toBigInt();
     userReferralInfo.discountFactor = discountFactor.toBigInt();
   }

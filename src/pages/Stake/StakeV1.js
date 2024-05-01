@@ -137,19 +137,15 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   }
 
   // const gmtPrice = pairData.gmtUsdg.balance1.mul(PRECISION).div(pairData.gmtUsdg.balance0)
-  const xgmtPrice = pairData.xgmtUsdg.balance0.eq(0)
-    ? bigNumberify(0)
-    : pairData.xgmtUsdg.balance1.mul(PRECISION).div(pairData.xgmtUsdg.balance0);
-  const gmtUsdgPrice = supplyData.gmtUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.gmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.gmtUsdg);
-  const xgmtUsdgPrice = supplyData.xgmtUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.xgmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.xgmtUsdg);
+  const xgmtPrice =
+    pairData.xgmtUsdg.balance0 == 0n ? 0n : pairData.xgmtUsdg.balance1.mul(PRECISION).div(pairData.xgmtUsdg.balance0);
+  const gmtUsdgPrice =
+    supplyData.gmtUsdg == 0n ? 0n : pairData.gmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.gmtUsdg);
+  const xgmtUsdgPrice =
+    supplyData.xgmtUsdg == 0n ? 0n : pairData.xgmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.xgmtUsdg);
   const bnbPrice = pairData.bnbBusd.balance1.mul(PRECISION).div(pairData.bnbBusd.balance0);
-  const autoUsdgPrice = supplyData.autoUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.autoUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.autoUsdg);
+  const autoUsdgPrice =
+    supplyData.autoUsdg == 0n ? 0n : pairData.autoUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.autoUsdg);
 
   const usdgAnnualRewardsUsd = stakingData.usdg.tokensPerInterval
     .mul(bnbPrice)
@@ -196,13 +192,14 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.usdgTotalStaked = totalStakedData.usdg;
   data.usdgTotalStakedUsd = totalStakedData.usdg.mul(PRECISION).div(expandDecimals(1, 18));
   data.usdgSupplyUsd = supplyData.usdg.mul(PRECISION).div(expandDecimals(1, 18));
-  data.usdgApr = data.usdgTotalStaked.eq(0)
-    ? undefined
-    : usdgAnnualRewardsUsd
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(totalStakedData.usdg)
-        .mul(expandDecimals(1, 18))
-        .div(PRECISION);
+  data.usdgApr =
+    data.usdgTotalStaked == 0n
+      ? undefined
+      : usdgAnnualRewardsUsd
+          .mul(BASIS_POINTS_DIVISOR)
+          .div(totalStakedData.usdg)
+          .mul(expandDecimals(1, 18))
+          .div(PRECISION);
   data.usdgRewards = stakingData.usdg.claimable;
 
   data.xgmtBalance = balanceData.xgmt;
@@ -211,9 +208,8 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.xgmtTotalStaked = totalStakedData.xgmt;
   data.xgmtTotalStakedUsd = totalStakedData.xgmt.mul(xgmtPrice).div(expandDecimals(1, 18));
   data.xgmtSupplyUsd = xgmtSupply.mul(xgmtPrice).div(expandDecimals(1, 18));
-  data.xgmtApr = data.xgmtSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : xgmtAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtTotalStakedUsd);
+  data.xgmtApr =
+    data.xgmtSupplyUsd == 0n ? 0n : xgmtAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtTotalStakedUsd);
   data.xgmtRewards = stakingData.xgmt.claimable;
 
   data.gmtUsdgFarmBalance = balanceData.gmtUsdgFarm;
@@ -225,11 +221,12 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.gmtUsdgStaked = balanceData.gmtUsdgFarm;
   data.gmtUsdgStakedUsd = balanceData.gmtUsdgFarm.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
   data.gmtUsdgFarmSupplyUsd = supplyData.gmtUsdgFarm.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
-  data.gmtUsdgApr = data.gmtUsdgSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : data.gmtUsdgFarmSupplyUsd.eq(0)
-    ? undefined
-    : gmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.gmtUsdgSupplyUsd);
+  data.gmtUsdgApr =
+    data.gmtUsdgSupplyUsd == 0n
+      ? 0n
+      : data.gmtUsdgFarmSupplyUsd == 0n
+      ? undefined
+      : gmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.gmtUsdgSupplyUsd);
   data.gmtUsdgXgmtRewards = stakingData.gmtUsdgFarmXgmt.claimable;
   data.gmtUsdgNativeRewards = stakingData.gmtUsdgFarmNative.claimable;
   data.gmtUsdgTotalRewards = data.gmtUsdgXgmtRewards.add(data.gmtUsdgNativeRewards);
@@ -244,9 +241,10 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.xgmtUsdgStaked = balanceData.xgmtUsdgFarm;
   data.xgmtUsdgStakedUsd = balanceData.xgmtUsdgFarm.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
   data.xgmtUsdgFarmSupplyUsd = supplyData.xgmtUsdgFarm.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
-  data.xgmtUsdgApr = data.xgmtUsdgFarmSupplyUsd.eq(0)
-    ? undefined
-    : xgmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtUsdgFarmSupplyUsd);
+  data.xgmtUsdgApr =
+    data.xgmtUsdgFarmSupplyUsd == 0n
+      ? undefined
+      : xgmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtUsdgFarmSupplyUsd);
   data.xgmtUsdgXgmtRewards = stakingData.xgmtUsdgFarmXgmt.claimable;
   data.xgmtUsdgNativeRewards = stakingData.xgmtUsdgFarmNative.claimable;
   data.xgmtUsdgTotalRewards = data.xgmtUsdgXgmtRewards.add(data.xgmtUsdgNativeRewards);
@@ -259,9 +257,10 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.autoUsdgStaked = balanceData.autoUsdgFarm;
   data.autoUsdgStakedUsd = balanceData.autoUsdgFarm.mul(autoUsdgPrice).div(expandDecimals(1, 18));
   data.autoUsdgFarmSupplyUsd = supplyData.autoUsdgFarm.mul(autoUsdgPrice).div(expandDecimals(1, 18));
-  data.autoUsdgApr = data.autoUsdgFarmSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : autoUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.autoUsdgFarmSupplyUsd);
+  data.autoUsdgApr =
+    data.autoUsdgFarmSupplyUsd == 0n
+      ? 0n
+      : autoUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.autoUsdgFarmSupplyUsd);
   data.autoUsdgXgmtRewards = stakingData.autoUsdgFarmXgmt.claimable;
   data.autoUsdgNativeRewards = stakingData.autoUsdgFarmNative.claimable;
   data.autoUsdgTotalRewards = data.autoUsdgXgmtRewards.add(data.autoUsdgNativeRewards);
@@ -318,7 +317,7 @@ function StakeModal(props) {
   const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount.gt(maxAmount)) {
@@ -687,7 +686,7 @@ export default function StakeV1() {
       helperToast.error(t`Incorrect Network`);
       return;
     }
-    if (!rewards || rewards.eq(0)) {
+    if (!rewards || rewards == 0n) {
       helperToast.error(t`No rewards to claim yet`);
       return;
     }

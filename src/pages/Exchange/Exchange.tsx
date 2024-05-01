@@ -197,7 +197,7 @@ export function getPositions(
     }
 
     let fundingFee = getFundingFee(position);
-    position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
+    position.fundingFee = fundingFee ? fundingFee : 0n;
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
 
     position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
@@ -645,8 +645,8 @@ export const Exchange = forwardRef(
           const position = positions[i];
           if (position.contractKey === key) {
             updatedPositions[position.key] = {
-              size: bigNumberify(0),
-              collateral: bigNumberify(0),
+              size: 0n,
+              collateral: 0n,
               averagePrice,
               entryFundingRate,
               reserveAmount,
@@ -670,7 +670,7 @@ export const Exchange = forwardRef(
           : indexTokenItem.symbol;
         const longOrShortText = isLong ? t`Long` : t`Short`;
         let message;
-        if (sizeDelta.eq(0)) {
+        if (sizeDelta == 0n) {
           message = t`Deposited ${formatAmount(
             collateralDelta,
             USD_DECIMALS,
@@ -701,7 +701,7 @@ export const Exchange = forwardRef(
         const longOrShortText = isLong ? t`Long` : t`Short`;
 
         let message;
-        if (sizeDelta.eq(0)) {
+        if (sizeDelta == 0n) {
           message = t`Withdrew ${formatAmount(
             collateralDelta,
             USD_DECIMALS,

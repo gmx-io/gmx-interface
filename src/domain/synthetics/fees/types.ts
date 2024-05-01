@@ -1,16 +1,15 @@
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 
 export type ExecutionFee = {
-  feeUsd: BigNumber;
-  feeTokenAmount: BigNumber;
+  feeUsd: bigint;
+  feeTokenAmount: bigint;
   feeToken: Token;
   warning?: string;
 };
 
 export type FeeItem = {
-  deltaUsd: BigNumber;
-  bps: BigNumber;
+  deltaUsd: bigint;
+  bps: bigint;
 };
 
 export type SwapFeeItem = FeeItem & {
@@ -20,13 +19,13 @@ export type SwapFeeItem = FeeItem & {
 };
 
 export type GasLimitsConfig = {
-  depositSingleToken: BigNumber;
-  depositMultiToken: BigNumber;
-  withdrawalMultiToken: BigNumber;
-  singleSwap: BigNumber;
-  swapOrder: BigNumber;
-  increaseOrder: BigNumber;
-  decreaseOrder: BigNumber;
-  estimatedFeeBaseGasLimit: BigNumber;
-  estimatedFeeMultiplierFactor: BigNumber;
+  depositSingleToken: bigint;
+  depositMultiToken: bigint;
+  withdrawalMultiToken: bigint;
+  singleSwap: bigint;
+  swapOrder: bigint;
+  increaseOrder: bigint;
+  decreaseOrder: bigint;
+  estimatedFeeBaseGasLimit: bigint;
+  estimatedFeeMultiplierFactor: bigint;
 };

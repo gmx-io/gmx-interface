@@ -4,7 +4,6 @@ import { getContract } from "config/contracts";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
-import { BigNumber } from "ethers";
 import useWallet from "lib/wallets/useWallet";
 
 type BalancesDataResult = {

@@ -1,16 +1,14 @@
-import { BigNumber } from "ethers";
-
 export type UserReferralInfo = {
   userReferralCode: string;
   userReferralCodeString: string;
   referralCodeForTxn: string;
   attachedOnChain: boolean;
   affiliate: string;
-  tierId: BigNumber;
-  totalRebate: BigNumber;
-  totalRebateFactor: BigNumber;
-  discountShare: BigNumber;
-  discountFactor: BigNumber;
+  tierId: bigint;
+  totalRebate: bigint;
+  totalRebateFactor: bigint;
+  discountShare: bigint;
+  discountFactor: bigint;
 };
 
 export enum RebateDistributionType {
@@ -27,8 +25,8 @@ export type RebateDistribution = {
   receiver: string;
   markets: string[];
   tokens: string[];
-  amounts: BigNumber[];
-  amountsInUsd: BigNumber[];
+  amounts: bigint[];
+  amountsInUsd: bigint[];
   timestamp: number;
   transactionHash: string;
   id: string;
@@ -48,21 +46,21 @@ export type ReferralCodeStats = {
   tradedReferralsCount: number;
   registeredReferralsCount: number;
   ownerOnOtherChain?: CodeOwnershipInfo;
-  volume: BigNumber;
-  totalRebateUsd: BigNumber;
-  affiliateRebateUsd: BigNumber;
-  discountUsd: BigNumber;
+  volume: bigint;
+  totalRebateUsd: bigint;
+  affiliateRebateUsd: bigint;
+  discountUsd: bigint;
   v1Data: {
-    volume: BigNumber;
-    totalRebateUsd: BigNumber;
-    affiliateRebateUsd: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    totalRebateUsd: bigint;
+    affiliateRebateUsd: bigint;
+    discountUsd: bigint;
   };
   v2Data: {
-    volume: BigNumber;
-    totalRebateUsd: BigNumber;
-    affiliateRebateUsd: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    totalRebateUsd: bigint;
+    affiliateRebateUsd: bigint;
+    discountUsd: bigint;
   };
 };
 
@@ -70,41 +68,41 @@ export type AffiliateTotalStats = {
   trades: number;
   tradedReferralsCount: number;
   registeredReferralsCount: number;
-  volume: BigNumber;
-  totalRebateUsd: BigNumber;
-  affiliateRebateUsd: BigNumber;
-  discountUsd: BigNumber;
+  volume: bigint;
+  totalRebateUsd: bigint;
+  affiliateRebateUsd: bigint;
+  discountUsd: bigint;
   v1Data: {
-    volume: BigNumber;
-    totalRebateUsd: BigNumber;
-    affiliateRebateUsd: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    totalRebateUsd: bigint;
+    affiliateRebateUsd: bigint;
+    discountUsd: bigint;
   };
   v2Data: {
-    volume: BigNumber;
-    totalRebateUsd: BigNumber;
-    affiliateRebateUsd: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    totalRebateUsd: bigint;
+    affiliateRebateUsd: bigint;
+    discountUsd: bigint;
   };
 };
 
 export type TraderReferralTotalStats = {
-  volume: BigNumber;
-  discountUsd: BigNumber;
+  volume: bigint;
+  discountUsd: bigint;
   v1Data: {
-    volume: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    discountUsd: bigint;
   };
   v2Data: {
-    volume: BigNumber;
-    discountUsd: BigNumber;
+    volume: bigint;
+    discountUsd: bigint;
   };
 };
 
 export type TierInfo = {
   id: string;
-  tierId: BigNumber;
-  discountShare: BigNumber;
+  tierId: bigint;
+  discountShare: bigint;
 };
 
 export type ReferralsStats = {
@@ -121,10 +119,10 @@ export type ReferralsStats = {
 export type TotalReferralsStats = {
   total: {
     registeredReferralsCount: number;
-    affiliateVolume: BigNumber;
-    affiliateRebateUsd: BigNumber;
-    discountUsd: BigNumber;
-    traderVolume: BigNumber;
+    affiliateVolume: bigint;
+    affiliateRebateUsd: bigint;
+    discountUsd: bigint;
+    traderVolume: bigint;
   };
   chains: {
     [chainId: number]: ReferralsStats;

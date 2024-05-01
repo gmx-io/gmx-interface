@@ -1,8 +1,7 @@
 import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
@@ -171,8 +170,8 @@ export function mockMarketsInfoData(
       maxOpenInterestShort: expandDecimals(5, 29),
 
       positionImpactPoolAmount: usdToToken(1000, indexToken),
-      positionImpactPoolDistributionRate: bigNumberify(0)!,
-      minPositionImpactPoolAmount: bigNumberify(0)!,
+      positionImpactPoolDistributionRate: 0n!,
+      minPositionImpactPoolAmount: 0n!,
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
@@ -202,32 +201,32 @@ export function mockMarketsInfoData(
       swapImpactExponentFactor: expandDecimals(2, 30),
 
       // MarketInfo
-      borrowingFactorPerSecondForLongs: BigInt(0),
-      borrowingFactorPerSecondForShorts: BigInt(0),
+      borrowingFactorPerSecondForLongs: 0n,
+      borrowingFactorPerSecondForShorts: 0n,
 
-      borrowingExponentFactorLong: BigInt(0),
-      borrowingExponentFactorShort: BigInt(0),
-      fundingFactor: BigInt(0),
-      fundingExponentFactor: BigInt(0),
-      fundingIncreaseFactorPerSecond: BigInt(0),
-      fundingDecreaseFactorPerSecond: BigInt(0),
-      maxFundingFactorPerSecond: BigInt(0),
-      minFundingFactorPerSecond: BigInt(0),
-      thresholdForDecreaseFunding: BigInt(0),
-      thresholdForStableFunding: BigInt(0),
+      borrowingExponentFactorLong: 0n,
+      borrowingExponentFactorShort: 0n,
+      fundingFactor: 0n,
+      fundingExponentFactor: 0n,
+      fundingIncreaseFactorPerSecond: 0n,
+      fundingDecreaseFactorPerSecond: 0n,
+      maxFundingFactorPerSecond: 0n,
+      minFundingFactorPerSecond: 0n,
+      thresholdForDecreaseFunding: 0n,
+      thresholdForStableFunding: 0n,
 
-      totalBorrowingFees: BigInt(0),
-      minCollateralFactor: BigInt(0),
+      totalBorrowingFees: 0n,
+      minCollateralFactor: 0n,
 
-      minCollateralFactorForOpenInterestLong: BigInt(0),
-      minCollateralFactorForOpenInterestShort: BigInt(0),
+      minCollateralFactorForOpenInterestLong: 0n,
+      minCollateralFactorForOpenInterestShort: 0n,
 
-      longPoolAmountAdjustment: BigInt(0),
-      shortPoolAmountAdjustment: BigInt(0),
-      borrowingFactorLong: BigInt(0),
-      borrowingFactorShort: BigInt(0),
+      longPoolAmountAdjustment: 0n,
+      shortPoolAmountAdjustment: 0n,
+      borrowingFactorLong: 0n,
+      borrowingFactorShort: 0n,
 
-      fundingFactorPerSecond: BigInt(0),
+      fundingFactorPerSecond: 0n,
       longsPayShorts: false,
 
       longInterestUsd: expandDecimals(500, USD_DECIMALS),
@@ -240,9 +239,9 @@ export function mockMarketsInfoData(
 
       data: "",
 
-      virtualPoolAmountForLongToken: BigInt(0),
-      virtualPoolAmountForShortToken: BigInt(0),
-      virtualInventoryForPositions: BigInt(0),
+      virtualPoolAmountForLongToken: 0n,
+      virtualPoolAmountForShortToken: 0n,
+      virtualInventoryForPositions: 0n,
 
       ...(overrides[key] || {}),
     };

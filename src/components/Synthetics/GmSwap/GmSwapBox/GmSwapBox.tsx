@@ -2,8 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { BigNumber } from "ethers";
-import { isAddress } from "ethers/lib/utils.js";
 import mapValues from "lodash/mapValues";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
@@ -67,6 +65,8 @@ import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import "./GmSwapBox.scss";
+import { bigMath } from "lib/bigmath";
+import { isAddress } from "ethers";
 
 type SearchParams = {
   market?: string;
@@ -201,8 +201,8 @@ export function GmSwapBox(p: Props) {
     const inputs: {
       address: string;
       value: string;
-      amount?: BigNumber;
-      usd?: BigNumber;
+      amount?: bigint;
+      usd?: bigint;
       token?: TokenData;
       setValue: (val: string) => void;
     }[] = [];
@@ -294,16 +294,19 @@ export function GmSwapBox(p: Props) {
     };
   }, [marketInfo]);
 
+  const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
+
   const depositAmounts = useMemo(() => {
     if (!isDeposit || !marketInfo || !marketToken) {
       return undefined;
     }
 
-    const longTokenAmount =
-      (marketInfo.isSameCollaterals ? longTokenInputState?.amount?.div(2) : longTokenInputState?.amount) || BN_ZERO;
+    const longTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenInputState?.amount) || BN_ZERO;
     const shortTokenAmount =
       (marketInfo.isSameCollaterals
-        ? longTokenInputState?.amount?.sub(longTokenAmount)
+        ? longTokenInputState?.amount !== undefined
+          ? longTokenInputState.amount - longTokenAmount
+          : undefined
         : shortTokenInputState?.amount) || BN_ZERO;
 
     return getDepositAmounts({
@@ -321,6 +324,7 @@ export function GmSwapBox(p: Props) {
     });
   }, [
     focusedInput,
+    halfOfLong,
     isDeposit,
     longTokenInputState?.address,
     longTokenInputState?.amount,
@@ -347,10 +351,12 @@ export function GmSwapBox(p: Props) {
     }
 
     const longTokenAmount = marketInfo.isSameCollaterals
-      ? longTokenInputState?.amount?.div(2) || BN_ZERO
+      ? halfOfLong || BN_ZERO
       : longTokenInputState?.amount || BN_ZERO;
     const shortTokenAmount = marketInfo.isSameCollaterals
-      ? longTokenInputState?.amount?.sub(longTokenAmount) || BN_ZERO
+      ? longTokenInputState?.amount !== undefined
+        ? longTokenInputState?.amount - longTokenAmount
+        : undefined || BN_ZERO
       : shortTokenInputState?.amount || BN_ZERO;
 
     return getWithdrawalAmounts({
@@ -364,6 +370,7 @@ export function GmSwapBox(p: Props) {
     });
   }, [
     focusedInput,
+    halfOfLong,
     isWithdrawal,
     longTokenInputState?.amount,
     marketInfo,
@@ -381,14 +388,12 @@ export function GmSwapBox(p: Props) {
     }
 
     const basisUsd = isDeposit
-      ? BigInt(0)
-          .add(amounts?.longTokenUsd || 0)
-          .add(amounts?.shortTokenUsd || 0)
-      : amounts?.marketTokenUsd || BigInt(0);
+      ? (amounts?.longTokenUsd ?? 0n) + (amounts?.shortTokenUsd ?? 0n)
+      : amounts?.marketTokenUsd || 0n;
 
-    const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
+    const swapFee = getFeeItem(amounts.swapFeeUsd * -1n, basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const uiFee = getFeeItem(amounts.uiFeeUsd.mul(-1), basisUsd, {
+    const uiFee = getFeeItem(amounts.uiFeeUsd * -1n, basisUsd, {
       shouldRoundUp: true,
     });
 
@@ -416,7 +421,8 @@ export function GmSwapBox(p: Props) {
   }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData]);
 
   const isHighPriceImpact =
-    fees?.swapPriceImpact?.deltaUsd.lt(0) && fees.swapPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
+    (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
+    bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
 
   const submitState = useMemo(() => {
     const commonError = getCommonError({
@@ -550,18 +556,18 @@ export function GmSwapBox(p: Props) {
 
       if (isDeposit) {
         if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
-          if (!amounts?.longTokenUsd?.gt(0) && !amounts?.shortTokenUsd?.gt(0)) {
+          if ((amounts?.longTokenUsd ?? 0) <= 0 && (amounts?.shortTokenUsd ?? 0) <= 0) {
             setMarketTokenInputValue("");
             return;
           }
 
           if (amounts) {
             setMarketTokenInputValue(
-              amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+              amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
           }
         } else if (focusedInput === "market") {
-          if (!marketTokenAmount?.gt(0)) {
+          if (marketTokenAmount <= 0) {
             longTokenInputState?.setValue("");
             shortTokenInputState?.setValue("");
             return;
@@ -570,12 +576,12 @@ export function GmSwapBox(p: Props) {
           if (amounts) {
             if (longToken) {
               longTokenInputState?.setValue(
-                amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
               );
             }
             if (shortToken) {
               shortTokenInputState?.setValue(
-                amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+                amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
               );
             }
             return;
@@ -587,7 +593,7 @@ export function GmSwapBox(p: Props) {
 
       if (isWithdrawal) {
         if (focusedInput === "market") {
-          if (!amounts?.marketTokenAmount?.gt(0)) {
+          if ((amounts?.marketTokenAmount ?? 0) <= 0) {
             longTokenInputState?.setValue("");
             shortTokenInputState?.setValue("");
             return;
@@ -597,32 +603,32 @@ export function GmSwapBox(p: Props) {
             if (marketInfo.isSameCollaterals) {
               if (longToken) {
                 setFirstTokenInputValue(
-                  amounts.longTokenAmount?.gt(0)
-                    ? formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken.decimals)
+                  amounts.longTokenAmount > 0
+                    ? formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, longToken.decimals)
                     : ""
                 );
               }
             } else {
               if (longToken) {
                 longTokenInputState?.setValue(
-                  amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                  amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
                 );
               }
               if (shortToken) {
                 shortTokenInputState?.setValue(
-                  amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+                  amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
                 );
               }
             }
           }
         } else if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
-          if (focusedInput === "longCollateral" && !amounts?.longTokenAmount?.gt(0)) {
+          if (focusedInput === "longCollateral" && (amounts?.longTokenAmount ?? 0) <= 0) {
             shortTokenInputState?.setValue("");
             setMarketTokenInputValue("");
             return;
           }
 
-          if (focusedInput === "shortCollateral" && !amounts?.shortTokenAmount?.gt(0)) {
+          if (focusedInput === "shortCollateral" && (amounts?.shortTokenAmount ?? 0) <= 0) {
             longTokenInputState?.setValue("");
             setMarketTokenInputValue("");
             return;
@@ -630,12 +636,12 @@ export function GmSwapBox(p: Props) {
 
           if (amounts) {
             setMarketTokenInputValue(
-              amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+              amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
             if (marketInfo.isSameCollaterals) {
               if (longToken) {
                 longTokenInputState?.setValue(
-                  formatAmountFree(amounts.longTokenAmount.add(amounts.shortTokenAmount), longToken.decimals)
+                  formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, longToken.decimals)
                 );
               }
             } else {
@@ -771,7 +777,7 @@ export function GmSwapBox(p: Props) {
         setFirstTokenAddress(tokenOptions[0].address);
       }
 
-      if (isSingle && secondTokenAddress && marketInfo && secondTokenAmount?.gt(0)) {
+      if (isSingle && secondTokenAddress && marketInfo && secondTokenAmount) {
         const secondTokenPoolType = getTokenPoolType(marketInfo, secondTokenAddress);
         setFocusedInput(secondTokenPoolType === "long" ? "longCollateral" : "shortCollateral");
         setSecondTokenAddress(undefined);
@@ -822,11 +828,11 @@ export function GmSwapBox(p: Props) {
   function onMaxClickFirstToken() {
     if (firstToken?.balance) {
       let maxAvailableAmount = firstToken.isNative
-        ? firstToken.balance.sub(minResidualAmount || 0)
+        ? firstToken.balance - (minResidualAmount || 0n)
         : firstToken.balance;
 
-      if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigInt(0);
+      if (maxAvailableAmount < 0) {
+        maxAvailableAmount = 0n;
       }
 
       const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
@@ -842,11 +848,11 @@ export function GmSwapBox(p: Props) {
   function onMaxClickSecondToken() {
     if (secondToken?.balance) {
       let maxAvailableAmount = secondToken.isNative
-        ? secondToken.balance.sub(minResidualAmount || 0)
+        ? secondToken.balance - (minResidualAmount ?? 0n)
         : secondToken.balance;
 
-      if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigInt(0);
+      if (maxAvailableAmount < 0) {
+        maxAvailableAmount = 0n;
       }
 
       const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
@@ -903,10 +909,13 @@ export function GmSwapBox(p: Props) {
               onClickTopRightLabel: onMaxClickFirstToken,
             })}
             showMaxButton={
-              isDeposit &&
-              firstToken?.balance?.gt(0) &&
-              !firstTokenAmount?.eq(firstToken.balance) &&
-              (firstToken?.isNative ? minResidualAmount && firstToken?.balance?.gt(minResidualAmount) : true)
+              (isDeposit &&
+                firstToken?.balance &&
+                (firstTokenAmount === undefined || firstTokenAmount !== firstToken.balance) &&
+                (firstToken?.isNative
+                  ? minResidualAmount && firstToken?.balance && firstToken.balance > minResidualAmount
+                  : true)) ||
+              false
             }
             inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
@@ -947,10 +956,14 @@ export function GmSwapBox(p: Props) {
               preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
               showMaxButton={
-                isDeposit &&
-                secondToken?.balance?.gt(0) &&
-                !secondTokenAmount?.eq(secondToken.balance) &&
-                (secondToken?.isNative ? minResidualAmount && secondToken?.balance?.gt(minResidualAmount) : true)
+                (isDeposit &&
+                  secondToken?.balance &&
+                  (secondTokenAmount === undefined || secondTokenAmount !== secondToken.balance) &&
+                  (secondToken?.isNative
+                    ? minResidualAmount &&
+                      (secondToken?.balance === undefined || secondToken.balance > minResidualAmount)
+                    : true)) ||
+                false
               }
               onInputValueChange={(e) => {
                 if (secondToken) {
@@ -977,13 +990,18 @@ export function GmSwapBox(p: Props) {
 
           <BuyInputSection
             topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-            topLeftValue={marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""}
+            topLeftValue={marketTokenUsd ? formatUsd(marketTokenUsd) : ""}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals, "", {
               useCommas: true,
             })}
             preventFocusOnLabelClick="right"
-            showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
+            showMaxButton={
+              (isWithdrawal &&
+                marketToken?.balance &&
+                (marketTokenAmount === undefined || marketTokenAmount !== marketToken.balance)) ||
+              false
+            }
             inputValue={marketTokenInputValue}
             onInputValueChange={(e) => {
               setMarketTokenInputValue(e.target.value);
@@ -1109,8 +1127,8 @@ export function GmSwapBox(p: Props) {
         marketToken={marketToken!}
         longToken={longTokenInputState?.token}
         shortToken={shortTokenInputState?.token}
-        marketTokenAmount={amounts?.marketTokenAmount ?? BigInt(0)}
-        marketTokenUsd={amounts?.marketTokenUsd ?? BigInt(0)}
+        marketTokenAmount={amounts?.marketTokenAmount ?? 0n}
+        marketTokenUsd={amounts?.marketTokenUsd ?? 0n}
         longTokenAmount={amounts?.longTokenAmount}
         longTokenUsd={amounts?.longTokenUsd}
         shortTokenAmount={amounts?.shortTokenAmount}

@@ -330,7 +330,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Deposited ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
@@ -393,7 +393,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Withdrew ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,

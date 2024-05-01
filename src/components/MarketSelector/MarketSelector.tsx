@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -34,8 +33,8 @@ type MarketState = {
 type MarketOption = {
   indexName: string;
   marketInfo: MarketInfo;
-  balance: BigNumber;
-  balanceUsd: BigNumber;
+  balance: bigint;
+  balanceUsd: bigint;
   state?: MarketState;
 };
 
@@ -70,15 +69,15 @@ export function MarketSelector({
         const option = optionsByIndexName[indexName];
 
         if (option) {
-          option.balance = option.balance.add(gmBalance || BigInt(0));
-          option.balanceUsd = option.balanceUsd.add(gmBalanceUsd || BigInt(0));
+          option.balance = option.balance + (gmBalance ?? 0n);
+          option.balanceUsd = option.balanceUsd + (gmBalanceUsd ?? 0n);
         }
 
         optionsByIndexName[indexName] = optionsByIndexName[indexName] || {
           indexName,
           marketInfo,
-          balance: gmBalance || BigInt(0),
-          balanceUsd: gmBalanceUsd || BigInt(0),
+          balance: gmBalance ?? 0n,
+          balanceUsd: gmBalanceUsd ?? 0n,
           state,
         };
       });
@@ -160,17 +159,17 @@ export function MarketSelector({
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {showBalances && balance && (
+                  {showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance.gt(0) &&
+                      {balance > 0 &&
                         formatTokenAmount(balance, marketToken?.decimals, "", {
                           useCommas: true,
                         })}
-                      {balance.eq(0) && "-"}
+                      {balance == 0n && "-"}
                     </div>
                   )}
                   <span className="text-accent">
-                    {showBalances && balanceUsd && balanceUsd.gt(0) && <div>{formatUsd(balanceUsd)}</div>}
+                    {(showBalances && balanceUsd && <div>{formatUsd(balanceUsd)}</div>) || null}
                   </span>
                 </div>
               </div>

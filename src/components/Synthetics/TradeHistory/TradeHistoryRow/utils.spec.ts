@@ -19,7 +19,6 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
-import { BigNumber } from "ethers";
 
 i18n.loadLocaleData({ en: { plurals } });
 i18n.load({ en: {} });

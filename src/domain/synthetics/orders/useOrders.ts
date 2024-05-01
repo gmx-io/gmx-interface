@@ -2,7 +2,6 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { OrdersData } from "./types";
 

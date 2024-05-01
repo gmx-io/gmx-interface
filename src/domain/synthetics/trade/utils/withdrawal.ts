@@ -7,10 +7,10 @@ import { WitdhrawalAmounts } from "../types";
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;
   marketToken: TokenData;
-  marketTokenAmount: BigNumber;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  uiFeeFactor: BigNumber;
+  marketTokenAmount: bigint;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral";
 }) {
   const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, uiFeeFactor, strategy } = p;
@@ -26,18 +26,18 @@ export function getWithdrawalAmounts(p: {
   const totalPoolUsd = longPoolUsd.add(shortPoolUsd);
 
   const values: WitdhrawalAmounts = {
-    marketTokenAmount: BigInt(0),
-    marketTokenUsd: BigInt(0),
-    longTokenAmount: BigInt(0),
-    longTokenUsd: BigInt(0),
-    shortTokenAmount: BigInt(0),
-    shortTokenUsd: BigInt(0),
-    swapFeeUsd: BigInt(0),
-    uiFeeUsd: BigInt(0),
-    swapPriceImpactDeltaUsd: BigInt(0),
+    marketTokenAmount: 0n,
+    marketTokenUsd: 0n,
+    longTokenAmount: 0n,
+    longTokenUsd: 0n,
+    shortTokenAmount: 0n,
+    shortTokenUsd: 0n,
+    swapFeeUsd: 0n,
+    uiFeeUsd: 0n,
+    swapPriceImpactDeltaUsd: 0n,
   };
 
-  if (totalPoolUsd.eq(0)) {
+  if (totalPoolUsd == 0n) {
     return values;
   }
 

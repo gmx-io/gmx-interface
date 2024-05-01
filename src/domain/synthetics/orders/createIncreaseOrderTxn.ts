@@ -23,16 +23,16 @@ type IncreaseOrderParams = {
   marketAddress: string;
   initialCollateralAddress: string;
   targetCollateralAddress: string;
-  initialCollateralAmount: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  initialCollateralAmount: bigint;
+  collateralDeltaAmount: bigint;
   swapPath: string[];
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  acceptablePrice: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  acceptablePrice: bigint;
   triggerPrice: BigNumber | undefined;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -56,7 +56,7 @@ export async function createIncreaseOrderTxn(
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigInt(0);
+  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
@@ -73,7 +73,7 @@ export async function createIncreaseOrderTxn(
     initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath: p.swapPath,
     sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: BigInt(0),
+    minOutputAmount: 0n,
     isLong: p.isLong,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
@@ -183,9 +183,9 @@ async function createEncodedPayload({
 }: {
   router: ethers.Contract;
   orderVaultAddress: string;
-  totalWntAmount: BigNumber;
+  totalWntAmount: bigint;
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
@@ -221,7 +221,7 @@ function createOrderParams({
   isNativePayment,
 }: {
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
   subaccount: Subaccount | null;
   isNativePayment: boolean;
@@ -237,12 +237,12 @@ function createOrderParams({
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigInt(0),
-      triggerPrice: convertToContractPrice(p.triggerPrice || BigInt(0), p.indexToken.decimals),
+      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : 0n,
+      triggerPrice: convertToContractPrice(p.triggerPrice || 0n, p.indexToken.decimals),
       acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
       executionFee: p.executionFee,
-      callbackGasLimit: BigInt(0),
-      minOutputAmount: BigInt(0),
+      callbackGasLimit: 0n,
+      minOutputAmount: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,

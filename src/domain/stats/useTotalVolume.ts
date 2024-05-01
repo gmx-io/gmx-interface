@@ -21,7 +21,7 @@ export function useTotalVolume() {
         acc.total = acc.total.add(sum);
         return acc;
       },
-      { total: bigNumberify(0)! }
+      { total: 0n! }
     );
   }
 }

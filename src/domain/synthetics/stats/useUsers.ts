@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
@@ -27,7 +26,7 @@ export default function useUsers(chainId: number) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching usersInfo data for chain ${chainId}:`, error);
       return {
-        totalUsers: BigInt(0),
+        totalUsers: 0n,
       };
     }
   }
@@ -42,7 +41,7 @@ export default function useUsers(chainId: number) {
       // eslint-disable-next-line no-console
       console.error("Error fetching usersInfo data:", error);
       return {
-        totalUsers: BigInt(0),
+        totalUsers: 0n,
       };
     }
   }

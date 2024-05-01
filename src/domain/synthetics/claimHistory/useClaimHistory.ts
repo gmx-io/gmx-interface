@@ -2,7 +2,6 @@ import { gql } from "@apollo/client";
 import { getToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { getAddress } from "ethers/lib/utils.js";
 import { bigNumberify, BN_ZERO } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
@@ -11,6 +10,7 @@ import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
+import { getAddress } from "ethers";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -227,15 +227,13 @@ function createClaimCollateralAction(
     }
 
     if (tokenAddress === marketInfo.longTokenAddress) {
-      claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
-      claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
-        amount.mul(price)
-      );
+      claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount + amount;
+      claimItemsMap[marketAddress].longTokenAmountUsd =
+        claimItemsMap[marketAddress].longTokenAmountUsd + amount * price;
     } else {
-      claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
-      claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
-        amount.mul(price)
-      );
+      claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount + amount;
+      claimItemsMap[marketAddress].shortTokenAmountUsd =
+        claimItemsMap[marketAddress].shortTokenAmountUsd + amount * price;
     }
   }
 
@@ -287,15 +285,13 @@ function createSettleFundingFeeAction(
       }
 
       if (tokenAddress === marketInfo.longTokenAddress) {
-        claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
-        claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
-          amount.mul(price)
-        );
+        claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount + amount;
+        claimItemsMap[marketAddress].longTokenAmountUsd =
+          claimItemsMap[marketAddress].longTokenAmountUsd + amount * price;
       } else {
-        claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
-        claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
-          amount.mul(price)
-        );
+        claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount + amount;
+        claimItemsMap[marketAddress].shortTokenAmountUsd =
+          claimItemsMap[marketAddress].shortTokenAmountUsd + amount * price;
       }
     }
   }

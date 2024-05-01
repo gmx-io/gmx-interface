@@ -11,16 +11,16 @@ import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
 import { PositionInfo, getPendingMockPosition } from "../positions";
 import { TokenData } from "../tokens";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import useOrderEntries, { OrderEntriesInfo, OrderEntry } from "./useOrderEntries";
 import {
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { bigMath } from "lib/bigmath";
 
 type SLTPEntry = OrderEntry & {
   amounts?: DecreasePositionAmounts;
@@ -28,8 +28,8 @@ type SLTPEntry = OrderEntry & {
 
 export type SLTPInfo = Omit<OrderEntriesInfo, "entries"> & {
   entries: SLTPEntry[];
-  totalPnL: BigNumber;
-  totalPnLPercentage: BigNumber;
+  totalPnL: bigint;
+  totalPnLPercentage: bigint;
 };
 
 type Props = {
@@ -38,7 +38,7 @@ type Props = {
   collateralToken?: TokenData;
   increaseAmounts?: IncreasePositionAmounts;
   nextPositionValues?: NextPositionValues;
-  triggerPrice?: BigNumber;
+  triggerPrice?: bigint;
 };
 
 export default function useSLTPEntries({
@@ -79,11 +79,11 @@ export default function useSLTPEntries({
     return getPendingMockPosition({
       isIncrease: true,
       positionKey,
-      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd || BigInt(0),
-      sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens || BigInt(0),
-      collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount || BigInt(0),
+      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd || 0n,
+      sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens || 0n,
+      collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount || 0n,
       updatedAt: Date.now(),
-      updatedAtBlock: BigInt(0),
+      updatedAtBlock: 0n,
     });
   }, [positionKey, collateralToken, increaseAmounts, marketInfo]);
 
@@ -107,14 +107,14 @@ export default function useSLTPEntries({
       hasLowCollateral: false,
       leverage: nextPositionValues.nextLeverage,
       leverageWithPnl: nextPositionValues.nextLeverage,
-      pnl: BigInt(0),
-      pnlPercentage: BigInt(0),
-      pnlAfterFees: BigInt(0),
-      pnlAfterFeesPercentage: BigInt(0),
-      closingFeeUsd: BigInt(0),
-      uiFeeUsd: BigInt(0),
-      pendingFundingFeesUsd: BigInt(0),
-      pendingClaimableFundingFeesUsd: BigInt(0),
+      pnl: 0n,
+      pnlPercentage: 0n,
+      pnlAfterFees: 0n,
+      pnlAfterFeesPercentage: 0n,
+      closingFeeUsd: 0n,
+      uiFeeUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      pendingClaimableFundingFeesUsd: 0n,
     };
   }, [
     collateralToken,
@@ -145,7 +145,7 @@ export default function useSLTPEntries({
       }
 
       const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
-      const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
+      const sizeUsd = bigMath.mulDiv(increaseAmounts.sizeDeltaUsd, BigInt(percentage), BASIS_POINTS_DIVISOR_BIGINT);
       const price = parseValue(entry.price, USD_DECIMALS);
 
       return getDecreasePositionAmounts({
@@ -187,11 +187,8 @@ export default function useSLTPEntries({
       };
     });
 
-    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigInt(0));
-    const totalPnLPercentage = entries.reduce(
-      (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
-      BigInt(0)
-    );
+    const totalPnL = entries.reduce((acc, entry) => acc + (entry.amounts?.realizedPnl ?? 0n), 0n);
+    const totalPnLPercentage = entries.reduce((acc, entry) => acc + (entry.amounts?.realizedPnlPercentage ?? 0n), 0n);
 
     return {
       ...stopLossEntriesInfo,
@@ -209,11 +206,8 @@ export default function useSLTPEntries({
       };
     });
 
-    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigInt(0));
-    const totalPnLPercentage = entries.reduce(
-      (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
-      BigInt(0)
-    );
+    const totalPnL = entries.reduce((acc, entry) => acc + (entry.amounts?.realizedPnl ?? 0n), 0n);
+    const totalPnLPercentage = entries.reduce((acc, entry) => acc + (entry.amounts?.realizedPnlPercentage ?? 0n), 0n);
 
     return {
       ...takeProfitEntriesInfo,
@@ -235,8 +229,8 @@ function createErrorHandlers({
   isLong,
   isLimit,
 }: {
-  liqPrice?: BigNumber;
-  entryPrice?: BigNumber;
+  liqPrice?: bigint;
+  entryPrice?: bigint;
   isLong?: boolean;
   isLimit?: boolean;
 }) {
@@ -247,14 +241,14 @@ function createErrorHandlers({
 
     const inputPrice = parseValue(entry.price, USD_DECIMALS);
 
-    const isPriceAboveMark = inputPrice?.gte(entryPrice);
-    const isPriceBelowMark = inputPrice?.lte(entryPrice);
+    const isPriceAboveMark = inputPrice === undefined ? undefined : inputPrice >= entryPrice;
+    const isPriceBelowMark = inputPrice === undefined ? undefined : inputPrice <= entryPrice;
     const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
     const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Mark Price.`;
     const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
 
     if (isStopLoss) {
-      if (inputPrice?.lte(liqPrice) && isLong) {
+      if (inputPrice === liqPrice && isLong) {
         return {
           ...entry,
           error: {
@@ -262,7 +256,7 @@ function createErrorHandlers({
           },
         };
       }
-      if (inputPrice?.gte(liqPrice) && !isLong) {
+      if (inputPrice === liqPrice && !isLong) {
         return {
           ...entry,
           error: {
@@ -310,7 +304,7 @@ function createErrorHandlers({
       }
     }
 
-    if (inputPrice?.gt(0) && (!entry.percentage || parseFloat(entry.percentage) === 0)) {
+    if (inputPrice && (!entry.percentage || parseFloat(entry.percentage) === 0)) {
       return {
         ...entry,
         error: {

@@ -1,6 +1,4 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
-import { getAddress } from "ethers/lib/utils.js";
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
@@ -18,12 +16,12 @@ type RawClaimableCollateral = {
 };
 
 export type RebateInfoItem = {
-  factor: BigNumber;
-  value: BigNumber;
+  factor: bigint;
+  value: bigint;
   marketAddress: string;
   timeKey: string;
   tokenAddress: string;
-  valueByFactor: BigNumber;
+  valueByFactor: bigint;
   id: string;
 };
 
@@ -70,12 +68,12 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
       let factor = BigInt(rawRebateInfo.factor);
       const factorByTime = BigInt(rawRebateInfo.factorByTime);
 
-      if (factorByTime.gt(factor)) {
+      if (factorByTime > factor) {
         factor = factorByTime;
       }
 
       const value = BigInt(rawRebateInfo.value);
-      const valueByFactor = value.mul(factor).div(expandDecimals(1, 30));
+      const valueByFactor = (value * factor) / expandDecimals(1, 30);
 
       const rebateInfo: RebateInfoItem = {
         factor,
@@ -87,13 +85,13 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
         id: rawRebateInfo.id,
       };
 
-      if (factor.gt(0) && valueByFactor.eq(0)) {
+      if (factor.gt(0) && valueByFactor == 0n) {
         // this is claimable entity but factor is too small
         // skipping to avoid CollateralAlreadyClaimed error
         return;
       }
 
-      if (rebateInfo.factor.eq(0)) {
+      if (rebateInfo.factor == 0n) {
         res.accruedPositionPriceImpactFees.push(rebateInfo);
       } else {
         res.claimablePositionPriceImpactFees.push(rebateInfo);

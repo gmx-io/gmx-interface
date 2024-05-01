@@ -102,7 +102,7 @@ function calculateNextCollateralAndReceiveUsd(
   totalFees
 ) {
   let nextCollateral;
-  let receiveUsd = bigNumberify(0);
+  let receiveUsd = 0n;
 
   if (collateral) {
     nextCollateral = collateral;
@@ -119,7 +119,7 @@ function calculateNextCollateralAndReceiveUsd(
     }
     if (isClosing) {
       receiveUsd = receiveUsd.add(nextCollateral);
-      nextCollateral = bigNumberify(0);
+      nextCollateral = 0n;
     }
     if (receiveUsd.gt(totalFees)) {
       receiveUsd = receiveUsd.sub(totalFees);
@@ -156,8 +156,8 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   let maxOutUsd;
 
   if (!fromInfo?.maxUsdgAmount) {
-    maxInUsd = bigNumberify(0);
-    maxIn = bigNumberify(0);
+    maxInUsd = 0n;
+    maxIn = 0n;
   } else {
     maxInUsd = fromInfo.maxUsdgAmount
       .sub(fromInfo.usdgAmount)
@@ -168,8 +168,8 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   }
 
   if (!toInfo?.poolAmount || !toInfo?.bufferAmount) {
-    maxOut = bigNumberify(0);
-    maxOutUsd = bigNumberify(0);
+    maxOut = 0n;
+    maxOutUsd = 0n;
   } else {
     maxOut = toInfo.availableAmount.gt(toInfo.poolAmount.sub(toInfo.bufferAmount))
       ? toInfo.poolAmount.sub(toInfo.bufferAmount)
@@ -273,9 +273,9 @@ export default function PositionSeller(props) {
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = orderOption === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
-  const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
+  const [nextDelta, nextHasProfit = 0n] = useMemo(() => {
     if (!position) {
-      return [bigNumberify(0), false];
+      return [0n, false];
     }
 
     if (orderOption !== STOP) {
@@ -283,7 +283,7 @@ export default function PositionSeller(props) {
     }
 
     if (!triggerPriceUsd) {
-      return [bigNumberify(0), false];
+      return [0n, false];
     }
 
     const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position);
@@ -291,7 +291,7 @@ export default function PositionSeller(props) {
   }, [position, orderOption, triggerPriceUsd]);
 
   const existingOrders = useMemo(() => {
-    if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
+    if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd == 0n)) {
       return [];
     }
     if (!orders || !position) {
@@ -346,10 +346,10 @@ export default function PositionSeller(props) {
   let leverageWithoutDelta;
 
   let nextCollateral;
-  let collateralDelta = bigNumberify(0);
-  let receiveUsd = bigNumberify(0);
-  let receiveAmount = bigNumberify(0);
-  let adjustedDelta = bigNumberify(0);
+  let collateralDelta = 0n;
+  let receiveUsd = 0n;
+  let receiveAmount = 0n;
+  let adjustedDelta = 0n;
 
   let isNotEnoughReceiveTokenLiquidity;
   let isCollateralPoolCapacityExceeded;
@@ -359,7 +359,7 @@ export default function PositionSeller(props) {
   let fundingFee;
   let positionFee;
   let swapFee;
-  let totalFees = bigNumberify(0);
+  let totalFees = 0n;
 
   useEffect(() => {
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
@@ -378,7 +378,7 @@ export default function PositionSeller(props) {
   const executionFee =
     orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
   const executionFeeUsd = useMemo(
-    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0),
+    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || 0n,
     [executionFee, infoTokens, nativeTokenAddress]
   );
 
@@ -434,7 +434,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
+    totalFees = totalFees.add(positionFee || 0n).add(fundingFee || 0n);
 
     if (sizeDelta && position.size.gt(0)) {
       adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
@@ -458,7 +458,7 @@ export default function PositionSeller(props) {
 
       if (nextHasProfit) {
         if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
-          collateralDelta = bigNumberify(0);
+          collateralDelta = 0n;
           // Keep Leverage is not possible
           isKeepLeverageNotPossible = true;
         }
@@ -466,7 +466,7 @@ export default function PositionSeller(props) {
         if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
           collateralDelta = collateralDelta.sub(adjustedDelta);
         } else {
-          collateralDelta = bigNumberify(0);
+          collateralDelta = 0n;
           // Keep leverage the same is not possible
           isKeepLeverageNotPossible = true;
         }
@@ -515,7 +515,7 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        totalFees = totalFees.add(swapFee || bigNumberify(0));
+        totalFees = totalFees.add(swapFee || 0n);
         receiveUsd = receiveUsd.sub(swapFee);
       }
       const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
@@ -588,7 +588,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position || !position.markPrice || position.collateral.eq(0)) {
+    if (!position || !position.markPrice || position.collateral == 0n) {
       return ["-", "-"];
     }
     if (orderOption !== STOP) {
@@ -604,7 +604,7 @@ export default function PositionSeller(props) {
       });
       return [deltaStr, deltaPercentageStr];
     }
-    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+    if (!triggerPriceUsd || triggerPriceUsd == 0n) {
       return ["-", "-"];
     }
 
@@ -636,11 +636,11 @@ export default function PositionSeller(props) {
     if (!fromAmount) {
       return [t`Enter an amount`];
     }
-    if (nextLeverage && nextLeverage.eq(0)) {
+    if (nextLeverage && nextLeverage == 0n) {
       return [t`Enter an amount`];
     }
     if (orderOption === STOP) {
-      if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+      if (!triggerPriceUsd || triggerPriceUsd == 0n) {
         return [t`Enter Price`];
       }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) {
@@ -650,7 +650,7 @@ export default function PositionSeller(props) {
         return [t`Price above Liq. Price`];
       }
 
-      if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
+      if (profitPrice && nextDelta == 0n && nextHasProfit) {
         return [t`Invalid price, see warning`];
       }
     }
@@ -741,7 +741,7 @@ export default function PositionSeller(props) {
     return true;
   };
 
-  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta.eq(0) && position.pendingDelta.gt(0);
+  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta.gt(0);
 
   const getPrimaryText = () => {
     const [error] = getError();
@@ -1003,8 +1003,8 @@ export default function PositionSeller(props) {
   const shouldShowExistingOrderWarning = false;
 
   if (orderOption === STOP && !triggerPriceUsd) {
-    receiveUsd = bigNumberify(0);
-    receiveAmount = bigNumberify(0);
+    receiveUsd = 0n;
+    receiveAmount = 0n;
   }
 
   const ERROR_TOOLTIP_MSG = {

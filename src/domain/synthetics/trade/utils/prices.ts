@@ -18,9 +18,9 @@ export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLo
 export function getDefaultAcceptablePriceImpactBps(p: {
   isIncrease: boolean;
   isLong: boolean;
-  indexPrice: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+  priceImpactDeltaUsd: bigint;
   acceptablePriceImapctBuffer?: number;
 }) {
   const {
@@ -52,17 +52,17 @@ export function getDefaultAcceptablePriceImpactBps(p: {
 export function getAcceptablePriceByPriceImpact(p: {
   isIncrease: boolean;
   isLong: boolean;
-  indexPrice: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+  priceImpactDeltaUsd: bigint;
 }) {
   const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd } = p;
 
-  if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {
+  if (!sizeDeltaUsd.gt(0) || indexPrice == 0n) {
     return {
       acceptablePrice: indexPrice,
-      acceptablePriceDeltaBps: BigInt(0),
-      priceDelta: BigInt(0),
+      acceptablePriceDeltaBps: 0n,
+      priceDelta: 0n,
     };
   }
 
@@ -84,22 +84,22 @@ export function getAcceptablePriceInfo(p: {
   marketInfo: MarketInfo;
   isIncrease: boolean;
   isLong: boolean;
-  indexPrice: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  maxNegativePriceImpactBps?: BigNumber;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+  maxNegativePriceImpactBps?: bigint;
 }) {
   const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
 
   const values = {
-    acceptablePrice: BigInt(0),
-    acceptablePriceDeltaBps: BigInt(0),
-    priceImpactDeltaAmount: BigInt(0),
-    priceImpactDeltaUsd: BigInt(0),
-    priceImpactDiffUsd: BigInt(0),
+    acceptablePrice: 0n,
+    acceptablePriceDeltaBps: 0n,
+    priceImpactDeltaAmount: 0n,
+    priceImpactDeltaUsd: 0n,
+    priceImpactDiffUsd: 0n,
   };
 
-  if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {
+  if (!sizeDeltaUsd.gt(0) || indexPrice == 0n) {
     return values;
   }
 
@@ -172,7 +172,7 @@ export function getAcceptablePriceInfo(p: {
   return values;
 }
 
-export function applySlippageToPrice(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
+export function applySlippageToPrice(allowedSlippage: number, price: bigint, isIncrease: boolean, isLong: boolean) {
   const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);
 
   const slippageBasisPoints = shouldIncreasePrice
@@ -212,8 +212,8 @@ export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
 }
 
 export function getTriggerDecreaseOrderType(p: {
-  triggerPrice: BigNumber;
-  markPrice: BigNumber;
+  triggerPrice: bigint;
+  markPrice: bigint;
   isLong: boolean;
 }): OrderType.LimitDecrease | OrderType.StopLossDecrease {
   const { triggerPrice, markPrice, isLong } = p;

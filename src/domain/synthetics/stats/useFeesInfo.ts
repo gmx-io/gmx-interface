@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import { useFeesSummary } from "domain/stats";
-import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
@@ -51,30 +50,29 @@ export default function useFeesInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
 
-      const totalPositionFees = BigInt(totalFeesInfo.position.totalBorrowingFeeUsd).add(
-        totalFeesInfo.position.totalPositionFeeUsd
-      );
+      const totalPositionFees =
+        BigInt(totalFeesInfo.position.totalBorrowingFeeUsd) + totalFeesInfo.position.totalPositionFeeUsd;
 
-      const totalSwapFees = BigInt(totalFeesInfo.swap.totalFeeReceiverUsd).add(totalFeesInfo.swap.totalFeeUsdForPool);
+      const totalSwapFees = BigInt(totalFeesInfo.swap.totalFeeReceiverUsd) + totalFeesInfo.swap.totalFeeUsdForPool;
 
       const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
-        return acc.add(fee.totalBorrowingFeeUsd).add(fee.totalPositionFeeUsd);
-      }, BigInt(0));
+        return acc + fee.totalBorrowingFeeUsd + fee.totalPositionFeeUsd;
+      }, 0n);
 
       const weeklySwapFees = weeklyFeesInfo.swap.reduce((acc, fee) => {
-        return acc.add(fee.totalFeeReceiverUsd).add(fee.totalFeeUsdForPool);
-      }, BigInt(0));
+        return acc + fee.totalFeeReceiverUsd + fee.totalFeeUsdForPool;
+      }, 0n);
 
       return {
-        weeklyFees: weeklyPositionFees.add(weeklySwapFees),
-        totalFees: totalPositionFees.add(totalSwapFees),
+        weeklyFees: weeklyPositionFees + weeklySwapFees,
+        totalFees: totalPositionFees + totalSwapFees,
       };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
       return {
-        weeklyFees: BigInt(0),
-        totalFees: BigInt(0),
+        weeklyFees: 0n,
+        totalFees: 0n,
       };
     }
   }

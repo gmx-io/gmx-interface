@@ -35,7 +35,6 @@ import {
   useTokensDataRequest,
   getTokenData,
 } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 import { useChainId } from "lib/chains";
@@ -389,7 +388,7 @@ const MainView = memo(() => {
             chainId,
             signer,
             subaccountAddress: address,
-          })) ?? BigInt(0);
+          })) ?? 0n;
       }
 
       if (!address) {

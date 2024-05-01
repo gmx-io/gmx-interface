@@ -137,10 +137,10 @@ export default function useReferralsData(account) {
                 return acc;
               },
               {
-                totalRebateUsd: bigNumberify(0),
-                volume: bigNumberify(0),
-                discountUsd: bigNumberify(0),
-                affiliateRebates: bigNumberify(0),
+                totalRebateUsd: 0n,
+                volume: 0n,
+                discountUsd: 0n,
+                affiliateRebates: 0n,
                 trades: 0,
                 tradedReferralsCount: 0,
                 registeredReferralsCount: 0,
@@ -164,8 +164,8 @@ export default function useReferralsData(account) {
                   discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd),
                 }
               : {
-                  volume: bigNumberify(0),
-                  discountUsd: bigNumberify(0),
+                  volume: 0n,
+                  discountUsd: 0n,
                 },
           };
         });
@@ -195,10 +195,10 @@ export default function useReferralsData(account) {
     const initialAccumulator = {
       total: {
         registeredReferralsCount: 0,
-        affiliatesVolume: bigNumberify(0),
-        affiliateRebates: bigNumberify(0),
-        discountUsd: bigNumberify(0),
-        tradersVolume: bigNumberify(0),
+        affiliatesVolume: 0n,
+        affiliateRebates: 0n,
+        discountUsd: 0n,
+        tradersVolume: 0n,
       },
     };
 

@@ -1,12 +1,11 @@
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 
 export type PositionsConstantsResult = {
-  minCollateralUsd?: BigNumber;
-  minPositionSizeUsd?: BigNumber;
+  minCollateralUsd?: bigint;
+  minPositionSizeUsd?: bigint;
 };
 
 export function usePositionsConstantsRequest(chainId: number): PositionsConstantsResult {

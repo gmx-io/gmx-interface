@@ -89,7 +89,7 @@ export default function OrderEditor(props) {
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
-      return bigNumberify(0);
+      return 0n;
     }
     let ratio = parseValue(triggerRatioValue, USD_DECIMALS);
     if (triggerRatioInverted) {
@@ -173,7 +173,7 @@ export default function OrderEditor(props) {
   };
 
   const getError = () => {
-    if ((!triggerRatio || triggerRatio.eq(0)) && (!triggerPrice || triggerPrice.eq(0))) {
+    if ((!triggerRatio || triggerRatio == 0n) && (!triggerPrice || triggerPrice == 0n)) {
       return t`Enter Price`;
     }
     if (order.type === SWAP && triggerRatio.eq(order.triggerRatio)) {
@@ -193,7 +193,7 @@ export default function OrderEditor(props) {
       }
 
       const { delta, hasProfit } = calculatePositionDelta(triggerPrice, position);
-      if (hasProfit && delta.eq(0)) {
+      if (hasProfit && delta == 0n) {
         return t`Invalid price, see warning`;
       }
     }
@@ -344,7 +344,7 @@ export default function OrderEditor(props) {
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label={t`Price`}>
-        {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) ? (
+        {triggerRatio && !triggerRatio == 0n && !triggerRatio.eq(order.triggerRatio) ? (
           <>
             <span className="muted">
               {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {

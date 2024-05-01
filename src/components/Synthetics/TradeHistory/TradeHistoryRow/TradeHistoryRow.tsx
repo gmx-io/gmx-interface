@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { BigNumber } from "ethers";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
@@ -25,7 +24,7 @@ import "./TradeHistoryRow.scss";
 
 type Props = {
   tradeAction: TradeAction;
-  minCollateralUsd: BigNumber;
+  minCollateralUsd: bigint;
   shouldDisplayAccount?: boolean;
   showDebugValues?: boolean;
 };

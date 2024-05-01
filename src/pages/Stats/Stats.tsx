@@ -18,7 +18,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import useWallet from "lib/wallets/useWallet";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
-  if (!share || !total || bigNumberify(total)!.eq(0)) {
+  if (!share || !total || bigNumberify(total) !== 0n) {
     return null;
   }
 
@@ -72,7 +72,7 @@ export default function Stats() {
   });
   const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, fundingRateInfo as any);
 
-  let adjustedUsdgSupply = bigNumberify(0);
+  let adjustedUsdgSupply = 0n;
 
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];

@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { getApproxSubaccountActionsCountByBalance } from "./utils";
 
 describe("getApproxSubaccountActionsCountByBalance", () => {
@@ -35,7 +34,7 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
   });
 
   it("case 3", () => {
-    const mainAccWrappedTokenBalance = BigInt(0);
+    const mainAccWrappedTokenBalance = 0n;
     const currentAutoTopUpAmount = BigInt(10);
     const subAccNativeTokenBalance = BigInt(100);
     const executionFee = BigInt(10);
@@ -52,7 +51,7 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
 
   it("case 4", () => {
     const mainAccWrappedTokenBalance = BigInt(10);
-    const currentAutoTopUpAmount = BigInt(0);
+    const currentAutoTopUpAmount = 0n;
     const subAccNativeTokenBalance = BigInt(100);
     const executionFee = BigInt(10);
     const res = getApproxSubaccountActionsCountByBalance(
@@ -80,7 +79,7 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
 
     // 1000 / 10 + 1 / 10
     // not enough balance to process an action
-    expect(res).toEqual(BigInt(0));
+    expect(res).toEqual(0n);
   });
 
   it("case 6", () => {
@@ -100,8 +99,8 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
   });
 
   it("case 7", () => {
-    const mainAccWrappedTokenBalance = BigInt(0);
-    const currentAutoTopUpAmount = BigInt(0);
+    const mainAccWrappedTokenBalance = 0n;
+    const currentAutoTopUpAmount = 0n;
     const subAccNativeTokenBalance = BigInt(10);
     const executionFee = BigInt(10);
     const res = getApproxSubaccountActionsCountByBalance(
@@ -167,7 +166,7 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
 
   it("case 11", () => {
     const mainAccWrappedTokenBalance = BigInt(100);
-    const currentAutoTopUpAmount = BigInt(0);
+    const currentAutoTopUpAmount = 0n;
     const subAccNativeTokenBalance = BigInt(20);
     const executionFee = BigInt(1);
     const res = getApproxSubaccountActionsCountByBalance(
@@ -207,6 +206,6 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigInt(0));
+    expect(res).toEqual(0n);
   });
 });

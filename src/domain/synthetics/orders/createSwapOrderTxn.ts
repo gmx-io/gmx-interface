@@ -19,14 +19,14 @@ const { ZeroAddress } = ethers;
 export type SwapOrderParams = {
   account: string;
   fromTokenAddress: string;
-  fromTokenAmount: BigNumber;
+  fromTokenAmount: bigint;
   toTokenAddress: string;
   swapPath: string[];
   referralCode?: string;
   tokensData: TokensData;
-  minOutputAmount: BigNumber;
+  minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
@@ -56,7 +56,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.fromTokenAmount,
     swapPath: p.swapPath,
-    sizeDeltaUsd: BigInt(0),
+    sizeDeltaUsd: 0n,
     minOutputAmount,
     isLong: false,
     orderType: p.orderType,
@@ -101,7 +101,7 @@ async function getParams(
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigInt(0);
+  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
   const totalWntAmount = wntSwapAmount.add(p.executionFee);
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
@@ -112,7 +112,7 @@ async function getParams(
     ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
     : p.minOutputAmount;
 
-  const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : BigInt(0);
+  const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
 
   const createOrderParams = {
     addresses: {
@@ -124,12 +124,12 @@ async function getParams(
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
-      sizeDeltaUsd: BigInt(0),
+      sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount,
-      triggerPrice: BigInt(0),
-      acceptablePrice: BigInt(0),
+      triggerPrice: 0n,
+      acceptablePrice: 0n,
       executionFee: p.executionFee,
-      callbackGasLimit: BigInt(0),
+      callbackGasLimit: 0n,
       minOutputAmount,
     },
     orderType: p.orderType,

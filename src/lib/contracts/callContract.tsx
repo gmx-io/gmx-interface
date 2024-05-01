@@ -14,8 +14,8 @@ export async function callContract(
   method: string,
   params: any,
   opts: {
-    value?: BigNumber | number;
-    gasLimit?: BigNumber | number;
+    value?: bigint | number;
+    gasLimit?: bigint | number;
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;

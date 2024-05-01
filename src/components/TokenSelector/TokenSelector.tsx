@@ -8,10 +8,9 @@ import Modal from "../Modal/Modal";
 import dropDownIcon from "img/DROP_DOWN.svg";
 import "./TokenSelector.scss";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -29,7 +28,7 @@ type Props = {
   tokens: Token[];
   infoTokens?: InfoTokens;
   showMintingCap?: boolean;
-  mintingCap?: BigNumber;
+  mintingCap?: bigint;
   disabled?: boolean;
   selectedTokenLabel?: ReactNode | string;
   showBalances?: boolean;
@@ -187,7 +186,7 @@ export default function TokenSelector(props: Props) {
               mintAmount = mintingCap.sub(info.usdgAmount);
             }
             if (mintAmount && mintAmount.lt(0)) {
-              mintAmount = bigNumberify(0);
+              mintAmount = 0n;
             }
             let balanceUsd;
             if (balance && info.maxPrice) {
@@ -226,7 +225,7 @@ export default function TokenSelector(props: Props) {
                   {showBalances && balance && (
                     <div className="Token-text">
                       {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
-                      {balance.eq(0) && "-"}
+                      {balance == 0n && "-"}
                     </div>
                   )}
                   <span className="text-accent">

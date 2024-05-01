@@ -18,7 +18,6 @@ import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -146,8 +145,8 @@ export function TVChart() {
           }
         : {
             symbol: "",
-            minPrice: BigInt(0),
-            maxPrice: BigInt(0),
+            minPrice: 0n,
+            maxPrice: 0n,
           },
     [chartToken]
   );

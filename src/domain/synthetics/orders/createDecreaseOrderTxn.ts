@@ -22,18 +22,18 @@ export type DecreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
-  initialCollateralDeltaAmount: BigNumber;
+  initialCollateralDeltaAmount: bigint;
   swapPath: string[];
   receiveTokenAddress: string;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  acceptablePrice: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  acceptablePrice: bigint;
   triggerPrice: BigNumber | undefined;
-  minOutputUsd: BigNumber;
+  minOutputUsd: bigint;
   isLong: boolean;
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode?: string;
@@ -60,7 +60,7 @@ export async function createDecreaseOrderTxn(
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigInt(0));
+  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), 0n);
   const account = ps[0].account;
   const encodedPayload = createDecreaseEncodedPayload({
     router,
@@ -219,10 +219,10 @@ export function createDecreaseEncodedPayload({
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,
           initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-          triggerPrice: convertToContractPrice(p.triggerPrice || BigInt(0), p.indexToken.decimals),
+          triggerPrice: convertToContractPrice(p.triggerPrice || 0n, p.indexToken.decimals),
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
-          callbackGasLimit: BigInt(0),
+          callbackGasLimit: 0n,
           minOutputAmount,
         },
         orderType: p.orderType,

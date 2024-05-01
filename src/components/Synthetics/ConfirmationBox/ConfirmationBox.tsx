@@ -12,7 +12,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import {
-  BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
   COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD,
   HIGH_SPREAD_THRESHOLD,
 } from "config/factors";
@@ -58,7 +58,6 @@ import {
   getExecutionPriceForDecrease,
 } from "domain/synthetics/trade";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
@@ -133,6 +132,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
+import { bigMath } from "lib/bigmath";
 
 export type Props = {
   isVisible: boolean;
@@ -293,8 +293,8 @@ export function ConfirmationBox(p: Props) {
 
     return existingTriggerOrders.filter((order) => {
       return order.triggerThresholdType === TriggerThresholdType.Above
-        ? markPrice.gt(order.triggerPrice)
-        : markPrice.lt(order.triggerPrice);
+        ? markPrice > order.triggerPrice
+        : markPrice < order.triggerPrice;
     });
   }, [existingPosition, existingTriggerOrders, markPrice]);
 
@@ -305,19 +305,19 @@ export function ConfirmationBox(p: Props) {
       const fromSpread = getSpread(fromToken.prices);
       const toSpread = getSpread(toToken.prices);
 
-      spread = fromSpread.add(toSpread);
+      spread = fromSpread + toSpread;
     } else if (isIncrease && fromToken && indexToken) {
       const fromSpread = getSpread(fromToken.prices);
       const toSpread = getSpread(indexToken.prices);
 
-      spread = fromSpread.add(toSpread);
+      spread = fromSpread + toSpread;
 
       if (isLong) {
         spread = fromSpread;
       }
     }
 
-    const isHigh = spread.gt(HIGH_SPREAD_THRESHOLD);
+    const isHigh = spread > HIGH_SPREAD_THRESHOLD;
 
     const showSpread = isMarket;
 
@@ -334,15 +334,15 @@ export function ConfirmationBox(p: Props) {
     if (getIsEquivalentTokens(collateralToken, indexToken)) {
       return {
         spread: totalSpread,
-        isHigh: totalSpread.gt(HIGH_SPREAD_THRESHOLD),
+        isHigh: totalSpread > HIGH_SPREAD_THRESHOLD,
       };
     }
 
-    totalSpread = totalSpread.add(getSpread(collateralToken!.prices!));
+    totalSpread = totalSpread + getSpread(collateralToken!.prices!);
 
     return {
       spread: totalSpread,
-      isHigh: totalSpread.gt(HIGH_SPREAD_THRESHOLD),
+      isHigh: totalSpread > HIGH_SPREAD_THRESHOLD,
     };
   }, [collateralToken, indexToken]);
 
@@ -474,11 +474,11 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, submitButtonState.disabled, onSubmit]
   );
 
-  const subaccountRequiredBalance =
-    executionFee?.feeTokenAmount.add(
-      sltpAmounts.reduce((acc, amount) => acc.add(getDecreaseExecutionFee(amount)?.feeTokenAmount || 0), BigInt(0))
-    ) ?? null;
-  const subaccount = useSubaccount(subaccountRequiredBalance, 1 + sltpAmounts.length);
+  const subaccountRequiredBalance = executionFee
+    ? executionFee.feeTokenAmount +
+        sltpAmounts.reduce((acc, amount) => acc + (getDecreaseExecutionFee(amount)?.feeTokenAmount || 0n), 0n) ?? null
+    : undefined;
+  const subaccount = useSubaccount(subaccountRequiredBalance ?? null, 1 + sltpAmounts.length);
   const isLastSubaccountAction = useIsLastSubaccountAction(1 + sltpAmounts.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(subaccountRequiredBalance ?? undefined, 1);
 
@@ -959,9 +959,9 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderAvailableLiquidity() {
-    const riskThresholdBps = 5000;
-    let availableLiquidityUsd: BigNumber | undefined = undefined;
-    let availableLiquidityAmount: BigNumber | undefined = undefined;
+    const riskThresholdBps = 5000n;
+    let availableLiquidityUsd: bigint | undefined = undefined;
+    let availableLiquidityAmount: bigint | undefined = undefined;
     let isLiquidityRisk = false;
 
     let tooltipContent = "";
@@ -975,7 +975,8 @@ export function ConfirmationBox(p: Props) {
         toToken?.prices.maxPrice
       );
 
-      isLiquidityRisk = availableLiquidityUsd!.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(swapAmounts.usdOut);
+      isLiquidityRisk =
+        bigMath.mulDiv(availableLiquidityUsd, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT) < swapAmounts.usdOut;
 
       tooltipContent = isLiquidityRisk
         ? t`There may not be sufficient liquidity to execute your order when the Min. Receive are met.`
@@ -985,10 +986,9 @@ export function ConfirmationBox(p: Props) {
     if (isIncrease && increaseAmounts) {
       availableLiquidityUsd = isLong ? longLiquidity : shortLiquidity;
 
-      isLiquidityRisk = availableLiquidityUsd!
-        .mul(riskThresholdBps)
-        .div(BASIS_POINTS_DIVISOR)
-        .lt(increaseAmounts.sizeDeltaUsd);
+      isLiquidityRisk =
+        bigMath.mulDiv(availableLiquidityUsd!, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT) <
+        increaseAmounts.sizeDeltaUsd;
 
       tooltipContent = isLiquidityRisk
         ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
@@ -1061,7 +1061,7 @@ export function ConfirmationBox(p: Props) {
           }
         />
         <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
-          {entriesInfo?.totalPnL?.isZero() ? (
+          {!entriesInfo?.totalPnL ? (
             "-"
           ) : (
             <Tooltip
@@ -1069,7 +1069,7 @@ export function ConfirmationBox(p: Props) {
                 signed: true,
               })})`}
               position="bottom-end"
-              handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={entriesInfo.totalPnL < 0 ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
                 entriesInfo?.entries?.map((entry, index) => {
@@ -1079,7 +1079,7 @@ export function ConfirmationBox(p: Props) {
                       <span className="mr-md">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
-                      <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                      <span className={entry.amounts?.realizedPnl < 0 ? "text-red" : "text-green"}>
                         {formatUsd(entry.amounts?.realizedPnl)} (
                         {formatPercentage(entry.amounts?.realizedPnlPercentage, {
                           signed: true,
@@ -1113,11 +1113,12 @@ export function ConfirmationBox(p: Props) {
     return <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />;
   }
 
-  const [initialCollateralSpread, setInitialCollateralSpread] = useState<BigNumber | undefined>();
+  const [initialCollateralSpread, setInitialCollateralSpread] = useState<bigint | undefined>();
 
-  const collateralSpreadPercent = collateralSpreadInfo?.spread
-    ?.mul(BASIS_POINTS_DIVISOR)
-    ?.div(expandDecimals(1, USD_DECIMALS));
+  const collateralSpreadPercent =
+    collateralSpreadInfo && collateralSpreadInfo.spread
+      ? bigMath.mulDiv(collateralSpreadInfo.spread, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals(1, USD_DECIMALS))
+      : undefined;
 
   useEffect(() => {
     if (collateralSpreadPercent && !initialCollateralSpread) {
@@ -1145,8 +1146,8 @@ export function ConfirmationBox(p: Props) {
         : increaseAmounts?.acceptablePrice;
 
     const isNearZeroFromStart =
-      initialCollateralSpread?.eq(0) &&
-      collateralSpreadPercent?.lt(COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD);
+      initialCollateralSpread === 0n &&
+      (collateralSpreadPercent ?? 0) < COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD;
 
     const showCollateralSpread = isMarket && !isNearZeroFromStart;
 
@@ -1259,7 +1260,7 @@ export function ConfirmationBox(p: Props) {
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          {existingPosition?.sizeInUsd.gt(0) && (
+          {existingPosition && (existingPosition.sizeInUsd ?? 0) > 0 && (
             <ExchangeInfoRow
               label={t`Size`}
               value={
@@ -1331,7 +1332,7 @@ export function ConfirmationBox(p: Props) {
                       <StatsTooltipRow
                         label={t`Fees`}
                         value={
-                          fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
+                          fees?.payTotalFees?.deltaUsd && fees.payTotalFees.deltaUsd !== 0n
                             ? formatDeltaUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
@@ -1388,11 +1389,12 @@ export function ConfirmationBox(p: Props) {
 
         <ExchangeInfo.Group>
           {isLimit && renderAvailableLiquidity()}
-          {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
+          {(swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
-              {formatAmount(swapSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
+              {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
-          )}
+          )) ||
+            null}
 
           {isMarket && (
             <AllowedSlippageRow
@@ -1465,7 +1467,7 @@ export function ConfirmationBox(p: Props) {
             {renderLeverage(
               existingPosition?.leverage,
               nextPositionValues?.nextLeverage,
-              nextPositionValues?.nextSizeUsd?.lte(0)
+              nextPositionValues?.nextSizeUsd ? nextPositionValues?.nextSizeUsd <= 0 : undefined
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
@@ -1544,7 +1546,7 @@ export function ConfirmationBox(p: Props) {
             <ExchangeInfoRow
               label={t`Liq. Price`}
               value={
-                nextPositionValues?.nextSizeUsd?.gt(0) ? (
+                nextPositionValues?.nextSizeUsd && nextPositionValues.nextSizeUsd > 0 ? (
                   <ValueTransition
                     from={
                       formatUsd(existingPosition?.liquidationPrice, {
@@ -1621,7 +1623,7 @@ export function ConfirmationBox(p: Props) {
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          {existingPosition && decreaseAmounts?.receiveUsd && (
+          {(existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
               label={t`Receive`}
               value={formatTokenAmountWithUsd(
@@ -1631,7 +1633,8 @@ export function ConfirmationBox(p: Props) {
                 collateralToken?.decimals
               )}
             />
-          )}
+          )) ||
+            null}
         </ExchangeInfo.Group>
       </ExchangeInfo>
     );
@@ -1652,13 +1655,14 @@ export function ConfirmationBox(p: Props) {
 
             {highExecutionFeeAcknowledgement}
 
-            {needPayTokenApproval && fromToken && (
+            {(needPayTokenApproval && fromToken && (
               <ApproveTokenButton
                 tokenAddress={fromToken.address}
                 tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
                 spenderAddress={getContract(chainId, "SyntheticsRouter")}
               />
-            )}
+            )) ||
+              null}
           </ExchangeInfo.Group>
         </ExchangeInfo>
 
@@ -1678,7 +1682,7 @@ export function ConfirmationBox(p: Props) {
   );
 }
 
-function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
+function renderLeverage(from: bigint | undefined, to: bigint | undefined, emptyValue = false) {
   return (
     <ExchangeInfoRow
       label={t`Leverage`}

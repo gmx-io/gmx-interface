@@ -14,14 +14,14 @@ import { t } from "@lingui/macro";
 type Params = {
   account: string;
   marketTokenAddress: string;
-  marketTokenAmount: BigNumber;
+  marketTokenAmount: bigint;
   initialLongTokenAddress: string;
-  minLongTokenAmount: BigNumber;
+  minLongTokenAmount: bigint;
   longTokenSwapPath: string[];
   initialShortTokenAddress: string;
   shortTokenSwapPath: string[];
-  minShortTokenAmount: BigNumber;
-  executionFee: BigNumber;
+  minShortTokenAmount: bigint;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
@@ -62,7 +62,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
-          callbackGasLimit: BigInt(0),
+          callbackGasLimit: 0n,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],

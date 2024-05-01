@@ -58,7 +58,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
 
     if (!usdOut || isOutLiquidity) {
       return {
-        usdOut: BigInt(0),
+        usdOut: 0n,
       };
     }
 
@@ -68,13 +68,13 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
-export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator: SwapEstimator) {
+export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: SwapEstimator) {
   if (routes.length === 0) {
     return undefined;
   }
 
   let bestPath = routes[0].path;
-  let bestUsdOut = BigInt(0);
+  let bestUsdOut = 0n;
 
   for (const route of routes) {
     try {

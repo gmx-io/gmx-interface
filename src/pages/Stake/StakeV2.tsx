@@ -115,7 +115,7 @@ function StakeModal(props) {
   const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount && amount.gt(tokenAllowance);
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount.gt(maxAmount)) {
@@ -398,7 +398,7 @@ function VesterDepositModal(props) {
     nextDepositAmount = vestedAmount.add(amount);
   }
 
-  let additionalReserveAmount = bigNumberify(0);
+  let additionalReserveAmount = 0n;
   if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0) && nextReserveAmount) {
     nextReserveAmount = nextDepositAmount.mul(averageStakedAmount).div(maxVestableAmount);
     if (nextReserveAmount?.gt(reserveAmount)) {
@@ -407,7 +407,7 @@ function VesterDepositModal(props) {
   }
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount.gt(maxAmount)) {
@@ -1317,7 +1317,7 @@ export default function StakeV2() {
     totalRewardTokens = processedData.bnGmxInFeeGmx.add(processedData.bonusGmxInFeeGmx);
   }
 
-  let totalRewardAndLpTokens = totalRewardTokens ?? bigNumberify(0);
+  let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
   if (processedData?.glpBalance) {
     totalRewardAndLpTokens = totalRewardAndLpTokens.add(processedData.glpBalance);
   }
@@ -1337,7 +1337,7 @@ export default function StakeV2() {
     totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
-  let maxUnstakeableGmx = bigNumberify(0);
+  let maxUnstakeableGmx = 0n;
   if (
     totalRewardTokens &&
     vestingData &&
@@ -1427,7 +1427,7 @@ export default function StakeV2() {
   };
 
   const showGmxVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount == 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1438,7 +1438,7 @@ export default function StakeV2() {
   };
 
   const showGlpVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount == 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }

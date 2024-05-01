@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -90,6 +89,7 @@ import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
 import "./OrderEditor.scss";
+import { bigMath } from "lib/bigmath";
 
 type Props = {
   order: OrderInfo;
@@ -127,12 +127,12 @@ export function OrderEditor(p: Props) {
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
   const additionalExecutionFee = useMemo(() => {
-    if (!executionFee || p.order.executionFee?.gte(executionFee.feeTokenAmount)) {
+    if (!executionFee || p.order.executionFee >= executionFee.feeTokenAmount) {
       return undefined;
     }
 
     const feeTokenData = getTokenData(tokensData, executionFee.feeToken.address);
-    const additionalTokenAmount = executionFee.feeTokenAmount.sub(p.order.executionFee ?? 0);
+    const additionalTokenAmount = executionFee.feeTokenAmount - p.order.executionFee;
 
     return {
       feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice),
@@ -171,8 +171,10 @@ export function OrderEditor(p: Props) {
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
-      ? increaseAmounts?.acceptablePriceDeltaBps.abs()
-      : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
+      ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
+      : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
+      ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
+      : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 

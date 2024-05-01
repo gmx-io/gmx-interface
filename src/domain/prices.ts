@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { gql } from "@apollo/client";
 import useSWR from "swr";
-import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS } from "lib/legacy";
 import { GMX_STATS_API_URL } from "config/backend";
@@ -10,8 +9,6 @@ import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
 import type { Bar, FromOldToNewArray } from "./tradingview/types";
-
-const BigNumber = ethers.BigNumber;
 
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {

@@ -1,5 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
-
 export type Token = {
   name: string;
   symbol: string;
@@ -33,46 +31,46 @@ export type TokenInfo = Token & {
   hasMaxAvailableLong?: boolean;
   hasMaxAvailableShort?: boolean;
 
-  usdgAmount?: BigNumber;
-  maxUsdgAmount?: BigNumber;
+  usdgAmount?: bigint;
+  maxUsdgAmount?: bigint;
 
-  poolAmount?: BigNumber;
-  bufferAmount?: BigNumber;
-  managedAmount?: BigNumber;
-  managedUsd?: BigNumber;
-  availableAmount?: BigNumber;
-  availableUsd?: BigNumber;
-  guaranteedUsd?: BigNumber;
-  redemptionAmount?: BigNumber;
-  reservedAmount?: BigNumber;
+  poolAmount?: bigint;
+  bufferAmount?: bigint;
+  managedAmount?: bigint;
+  managedUsd?: bigint;
+  availableAmount?: bigint;
+  availableUsd?: bigint;
+  guaranteedUsd?: bigint;
+  redemptionAmount?: bigint;
+  reservedAmount?: bigint;
 
-  balance?: BigNumber;
+  balance?: bigint;
 
-  weight?: BigNumber;
+  weight?: bigint;
 
-  maxPrice?: BigNumber;
-  maxPrimaryPrice?: BigNumber;
+  maxPrice?: bigint;
+  maxPrimaryPrice?: bigint;
 
-  minPrice?: BigNumber;
-  minPrimaryPrice?: BigNumber;
+  minPrice?: bigint;
+  minPrimaryPrice?: bigint;
 
-  contractMaxPrice?: BigNumber;
-  contractMinPrice?: BigNumber;
+  contractMaxPrice?: bigint;
+  contractMinPrice?: bigint;
 
-  spread?: BigNumber;
+  spread?: bigint;
 
-  cumulativeFundingRate?: BigNumber;
-  fundingRate?: BigNumber;
+  cumulativeFundingRate?: bigint;
+  fundingRate?: bigint;
 
-  globalShortSize?: BigNumber;
+  globalShortSize?: bigint;
 
-  maxAvailableLong?: BigNumber;
-  maxAvailableShort?: BigNumber;
+  maxAvailableLong?: bigint;
+  maxAvailableShort?: bigint;
 
-  maxGlobalLongSize?: BigNumber;
-  maxGlobalShortSize?: BigNumber;
+  maxGlobalLongSize?: bigint;
+  maxGlobalShortSize?: bigint;
 
-  maxLongCapacity?: BigNumber;
+  maxLongCapacity?: bigint;
 };
 
 export type InfoTokens = {
@@ -80,6 +78,6 @@ export type InfoTokens = {
 };
 
 export type TokenPrices = {
-  minPrice: BigNumber;
-  maxPrice: BigNumber;
+  minPrice: bigint;
+  maxPrice: bigint;
 };

@@ -85,9 +85,9 @@ function getPositionStats(positionStats) {
       return acc;
     },
     {
-      totalLongPositionSizes: bigNumberify(0),
-      totalShortPositionSizes: bigNumberify(0),
-      totalOpenInterest: bigNumberify(0),
+      totalLongPositionSizes: 0n,
+      totalShortPositionSizes: 0n,
+      totalOpenInterest: 0n,
     }
   );
 }
@@ -319,7 +319,7 @@ export default function DashboardV2() {
       !tokenInfo.weight ||
       !tokenInfo.usdgAmount ||
       !adjustedUsdgSupply ||
-      adjustedUsdgSupply.eq(0) ||
+      adjustedUsdgSupply == 0n ||
       !totalTokenWeights
     ) {
       return "...";
@@ -1008,7 +1008,7 @@ export default function DashboardV2() {
                     <tbody>
                       {visibleTokens.map((token) => {
                         const tokenInfo = infoTokens[token.address];
-                        let utilization = bigNumberify(0);
+                        let utilization = 0n;
                         if (
                           tokenInfo &&
                           tokenInfo.reservedAmount &&
@@ -1097,7 +1097,7 @@ export default function DashboardV2() {
                 <div className="token-grid">
                   {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
-                    let utilization = bigNumberify(0);
+                    let utilization = 0n;
                     if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
                       utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
                     }

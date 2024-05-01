@@ -14,7 +14,6 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getSwapPathStats,
 } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
 import { createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
@@ -27,6 +26,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { bigMath } from "lib/bigmath";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -73,16 +73,14 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         }
 
         const paths = findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)
-          ?.sort((a, b) => {
-            return b.liquidity.sub(a.liquidity).gt(0) ? 1 : -1;
-          })
+          ?.sort((a, b) => bigMath.sign(b.liquidity - a.liquidity))
           .slice(0, 5);
 
         return paths;
       })();
 
       const { maxLiquidity, maxLiquidityPath } = (() => {
-        let maxLiquidity = BigInt(0);
+        let maxLiquidity = 0n;
         let maxLiquidityPath: string[] | undefined = undefined;
 
         if (!allRoutes || !marketsInfoData || !wrappedFromAddress) {
@@ -105,7 +103,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         return { maxLiquidity, maxLiquidityPath };
       })();
 
-      const findSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => {
+      const findSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => {
         if (!allRoutes?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
           return undefined;
         }
@@ -171,11 +169,11 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     tradeType: TradeType;
     collateralTokenAddress: string | undefined;
     marketAddress: string | undefined;
-    initialCollateralAmount: BigNumber;
-    indexTokenAmount: BigNumber | undefined;
-    leverage: BigNumber | undefined;
-    triggerPrice: BigNumber | undefined;
-    fixedAcceptablePriceImpactBps: BigNumber | undefined;
+    initialCollateralAmount: bigint;
+    indexTokenAmount: bigint | undefined;
+    leverage: bigint | undefined;
+    triggerPrice: bigint | undefined;
+    fixedAcceptablePriceImpactBps: bigint | undefined;
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   }) =>
@@ -284,9 +282,9 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     tradeType: TradeType;
     collateralTokenAddress: string | undefined;
     marketAddress: string | undefined;
-    triggerPrice: BigNumber | undefined;
-    closeSizeUsd: BigNumber | undefined;
-    fixedAcceptablePriceImpactBps: BigNumber | undefined;
+    triggerPrice: bigint | undefined;
+    closeSizeUsd: bigint | undefined;
+    fixedAcceptablePriceImpactBps: bigint | undefined;
     keepLeverage: boolean | undefined;
   }) =>
     createSelectorDeprecated(
@@ -361,11 +359,11 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     tradeType: TradeType;
     collateralTokenAddress: string | undefined;
     marketAddress: string | undefined;
-    initialCollateralAmount: BigNumber;
-    indexTokenAmount: BigNumber | undefined;
-    leverage: BigNumber | undefined;
-    triggerPrice: BigNumber | undefined;
-    fixedAcceptablePriceImpactBps: BigNumber | undefined;
+    initialCollateralAmount: bigint;
+    indexTokenAmount: bigint | undefined;
+    leverage: bigint | undefined;
+    triggerPrice: bigint | undefined;
+    fixedAcceptablePriceImpactBps: bigint | undefined;
     increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
@@ -404,7 +402,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           return undefined;
         }
 
-        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
+        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount > 0) {
           return getNextPositionValuesForIncreaseTrade({
             marketInfo,
             collateralToken,
@@ -437,15 +435,15 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     triggerPrice,
     isPnlInLeverage,
   }: {
-    closeSizeUsd: BigNumber | undefined;
+    closeSizeUsd: bigint | undefined;
     collateralTokenAddress: string | undefined;
-    fixedAcceptablePriceImpactBps: BigNumber | undefined;
+    fixedAcceptablePriceImpactBps: bigint | undefined;
     keepLeverage: boolean | undefined;
     marketAddress: string | undefined;
     positionKey: string | undefined;
     tradeMode: TradeMode;
     tradeType: TradeType;
-    triggerPrice: BigNumber | undefined;
+    triggerPrice: bigint | undefined;
     isPnlInLeverage: boolean;
   }) =>
     createSelectorDeprecated(
@@ -479,7 +477,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
 
         if (!closeSizeUsd) throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
-        if (decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
+        if (decreaseAmounts?.acceptablePrice && closeSizeUsd > 0) {
           return getNextPositionValuesForDecreaseTrade({
             existingPosition: position,
             marketInfo,

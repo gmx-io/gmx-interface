@@ -16,7 +16,7 @@ export default function ExchangeWalletTokens(props) {
           mintAmount = mintingCap.sub(info.usdgAmount);
         }
         if (mintAmount && mintAmount.lt(0)) {
-          mintAmount = bigNumberify(0);
+          mintAmount = 0n;
         }
         let balanceUsd;
         if (balance && info.maxPrice) {
@@ -29,7 +29,7 @@ export default function ExchangeWalletTokens(props) {
               {balance && (
                 <div className="align-right">
                   {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
-                  {balance.eq(0) && "-"}
+                  {balance == 0n && "-"}
                 </div>
               )}
             </div>

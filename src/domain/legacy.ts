@@ -277,7 +277,7 @@ export function usePositionsForOrders(chainId, signer, orders) {
             order.indexToken,
             order.isLong
           );
-          if (position[0].eq(0)) {
+          if (position[0] == 0n) {
             return [null, order];
           }
           return [position, order];

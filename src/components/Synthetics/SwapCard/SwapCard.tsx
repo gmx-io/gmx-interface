@@ -4,14 +4,13 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 export type Props = {
-  maxLiquidityUsd?: BigNumber;
+  maxLiquidityUsd?: bigint;
   fromToken?: TokenData;
   toToken?: TokenData;
   markRatio?: TokensRatio;

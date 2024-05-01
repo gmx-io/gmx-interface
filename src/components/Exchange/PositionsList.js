@@ -242,8 +242,7 @@ export default function PositionsList(props) {
               const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
 
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-              const positionDelta =
-                position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+              const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
               let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
                 const borrowFeeRate = position.collateralToken.fundingRate
@@ -295,7 +294,7 @@ export default function PositionsList(props) {
                             className={cx("Exchange-list-info-label Position-pnl", {
                               positive: hasPositionProfit && positionDelta.gt(0),
                               negative: !hasPositionProfit && positionDelta.gt(0),
-                              muted: positionDelta.eq(0),
+                              muted: positionDelta == 0n,
                             })}
                             onClick={openSettings}
                           >
@@ -429,7 +428,7 @@ export default function PositionsList(props) {
                         <Button
                           variant="secondary"
                           className="mr-md mt-md"
-                          disabled={position.size.eq(0)}
+                          disabled={position.size == 0n}
                           onClick={() => sellPosition(position)}
                         >
                           <Trans>Close</Trans>
@@ -437,7 +436,7 @@ export default function PositionsList(props) {
                         <Button
                           variant="secondary"
                           className="mr-md mt-md"
-                          disabled={position.size.eq(0)}
+                          disabled={position.size == 0n}
                           onClick={() => editPosition(position)}
                         >
                           <Trans>Edit Collateral</Trans>
@@ -449,7 +448,7 @@ export default function PositionsList(props) {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);
                           }}
-                          disabled={position.size.eq(0)}
+                          disabled={position.size == 0n}
                         >
                           <Trans>Share</Trans>
                         </Button>
@@ -511,14 +510,13 @@ export default function PositionsList(props) {
                 averagePrice: position.averagePrice,
                 isLong: position.isLong,
                 fundingFee: position.fundingFee,
-              }) || bigNumberify(0);
+              }) || 0n;
 
             const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-            const positionDelta =
-              position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+            const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
             let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
               const borrowFeeRate = position.collateralToken.fundingRate
@@ -592,7 +590,7 @@ export default function PositionsList(props) {
                       className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
                         positive: hasPositionProfit && positionDelta.gt(0),
                         negative: !hasPositionProfit && positionDelta.gt(0),
-                        muted: positionDelta.eq(0),
+                        muted: positionDelta == 0n,
                       })}
                       onClick={openSettings}
                     >
@@ -710,7 +708,7 @@ export default function PositionsList(props) {
                   <button
                     className="Exchange-list-action"
                     onClick={() => sellPosition(position)}
-                    disabled={position.size.eq(0)}
+                    disabled={position.size == 0n}
                   >
                     <Trans>Close</Trans>
                   </button>

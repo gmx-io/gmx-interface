@@ -1,11 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import "./StatsTooltip.css";
 import { formatAmount } from "lib/numbers";
 
 type Props = {
-  entries: { [key: string]: BigNumber | string | undefined };
+  entries: { [key: string]: bigint | string | undefined };
   showDollar?: boolean;
   decimalsForConversion?: number;
   symbol?: string;
@@ -19,8 +18,8 @@ export default function ChainsStatsTooltipRow({
   symbol,
   shouldFormat = true,
 }: Props) {
-  const validEntries = Object.entries(entries).filter(([, value]) => Boolean(value) && !BigInt(value).isZero());
-  const total = validEntries.reduce((acc, [, value]) => acc.add(value ?? BigInt(0)), BigInt(0));
+  const validEntries = Object.entries(entries).filter(([, value]) => value);
+  const total = validEntries.reduce((acc, [, value]) => acc + (BigInt(value || 0) ?? 0n), 0n);
 
   if (validEntries.length === 0) {
     return null;

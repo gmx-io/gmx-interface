@@ -5,7 +5,6 @@ import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
@@ -121,8 +120,8 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
           ...tokenConfig,
           address: marketAddress,
           prices: {
-            minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
-            maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
+            minPrice: minPrice && minPrice > 0 ? minPrice : expandDecimals(1, USD_DECIMALS),
+            maxPrice: maxPrice && maxPrice > 0 ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
           balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,

@@ -12,12 +12,12 @@ import { callContract } from "lib/contracts";
 export type UpdateOrderParams = {
   orderKey: string;
   indexToken?: Token;
-  sizeDeltaUsd: BigNumber;
-  triggerPrice: BigNumber;
-  acceptablePrice: BigNumber;
-  minOutputAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  minOutputAmount: bigint;
   // used to top-up execution fee for frozen orders
-  executionFee?: BigNumber;
+  executionFee?: bigint;
   setPendingTxns: (txns: any) => void;
 };
 

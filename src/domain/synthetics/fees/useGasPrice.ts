@@ -1,8 +1,6 @@
 import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { BigNumber } from "ethers";
-import { bigNumberify } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import useSWR from "swr";
@@ -13,11 +11,11 @@ export function useGasPrice(chainId: number) {
 
   const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
-  const { data: gasPrice } = useSWR<BigNumber | undefined>(
+  const { data: gasPrice } = useSWR<bigint | undefined>(
     ["gasPrice", chainId, executionFeeConfig.shouldUseMaxPriorityFeePerGas, settings.executionFeeBufferBps],
     {
       fetcher: () => {
-        return new Promise<BigNumber | undefined>(async (resolve, reject) => {
+        return new Promise<bigint | undefined>(async (resolve, reject) => {
           const provider = getProvider(signer, chainId);
 
           if (!provider) {
@@ -42,7 +40,7 @@ export function useGasPrice(chainId: number) {
               const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
               gasPrice = gasPrice.add(buffer);
             }
-            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
 
             resolve(gasPrice.add(premium));
           } catch (e) {

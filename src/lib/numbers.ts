@@ -1,22 +1,26 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getPlusOrMinusSymbol } from "./utils";
+import { bigMath } from "./bigmath";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
-export const BN_ZERO = BigInt(0);
-export const BN_ONE = BigInt(1);
-export const BN_NEGATIVE_ONE = BigInt(-1);
+export const BN_ZERO = 0n;
+export const BN_ONE = 1n;
+export const BN_NEGATIVE_ONE = -1n;
 
 /**
  *
  * @deprecated Use BigInt instead
  */
-export function bigNumberify(n?: BigNumberish) {
+export function bigNumberify(n?: BigNumberish | null | undefined) {
   try {
+    if (n === undefined) throw new Error("n is undefined");
+    if (n === null) throw new Error("n is null");
+
     return BigInt(n);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -25,30 +29,29 @@ export function bigNumberify(n?: BigNumberish) {
   }
 }
 
-export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
-  // @ts-ignore
-  return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
+export function expandDecimals(n: BigNumberish, decimals: number): bigint {
+  return BigInt(n) * 10n ** BigInt(decimals);
 }
 
 function getLimitedDisplay(
-  amount: BigNumber,
+  amount: bigint,
   tokenDecimals: number,
   opts: { maxThreshold?: string; minThreshold?: string } = {}
 ) {
   const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
   const max = expandDecimals(maxThreshold, tokenDecimals);
   const min = ethers.parseUnits(minThreshold, tokenDecimals);
-  const absAmount = amount.abs();
+  const absAmount = bigMath.abs(amount);
 
-  if (absAmount.eq(0)) {
+  if (absAmount == 0n) {
     return {
       symbol: "",
       value: absAmount,
     };
   }
 
-  const symbol = absAmount.gt(max) ? TRIGGER_PREFIX_ABOVE : absAmount.lt(min) ? TRIGGER_PREFIX_BELOW : "";
-  const value = absAmount.gt(max) ? max : absAmount.lt(min) ? min : absAmount;
+  const symbol = absAmount > max ? TRIGGER_PREFIX_ABOVE : absAmount < min ? TRIGGER_PREFIX_BELOW : "";
+  const value = absAmount > max ? max : absAmount < min ? min : absAmount;
 
   return {
     symbol,
@@ -130,11 +133,12 @@ export const formatKeyAmount = <T extends {}>(
   displayDecimals: number,
   useCommas?: boolean
 ) => {
-  if (!map || !map[key]) {
+  const value = map ? map[key] : undefined;
+  if (!value) {
     return "...";
   }
 
-  return formatAmount(map[key] as unknown as BigNumber, tokenDecimals, displayDecimals, useCommas);
+  return formatAmount(value as bigint, tokenDecimals, displayDecimals, useCommas);
 };
 
 export const formatArrayAmount = (
@@ -161,7 +165,7 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
 };
 
 export function formatUsd(
-  usd?: BigNumber,
+  usd?: bigint,
   opts: {
     fallbackToZero?: boolean;
     displayDecimals?: number;
@@ -174,7 +178,7 @@ export function formatUsd(
 
   if (!usd) {
     if (fallbackToZero) {
-      usd = BigInt(0);
+      usd = 0n;
     } else {
       return undefined;
     }
@@ -183,20 +187,20 @@ export function formatUsd(
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
 
   const maybePlus = opts.displayPlus ? "+" : "";
-  const sign = usd.lt(0) ? "-" : maybePlus;
+  const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${symbol}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(
-  deltaUsd?: BigNumber,
-  percentage?: BigNumber,
+  deltaUsd?: bigint,
+  percentage?: bigint,
   opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
 ) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
-      return `${formatUsd(BigInt(0))} (${formatAmount(BigInt(0), 2, 2)}%)`;
+      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
     }
 
     return undefined;
@@ -205,19 +209,19 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const percentageStr = percentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
   return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
-export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
+export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
   const { fallbackToZero = false, signed = false } = opts;
 
   if (!percentage) {
     if (fallbackToZero) {
-      return `${formatAmount(BigInt(0), 2, 2)}%`;
+      return `${formatAmount(0n, 2, 2)}%`;
     }
 
     return undefined;
@@ -225,11 +229,11 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), 2, 2)}%`;
 }
 
 export function formatTokenAmount(
-  amount?: BigNumber,
+  amount?: bigint,
   tokenDecimals?: number,
   symbol?: string,
   opts: {
@@ -255,7 +259,7 @@ export function formatTokenAmount(
 
   if (!amount || !tokenDecimals) {
     if (fallbackToZero) {
-      amount = BigInt(0);
+      amount = 0n;
       tokenDecimals = displayDecimals;
     } else {
       return undefined;
@@ -265,7 +269,7 @@ export function formatTokenAmount(
   let amountStr: string;
 
   const maybePlus = opts.displayPlus ? "+" : "";
-  const sign = amount.lt(0) ? "-" : maybePlus;
+  const sign = amount < 0n ? "-" : maybePlus;
 
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
@@ -279,8 +283,8 @@ export function formatTokenAmount(
 }
 
 export function formatTokenAmountWithUsd(
-  tokenAmount?: BigNumber,
-  usdAmount?: BigNumber,
+  tokenAmount?: bigint,
+  usdAmount?: bigint,
   tokenSymbol?: string,
   tokenDecimals?: number,
   opts: {
@@ -330,29 +334,29 @@ export function numberWithCommas(x: BigNumberish) {
   return parts.join(".");
 }
 
-export function roundUpDivision(a: BigNumber, b: BigNumber) {
-  return a.add(b).sub(1).div(b);
+export function roundUpDivision(a: bigint, b: bigint) {
+  return (a + b - 1n) / b;
 }
 
-export function roundUpMagnitudeDivision(a: BigNumber, b: BigNumber) {
-  if (a.lt(0)) {
-    return a.sub(b).add(1).div(b);
+export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
+  if (a < 0n) {
+    return (a - b + 1n) / b;
   }
 
-  return a.add(b).sub(1).div(b);
+  return (a + b - 1n) / b;
 }
 
-export function applyFactor(value: BigNumber, factor: BigNumber) {
-  return value.mul(factor).div(PRECISION);
+export function applyFactor(value: bigint, factor: bigint) {
+  return (value * factor) / PRECISION;
 }
 
-export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, shouldRoundUp = false) {
-  const result = numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRoundUp = false) {
+  const result = (numerator * BASIS_POINTS_DIVISOR_BIGINT) / denominator;
 
   if (shouldRoundUp) {
-    const remainder = numerator.mul(BASIS_POINTS_DIVISOR).mod(denominator);
-    if (!remainder.isZero()) {
-      return result.isNegative() ? result.sub(1) : result.add(1);
+    const remainder = (numerator * BASIS_POINTS_DIVISOR_BIGINT) % denominator;
+    if (remainder !== 0n) {
+      return result < 0n ? result - 1n : result + 1n;
     }
   }
 
@@ -363,7 +367,7 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */
-export function formatRatePercentage(rate?: BigNumber, opts?: { displayDecimals?: number; signed?: boolean }) {
+export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: number; signed?: boolean }) {
   if (!rate) {
     return "-";
   }
@@ -371,19 +375,20 @@ export function formatRatePercentage(rate?: BigNumber, opts?: { displayDecimals?
   const signed = opts?.signed ?? true;
   const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
 
-  return `${plurOrMinus}${formatAmount(rate.mul(100).abs(), 30, opts?.displayDecimals ?? 4)}%`;
+  const amount = bigMath.abs(rate * 100n);
+  return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
-export function basisPointsToFloat(basisPoints: BigNumber) {
-  return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
+export function basisPointsToFloat(basisPoints: bigint) {
+  return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
 
-export function roundToTwoDecimals(n) {
+export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
-export function sumBigNumbers(...args) {
-  return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigInt(0));
+export function sumBigNumbers(...args: (bigint | undefined)[]) {
+  return args.reduce<bigint>((acc, value) => acc + (value ?? 0n), 0n);
 }
 
 export function removeTrailingZeros(amount: string | number) {

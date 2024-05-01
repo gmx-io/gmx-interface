@@ -26,7 +26,7 @@ import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
-function pow(bn: BigNumber, exponent: BigNumber) {
+function pow(bn: bigint, exponent: BigNumber) {
   // this is just aproximation
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
@@ -50,7 +50,7 @@ function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: numb
 }
 
 function formatFactor(factor: BigNumber) {
-  if (factor.eq(0)) {
+  if (factor == 0n) {
     return "0";
   }
 
@@ -632,7 +632,7 @@ export function SyntheticsStats() {
                 const isLongLabel = isLong ? "Long" : "Short";
                 let availableLiquidity = maxLiquidity.sub(liquidity);
                 if (availableLiquidity.lt(0)) {
-                  availableLiquidity = bigNumberify(0)!;
+                  availableLiquidity = 0n!;
                 }
 
                 return (
@@ -690,9 +690,9 @@ export function SyntheticsStats() {
 
                 const reservedPositivePriceImpactUsd = getPriceImpactUsd({
                   currentLongUsd: market.longInterestUsd.sub(market.shortInterestUsd),
-                  currentShortUsd: bigNumberify(0)!,
-                  nextLongUsd: bigNumberify(0)!,
-                  nextShortUsd: bigNumberify(0)!,
+                  currentShortUsd: 0n!,
+                  nextLongUsd: 0n!,
+                  nextShortUsd: 0n!,
                   factorNegative: market.positionImpactFactorNegative,
                   factorPositive: market.positionImpactFactorPositive,
                   exponentFactor: market.positionImpactExponentFactor,

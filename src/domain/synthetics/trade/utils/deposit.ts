@@ -10,13 +10,13 @@ export function getDepositAmounts(p: {
   marketToken: TokenData;
   longToken: TokenData;
   shortToken: TokenData;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  marketTokenAmount: BigNumber;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  marketTokenAmount: bigint;
   strategy: "byCollaterals" | "byMarketToken";
   includeLongToken: boolean;
   includeShortToken: boolean;
-  uiFeeFactor: BigNumber;
+  uiFeeFactor: bigint;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -36,19 +36,19 @@ export function getDepositAmounts(p: {
   const shortTokenPrice = getMidPrice(shortToken.prices);
 
   const values: DepositAmounts = {
-    longTokenAmount: BigInt(0),
-    longTokenUsd: BigInt(0),
-    shortTokenAmount: BigInt(0),
-    shortTokenUsd: BigInt(0),
-    marketTokenAmount: BigInt(0),
-    marketTokenUsd: BigInt(0),
-    swapFeeUsd: BigInt(0),
-    uiFeeUsd: BigInt(0),
-    swapPriceImpactDeltaUsd: BigInt(0),
+    longTokenAmount: 0n,
+    longTokenUsd: 0n,
+    shortTokenAmount: 0n,
+    shortTokenUsd: 0n,
+    marketTokenAmount: 0n,
+    marketTokenUsd: 0n,
+    swapFeeUsd: 0n,
+    uiFeeUsd: 0n,
+    swapPriceImpactDeltaUsd: 0n,
   };
 
   if (strategy === "byCollaterals") {
-    if (longTokenAmount.eq(0) && shortTokenAmount.eq(0)) {
+    if (longTokenAmount == 0n && shortTokenAmount == 0n) {
       return values;
     }
 
@@ -111,7 +111,7 @@ export function getDepositAmounts(p: {
 
     values.marketTokenUsd = convertToUsd(values.marketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
   } else if (strategy === "byMarketToken") {
-    if (marketTokenAmount.eq(0)) {
+    if (marketTokenAmount == 0n) {
       return values;
     }
 
@@ -179,10 +179,10 @@ function getMarketTokenAmountByCollateral(p: {
   marketToken: TokenData;
   tokenIn: TokenData;
   tokenOut: TokenData;
-  amount: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
-  swapFeeUsd: BigNumber;
-  uiFeeUsd: BigNumber;
+  amount: bigint;
+  priceImpactDeltaUsd: bigint;
+  swapFeeUsd: bigint;
+  uiFeeUsd: bigint;
 }): BigNumber {
   const { marketInfo, marketToken, tokenIn, tokenOut, amount, priceImpactDeltaUsd, swapFeeUsd, uiFeeUsd } = p;
 
@@ -190,7 +190,7 @@ function getMarketTokenAmountByCollateral(p: {
   const uiFeeAmount = convertToTokenAmount(uiFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
 
   let amountInAfterFees = amount.sub(swapFeeAmount).sub(uiFeeAmount);
-  let mintAmount = BigInt(0);
+  let mintAmount = 0n;
 
   if (priceImpactDeltaUsd.gt(0)) {
     const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);

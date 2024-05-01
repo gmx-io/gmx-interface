@@ -105,7 +105,7 @@ export function usePositions(
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigInt(numbers.increasedAtBlock).eq(0)) {
+        if (BigInt(numbers.increasedAtBlock) == 0n) {
           return positionsMap;
         }
 
@@ -267,10 +267,10 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.sizeInUsd = event.sizeInUsd;
   nextPosition.sizeInTokens = event.sizeInTokens;
   nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.pendingBorrowingFeesUsd = BigInt(0);
-  nextPosition.fundingFeeAmount = BigInt(0);
-  nextPosition.claimableLongTokenAmount = BigInt(0);
-  nextPosition.claimableShortTokenAmount = BigInt(0);
+  nextPosition.pendingBorrowingFeesUsd = 0n;
+  nextPosition.fundingFeeAmount = 0n;
+  nextPosition.claimableLongTokenAmount = 0n;
+  nextPosition.claimableShortTokenAmount = 0n;
   nextPosition.pendingUpdate = undefined;
   nextPosition.isOpening = false;
 
@@ -295,15 +295,15 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     marketAddress,
     collateralTokenAddress: collateralAddress,
     isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd || BigInt(0),
-    collateralAmount: pendingUpdate.collateralDeltaAmount || BigInt(0),
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigInt(0),
+    sizeInUsd: pendingUpdate.sizeDeltaUsd || 0n,
+    collateralAmount: pendingUpdate.collateralDeltaAmount || 0n,
+    sizeInTokens: pendingUpdate.sizeDeltaInTokens || 0n,
     increasedAtBlock: pendingUpdate.updatedAtBlock,
-    decreasedAtBlock: BigInt(0),
-    pendingBorrowingFeesUsd: BigInt(0),
-    fundingFeeAmount: BigInt(0),
-    claimableLongTokenAmount: BigInt(0),
-    claimableShortTokenAmount: BigInt(0),
+    decreasedAtBlock: 0n,
+    pendingBorrowingFeesUsd: 0n,
+    fundingFeeAmount: 0n,
+    claimableLongTokenAmount: 0n,
+    claimableShortTokenAmount: 0n,
     data: "0x",
 
     isOpening: true,

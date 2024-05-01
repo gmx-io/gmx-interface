@@ -106,7 +106,7 @@ export function OrderStatusNotification({
       const longShortText = isLong ? t`Long` : t`Short`;
       const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
 
-      if (sizeDeltaUsd.eq(0)) {
+      if (sizeDeltaUsd == 0n) {
         const symbol = orderData.shouldUnwrapNativeToken
           ? initialCollateralToken?.baseSymbol
           : initialCollateralToken?.symbol;

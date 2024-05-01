@@ -1,6 +1,5 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
@@ -10,10 +9,10 @@ export function useDebugExecutionPrice(
   chainId,
   p: {
     marketInfo?: MarketInfo;
-    sizeInUsd?: BigNumber;
-    sizeInTokens?: BigNumber;
-    sizeDeltaUsd?: BigNumber;
-    overrideIndexTokenPrice?: BigNumber;
+    sizeInUsd?: bigint;
+    sizeInTokens?: bigint;
+    sizeDeltaUsd?: bigint;
+    overrideIndexTokenPrice?: bigint;
     skip?: boolean;
     isLong?: boolean;
   }

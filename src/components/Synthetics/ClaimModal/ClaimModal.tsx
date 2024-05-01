@@ -7,7 +7,6 @@ import {
   getTotalClaimableFundingUsd,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
@@ -50,19 +49,17 @@ export function ClaimModal(p: Props) {
     const fundingLongUsd = convertToUsd(fundingLongAmount, longToken?.decimals, longToken?.prices?.minPrice);
     const fundingShortUsd = convertToUsd(fundingShortAmount, shortToken?.decimals, shortToken?.prices?.minPrice);
 
-    const totalFundingUsd = BigInt(0)
-      .add(fundingLongUsd || 0)
-      ?.add(fundingShortUsd || 0);
+    const totalFundingUsd = (fundingLongUsd ?? 0n) + (fundingShortUsd ?? 0n);
 
-    if (!totalFundingUsd?.gt(0)) return null;
+    if (totalFundingUsd <= 0) return null;
 
     const claimableAmountsItems: string[] = [];
 
-    if (fundingLongAmount?.gt(0)) {
+    if (fundingLongAmount) {
       claimableAmountsItems.push(formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (fundingShortAmount?.gt(0)) {
+    if (fundingShortAmount) {
       claimableAmountsItems.push(formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol)!);
     }
 
@@ -101,12 +98,12 @@ export function ClaimModal(p: Props) {
     const fundingTokenAddresses: string[] = [];
 
     for (const market of markets) {
-      if (market.claimableFundingAmountLong?.gt(0)) {
+      if (market.claimableFundingAmountLong) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.longTokenAddress);
       }
 
-      if (market.claimableFundingAmountShort?.gt(0)) {
+      if (market.claimableFundingAmountShort) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.shortTokenAddress);
       }

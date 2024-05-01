@@ -74,11 +74,11 @@ export function getVestingDataV2(vestingInfo) {
 }
 
 function getVestingValues({ minRatio, amount, vestingDataItem }) {
-  if (!vestingDataItem || !amount || amount.eq(0)) {
+  if (!vestingDataItem || !amount || amount == 0n) {
     return;
   }
 
-  let currentRatio = bigNumberify(0);
+  let currentRatio = 0n;
 
   const ratioMultiplier = 10000;
   const maxVestableAmount = vestingDataItem.maxVestableAmount;
@@ -263,11 +263,11 @@ export default function ClaimEsGmx() {
       return t`Wallet not connected`;
     }
 
-    if (esGmxIouBalance && esGmxIouBalance.eq(0)) {
+    if (esGmxIouBalance && esGmxIouBalance == 0n) {
       return t`No esGMX to claim`;
     }
 
-    if (!amount || amount.eq(0)) {
+    if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
 

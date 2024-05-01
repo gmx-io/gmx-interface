@@ -43,7 +43,6 @@ import {
   positionImpactPoolDistributionRateKey,
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { TokensData, useTokensDataRequest } from "../tokens";
@@ -410,37 +409,29 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
         const market = getByKey(marketsData, marketAddress)!;
         const marketDivisor = market.isSameCollaterals ? BigInt(2) : BN_ONE;
 
-        const longInterestUsingLongToken = BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]).div(
-          marketDivisor
-        );
-        const longInterestUsingShortToken = BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]).div(
-          marketDivisor
-        );
-        const shortInterestUsingLongToken = BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]).div(
-          marketDivisor
-        );
-        const shortInterestUsingShortToken = BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]).div(
-          marketDivisor
-        );
+        const longInterestUsingLongToken =
+          BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;
+        const longInterestUsingShortToken =
+          BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]) / marketDivisor;
+        const shortInterestUsingLongToken =
+          BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]) / marketDivisor;
+        const shortInterestUsingShortToken =
+          BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]) / marketDivisor;
 
-        const longInterestUsd = longInterestUsingLongToken.add(longInterestUsingShortToken);
-        const shortInterestUsd = shortInterestUsingLongToken.add(shortInterestUsingShortToken);
+        const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
+        const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
 
-        const longInterestInTokensUsingLongToken = BigInt(
-          dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const longInterestInTokensUsingShortToken = BigInt(
-          dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestInTokensUsingLongToken = BigInt(
-          dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestInTokensUsingShortToken = BigInt(
-          dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
+        const longInterestInTokensUsingLongToken =
+          BigInt(dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+        const longInterestInTokensUsingShortToken =
+          BigInt(dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
+        const shortInterestInTokensUsingLongToken =
+          BigInt(dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+        const shortInterestInTokensUsingShortToken =
+          BigInt(dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
 
-        const longInterestInTokens = longInterestInTokensUsingLongToken.add(longInterestInTokensUsingShortToken);
-        const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
+        const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
+        const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
@@ -465,8 +456,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestUsd,
           longInterestInTokens,
           shortInterestInTokens,
-          longPoolAmount: BigInt(dataStoreValues.longPoolAmount.returnValues[0]).div(marketDivisor),
-          shortPoolAmount: BigInt(dataStoreValues.shortPoolAmount.returnValues[0]).div(marketDivisor),
+          longPoolAmount: BigInt(dataStoreValues.longPoolAmount.returnValues[0]) / marketDivisor,
+          shortPoolAmount: BigInt(dataStoreValues.shortPoolAmount.returnValues[0]) / marketDivisor,
           maxLongPoolAmountForDeposit: BigInt(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
           maxShortPoolAmountForDeposit: BigInt(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
           maxLongPoolAmount: BigInt(dataStoreValues.maxLongPoolAmount.returnValues[0]),
@@ -521,11 +512,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           ),
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigInt(dataStoreValues.claimableFundingAmountLong?.returnValues[0]).div(marketDivisor)
+            ? BigInt(dataStoreValues.claimableFundingAmountLong?.returnValues[0]) / marketDivisor
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigInt(dataStoreValues.claimableFundingAmountShort?.returnValues[0]).div(marketDivisor)
+            ? BigInt(dataStoreValues.claimableFundingAmountShort?.returnValues[0]) / marketDivisor
             : undefined,
 
           positionFeeFactorForPositiveImpact: BigInt(

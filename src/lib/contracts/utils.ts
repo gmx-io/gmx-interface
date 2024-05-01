@@ -5,7 +5,7 @@ import { bigNumberify } from "../numbers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
 
   const gasPrice = await provider.getGasPrice();
 
@@ -29,8 +29,8 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   return;
 }
 
-export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: BigNumber | number) {
-  const defaultValue = bigNumberify(0);
+export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: bigint | number) {
+  const defaultValue = 0n;
 
   if (!value) {
     value = defaultValue;

@@ -46,7 +46,7 @@ describe("applyImpactFactor", () => {
       const _expected = BigInt(expected);
 
       expect(
-        _expected.eq(0)
+        _expected == 0n
           ? result?.lt(expandDecimals(1, 20))
           : _expected.div(_expected.sub(result!).abs()).gt(expandDecimals(1, 10))
       ).toBe(true);

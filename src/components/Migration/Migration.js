@@ -140,7 +140,7 @@ function MigrationModal(props) {
   }
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount.gt(maxAmount)) {
@@ -346,8 +346,8 @@ export default function Migration() {
   let totalMigratedUsd;
 
   if (iouBalances) {
-    gmxBalance = bigNumberify(0);
-    totalMigratedGmx = bigNumberify(0);
+    gmxBalance = 0n;
+    totalMigratedGmx = 0n;
 
     for (let i = 0; i < iouBalances.length / 2; i++) {
       gmxBalance = gmxBalance.add(iouBalances[i * 2]);

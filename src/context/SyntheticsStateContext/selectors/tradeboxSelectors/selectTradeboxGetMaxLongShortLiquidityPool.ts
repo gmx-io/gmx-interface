@@ -1,6 +1,5 @@
 import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { BN_ZERO } from "lib/numbers";
 import groupBy from "lodash/groupBy";
 import maxBy from "lodash/maxBy";
@@ -8,14 +7,14 @@ import { selectTradeboxAvailableTokensOptions } from ".";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 
 export type TokenOption = {
-  maxLongLiquidity: BigNumber;
-  maxShortLiquidity: BigNumber;
+  maxLongLiquidity: bigint;
+  maxShortLiquidity: bigint;
   marketTokenAddress: string;
   indexTokenAddress: string;
 };
 
-export function bnClampMin(value: BigNumber, min: BigNumber) {
-  return value.lt(min) ? min : value;
+export function bnClampMin(value: bigint, min: bigint) {
+  return value < min ? min : value;
 }
 
 const selectSortedAllMarkets = createSelector((q) => q(selectTradeboxAvailableTokensOptions).sortedAllMarkets);

@@ -3,21 +3,20 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DOCS_LINKS } from "config/links";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
-import { BigNumber } from "ethers";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
 
 type Props = {
   processedData: {
-    gmxAprForEsGmx: BigNumber;
-    gmxAprForNativeToken: BigNumber;
-    maxGmxAprForNativeToken: BigNumber;
-    gmxAprForNativeTokenWithBoost: BigNumber;
-    gmxBoostAprForNativeToken?: BigNumber;
-    avgBoostMultiplier?: BigNumber;
+    gmxAprForEsGmx: bigint;
+    gmxAprForNativeToken: bigint;
+    maxGmxAprForNativeToken: bigint;
+    gmxAprForNativeTokenWithBoost: bigint;
+    gmxBoostAprForNativeToken?: bigint;
+    avgBoostMultiplier?: bigint;
   };
   nativeTokenSymbol: string;
   isUserConnected?: boolean;
-  recommendStakeGmx?: BigNumber;
+  recommendStakeGmx?: bigint;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -41,9 +40,8 @@ export default function GMXAprTooltip({
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
-  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(
-    processedData.gmxAprForNativeTokenWithBoost
-  );
+  const maxGmxAprPercentageDifference =
+    processedData.maxGmxAprForNativeToken - processedData.gmxAprForNativeTokenWithBoost;
 
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
@@ -94,7 +92,7 @@ export default function GMXAprTooltip({
           </>
         )}
         <br />
-        {recommendStakeGmx?.gt(0) ? (
+        {(recommendStakeGmx ?? 0) > 0 ? (
           <Trans>
             You have reached the maximum Boost Percentage. Stake an additional{" "}
             {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}

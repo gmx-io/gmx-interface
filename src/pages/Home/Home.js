@@ -60,7 +60,7 @@ export default function Home({ showRedirectModal }) {
   const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume);
   const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume);
 
-  let totalVolumeSum = bigNumberify(0);
+  let totalVolumeSum = 0n;
   if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
     totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum);
     totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum);
@@ -70,7 +70,7 @@ export default function Home({ showRedirectModal }) {
 
   // Open Interest
 
-  let openInterest = bigNumberify(0);
+  let openInterest = 0n;
   if (
     arbitrumPositionStats &&
     arbitrumPositionStats.totalLongPositionSizes &&

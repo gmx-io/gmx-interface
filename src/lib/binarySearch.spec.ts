@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { bigMath } from "./bigmath";
 import { numericBinarySearch, bigNumberBinarySearch } from "./binarySearch";
 import { expandDecimals } from "./numbers";
 
@@ -22,7 +22,7 @@ describe("numericBinarySearch", () => {
 });
 
 describe("bigNumberBinarySearch", () => {
-  const ONE = BigInt(1);
+  const ONE = 1n;
   const FIFTY = BigInt(50);
 
   it(`1..50 check`, () => {
@@ -30,7 +30,7 @@ describe("bigNumberBinarySearch", () => {
     cases.forEach((correctAnswerRaw) => {
       const correctAnswer = BigInt(correctAnswerRaw);
       const { result } = bigNumberBinarySearch(ONE, FIFTY, ONE, (x) => {
-        return { isValid: x.lte(correctAnswer), returnValue: null };
+        return { isValid: x <= correctAnswer, returnValue: null };
       });
 
       expect(result).toEqual(correctAnswer);
@@ -46,30 +46,30 @@ describe("bigNumberBinarySearch", () => {
 
   it("1..1e30..1e32", () => {
     const correctAnswer = expandDecimals(1, 30);
-    const from = BigInt(1);
-    const to = BigInt(10).pow(32);
-    const delta = BigInt(10).pow(15);
+    const from = 1n;
+    const to = 10n ** 32n;
+    const delta = 10n ** 15n;
     const { result } = bigNumberBinarySearch(from, to, delta, (x) => {
-      return { isValid: x.lte(correctAnswer), returnValue: null };
+      return { isValid: x <= correctAnswer, returnValue: null };
     });
 
     checkWithDelta(result, correctAnswer, delta);
   });
 
   it("1..250..1000", () => {
-    const correctAnswer = BigInt(250);
-    const from = BigInt(1);
-    const to = BigInt(1000);
-    const delta = BigInt(1);
+    const correctAnswer = 250n;
+    const from = 1n;
+    const to = 1000n;
+    const delta = 1n;
 
     const { result } = bigNumberBinarySearch(from, to, delta, (x) => {
-      return { isValid: x.lte(correctAnswer), returnValue: null };
+      return { isValid: x <= correctAnswer, returnValue: null };
     });
 
     checkWithDelta(result, correctAnswer, delta);
   });
 });
 
-function checkWithDelta(result: BigNumber, correctAnswer: BigNumber, delta: BigNumber) {
-  expect(result.sub(correctAnswer).abs().lte(delta.mul(2))).toBeTruthy();
+function checkWithDelta(result: bigint, correctAnswer: bigint, delta: bigint) {
+  expect(bigMath.abs(result - correctAnswer) <= delta * 2n).toBeTruthy();
 }

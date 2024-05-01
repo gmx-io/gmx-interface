@@ -185,21 +185,21 @@ export function useReferralsData(account?: string | null) {
               trades: 0,
               tradedReferralsCount: 0,
               registeredReferralsCount: 0,
-              volume: bigNumberify(0),
-              totalRebateUsd: bigNumberify(0),
-              affiliateRebateUsd: bigNumberify(0),
-              discountUsd: bigNumberify(0),
+              volume: 0n,
+              totalRebateUsd: 0n,
+              affiliateRebateUsd: 0n,
+              discountUsd: 0n,
               v1Data: {
-                volume: bigNumberify(0),
-                totalRebateUsd: bigNumberify(0),
-                affiliateRebateUsd: bigNumberify(0),
-                discountUsd: bigNumberify(0),
+                volume: 0n,
+                totalRebateUsd: 0n,
+                affiliateRebateUsd: 0n,
+                discountUsd: 0n,
               },
               v2Data: {
-                volume: bigNumberify(0),
-                totalRebateUsd: bigNumberify(0),
-                affiliateRebateUsd: bigNumberify(0),
-                discountUsd: bigNumberify(0),
+                volume: 0n,
+                totalRebateUsd: 0n,
+                affiliateRebateUsd: 0n,
+                discountUsd: 0n,
               },
             } as AffiliateTotalStats
           );
@@ -218,15 +218,15 @@ export function useReferralsData(account?: string | null) {
                 },
               }
             : {
-                volume: bigNumberify(0)!,
-                discountUsd: bigNumberify(0)!,
+                volume: 0n!,
+                discountUsd: 0n!,
                 v1Data: {
-                  volume: bigNumberify(0)!,
-                  discountUsd: bigNumberify(0)!,
+                  volume: 0n!,
+                  discountUsd: 0n!,
                 },
                 v2Data: {
-                  volume: bigNumberify(0)!,
-                  discountUsd: bigNumberify(0)!,
+                  volume: 0n!,
+                  discountUsd: 0n!,
                 },
               };
 
@@ -277,10 +277,10 @@ export function useReferralsData(account?: string | null) {
           {
             total: {
               registeredReferralsCount: 0,
-              affiliateVolume: BigInt(0),
-              affiliateRebateUsd: BigInt(0),
-              discountUsd: BigInt(0),
-              traderVolume: BigInt(0),
+              affiliateVolume: 0n,
+              affiliateRebateUsd: 0n,
+              discountUsd: 0n,
+              traderVolume: 0n,
             },
             chains: {},
           } as TotalReferralsStats

@@ -6,7 +6,7 @@ import { t } from "@lingui/macro";
 import { formatTokenAmount } from "lib/numbers";
 
 type WrapOrUnwrapParams = {
-  amount: BigNumber;
+  amount: bigint;
   isWrap: boolean;
   setPendingTxns: (txns: any) => void;
 };

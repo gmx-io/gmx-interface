@@ -1,6 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { TokenData, TokenPrices, TokensAllowanceData, TokensData, TokensRatio } from "./types";
@@ -26,52 +25,51 @@ export function getTokenData(tokensData?: TokensData, address?: string, convertT
 export function getNeedTokenApprove(
   tokenAllowanceData: TokensAllowanceData,
   tokenAddress: string,
-  amountToSpend: BigNumber
+  amountToSpend: bigint
 ): boolean {
   if (tokenAddress === NATIVE_TOKEN_ADDRESS || !tokenAllowanceData[tokenAddress]) {
     return false;
   }
 
-  return amountToSpend.gt(tokenAllowanceData[tokenAddress]);
+  return amountToSpend > tokenAllowanceData[tokenAddress];
 }
 
 export function convertToTokenAmount(
-  usd: BigNumber | undefined,
+  usd: bigint | undefined,
   tokenDecimals: number | undefined,
-  price: BigNumber | undefined
+  price: bigint | undefined
 ) {
-  if (!usd || typeof tokenDecimals !== "number" || !price?.gt(0)) {
+  if (usd === undefined || typeof tokenDecimals !== "number" || price === undefined || price <= 0) {
     return undefined;
   }
 
-  return usd.mul(expandDecimals(1, tokenDecimals)).div(price);
+  return (usd * expandDecimals(1, tokenDecimals)) / price;
 }
 
 export function convertToUsd(
-  tokenAmount: BigNumber | undefined,
+  tokenAmount: bigint | undefined,
   tokenDecimals: number | undefined,
-  price: BigNumber | undefined
+  price: bigint | undefined
 ) {
-  if (!tokenAmount || typeof tokenDecimals !== "number" || !price) {
+  if (tokenAmount == undefined || typeof tokenDecimals !== "number" || price === undefined) {
     return undefined;
   }
 
-  return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
+  return (tokenAmount * price) / expandDecimals(1, tokenDecimals);
 }
 
 export function getTokensRatioByPrice(p: {
   fromToken: TokenData;
   toToken: TokenData;
-  fromPrice: BigNumber;
-  toPrice: BigNumber;
+  fromPrice: bigint;
+  toPrice: bigint;
 }): TokensRatio {
   const { fromToken, toToken, fromPrice, toPrice } = p;
 
-  const [largestToken, smallestToken, largestPrice, smallestPrice] = fromPrice.gt(toPrice)
-    ? [fromToken, toToken, fromPrice, toPrice]
-    : [toToken, fromToken, toPrice, fromPrice];
+  const [largestToken, smallestToken, largestPrice, smallestPrice] =
+    fromPrice > toPrice ? [fromToken, toToken, fromPrice, toPrice] : [toToken, fromToken, toPrice, fromPrice];
 
-  const ratio = largestPrice.mul(PRECISION).div(smallestPrice);
+  const ratio = (largestPrice * PRECISION) / smallestPrice;
 
   return { ratio, largestToken, smallestToken };
 }
@@ -83,19 +81,20 @@ export function getTokensRatioByPrice(p: {
 export function getTokensRatioByAmounts(p: {
   fromToken: Token;
   toToken: Token;
-  fromTokenAmount: BigNumber;
-  toTokenAmount: BigNumber;
+  fromTokenAmount: bigint;
+  toTokenAmount: bigint;
 }): TokensRatio {
   const { fromToken, toToken, fromTokenAmount, toTokenAmount } = p;
 
-  const adjustedFromAmount = fromTokenAmount.mul(PRECISION).div(expandDecimals(1, fromToken.decimals));
-  const adjustedToAmount = toTokenAmount.mul(PRECISION).div(expandDecimals(1, toToken.decimals));
+  const adjustedFromAmount = (fromTokenAmount * PRECISION) / expandDecimals(1, fromToken.decimals);
+  const adjustedToAmount = (toTokenAmount * PRECISION) / expandDecimals(1, toToken.decimals);
 
-  const [smallestToken, largestToken, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
-    ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
-    : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+  const [smallestToken, largestToken, largestAmount, smallestAmount] =
+    adjustedFromAmount > adjustedToAmount
+      ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
+      : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 
-  const ratio = smallestAmount.gt(0) ? largestAmount.mul(PRECISION).div(smallestAmount) : BigInt(0);
+  const ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
 
   return { ratio, largestToken, smallestToken };
 }
@@ -114,29 +113,29 @@ export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: To
 export function getAmountByRatio(p: {
   fromToken: Token;
   toToken: Token;
-  fromTokenAmount: BigNumber;
-  ratio: BigNumber;
+  fromTokenAmount: bigint;
+  ratio: bigint;
   shouldInvertRatio?: boolean;
 }) {
   const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio } = p;
 
-  if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount.eq(0)) {
+  if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount === 0n) {
     return p.fromTokenAmount;
   }
 
-  const _ratio = shouldInvertRatio ? PRECISION.mul(PRECISION).div(ratio) : ratio;
+  const _ratio = shouldInvertRatio ? (PRECISION * PRECISION) / ratio : ratio;
 
   const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
 
-  return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
+  return (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
 }
 
 export function getMidPrice(prices: TokenPrices) {
-  return prices.minPrice.add(prices.maxPrice).div(2);
+  return (prices.minPrice + prices.maxPrice) / 2n;
 }
 
-export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
-  return price.div(expandDecimals(1, tokenDecimals));
+export function convertToContractPrice(price: bigint, tokenDecimals: number) {
+  return price / expandDecimals(1, tokenDecimals);
 }
 
 export function convertToContractTokenPrices(prices: TokenPrices, tokenDecimals: number) {
@@ -146,8 +145,8 @@ export function convertToContractTokenPrices(prices: TokenPrices, tokenDecimals:
   };
 }
 
-export function parseContractPrice(price: BigNumber, tokenDecimals: number) {
-  return price.mul(expandDecimals(1, tokenDecimals));
+export function parseContractPrice(price: bigint, tokenDecimals: number) {
+  return price * expandDecimals(1, tokenDecimals);
 }
 
 /**

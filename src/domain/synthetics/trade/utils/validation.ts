@@ -83,7 +83,7 @@ export function getSwapError(p: {
     return [t`Enter a  price`];
   }
 
-  if (fromTokenAmount.gt(fromToken.balance || BigInt(0))) {
+  if (fromTokenAmount.gt(fromToken.balance || 0n)) {
     return [t`Insufficient ${fromToken?.symbol} balance`];
   }
 
@@ -186,7 +186,7 @@ export function getIncreaseError(p: {
     return [t`Enter an amount`];
   }
 
-  if (initialCollateralAmount.gt(initialCollateralToken.balance || BigInt(0))) {
+  if (initialCollateralAmount.gt(initialCollateralToken.balance || 0n)) {
     return [t`Insufficient ${initialCollateralToken?.symbol} balance`];
   }
 
@@ -198,7 +198,7 @@ export function getIncreaseError(p: {
     }
 
     if (!isLimit) {
-      if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || BigInt(0))) {
+      if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || 0n)) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }
@@ -275,7 +275,7 @@ export function getIncreaseError(p: {
 }
 
 export function getIsMaxLeverageExceeded(
-  nextLeverage: BigNumber,
+  nextLeverage: bigint,
   marketInfo: MarketInfo,
   isLong: boolean,
   sizeDeltaUsd: BigNumber
@@ -422,7 +422,7 @@ export function getEditCollateralError(p: {
     minCollateralFactor,
   } = p;
 
-  if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
+  if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount== 0n || collateralDeltaUsd?== 0n) {
     return [t`Enter an amount`];
   }
 
@@ -448,9 +448,9 @@ export function getEditCollateralError(p: {
     const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,
-      BigInt(0),
+      0n,
       minCollateralFactor,
-      BigInt(0)
+      0n
     );
 
     if (!isPositionCollateralSufficient) {
@@ -462,8 +462,8 @@ export function getEditCollateralError(p: {
 }
 
 export function decreasePositionSizeByLeverageDiff(
-  currentLeverage: BigNumber,
-  targetLeverage: BigNumber,
+  currentLeverage: bigint,
+  targetLeverage: bigint,
   sizeDeltaUsd: BigNumber
 ) {
   return (
@@ -522,9 +522,7 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
-    const totalCollateralUsd = BigInt(0)
-      .add(longTokenUsd || 0)
-      .add(shortTokenUsd || 0);
+    const totalCollateralUsd = 0n.add(longTokenUsd || 0).add(shortTokenUsd || 0);
 
     const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
 
@@ -539,7 +537,7 @@ export function getGmSwapError(p: {
     if (shortTokenAmount?.gt(mintableInfo.shortDepositCapacityAmount)) {
       return [t`Max ${shortToken?.symbol} amount exceeded`];
     }
-  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigInt(0))) {
+  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || 0n)) {
     return [t`Fees exceed Pay amount`];
   }
 

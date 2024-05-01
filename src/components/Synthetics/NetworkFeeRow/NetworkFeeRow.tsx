@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { ReactNode, useMemo } from "react";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { ExecutionFee } from "domain/synthetics/fees/types";
@@ -15,6 +14,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./NetworkFeeRow.scss";
+import { bigMath } from "lib/bigmath";
 
 type Props = {
   executionFee?: ExecutionFee;
@@ -32,25 +32,28 @@ export function NetworkFeeRow({ executionFee }: Props) {
 
   const { executionFeeText, estimatedRefundText } = useMemo(() => {
     const executionFeeText = formatTokenAmountWithUsd(
-      executionFee?.feeTokenAmount.mul(-1),
-      executionFee?.feeUsd.mul(-1),
+      executionFee?.feeTokenAmount ? executionFee.feeTokenAmount * -1n : undefined,
+      executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined,
       executionFee?.feeToken.symbol,
       executionFee?.feeToken.decimals
     );
 
-    let estimatedRefundTokenAmount: BigNumber | undefined;
+    let estimatedRefundTokenAmount: bigint | undefined;
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
     } else {
       const fee = executionFee.feeTokenAmount;
-      const feeBeforeBuffer = fee.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR + executionFeeBufferBps);
-      estimatedRefundTokenAmount = feeBeforeBuffer
-        .mul(ESTIMATED_REFUND_BPS)
-        .div(BASIS_POINTS_DIVISOR)
-        .add(fee.sub(feeBeforeBuffer));
+      const feeBeforeBuffer = bigMath.mulDiv(
+        fee,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
+      );
+      estimatedRefundTokenAmount =
+        bigMath.mulDiv(feeBeforeBuffer, BigInt(ESTIMATED_REFUND_BPS), BASIS_POINTS_DIVISOR_BIGINT) +
+        (fee - feeBeforeBuffer);
     }
 
-    let estimatedRefundUsd: BigNumber | undefined;
+    let estimatedRefundUsd: bigint | undefined;
 
     if (executionFeeBufferBps === undefined || !executionFee || !tokenData) {
       estimatedRefundUsd = undefined;
@@ -106,7 +109,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
           </>
         )}
       >
-        {formatUsd(executionFee?.feeUsd.mul(-1))}
+        {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
   }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText]);

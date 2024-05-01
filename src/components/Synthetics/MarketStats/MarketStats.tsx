@@ -19,7 +19,6 @@ import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
-import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 import { useMemo } from "react";
@@ -187,8 +186,8 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Wallet`}
           value={formatTokenAmountWithUsd(
-            marketBalance || BigInt(0),
-            marketBalanceUsd || BigInt(0),
+            marketBalance || 0n,
+            marketBalanceUsd || 0n,
             "GM",
             marketToken?.decimals ?? 18
           )}
@@ -325,8 +324,8 @@ export function MarketStats(p: Props) {
             <CardRow
               label={t`Pool Amount`}
               value={formatTokenAmountWithUsd(
-                longPoolAmount?.add(shortPoolAmount ?? BN_ZERO),
-                longPoolAmountUsd?.add(shortPoolAmountUsd ?? BN_ZERO),
+                longPoolAmount ? longPoolAmount + (shortPoolAmount ?? BN_ZERO) : undefined,
+                longPoolAmountUsd ? longPoolAmountUsd + (shortPoolAmountUsd ?? BN_ZERO) : undefined,
                 longToken?.symbol,
                 longToken?.decimals
               )}

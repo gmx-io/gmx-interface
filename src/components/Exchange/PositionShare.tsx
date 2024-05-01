@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
+
 import { toJpeg } from "html-to-image";
 import shareBgImg from "img/position-share-bg.png";
 import downloadImage from "lib/downloadImage";
@@ -32,12 +32,12 @@ function getShareURL(imageInfo, ref) {
 }
 
 type Props = {
-  entryPrice: BigNumber | undefined;
+  entryPrice: bigint | undefined;
   indexToken: Token;
   isLong: boolean;
-  leverage: BigNumber | undefined;
-  markPrice: BigNumber;
-  pnlAfterFeesPercentage: BigNumber;
+  leverage: bigint | undefined;
+  markPrice: bigint;
+  pnlAfterFeesPercentage: bigint;
   setIsPositionShareModalOpen: (isOpen: boolean) => void;
   isPositionShareModalOpen: boolean;
   account: string | undefined | null;

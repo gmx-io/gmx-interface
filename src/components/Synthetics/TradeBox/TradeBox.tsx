@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { BigNumber } from "ethers";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -218,14 +217,17 @@ export function TradeBox(p: Props) {
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigInt(0);
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigInt(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
-  const isNotMatchAvailableBalance =
-    fromToken?.balance?.gt(0) &&
-    !fromToken.balance.eq(fromTokenAmount) &&
-    (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
+  const isNotMatchAvailableBalance = useMemo(
+    () =>
+      (fromToken?.balance ?? 0n) > 0n &&
+      fromToken?.balance !== fromTokenAmount &&
+      (fromToken?.isNative ? minResidualAmount && (fromToken?.balance ?? 0n) > minResidualAmount : true),
+    [fromToken?.balance, fromToken?.isNative, fromTokenAmount, minResidualAmount]
+  );
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
@@ -286,7 +288,7 @@ export function TradeBox(p: Props) {
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
 
-    const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<BigNumber | undefined>(
+    const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
       (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
@@ -735,7 +737,7 @@ export function TradeBox(p: Props) {
         : fromToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
-        maxAvailableAmount = BigInt(0);
+        maxAvailableAmount = 0n;
       }
 
       setFocusedInput("from");

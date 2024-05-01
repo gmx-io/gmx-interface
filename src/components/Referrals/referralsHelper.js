@@ -72,7 +72,7 @@ export const tierDiscountInfo = {
 
 export function getSharePercentage(tierId, discountShare, totalRebate, isRebate) {
   if (!tierId || !totalRebate) return;
-  if (!discountShare || discountShare?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+  if (!discountShare) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
   const decimals = 4;
 
   const discount = totalRebate
@@ -109,23 +109,23 @@ export function deserializeSampleStats(input) {
 
 export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", account = "") => {
   return {
-    discountUsd: bigNumberify(0),
+    discountUsd: 0n,
     referralCode: code,
-    totalRebateUsd: bigNumberify(0),
+    totalRebateUsd: 0n,
     tradedReferralsCount: 0,
     registeredReferralsCount: 0,
     trades: 0,
-    volume: bigNumberify(0),
+    volume: 0n,
     time: Date.now(),
     v1Data: {
-      volume: bigNumberify(0),
-      totalRebateUsd: bigNumberify(0),
-      discountUsd: bigNumberify(0),
+      volume: 0n,
+      totalRebateUsd: 0n,
+      discountUsd: 0n,
     },
     v2Data: {
-      volume: bigNumberify(0),
-      totalRebateUsd: bigNumberify(0),
-      discountUsd: bigNumberify(0),
+      volume: 0n,
+      totalRebateUsd: 0n,
+      discountUsd: 0n,
     },
     ownerOnOtherChain: {
       code: encodeReferralCode(code),

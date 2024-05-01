@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MarketInfo } from "../markets";
@@ -37,85 +36,85 @@ export type TradeFlags = {
 };
 
 export type SwapAmounts = {
-  amountIn: BigNumber;
-  usdIn: BigNumber;
-  amountOut: BigNumber;
-  usdOut: BigNumber;
-  priceIn: BigNumber;
-  priceOut: BigNumber;
+  amountIn: bigint;
+  usdIn: bigint;
+  amountOut: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
   swapPathStats: SwapPathStats | undefined;
-  minOutputAmount: BigNumber;
-  uiFeeUsd?: BigNumber;
+  minOutputAmount: bigint;
+  uiFeeUsd?: bigint;
 };
 
 export type IncreasePositionAmounts = {
-  initialCollateralAmount: BigNumber;
-  initialCollateralUsd: BigNumber;
+  initialCollateralAmount: bigint;
+  initialCollateralUsd: bigint;
 
-  collateralDeltaAmount: BigNumber;
-  collateralDeltaUsd: BigNumber;
+  collateralDeltaAmount: bigint;
+  collateralDeltaUsd: bigint;
 
   swapPathStats: SwapPathStats | undefined;
 
-  indexTokenAmount: BigNumber;
+  indexTokenAmount: bigint;
 
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
 
-  estimatedLeverage?: BigNumber;
+  estimatedLeverage?: bigint;
 
-  indexPrice: BigNumber;
-  initialCollateralPrice: BigNumber;
-  collateralPrice: BigNumber;
-  triggerPrice?: BigNumber;
+  indexPrice: bigint;
+  initialCollateralPrice: bigint;
+  collateralPrice: bigint;
+  triggerPrice?: bigint;
   triggerThresholdType?: TriggerThresholdType;
-  acceptablePrice: BigNumber;
-  acceptablePriceDeltaBps: BigNumber;
+  acceptablePrice: bigint;
+  acceptablePriceDeltaBps: bigint;
 
-  positionFeeUsd: BigNumber;
-  uiFeeUsd: BigNumber;
-  swapUiFeeUsd: BigNumber;
-  feeDiscountUsd: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  positionPriceImpactDeltaUsd: BigNumber;
+  positionFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  swapUiFeeUsd: bigint;
+  feeDiscountUsd: bigint;
+  borrowingFeeUsd: bigint;
+  fundingFeeUsd: bigint;
+  positionPriceImpactDeltaUsd: bigint;
 };
 
 export type DecreasePositionAmounts = {
   isFullClose: boolean;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  collateralDeltaUsd: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralDeltaUsd: bigint;
+  collateralDeltaAmount: bigint;
 
-  indexPrice: BigNumber;
-  collateralPrice: BigNumber;
-  triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
-  acceptablePriceDeltaBps: BigNumber;
-  recommendedAcceptablePriceDeltaBps: BigNumber;
+  indexPrice: bigint;
+  collateralPrice: bigint;
+  triggerPrice?: bigint;
+  acceptablePrice: bigint;
+  acceptablePriceDeltaBps: bigint;
+  recommendedAcceptablePriceDeltaBps: bigint;
 
-  estimatedPnl: BigNumber;
-  estimatedPnlPercentage: BigNumber;
-  realizedPnl: BigNumber;
-  realizedPnlPercentage: BigNumber;
+  estimatedPnl: bigint;
+  estimatedPnlPercentage: bigint;
+  realizedPnl: bigint;
+  realizedPnlPercentage: bigint;
 
-  positionFeeUsd: BigNumber;
-  uiFeeUsd: BigNumber;
-  swapUiFeeUsd: BigNumber;
-  feeDiscountUsd: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  swapProfitFeeUsd: BigNumber;
-  positionPriceImpactDeltaUsd: BigNumber;
-  priceImpactDiffUsd: BigNumber;
-  payedRemainingCollateralAmount: BigNumber;
+  positionFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  swapUiFeeUsd: bigint;
+  feeDiscountUsd: bigint;
+  borrowingFeeUsd: bigint;
+  fundingFeeUsd: bigint;
+  swapProfitFeeUsd: bigint;
+  positionPriceImpactDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
+  payedRemainingCollateralAmount: bigint;
 
-  payedOutputUsd: BigNumber;
-  payedRemainingCollateralUsd: BigNumber;
+  payedOutputUsd: bigint;
+  payedRemainingCollateralUsd: bigint;
 
-  receiveTokenAmount: BigNumber;
-  receiveUsd: BigNumber;
+  receiveTokenAmount: bigint;
+  receiveUsd: bigint;
 
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
   triggerThresholdType?: TriggerThresholdType;
@@ -123,38 +122,38 @@ export type DecreasePositionAmounts = {
 };
 
 export type DepositAmounts = {
-  marketTokenAmount: BigNumber;
-  marketTokenUsd: BigNumber;
-  longTokenAmount: BigNumber;
-  longTokenUsd: BigNumber;
-  shortTokenAmount: BigNumber;
-  shortTokenUsd: BigNumber;
-  swapFeeUsd: BigNumber;
-  uiFeeUsd: BigNumber;
-  swapPriceImpactDeltaUsd: BigNumber;
+  marketTokenAmount: bigint;
+  marketTokenUsd: bigint;
+  longTokenAmount: bigint;
+  longTokenUsd: bigint;
+  shortTokenAmount: bigint;
+  shortTokenUsd: bigint;
+  swapFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  swapPriceImpactDeltaUsd: bigint;
 };
 
 export type WitdhrawalAmounts = {
-  marketTokenAmount: BigNumber;
-  marketTokenUsd: BigNumber;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  longTokenUsd: BigNumber;
-  shortTokenUsd: BigNumber;
-  swapFeeUsd: BigNumber;
-  uiFeeUsd: BigNumber;
-  swapPriceImpactDeltaUsd: BigNumber;
+  marketTokenAmount: bigint;
+  marketTokenUsd: bigint;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  longTokenUsd: bigint;
+  shortTokenUsd: bigint;
+  swapFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  swapPriceImpactDeltaUsd: bigint;
 };
 
 export type NextPositionValues = {
-  nextLeverage?: BigNumber;
-  nextLiqPrice?: BigNumber;
-  nextCollateralUsd?: BigNumber;
-  nextSizeUsd?: BigNumber;
-  nextPnl?: BigNumber;
-  nextPnlPercentage?: BigNumber;
-  nextEntryPrice?: BigNumber;
-  remainingCollateralFeesUsd?: BigNumber;
+  nextLeverage?: bigint;
+  nextLiqPrice?: bigint;
+  nextCollateralUsd?: bigint;
+  nextSizeUsd?: bigint;
+  nextPnl?: bigint;
+  nextPnlPercentage?: bigint;
+  nextEntryPrice?: bigint;
+  remainingCollateralFeesUsd?: bigint;
 };
 
 export type SwapStats = {
@@ -164,27 +163,27 @@ export type SwapStats = {
   isWrap: boolean;
   isUnwrap: boolean;
   isOutLiquidity?: boolean;
-  swapFeeAmount: BigNumber;
-  swapFeeUsd: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
-  amountIn: BigNumber;
-  amountInAfterFees: BigNumber;
-  usdIn: BigNumber;
-  amountOut: BigNumber;
-  usdOut: BigNumber;
+  swapFeeAmount: bigint;
+  swapFeeUsd: bigint;
+  priceImpactDeltaUsd: bigint;
+  amountIn: bigint;
+  amountInAfterFees: bigint;
+  usdIn: bigint;
+  amountOut: bigint;
+  usdOut: bigint;
 };
 
 export type SwapPathStats = {
   swapPath: string[];
   swapSteps: SwapStats[];
   targetMarketAddress?: string;
-  totalSwapPriceImpactDeltaUsd: BigNumber;
-  totalSwapFeeUsd: BigNumber;
-  totalFeesDeltaUsd: BigNumber;
+  totalSwapPriceImpactDeltaUsd: bigint;
+  totalSwapFeeUsd: bigint;
+  totalFeesDeltaUsd: bigint;
   tokenInAddress: string;
   tokenOutAddress: string;
-  usdOut: BigNumber;
-  amountOut: BigNumber;
+  usdOut: bigint;
+  amountOut: bigint;
 };
 
 export type MarketEdge = {
@@ -199,7 +198,7 @@ export type MarketEdge = {
 export type SwapRoute = {
   edged: MarketEdge[];
   path: string[];
-  liquidity: BigNumber;
+  liquidity: bigint;
 };
 
 export type MarketsGraph = {
@@ -211,10 +210,10 @@ export type SwapEstimator = (
   e: MarketEdge,
   usdIn: BigNumber
 ) => {
-  usdOut: BigNumber;
+  usdOut: bigint;
 };
 
-export type FindSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
+export type FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
@@ -226,12 +225,12 @@ export type TradeFees = {
   swapPriceImpact?: FeeItem;
   positionPriceImpact?: FeeItem;
   priceImpactDiff?: FeeItem;
-  positionFeeFactor?: BigNumber;
+  positionFeeFactor?: bigint;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
   uiFee?: FeeItem;
   uiSwapFee?: FeeItem;
-  feeDiscountUsd?: BigNumber;
+  feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
 };
 

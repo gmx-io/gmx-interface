@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import { addDays, set, startOfWeek } from "date-fns";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
@@ -48,11 +47,11 @@ export const useTradingIncentives = () => {
     );
   }, []);
 
-  const { data: burnedTokens } = useSWR<BigNumber>(
+  const { data: burnedTokens } = useSWR<bigint>(
     ["trading-incentives", chainId, incentiveStats?.trading.isActive ? "on" : "off"],
     {
-      fetcher: async (): Promise<BigNumber> => {
-        if (!incentiveStats?.trading.isActive) return BigInt(0);
+      fetcher: async (): Promise<bigint> => {
+        if (!incentiveStats?.trading.isActive) return 0n;
 
         const client = getSyntheticsGraphClient(chainId);
         const res = (
@@ -69,7 +68,7 @@ export const useTradingIncentives = () => {
         ).data as RawResponse;
 
         if (!res || !res.tradingIncentivesStat || !res.tradingIncentivesStat.eligibleFeesInArb) {
-          return BigInt(0);
+          return 0n;
         }
 
         return BigInt(res.tradingIncentivesStat.eligibleFeesInArb);
@@ -84,7 +83,7 @@ export const useTradingIncentives = () => {
     }
 
     const rebatePercent = BigInt(raw.rebatePercent);
-    if (rebatePercent.eq(0)) return null;
+    if (rebatePercent == 0n) return null;
 
     const allocation = BigInt(raw.allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);

@@ -15,8 +15,8 @@ export function useInfoTokens(
   signer: Signer | undefined,
   chainId: number,
   active: boolean,
-  tokenBalances?: BigNumber[],
-  fundingRateInfo?: BigNumber[],
+  tokenBalances?: bigint[],
+  fundingRateInfo?: bigint[],
   vaultPropsLength?: number
 ) {
   const tokens = getV1Tokens(chainId);
@@ -124,7 +124,7 @@ function getInfoTokens(
       token.contractMinPrice = token.minPrice;
       token.contractMaxPrice = token.maxPrice;
 
-      token.maxAvailableShort = bigNumberify(0)!;
+      token.maxAvailableShort = 0n!;
 
       token.hasMaxAvailableShort = false;
       if (token.maxGlobalShortSize.gt(0)) {
@@ -134,7 +134,7 @@ function getInfoTokens(
         }
       }
 
-      if (token.maxUsdgAmount.eq(0)) {
+      if (token.maxUsdgAmount == 0n) {
         token.maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
       }
 
@@ -142,7 +142,7 @@ function getInfoTokens(
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
 
-      token.maxAvailableLong = bigNumberify(0)!;
+      token.maxAvailableLong = 0n!;
       token.hasMaxAvailableLong = false;
       if (token.maxGlobalLongSize.gt(0)) {
         token.hasMaxAvailableLong = true;
@@ -200,7 +200,7 @@ function setTokenUsingIndexPrices(
 
   const indexPriceBn = bigNumberify(indexPrice)!;
 
-  if (indexPriceBn.eq(0)) {
+  if (indexPriceBn == 0n) {
     return;
   }
 

@@ -46,8 +46,8 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
     if (!availableAmount || !poolAmount || !bufferAmount || !maxUsdgAmount || !usdgAmount)
       return {
         ...token,
-        maxInUsd: bigNumberify(0),
-        maxOutUsd: bigNumberify(0),
+        maxInUsd: 0n,
+        maxOutUsd: 0n,
       };
     const maxOut = availableAmount.gt(poolAmount.sub(bufferAmount)) ? poolAmount.sub(bufferAmount) : availableAmount;
     const maxOutUsd = getUsd(maxOut, token.address, false, infoTokens);
@@ -58,8 +58,8 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 
     return {
       ...token,
-      maxOutUsd: maxOutUsd?.gt(0) ? maxOutUsd : bigNumberify(0),
-      maxInUsd: maxInUsd?.gt(0) ? maxInUsd : bigNumberify(0),
+      maxOutUsd: maxOutUsd?.gt(0) ? maxOutUsd : 0n,
+      maxInUsd: maxInUsd?.gt(0) ? maxInUsd : 0n,
     };
   });
 }

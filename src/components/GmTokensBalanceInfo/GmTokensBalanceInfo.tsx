@@ -6,7 +6,6 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { useCallback, useMemo } from "react";
@@ -19,8 +18,8 @@ export const GmTokensBalanceInfo = ({
   oneLine = false,
 }: {
   token: TokenData;
-  earnedTotal?: BigNumber;
-  earnedRecently?: BigNumber;
+  earnedTotal?: bigint;
+  earnedRecently?: bigint;
   daysConsidered: number;
   oneLine?: boolean;
 }) => {
@@ -80,8 +79,8 @@ export const GmTokensTotalBalanceInfo = ({
   tooltipPosition,
   label,
 }: {
-  balance?: BigNumber;
-  balanceUsd?: BigNumber;
+  balance?: bigint;
+  balanceUsd?: bigint;
   userEarnings: UserEarningsData | null;
   tooltipPosition?: TooltipPosition;
   label: string;
@@ -117,7 +116,7 @@ export const GmTokensTotalBalanceInfo = ({
               value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
-            {userEarnings.allMarkets.expected365d.gt(0) && (
+            {userEarnings.allMarkets.expected365d > 0 && (
               <>
                 <StatsTooltipRow
                   label={t`Wallet 365d expected Fees`}
