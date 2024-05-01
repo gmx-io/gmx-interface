@@ -2,9 +2,8 @@
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
-import { AnimatePresence, Variants, motion } from "framer-motion";
 import { noop } from "lodash";
-import React, { PropsWithChildren, ReactNode, startTransition, useCallback, useState } from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
@@ -23,11 +22,7 @@ type NewSelectorContextType = () => void;
 const newSelectorContext = React.createContext<NewSelectorContextType>(noop);
 export const useNewSelectorClose = () => React.useContext(newSelectorContext);
 const NewSelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
-  const handleClose = useCallback(() => {
-    startTransition(props.close);
-  }, [props.close]);
-
-  return <newSelectorContext.Provider value={handleClose}>{props.children}</newSelectorContext.Provider>;
+  return <newSelectorContext.Provider value={props.close}>{props.children}</newSelectorContext.Provider>;
 };
 
 export function NewSelectorBase(props: Props) {
@@ -39,6 +34,8 @@ export function NewSelectorBase(props: Props) {
 
   return <NewSelectorBaseDesktop {...props} />;
 }
+
+//#region Utility components
 
 export function NewSelectorBaseMobileList(props: PropsWithChildren) {
   return <div className="NewSelectorBaseUtils-mobile-list">{props.children}</div>;
@@ -58,7 +55,6 @@ export function NewSelectorBaseMobileButton(
         "NewSelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
-      // disabled={props.disabled}
     >
       {props.children}
     </button>
@@ -108,12 +104,10 @@ export function NewSelectorBaseDesktopRow(
   );
 }
 
-const FADE_VARIANTS: Variants = {
-  hidden: { opacity: 0, pointerEvents: "none" },
-  visible: { opacity: 1, pointerEvents: "auto" },
-};
-
-const TRANSITION = { duration: 0.1 };
+export function NewSelectorBaseTableHeadRow(props: PropsWithChildren) {
+  return <tr className="NewSelectorBaseUtils-table-head-row">{props.children}</tr>;
+}
+//#endregion
 
 function NewSelectorBaseDesktop(props: Props) {
   const { refs, floatingStyles } = useFloating({
@@ -135,28 +129,20 @@ function NewSelectorBaseDesktop(props: Props) {
             {props.label}
             <BiChevronDown className="TokenSelector-caret" />
           </Popover.Button>
-          {/* @ts-ignore */}
-          <AnimatePresence>
-            {popoverProps.open && (
-              <FloatingPortal>
-                <Popover.Panel
-                  static
-                  className="NewSelectorBase-panel"
-                  as={motion.div}
-                  ref={refs.setFloating}
-                  style={floatingStyles}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={FADE_VARIANTS}
-                  transition={TRANSITION}
-                  onPointerDown={suppressPointerDown}
-                >
-                  <NewSelectorContextProvider close={popoverProps.close}>{props.children}</NewSelectorContextProvider>
-                </Popover.Panel>
-              </FloatingPortal>
-            )}
-          </AnimatePresence>
+
+          {popoverProps.open && (
+            <FloatingPortal>
+              <Popover.Panel
+                static
+                className="NewSelectorBase-panel"
+                ref={refs.setFloating}
+                style={floatingStyles}
+                onPointerDown={suppressPointerDown}
+              >
+                <NewSelectorContextProvider close={popoverProps.close}>{props.children}</NewSelectorContextProvider>
+              </Popover.Panel>
+            </FloatingPortal>
+          )}
         </>
       )}
     </Popover>
@@ -170,13 +156,20 @@ function NewSelectorBaseMobile(props: Props) {
     setIsVisible((prev) => !prev);
   }, []);
 
+
+
   return (
     <>
       <button className="SwapBox-info-dropdown NewSelectorBase-button" onClick={toggleVisibility}>
         {props.label}
         <BiChevronDown className="TokenSelector-caret" />
       </button>
-      <Modal setIsVisible={setIsVisible} isVisible={isVisible} label={props.modalLabel}>
+      <Modal
+        setIsVisible={setIsVisible}
+        isVisible={isVisible}
+        label={props.modalLabel}
+        className="NewSelectorBase-mobile-modal"
+      >
         <NewSelectorContextProvider close={toggleVisibility}>{props.children}</NewSelectorContextProvider>
       </Modal>
     </>

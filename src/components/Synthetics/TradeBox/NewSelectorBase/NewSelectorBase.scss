@@ -7,21 +7,61 @@
     margin: unset;
 
     color: inherit;
+    font-size: inherit;
   }
 
   &-panel {
     position: relative;
     z-index: 1000;
 
-    font-size: var(--font-base);
+    font-size: var(--font-sm);
 
     border-radius: var(--border-radius-sm);
     background-color: var(--dark-blue-bg);
     border: 1px solid #32344c;
   }
+
+  &-mobile-modal {
+    .Modal-content {
+      top: auto;
+      bottom: auto;
+
+      width: 42rem;
+      position: absolute;
+      max-height: 100vh;
+
+      @media screen and (max-width: 700px) {
+        bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+
+        animation: slide-up 200ms ease-out;
+      }
+
+      @keyframes slide-up {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+    }
+  }
 }
 
 .NewSelectorBaseUtils {
+  &-table-head-row {
+    th {
+      text-align: left;
+
+      padding: 0.75rem 1.5rem;
+      text-transform: uppercase;
+      font-weight: normal;
+      opacity: 0.7;
+    }
+  }
+
   &-row {
     cursor: pointer;
 
@@ -38,15 +78,7 @@
     }
 
     td {
-      padding: 0.5rem;
-
-      &:first-child {
-        padding-left: 1.4rem;
-      }
-
-      &:last-child {
-        padding-right: 1.4rem;
-      }
+      padding: 0.75rem 1.5rem;
     }
   }
 
@@ -65,6 +97,7 @@
     text-align: unset;
 
     color: inherit;
+    font-size: inherit;
 
     border: 1px solid #ffffff29;
     border-radius: 4px;

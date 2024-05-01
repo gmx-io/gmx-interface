@@ -12,6 +12,7 @@ import {
   NewSelectorBaseDesktopRow,
   NewSelectorBaseMobileButton,
   NewSelectorBaseMobileList,
+  NewSelectorBaseTableHeadRow,
   useNewSelectorClose,
 } from "../NewSelectorBase/NewSelectorBase";
 
@@ -43,11 +44,11 @@ function NewCollateralSelectorDesktop(props: Props) {
   return (
     <table className="NewCollateralSelector-table">
       <thead>
-        <tr>
+        <NewSelectorBaseTableHeadRow>
           <th>
             <Trans>Token</Trans>
           </th>
-        </tr>
+        </NewSelectorBaseTableHeadRow>
       </thead>
       <tbody>
         {props.options?.map((option) => (

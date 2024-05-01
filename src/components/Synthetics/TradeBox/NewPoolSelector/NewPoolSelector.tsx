@@ -17,6 +17,7 @@ import {
   NewSelectorBaseDesktopRow,
   NewSelectorBaseMobileButton,
   NewSelectorBaseMobileList,
+  NewSelectorBaseTableHeadRow,
   useNewSelectorClose,
 } from "../NewSelectorBase/NewSelectorBase";
 
@@ -46,7 +47,7 @@ function NewPoolSelectorDesktop(props: Props) {
   return (
     <table className="NewPoolSelector-table">
       <thead>
-        <tr>
+        <NewSelectorBaseTableHeadRow>
           <th>
             <Trans>Pool</Trans>
           </th>
@@ -59,7 +60,7 @@ function NewPoolSelectorDesktop(props: Props) {
           <th>
             <Trans>Open fees</Trans>
           </th>
-        </tr>
+        </NewSelectorBaseTableHeadRow>
       </thead>
       <tbody>
         {props.options?.map((option) => (
