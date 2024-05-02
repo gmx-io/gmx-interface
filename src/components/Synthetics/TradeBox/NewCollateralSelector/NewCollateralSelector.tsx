@@ -2,9 +2,11 @@
 import { Trans, t } from "@lingui/macro";
 import { noop } from "lodash";
 import React, { useCallback, useEffect } from "react";
+import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
 import type { TokenData } from "domain/synthetics/tokens/types";
+import { helperToast } from "lib/helperToast";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
@@ -17,8 +19,6 @@ import {
 } from "../NewSelectorBase/NewSelectorBase";
 
 import "./NewCollateralSelector.scss";
-import { helperToast } from "lib/helperToast";
-import { toast } from "react-toastify";
 
 type Props = {
   selectedTokenAddress?: string;
