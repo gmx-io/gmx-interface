@@ -20,6 +20,8 @@ import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { convertTokenAddress, getToken } from "config/tokens";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigNumber.from(10).pow(25); // +0.001%
@@ -30,6 +32,7 @@ export const useTradeboxPoolWarnings = (
   withActions = true,
   textColor: "text-warning" | "text-gray" = "text-warning"
 ) => {
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
@@ -73,6 +76,7 @@ export const useTradeboxPoolWarnings = (
   const marketWithPosition = marketsOptions?.marketWithPosition;
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
+  const collateralWithOrderShouldUnwrapNativeToken = marketsOptions?.collateralWithOrderShouldUnwrapNativeToken;
   const minOpenFeesMarket = (marketsOptions?.minOpenFeesAvailableMarketAddress &&
     getByKey(marketsInfoData, marketsOptions?.minOpenFeesAvailableMarketAddress)) as MarketInfo | undefined;
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
@@ -258,6 +262,12 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasExistingOrderWarning) {
+    // We do not know why in cases like WETH+ETH the target collateral is the native token
+    // This is a workaround
+    const address = collateralWithOrderShouldUnwrapNativeToken
+      ? convertTokenAddress(chainId, marketsOptions.collateralWithOrder!.address, "wrapped")
+      : marketsOptions.collateralWithOrder!.address;
+
     warning.push(
       <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor={textColor}>
         <Trans>
@@ -267,7 +277,7 @@ export const useTradeboxPoolWarnings = (
               className="clickable underline muted"
               onClick={() => {
                 setMarketAddress(marketWithOrder.marketTokenAddress);
-                setCollateralAddress(marketsOptions.collateralWithOrder?.address);
+                setCollateralAddress(address);
               }}
             >
               Switch to {getMarketPoolName(marketWithOrder)} market pool
