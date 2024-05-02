@@ -1,3 +1,5 @@
+@use "src/styles/slide-up" as *;
+
 .NewSelectorBase {
   &-button {
     appearance: none;
@@ -37,16 +39,7 @@
 
         height: 80vh;
 
-        animation: slide-up 200ms ease-out;
-      }
-
-      @keyframes slide-up {
-        from {
-          transform: translateY(100%);
-        }
-        to {
-          transform: translateY(0);
-        }
+        @include slide-up;
       }
     }
   }
