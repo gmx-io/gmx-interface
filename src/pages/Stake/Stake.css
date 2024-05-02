@@ -17,6 +17,10 @@
 .StakeModal .Modal-body {
   font-size: var(--font-base);
 }
+.StakeModal .StakeModal-delegate {
+  margin-top: 1.6rem;
+  margin-bottom: 1.6rem;
+}
 
 .Stake-warning {
   text-align: center;
@@ -27,4 +31,8 @@
   .Stake-cards {
     grid-template-columns: 1fr;
   }
+}
+
+.DelegateGMXAlertInfo {
+  text-wrap: wrap;
 }

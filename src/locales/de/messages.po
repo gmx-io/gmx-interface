@@ -75,6 +75,10 @@ msgstr ""
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
@@ -1590,6 +1594,14 @@ msgstr "Verringert {tokenSymbol} {longOrShortText}, -{0} USD."
 msgid "Decreasing"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Delegate"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Delegated to:"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2359,6 +2371,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX & Voting Power"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3566,6 +3582,10 @@ msgstr ""
 msgid "Multiplier Points APR"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Myself"
+msgstr ""
+
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3673,6 +3693,10 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "No delegate found"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -4094,8 +4118,12 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Bitte gebe einen Empfehlungscode ein, um von Gebührenermäßigungen zu profitieren."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr "Bitte verwende dies nur für vollständige Kontotransfers.<0/>Damit werden alle deine GMX, esGMX, GLP und Multiplikatorpunkte auf dein neues Konto übertragen.<1/>Transfers werden nur unterstützt, wenn das Empfängerkonto noch keine GMX- oder GLP-Token gestaket hat.<2/>Transfers sind einseitig, du kannst keine gestaketen Token zurück auf das Sendekonto übertragen."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+#~ msgstr "Bitte verwende dies nur für vollständige Kontotransfers.<0/>Damit werden alle deine GMX, esGMX, GLP und Multiplikatorpunkte auf dein neues Konto übertragen.<1/>Transfers werden nur unterstützt, wenn das Empfängerkonto noch keine GMX- oder GLP-Token gestaket hat.<2/>Transfers sind einseitig, du kannst keine gestaketen Token zurück auf das Sendekonto übertragen."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -6187,7 +6215,11 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "Unstaken übermittelt! <0>Status anzeigen.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -6436,6 +6468,10 @@ msgstr "Von den von dir empfohlenen Tradern gehandeltes Volumen."
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Voting Power"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

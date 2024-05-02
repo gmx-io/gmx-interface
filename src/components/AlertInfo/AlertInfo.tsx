@@ -9,6 +9,7 @@ import "./AlertInfo.scss";
 interface Props {
   type: "warning" | "info";
   children: ReactNode;
+  className?: string;
   compact?: boolean;
   /**
    * @default "text-gray"
@@ -16,10 +17,10 @@ interface Props {
   textColor?: "text-gray" | "text-warning";
 }
 
-export function AlertInfo({ compact = false, children, type, textColor = "text-gray" }: Props) {
+export function AlertInfo({ compact = false, children, type, textColor = "text-gray", className }: Props) {
   const Icon = type === "warning" ? WarnIconComponent : InfoIconComponent;
   return (
-    <div className={cx("AlertInfo", { compact }, textColor)}>
+    <div className={cx("AlertInfo", { compact }, textColor, className)}>
       <div className="AlertInfo-icon">
         <Icon aria-label="Alert Icon" />
       </div>

@@ -20,6 +20,7 @@ import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmo
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { BigNumber, ethers } from "ethers";
+import cx from "classnames";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
@@ -51,11 +52,16 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
+import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { shortenAddressOrEns } from "lib/wallets";
+import { useENS } from "lib/legacy";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import {
   BN_ZERO,
   bigNumberify,
@@ -77,6 +83,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 const { AddressZero } = ethers.constants;
 
@@ -210,6 +217,8 @@ function StakeModal(props) {
             {stakingTokenSymbol}
           </div>
         </BuyInputSection>
+
+        <DelegateGMXAlertInfo />
 
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -348,7 +357,7 @@ function UnstakeModal(props) {
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
-              .&nbsp;
+              <span>&nbsp;and {formatAmount(burnAmount, 18, 4, true)} voting pover.&nbsp;</span>
               <span>
                 You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                 this action.
@@ -885,6 +894,7 @@ function CompoundModal(props) {
             </Checkbox>
           </div>
         </div>
+        <DelegateGMXAlertInfo className="StakeModal-delegate" />
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -1188,6 +1198,9 @@ export default function StakeV2() {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
   const vestingData = useVestingData(account);
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
   const { data: walletBalances } = useSWR(
     [
@@ -1798,7 +1811,7 @@ export default function StakeV2() {
             <div className="App-card-title">
               <div className="inline-items-center">
                 <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
-                GMX
+                {t`GMX & Voting Power`}
               </div>
             </div>
             <div className="App-card-divider"></div>
@@ -1846,6 +1859,40 @@ export default function StakeV2() {
                 <div>
                   {formatKeyAmount(processedData, "gmxInStakedGmx", 18, 2, true)} GMX ($
                   {formatKeyAmount(processedData, "gmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Voting Power</Trans>
+                </div>
+                <div>
+                  {govTokenAmount ? (
+                    <Tooltip
+                      position="bottom-end"
+                      className="nowrap"
+                      handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
+                      renderContent={() => (
+                        <>
+                          <DelegateGMXAlertInfo />
+                          <Trans>Delegated to:</Trans>{" "}
+                          {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS ? (
+                            <Trans>No delegate found</Trans>
+                          ) : (
+                            <ExternalLink href={getGmxDAODelegateLink(govTokenDelegatesAddress)}>
+                              {govTokenDelegatesAddress === account
+                                ? t`Myself`
+                                : shortenAddressOrEns(govTokenDelegatesEns || govTokenDelegatesAddress, 13)}
+                            </ExternalLink>
+                          )}
+                          <br />
+                          <br />
+                          <ExternalLink href={GMX_DAO_LINKS.DELEGATES}>Explore the list of delegates.</ExternalLink>
+                        </>
+                      )}
+                    />
+                  ) : (
+                    "..."
+                  )}
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -1996,6 +2043,11 @@ export default function StakeV2() {
                 {active && (
                   <Button variant="secondary" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
+                  </Button>
+                )}
+                {active && (
+                  <Button variant="secondary" to={GMX_DAO_LINKS.VOTING_POWER}>
+                    <Trans>Delegate</Trans>
                   </Button>
                 )}
                 {active && (
@@ -2696,4 +2748,21 @@ export default function StakeV2() {
       <Footer />
     </div>
   );
+}
+
+function DelegateGMXAlertInfo({ className }: { className?: string }) {
+  const { chainId } = useChainId();
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+
+  return govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
+    <AlertInfo type="info" className={cx("DelegateGMXAlertInfo", className)}>
+      <Trans>
+        <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+          Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+        </ExternalLink>
+        <span>&nbsp;voting power.</span>
+      </Trans>
+    </AlertInfo>
+  ) : null;
 }
