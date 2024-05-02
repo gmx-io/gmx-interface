@@ -38,13 +38,6 @@ export function getSwapPathOutputAddresses(p: {
 
     // Increase
     if (isIncrease) {
-      if (initialCollateralAddress === ethers.constants.AddressZero) {
-        return {
-          outTokenAddress: wrappedNativeTokenAddress,
-          outMarketAddress: undefined,
-        };
-      }
-
       return {
         outTokenAddress: initialCollateralAddress,
         outMarketAddress: undefined,
@@ -96,7 +89,7 @@ export function getSwapPathOutputAddresses(p: {
   let outTokenAddress: string;
   if (isIncrease) {
     // Here swap path is not empty, this means out token came from swapping tokens,
-    // thus it can not be wrapped native token by design.
+    // thus it can not be native token by design.
     outTokenAddress = outToken.address;
   } else {
     if (shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress) {
