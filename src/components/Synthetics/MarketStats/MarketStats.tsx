@@ -285,10 +285,18 @@ export function MarketStats(p: Props) {
               position="bottom-end"
               content={
                 <div>
-                  <Trans>
-                    GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the specified
-                    selling caps. The remaining tokens in the pool are reserved for currently open Positions.
-                  </Trans>
+                  {marketInfo?.isSameCollaterals ? (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} for this market up to the specified selling caps. The
+                      remaining tokens in the pool are reserved for currently open Positions.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the
+                      specified selling caps. The remaining tokens in the pool are reserved for currently open
+                      Positions.
+                    </Trans>
+                  )}
                   <br />
                   <br />
                   <StatsTooltipRow
