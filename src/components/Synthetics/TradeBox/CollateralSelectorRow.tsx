@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress, getToken } from "config/tokens";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -203,10 +203,14 @@ function useCollateralWarnings() {
     }
 
     if (showHasExistingOrderWithDifferentCollateral) {
-      const symbol = collateralWithOrder.symbol;
+      // We do not know why in cases like WETH+ETH the target collateral is the native token
+      // This is a workaround
       const address = collateralWithOrderShouldUnwrapNativeToken
         ? convertTokenAddress(chainId, collateralWithOrder.address, "wrapped")
         : collateralWithOrder.address;
+      const realTargetCollateralToken = getToken(chainId, address);
+      const symbol = realTargetCollateralToken.symbol;
+
       messages.push(
         <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-warning" compact>
           <Trans>
@@ -233,7 +237,6 @@ function useCollateralWarnings() {
     collateralWithPosition?.symbol,
     collateralWithPosition?.address,
     onSelectCollateralAddress,
-    collateralWithOrder?.symbol,
     collateralWithOrder?.address,
     collateralWithOrderShouldUnwrapNativeToken,
     chainId,
