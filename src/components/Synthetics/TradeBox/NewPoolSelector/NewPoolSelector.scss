@@ -18,7 +18,7 @@
   }
 
   &-collateral-logo-second {
-    margin-left: calc(-30px / 2);
+    margin-left: calc(-24px / 2);
   }
 
   &-column-pool {
@@ -48,6 +48,10 @@
         margin: 0;
         text-align: right;
       }
+    }
+
+    &-collateral-logo-second {
+      margin-left: calc(-30px / 2);
     }
   }
 }
