@@ -20,7 +20,7 @@ import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { convertTokenAddress, getToken } from "config/tokens";
+import { convertTokenAddress } from "config/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
