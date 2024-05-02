@@ -54,7 +54,6 @@ function NewCollateralSelectorDesktop(props: Props) {
         {props.options?.map((option) => (
           <CollateralListItemDesktop
             key={option.address}
-            isSelected={option.address === props.selectedTokenAddress}
             onSelect={() => {
               props.onSelect(option.address);
               close();
@@ -64,13 +63,7 @@ function NewCollateralSelectorDesktop(props: Props) {
         ))}
 
         {props.disabledOptions?.map((option) => (
-          <CollateralListItemDesktop
-            key={option.address}
-            isSelected={false}
-            onSelect={noop}
-            tokenData={option}
-            disabled
-          />
+          <CollateralListItemDesktop key={option.address} onSelect={noop} tokenData={option} disabled />
         ))}
       </tbody>
     </table>
@@ -79,12 +72,10 @@ function NewCollateralSelectorDesktop(props: Props) {
 
 function CollateralListItemDesktop({
   tokenData,
-  isSelected,
   onSelect,
   disabled,
 }: {
   tokenData: TokenData;
-  isSelected: boolean;
   onSelect: () => void;
   disabled?: boolean;
 }) {
@@ -103,7 +94,6 @@ function CollateralListItemDesktop({
   if (disabled) {
     return (
       <NewSelectorBaseDesktopRow
-        isSelected={isSelected}
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
@@ -121,7 +111,7 @@ function CollateralListItemDesktop({
   }
 
   return (
-    <NewSelectorBaseDesktopRow isSelected={isSelected} onClick={handleClick}>
+    <NewSelectorBaseDesktopRow onClick={handleClick}>
       <td className="NewCollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}
@@ -143,7 +133,6 @@ function NewCollateralSelectorMobile(props: Props) {
       {props.options?.map((option) => (
         <CollateralListItemMobile
           key={option.address}
-          isSelected={option.address === props.selectedTokenAddress}
           onSelect={() => {
             props.onSelect(option.address);
             close();
@@ -152,7 +141,7 @@ function NewCollateralSelectorMobile(props: Props) {
         />
       ))}
       {props.disabledOptions?.map((option) => (
-        <CollateralListItemMobile key={option.address} isSelected={false} onSelect={noop} tokenData={option} disabled />
+        <CollateralListItemMobile key={option.address} onSelect={noop} tokenData={option} disabled />
       ))}
     </NewSelectorBaseMobileList>
   );
@@ -160,12 +149,10 @@ function NewCollateralSelectorMobile(props: Props) {
 
 function CollateralListItemMobile({
   tokenData,
-  isSelected,
   onSelect,
   disabled,
 }: {
   tokenData: TokenData;
-  isSelected: boolean;
   onSelect: () => void;
   disabled?: boolean;
 }) {
@@ -188,7 +175,7 @@ function CollateralListItemMobile({
   }, [tokenData.symbol]);
 
   return (
-    <NewSelectorBaseMobileButton isSelected={isSelected} onSelect={handleSelect} disabled={disabled}>
+    <NewSelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
       <div className="NewCollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}

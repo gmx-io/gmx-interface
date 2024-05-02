@@ -44,14 +44,12 @@ export function NewSelectorBaseMobileList(props: PropsWithChildren) {
 export function NewSelectorBaseMobileButton(
   props: PropsWithChildren<{
     onSelect: () => void;
-    isSelected: boolean;
     disabled?: boolean;
   }>
 ) {
   return (
     <button
       className={cx("NewSelectorBaseUtils-mobile-row", {
-        "NewSelectorBaseUtils-mobile-row-selected": props.isSelected,
         "NewSelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
@@ -64,7 +62,6 @@ export function NewSelectorBaseMobileButton(
 
 export function NewSelectorBaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
-    isSelected?: boolean;
     disabled?: boolean;
     disabledMessage?: ReactNode;
   }
@@ -73,13 +70,7 @@ export function NewSelectorBaseDesktopRow(
     return (
       <Tooltip
         as="tr"
-        className={cx(
-          "NewSelectorBaseUtils-row",
-          {
-            "NewSelectorBaseUtils-row-selected": props.isSelected,
-          },
-          props.className
-        )}
+        className={cx("NewSelectorBaseUtils-row", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
       >
@@ -94,7 +85,6 @@ export function NewSelectorBaseDesktopRow(
       className={cx(
         "NewSelectorBaseUtils-row",
         {
-          "NewSelectorBaseUtils-row-selected": props.isSelected,
           "NewSelectorBaseUtils-row-disabled": props.disabled,
         },
         props.className

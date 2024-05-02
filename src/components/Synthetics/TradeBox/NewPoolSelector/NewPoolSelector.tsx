@@ -55,10 +55,10 @@ function NewPoolSelectorDesktop(props: Props) {
             <Trans>Liquidity</Trans>
           </th>
           <th>
-            <Trans>Net rate</Trans>
+            <Trans>Net Rate</Trans>
           </th>
           <th>
-            <Trans>Open fees</Trans>
+            <Trans>Open Fees</Trans>
           </th>
         </NewSelectorBaseTableHeadRow>
       </thead>
@@ -69,7 +69,6 @@ function NewPoolSelectorDesktop(props: Props) {
             marketStat={option}
             tradeType={props.tradeType}
             openFees={props.openFees[option.marketInfo.marketTokenAddress]}
-            isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
             onSelect={() => {
               props.onSelect(option.marketInfo.marketTokenAddress);
               close();
@@ -85,13 +84,11 @@ function PoolListItemDesktop({
   marketStat,
   tradeType,
   openFees,
-  isSelected,
   onSelect,
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
   openFees: BigNumber | undefined;
-  isSelected: boolean;
   onSelect: () => void;
 }) {
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
@@ -114,7 +111,7 @@ function PoolListItemDesktop({
   );
 
   return (
-    <NewSelectorBaseDesktopRow onClick={handleClick} isSelected={isSelected}>
+    <NewSelectorBaseDesktopRow onClick={handleClick}>
       <td className="NewPoolSelector-column-pool">
         <div className="NewPoolSelector-collateral-logos">
           <>
@@ -168,7 +165,6 @@ function NewPoolSelectorMobile(props: Props) {
           marketStat={option}
           tradeType={props.tradeType}
           openFees={props.openFees[option.marketInfo.marketTokenAddress]}
-          isSelected={getMarketPoolName(option.marketInfo) === props.selectedPoolName}
           onSelect={() => {
             props.onSelect(option.marketInfo.marketTokenAddress);
             close();
@@ -183,13 +179,11 @@ function PoolListItemMobile({
   marketStat,
   tradeType,
   openFees,
-  isSelected,
   onSelect,
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
   openFees: BigNumber | undefined;
-  isSelected: boolean;
   onSelect: () => void;
 }) {
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
@@ -204,11 +198,7 @@ function PoolListItemMobile({
   const openFeesState = numberToState(openFees);
 
   return (
-    <NewSelectorBaseMobileButton
-      key={marketStat.marketInfo.marketTokenAddress}
-      isSelected={isSelected}
-      onSelect={onSelect}
-    >
+    <NewSelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
       <div className="NewPoolSelector-column-pool">
         <div className="NewPoolSelector-collateral-logos">
           <>
@@ -236,7 +226,7 @@ function PoolListItemMobile({
         </dt>
         <dd>{formattedLiquidity}</dd>
         <dt>
-          <Trans>Net rate</Trans>
+          <Trans>Net Rate</Trans>
         </dt>
         <dd
           className={cx({
@@ -247,7 +237,7 @@ function PoolListItemMobile({
           {formattedNetRate} / 1h
         </dd>
         <dt>
-          <Trans>Open fees</Trans>
+          <Trans>Open Fees</Trans>
         </dt>
         <dd
           className={cx({
