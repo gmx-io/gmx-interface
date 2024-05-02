@@ -1,12 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { convertTokenAddress, getToken } from "config/tokens";
-import {
-  selectChainId,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { filter, flatMap, pickBy, uniqBy, values } from "lodash";
+import React, { useMemo } from "react";
+
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralTokenAddress,
@@ -19,8 +15,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 
-import { filter, flatMap, pickBy, uniqBy, values } from "lodash";
-import React, { useMemo } from "react";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { NewCollateralSelector } from "./NewCollateralSelector/NewCollateralSelector";
 
 export type Props = {
@@ -121,19 +117,12 @@ function useCollateralWarnings() {
   const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const { isMarket } = useSelector(selectTradeboxTradeFlags);
   const onSelectCollateralAddress = useSelector(selectTradeboxSetCollateralAddress);
-  const chainId = useSelector(selectChainId);
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
 
   const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
-  const {
-    collateralWithOrder,
-    marketWithOrder,
-    marketWithPosition,
-    collateralWithPosition,
-    collateralWithOrderShouldUnwrapNativeToken,
-  } = marketsOptions || {};
+  const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const showHasExistingPositionWithDifferentCollateral =
     !hasExistingPosition &&
@@ -233,8 +222,7 @@ function useCollateralWarnings() {
     collateralWithPosition?.address,
     onSelectCollateralAddress,
     collateralWithOrder?.address,
-    collateralWithOrderShouldUnwrapNativeToken,
-    chainId,
+    collateralWithOrder?.symbol,
   ]);
 
   return messages;
