@@ -19,16 +19,48 @@ export function getSwapPathOutputAddresses(p: {
   swapPath: string[];
   wrappedNativeTokenAddress: string;
   shouldUnwrapNativeToken: boolean;
+  isIncrease: boolean;
 }) {
-  const { marketsInfoData, initialCollateralAddress, swapPath, wrappedNativeTokenAddress, shouldUnwrapNativeToken } = p;
+  const {
+    marketsInfoData,
+    initialCollateralAddress,
+    swapPath,
+    wrappedNativeTokenAddress,
+    shouldUnwrapNativeToken,
+    isIncrease,
+  } = p;
 
   if (swapPath.length === 0) {
-    return {
-      outTokenAddress:
-        shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress
-          ? NATIVE_TOKEN_ADDRESS
-          : initialCollateralAddress,
+    // If the swap path is empty and is increase order,
+    // we do not care about the output token address during happy path,
+    // as user will not be getting any token in return.
+    // By this point shouldUnwrapNativeToken is already saved in the contract in case of cancelation or errors.
 
+    // Increase
+    if (isIncrease) {
+      if (initialCollateralAddress === ethers.constants.AddressZero) {
+        return {
+          outTokenAddress: wrappedNativeTokenAddress,
+          outMarketAddress: undefined,
+        };
+      }
+
+      return {
+        outTokenAddress: initialCollateralAddress,
+        outMarketAddress: undefined,
+      };
+    }
+
+    // Decrease
+    if (shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress) {
+      return {
+        outTokenAddress: NATIVE_TOKEN_ADDRESS,
+        outMarketAddress: undefined,
+      };
+    }
+
+    return {
+      outTokenAddress: initialCollateralAddress,
       outMarketAddress: undefined,
     };
   }
@@ -61,8 +93,18 @@ export function getSwapPathOutputAddresses(p: {
     outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }
 
-  const outTokenAddress =
-    shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress ? NATIVE_TOKEN_ADDRESS : outToken.address;
+  let outTokenAddress: string;
+  if (isIncrease) {
+    // Here swap path is not empty, this means out token came from swapping tokens,
+    // thus it can not be wrapped native token by design.
+    outTokenAddress = outToken.address;
+  } else {
+    if (shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress) {
+      outTokenAddress = NATIVE_TOKEN_ADDRESS;
+    } else {
+      outTokenAddress = outToken.address;
+    }
+  }
 
   return {
     outTokenAddress,

@@ -255,6 +255,7 @@ export const selectOrderEditorToToken = createSelector((q) => {
         swapPath: order.swapPath,
         wrappedNativeTokenAddress: getWrappedToken(chainId).address,
         shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+        isIncrease: isIncreaseOrderType(order.orderType),
       })
     : undefined;
 

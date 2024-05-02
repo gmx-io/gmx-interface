@@ -262,11 +262,7 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasExistingOrderWarning) {
-    // We do not know why in cases like WETH+ETH the target collateral is the native token
-    // This is a workaround
-    const address = collateralWithOrderShouldUnwrapNativeToken
-      ? convertTokenAddress(chainId, marketsOptions.collateralWithOrder!.address, "wrapped")
-      : marketsOptions.collateralWithOrder!.address;
+    const address = marketsOptions.collateralWithOrder!.address;
 
     warning.push(
       <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor={textColor}>

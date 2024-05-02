@@ -166,6 +166,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             swapPath: order.swapPath,
             wrappedNativeTokenAddress: wrappedToken.address,
             shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+            isIncrease: true,
           });
 
           if (outTokenAddress) {
