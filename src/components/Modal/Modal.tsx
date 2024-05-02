@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback } from "react";
 import cx from "classnames";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
 
 import "./Modal.css";
 
-const FADE_VARIANTS = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+const FADE_VARIANTS: Variants = {
+  hidden: { opacity: 0, pointerEvents: "none" },
+  visible: { opacity: 1, pointerEvents: "auto" },
 };
 
 const VISIBLE_STYLES: React.CSSProperties = {
