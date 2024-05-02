@@ -100,7 +100,7 @@ function CollateralListItemDesktop({
         <td className="NewCollateralSelector-column-pool">
           <TokenIcon
             symbol={tokenData.symbol}
-            displaySize={24}
+            displaySize={30}
             importSize={24}
             className="NewCollateralSelector-collateral-logo-first"
           />
@@ -115,7 +115,7 @@ function CollateralListItemDesktop({
       <td className="NewCollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}
-          displaySize={24}
+          displaySize={30}
           importSize={24}
           className="NewCollateralSelector-collateral-logo-first"
         />
@@ -179,7 +179,7 @@ function CollateralListItemMobile({
       <div className="NewCollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}
-          displaySize={24}
+          displaySize={30}
           importSize={24}
           className="NewCollateralSelector-collateral-logo-first"
         />

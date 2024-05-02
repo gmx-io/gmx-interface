@@ -117,14 +117,14 @@ function PoolListItemDesktop({
           <>
             <TokenIcon
               symbol={longTokenSymbol}
-              displaySize={24}
+              displaySize={30}
               importSize={24}
               className="NewPoolSelector-collateral-logo-first"
             />
             {shortTokenSymbol && (
               <TokenIcon
                 symbol={shortTokenSymbol}
-                displaySize={24}
+                displaySize={30}
                 importSize={24}
                 className="NewPoolSelector-collateral-logo-second"
               />
@@ -204,14 +204,14 @@ function PoolListItemMobile({
           <>
             <TokenIcon
               symbol={longTokenSymbol}
-              displaySize={24}
+              displaySize={30}
               importSize={24}
               className="NewPoolSelector-collateral-logo-first"
             />
             {shortTokenSymbol && (
               <TokenIcon
                 symbol={shortTokenSymbol}
-                displaySize={24}
+                displaySize={30}
                 importSize={24}
                 className="NewPoolSelector-collateral-logo-second"
               />

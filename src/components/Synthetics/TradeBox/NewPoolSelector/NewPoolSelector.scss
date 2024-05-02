@@ -18,7 +18,7 @@
   }
 
   &-collateral-logo-second {
-    margin-left: calc(-24px / 2);
+    margin-left: calc(-30px / 2);
   }
 
   &-column-pool {
@@ -38,6 +38,11 @@
       display: grid;
 
       grid-template-columns: 1fr 1fr;
+      row-gap: 0.8rem;
+
+      dt {
+        color: rgba(255, 255, 255, 0.7);
+      }
 
       dd {
         margin: 0;
