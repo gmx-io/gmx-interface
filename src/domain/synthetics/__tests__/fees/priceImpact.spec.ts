@@ -1,5 +1,6 @@
 import { applyImpactFactor } from "domain/synthetics/fees";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { expandDecimals } from "lib/numbers";
 
 describe("applyImpactFactor", () => {
@@ -47,8 +48,8 @@ describe("applyImpactFactor", () => {
 
       expect(
         _expected == 0n
-          ? result?.lt(expandDecimals(1, 20))
-          : _expected.div(_expected.sub(result!).abs()).gt(expandDecimals(1, 10))
+          ? result < expandDecimals(1, 20)
+          : _expected / bigMath.abs(_expected - result!) > expandDecimals(1, 10)
       ).toBe(true);
     });
   }

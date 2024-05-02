@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -12,7 +12,6 @@ import {
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import {
   getAcceptablePriceInfo,
@@ -22,6 +21,7 @@ import {
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 import { applyFactor } from "lib/numbers";
+import { bigMath } from "lib/bigmath";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -29,9 +29,9 @@ export function getIncreasePositionAmounts(p: {
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
   isLong: boolean;
-  initialCollateralAmount: BigNumber | undefined;
+  initialCollateralAmount: bigint | undefined;
   position: PositionInfo | undefined;
-  indexTokenAmount: BigNumber | undefined;
+  indexTokenAmount: bigint | undefined;
   leverage?: bigint;
   triggerPrice?: bigint;
   fixedAcceptablePriceImpactBps?: bigint;
@@ -92,9 +92,9 @@ export function getIncreasePositionAmounts(p: {
     positionPriceImpactDeltaUsd: 0n,
   };
 
-  const isLimit = triggerPrice?.gt(0);
+  const isLimit = Boolean(triggerPrice && triggerPrice > 0);
 
-  if (triggerPrice?.gt(0)) {
+  if (isLimit && triggerPrice) {
     values.triggerPrice = triggerPrice;
     values.triggerThresholdType = getTriggerThresholdType(OrderType.LimitIncrease, isLong);
 
@@ -116,12 +116,12 @@ export function getIncreasePositionAmounts(p: {
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
   values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
 
-  if (!values.indexPrice.gt(0) || !values.initialCollateralPrice.gt(0) || !values.collateralPrice.gt(0)) {
+  if (values.indexPrice <= 0 || values.initialCollateralPrice <= 0 || values.collateralPrice <= 0) {
     return values;
   }
 
   // Size and collateral
-  if (strategy === "leverageByCollateral" && leverage && initialCollateralAmount?.gt(0)) {
+  if (strategy === "leverageByCollateral" && leverage && initialCollateralAmount && initialCollateralAmount > 0) {
     values.estimatedLeverage = leverage;
 
     values.initialCollateralAmount = initialCollateralAmount;
@@ -144,50 +144,50 @@ export function getIncreasePositionAmounts(p: {
     values.swapPathStats = swapAmounts.swapPathStats;
 
     const baseCollateralUsd = convertToUsd(swapAmounts.amountOut, collateralToken.decimals, values.collateralPrice)!;
-    const baseSizeDeltaUsd = baseCollateralUsd.mul(leverage).div(BASIS_POINTS_DIVISOR);
+    const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
     const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
     const basePositionFeeInfo = getPositionFee(
       marketInfo,
       baseSizeDeltaUsd,
-      basePriceImpactDeltaUsd.gt(0),
+      basePriceImpactDeltaUsd > 0,
       userReferralInfo
     );
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
     const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps);
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
-    values.sizeDeltaUsd = baseCollateralUsd
-      .sub(basePositionFeeInfo.positionFeeUsd)
-      .sub(baseUiFeeUsd)
-      .sub(values.swapUiFeeUsd)
-      .mul(leverage)
-      .div(BASIS_POINTS_DIVISOR);
+    values.sizeDeltaUsd = bigMath.mulDiv(
+      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd - values.swapUiFeeUsd,
+      leverage,
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     values.indexTokenAmount = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
     const positionFeeInfo = getPositionFee(
       marketInfo,
       values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd.gt(0),
+      basePriceImpactDeltaUsd > 0,
       userReferralInfo
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
-    values.collateralDeltaUsd = baseCollateralUsd
-      .sub(values.positionFeeUsd)
-      .sub(values.borrowingFeeUsd)
-      .sub(values.fundingFeeUsd)
-      .sub(values.uiFeeUsd)
-      .sub(values.swapUiFeeUsd);
+    values.collateralDeltaUsd =
+      baseCollateralUsd -
+      values.positionFeeUsd -
+      values.borrowingFeeUsd -
+      values.fundingFeeUsd -
+      values.uiFeeUsd -
+      values.swapUiFeeUsd;
 
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
       collateralToken.decimals,
       values.collateralPrice
     )!;
-  } else if (strategy === "leverageBySize" && leverage && indexTokenAmount?.gt(0)) {
+  } else if (strategy === "leverageBySize" && leverage && indexTokenAmount && indexTokenAmount > 0) {
     values.estimatedLeverage = leverage;
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
@@ -197,7 +197,7 @@ export function getIncreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(
       marketInfo,
       values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd.gt(0),
+      basePriceImpactDeltaUsd > 0,
       userReferralInfo
     );
 
@@ -205,19 +205,20 @@ export function getIncreasePositionAmounts(p: {
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
-    values.collateralDeltaUsd = values.sizeDeltaUsd.mul(BASIS_POINTS_DIVISOR).div(leverage);
+    values.collateralDeltaUsd = bigMath.mulDiv(values.sizeDeltaUsd, BASIS_POINTS_DIVISOR_BIGINT, leverage);
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
       collateralToken.decimals,
       values.collateralPrice
     )!;
 
-    const baseCollateralUsd = values.collateralDeltaUsd
-      .add(values.positionFeeUsd)
-      .add(values.borrowingFeeUsd)
-      .add(values.fundingFeeUsd)
-      .add(values.uiFeeUsd)
-      .add(values.swapUiFeeUsd);
+    const baseCollateralUsd =
+      values.collateralDeltaUsd +
+      values.positionFeeUsd +
+      values.borrowingFeeUsd +
+      values.fundingFeeUsd +
+      values.uiFeeUsd +
+      values.swapUiFeeUsd;
 
     const baseCollateralAmount = convertToTokenAmount(
       baseCollateralUsd,
@@ -244,7 +245,7 @@ export function getIncreasePositionAmounts(p: {
       values.initialCollateralPrice
     )!;
   } else if (strategy === "independent") {
-    if (indexTokenAmount?.gt(0)) {
+    if (indexTokenAmount && indexTokenAmount > 0) {
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
@@ -253,7 +254,7 @@ export function getIncreasePositionAmounts(p: {
       const positionFeeInfo = getPositionFee(
         marketInfo,
         values.sizeDeltaUsd,
-        basePriceImpactDeltaUsd.gt(0),
+        basePriceImpactDeltaUsd > 0,
         userReferralInfo
       );
 
@@ -262,7 +263,7 @@ export function getIncreasePositionAmounts(p: {
       values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
     }
 
-    if (initialCollateralAmount?.gt(0)) {
+    if (initialCollateralAmount && initialCollateralAmount > 0) {
       values.initialCollateralAmount = initialCollateralAmount;
       values.initialCollateralUsd = convertToUsd(
         initialCollateralAmount,
@@ -285,12 +286,13 @@ export function getIncreasePositionAmounts(p: {
 
       const baseCollateralUsd = convertToUsd(swapAmounts.amountOut, collateralToken.decimals, values.collateralPrice)!;
 
-      values.collateralDeltaUsd = baseCollateralUsd
-        .sub(values.positionFeeUsd)
-        .sub(values.borrowingFeeUsd)
-        .sub(values.fundingFeeUsd)
-        .sub(values.uiFeeUsd)
-        .sub(values.swapUiFeeUsd);
+      values.collateralDeltaUsd =
+        baseCollateralUsd -
+        values.positionFeeUsd -
+        values.borrowingFeeUsd -
+        values.fundingFeeUsd -
+        values.uiFeeUsd -
+        values.swapUiFeeUsd;
 
       values.collateralDeltaAmount = convertToTokenAmount(
         values.collateralDeltaUsd,
@@ -348,20 +350,20 @@ export function getIncreasePositionAmounts(p: {
 
   let priceImpactAmount = 0n;
 
-  if (values.positionPriceImpactDeltaUsd.gt(0)) {
-    const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.maxPrice;
+  if (values.positionPriceImpactDeltaUsd > 0) {
+    const price = triggerPrice && triggerPrice > 0 ? triggerPrice : indexToken.prices.maxPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   } else {
-    const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.minPrice;
+    const price = triggerPrice && triggerPrice > 0 ? triggerPrice : indexToken.prices.minPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   }
 
   values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
   if (isLong) {
-    values.sizeDeltaInTokens = values.sizeDeltaInTokens.add(priceImpactAmount);
+    values.sizeDeltaInTokens = values.sizeDeltaInTokens + priceImpactAmount;
   } else {
-    values.sizeDeltaInTokens = values.sizeDeltaInTokens.sub(priceImpactAmount);
+    values.sizeDeltaInTokens = values.sizeDeltaInTokens - priceImpactAmount;
   }
 
   return values;
@@ -396,16 +398,14 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     userReferralInfo,
   } = p;
 
-  const nextCollateralUsd = existingPosition
-    ? existingPosition.collateralUsd.add(collateralDeltaUsd)
-    : collateralDeltaUsd;
+  const nextCollateralUsd = existingPosition ? existingPosition.collateralUsd + collateralDeltaUsd : collateralDeltaUsd;
 
   const nextCollateralAmount = existingPosition
-    ? existingPosition.collateralAmount.add(collateralDeltaAmount)
+    ? existingPosition.collateralAmount + collateralDeltaAmount
     : collateralDeltaAmount;
 
-  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
-  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens.add(sizeDeltaInTokens) : sizeDeltaInTokens;
+  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd + sizeDeltaUsd : sizeDeltaUsd;
+  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens + sizeDeltaInTokens : sizeDeltaInTokens;
 
   const nextEntryPrice =
     getEntryPrice({

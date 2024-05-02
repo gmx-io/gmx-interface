@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
@@ -76,9 +76,9 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
-  [ARBITRUM]: BigInt(10).pow(29).mul(5),
-  [AVALANCHE]: BigInt(10).pow(29).mul(35),
-  [AVALANCHE_FUJI]: BigInt(10).pow(29).mul(2),
+  [ARBITRUM]: 10n ** 29n * 5n,
+  [AVALANCHE]: 10n ** 29n * 35n,
+  [AVALANCHE_FUJI]: 10n ** 29n * 2n,
 } as const;
 
 export const EXECUTION_FEE_CONFIG_V2: {

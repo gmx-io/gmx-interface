@@ -208,7 +208,7 @@ export type MarketsGraph = {
 
 export type SwapEstimator = (
   e: MarketEdge,
-  usdIn: BigNumber
+  usdIn: bigint
 ) => {
   usdOut: bigint;
 };

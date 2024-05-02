@@ -8,7 +8,7 @@ import {
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
@@ -232,27 +232,27 @@ export function useOptimisticPositions(p: {
 
       if (
         lastIncreaseEvent &&
-        lastIncreaseEvent.increasedAtBlock.gt(position.increasedAtBlock) &&
-        lastIncreaseEvent.increasedAtBlock.gt(lastDecreaseEvent?.decreasedAtBlock || 0)
+        lastIncreaseEvent.increasedAtBlock > position.increasedAtBlock &&
+        lastIncreaseEvent.increasedAtBlock > (lastDecreaseEvent?.decreasedAtBlock || 0)
       ) {
         position = applyEventChanges(position, lastIncreaseEvent);
       } else if (
         lastDecreaseEvent &&
-        lastDecreaseEvent.decreasedAtBlock.gt(position.decreasedAtBlock) &&
-        lastDecreaseEvent.decreasedAtBlock.gt(lastIncreaseEvent?.increasedAtBlock || 0)
+        lastDecreaseEvent.decreasedAtBlock > position.decreasedAtBlock &&
+        lastDecreaseEvent.decreasedAtBlock > (lastIncreaseEvent?.increasedAtBlock || 0)
       ) {
         position = applyEventChanges(position, lastDecreaseEvent);
       }
 
       if (
         pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.increasedAtBlock)) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.decreasedAtBlock)))
+        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtBlock) ||
+          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtBlock))
       ) {
         position.pendingUpdate = pendingUpdate;
       }
 
-      if (position.sizeInUsd.gt(0)) {
+      if (position.sizeInUsd > 0) {
         acc[key] = position;
       }
 

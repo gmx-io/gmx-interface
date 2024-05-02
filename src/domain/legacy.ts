@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
@@ -32,6 +32,7 @@ import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
+import { bigMath } from "lib/bigmath";
 
 export * from "./prices";
 
@@ -383,13 +384,13 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
+  const { data: minExecutionFee } = useSWR<bigint>([active, chainId, positionRouterAddress, "minExecutionFee"], {
     fetcher: contractFetcher(signer, PositionRouter) as any,
   });
 
-  const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
+  const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise<BigNumber | undefined>(async (resolve) => {
+      return new Promise<bigint | undefined>(async (resolve) => {
         const provider = getProvider(signer, chainId);
         if (!provider) {
           resolve(undefined);
@@ -398,7 +399,7 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
 
         try {
           const gasPrice = (await provider.getFeeData()).gasPrice;
-          resolve(gasPrice);
+          resolve(gasPrice ?? undefined);
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);
@@ -421,14 +422,16 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   let finalExecutionFee = minExecutionFee;
 
   if (gasPrice && minExecutionFee) {
-    const estimatedExecutionFee = gasPrice.mul(multiplier);
-    if (estimatedExecutionFee.gt(minExecutionFee)) {
+    const estimatedExecutionFee = gasPrice * multiplier;
+    if (estimatedExecutionFee > minExecutionFee) {
       finalExecutionFee = estimatedExecutionFee;
     }
   }
 
   const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
-  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
+  const isFeeHigh =
+    finalExecutionFeeUSD !== undefined &&
+    finalExecutionFeeUSD > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
   const errorMessage =
     isFeeHigh &&
     t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
@@ -537,7 +540,7 @@ export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
   let totalStakedGmx = useRef(BN_ZERO);
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<bigint>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
       ARBITRUM,
@@ -549,7 +552,7 @@ export function useTotalGmxStaked() {
       fetcher: contractFetcher(undefined, Token) as any,
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<bigint>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
       AVALANCHE,
@@ -568,7 +571,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = BigInt(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    let total = BigInt(stakedGmxSupplyArbitrum) + stakedGmxSupplyAvax;
     totalStakedGmx.current = total;
   }
 
@@ -603,7 +606,7 @@ export function useTotalGmxInLiquidity() {
   }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
 
   if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
-    let total = bigNumberify(gmxInLiquidityOnArbitrum)!.add(gmxInLiquidityOnAvax);
+    let total = bigNumberify(gmxInLiquidityOnArbitrum)! + gmxInLiquidityOnAvax;
     totalGMX.current = total;
   }
   return {
@@ -631,7 +634,7 @@ function useGmxPriceFromAvalanche() {
     }
   );
 
-  const PRECISION = bigNumberify(10)!.pow(18);
+  const PRECISION = 10n ** 18n;
   let gmxPrice;
   if (avaxReserve && gmxReserve && avaxPrice) {
     gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
@@ -656,7 +659,7 @@ function useGmxPriceFromArbitrum(signer, active) {
 
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<bigint>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
       fetcher: contractFetcher(signer, Vault) as any,
@@ -682,7 +685,9 @@ function useGmxPriceFromArbitrum(signer, active) {
 
       const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
       const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
-      return poolTokenPriceAmount?.mul(ethPrice).div(expandDecimals(1, 18));
+      return poolTokenPriceAmount === undefined
+        ? undefined
+        : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
     }
   }, [ethPrice, uniPoolSlot0, ethAddress]);
 

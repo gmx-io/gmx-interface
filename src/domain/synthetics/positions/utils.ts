@@ -3,13 +3,14 @@ import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl 
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
 import { t } from "@lingui/macro";
+import { bigMath } from "lib/bigmath";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -87,8 +88,8 @@ export function getPositionPnlUsd(p: {
 
   const WEI_PRECISION = expandDecimals(1, 18);
 
-  if (!cappedPnl.eq(poolPnl) && cappedPnl.gt(0) && poolPnl.gt(0)) {
-    totalPnl = totalPnl.mul(cappedPnl.div(WEI_PRECISION)).div(poolPnl.div(WEI_PRECISION));
+  if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
+    totalPnl = bigMath.mulDiv(totalPnl, cappedPnl / WEI_PRECISION, poolPnl / WEI_PRECISION);
   }
 
   return totalPnl;
@@ -123,7 +124,7 @@ export function getLiquidationPrice(p: {
     useMaxPriceImpact,
   } = p;
 
-  if (!sizeInUsd.gt(0) || !sizeInTokens.gt(0)) {
+  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
     return undefined;
   }
 
@@ -131,29 +132,29 @@ export function getLiquidationPrice(p: {
 
   const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
-  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
+  const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
 
-  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
 
-  let priceImpactDeltaUsd: BigNumber = 0n;
+  let priceImpactDeltaUsd = 0n;
 
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
+    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
 
-    if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+    if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
       priceImpactDeltaUsd = maxNegativePriceImpactUsd;
     }
 
     // Ignore positive price impact
-    if (priceImpactDeltaUsd.gt(0)) {
+    if (priceImpactDeltaUsd > 0) {
       priceImpactDeltaUsd = 0n;
     }
   }
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
-  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+  if (liquidationCollateralUsd < minCollateralUsd) {
     liquidationCollateralUsd = minCollateralUsd;
   }
 
@@ -161,55 +162,45 @@ export function getLiquidationPrice(p: {
 
   if (getIsEquivalentTokens(collateralToken, indexToken)) {
     if (isLong) {
-      const denominator = sizeInTokens.add(collateralAmount);
+      const denominator = sizeInTokens + collateralAmount;
 
       if (denominator == 0n) {
         return undefined;
       }
 
-      liquidationPrice = sizeInUsd
-        .add(liquidationCollateralUsd)
-        .sub(priceImpactDeltaUsd)
-        .add(totalFeesUsd)
-        .div(denominator)
-        .mul(expandDecimals(1, indexToken.decimals));
+      liquidationPrice =
+        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + totalFeesUsd) / denominator) *
+        expandDecimals(1, indexToken.decimals);
     } else {
-      const denominator = sizeInTokens.sub(collateralAmount);
+      const denominator = sizeInTokens - collateralAmount;
 
       if (denominator == 0n) {
         return undefined;
       }
 
-      liquidationPrice = sizeInUsd
-        .sub(liquidationCollateralUsd)
-        .add(priceImpactDeltaUsd)
-        .sub(totalFeesUsd)
-        .div(denominator)
-        .mul(expandDecimals(1, indexToken.decimals));
+      liquidationPrice =
+        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - totalFeesUsd) / denominator) *
+        expandDecimals(1, indexToken.decimals);
     }
   } else {
     if (sizeInTokens == 0n) {
       return undefined;
     }
 
-    const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
+    const remainingCollateralUsd = collateralUsd + priceImpactDeltaUsd - totalPendingFeesUsd - closingFeeUsd;
 
     if (isLong) {
-      liquidationPrice = liquidationCollateralUsd
-        .sub(remainingCollateralUsd)
-        .add(sizeInUsd)
-        .div(sizeInTokens)
-        .mul(expandDecimals(1, indexToken.decimals));
+      liquidationPrice =
+        ((liquidationCollateralUsd - remainingCollateralUsd + sizeInUsd) / sizeInTokens) *
+        expandDecimals(1, indexToken.decimals);
     } else {
-      liquidationPrice = liquidationCollateralUsd
-        .sub(remainingCollateralUsd)
-        .sub(sizeInUsd)
-        .div(sizeInTokens.mul(-1))
-        .mul(expandDecimals(1, indexToken.decimals));
+      liquidationPrice =
+        ((liquidationCollateralUsd - remainingCollateralUsd - sizeInUsd) / -sizeInTokens) *
+        expandDecimals(1, indexToken.decimals);
     }
   }
 
-  if (liquidationPrice.lte(0)) {
+  if (liquidationPrice <= 0) {
     return undefined;
   }
 
@@ -217,7 +208,7 @@ export function getLiquidationPrice(p: {
 }
 
 export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (!liquidationPrice || liquidationPrice.lte(0)) {
+  if (!liquidationPrice || liquidationPrice <= 0) {
     return "NA";
   }
 
@@ -225,7 +216,7 @@ export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displa
 }
 
 export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (acceptablePrice && (acceptablePrice == 0n || acceptablePrice.gte(ethers.constants.MaxInt256))) {
+  if (acceptablePrice && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }
 
@@ -235,7 +226,7 @@ export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayD
 export function getLeverage(p: {
   sizeInUsd: bigint;
   collateralUsd: bigint;
-  pnl: BigNumber | undefined;
+  pnl: bigint | undefined;
   pendingFundingFeesUsd: bigint;
   pendingBorrowingFeesUsd: bigint;
 }) {
@@ -243,13 +234,13 @@ export function getLeverage(p: {
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
-  const remainingCollateralUsd = collateralUsd.add(pnl || 0).sub(totalPendingFeesUsd);
+  const remainingCollateralUsd = collateralUsd + (pnl || 0n) - totalPendingFeesUsd;
 
-  if (remainingCollateralUsd.lte(0)) {
+  if (remainingCollateralUsd <= 0) {
     return undefined;
   }
 
-  return sizeInUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
+  return bigMath.mulDiv(sizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, remainingCollateralUsd);
 }
 
 export function formatLeverage(leverage?: bigint) {
@@ -260,41 +251,40 @@ export function formatLeverage(leverage?: bigint) {
 
 export function getEstimatedLiquidationTimeInHours(
   position: PositionInfo,
-  minCollateralUsd: BigNumber | undefined
+  minCollateralUsd: bigint | undefined
 ): number | undefined {
   const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
 
   if (isOpening || !minCollateralUsd) return;
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
-  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+  if (liquidationCollateralUsd < minCollateralUsd) {
     liquidationCollateralUsd = minCollateralUsd;
   }
   const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
   const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
-  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
-  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
   });
 
-  if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+  if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   }
 
   // Ignore positive price impact
-  if (priceImpactDeltaUsd.gt(0)) {
+  if (priceImpactDeltaUsd > 0) {
     priceImpactDeltaUsd = 0n;
   }
 
-  const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
+  const totalFeesPerHour =
+    bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0 ? bigMath.abs(fundingFeePerHour) : 0n);
 
   if (totalFeesPerHour == 0n) return;
 
-  const hours = netValue
-    .add(priceImpactDeltaUsd)
-    .sub(liquidationCollateralUsd)
-    .mul(BASIS_POINTS_DIVISOR)
-    .div(totalFeesPerHour);
+  const hours =
+    ((netValue + priceImpactDeltaUsd - liquidationCollateralUsd) * BASIS_POINTS_DIVISOR_BIGINT) / totalFeesPerHour;
+
   return parseFloat(formatAmount(hours, 4, 2));
 }
 
@@ -340,24 +330,25 @@ function willPositionCollateralBeSufficient(
   collateralTokenDecimals: number,
   realizedPnlUsd: bigint,
   minCollateralFactor: bigint,
-  sizeInUsd: BigNumber
+  sizeInUsd: bigint
 ) {
-  let remainingCollateralUsd = collateralAmount
-    .sub(collateralDeltaAmount)
-    .mul(collateralTokenMinPrice)
-    .div(expandDecimals(1, collateralTokenDecimals));
+  let remainingCollateralUsd = bigMath.mulDiv(
+    collateralAmount - collateralDeltaAmount,
+    collateralTokenMinPrice,
+    expandDecimals(1, collateralTokenDecimals)
+  );
 
-  if (realizedPnlUsd.lt(0)) {
-    remainingCollateralUsd = remainingCollateralUsd.add(realizedPnlUsd);
+  if (realizedPnlUsd < 0) {
+    remainingCollateralUsd = remainingCollateralUsd + realizedPnlUsd;
   }
 
-  if (remainingCollateralUsd.lt(0)) {
+  if (remainingCollateralUsd < 0) {
     return false;
   }
 
   const minCollateralUsdForLeverage = applyFactor(sizeInUsd, minCollateralFactor);
 
-  return remainingCollateralUsd.gte(minCollateralUsdForLeverage);
+  return remainingCollateralUsd >= minCollateralUsdForLeverage;
 }
 
 export function willPositionCollateralBeSufficientForPosition(
@@ -365,7 +356,7 @@ export function willPositionCollateralBeSufficientForPosition(
   collateralDeltaAmount: bigint,
   realizedPnlUsd: bigint,
   minCollateralFactor: bigint,
-  sideDeltaUsd: BigNumber
+  sideDeltaUsd: bigint
 ) {
   return willPositionCollateralBeSufficient(
     position.collateralToken.prices.minPrice,
@@ -374,21 +365,21 @@ export function willPositionCollateralBeSufficientForPosition(
     position.collateralToken.decimals,
     realizedPnlUsd,
     minCollateralFactor,
-    position.sizeInUsd.add(sideDeltaUsd)
+    position.sizeInUsd + sideDeltaUsd
   );
 }
 
-export function getMinCollateralFactorForPosition(position: PositionInfo, openInterestDelta: BigNumber) {
+export function getMinCollateralFactorForPosition(position: PositionInfo, openInterestDelta: bigint) {
   const marketInfo = position.marketInfo;
   const isLong = position.isLong;
-  const openInterest = getOpenInterestUsd(marketInfo, isLong).add(openInterestDelta);
+  const openInterest = getOpenInterestUsd(marketInfo, isLong) + openInterestDelta;
   const minCollateralFactorMultiplier = isLong
     ? marketInfo.minCollateralFactorForOpenInterestLong
     : marketInfo.minCollateralFactorForOpenInterestShort;
-  let minCollateralFactor = openInterest.mul(minCollateralFactorMultiplier).div(PRECISION);
+  let minCollateralFactor = bigMath.mulDiv(openInterest, minCollateralFactorMultiplier, PRECISION);
   const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
 
-  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+  if (minCollateralFactorForMarket > minCollateralFactor) {
     minCollateralFactor = minCollateralFactorForMarket;
   }
 
@@ -396,11 +387,11 @@ export function getMinCollateralFactorForPosition(position: PositionInfo, openIn
 }
 
 // 1% slippage
-export function substractMaxLeverageSlippage(number: BigNumber): bigint;
+export function substractMaxLeverageSlippage(number: bigint): bigint;
 export function substractMaxLeverageSlippage(number: number): number;
-export function substractMaxLeverageSlippage(number: BigNumber | number): BigNumber | number {
+export function substractMaxLeverageSlippage(number: bigint | number): bigint | number {
   if (typeof number === "number") {
     return Math.floor(number * 0.99);
   }
-  return number.mul(99).div(100);
+  return (number * 99n) / 100n;
 }

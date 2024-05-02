@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 

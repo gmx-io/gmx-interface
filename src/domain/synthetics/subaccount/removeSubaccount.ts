@@ -1,4 +1,4 @@
-import { BigNumber, Signer } from "ethers";
+import { Signer } from "ethers";
 import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 

@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
@@ -45,7 +45,7 @@ export function updateOrderTxn(
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
-  if (executionFee?.gt(0)) {
+  if (executionFee && executionFee > 0) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
   multicall.push({
@@ -64,7 +64,7 @@ export function updateOrderTxn(
     .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee?.gt(0) ? executionFee : undefined,
+    value: executionFee && executionFee > 0 ? executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,

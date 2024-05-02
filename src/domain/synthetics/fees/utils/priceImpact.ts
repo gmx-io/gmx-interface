@@ -36,7 +36,7 @@ export function getPriceImpactByAcceptablePrice(p: {
   };
 }
 
-export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData, priceImpactDeltaUsd: BigNumber) {
+export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData, priceImpactDeltaUsd: bigint) {
   const tokenPoolType = getTokenPoolType(marketInfo, token.address);
 
   if (!tokenPoolType) {
@@ -44,11 +44,11 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
   }
 
   const isLongCollateral = tokenPoolType === "long";
-  const price = priceImpactDeltaUsd.gt(0) ? token.prices.maxPrice : token.prices.minPrice;
+  const price = priceImpactDeltaUsd > 0 ? token.prices.maxPrice : token.prices.minPrice;
 
   let impactDeltaAmount: bigint;
 
-  if (priceImpactDeltaUsd.gt(0)) {
+  if (priceImpactDeltaUsd > 0) {
     // round positive impactAmount down, this will be deducted from the swap impact pool for the user
     impactDeltaAmount = convertToTokenAmount(priceImpactDeltaUsd, token.decimals, price)!;
 
@@ -61,7 +61,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
     }
   } else {
     // round negative impactAmount up, this will be deducted from the user
-    impactDeltaAmount = roundUpMagnitudeDivision(priceImpactDeltaUsd.mul(expandDecimals(1, token.decimals)), price);
+    impactDeltaAmount = roundUpMagnitudeDivision(priceImpactDeltaUsd * expandDecimals(1, token.decimals), price);
   }
 
   return impactDeltaAmount;
@@ -276,9 +276,9 @@ function getNextOpenInterestParams(p: {
   let nextShortUsd = currentShortUsd;
 
   if (isLong) {
-    nextLongUsd = currentLongUsd?.add(usdDelta || 0);
+    nextLongUsd = (currentLongUsd ?? 0n) + (usdDelta ?? 0n);
   } else {
-    nextShortUsd = currentShortUsd?.add(usdDelta || 0);
+    nextShortUsd = (currentShortUsd ?? 0n) + (usdDelta ?? 0n);
   }
 
   return {
@@ -309,8 +309,8 @@ export function getNextPoolAmountsParams(p: {
   const longPoolUsdAdjustment = convertToUsd(marketInfo.longPoolAmountAdjustment, longToken.decimals, longPrice)!;
   const shortPoolUsdAdjustment = convertToUsd(marketInfo.shortPoolAmountAdjustment, shortToken.decimals, shortPrice)!;
 
-  const nextLongPoolUsd = longPoolUsd.add(longDeltaUsd).add(longPoolUsdAdjustment);
-  const nextShortPoolUsd = shortPoolUsd.add(shortDeltaUsd).add(shortPoolUsdAdjustment);
+  const nextLongPoolUsd = longPoolUsd + longDeltaUsd + longPoolUsdAdjustment;
+  const nextShortPoolUsd = shortPoolUsd + shortDeltaUsd + shortPoolUsdAdjustment;
 
   return {
     longPoolUsd,
@@ -419,7 +419,7 @@ export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint
   const _diff = Number(diff) / 10 ** 30;
   const _exponent = Number(exponent) / 10 ** 30;
 
-  // Pow and convert back to BigNumber with 30 decimals
+  // Pow and convert back to BigInt with 30 decimals
   let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)))!;
 
   result = (result * factor) / expandDecimals(1, 30);

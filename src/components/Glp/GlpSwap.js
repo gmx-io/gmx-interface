@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import {
   adjustForDecimals,
   getBuyGlpFromAmount,
@@ -57,7 +57,6 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import {
   applyFactor,
   basisPointsToFloat,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,

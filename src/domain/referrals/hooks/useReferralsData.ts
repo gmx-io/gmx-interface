@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { useUserCodesOnAllChain } from ".";
@@ -132,7 +132,7 @@ export function useReferralsData(account?: string | null) {
           });
 
           function getAffiliateRebateUsd(data: { totalRebateUsd: BigNumberish; discountUsd: BigNumberish }) {
-            return bigNumberify(data.totalRebateUsd)!.sub(data.discountUsd);
+            return BigInt(data.totalRebateUsd) - BigInt(data.discountUsd);
           }
 
           const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats.map((e) => ({
@@ -165,20 +165,20 @@ export function useReferralsData(account?: string | null) {
               acc.tradedReferralsCount = acc.tradedReferralsCount + parseInt(cv.tradedReferralsCount);
               acc.registeredReferralsCount = acc.registeredReferralsCount + parseInt(cv.registeredReferralsCount);
 
-              acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
-              acc.volume = acc.volume.add(cv.volume);
-              acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
-              acc.affiliateRebateUsd = acc.affiliateRebateUsd.add(getAffiliateRebateUsd(cv));
+              acc.totalRebateUsd = acc.totalRebateUsd + cv.totalRebateUsd;
+              acc.volume = acc.volume + cv.volume;
+              acc.discountUsd = acc.discountUsd + cv.discountUsd;
+              acc.affiliateRebateUsd = acc.affiliateRebateUsd + getAffiliateRebateUsd(cv);
 
-              acc.v1Data.volume = acc.v1Data.volume.add(cv.v1Data.volume);
-              acc.v1Data.totalRebateUsd = acc.v1Data.totalRebateUsd.add(cv.v1Data.totalRebateUsd);
-              acc.v1Data.discountUsd = acc.v1Data.discountUsd.add(cv.v1Data.discountUsd);
-              acc.v1Data.affiliateRebateUsd = acc.v1Data.affiliateRebateUsd.add(getAffiliateRebateUsd(cv.v1Data));
+              acc.v1Data.volume = acc.v1Data.volume + cv.v1Data.volume;
+              acc.v1Data.totalRebateUsd = acc.v1Data.totalRebateUsd + cv.v1Data.totalRebateUsd;
+              acc.v1Data.discountUsd = acc.v1Data.discountUsd + cv.v1Data.discountUsd;
+              acc.v1Data.affiliateRebateUsd = acc.v1Data.affiliateRebateUsd + getAffiliateRebateUsd(cv.v1Data);
 
-              acc.v2Data.volume = acc.v2Data.volume.add(cv.v2Data.volume);
-              acc.v2Data.totalRebateUsd = acc.v2Data.totalRebateUsd.add(cv.v2Data.totalRebateUsd);
-              acc.v2Data.discountUsd = acc.v2Data.discountUsd.add(cv.v2Data.discountUsd);
-              acc.v2Data.affiliateRebateUsd = acc.v2Data.affiliateRebateUsd.add(getAffiliateRebateUsd(cv.v2Data));
+              acc.v2Data.volume = acc.v2Data.volume + cv.v2Data.volume;
+              acc.v2Data.totalRebateUsd = acc.v2Data.totalRebateUsd + cv.v2Data.totalRebateUsd;
+              acc.v2Data.discountUsd = acc.v2Data.discountUsd + cv.v2Data.discountUsd;
+              acc.v2Data.affiliateRebateUsd = acc.v2Data.affiliateRebateUsd + getAffiliateRebateUsd(cv.v2Data);
               return acc;
             },
             {
@@ -264,13 +264,12 @@ export function useReferralsData(account?: string | null) {
             const { affiliateTotalStats, traderReferralTotalStats } = currentValue;
 
             accumulator.total.registeredReferralsCount += affiliateTotalStats.registeredReferralsCount;
-            accumulator.total.affiliateVolume = accumulator.total.affiliateVolume.add(affiliateTotalStats.volume);
-            accumulator.total.affiliateRebateUsd = accumulator.total.affiliateRebateUsd.add(
-              affiliateTotalStats.affiliateRebateUsd
-            );
+            accumulator.total.affiliateVolume = accumulator.total.affiliateVolume + affiliateTotalStats.volume;
+            accumulator.total.affiliateRebateUsd =
+              accumulator.total.affiliateRebateUsd + affiliateTotalStats.affiliateRebateUsd;
 
-            accumulator.total.discountUsd = accumulator.total.discountUsd.add(traderReferralTotalStats.discountUsd);
-            accumulator.total.traderVolume = accumulator.total.traderVolume.add(traderReferralTotalStats.volume);
+            accumulator.total.discountUsd = accumulator.total.discountUsd + traderReferralTotalStats.discountUsd;
+            accumulator.total.traderVolume = accumulator.total.traderVolume + traderReferralTotalStats.volume;
 
             return accumulator;
           },

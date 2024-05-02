@@ -2,7 +2,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";

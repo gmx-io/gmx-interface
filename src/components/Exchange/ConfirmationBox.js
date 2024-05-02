@@ -10,6 +10,7 @@ import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DEFAULT_SLIPPAGE_AMOUNT,
   EXCESSIVE_SLIPPAGE_AMOUNT,
@@ -29,7 +30,7 @@ import {
   getExchangeRateDisplay,
 } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
+import { expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -44,12 +45,13 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 
 import "./ConfirmationBox.css";
+import { bigMath } from "lib/bigmath";
 
-const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
+const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo?.spread && toTokenInfo?.spread) {
-    let value = fromTokenInfo.spread.add(toTokenInfo.spread);
+    let value = fromTokenInfo.spread + toTokenInfo.spread;
 
     const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
     const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
@@ -60,7 +62,7 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
 
     return {
       value,
-      isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
+      isHigh: value > HIGH_SPREAD_THRESHOLD,
     };
   }
 }
@@ -80,8 +82,8 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
                   <br />
                   <br />
                   Note that a low allowed slippage, e.g. less than{" "}
-                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                  orders if prices are volatile.
+                  {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed orders if
+                  prices are volatile.
                 </Trans>
               </div>
             );
@@ -176,10 +178,10 @@ export default function ConfirmationBox(props) {
 
   let collateralAfterFees = fromUsdMin;
   if (feesUsd) {
-    collateralAfterFees = fromUsdMin.sub(feesUsd);
+    collateralAfterFees = fromUsdMin - feesUsd;
   }
   if (isSwap) {
-    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
+    minOut = bigMath.mulDiv(toAmount, BASIS_POINTS_DIVISOR - allowedSlippage, BASIS_POINTS_DIVISOR);
 
     fromTokenUsd = fromTokenInfo ? formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true) : 0;
     toTokenUsd = toTokenInfo ? formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true) : 0;
@@ -274,7 +276,7 @@ export default function ConfirmationBox(props) {
         MIN_PROFIT_TIME > 0 &&
         hasExistingPosition &&
         existingPosition.delta == 0n &&
-        existingPosition.pendingDelta.gt(0)
+        existingPosition.pendingDelta > 0
       ) {
         return isLong ? t`Forfeit profit and ${action}` : t`Forfeit profit and Short`;
       }
@@ -333,18 +335,18 @@ export default function ConfirmationBox(props) {
     if (toTokenInfo.address === collateralTokenAddress) {
       return {
         value: totalSpread,
-        isHigh: toTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
+        isHigh: toTokenInfo.spread > HIGH_SPREAD_THRESHOLD,
       };
     }
 
     const collateralTokenInfo = getTokenInfo(infoTokens, collateralTokenAddress);
     if (collateralTokenInfo?.spread) {
-      totalSpread = totalSpread.add(collateralTokenInfo.spread);
+      totalSpread = totalSpread + collateralTokenInfo.spread;
     }
 
     return {
       value: totalSpread,
-      isHigh: totalSpread.gt(HIGH_SPREAD_THRESHOLD),
+      isHigh: totalSpread > HIGH_SPREAD_THRESHOLD,
     };
   }, [toTokenInfo, collateralTokenAddress, infoTokens]);
 
@@ -394,7 +396,7 @@ export default function ConfirmationBox(props) {
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption]);
 
   const hasPendingProfit =
-    MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta == 0n && existingPosition.pendingDelta.gt(0);
+    MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta == 0n && existingPosition.pendingDelta > 0;
 
   const renderExistingOrderWarning = useCallback(() => {
     if (isSwap || !existingOrder) {
@@ -402,7 +404,7 @@ export default function ConfirmationBox(props) {
     }
     const indexToken = getToken(chainId, existingOrder.indexToken);
     const sizeInToken = formatAmount(
-      existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice),
+      bigMath.mulDiv(existingOrder.sizeDelta, PRECISION, existingOrder.triggerPrice),
       USD_DECIMALS,
       4,
       true
@@ -571,7 +573,7 @@ export default function ConfirmationBox(props) {
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
-    const riskThresholdBps = 5000;
+    const riskThresholdBps = 5000n;
     let isLiquidityRisk;
     const token = isSwap || isLong ? toTokenInfo : shortCollateralToken;
 
@@ -579,31 +581,35 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
+    const riskLiquidity = bigMath.mulDiv(availableLiquidity, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT);
+
     if (isSwap) {
-      const poolWithoutBuffer = token.poolAmount.sub(token.bufferAmount);
-      availableLiquidity = token.availableAmount.gt(poolWithoutBuffer) ? poolWithoutBuffer : token.availableAmount;
-      isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount);
+      const poolWithoutBuffer = token.poolAmount - token.bufferAmount;
+      availableLiquidity = token.availableAmount > poolWithoutBuffer ? poolWithoutBuffer : token.availableAmount;
+      isLiquidityRisk = riskLiquidity < toAmount;
     } else {
       if (isShort) {
         availableLiquidity = token.availableAmount;
 
         let adjustedMaxGlobalShortSize;
 
-        if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)) {
-          adjustedMaxGlobalShortSize = toTokenInfo.maxAvailableShort
-            .mul(expandDecimals(1, token.decimals))
-            .div(expandDecimals(1, USD_DECIMALS));
+        if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort > 0) {
+          adjustedMaxGlobalShortSize = bigMath.mulDiv(
+            toTokenInfo.maxAvailableShort,
+            expandDecimals(1, token.decimals),
+            expandDecimals(1, USD_DECIMALS)
+          );
         }
 
-        if (adjustedMaxGlobalShortSize && adjustedMaxGlobalShortSize.lt(token.availableAmount)) {
+        if (adjustedMaxGlobalShortSize && adjustedMaxGlobalShortSize < token.availableAmount) {
           availableLiquidity = adjustedMaxGlobalShortSize;
         }
 
-        const sizeTokens = toUsdMax.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
-        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(sizeTokens);
+        const sizeTokens = bigMath.mulDiv(toUsdMax, expandDecimals(1, token.decimals), token.minPrice);
+        isLiquidityRisk = riskLiquidity < sizeTokens;
       } else {
         availableLiquidity = token.availableAmount;
-        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount);
+        isLiquidityRisk = riskLiquidity < toAmount;
       }
     }
 
@@ -662,25 +668,25 @@ export default function ConfirmationBox(props) {
           )}
           {orderOption === LIMIT && renderAvailableLiquidity()}
           <ExchangeInfoRow label={t`Leverage`}>
-            {hasExistingPosition && toAmount && toAmount.gt(0) && (
+            {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="inline-block muted">
                 {formatAmount(existingPosition?.leverage, 4, 2)}x
                 <BsArrowRight className="transition-arrow" />
               </div>
             )}
-            {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
-            {!toAmount && leverage && leverage.gt(0) && `-`}
+            {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
+            {!toAmount && leverage && leverage > 0 && `-`}
             {leverage && leverage == 0n && `-`}
           </ExchangeInfoRow>
           {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
-              {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+              {formatAmount(collateralSpreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {isMarketOrder && (
             <ExchangeInfoRow label={t`Entry Price`}>
-              {hasExistingPosition && toAmount && toAmount.gt(0) && (
+              {hasExistingPosition && toAmount && toAmount > 0 && (
                 <div className="inline-block muted">
                   ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow" />
@@ -702,7 +708,7 @@ export default function ConfirmationBox(props) {
             </ExchangeInfoRow>
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
-            {hasExistingPosition && toAmount && toAmount.gt(0) && (
+            {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="inline-block muted">
                 ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow" />
@@ -808,7 +814,7 @@ export default function ConfirmationBox(props) {
         {renderSwapSpreadWarning()}
         {showSwapSpread && (
           <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh}>
-            {formatAmount(spreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+            {formatAmount(spreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}

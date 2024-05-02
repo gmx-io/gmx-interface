@@ -1,5 +1,5 @@
 import { Provider } from "ethers";
-import { BigNumber, Contract } from "ethers";
+import { Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
 import { bigNumberify } from "../numbers";
 
@@ -7,25 +7,24 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
 
-  const gasPrice = await provider.getGasPrice();
+  const feeData = await provider.getFeeData();
+  const gasPrice = feeData.gasPrice;
 
   if (maxGasPrice) {
-    if (gasPrice.gt(maxGasPrice)) {
+    if (gasPrice && gasPrice > maxGasPrice) {
       maxGasPrice = gasPrice;
     }
-
-    const feeData = await provider.getFeeData();
 
     // the wallet provider might not return maxPriorityFeePerGas in feeData
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas) {
       txnOpts.maxFeePerGas = maxGasPrice;
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas + premium;
       return;
     }
   }
 
-  txnOpts.gasPrice = gasPrice.add(premium);
+  txnOpts.gasPrice = gasPrice + premium;
   return;
 }
 

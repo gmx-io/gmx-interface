@@ -8,6 +8,7 @@ import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMi
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
 import { PositionInfo } from "../positions";
+import { bigMath } from "lib/bigmath";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -266,7 +267,7 @@ export function getMinPriceImpactMarket(
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
       const priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong);
 
-      if (!bestImpactDeltaUsd || priceImpactDeltaUsd.gt(bestImpactDeltaUsd)) {
+      if (!bestImpactDeltaUsd || priceImpactDeltaUsd > bestImpactDeltaUsd) {
         bestMarket = marketInfo;
         bestImpactDeltaUsd = priceImpactDeltaUsd;
       }
@@ -289,13 +290,13 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
     const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice);
     const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice);
 
-    return acc.add(usdLong || 0).add(usdShort || 0);
+    return acc + (usdLong ?? 0n) + (usdShort ?? 0n);
   }, 0n);
 }
 
 export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
   return positions.reduce((acc, position) => {
-    if (position.pendingClaimableFundingFeesUsd) return acc.add(position.pendingClaimableFundingFeesUsd);
+    if (position.pendingClaimableFundingFeesUsd) return acc + position.pendingClaimableFundingFeesUsd;
 
     return acc;
   }, 0n);
@@ -312,25 +313,25 @@ export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLon
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
   const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
 
-  const capacityAmount = maxPoolAmount.sub(poolAmount);
+  const capacityAmount = maxPoolAmount - poolAmount;
 
-  return capacityAmount.gt(0) ? capacityAmount : 0n;
+  return capacityAmount > 0 ? capacityAmount : 0n;
 }
 
 export function getMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const maxAmountForDeposit = isLong ? marketInfo.maxLongPoolAmountForDeposit : marketInfo.maxShortPoolAmountForDeposit;
   const maxAmountForSwap = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
 
-  return maxAmountForDeposit.lt(maxAmountForSwap) ? maxAmountForDeposit : maxAmountForSwap;
+  return maxAmountForDeposit < maxAmountForSwap ? maxAmountForDeposit : maxAmountForSwap;
 }
 
 export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
   const maxPoolUsd = getMaxPoolUsdForDeposit(marketInfo, isLong);
 
-  const capacityUsd = maxPoolUsd.sub(poolUsd);
+  const capacityUsd = maxPoolUsd - poolUsd;
 
-  return capacityUsd.gt(0) ? capacityUsd : 0n;
+  return capacityUsd > 0 ? capacityUsd : 0n;
 }
 
 export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: TokenData) {
@@ -340,7 +341,7 @@ export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: Tok
   const longDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, true);
   const shortDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, false);
 
-  const mintableUsd = longDepositCapacityUsd.add(shortDepositCapacityUsd);
+  const mintableUsd = longDepositCapacityUsd + shortDepositCapacityUsd;
   const mintableAmount = usdToMarketTokenAmount(marketInfo, marketToken, mintableUsd);
 
   return {
@@ -363,10 +364,10 @@ export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: Toke
   const factor = expandDecimals(1, 8);
 
   if (
-    longPoolUsd.isZero() ||
-    shortPoolUsd.isZero() ||
-    longCollateralLiquidityUsd.isZero() ||
-    shortCollateralLiquidityUsd.isZero()
+    longPoolUsd == 0n ||
+    shortPoolUsd == 0n ||
+    longCollateralLiquidityUsd == 0n ||
+    shortCollateralLiquidityUsd == 0n
   ) {
     return {
       maxLongSellableUsd: 0n,
@@ -375,16 +376,16 @@ export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: Toke
     };
   }
 
-  const ratio = longPoolUsd.mul(factor).div(shortPoolUsd);
+  const ratio = bigMath.mulDiv(longPoolUsd, factor, shortPoolUsd);
   let maxLongSellableUsd: bigint;
   let maxShortSellableUsd: bigint;
 
-  if (shortCollateralLiquidityUsd.mul(ratio).div(factor).lte(longCollateralLiquidityUsd)) {
-    maxLongSellableUsd = shortCollateralLiquidityUsd.mul(ratio).div(factor);
+  if (bigMath.mulDiv(shortCollateralLiquidityUsd, ratio, factor) <= longCollateralLiquidityUsd) {
+    maxLongSellableUsd = bigMath.mulDiv(shortCollateralLiquidityUsd, ratio, factor);
     maxShortSellableUsd = shortCollateralLiquidityUsd;
   } else {
     maxLongSellableUsd = longCollateralLiquidityUsd;
-    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).mul(factor);
+    maxShortSellableUsd = (longCollateralLiquidityUsd / ratio) * factor;
   }
 
   const maxLongSellableAmount = usdToMarketTokenAmount(marketInfo, marketToken, maxLongSellableUsd);
@@ -395,12 +396,12 @@ export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: Toke
     maxShortSellableUsd,
     maxLongSellableAmount,
     maxShortSellableAmount,
-    totalUsd: maxLongSellableUsd.add(maxShortSellableUsd),
-    totalAmount: maxLongSellableAmount.add(maxShortSellableAmount),
+    totalUsd: maxLongSellableUsd + maxShortSellableUsd,
+    totalAmount: maxLongSellableAmount + maxShortSellableAmount,
   };
 }
 
-export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {
+export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: bigint) {
   const supply = marketToken.totalSupply!;
   const poolValue = marketInfo.poolValueMax!;
   // if the supply and poolValue is zero, use 1 USD as the token price
@@ -411,23 +412,25 @@ export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: Toke
   // if the supply is zero and the poolValue is more than zero,
   // then include the poolValue for the amount of tokens minted so that
   // the market token price after mint would be 1 USD
-  if (supply == 0n && poolValue.gt(0)) {
-    return convertToTokenAmount(usdValue.add(poolValue), marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
+  if (supply == 0n && poolValue > 0) {
+    return convertToTokenAmount(usdValue + poolValue, marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
   }
 
   if (poolValue == 0n) {
     return 0n;
   }
 
-  return supply.mul(usdValue).div(poolValue);
+  return bigMath.mulDiv(supply, usdValue, poolValue);
 }
 
-export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: TokenData, amount: BigNumber) {
+export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: TokenData, amount: bigint) {
   const supply = marketToken.totalSupply!;
   const poolValue = marketInfo.poolValueMax!;
 
   const price =
-    supply == 0n ? expandDecimals(1, USD_DECIMALS) : poolValue.mul(expandDecimals(1, marketToken.decimals)).div(supply);
+    supply == 0n
+      ? expandDecimals(1, USD_DECIMALS)
+      : bigMath.mulDiv(poolValue, expandDecimals(1, marketToken.decimals), supply);
 
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
@@ -462,8 +465,8 @@ export function getTotalGmInfo(tokensData?: TokensData) {
 
   return tokens.reduce((acc, token) => {
     const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
-    acc.balance = acc.balance.add(token.balance || 0);
-    acc.balanceUsd = acc.balanceUsd.add(balanceUsd || 0);
+    acc.balance = acc.balance + (token.balance ?? 0n);
+    acc.balanceUsd = acc.balanceUsd + (balanceUsd ?? 0n);
     return acc;
   }, defaultResult);
 }

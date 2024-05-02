@@ -5,13 +5,14 @@ import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
 import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { InfoTokens, Token } from "domain/tokens/types";
 import { getUsd } from "domain/tokens";
 import { BigNumberish } from "ethers";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { t } from "@lingui/macro";
+import { bigMath } from "lib/bigmath";
 
 type ChartToken = Token & {
   maxInUsd?: BigNumberish;
@@ -49,17 +50,18 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
         maxInUsd: 0n,
         maxOutUsd: 0n,
       };
-    const maxOut = availableAmount.gt(poolAmount.sub(bufferAmount)) ? poolAmount.sub(bufferAmount) : availableAmount;
+    const maxOut = availableAmount > poolAmount - bufferAmount ? poolAmount - bufferAmount : availableAmount;
     const maxOutUsd = getUsd(maxOut, token.address, false, infoTokens);
-    const maxInUsd = maxUsdgAmount
-      .sub(usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+    const maxInUsd = bigMath.mulDiv(
+      maxUsdgAmount - usdgAmount,
+      expandDecimals(1, USD_DECIMALS),
+      expandDecimals(1, USDG_DECIMALS)
+    );
 
     return {
       ...token,
-      maxOutUsd: maxOutUsd?.gt(0) ? maxOutUsd : 0n,
-      maxInUsd: maxInUsd?.gt(0) ? maxInUsd : 0n,
+      maxOutUsd: maxOutUsd && maxOutUsd > 0 ? maxOutUsd : 0n,
+      maxInUsd: maxInUsd && maxInUsd > 0 ? maxInUsd : 0n,
     };
   });
 }

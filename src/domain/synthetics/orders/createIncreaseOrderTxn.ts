@@ -3,7 +3,7 @@ import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
@@ -29,7 +29,7 @@ type IncreaseOrderParams = {
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   acceptablePrice: bigint;
-  triggerPrice: BigNumber | undefined;
+  triggerPrice: bigint | undefined;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: bigint;
@@ -63,8 +63,8 @@ export async function createIncreaseOrderTxn(
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
     : p.acceptablePrice;
 
-  const wntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
-  const totalWntAmount = (decreaseOrderParams || []).reduce((acc, p) => acc.add(p.executionFee), wntAmountToIncrease);
+  const wntAmountToIncrease = wntCollateralAmount + p.executionFee;
+  const totalWntAmount = (decreaseOrderParams || []).reduce((acc, p) => acc + p.executionFee, wntAmountToIncrease);
 
   const increaseOrder = {
     account: p.account,
@@ -155,7 +155,8 @@ export async function createIncreaseOrderTxn(
   }
 
   if (isMarketOrderType(p.orderType)) {
-    const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+    if (!signer.provider) throw new Error("No provider found");
+    const txnCreatedAtBlock = await signer.provider.getBlockNumber();
     const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
 
     p.setPendingPosition({

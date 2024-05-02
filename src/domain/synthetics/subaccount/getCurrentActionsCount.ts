@@ -1,7 +1,7 @@
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { SUBACCOUNT_ORDER_ACTION, subaccountActionCountKey } from "config/dataStore";
-import { BigNumber, Signer } from "ethers";
+import { Signer } from "ethers";
 import { executeMulticall } from "lib/multicall";
 
 export async function getCurrentMaxActionsCount({

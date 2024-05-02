@@ -419,7 +419,7 @@ export function PositionSeller(p: Props) {
     if (isTrigger && decreaseAmounts) {
       if (
         !defaultTriggerAcceptablePriceImpactBps ||
-        !defaultTriggerAcceptablePriceImpactBps.eq(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps))
+        defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
         setSelectedTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));

@@ -5,6 +5,7 @@ import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
 import { USD_DECIMALS } from "lib/legacy";
 import { getByKey } from "lib/objects";
+import { bigMath } from "lib/bigmath";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 
@@ -83,7 +84,8 @@ function useAcceptablePrice(
     const positionOrder = order as PositionOrderInfo;
     const initialAcceptablePrice = positionOrder.acceptablePrice;
     const initialTriggerPrice = positionOrder.triggerPrice;
-    const initialPriceDelta = initialAcceptablePrice?.sub(initialTriggerPrice || 0).abs() || 0;
+    const initialPriceDelta =
+      initialAcceptablePrice === undefined ? 0n : bigMath.abs(initialAcceptablePrice - (initialTriggerPrice ?? 0n));
     initialAcceptablePriceImpactBps = getBasisPoints(initialPriceDelta, initialTriggerPrice);
   }
 
@@ -94,7 +96,7 @@ function useAcceptablePrice(
       setAcceptablePriceImpactBps(initialAcceptablePriceImpactBps);
     }
 
-    if (initialAcceptablePriceImpactBps.eq(acceptablePriceImpactBps)) {
+    if (initialAcceptablePriceImpactBps === acceptablePriceImpactBps) {
       return;
     }
 
@@ -114,7 +116,7 @@ function useAcceptablePrice(
     } else {
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;
       acceptablePrice = applySlippageToPrice(
-        acceptablePriceImpactBps.toNumber(),
+        Number(acceptablePriceImpactBps),
         triggerPrice || initialTriggerPrice,
         order.isLong,
         isIncreaseOrderType(order.orderType)

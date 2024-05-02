@@ -1,9 +1,9 @@
 import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { FindSwapPath, SwapAmounts } from "../types";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
+import { bigMath } from "lib/bigmath";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -36,7 +36,7 @@ export function getSwapAmountsByFromValue(p: {
     swapPathStats: undefined,
   };
 
-  if (amountIn.lte(0)) {
+  if (amountIn <= 0) {
     return defaultAmounts;
   }
 
@@ -81,19 +81,16 @@ export function getSwapAmountsByFromValue(p: {
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-    usdOut = usdOut
-      .sub(swapPathStats.totalSwapFeeUsd)
-      .sub(swapUiFeeUsd)
-      .add(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    usdOut = usdOut - swapPathStats.totalSwapFeeUsd - swapUiFeeUsd + swapPathStats.totalSwapPriceImpactDeltaUsd;
     amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
     minOutputAmount = amountOut;
   } else {
-    usdOut = swapPathStats.usdOut.sub(swapUiFeeUsd);
-    amountOut = swapPathStats.amountOut.sub(swapUiFeeAmount);
+    usdOut = swapPathStats.usdOut - swapUiFeeUsd;
+    amountOut = swapPathStats.amountOut - swapUiFeeAmount;
     minOutputAmount = amountOut;
   }
 
-  if (amountOut.lt(0)) {
+  if (amountOut < 0) {
     amountOut = 0n;
     usdOut = 0n;
     minOutputAmount = 0n;
@@ -144,7 +141,7 @@ export function getSwapAmountsByToValue(p: {
     swapPathStats: undefined,
   };
 
-  if (amountOut.lte(0)) {
+  if (amountOut <= 0) {
     return defaultAmounts;
   }
 
@@ -185,16 +182,16 @@ export function getSwapAmountsByToValue(p: {
     });
 
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-    usdIn = usdIn.add(swapPathStats.totalSwapFeeUsd).add(uiFeeUsd).sub(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    usdIn = usdIn + swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapPathStats.totalSwapPriceImpactDeltaUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
-    const adjustedUsdIn = swapPathStats.usdOut.gt(0) ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut) : 0n;
+    const adjustedUsdIn = swapPathStats.usdOut > 0 ? bigMath.mulDiv(baseUsdIn, usdOut, swapPathStats.usdOut) : 0n;
 
-    usdIn = adjustedUsdIn.add(uiFeeUsd);
+    usdIn = adjustedUsdIn + uiFeeUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 
-  if (amountIn.lt(0)) {
+  if (amountIn < 0) {
     amountIn = 0n;
     usdIn = 0n;
   }

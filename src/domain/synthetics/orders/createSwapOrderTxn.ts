@@ -2,7 +2,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder } from "context/SyntheticsEvents";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
@@ -102,7 +102,7 @@ async function getParams(
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
-  const totalWntAmount = wntSwapAmount.add(p.executionFee);
+  const totalWntAmount = wntSwapAmount + p.executionFee;
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 

@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 
@@ -51,7 +51,6 @@ import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import {
   BN_ZERO,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatKeyAmount,
@@ -65,6 +64,7 @@ import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { groupBy } from "lodash";
 import AssetDropdown from "./AssetDropdown";
+import { bigMath } from "lib/bigmath";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -76,10 +76,10 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = BigInt(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
-      acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
-      acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
-      acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
+      cv.openInterest = BigInt(cv.totalLongPositionSizes) + cv.totalShortPositionSizes.toString();
+      acc.totalLongPositionSizes = acc.totalLongPositionSizes + cv.totalLongPositionSizes;
+      acc.totalShortPositionSizes = acc.totalShortPositionSizes + cv.totalShortPositionSizes;
+      acc.totalOpenInterest = acc.totalOpenInterest + cv.openInterest;
 
       acc[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
@@ -105,8 +105,8 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
       continue;
     }
 
-    const feeUsd = fees[i].mul(tokenInfo.contractMinPrice).div(expandDecimals(1, tokenInfo.decimals));
-    currentFeesUsd = currentFeesUsd.add(feeUsd);
+    const feeUsd = bigMath.mulDiv(fees[i], tokenInfo.contractMinPrice, expandDecimals(1, tokenInfo.decimals));
+    currentFeesUsd = currentFeesUsd + feeUsd;
   }
 
   return currentFeesUsd;
@@ -204,7 +204,7 @@ export default function DashboardV2() {
             ])
           )
         ).then((fees) => {
-          return fees.reduce<Record<string, BigNumber>>(
+          return fees.reduce<Record<string, bigint>>(
             (acc, cv, i) => {
               const feeUSD = getCurrentFeesUsd(
                 getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
@@ -212,7 +212,7 @@ export default function DashboardV2() {
                 ACTIVE_CHAIN_IDS[i] === ARBITRUM ? infoTokensArbitrum : infoTokensAvax
               );
               acc[ACTIVE_CHAIN_IDS[i]] = feeUSD;
-              acc.total = acc.total.add(feeUSD);
+              acc.total = acc.total + feeUSD;
               return acc;
             },
             { total: BN_ZERO }
@@ -264,7 +264,7 @@ export default function DashboardV2() {
 
   let stakedGmxSupplyUsd;
   if (gmxPrice && totalStakedGmx) {
-    stakedGmxSupplyUsd = totalStakedGmx.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
+    stakedGmxSupplyUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
   }
 
   let aum;
@@ -284,7 +284,7 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
   }
 
-  let tvl: BigNumber | undefined = undefined;
+  let tvl: bigint | undefined = undefined;
   if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
     tvl = glpMarketCap
       .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
@@ -298,10 +298,10 @@ export default function DashboardV2() {
   let totalTreasuryFundUsd;
 
   if (eth && eth.contractMinPrice && glpPrice) {
-    const ethTreasuryFundUsd = ethTreasuryFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
-    const glpTreasuryFundUsd = glpTreasuryFund.mul(glpPrice).div(expandDecimals(1, 18));
+    const ethTreasuryFundUsd = bigMath.mulDiv(ethTreasuryFund, eth.contractMinPrice, expandDecimals(1, eth.decimals));
+    const glpTreasuryFundUsd = bigMath.mulDiv(glpTreasuryFund, glpPrice, expandDecimals(1, 18));
 
-    totalTreasuryFundUsd = ethTreasuryFundUsd.add(glpTreasuryFundUsd).add(usdcTreasuryFund);
+    totalTreasuryFundUsd = ethTreasuryFundUsd + glpTreasuryFundUsd + usdcTreasuryFund;
   }
 
   let adjustedUsdgSupply = BN_ZERO;
@@ -310,7 +310,7 @@ export default function DashboardV2() {
     const token = tokenList[i];
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo && tokenInfo.usdgAmount) {
-      adjustedUsdgSupply = adjustedUsdgSupply.add(tokenInfo.usdgAmount);
+      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
     }
   }
 
@@ -403,14 +403,14 @@ export default function DashboardV2() {
 
   let stakedPercent = 0;
 
-  if (totalGmxSupply && !totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
-    stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
+  if (totalGmxSupply && totalStakedGmx) {
+    stakedPercent = Number(bigMath.mulDiv(totalStakedGmx, 100n, totalGmxSupply));
   }
 
   let liquidityPercent = 0;
 
-  if (totalGmxSupply && !totalGmxSupply.isZero() && totalGmxInLiquidity) {
-    liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
+  if (totalGmxSupply && totalGmxInLiquidity) {
+    liquidityPercent = Number(bigMath.mulDiv(totalGmxInLiquidity, 100n, totalGmxSupply));
   }
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
@@ -445,8 +445,12 @@ export default function DashboardV2() {
     const glpPool = tokenList
       .map((token) => {
         const tokenInfo = infoTokens[token.address];
-        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-          const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply > 0) {
+          const currentWeightBps = bigMath.mulDiv(
+            tokenInfo.usdgAmount,
+            BASIS_POINTS_DIVISOR_BIGINT,
+            adjustedUsdgSupply
+          );
           if (tokenInfo.isStable) {
             stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
           }
@@ -751,6 +755,7 @@ export default function DashboardV2() {
                       handle={`$${numberWithCommas(
                         sumBigNumbers(
                           totalFees?.[chainId],
+                          // TODO wat?
                           formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
                         )
                       )}`}

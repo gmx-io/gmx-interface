@@ -4,7 +4,7 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -28,7 +28,7 @@ export type DecreaseOrderParams = {
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   acceptablePrice: bigint;
-  triggerPrice: BigNumber | undefined;
+  triggerPrice: bigint | undefined;
   minOutputUsd: bigint;
   isLong: boolean;
   decreasePositionSwapType: DecreasePositionSwapType;
@@ -60,7 +60,7 @@ export async function createDecreaseOrderTxn(
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), 0n);
+  const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
   const account = ps[0].account;
   const encodedPayload = createDecreaseEncodedPayload({
     router,
@@ -108,7 +108,9 @@ export async function createDecreaseOrderTxn(
   );
 
   const txnCreatedAt = Date.now();
-  const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+
+  if (!signer.provider) throw new Error("No provider found");
+  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
@@ -160,11 +162,7 @@ export function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParam
   };
 }
 
-function getPendingPositionFromParams(
-  txnCreatedAt: number,
-  txnCreatedAtBlock: number | undefined,
-  p: DecreaseOrderParams
-) {
+function getPendingPositionFromParams(txnCreatedAt: number, txnCreatedAtBlock: number, p: DecreaseOrderParams) {
   const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
   return {
     isIncrease: false,
