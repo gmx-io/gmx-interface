@@ -55,6 +55,7 @@ export function NewSelectorBaseMobileButton(
         "NewSelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
+      type="button"
     >
       {props.children}
     </button>
@@ -156,11 +157,9 @@ function NewSelectorBaseMobile(props: Props) {
     setIsVisible((prev) => !prev);
   }, []);
 
-
-
   return (
     <>
-      <button className="SwapBox-info-dropdown NewSelectorBase-button" onClick={toggleVisibility}>
+      <button className="SwapBox-info-dropdown NewSelectorBase-button" onClick={toggleVisibility} type="button">
         {props.label}
         <BiChevronDown className="TokenSelector-caret" />
       </button>
