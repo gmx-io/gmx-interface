@@ -8,9 +8,10 @@ type Props = {
   currentLanguage: {
     current: string | undefined;
   };
+  onClose: () => void;
 };
 
-export default function LanguageModalContent({ currentLanguage }: Props) {
+export default function LanguageModalContent({ currentLanguage, onClose }: Props) {
   return (
     <>
       {Object.keys(locales).map((item) => {
@@ -25,7 +26,7 @@ export default function LanguageModalContent({ currentLanguage }: Props) {
               if (!isTestLanguage(item)) {
                 localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
               }
-              dynamicActivate(item);
+              dynamicActivate(item).then(onClose);
             }}
           >
             <div className="menu-item-group">

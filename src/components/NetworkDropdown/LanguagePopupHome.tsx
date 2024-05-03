@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t } from "@lingui/macro";
 import cx from "classnames";
@@ -12,6 +12,10 @@ import LanguageModalContent from "./LanguageModalContent";
 export default function LanguagePopupHome() {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+
+  const handleLanguageModalClose = useCallback(() => {
+    setIsLanguageModalOpen(false);
+  }, []);
 
   return (
     <>
@@ -29,7 +33,7 @@ export default function LanguagePopupHome() {
         setIsVisible={setIsLanguageModalOpen}
         label={t`Select Language`}
       >
-        <LanguageModalContent currentLanguage={currentLanguage} />
+        <LanguageModalContent currentLanguage={currentLanguage} onClose={handleLanguageModalClose} />
       </ModalWithPortal>
     </>
   );

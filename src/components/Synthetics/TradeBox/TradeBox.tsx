@@ -114,10 +114,10 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { helperToast } from "lib/helperToast";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
-import { useLingui } from "@lingui/react";
+import { useLocalizedMap } from "lib/i18n";
 import "./TradeBox.scss";
 import { bigMath } from "lib/bigmath";
-import { mapValues } from "lodash";
+
 
 export type Props = {
   allowedSlippage: number;
@@ -145,15 +145,8 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const { i18n } = useLingui();
-
-  const [localizedTradeModeLabels, localizedTradeTypeLabels] = useMemo(() => {
-    return [
-      //
-      mapValues(tradeModeLabels, (label) => i18n._(label)),
-      mapValues(tradeTypeLabels, (label) => i18n._(label)),
-    ];
-  }, [i18n]);
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const formRef = useRef<HTMLFormElement>(null);

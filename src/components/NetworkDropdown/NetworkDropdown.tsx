@@ -2,7 +2,7 @@ import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 
 import { getIcon } from "config/icons";
@@ -28,10 +28,14 @@ export default function NetworkDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  const handleLanguageModalClose = useCallback(() => {
+    setActiveModal(null);
+  }, []);
+
   function getModalContent(modalName) {
     switch (modalName) {
       case LANGUAGE_MODAL_KEY:
-        return <LanguageModalContent currentLanguage={currentLanguage} />;
+        return <LanguageModalContent currentLanguage={currentLanguage} onClose={handleLanguageModalClose} />;
       case NETWORK_MODAL_KEY:
         return (
           <NetworkModalContent
