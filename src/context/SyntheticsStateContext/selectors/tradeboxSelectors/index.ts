@@ -49,6 +49,7 @@ import { selectIsPnlInLeverage } from "../settingsSelectors";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxAvailableMarketsOptions";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;

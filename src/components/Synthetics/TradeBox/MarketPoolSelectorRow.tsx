@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 
 import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxRelatedMarketsOpenFees } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxRelatedMarketsOpenFees";
+import { selectTradeboxRelatedMarketsStats } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
 import type { Token } from "domain/tokens";
@@ -21,7 +21,7 @@ export type Props = {
 
 export function MarketPoolSelectorRow(p: Props) {
   const { selectedMarket, onSelectMarketAddress } = p;
-  const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsOpenFees);
+  const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
   const tradeType = useTradeboxTradeType();
 
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;

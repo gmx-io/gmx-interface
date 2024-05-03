@@ -18,7 +18,7 @@ import {
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { values, keyBy, fromPairs } from "lodash";
 
-export type OpenFeesForRelatedMarkets = {
+export type RelatedMarketsStats = {
   relatedMarketsPositionStats: {
     [marketTokenAddress: string]: {
       isEnoughLiquidity: boolean;
@@ -29,7 +29,7 @@ export type OpenFeesForRelatedMarkets = {
   relatedMarketStats: MarketStat[];
 };
 
-export const selectTradeboxRelatedMarketsOpenFees = createSelector((q) => {
+export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
   const tokensData = q(selectTokensData);
@@ -45,7 +45,7 @@ export const selectTradeboxRelatedMarketsOpenFees = createSelector((q) => {
     return {
       relatedMarketsPositionStats: {},
       relatedMarketStats: [],
-    } satisfies OpenFeesForRelatedMarkets;
+    } as RelatedMarketsStats;
   }
 
   const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
@@ -60,10 +60,10 @@ export const selectTradeboxRelatedMarketsOpenFees = createSelector((q) => {
     relatedMarkets.map((market) => {
       const liquidity = getAvailableUsdLiquidityForPosition(market, isLong);
       return [market.marketTokenAddress, { isEnoughLiquidity: liquidity.gt(0), liquidity, openFees: undefined }];
-    }),
+    })
   );
 
-  const result: OpenFeesForRelatedMarkets = {
+  const result: RelatedMarketsStats = {
     relatedMarketsPositionStats: defaultMarketsEnoughLiquidity,
     relatedMarketStats: relatedMarketStats,
   };
@@ -77,13 +77,13 @@ export const selectTradeboxRelatedMarketsOpenFees = createSelector((q) => {
 
       const positionFeeBeforeDiscount = getFeeItem(
         marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
-        marketIncreasePositionAmounts.sizeDeltaUsd,
+        marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
       const priceImpactDeltaUsd = getCappedPositionImpactUsd(
         relatedMarket,
         marketIncreasePositionAmounts.sizeDeltaUsd,
-        isLong,
+        isLong
       );
 
       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({

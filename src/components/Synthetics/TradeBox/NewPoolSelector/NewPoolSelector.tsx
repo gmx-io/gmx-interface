@@ -118,7 +118,7 @@ function PoolListItemDesktop({
       e.preventDefault();
       onSelect();
     },
-    [onSelect],
+    [onSelect]
   );
 
   return (
