@@ -76,10 +76,10 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = BigInt(cv.totalLongPositionSizes) + cv.totalShortPositionSizes.toString();
-      acc.totalLongPositionSizes = acc.totalLongPositionSizes + cv.totalLongPositionSizes;
-      acc.totalShortPositionSizes = acc.totalShortPositionSizes + cv.totalShortPositionSizes;
-      acc.totalOpenInterest = acc.totalOpenInterest + cv.openInterest;
+      cv.openInterest = BigInt(cv.totalLongPositionSizes) + BigInt(cv.totalShortPositionSizes);
+      acc.totalLongPositionSizes += BigInt(cv.totalLongPositionSizes);
+      acc.totalShortPositionSizes += BigInt(cv.totalShortPositionSizes);
+      acc.totalOpenInterest += cv.openInterest;
 
       acc[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
@@ -116,6 +116,7 @@ export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
+
   const arbitrumOverview = useV2Stats(ARBITRUM);
   const avalancheOverview = useV2Stats(AVALANCHE);
   const v2MarketsOverview = useMemo(
@@ -232,10 +233,13 @@ export default function DashboardV2() {
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
-      return currentFees[chainId] / expandDecimals(1, USD_DECIMALS) + (feesSummaryByChain[chainId]?.totalFees || 0);
+      return (
+        Number(currentFees[chainId]) / Number(expandDecimals(1, USD_DECIMALS)) +
+        Number(feesSummaryByChain[chainId]?.totalFees || 0)
+      );
     }
 
-    return feesSummaryByChain[chainId].totalFees || 0;
+    return Number(feesSummaryByChain[chainId].totalFees) || 0;
   })
     .map((v) => Math.round(v))
     .reduce(
@@ -645,7 +649,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        sumBigNumbers("1", currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -664,6 +668,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
+                          "2",
                           positionStatsInfo?.[chainId]?.openInterest,
                           v2MarketsOverview?.[chainId]?.openInterest
                         ),
@@ -685,6 +690,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
+                          "3",
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
@@ -706,6 +712,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
+                          "4",
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
@@ -727,7 +734,7 @@ export default function DashboardV2() {
                         position="bottom-end"
                         className="nowrap"
                         handle={`$${formatAmount(
-                          sumBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          sumBigNumbers("4", currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
                           2,
                           true
@@ -755,6 +762,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${numberWithCommas(
                         sumBigNumbers(
+                          "5",
                           totalFees?.[chainId],
                           // FIXME
                           BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
@@ -775,7 +783,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        sumBigNumbers("6", totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -793,7 +801,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={formatAmount(
-                        sumBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
+                        sumBigNumbers("7", uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
                         0,
                         0,
                         true

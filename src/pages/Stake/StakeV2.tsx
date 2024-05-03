@@ -1017,7 +1017,7 @@ function AffiliateClaimModal(props) {
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const isPrimaryEnabled = () => {
-    if (totalVesterRewards.isZero()) {
+    if (totalVesterRewards == 0) {
       return false;
     }
 
@@ -1311,6 +1311,7 @@ export default function StakeV2() {
       hasMultiplierPoints = true;
     }
   }
+
   let totalRewardTokens;
 
   if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {

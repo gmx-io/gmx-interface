@@ -51,16 +51,17 @@ export default function useFeesInfo(chainId: number) {
       });
 
       const totalPositionFees =
-        BigInt(totalFeesInfo.position.totalBorrowingFeeUsd) + totalFeesInfo.position.totalPositionFeeUsd;
+        BigInt(totalFeesInfo.position.totalBorrowingFeeUsd) + BigInt(totalFeesInfo.position.totalPositionFeeUsd);
 
-      const totalSwapFees = BigInt(totalFeesInfo.swap.totalFeeReceiverUsd) + totalFeesInfo.swap.totalFeeUsdForPool;
+      const totalSwapFees =
+        BigInt(totalFeesInfo.swap.totalFeeReceiverUsd) + BigInt(totalFeesInfo.swap.totalFeeUsdForPool);
 
       const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
-        return acc + fee.totalBorrowingFeeUsd + fee.totalPositionFeeUsd;
+        return acc + BigInt(fee.totalBorrowingFeeUsd) + BigInt(fee.totalPositionFeeUsd);
       }, 0n);
 
       const weeklySwapFees = weeklyFeesInfo.swap.reduce((acc, fee) => {
-        return acc + fee.totalFeeReceiverUsd + fee.totalFeeUsdForPool;
+        return acc + BigInt(fee.totalFeeReceiverUsd) + BigInt(fee.totalFeeUsdForPool);
       }, 0n);
 
       return {

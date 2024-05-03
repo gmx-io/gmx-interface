@@ -109,7 +109,7 @@ export const formatAmount = (
   if (!defaultValue) {
     defaultValue = "...";
   }
-  if (amount === undefined || amount.toString().length === 0) {
+  if (amount === undefined || amount === null) {
     return defaultValue;
   }
   if (displayDecimals === undefined) {
@@ -176,7 +176,7 @@ export function formatUsd(
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
-  if (!usd) {
+  if (typeof usd !== "bigint") {
     if (fallbackToZero) {
       usd = 0n;
     } else {
@@ -198,7 +198,7 @@ export function formatDeltaUsd(
   percentage?: bigint,
   opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
 ) {
-  if (!deltaUsd) {
+  if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
       return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
     }
@@ -219,7 +219,7 @@ export function formatDeltaUsd(
 export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
   const { fallbackToZero = false, signed = false } = opts;
 
-  if (!percentage) {
+  if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
       return `${formatAmount(0n, 2, 2)}%`;
     }
@@ -257,7 +257,7 @@ export function formatTokenAmount(
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
-  if (!amount || !tokenDecimals) {
+  if (typeof amount !== "bigint" || !tokenDecimals) {
     if (fallbackToZero) {
       amount = 0n;
       tokenDecimals = displayDecimals;
@@ -293,7 +293,7 @@ export function formatTokenAmountWithUsd(
     displayPlus?: boolean;
   } = {}
 ) {
-  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+  if (typeof tokenAmount !== "bigint" || typeof usdAmount !== "bigint" || !tokenSymbol || !tokenDecimals) {
     if (!opts.fallbackToZero) {
       return undefined;
     }
@@ -325,7 +325,7 @@ export const parseValue = (value: string, tokenDecimals: number) => {
 };
 
 export function numberWithCommas(x: BigNumberish) {
-  if (!x) {
+  if (x === undefined || x === null) {
     return "...";
   }
 
@@ -368,7 +368,7 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */
 export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: number; signed?: boolean }) {
-  if (!rate) {
+  if (typeof rate !== "bigint") {
     return "-";
   }
 
@@ -387,7 +387,7 @@ export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
-export function sumBigNumbers(...args: (bigint | number | undefined)[]) {
+export function sumBigNumbers(name: string, ...args: (bigint | number | undefined)[]) {
   return args.reduce<bigint>((acc, value) => acc + BigInt(value ?? 0n), 0n);
 }
 

@@ -76,10 +76,6 @@ export function useJsonRpcProvider(chainId: number) {
 
       const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
 
-      console.log("CHECK ME: should have CHECK 2");
-      await provider._waitUntilReady();
-      console.log("CHECKED!");
-
       setProvider(provider);
     }
 

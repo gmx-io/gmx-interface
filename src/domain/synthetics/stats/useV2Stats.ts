@@ -25,15 +25,15 @@ export default function useV2Stats(chainId: number): DashboardOverview {
   const stats = useMemo(() => {
     const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isDisabled);
     const totalLiquidity = allMarkets.reduce((acc, market) => {
-      return acc + market.poolValueMax;
+      return acc + BigInt(market.poolValueMax);
     }, 0n);
 
     const totalLongInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + market.longInterestUsd;
+      return acc + BigInt(market.longInterestUsd);
     }, 0n);
 
     const totalShortInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + market.shortInterestUsd;
+      return acc + BigInt(market.shortInterestUsd);
     }, 0n);
 
     return {

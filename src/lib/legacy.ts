@@ -666,7 +666,7 @@ export function calculatePositionDelta(
     sizeDelta = size;
   }
   const priceDelta = averagePrice > price ? averagePrice - price : price - averagePrice;
-  let delta = mulDiv(sizeDelta, priceDelta, averagePrice);
+  let delta = mulDiv(sizeDelta, priceDelta, averagePrice)!;
   const pendingDelta = delta;
 
   const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
@@ -994,7 +994,7 @@ export function getTotalVolumeSum(volumes) {
   let volume = 0n!;
 
   for (let i = 0; i < volumes.length; i++) {
-    volume = volume + volumes[i].data.volume;
+    volume = volume + BigInt(volumes[i].data.volume);
   }
 
   return volume;

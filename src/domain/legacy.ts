@@ -677,9 +677,9 @@ function useGmxPriceFromArbitrum(signer, active) {
         tokenA, // tokenA
         tokenB, // tokenB
         10000, // fee
-        uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
+        uniPoolSlot0.sqrtPriceX96.toString(), // sqrtRatioX96
         1, // liquidity
-        uniPoolSlot0.tick, // tickCurrent
+        Number(uniPoolSlot0.tick), // tickCurrent
         []
       );
 

@@ -1,32 +1,30 @@
-import React from "react";
-
 import useSWR from "swr";
 
 import {
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getStakingData,
   getProcessedData,
+  getStakingData,
 } from "lib/legacy";
 
-import Vault from "abis/Vault.json";
+import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
 import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
-import GlpManager from "abis/GlpManager.json";
+import Vault from "abis/Vault.json";
 
 import { useGmxPrice } from "domain/legacy";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
-import { getContract } from "config/contracts";
 import { getServerUrl } from "config/backend";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getContract } from "config/contracts";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
+import useVestingData from "domain/vesting/useVestingData";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import useVestingData from "domain/vesting/useVestingData";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 
 export default function APRLabel({ chainId, label }) {
   const { active } = useWallet();

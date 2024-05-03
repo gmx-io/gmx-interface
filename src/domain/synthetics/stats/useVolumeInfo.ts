@@ -28,10 +28,11 @@ export default function useVolumeInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
       const { hourlyVolumeInfos, totalVolumeInfos } = data;
-      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc + volumeUsd, 0n);
+      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+
       return {
         dailyVolume,
-        totalVolume: totalVolumeInfos[0].volumeUsd,
+        totalVolume: BigInt(totalVolumeInfos[0].volumeUsd),
       };
     } catch (error) {
       // eslint-disable-next-line no-console
