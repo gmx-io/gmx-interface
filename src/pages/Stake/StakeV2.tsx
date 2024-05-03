@@ -1314,12 +1314,12 @@ export default function StakeV2() {
 
   let totalRewardTokens;
 
-  if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {
+  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
     totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
   }
 
   let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
-  if (processedData?.glpBalance) {
+  if (processedData?.glpBalance !== undefined) {
     totalRewardAndLpTokens = totalRewardAndLpTokens + processedData.glpBalance;
   }
   if ((userTotalGmInfo?.balance ?? 0n) > 0) {
@@ -1329,12 +1329,12 @@ export default function StakeV2() {
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  if (totalGmxStaked && gmxPrice) {
+  if (totalGmxStaked !== undefined && gmxPrice) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply && totalGmxSupply && gmxPrice) {
+  if (totalGmxSupply !== undefined && gmxPrice) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 

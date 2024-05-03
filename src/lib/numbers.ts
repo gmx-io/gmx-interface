@@ -133,8 +133,8 @@ export const formatKeyAmount = <T extends {}>(
   displayDecimals: number,
   useCommas?: boolean
 ) => {
-  const value = map ? map[key] : undefined;
-  if (!value) {
+  const value = map ? map[key] ?? undefined : undefined;
+  if (value === undefined) {
     return "...";
   }
 
