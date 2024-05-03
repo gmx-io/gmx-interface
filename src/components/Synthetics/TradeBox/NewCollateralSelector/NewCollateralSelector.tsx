@@ -32,7 +32,7 @@ export function NewCollateralSelector(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
-    <NewSelectorBase label={props.selectedTokenSymbol} modalLabel={t`Select collateral`}>
+    <NewSelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>
       {isMobile ? <NewCollateralSelectorMobile {...props} /> : <NewCollateralSelectorDesktop {...props} />}
     </NewSelectorBase>
   );
@@ -46,7 +46,7 @@ function NewCollateralSelectorDesktop(props: Props) {
       <thead>
         <NewSelectorBaseTableHeadRow>
           <th>
-            <Trans>Token</Trans>
+            <Trans>Collateral In</Trans>
           </th>
         </NewSelectorBaseTableHeadRow>
       </thead>

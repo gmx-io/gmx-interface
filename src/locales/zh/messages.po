@@ -1151,6 +1151,8 @@ msgstr "抵押品({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Collateral In"
 msgstr "抵押品进入"
 
@@ -4781,10 +4783,6 @@ msgstr ""
 msgid "Select an option"
 msgstr "选择一个方案"
 
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-msgid "Select collateral"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -5809,10 +5807,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "为了减少费用，请选择不同的资产来支付"
-
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-msgid "Token"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"

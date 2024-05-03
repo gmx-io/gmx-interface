@@ -1151,6 +1151,8 @@ msgstr "Garantía ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Collateral In"
 msgstr "Garantía En"
 
@@ -4781,10 +4783,6 @@ msgstr ""
 msgid "Select an option"
 msgstr "Seleccionar una opción"
 
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-msgid "Select collateral"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -5809,10 +5807,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "Para reducir las comisiones, seleccione un activo diferente con el que pagar."
-
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-msgid "Token"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
