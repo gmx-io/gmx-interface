@@ -1,16 +1,15 @@
-import { useCallback, useRef, useState } from "react";
-import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import { isHomeSite } from "lib/legacy";
-import { defaultLocale } from "lib/i18n";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { useCallback, useState } from "react";
+import ModalWithPortal from "../Modal/ModalWithPortal";
 import LanguageModalContent from "./LanguageModalContent";
+import "./NetworkDropdown.css";
 
 export default function LanguagePopupHome() {
-  const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
+  const currentLanguage = useLingui().i18n.locale;
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
 
   const handleLanguageModalClose = useCallback(() => {

@@ -1,13 +1,10 @@
 import { dynamicActivate, isTestLanguage, locales } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import cx from "classnames";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import checkedIcon from "img/ic_checked.svg";
 
 type Props = {
-  currentLanguage: {
-    current: string | undefined;
-  };
+  currentLanguage: string | undefined;
   onClose: () => void;
 };
 
@@ -20,12 +17,9 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
           <div
             key={item}
             className={cx("network-dropdown-menu-item  menu-item language-modal-item", {
-              active: currentLanguage.current === item,
+              active: currentLanguage === item,
             })}
             onClick={() => {
-              if (!isTestLanguage(item)) {
-                localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
-              }
               dynamicActivate(item).then(onClose);
             }}
           >
@@ -36,7 +30,7 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
               <span className="language-item">{locales[item]}</span>
             </div>
             <div className="network-dropdown-menu-item-img">
-              {currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}
+              {currentLanguage === item && <img src={checkedIcon} alt={locales[item]} />}
             </div>
           </div>
         );
