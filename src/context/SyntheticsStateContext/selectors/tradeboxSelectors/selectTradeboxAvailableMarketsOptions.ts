@@ -228,7 +228,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
   return result;
 });
 
-function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
+export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);

@@ -2,11 +2,10 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 
 import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxRelatedMarketsOpenFees } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxRelatedMarketsOpenFees";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
-import { EMPTY_OBJECT } from "lib/objects";
+import { type MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
+import type { Token } from "domain/tokens";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
@@ -22,8 +21,7 @@ export type Props = {
 
 export function MarketPoolSelectorRow(p: Props) {
   const { selectedMarket, onSelectMarketAddress } = p;
-  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
-  const { availableMarketsOpenFees, availableIndexTokenStat } = marketsOptions || {};
+  const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsOpenFees);
   const tradeType = useTradeboxTradeType();
 
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
@@ -37,9 +35,9 @@ export function MarketPoolSelectorRow(p: Props) {
           <>
             <NewPoolSelector
               selectedPoolName={poolName}
-              options={availableIndexTokenStat?.marketsStats}
+              options={relatedMarketStats}
               tradeType={tradeType}
-              openFees={availableMarketsOpenFees || EMPTY_OBJECT}
+              positionStats={relatedMarketsPositionStats}
               onSelect={onSelectMarketAddress}
             />
           </>

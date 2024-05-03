@@ -26,7 +26,13 @@ import "./NewPoolSelector.scss";
 type Props = {
   selectedPoolName: string | undefined;
   options: MarketStat[] | undefined;
-  openFees: { [marketTokenAddress: string]: BigNumber | undefined };
+  positionStats: {
+    [marketTokenAddress: string]: {
+      isEnoughLiquidity: boolean;
+      liquidity: BigNumber;
+      openFees: BigNumber | undefined;
+    };
+  };
   tradeType: TradeType;
   onSelect: (marketAddress: string) => void;
 };
@@ -43,6 +49,7 @@ export function NewPoolSelector(props: Props) {
 
 function NewPoolSelectorDesktop(props: Props) {
   const close = useNewSelectorClose();
+  const isLong = props.tradeType === TradeType.Long;
 
   return (
     <table className="NewPoolSelector-table">
@@ -51,9 +58,7 @@ function NewPoolSelectorDesktop(props: Props) {
           <th>
             <Trans>Pool</Trans>
           </th>
-          <th>
-            <Trans>Liquidity</Trans>
-          </th>
+          <th>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</th>
           <th>
             <Trans>Net Rate</Trans>
           </th>
@@ -68,7 +73,9 @@ function NewPoolSelectorDesktop(props: Props) {
             key={option.marketInfo.marketTokenAddress}
             marketStat={option}
             tradeType={props.tradeType}
-            openFees={props.openFees[option.marketInfo.marketTokenAddress]}
+            openFees={props.positionStats[option.marketInfo.marketTokenAddress].openFees}
+            isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
+            liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
             onSelect={() => {
               props.onSelect(option.marketInfo.marketTokenAddress);
               close();
@@ -84,21 +91,25 @@ function PoolListItemDesktop({
   marketStat,
   tradeType,
   openFees,
+  isEnoughLiquidity,
+  liquidity,
   onSelect,
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
   openFees: BigNumber | undefined;
+  isEnoughLiquidity: boolean;
+  liquidity: BigNumber;
   onSelect: () => void;
 }) {
+  const isLong = tradeType === TradeType.Long;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
   const poolName = getMarketPoolName(marketStat.marketInfo);
-  const formattedLiquidity = formatUsd(marketStat.maxLiquidity);
-  const formattedNetRate = formatRatePercentage(
-    tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort
-  );
-  const netRateState = numberToState(tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort);
+  const formattedLiquidity = formatUsd(liquidity);
+
+  const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
+  const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
   const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
   const openFeesState = numberToState(openFees);
   const handleClick = useCallback(
@@ -107,7 +118,7 @@ function PoolListItemDesktop({
       e.preventDefault();
       onSelect();
     },
-    [onSelect]
+    [onSelect],
   );
 
   return (
@@ -133,7 +144,13 @@ function PoolListItemDesktop({
         </div>
         <div>{poolName}</div>
       </td>
-      <td>{formattedLiquidity}</td>
+      <td
+        className={cx({
+          "text-red": !isEnoughLiquidity,
+        })}
+      >
+        {formattedLiquidity}
+      </td>
       <td
         className={cx({
           "text-red": netRateState === "error",
@@ -164,7 +181,9 @@ function NewPoolSelectorMobile(props: Props) {
           key={option.marketInfo.marketTokenAddress}
           marketStat={option}
           tradeType={props.tradeType}
-          openFees={props.openFees[option.marketInfo.marketTokenAddress]}
+          openFees={props.positionStats[option.marketInfo.marketTokenAddress].openFees}
+          isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
+          liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
           onSelect={() => {
             props.onSelect(option.marketInfo.marketTokenAddress);
             close();
@@ -179,21 +198,25 @@ function PoolListItemMobile({
   marketStat,
   tradeType,
   openFees,
+  isEnoughLiquidity,
+  liquidity,
   onSelect,
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
   openFees: BigNumber | undefined;
+  isEnoughLiquidity: boolean;
+  liquidity: BigNumber;
   onSelect: () => void;
 }) {
+  const isLong = tradeType === TradeType.Long;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
   const poolName = getMarketPoolName(marketStat.marketInfo);
-  const formattedLiquidity = formatUsd(marketStat.maxLiquidity);
-  const formattedNetRate = formatRatePercentage(
-    tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort
-  );
-  const netRateState = numberToState(tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort);
+  const formattedLiquidity = formatUsd(liquidity);
+  const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
+
+  const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
   const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
   const openFeesState = numberToState(openFees);
 
@@ -221,10 +244,14 @@ function PoolListItemMobile({
         <div>{poolName}</div>
       </div>
       <dl className="NewPoolSelector-mobile-info">
-        <dt>
-          <Trans>Liquidity</Trans>
-        </dt>
-        <dd>{formattedLiquidity}</dd>
+        <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>
+        <dd
+          className={cx({
+            "text-red": !isEnoughLiquidity,
+          })}
+        >
+          {formattedLiquidity}
+        </dd>
         <dt>
           <Trans>Net Rate</Trans>
         </dt>

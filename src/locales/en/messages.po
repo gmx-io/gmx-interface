@@ -3048,8 +3048,6 @@ msgid "Liquidation price would cross mark price."
 msgstr "Liquidation price would cross mark price."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 msgid "Liquidity"
 msgstr "Liquidity"
 
@@ -3146,6 +3144,11 @@ msgstr "Long"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Long Collateral"
 msgstr "Long Collateral"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Long Liq."
+msgstr "Long Liq."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
@@ -5006,6 +5009,11 @@ msgstr "Short"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
 msgstr "Short Collateral"
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Short Liq."
+msgstr "Short Liq."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"

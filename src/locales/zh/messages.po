@@ -3045,8 +3045,6 @@ msgid "Liquidation price would cross mark price."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 msgid "Liquidity"
 msgstr "流动性"
 
@@ -3142,6 +3140,11 @@ msgstr "做多"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Long Collateral"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Long Liq."
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
@@ -5002,6 +5005,11 @@ msgstr "做空"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+msgid "Short Liq."
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
