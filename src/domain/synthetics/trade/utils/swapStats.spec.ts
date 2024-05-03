@@ -48,7 +48,7 @@ describe("getSwapPathOutputAddresses", () => {
     });
   });
 
-  it("increase, pay native, collateral unrelated, swap empty", () => {
+  it("increase, pay native, collateral unrelated", () => {
     const input: Input = {
       marketsInfoData: mockMarketsInfoData,
       swapPath: [marketA],
