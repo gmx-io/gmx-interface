@@ -17,10 +17,6 @@
 .StakeModal .Modal-body {
   font-size: var(--font-base);
 }
-.StakeModal .StakeModal-delegate {
-  margin-top: 1.6rem;
-  margin-bottom: 1.6rem;
-}
 
 .Stake-warning {
   text-align: center;
@@ -35,4 +31,14 @@
 
 .DelegateGMXAlertInfo {
   text-wrap: wrap;
+
+  a {
+    color: var(--warning-yellow);
+    opacity: 0.7;
+
+    &:hover {
+      color: var(--warning-yellow);
+      opacity: 1;
+    }
+  }
 }

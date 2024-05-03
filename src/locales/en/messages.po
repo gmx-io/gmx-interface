@@ -76,6 +76,14 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Claimable Funding Fee.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
+msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before staking.</1>"
+msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before staking.</1>"
+
+#: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
 msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
 
@@ -1599,8 +1607,12 @@ msgid "Delegate"
 msgstr "Delegate"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Delegated to:"
-msgstr "Delegated to:"
+msgid "Delegated to"
+msgstr "Delegated to"
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "Delegated to:"
+#~ msgstr "Delegated to:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -6222,8 +6234,12 @@ msgstr "Unstake submitted! <0>View status.</0>"
 #~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
-msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.tsx

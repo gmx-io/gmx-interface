@@ -4,6 +4,7 @@ import { contractFetcher } from "lib/contracts";
 import { getContract } from "config/contracts";
 import GovToken from "abis/GovToken.json";
 import useWallet from "lib/wallets/useWallet";
+import { BigNumber } from "ethers";
 
 export function useGovTokenAmount(chainId: number) {
   let govTokenAddress;
@@ -16,12 +17,12 @@ export function useGovTokenAmount(chainId: number) {
 
   const { account } = useWallet();
 
-  const { data: govTokenAmount } = useSWR(
+  const { data: govTokenAmount, isLoading } = useSWR(
     govTokenAddress && [`GovTokenAmount:${chainId}`, chainId, govTokenAddress, "balanceOf", account],
     {
       fetcher: contractFetcher(undefined, GovToken),
     }
   );
 
-  return govTokenAmount;
+  return !isLoading && !govTokenAmount ? BigNumber.from(0) : govTokenAmount;
 }
