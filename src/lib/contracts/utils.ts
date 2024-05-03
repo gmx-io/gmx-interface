@@ -36,8 +36,8 @@ export async function getGasLimit(contract: Contract, method, params: any[] = []
 
   let gasLimit = await contract.estimateGas[method](...params, { value });
 
-  if (gasLimit.lt(22000)) {
-    gasLimit = bigNumberify(22000)!;
+  if (gasLimit < 22000) {
+    gasLimit = 22000n;
   }
 
   return (gasLimit * 11n) / 10n; // add a 10% buffer

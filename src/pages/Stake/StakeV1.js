@@ -138,16 +138,17 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     return {};
   }
 
-  // const gmtPrice = pairData.gmtUsdg.balance1.mul(PRECISION).div(pairData.gmtUsdg.balance0)
   const xgmtPrice =
-    pairData.xgmtUsdg.balance0 == 0n ? 0n : pairData.xgmtUsdg.balance1.mul(PRECISION).div(pairData.xgmtUsdg.balance0);
+    pairData.xgmtUsdg.balance0 == 0n
+      ? 0n
+      : bigMath.mulDiv(pairData.xgmtUsdg.balance1, PRECISION, pairData.xgmtUsdg.balance0);
   const gmtUsdgPrice =
-    supplyData.gmtUsdg == 0n ? 0n : pairData.gmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.gmtUsdg);
+    supplyData.gmtUsdg == 0n ? 0n : bigMath.mulDiv(pairData.gmtUsdg.balance1 * PRECISION, 2n, supplyData.gmtUsdg);
   const xgmtUsdgPrice =
-    supplyData.xgmtUsdg == 0n ? 0n : pairData.xgmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.xgmtUsdg);
-  const bnbPrice = pairData.bnbBusd.balance1.mul(PRECISION).div(pairData.bnbBusd.balance0);
+    supplyData.xgmtUsdg == 0n ? 0n : bigMath.mulDiv(pairData.xgmtUsdg.balance1 * PRECISION, 2n, supplyData.xgmtUsdg);
+  const bnbPrice = bigMath.mulDiv(pairData.bnbBusd.balance1, PRECISION, pairData.bnbBusd.balance0);
   const autoUsdgPrice =
-    supplyData.autoUsdg == 0n ? 0n : pairData.autoUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.autoUsdg);
+    supplyData.autoUsdg == 0n ? 0n : bigMath.mulDiv(pairData.autoUsdg.balance1 * PRECISION, 2n, supplyData.autoUsdg);
 
   const usdgAnnualRewardsUsd = bigMath.mulDiv(
     stakingData.usdg.tokensPerInterval * bnbPrice,
@@ -170,7 +171,7 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     HOURS_PER_YEAR,
     expandDecimals(1, 18)
   );
-  const gmtUsdgTotalAnnualRewardsUsd = gmtUsdgAnnualRewardsXmgtUsd.add(gmtUsdgAnnualRewardsNativeUsd);
+  const gmtUsdgTotalAnnualRewardsUsd = gmtUsdgAnnualRewardsXmgtUsd + gmtUsdgAnnualRewardsNativeUsd;
 
   const xgmtUsdgAnnualRewardsXmgtUsd = bigMath.mulDiv(
     stakingData.xgmtUsdgFarmXgmt.tokensPerInterval * xgmtPrice,
@@ -182,7 +183,7 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     HOURS_PER_YEAR,
     expandDecimals(1, 18)
   );
-  const xgmtUsdgTotalAnnualRewardsUsd = xgmtUsdgAnnualRewardsXmgtUsd.add(xgmtUsdgAnnualRewardsNativeUsd);
+  const xgmtUsdgTotalAnnualRewardsUsd = xgmtUsdgAnnualRewardsXmgtUsd + xgmtUsdgAnnualRewardsNativeUsd;
 
   const autoUsdgAnnualRewardsXgmtUsd = bigMath.mulDiv(
     stakingData.autoUsdgFarmXgmt.tokensPerInterval * xgmtPrice,
@@ -194,7 +195,7 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     HOURS_PER_YEAR,
     expandDecimals(1, 18)
   );
-  const autoUsdgTotalAnnualRewardsUsd = autoUsdgAnnualRewardsXgmtUsd.add(autoUsdgAnnualRewardsNativeUsd);
+  const autoUsdgTotalAnnualRewardsUsd = autoUsdgAnnualRewardsXgmtUsd + autoUsdgAnnualRewardsNativeUsd;
 
   const data = {};
   data.usdgBalance = balanceData.usdg;
@@ -1004,7 +1005,7 @@ export default function StakeV1() {
               <div>
                 {hasFeeDistribution &&
                   processedData.gmtUsdgNativeRewards &&
-                  processedData.gmtUsdgNativeRewards.gt(0) &&
+                  processedData.gmtUsdgNativeRewards > 0 &&
                   `${formatKeyAmount(processedData, "gmtUsdgNativeRewards", 18, 8, true)} WBNB, `}
                 {formatKeyAmount(processedData, "gmtUsdgXgmtRewards", 18, 4, true)} xGMT
               </div>
@@ -1086,7 +1087,7 @@ export default function StakeV1() {
               <div>
                 {hasFeeDistribution &&
                   processedData.xgmtUsdgNativeRewards &&
-                  processedData.xgmtUsdgNativeRewards.gt(0) &&
+                  processedData.xgmtUsdgNativeRewards > 0 &&
                   `${formatKeyAmount(processedData, "xgmtUsdgNativeRewards", 18, 8, true)} WBNB, `}
                 {formatKeyAmount(processedData, "xgmtUsdgXgmtRewards", 18, 4, true)} xGMT
               </div>

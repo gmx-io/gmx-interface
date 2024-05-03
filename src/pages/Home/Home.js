@@ -62,10 +62,10 @@ export default function Home({ showRedirectModal }) {
 
   let totalVolumeSum = 0n;
   if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
-    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum);
-    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum);
-    totalVolumeSum = totalVolumeSum.add(arbV2Stats.totalVolume);
-    totalVolumeSum = totalVolumeSum.add(avaxV2Stats.totalVolume);
+    totalVolumeSum = totalVolumeSum + arbitrumTotalVolumeSum;
+    totalVolumeSum = totalVolumeSum + avalancheTotalVolumeSum;
+    totalVolumeSum = totalVolumeSum + arbV2Stats.totalVolume;
+    totalVolumeSum = totalVolumeSum + avaxV2Stats.totalVolume;
   }
 
   // Open Interest
@@ -76,8 +76,8 @@ export default function Home({ showRedirectModal }) {
     arbitrumPositionStats.totalLongPositionSizes &&
     arbitrumPositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes);
-    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes);
+    openInterest = openInterest + arbitrumPositionStats.totalLongPositionSizes;
+    openInterest = openInterest + arbitrumPositionStats.totalShortPositionSizes;
   }
 
   if (
@@ -85,13 +85,13 @@ export default function Home({ showRedirectModal }) {
     avalanchePositionStats.totalLongPositionSizes &&
     avalanchePositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes);
-    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes);
+    openInterest = openInterest + avalanchePositionStats.totalLongPositionSizes;
+    openInterest = openInterest + avalanchePositionStats.totalShortPositionSizes;
   }
 
   if (arbV2Stats && avaxV2Stats) {
-    openInterest = openInterest.add(arbV2Stats.openInterest);
-    openInterest = openInterest.add(avaxV2Stats.openInterest);
+    openInterest = openInterest + arbV2Stats.openInterest;
+    openInterest = openInterest + avaxV2Stats.openInterest;
   }
 
   // user stat
@@ -108,7 +108,7 @@ export default function Home({ showRedirectModal }) {
   }
 
   if (arbV2Stats && avaxV2Stats) {
-    totalUsers = bigNumberify(totalUsers).add(arbV2Stats.totalUsers).add(avaxV2Stats.totalUsers).toNumber();
+    totalUsers = Number(bigNumberify(totalUsers) + arbV2Stats.totalUsers + avaxV2Stats.totalUsers);
   }
 
   const LaunchExchangeButton = () => {

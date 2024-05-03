@@ -15,7 +15,7 @@ import {
   USD_DECIMALS,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -83,6 +83,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { bigMath } from "lib/bigmath";
 
 const { ZeroAddress } = ethers;
 
@@ -295,7 +296,7 @@ export default function GlpSwap(props) {
 
   const stakingData = getStakingData(stakingInfo);
 
-  const redemptionTime = lastPurchaseTime ? lastPurchaseTime.add(GLP_COOLDOWN_DURATION) : undefined;
+  const redemptionTime = lastPurchaseTime ? lastPurchaseTime + GLP_COOLDOWN_DURATION : undefined;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
   const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : 0n;
@@ -306,22 +307,22 @@ export default function GlpSwap(props) {
   }
   const glpPrice =
     aum && aum > 0 && glpSupply > 0
-      ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
+      ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
       : expandDecimals(1, USD_DECIMALS);
   let glpBalanceUsd;
   if (glpBalance) {
-    glpBalanceUsd = glpBalance.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+    glpBalanceUsd = bigMath.mulDiv(glpBalance, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
-  const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  const glpSupplyUsd = bigMath.mulDiv(glpSupply, glpPrice, expandDecimals(1, GLP_DECIMALS));
 
   let reserveAmountUsd;
   if (reservedAmount) {
-    reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+    reserveAmountUsd = bigMath.mulDiv(reservedAmount, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
 
   let maxSellAmount = glpBalance;
   if (glpBalance && reservedAmount) {
-    maxSellAmount = glpBalance.sub(reservedAmount);
+    maxSellAmount = glpBalance - reservedAmount;
   }
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
@@ -338,7 +339,8 @@ export default function GlpSwap(props) {
     isBuying && swapTokenAddress !== ZeroAddress && tokenAllowance && swapAmount && swapAmount > tokenAllowance;
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
-  const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
+  const glpUsdMax =
+    glpAmount && glpPrice ? bigMath.mulDiv(glpAmount, glpPrice, expandDecimals(1, GLP_DECIMALS)) : undefined;
 
   const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
@@ -382,12 +384,13 @@ export default function GlpSwap(props) {
     glpSupplyUsd &&
     glpSupplyUsd > 0
   ) {
-    feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval
-      .mul(SECONDS_PER_YEAR)
-      .mul(nativeToken.minPrice)
-      .div(expandDecimals(1, 18));
-    feeGlpTrackerApr = feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(glpSupplyUsd);
-    totalApr = totalApr.add(feeGlpTrackerApr);
+    feeGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
+      stakingData.feeGlpTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR),
+      nativeToken.minPrice,
+      expandDecimals(1, 18)
+    );
+    feeGlpTrackerApr = bigMath.mulDiv(feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, glpSupplyUsd);
+    totalApr = totalApr + feeGlpTrackerApr;
   }
 
   let stakedGlpTrackerAnnualRewardsUsd;
@@ -401,12 +404,13 @@ export default function GlpSwap(props) {
     glpSupplyUsd &&
     glpSupplyUsd > 0
   ) {
-    stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval
-      .mul(SECONDS_PER_YEAR)
-      .mul(gmxPrice)
-      .div(expandDecimals(1, 18));
-    stakedGlpTrackerApr = stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(glpSupplyUsd);
-    totalApr = totalApr.add(stakedGlpTrackerApr);
+    stakedGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
+      stakingData.stakedGlpTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR),
+      gmxPrice,
+      expandDecimals(1, 18)
+    );
+    stakedGlpTrackerApr = bigMath.mulDiv(stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, glpSupplyUsd);
+    totalApr = totalApr + stakedGlpTrackerApr;
   }
 
   useEffect(() => {
@@ -552,7 +556,7 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
+      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance - (minResidualAmount || 0n) : swapTokenBalance;
       if (maxAvailableAmount?.isNegative()) {
         maxAvailableAmount = 0n;
       }
@@ -611,7 +615,7 @@ export default function GlpSwap(props) {
 
       if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS);
-        const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount);
+        const nextUsdgAmount = swapTokenInfo.usdgAmount + usdgFromAmount;
         if (swapTokenInfo.maxUsdgAmount > 0 && nextUsdgAmount > swapTokenInfo.maxUsdgAmount) {
           return [t`${swapTokenInfo.symbol} pool exceeded, try different token`, true];
         }
@@ -717,7 +721,7 @@ export default function GlpSwap(props) {
   const buyGlp = () => {
     setIsSubmitting(true);
 
-    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
+    const minGlp = bigMath.mulDiv(glpAmount, BASIS_POINTS_DIVISOR - savedAllowedSlippage, BASIS_POINTS_DIVISOR_BIGINT);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
@@ -743,7 +747,7 @@ export default function GlpSwap(props) {
   const sellGlp = () => {
     setIsSubmitting(true);
 
-    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
+    const minOut = bigMath.mulDiv(swapAmount, BASIS_POINTS_DIVISOR - savedAllowedSlippage, BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
@@ -836,7 +840,7 @@ export default function GlpSwap(props) {
     if (!incentiveStats?.migration?.isActive) return;
 
     const feeFactor = basisPointsToFloat(BigInt(feeBasisPoints));
-    const glpUsdMaxNegative = glpUsdMax?.mul(-1);
+    const glpUsdMaxNegative = glpUsdMax === undefined ? undefined : -glpUsdMax;
     const feeItem =
       glpUsdMax &&
       getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
@@ -845,7 +849,7 @@ export default function GlpSwap(props) {
     const rebateBasisPoints = basisPointsToFloat(
       BigInt(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
     );
-    const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
+    const maxRebateUsd = glpUsdMax && applyFactor(bigMath.abs(glpUsdMax), rebateBasisPoints);
     const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
 
     return (
@@ -1320,30 +1324,33 @@ export default function GlpSwap(props) {
               }
               let availableAmountUsd;
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
-                availableAmountUsd = tokenInfo.availableAmount
-                  .mul(tokenInfo.minPrice)
-                  .div(expandDecimals(1, token.decimals));
+                availableAmountUsd = bigMath.mulDiv(
+                  tokenInfo.availableAmount,
+                  tokenInfo.minPrice,
+                  expandDecimals(1, token.decimals)
+                );
               }
               let balanceUsd;
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
-                balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
+                balanceUsd = bigMath.mulDiv(tokenInfo.balance, tokenInfo.minPrice, expandDecimals(1, token.decimals));
               }
               let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
 
               let amountLeftToDeposit = 0n;
               if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
-                amountLeftToDeposit = tokenInfo.maxUsdgAmount
-                  .sub(tokenInfo.usdgAmount)
-                  .mul(expandDecimals(1, USD_DECIMALS))
-                  .div(expandDecimals(1, USDG_DECIMALS));
+                amountLeftToDeposit = bigMath.mulDiv(
+                  tokenInfo.maxUsdgAmount - tokenInfo.usdgAmount,
+                  expandDecimals(1, USD_DECIMALS),
+                  expandDecimals(1, USDG_DECIMALS)
+                );
               }
-              if (amountLeftToDeposit.lt(0)) {
+              if (amountLeftToDeposit < 0) {
                 amountLeftToDeposit = 0n;
               }
               function renderFees() {
                 const swapUrl = `https://app.1inch.io/#/${chainId}/swap/`;
                 switch (true) {
-                  case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                  case (isBuying && isCapReached) || (!isBuying && managedUsd !== undefined && managedUsd < 1):
                     return (
                       <Tooltip
                         handle="NA"
@@ -1397,7 +1404,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                            amountLeftToDeposit && amountLeftToDeposit < 0
                               ? "$0.00"
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
@@ -1412,7 +1419,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            availableAmountUsd && availableAmountUsd.lt(0)
+                            availableAmountUsd && availableAmountUsd < 0
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
@@ -1474,23 +1481,26 @@ export default function GlpSwap(props) {
             }
             let availableAmountUsd;
             if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
-              availableAmountUsd = tokenInfo.availableAmount
-                .mul(tokenInfo.minPrice)
-                .div(expandDecimals(1, token.decimals));
+              availableAmountUsd = bigMath.mulDiv(
+                tokenInfo.availableAmount,
+                tokenInfo.minPrice,
+                expandDecimals(1, token.decimals)
+              );
             }
             let balanceUsd;
             if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
-              balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
+              balanceUsd = bigMath.mulDiv(tokenInfo.balance, tokenInfo.minPrice, expandDecimals(1, token.decimals));
             }
 
             let amountLeftToDeposit = 0n;
             if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
-              amountLeftToDeposit = tokenInfo.maxUsdgAmount
-                .sub(tokenInfo.usdgAmount)
-                .mul(expandDecimals(1, USD_DECIMALS))
-                .div(expandDecimals(1, USDG_DECIMALS));
+              amountLeftToDeposit = bigMath.mulDiv(
+                tokenInfo.maxUsdgAmount - tokenInfo.usdgAmount,
+                expandDecimals(1, USD_DECIMALS),
+                expandDecimals(1, USDG_DECIMALS)
+              );
             }
-            if (amountLeftToDeposit.lt(0)) {
+            if (amountLeftToDeposit < 0) {
               amountLeftToDeposit = 0n;
             }
             let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
@@ -1578,7 +1588,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            availableAmountUsd && availableAmountUsd.lt(0)
+                            availableAmountUsd && availableAmountUsd < 0
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }

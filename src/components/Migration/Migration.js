@@ -29,6 +29,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { bigMath } from "lib/bigmath";
 
 const { MaxUint256, ZeroAddress } = ethers;
 
@@ -130,13 +131,13 @@ function MigrationModal(props) {
   let totalAmountUsd;
 
   if (amount) {
-    baseAmount = amount.mul(token.price).div(gmxPrice);
-    bonusAmount = baseAmount.mul(token.bonus).div(100);
-    totalAmount = baseAmount.add(bonusAmount);
+    baseAmount = bigMath.mulDiv(amount, token.price, gmxPrice);
+    bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100);
+    totalAmount = baseAmount + bonusAmount;
 
-    baseAmountUsd = baseAmount.mul(gmxPrice);
-    bonusAmountUsd = bonusAmount.mul(gmxPrice);
-    totalAmountUsd = totalAmount.mul(gmxPrice);
+    baseAmountUsd = baseAmount * gmxPrice;
+    bonusAmountUsd = bonusAmount * gmxPrice;
+    totalAmountUsd = totalAmount * gmxPrice;
   }
 
   const getError = () => {
@@ -350,11 +351,11 @@ export default function Migration() {
     totalMigratedGmx = 0n;
 
     for (let i = 0; i < iouBalances.length / 2; i++) {
-      gmxBalance = gmxBalance.add(iouBalances[i * 2]);
-      totalMigratedGmx = totalMigratedGmx.add(iouBalances[i * 2 + 1]);
+      gmxBalance = gmxBalance + iouBalances[i * 2];
+      totalMigratedGmx = totalMigratedGmx + iouBalances[i * 2 + 1];
     }
 
-    totalMigratedUsd = totalMigratedGmx.mul(gmxPrice);
+    totalMigratedUsd = totalMigratedGmx * gmxPrice;
   }
 
   useEffect(() => {
@@ -408,7 +409,7 @@ export default function Migration() {
       <div className="Migration-cards">
         {tokens.map((token, index) => {
           const { cap, price, bonus } = token;
-          const hasCap = cap.lt(MaxUint256);
+          const hasCap = cap < MaxUint256;
           return (
             <div className={cx("border", "App-card", { primary: index === 0 })} key={index}>
               <div className="Stake-card-title App-card-title">{token.name}</div>

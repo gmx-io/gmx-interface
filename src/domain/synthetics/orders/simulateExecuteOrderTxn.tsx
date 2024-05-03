@@ -37,7 +37,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
 
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
-  const nextNonce = nonce.add(1);
+  const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(

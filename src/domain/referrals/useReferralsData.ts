@@ -127,13 +127,13 @@ export default function useReferralsData(account) {
           function getCumulativeStats(data: any[] = []) {
             return data.reduce(
               (acc, cv) => {
-                acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
-                acc.volume = acc.volume.add(cv.volume);
-                acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
+                acc.totalRebateUsd = acc.totalRebateUsd + cv.totalRebateUsd;
+                acc.volume = acc.volume + cv.volume;
+                acc.discountUsd = acc.discountUsd + cv.discountUsd;
                 acc.trades = acc.trades + cv.trades;
                 acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
                 acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
-                acc.affiliateRebates = acc.totalRebateUsd.sub(acc.discountUsd);
+                acc.affiliateRebates = acc.totalRebateUsd - acc.discountUsd;
                 return acc;
               },
               {
@@ -175,12 +175,13 @@ export default function useReferralsData(account) {
       const { cumulativeStats = {}, referralTotalStats = {} } = currentValue;
 
       accumulator.total.registeredReferralsCount += cumulativeStats.registeredReferralsCount || 0;
-      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(cumulativeStats.volume || 0);
-      accumulator.total.affiliateRebates = accumulator.total.affiliateRebates
-        .add(cumulativeStats.totalRebateUsd || 0)
-        .sub(cumulativeStats.discountUsd || 0);
-      accumulator.total.discountUsd = accumulator.total.discountUsd.add(referralTotalStats.discountUsd || 0);
-      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(referralTotalStats.volume || 0);
+      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume + (cumulativeStats.volume || 0n);
+      accumulator.total.affiliateRebates =
+        accumulator.total.affiliateRebates +
+        (cumulativeStats.totalRebateUsd || 0n) -
+        (cumulativeStats.discountUsd || 0n);
+      accumulator.total.discountUsd = accumulator.total.discountUsd + (referralTotalStats.discountUsd || 0n);
+      accumulator.total.tradersVolume = accumulator.total.tradersVolume + (referralTotalStats.volume || 0n);
 
       return accumulator;
     }

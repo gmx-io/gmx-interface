@@ -188,7 +188,7 @@ export default function TokenSelector(props: Props) {
             if (showMintingCap && mintingCap && info.usdgAmount) {
               mintAmount = mintingCap - info.usdgAmount;
             }
-            if (mintAmount && mintAmount.lt(0)) {
+            if (mintAmount && mintAmount < 0) {
               mintAmount = 0n;
             }
             let balanceUsd: bigint | undefined = undefined;

@@ -166,8 +166,10 @@ export default function OrdersOverview() {
                 markExchangeRate = getExchangeRate(fromToken, toToken);
                 prefix =
                   (order.triggerAboveThreshold && !invert) || (!order.triggerAboveThreshold && invert) ? "> " : "< ";
-                shouldExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio);
-                nearExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio.mul(100).div(NEAR_TRESHOLD));
+                shouldExecute = markExchangeRate && markExchangeRate < order.triggerRatio;
+                nearExecute =
+                  markExchangeRate &&
+                  markExchangeRate < bigMath.mulDiv(order.triggerRatio, 100n, BigInt(NEAR_TRESHOLD));
 
                 if (markExchangeRate) {
                   const diff =

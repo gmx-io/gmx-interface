@@ -116,7 +116,6 @@ export function SettleAccruedFundingFeeModal({
           swapPath: [],
           sizeDeltaUsd: 0n,
           sizeDeltaInTokens: 0n,
-          // acceptablePrice: position.isLong ? BigInt(2).pow(256).sub(1) : 0n,
           acceptablePrice: position.isLong ? 2n ** 256n - 1n : 0n,
           triggerPrice: undefined,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,

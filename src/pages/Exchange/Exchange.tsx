@@ -125,11 +125,11 @@ function applyPendingChanges(position, pendingPositions) {
     pendingPositions[key].updatedAt + PENDING_POSITION_VALID_DURATION > Date.now()
   ) {
     const { pendingChanges } = pendingPositions[key];
-    if (pendingChanges.size && position.size.eq(pendingChanges.size)) {
+    if (pendingChanges.size && position.size == pendingChanges.size) {
       return;
     }
 
-    if (pendingChanges.expectingCollateralChange && !position.collateral.eq(pendingChanges.collateralSnapshot)) {
+    if (pendingChanges.expectingCollateralChange && !position.collateral == pendingChanges.collateralSnapshot) {
       return;
     }
 

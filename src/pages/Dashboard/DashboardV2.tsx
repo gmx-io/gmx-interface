@@ -232,7 +232,7 @@ export default function DashboardV2() {
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
-      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId]?.totalFees || 0);
+      return currentFees[chainId] / expandDecimals(1, USD_DECIMALS) + (feesSummaryByChain[chainId]?.totalFees || 0);
     }
 
     return feesSummaryByChain[chainId].totalFees || 0;
@@ -328,7 +328,6 @@ export default function DashboardV2() {
 
     const currentWeightBps = bigMath.mulDiv(tokenInfo.usdgAmount, BASIS_POINTS_DIVISOR_BIGINT, adjustedUsdgSupply);
     const targetWeightBps =
-      // use add(1).div(10).mul(10) to round numbers up
       ((bigMath.mulDiv(tokenInfo.weight, BASIS_POINTS_DIVISOR_BIGINT, totalTokenWeights) + 1n) / 10n) * 10n;
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(

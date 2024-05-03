@@ -60,7 +60,7 @@ export function getVestingDataV2(vestingInfo) {
     data[key + "PairAmount"] = data[key].pairAmount;
     data[key + "VestedAmount"] = data[key].vestedAmount;
     data[key + "EscrowedBalance"] = data[key].escrowedBalance;
-    data[key + "ClaimSum"] = data[key].claimedAmounts.add(data[key].claimable);
+    data[key + "ClaimSum"] = data[key].claimedAmounts + data[key].claimable;
     data[key + "Claimable"] = data[key].claimable;
     data[key + "MaxVestableAmount"] = data[key].maxVestableAmount;
     data[key + "CombinedAverageStakedAmount"] = data[key].combinedAverageStakedAmount;
@@ -83,7 +83,7 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
 
   const ratioMultiplier = 10000;
   const maxVestableAmount = vestingDataItem.maxVestableAmount;
-  const nextMaxVestableEsGmx = maxVestableAmount.add(amount);
+  const nextMaxVestableEsGmx = maxVestableAmount + amount;
 
   const combinedAverageStakedAmount = vestingDataItem.combinedAverageStakedAmount;
   if (maxVestableAmount > 0) {

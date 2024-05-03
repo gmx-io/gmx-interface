@@ -30,7 +30,7 @@ import {
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 import useSWR from "swr";
 
@@ -249,7 +249,7 @@ function UnstakeModal(props) {
 
   if (
     multiplierPointsAmount &&
-    multiplierPointsAmount.gt(0) &&
+    multiplierPointsAmount > 0 &&
     amount &&
     amount > 0 &&
     bonusGmxInFeeGmx &&
@@ -336,12 +336,12 @@ function UnstakeModal(props) {
             {unstakingTokenSymbol}
           </div>
         </BuyInputSection>
-        {reservedAmount && reservedAmount.gt(0) && (
+        {reservedAmount && reservedAmount > 0 && (
           <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && amount && amount < maxAmount && (
+        {burnAmount > 0 && unstakeBonusLostPercentage > 0 && amount && amount < maxAmount && (
           <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
@@ -395,7 +395,7 @@ function VesterDepositModal(props) {
 
   let nextDepositAmount = vestedAmount;
   if (amount) {
-    nextDepositAmount = vestedAmount.add(amount);
+    nextDepositAmount = vestedAmount + amount;
   }
 
   let additionalReserveAmount = 0n;
@@ -730,7 +730,7 @@ function CompoundModal(props) {
     }
   );
 
-  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
+  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards > tokenAllowance;
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !isCompounding;
@@ -1271,12 +1271,12 @@ export default function StakeV2() {
 
   let esGmxSupplyUsd;
   if (esGmxSupply && gmxPrice) {
-    esGmxSupplyUsd = esGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+    esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
@@ -1300,7 +1300,7 @@ export default function StakeV2() {
     stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
-    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
+    maxBoostBasicPoints === undefined ? undefined : maxBoostBasicPoints / BASIS_POINTS_DIVISOR_BIGINT
   );
 
   let hasMultiplierPoints = false;
@@ -1345,11 +1345,11 @@ export default function StakeV2() {
     multiplierPointsAmount &&
     processedData?.bonusGmxInFeeGmx
   ) {
-    const availableTokens = totalRewardTokens.sub(vestingData.gmxVesterPairAmount);
+    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount.add(stakedTokens);
-    if (divisor.gt(0)) {
-      maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
+    const divisor = multiplierPointsAmount + stakedTokens;
+    if (divisor > 0) {
+      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
     }
   }
 
@@ -1607,7 +1607,7 @@ export default function StakeV2() {
   }, []);
 
   let earnMsg;
-  if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
+  if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
     let gmxAmountStr;
     if (processedData?.gmxInStakedGmx && processedData.gmxInStakedGmx > 0) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";

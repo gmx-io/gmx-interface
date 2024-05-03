@@ -235,9 +235,9 @@ export default function ConfirmationBox(props) {
     if (isSwap) return [];
     return existingTriggerOrders.filter((order) => {
       if (order.triggerAboveThreshold) {
-        return existingPosition?.markPrice.gte(order.triggerPrice);
+        return existingPosition?.markPrice >= order.triggerPrice;
       } else {
-        return existingPosition?.markPrice.lte(order.triggerPrice);
+        return existingPosition?.markPrice <= order.triggerPrice;
       }
     });
   }, [existingPosition, existingTriggerOrders, isSwap]);

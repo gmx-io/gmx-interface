@@ -337,7 +337,7 @@ export function getSellGlpToAmount(
 
   // in the Vault contract, the USDG supply is reduced before the fee basis points
   // is calculated
-  usdgSupply = usdgSupply.sub(usdgAmount);
+  usdgSupply = usdgSupply - usdgAmount;
 
   // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
   // is calculated
@@ -1461,15 +1461,15 @@ export function getOrderError(account, order, positionsMap, position) {
   if (!positionForOrder) {
     return t`No open position, order cannot be executed unless a position is opened`;
   }
-  if (positionForOrder.size.lt(order.sizeDelta)) {
+  if (positionForOrder.size < order.sizeDelta) {
     return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
   if (positionForOrder.size > order.sizeDelta) {
-    if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
+    if (positionForOrder.size - order.sizeDelta < positionForOrder.collateral - order.collateralDelta) {
       return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
-    if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
+    if (positionForOrder.size - order.sizeDelta < expandDecimals(5, USD_DECIMALS)) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
@@ -1485,14 +1485,16 @@ export function shouldShowRedirectModal(timestamp?: number): boolean {
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
 }
 
-function mulDiv(a: bigint | number, b: bigint | number, c: bigint | number) {
+function mulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | number) {
+  if (a === undefined) return undefined;
   a = BigInt(a);
   b = BigInt(b);
   c = BigInt(c);
   return (a * b) / c;
 }
 
-function mulMulDiv(a: bigint | number, b: bigint | number, c: bigint | number, d: bigint | number) {
+function mulMulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | number, d: bigint | number) {
+  if (a === undefined) return undefined;
   a = BigInt(a);
   b = BigInt(b);
   c = BigInt(c);

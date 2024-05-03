@@ -21,7 +21,7 @@ import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
 import { getContract } from "config/contracts";
 import { getServerUrl } from "config/backend";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -125,7 +125,7 @@ export default function APRLabel({ chainId, label }) {
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = aums[0] + aums[1] / 2n;
   }
 
   const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances);
@@ -144,7 +144,7 @@ export default function APRLabel({ chainId, label }) {
     stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
-    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
+    maxBoostBasicPoints / BASIS_POINTS_DIVISOR_BIGINT
   );
 
   return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;

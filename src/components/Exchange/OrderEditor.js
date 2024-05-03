@@ -177,18 +177,18 @@ export default function OrderEditor(props) {
     if ((!triggerRatio || triggerRatio == 0n) && (!triggerPrice || triggerPrice == 0n)) {
       return t`Enter Price`;
     }
-    if (order.type === SWAP && triggerRatio.eq(order.triggerRatio)) {
+    if (order.type === SWAP && triggerRatio == order.triggerRatio) {
       return t`Enter new Price`;
     }
-    if (order.type !== SWAP && triggerPrice.eq(order.triggerPrice)) {
+    if (order.type !== SWAP && triggerPrice == order.triggerPrice) {
       return t`Enter new Price`;
     }
     if (position) {
       if (order.type === DECREASE) {
-        if (position.isLong && triggerPrice.lte(liquidationPrice)) {
+        if (position.isLong && triggerPrice <= liquidationPrice) {
           return t`Price below Liq. Price`;
         }
-        if (!position.isLong && triggerPrice.gte(liquidationPrice)) {
+        if (!position.isLong && triggerPrice >= liquidationPrice) {
           return t`Price above Liq. Price`;
         }
       }
@@ -210,7 +210,7 @@ export default function OrderEditor(props) {
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate && !currentRate.gte(triggerRatio)) {
+      if (currentRate && !currentRate >= triggerRatio) {
         return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
       }
     }
@@ -265,7 +265,7 @@ export default function OrderEditor(props) {
         </BuyInputSection>
 
         <ExchangeInfoRow label={t`Price`}>
-          {triggerPrice && !triggerPrice.eq(order.triggerPrice) ? (
+          {triggerPrice && triggerPrice != order.triggerPrice ? (
             <>
               <span className="muted">
                 {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
@@ -331,7 +331,7 @@ export default function OrderEditor(props) {
         })()}
       </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
-        {triggerRatio && !triggerRatio.eq(order.triggerRatio) ? (
+        {triggerRatio && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
@@ -345,11 +345,11 @@ export default function OrderEditor(props) {
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label={t`Price`}>
-        {triggerRatio && !triggerRatio == 0n && !triggerRatio.eq(order.triggerRatio) ? (
+        {triggerRatio && !triggerRatio == 0n && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">
               {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-                omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio),
+                omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
               })}
             </span>
             &nbsp;
@@ -359,7 +359,7 @@ export default function OrderEditor(props) {
           </>
         ) : (
           getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-            omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio),
+            omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
           })
         )}
       </ExchangeInfoRow>

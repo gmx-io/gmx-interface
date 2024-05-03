@@ -187,7 +187,7 @@ export function useAllPositions(chainId, signer) {
           };
           position.fundingFee = await contract.getFundingFee(collateralToken, position.size, position.entryFundingRate);
           position.marginFee = position.size / 1000n;
-          position.fee = position.fundingFee.add(position.marginFee);
+          position.fee = position.fundingFee + position.marginFee;
 
           const THRESHOLD = 5000;
           const collateralDiffPercent = bigMath.mulDiv(position.fee, 10000n, position.collateral);
@@ -468,7 +468,7 @@ export function useStakedGmxSupply(signer, active) {
 
   let data;
   if (arbData && avaxData) {
-    data = arbData.add(avaxData);
+    data = arbData + avaxData;
   }
 
   const mutate = () => {
@@ -727,7 +727,7 @@ export async function createSwapOrder(
 
   if (path[0] === ZeroAddress) {
     shouldWrap = true;
-    opts.value = opts.value.add(amountIn);
+    opts.value = opts.value + amountIn;
   }
   if (path[path.length - 1] === ZeroAddress) {
     shouldUnwrap = true;
@@ -782,7 +782,7 @@ export async function createIncreaseOrder(
   ];
 
   if (!opts.value) {
-    opts.value = fromETH ? amountIn.add(executionFee) : executionFee;
+    opts.value = fromETH ? amountIn + executionFee : executionFee;
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook");

@@ -174,8 +174,8 @@ export default function PositionEditor(props) {
       }
 
       nextCollateral = isDeposit
-        ? position.collateralAfterFee.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
+        ? position.collateralAfterFee + collateralDelta
+        : position.collateralAfterFee - collateralDelta;
 
       nextLeverage = getLeverage({
         size: position.size,
@@ -214,7 +214,7 @@ export default function PositionEditor(props) {
       return [t`Enter an amount`];
     }
 
-    if (fromAmount.lte(0)) {
+    if (fromAmount <= 0) {
       return [t`Amount should be greater than zero`];
     }
 
@@ -233,7 +233,7 @@ export default function PositionEditor(props) {
       }
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl < 1.1 * BASIS_POINTS_DIVISOR) {
       return [t`Min leverage: 1.1x`];
     }
 
@@ -358,7 +358,7 @@ export default function PositionEditor(props) {
     let value = minExecutionFee;
     if (collateralTokenAddress === ZeroAddress) {
       method = "createIncreasePositionETH";
-      value = fromAmount.add(minExecutionFee);
+      value = fromAmount + minExecutionFee;
       params = [
         path, // _path
         indexTokenAddress, // _indexToken
