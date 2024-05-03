@@ -1,5 +1,4 @@
 import { i18n } from "@lingui/core";
-import { en as plurals } from "make-plural/plurals";
 import { formatPositionMessage } from "./utils/position";
 import { formatSwapMessage } from "./utils/swap";
 import {
@@ -20,7 +19,6 @@ import {
   withdraw1Usd,
 } from "./mocks";
 
-i18n.loadLocaleData({ en: { plurals } });
 i18n.load({ en: {} });
 i18n.activate("en");
 

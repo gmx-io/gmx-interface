@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
@@ -100,13 +100,13 @@ type Props = {
 };
 
 const OPERATION_LABELS = {
-  [Operation.Deposit]: /*i18n*/ "Buy GM",
-  [Operation.Withdrawal]: /*i18n*/ "Sell GM",
+  [Operation.Deposit]: msg`Buy GM`,
+  [Operation.Withdrawal]: msg`Sell GM`,
 };
 
 const MODE_LABELS = {
-  [Mode.Single]: /*i18n*/ "Single",
-  [Mode.Pair]: /*i18n*/ "Pair",
+  [Mode.Single]: msg`Single`,
+  [Mode.Pair]: msg`Pair`,
 };
 
 export function GmSwapBox(p: Props) {

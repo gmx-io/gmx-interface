@@ -1,4 +1,7 @@
-import { t, Trans } from "@lingui/macro";
+import { MessageDescriptor } from "@lingui/core";
+import { msg, t, Trans } from "@lingui/macro";
+import { Trans as TransReact } from "@lingui/react";
+import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
@@ -21,14 +24,16 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 const INCENTIVE_TYPE_MAP = {
-  1001: t`GM Airdrop`,
-  1002: t`GLP to GM Airdrop`,
-  1003: t`TRADING Airdrop`,
+  1001: msg`GM Airdrop`,
+  1002: msg`GLP to GM Airdrop`,
+  1003: msg`TRADING Airdrop`,
 };
 
-const INCENTIVE_TOOLTIP_MAP = {
-  2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
-  2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
+const INCENTIVE_TOOLTIP_MAP: {
+  [typeId: number]: { link: string; text: MessageDescriptor };
+} = {
+  2001: { link: "/competitions/march_13-20_2024", text: msg`EIP-4844, 13-20 Mar` },
+  2002: { link: "/competitions/march_20-27_2024", text: msg`EIP-4844, 20-27 Mar` },
 };
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
@@ -128,9 +133,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
+  const { i18n } = useLingui();
 
   const isCompetition = typeId >= 2000 && typeId < 3000;
-  const typeStr = isCompetition ? t`COMPETITION Airdrop` : INCENTIVE_TYPE_MAP[typeId];
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : i18n._(INCENTIVE_TYPE_MAP[typeId]);
   const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
 
   const renderTotalTooltipContent = useCallback(() => {
@@ -149,7 +155,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     () =>
       tooltipData ? (
         <Link className="link-underline" to={tooltipData.link}>
-          {tooltipData.text}
+          <TransReact id={tooltipData.text.id} />
         </Link>
       ) : null,
     [tooltipData]

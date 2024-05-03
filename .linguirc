@@ -26,6 +26,6 @@
     "default": "en"
   },
   "format": "po",
-  "orderBy": "origin",
+  "orderBy": "messageId",
   "pseudoLocale": "pseudo"
 }

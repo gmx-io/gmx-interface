@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -86,6 +86,7 @@ import { useKey } from "react-use";
 import "./PositionEditor.scss";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 export type Props = {
   allowedSlippage: number;
@@ -98,8 +99,8 @@ enum Operation {
 }
 
 const OPERATION_LABELS = {
-  [Operation.Deposit]: t`Deposit`,
-  [Operation.Withdraw]: t`Withdraw`,
+  [Operation.Deposit]: msg`Deposit`,
+  [Operation.Withdraw]: msg`Withdraw`,
 };
 
 export function PositionEditor(p: Props) {
@@ -117,6 +118,7 @@ export function PositionEditor(p: Props) {
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
+  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -551,7 +553,7 @@ export function PositionEditor(p: Props) {
       disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
     >
-      {error || OPERATION_LABELS[operation]}
+      {error || localizedOperationLabels[operation]}
     </Button>
   );
   const button = errorTooltipContent ? (
@@ -585,7 +587,7 @@ export function PositionEditor(p: Props) {
               onChange={setOperation}
               option={operation}
               options={Object.values(Operation)}
-              optionLabels={OPERATION_LABELS}
+              optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
             <SubaccountNavigationButton
@@ -596,7 +598,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={OPERATION_LABELS[operation]}
+              topLeftLabel={localizedOperationLabels[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={
@@ -656,7 +658,7 @@ export function PositionEditor(p: Props) {
             >
               {availableSwapTokens ? (
                 <TokenSelector
-                  label={OPERATION_LABELS[operation]}
+                  label={localizedOperationLabels[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
                   onSelectToken={(token) => setSelectedCollateralAddress(token.address)}

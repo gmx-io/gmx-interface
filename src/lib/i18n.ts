@@ -1,7 +1,9 @@
-import { i18n } from "@lingui/core";
-import { en, es, zh, ko, ru, ja, fr, de } from "make-plural/plurals";
+import { MessageDescriptor, i18n } from "@lingui/core";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isDevelopment } from "config/env";
+import { mapValues } from "lodash";
+import { useLingui } from "@lingui/react";
+import { useMemo } from "react";
 
 // uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {
@@ -18,18 +20,6 @@ export const locales = {
 
 export const defaultLocale = "en";
 
-i18n.loadLocaleData({
-  en: { plurals: en },
-  es: { plurals: es },
-  zh: { plurals: zh },
-  ko: { plurals: ko },
-  ru: { plurals: ru },
-  ja: { plurals: ja },
-  fr: { plurals: fr },
-  de: { plurals: de },
-  ...(isDevelopment() && { pseudo: { plurals: en } }),
-});
-
 export function isTestLanguage(locale: string) {
   return locale === "pseudo";
 }
@@ -41,4 +31,9 @@ export async function dynamicActivate(locale: string) {
   }
   i18n.load(locale, messages);
   i18n.activate(locale);
+}
+
+export function useLocalizedMap<T extends Record<string, MessageDescriptor>>(map: T): Record<keyof T, string> {
+  const { i18n } = useLingui();
+  return useMemo(() => mapValues(map, (value) => i18n._(value)), [i18n, map]);
 }

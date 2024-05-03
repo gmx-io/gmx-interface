@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, msg } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -69,6 +69,7 @@ import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
 import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -76,8 +77,8 @@ const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 const ORDER_OPTION_LABELS = {
-  [MARKET]: t`Market`,
-  [STOP]: t`Trigger`,
+  [MARKET]: msg`Market`,
+  [STOP]: msg`Trigger`,
 };
 
 function applySpread(amount, spread) {
@@ -232,6 +233,7 @@ export default function PositionSeller(props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
   const submitButtonRef = useRef(null);
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -1084,7 +1086,7 @@ export default function PositionSeller(props) {
             <Tab
               options={ORDER_OPTIONS}
               option={orderOption}
-              optionLabels={ORDER_OPTION_LABELS}
+              optionLabels={localizedOrderOptionLabels}
               onChange={onOrderOptionChange}
             />
           )}

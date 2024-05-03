@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
@@ -86,6 +86,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
 import "./PositionSeller.scss";
+import { useLocalizedMap } from "lib/i18n";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -94,8 +95,8 @@ export type Props = {
 };
 
 const ORDER_OPTION_LABELS = {
-  [OrderOption.Market]: t`Market`,
-  [OrderOption.Trigger]: t`TP/SL`,
+  [OrderOption.Market]: msg`Market`,
+  [OrderOption.Trigger]: msg`TP/SL`,
 };
 
 export function PositionSeller(p: Props) {
@@ -120,6 +121,7 @@ export function PositionSeller(p: Props) {
   const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   const isVisible = Boolean(position);
 
@@ -677,7 +679,7 @@ export function PositionSeller(p: Props) {
         <Tab
           options={Object.values(OrderOption)}
           option={orderOption}
-          optionLabels={ORDER_OPTION_LABELS}
+          optionLabels={localizedOrderOptionLabels}
           onChange={setOrderOption}
         />
         <SubaccountNavigationButton
