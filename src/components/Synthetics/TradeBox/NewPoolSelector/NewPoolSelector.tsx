@@ -99,7 +99,7 @@ function PoolListItemDesktop({
     tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort
   );
   const netRateState = numberToState(tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort);
-  const formattedOpenFees = openFees ? formatPercentage(openFees, { signed: true }) : "-";
+  const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
   const openFeesState = numberToState(openFees);
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -194,7 +194,7 @@ function PoolListItemMobile({
     tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort
   );
   const netRateState = numberToState(tradeType === TradeType.Long ? marketStat.netFeeLong : marketStat.netFeeShort);
-  const formattedOpenFees = openFees ? formatPercentage(openFees, { signed: true }) : "-";
+  const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
   const openFeesState = numberToState(openFees);
 
   return (

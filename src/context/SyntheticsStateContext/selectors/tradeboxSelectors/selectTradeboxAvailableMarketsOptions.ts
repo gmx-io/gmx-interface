@@ -188,38 +188,40 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  for (const liquidMarket of liquidMarkets) {
-    const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
-    if (!marketIncreasePositionAmounts) {
-      continue;
-    }
+  if (increaseSizeUsd?.gt(0)) {
+    for (const liquidMarket of liquidMarkets) {
+      const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
+      if (!marketIncreasePositionAmounts) {
+        continue;
+      }
 
-    const positionFeeBeforeDiscount = getFeeItem(
-      marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
-      marketIncreasePositionAmounts.sizeDeltaUsd
-    );
+      const positionFeeBeforeDiscount = getFeeItem(
+        marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+        marketIncreasePositionAmounts.sizeDeltaUsd
+      );
 
-    const priceImpactDeltaUsd = getCappedPositionImpactUsd(
-      liquidMarket,
-      marketIncreasePositionAmounts.sizeDeltaUsd,
-      isLong
-    );
+      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
+        liquidMarket,
+        marketIncreasePositionAmounts.sizeDeltaUsd,
+        isLong
+      );
 
-    const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
-      isIncrease: true,
-      isLong,
-      indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
-      priceImpactDeltaUsd: priceImpactDeltaUsd,
-      sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
-    });
+      const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
+        isIncrease: true,
+        isLong,
+        indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+        priceImpactDeltaUsd: priceImpactDeltaUsd,
+        sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
+      });
 
-    const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+      const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
 
-    result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
+      result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
 
-    if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
-      result.minOpenFeesBps = openFees;
-      result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
+      if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
+        result.minOpenFeesBps = openFees;
+        result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
+      }
     }
   }
 
