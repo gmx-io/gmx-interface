@@ -14,7 +14,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -47,7 +47,7 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
     })
     .map((order) => {
       order.error = getOrderError(account, order, undefined, position);
-      if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
+      if (order.type === DECREASE && order.sizeDelta > position.size) {
         order.error = t`Order size is bigger than position, will only be executable if position increases`;
       }
       return order;
@@ -123,7 +123,10 @@ export default function PositionsList(props) {
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
   const positivePercentage = positionToShare?.hasProfitAfterFees;
-  const pnlAfterFeesPercentageSigned = positionToShare?.deltaPercentageAfterFees.mul(positivePercentage ? 1 : -1);
+  const pnlAfterFeesPercentageSigned =
+    positionToShare?.deltaPercentageAfterFees === undefined
+      ? undefined
+      : positionToShare.deltaPercentageAfterFees * (positivePercentage ? 1n : -1n);
 
   return (
     <div className="PositionsList">
@@ -245,10 +248,8 @@ export default function PositionsList(props) {
               const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
               let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
-                const borrowFeeRate = position.collateralToken.fundingRate
-                  .mul(position.size)
-                  .mul(24)
-                  .div(FUNDING_RATE_PRECISION);
+                const borrowFeeRate =
+                  (position.collateralToken.fundingRate * position.size * 24n) / FUNDING_RATE_PRECISION;
                 borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
               }
 
@@ -292,8 +293,8 @@ export default function PositionsList(props) {
                         <div>
                           <span
                             className={cx("Exchange-list-info-label Position-pnl", {
-                              positive: hasPositionProfit && positionDelta.gt(0),
-                              negative: !hasPositionProfit && positionDelta.gt(0),
+                              positive: hasPositionProfit && positionDelta > 0,
+                              negative: !hasPositionProfit && positionDelta > 0,
                               muted: positionDelta == 0n,
                             })}
                             onClick={openSettings}
@@ -519,10 +520,8 @@ export default function PositionsList(props) {
             const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
             let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
-              const borrowFeeRate = position.collateralToken.fundingRate
-                .mul(position.size)
-                .mul(24)
-                .div(FUNDING_RATE_PRECISION);
+              const borrowFeeRate =
+                (position.collateralToken.fundingRate * position.size * 24n) / FUNDING_RATE_PRECISION;
               borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
             }
 
@@ -588,8 +587,8 @@ export default function PositionsList(props) {
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
-                        positive: hasPositionProfit && positionDelta.gt(0),
-                        negative: !hasPositionProfit && positionDelta.gt(0),
+                        positive: hasPositionProfit && positionDelta > 0,
+                        negative: !hasPositionProfit && positionDelta > 0,
                         muted: positionDelta == 0n,
                       })}
                       onClick={openSettings}

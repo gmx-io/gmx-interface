@@ -407,8 +407,12 @@ export function getOrderErrors(p: {
     const triggerPrice = (order as PositionOrderInfo).triggerPrice;
 
     const isInvalidTriggerPrice = position.isLong
-      ? position.liquidationPrice?.gt(triggerPrice)
-      : position.liquidationPrice?.lt(triggerPrice);
+      ? position.liquidationPrice === undefined
+        ? undefined
+        : position.liquidationPrice > triggerPrice
+      : position.liquidationPrice === undefined
+      ? undefined
+      : position.liquidationPrice < triggerPrice;
 
     if (isInvalidTriggerPrice) {
       errors.push({

@@ -235,7 +235,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
-                      return acc.add(amount);
+                      return acc + amount;
                     }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);

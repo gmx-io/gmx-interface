@@ -125,17 +125,17 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance && gmxStaked && gmxStaked.gt(gmxAllowance);
+  const needApproval = gmxAllowance && gmxStaked && gmxStaked > gmxAllowance;
 
-  const hasVestedGmx = gmxVesterBalance?.gt(0);
-  const hasVestedGlp = glpVesterBalance?.gt(0);
-  const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
+  const hasVestedGmx = gmxVesterBalance > 0;
+  const hasVestedGlp = glpVesterBalance > 0;
+  const hasVestedAffiliate = affiliateVesterBalance > 0;
   const hasStakedGmx =
-    (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0));
+    (cumulativeGmxRewards && cumulativeGmxRewards > 0) ||
+    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards > 0);
   const hasStakedGlp =
-    (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0));
+    (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
+    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0);
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.ZeroAddress;
 
   const getError = () => {

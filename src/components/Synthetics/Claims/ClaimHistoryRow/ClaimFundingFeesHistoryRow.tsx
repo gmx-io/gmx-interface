@@ -134,7 +134,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
             showDollar={false}
             value={
               <>
-                {longTokenAmount.gt(0) && (
+                {longTokenAmount > 0 && (
                   <div>
                     {formatTokenAmountWithUsd(
                       longTokenAmount,
@@ -145,7 +145,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   </div>
                 )}
 
-                {shortTokenAmount.gt(0) && (
+                {shortTokenAmount > 0 && (
                   <div>
                     {formatTokenAmountWithUsd(
                       shortTokenAmount,

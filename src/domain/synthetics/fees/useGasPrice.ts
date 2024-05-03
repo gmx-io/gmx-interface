@@ -1,12 +1,11 @@
 import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { bigMath } from "lib/bigmath";
 import { getProvider } from "lib/rpc";
-import useWallet from "lib/wallets/useWallet";
 import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
-  const { signer } = useWallet();
   const settings = useSettings();
 
   const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
@@ -16,7 +15,7 @@ export function useGasPrice(chainId: number) {
     {
       fetcher: () => {
         return new Promise<bigint | undefined>(async (resolve, reject) => {
-          const provider = getProvider(signer, chainId);
+          const provider = getProvider(undefined, chainId);
 
           if (!provider) {
             resolve(undefined);
@@ -24,25 +23,28 @@ export function useGasPrice(chainId: number) {
           }
 
           try {
-            let gasPrice = await provider.getGasPrice();
+            const feeData = await provider.getFeeData();
+            let gasPrice = feeData.gasPrice ?? 0n;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-              const feeData = await provider.getFeeData();
-
               // the wallet provider might not return maxPriorityFeePerGas in feeData
               // in which case we should fallback to the usual getGasPrice flow handled below
               if (feeData && feeData.maxPriorityFeePerGas) {
-                gasPrice = gasPrice.add(feeData.maxPriorityFeePerGas);
+                gasPrice = gasPrice + feeData.maxPriorityFeePerGas;
               }
             }
 
             if (settings.executionFeeBufferBps) {
-              const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
-              gasPrice = gasPrice.add(buffer);
+              const buffer = bigMath.mulDiv(
+                gasPrice,
+                BigInt(settings.executionFeeBufferBps),
+                BASIS_POINTS_DIVISOR_BIGINT
+              );
+              gasPrice = gasPrice + buffer;
             }
             const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
 
-            resolve(gasPrice.add(premium));
+            resolve(gasPrice + premium);
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error(e);
@@ -53,5 +55,5 @@ export function useGasPrice(chainId: number) {
     }
   );
 
-  return gasPrice;
+  return gasPrice === undefined ? undefined : BigInt(gasPrice);
 }

@@ -67,11 +67,12 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
+import { bigMath } from "lib/bigmath";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
-const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
+const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 const ORDER_OPTION_LABELS = {
   [MARKET]: t`Market`,
@@ -82,7 +83,7 @@ function applySpread(amount, spread) {
   if (!amount || !spread) {
     return amount;
   }
-  return amount.sub(amount.mul(spread).div(PRECISION));
+  return amount - bigMath.mulDiv(amount, spread, PRECISION);
 }
 
 /*
@@ -108,23 +109,23 @@ function calculateNextCollateralAndReceiveUsd(
     nextCollateral = collateral;
 
     if (hasProfit) {
-      receiveUsd = receiveUsd.add(adjustedDelta);
+      receiveUsd = receiveUsd + adjustedDelta;
     } else {
-      nextCollateral = nextCollateral.sub(adjustedDelta);
+      nextCollateral = nextCollateral - adjustedDelta;
     }
 
-    if (collateralDelta && collateralDelta.gt(0)) {
-      receiveUsd = receiveUsd.add(collateralDelta);
-      nextCollateral = nextCollateral.sub(collateralDelta);
+    if (collateralDelta && collateralDelta > 0) {
+      receiveUsd = receiveUsd + collateralDelta;
+      nextCollateral = nextCollateral - collateralDelta;
     }
     if (isClosing) {
-      receiveUsd = receiveUsd.add(nextCollateral);
+      receiveUsd = receiveUsd + nextCollateral;
       nextCollateral = 0n;
     }
-    if (receiveUsd.gt(totalFees)) {
-      receiveUsd = receiveUsd.sub(totalFees);
+    if (receiveUsd > totalFees) {
+      receiveUsd = receiveUsd - totalFees;
     } else {
-      nextCollateral = nextCollateral.sub(totalFees);
+      nextCollateral = nextCollateral - totalFees;
     }
   }
 
@@ -159,21 +160,23 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
     maxInUsd = 0n;
     maxIn = 0n;
   } else {
-    maxInUsd = fromInfo.maxUsdgAmount
-      .sub(fromInfo.usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+    maxInUsd = bigMath.mulDiv(
+      fromInfo.maxUsdgAmount - fromInfo.usdgAmount,
+      expandDecimals(1, USD_DECIMALS),
+      expandDecimals(1, USDG_DECIMALS)
+    );
 
-    maxIn = maxInUsd.mul(expandDecimals(1, fromInfo.decimals)).div(fromInfo.maxPrice).toString();
+    maxIn = bigMath.mulDiv(maxInUsd, expandDecimals(1, fromInfo.decimals), fromInfo.maxPrice).toString();
   }
 
   if (!toInfo?.poolAmount || !toInfo?.bufferAmount) {
     maxOut = 0n;
     maxOutUsd = 0n;
   } else {
-    maxOut = toInfo.availableAmount.gt(toInfo.poolAmount.sub(toInfo.bufferAmount))
-      ? toInfo.poolAmount.sub(toInfo.bufferAmount)
-      : toInfo.availableAmount;
+    maxOut =
+      toInfo.availableAmount > toInfo.poolAmount - toInfo.bufferAmount
+        ? toInfo.poolAmount - toInfo.bufferAmount
+        : toInfo.availableAmount;
 
     maxOutUsd = getUsd(maxOut, toInfo.address, false, infoTokens);
   }
@@ -305,7 +308,7 @@ export default function PositionSeller(props) {
 
       // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
       if (orderOption === STOP) {
-        const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
+        const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue;
       }
 
@@ -436,15 +439,14 @@ export default function PositionSeller(props) {
 
     totalFees = totalFees.add(positionFee || 0n).add(fundingFee || 0n);
 
-    if (sizeDelta && position.size.gt(0)) {
-      adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
+    if (sizeDelta && position.size > 0) {
+      adjustedDelta = bigMath.mulDiv(nextDelta, sizeDelta, position.size);
     }
 
     if (keepLeverage && sizeDelta && !isClosing) {
       // Calculating the collateralDelta needed to keep the next leverage same as current leverage
-      collateralDelta = position.collateral.sub(
-        position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
-      );
+      collateralDelta =
+        position.collateral - bigMath.mulDiv(position.size - sizeDelta, BASIS_POINTS_DIVISOR, leverageWithoutDelta);
 
       /*
        In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether
@@ -457,14 +459,14 @@ export default function PositionSeller(props) {
       */
 
       if (nextHasProfit) {
-        if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
+        if (collateralDelta + adjustedDelta <= totalFees) {
           collateralDelta = 0n;
           // Keep Leverage is not possible
           isKeepLeverageNotPossible = true;
         }
       } else {
-        if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
-          collateralDelta = collateralDelta.sub(adjustedDelta);
+        if (collateralDelta - adjustedDelta > totalFees) {
+          collateralDelta = collateralDelta - adjustedDelta;
         } else {
           collateralDelta = 0n;
           // Keep leverage the same is not possible
@@ -487,7 +489,11 @@ export default function PositionSeller(props) {
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
 
     if (fromAmount && collateralToken.maxPrice) {
-      convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+      convertedAmount = bigMath.mulDiv(
+        fromAmount,
+        expandDecimals(1, collateralToken.decimals),
+        collateralToken.maxPrice
+      );
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
@@ -514,7 +520,7 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+        swapFee = bigMath.mulDiv(receiveUsd, feeBasisPoints, BASIS_POINTS_DIVISOR);
         totalFees = totalFees.add(swapFee || 0n);
         receiveUsd = receiveUsd.sub(swapFee);
       }
@@ -537,19 +543,19 @@ export default function PositionSeller(props) {
       const receiveTokenInfo = getTokenInfo(infoTokens, receiveToken.address);
 
       isNotEnoughReceiveTokenLiquidity =
-        receiveTokenInfo.availableAmount.lt(receiveAmount) ||
-        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(receiveAmount));
+        receiveTokenInfo.availableAmount < receiveAmount ||
+        receiveTokenInfo.bufferAmount > receiveTokenInfo.poolAmount.sub(receiveAmount);
 
       if (
         collateralInfo.maxUsdgAmount &&
-        collateralInfo.maxUsdgAmount.gt(0) &&
+        collateralInfo.maxUsdgAmount > 0 &&
         collateralInfo.usdgAmount &&
         collateralInfo.maxPrice
       ) {
         const usdgFromAmount = adjustForDecimals(receiveUsd, USD_DECIMALS, USDG_DECIMALS);
         const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
 
-        if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
+        if (nextUsdgAmount > collateralInfo.maxUsdgAmount) {
           isCollateralPoolCapacityExceeded = true;
         }
       }
@@ -558,7 +564,7 @@ export default function PositionSeller(props) {
     if (fromAmount) {
       if (!isClosing) {
         nextLiquidationPrice = getLiquidationPrice({
-          size: position.size.sub(sizeDelta),
+          size: position.size - sizeDelta,
           collateral: nextCollateral,
           averagePrice: position.averagePrice,
           isLong: position.isLong,
@@ -566,7 +572,7 @@ export default function PositionSeller(props) {
 
         if (!keepLeverage) {
           // We need to send the remaining delta
-          const remainingDelta = nextDelta?.sub(adjustedDelta);
+          const remainingDelta = nextDelta === undefined ? undefined : nextDelta - adjustedDelta;
           nextLeverage = getLeverage({
             size: position.size.sub(sizeDelta),
             collateral: nextCollateral,
@@ -659,11 +665,7 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
-    if (
-      !isClosing &&
-      keepLeverage &&
-      (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))
-    ) {
+    if (!isClosing && keepLeverage && (leverageWithoutDelta < 0 || leverageWithoutDelta > 100 * BASIS_POINTS_DIVISOR)) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
@@ -671,7 +673,7 @@ export default function PositionSeller(props) {
       return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
-    if (!isClosing && nextCollateral?.lt(0)) {
+    if (!isClosing && nextCollateral < 0) {
       return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
@@ -680,36 +682,36 @@ export default function PositionSeller(props) {
     }
 
     if (!isClosing && position && position.size && fromAmount) {
-      if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
+      if (position.size - fromAmount < expandDecimals(10, USD_DECIMALS)) {
         return [t`Leftover position below 10 USD`];
       }
-      if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
+      if (nextCollateral && nextCollateral < expandDecimals(5, USD_DECIMALS)) {
         return [t`Leftover collateral below 5 USD`];
       }
     }
 
-    if (position && position.size && position.size.lt(fromAmount)) {
+    if (position && position.size && position.size < fromAmount) {
       return [t`Max close amount exceeded`];
     }
 
-    if (!isClosing && nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && nextLeverage && nextLeverage < 1.1 * BASIS_POINTS_DIVISOR) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (!isClosing && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!isClosing && nextLeverage && nextLeverage > MAX_ALLOWED_LEVERAGE) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta > MAX_LEVERAGE) {
       return [t`Max Leverage without PnL: 100x`];
     }
 
     if (position.isLong) {
-      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice > position.markPrice) {
         return [t`Invalid Liquidation Price`];
       }
     } else {
-      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice < position.markPrice) {
         return [t`Invalid Liquidation Price`];
       }
     }
@@ -741,7 +743,7 @@ export default function PositionSeller(props) {
     return true;
   };
 
-  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta.gt(0);
+  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta > 0;
 
   const getPrimaryText = () => {
     const [error] = getError();
@@ -802,18 +804,18 @@ export default function PositionSeller(props) {
     if (!swapToToken || swapToToken.address === collateralTokenInfo.address) {
       return {
         value: collateralTokenInfo.spread,
-        isHigh: collateralTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
+        isHigh: collateralTokenInfo.spread > HIGH_SPREAD_THRESHOLD,
       };
     }
 
     const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
-    const spread = collateralTokenInfo.spread.add(swapToTokenInfo.spread);
+    const spread = collateralTokenInfo.spread + swapToTokenInfo.spread;
     return {
       value: spread,
-      isHigh: spread.gt(HIGH_SPREAD_THRESHOLD),
+      isHigh: spread > HIGH_SPREAD_THRESHOLD,
     };
   }, [swapToToken, infoTokens, collateralTokenInfo]);
-  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value.gt(0);
+  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value > 0;
 
   const renderReceiveSpreadWarning = useCallback(() => {
     if (receiveSpreadInfo && receiveSpreadInfo.isHigh) {
@@ -850,7 +852,7 @@ export default function PositionSeller(props) {
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
 
     if (orderOption === STOP) {
-      const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
+      const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
 
       createDecreaseOrder(
         chainId,
@@ -883,12 +885,12 @@ export default function PositionSeller(props) {
       ? BASIS_POINTS_DIVISOR - allowedSlippage
       : BASIS_POINTS_DIVISOR + allowedSlippage;
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
-    let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
+    let priceLimit = bigMath.mulDiv(refPrice, priceBasisPoints, BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
 
     if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
-      if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
+      if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit > profitPrice)) {
         priceLimit = profitPrice;
       }
     }
@@ -976,7 +978,7 @@ export default function PositionSeller(props) {
     }
     const indexToken = getTokenInfo(infoTokens, existingOrder.indexToken);
     const sizeInToken = formatAmount(
-      existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice),
+      bigMath.mulDiv(existingOrder.sizeDelta, PRECISION, existingOrder.triggerPrice),
       USD_DECIMALS,
       4,
       true
@@ -997,7 +999,7 @@ export default function PositionSeller(props) {
 
   let triggerPricePrefix;
   if (triggerPriceUsd) {
-    triggerPricePrefix = triggerPriceUsd.gt(position.markPrice) ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+    triggerPricePrefix = triggerPriceUsd > position.markPrice ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
   }
 
   const shouldShowExistingOrderWarning = false;
@@ -1099,7 +1101,7 @@ export default function PositionSeller(props) {
               showMaxButton={fromValue !== maxAmountFormattedFree}
               showPercentSelector={true}
               onPercentChange={(percentage) => {
-                setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2));
               }}
             >
               USD
@@ -1324,7 +1326,7 @@ export default function PositionSeller(props) {
             </div>
             {showReceiveSpread && (
               <ExchangeInfoRow label={t`Spread`} isWarning={receiveSpreadInfo.isHigh} isTop>
-                {formatAmount(receiveSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+                {formatAmount(receiveSpreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
               </ExchangeInfoRow>
             )}
             <div className={cx("Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : "")}>
@@ -1367,8 +1369,8 @@ export default function PositionSeller(props) {
                       );
 
                       const isNotEnoughLiquidity =
-                        tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
-                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+                        tokenOptionInfo.availableAmount < convertedTokenAmount ||
+                        tokenOptionInfo.bufferAmount > tokenOptionInfo.poolAmount - convertedTokenAmount;
 
                       if (isNotEnoughLiquidity) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(

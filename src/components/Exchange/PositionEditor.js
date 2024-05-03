@@ -32,6 +32,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useKey } from "react-use";
+import { bigMath } from "lib/bigmath";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -149,25 +150,27 @@ export default function PositionEditor(props) {
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
 
-      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD).gt(0)
-        ? position.collateralAfterFee.sub(MIN_ORDER_USD)
-        : 0n;
+      maxAmount = position.collateralAfterFee - MIN_ORDER_USD > 0 ? position.collateralAfterFee - MIN_ORDER_USD : 0n;
 
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
       if (fromAmount) {
-        convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+        convertedAmount = bigMath.mulDiv(
+          fromAmount,
+          expandDecimals(1, collateralToken.decimals),
+          collateralToken.maxPrice
+        );
         convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
       }
     }
-    needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance);
+    needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount > tokenAllowance;
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
 
       if (position.isLong && isDeposit) {
-        collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
-        depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
+        collateralDelta = bigMath.mulDiv(collateralDelta, BASIS_POINTS_DIVISOR - DEPOSIT_FEE, BASIS_POINTS_DIVISOR);
+        depositFeeUSD = bigMath.mulDiv(convertedAmount, DEPOSIT_FEE, BASIS_POINTS_DIVISOR);
       }
 
       nextCollateral = isDeposit
@@ -216,16 +219,16 @@ export default function PositionEditor(props) {
     }
 
     if (!isDeposit && fromAmount) {
-      if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
+      if (position.collateralAfterFee - fromAmount < MIN_ORDER_USD) {
         return [t`Min residual collateral: 10 USD`];
       }
     }
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
-      if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
+      if (position.isLong && position.markPrice < nextLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
-      if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
+      if (!position.isLong && position.markPrice > nextLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
     }
@@ -234,14 +237,14 @@ export default function PositionEditor(props) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (nextLeverage && nextLeverage > MAX_ALLOWED_LEVERAGE) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (fromAmount && isDeposit && nextLiquidationPrice) {
       const isInvalidLiquidationPrice = position.isLong
-        ? nextLiquidationPrice.gte(position.markPrice)
-        : nextLiquidationPrice.lte(position.markPrice);
+        ? nextLiquidationPrice >= position.markPrice
+        : nextLiquidationPrice <= position.markPrice;
 
       if (isInvalidLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
@@ -249,10 +252,10 @@ export default function PositionEditor(props) {
     }
 
     if (position.hasProfit) {
-      if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
+      if (nextCollateral <= position.closingFee + LIQUIDATION_FEE) {
         return isDeposit ? [t`Deposit not enough to cover fees`] : [t`Leftover Collateral not enough to cover fees`];
       }
-      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_LEVERAGE)) {
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl > MAX_LEVERAGE) {
         return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
       }
     }
@@ -335,7 +338,7 @@ export default function PositionEditor(props) {
       position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
 
     const priceBasisPoints = position.isLong ? 11000 : 9000;
-    const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
+    const priceLimit = bigMath.mulDiv(position.indexToken.maxPrice, BigInt(priceBasisPoints), 10000n);
 
     const referralCode = ethers.ZeroHash;
     let params = [
@@ -409,10 +412,10 @@ export default function PositionEditor(props) {
     const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
     const indexTokenAddress =
       position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
-    const priceBasisPoints = position.isLong ? 9000 : 11000;
-    const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
+    const priceBasisPoints = position.isLong ? 9000n : 11000n;
+    const priceLimit = bigMath.mulDiv(position.indexToken.maxPrice, priceBasisPoints, 10000n);
 
-    const withdrawAmount = fromAmount.add(fundingFee || 0n);
+    const withdrawAmount = fromAmount + (fundingFee || 0n);
 
     const withdrawETH =
       !isContractAccount && (collateralTokenAddress === ZeroAddress || collateralTokenAddress === nativeTokenAddress);
@@ -585,7 +588,7 @@ export default function PositionEditor(props) {
                   onClickMax={() => setFromValue(maxAmountFormattedFree)}
                   showPercentSelector={!isDeposit}
                   onPercentChange={(percentage) => {
-                    setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                    setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, percentage, 100n), USD_DECIMALS, 2));
                   }}
                 >
                   {isDeposit ? (
@@ -688,7 +691,7 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
 
-                  {fromAmount?.gt(0) && fundingFee?.gt(0) && (
+                  {fromAmount > 0 && fundingFee > 0 && (
                     <div className="Exchange-info-row">
                       <div className="Exchange-info-label">
                         <Trans>Borrow Fee</Trans>

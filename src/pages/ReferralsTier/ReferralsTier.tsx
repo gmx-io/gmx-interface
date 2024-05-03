@@ -43,7 +43,7 @@ export default function ReferralsTier() {
           <>
             <div className="ReferralsTier-row">
               <label className="ReferralsTier-label">Current Tier:</label>
-              <strong>{currentAffiliateTier?.add(1).toString()}</strong>
+              <strong>{currentAffiliateTier === undefined ? undefined : String(currentAffiliateTier + 1n)}</strong>
             </div>
             <div className="ReferralsTier-row">
               <label className="ReferralsTier-label">New Tier:</label>

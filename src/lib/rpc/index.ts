@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
-export function getProvider(signer: Signer | undefined, chainId: number);
-export function getProvider(signer: Signer | undefined, chainId: number) {
+export function getProvider(signer: Signer | undefined, chainId: number): ethers.JsonRpcProvider | Signer;
+export function getProvider(signer: Signer | undefined, chainId: number): ethers.JsonRpcProvider | Signer {
   let url;
 
   if (signer) {

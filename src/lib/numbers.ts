@@ -387,8 +387,8 @@ export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
-export function sumBigNumbers(...args: (bigint | undefined)[]) {
-  return args.reduce<bigint>((acc, value) => acc + (value ?? 0n), 0n);
+export function sumBigNumbers(...args: (bigint | number | undefined)[]) {
+  return args.reduce<bigint>((acc, value) => acc + BigInt(value ?? 0n), 0n);
 }
 
 export function removeTrailingZeros(amount: string | number) {

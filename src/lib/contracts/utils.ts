@@ -1,6 +1,5 @@
-import { Provider } from "ethers";
-import { Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
+import { Contract, Provider } from "ethers";
 import { bigNumberify } from "../numbers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
@@ -41,5 +40,5 @@ export async function getGasLimit(contract: Contract, method, params: any[] = []
     gasLimit = bigNumberify(22000)!;
   }
 
-  return gasLimit.mul(11000).div(10000); // add a 10% buffer
+  return (gasLimit * 11n) / 10n; // add a 10% buffer
 }

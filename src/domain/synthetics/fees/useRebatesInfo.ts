@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { getAddress } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
@@ -85,7 +86,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
         id: rawRebateInfo.id,
       };
 
-      if (factor.gt(0) && valueByFactor == 0n) {
+      if (factor > 0 && valueByFactor == 0n) {
         // this is claimable entity but factor is too small
         // skipping to avoid CollateralAlreadyClaimed error
         return;

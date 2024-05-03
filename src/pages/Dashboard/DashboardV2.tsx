@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import { ethers } from "ethers";
 
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 
@@ -259,7 +259,7 @@ export default function DashboardV2() {
 
   let gmxMarketCap;
   if (gmxPrice && totalGmxSupply) {
-    gmxMarketCap = gmxPrice.mul(totalGmxSupply).div(expandDecimals(1, GMX_DECIMALS));
+    gmxMarketCap = bigMath.mulDiv(gmxPrice, totalGmxSupply, expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
@@ -269,7 +269,7 @@ export default function DashboardV2() {
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   let glpPrice;
@@ -278,17 +278,18 @@ export default function DashboardV2() {
   if (aum && totalSupplies && totalSupplies[3]) {
     glpSupply = totalSupplies[3];
     glpPrice =
-      aum && aum.gt(0) && glpSupply.gt(0)
-        ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
+      aum && aum > 0 && glpSupply > 0
+        ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
         : expandDecimals(1, USD_DECIMALS);
-    glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
+    glpMarketCap = bigMath.mulDiv(glpPrice, glpSupply, expandDecimals(1, GLP_DECIMALS));
   }
 
   let tvl: bigint | undefined = undefined;
   if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
-    tvl = glpMarketCap
-      .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
-      .add(currentV2MarketOverview.totalGMLiquidity);
+    tvl =
+      glpMarketCap +
+      bigMath.mulDiv(gmxPrice, totalStakedGmx, expandDecimals(1, GMX_DECIMALS)) +
+      currentV2MarketOverview.totalGMLiquidity;
   }
 
   const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
@@ -325,9 +326,10 @@ export default function DashboardV2() {
       return "...";
     }
 
-    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    // use add(1).div(10).mul(10) to round numbers up
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
+    const currentWeightBps = bigMath.mulDiv(tokenInfo.usdgAmount, BASIS_POINTS_DIVISOR_BIGINT, adjustedUsdgSupply);
+    const targetWeightBps =
+      // use add(1).div(10).mul(10) to round numbers up
+      ((bigMath.mulDiv(tokenInfo.weight, BASIS_POINTS_DIVISOR_BIGINT, totalTokenWeights) + 1n) / 10n) * 10n;
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
       targetWeightBps,
@@ -355,7 +357,7 @@ export default function DashboardV2() {
                 showDollar={false}
               />
               <br />
-              {currentWeightBps.lt(targetWeightBps) && (
+              {currentWeightBps < targetWeightBps && (
                 <div className="text-white">
                   <Trans>
                     {tokenInfo.symbol} is below its target weight.
@@ -373,7 +375,7 @@ export default function DashboardV2() {
                   </Trans>
                 </div>
               )}
-              {currentWeightBps.gt(targetWeightBps) && (
+              {currentWeightBps > targetWeightBps && (
                 <div className="text-white">
                   <Trans>
                     {tokenInfo.symbol} is above its target weight.
@@ -755,8 +757,8 @@ export default function DashboardV2() {
                       handle={`$${numberWithCommas(
                         sumBigNumbers(
                           totalFees?.[chainId],
-                          // TODO wat?
-                          formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
+                          // FIXME
+                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
                         )
                       )}`}
                       renderContent={() => (
@@ -1014,16 +1016,15 @@ export default function DashboardV2() {
                       {visibleTokens.map((token) => {
                         const tokenInfo = infoTokens[token.address];
                         let utilization = 0n;
-                        if (
-                          tokenInfo &&
-                          tokenInfo.reservedAmount &&
-                          tokenInfo.poolAmount &&
-                          tokenInfo.poolAmount.gt(0)
-                        ) {
-                          utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                        if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                          utilization = bigMath.mulDiv(
+                            tokenInfo.reservedAmount,
+                            BASIS_POINTS_DIVISOR_BIGINT,
+                            tokenInfo.poolAmount
+                          );
                         }
                         let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
                           maxUsdgAmount = tokenInfo.maxUsdgAmount;
                         }
 
@@ -1103,11 +1104,15 @@ export default function DashboardV2() {
                   {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
                     let utilization = 0n;
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                      utilization = bigMath.mulDiv(
+                        tokenInfo.reservedAmount,
+                        BASIS_POINTS_DIVISOR_BIGINT,
+                        tokenInfo.poolAmount
+                      );
                     }
                     let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
 
@@ -1215,8 +1220,8 @@ function GMCard() {
     () =>
       Object.values(marketTokensData || {}).reduce(
         (acc, { totalSupply, decimals, prices }) => ({
-          amount: acc.amount.add(totalSupply ?? 0),
-          usd: acc.usd.add(convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0),
+          amount: acc.amount + (totalSupply ?? 0n),
+          usd: acc.usd + (convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0n),
         }),
         { amount: BN_ZERO, usd: BN_ZERO }
       ),
@@ -1224,7 +1229,7 @@ function GMCard() {
   );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply?.amount?.gt(0) || !marketsInfoData) return [];
+    if (!totalGMSupply?.amount || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),
@@ -1232,11 +1237,12 @@ function GMCard() {
     );
 
     return Object.values(poolsByIndexToken || EMPTY_OBJECT).map((pools) => {
-      const totalMarketUSD = pools.reduce((acc, pool) => acc.add(pool.poolValueMax), BN_ZERO);
+      const totalMarketUSD = pools.reduce((acc, pool) => acc + pool.poolValueMax, BN_ZERO);
 
       const marketInfo = pools[0];
       const indexToken = marketInfo.isSpotOnly ? marketInfo.shortToken : marketInfo.indexToken;
-      const marketSupplyPercentage = totalMarketUSD.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.usd).toNumber() / 100;
+      const marketSupplyPercentage =
+        Number(bigMath.mulDiv(totalMarketUSD, BASIS_POINTS_DIVISOR_BIGINT, totalGMSupply.usd)) / 100;
 
       return {
         fullName: marketInfo.name,

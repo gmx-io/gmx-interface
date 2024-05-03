@@ -119,7 +119,7 @@ function MigrationModal(props) {
   }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
-  const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval = tokenAllowance && amount && amount > tokenAllowance;
 
   let baseAmount;
   let bonusAmount;
@@ -143,7 +143,7 @@ function MigrationModal(props) {
     if (!amount || amount == 0n) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };

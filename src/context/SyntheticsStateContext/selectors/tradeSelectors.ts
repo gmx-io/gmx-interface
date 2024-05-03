@@ -94,7 +94,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
             initialCollateralAddress: wrappedFromAddress,
           });
 
-          if (liquidity.gt(maxLiquidity)) {
+          if (liquidity > maxLiquidity) {
             maxLiquidity = liquidity;
             maxLiquidityPath = route.path;
           }
@@ -475,7 +475,8 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           return undefined;
         }
 
-        if (!closeSizeUsd) throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
+        if (closeSizeUsd === undefined)
+          throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
         if (decreaseAmounts?.acceptablePrice && closeSizeUsd > 0) {
           return getNextPositionValuesForDecreaseTrade({

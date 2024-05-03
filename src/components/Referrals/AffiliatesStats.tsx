@@ -466,7 +466,7 @@ function AffiliatesStats({
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
-                      return acc.add(usdAmount);
+                      return acc + usdAmount;
                     }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);

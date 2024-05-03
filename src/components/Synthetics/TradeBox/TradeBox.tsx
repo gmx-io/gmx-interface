@@ -113,6 +113,7 @@ import { helperToast } from "lib/helperToast";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
+import { bigMath } from "lib/bigmath";
 
 export type Props = {
   allowedSlippage: number;
@@ -223,9 +224,10 @@ export function TradeBox(p: Props) {
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
   const isNotMatchAvailableBalance = useMemo(
     () =>
-      (fromToken?.balance ?? 0n) > 0n &&
-      fromToken?.balance !== fromTokenAmount &&
-      (fromToken?.isNative ? minResidualAmount && (fromToken?.balance ?? 0n) > minResidualAmount : true),
+      ((fromToken?.balance ?? 0n) > 0n &&
+        fromToken?.balance !== fromTokenAmount &&
+        (fromToken?.isNative ? minResidualAmount && (fromToken?.balance ?? 0n) > minResidualAmount : true)) ||
+      false,
     [fromToken?.balance, fromToken?.isNative, fromTokenAmount, minResidualAmount]
   );
 
@@ -575,13 +577,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setSelectedAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
+      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
-      setSelectedAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
+      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
     }
 
     setStage("confirmation");
@@ -621,12 +623,12 @@ export function TradeBox(p: Props) {
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            swapAmounts.amountOut.gt(0) ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
+            swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
             false
           );
         } else {
           setFromTokenInputValue(
-            swapAmounts.amountIn.gt(0) ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
+            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
             false
           );
         }
@@ -635,14 +637,14 @@ export function TradeBox(p: Props) {
       if (isIncrease && increaseAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            increaseAmounts.indexTokenAmount?.gt(0)
+            increaseAmounts.indexTokenAmount > 0
               ? formatAmountFree(increaseAmounts.indexTokenAmount, toToken.decimals)
               : "",
             false
           );
         } else {
           setFromTokenInputValue(
-            increaseAmounts.initialCollateralAmount.gt(0)
+            increaseAmounts.initialCollateralAmount > 0
               ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
               : "",
             false
@@ -733,10 +735,10 @@ export function TradeBox(p: Props) {
   const onMaxClick = useCallback(() => {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken?.isNative
-        ? fromToken.balance.sub(BigInt(minResidualAmount || 0))
+        ? fromToken.balance - BigInt(minResidualAmount || 0)
         : fromToken.balance;
 
-      if (maxAvailableAmount.isNegative()) {
+      if (maxAvailableAmount < 0) {
         maxAvailableAmount = 0n;
       }
 
@@ -786,7 +788,7 @@ export function TradeBox(p: Props) {
   );
   const handleClosePercentageChange = useCallback(
     (percent) =>
-      setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2)),
+      setCloseSizeInputValue(formatAmount(((selectedPosition?.sizeInUsd ?? 0n) * percent) / 100n, USD_DECIMALS, 2)),
     [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
   );
 
@@ -830,7 +832,9 @@ export function TradeBox(p: Props) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
+          topLeftValue={
+            fromUsd && fromUsd > 0 ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""
+          }
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals, "", {
             useCommas: true,
@@ -866,7 +870,7 @@ export function TradeBox(p: Props) {
         {isSwap && (
           <BuyInputSection
             topLeftLabel={t`Receive`}
-            topLeftValue={swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""}
+            topLeftValue={swapAmounts?.usdOut && swapAmounts.usdOut > 0 ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
               useCommas: true,
@@ -898,7 +902,7 @@ export function TradeBox(p: Props) {
           <BuyInputSection
             topLeftLabel={tradeTypeLabels[tradeType!]}
             topLeftValue={
-              increaseAmounts?.sizeDeltaUsd.gt(0)
+              increaseAmounts?.sizeDeltaUsd && increaseAmounts.sizeDeltaUsd > 0
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
                 : ""
             }
@@ -942,9 +946,11 @@ export function TradeBox(p: Props) {
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
         onClickTopRightLabel={setMaxCloseSize}
-        showMaxButton={selectedPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(selectedPosition.sizeInUsd)}
+        showMaxButton={Boolean(
+          selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeUsd != selectedPosition.sizeInUsd
+        )}
         onClickMax={setMaxCloseSize}
-        showPercentSelector={selectedPosition?.sizeInUsd.gt(0)}
+        showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
       >
         USD
@@ -1056,7 +1062,7 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Leverage`}
           value={
-            nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
+            nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
               <ValueTransition
                 from={formatLeverage(selectedPosition?.leverage)}
                 to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
@@ -1072,7 +1078,7 @@ export function TradeBox(p: Props) {
 
       if (decreaseAmounts?.isFullClose) {
         leverageValue = t`NA`;
-      } else if (selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0)) {
+      } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
         leverageValue = "-";
       } else {
         leverageValue = (
@@ -1141,7 +1147,7 @@ export function TradeBox(p: Props) {
                   : undefined
               }
               to={
-                increaseAmounts?.sizeDeltaUsd.gt(0)
+                increaseAmounts?.sizeDeltaUsd && increaseAmounts.sizeDeltaUsd > 0
                   ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
@@ -1199,7 +1205,7 @@ export function TradeBox(p: Props) {
                 to={
                   decreaseAmounts?.isFullClose
                     ? "-"
-                    : decreaseAmounts?.sizeDeltaUsd.gt(0)
+                    : decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0
                     ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                         displayDecimals: toToken?.priceDecimals,
                       })
@@ -1216,7 +1222,7 @@ export function TradeBox(p: Props) {
   function renderExistingPositionInfo() {
     return (
       <>
-        {selectedPosition?.sizeInUsd.gt(0) && (
+        {selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Size`}
@@ -1240,7 +1246,7 @@ export function TradeBox(p: Props) {
                   </>
                 }
                 to={
-                  decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
+                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
                     <>
                       {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                       {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
@@ -1349,7 +1355,7 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd && (
+                {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd && (
                   <ExchangeInfoRow
                     className="SwapBox-info-row"
                     label={t`Receive`}
@@ -1360,7 +1366,8 @@ export function TradeBox(p: Props) {
                       collateralToken?.decimals
                     )}
                   />
-                )}
+                )) ||
+                  null}
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

@@ -46,7 +46,7 @@ export type TooltipString =
   | undefined
   | string
   | {
-      text: string;
+      text: string | undefined;
       state?: TooltipState;
     };
 

@@ -76,8 +76,10 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         if (isDevelopment() && isReconnectingIntervalPassed) {
           // eslint-disable-next-line no-console
           console.log(
-            `ws provider health check, state: ${wsProvider._websocket.readyState}, subs: ${
-              Object.keys(wsProvider._subs).length
+            `ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${
+              // FIXME
+              // Object.keys(wsProvider._subs).length
+              "FIXME"
             }`
           );
         }

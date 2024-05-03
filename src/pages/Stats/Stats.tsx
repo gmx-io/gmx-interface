@@ -209,11 +209,11 @@ export default function Stats() {
               maxPoolClassName = "warn";
             }
 
-            let targetWeightBps;
-            let currentWeightBps;
-            let targetUsdg;
+            let targetWeightBps: bigint | undefined = undefined;
+            let currentWeightBps: bigint | undefined = undefined;
+            let targetUsdg: bigint | undefined = undefined;
             let weightClassName = "";
-            let weightDiffBps;
+            let weightDiffBps: bigint | undefined = undefined;
             if (
               tokenInfo.usdgAmount &&
               tokenInfo.usdgAmount > 0 &&
@@ -227,10 +227,10 @@ export default function Stats() {
               targetWeightBps =
                 ((bigMath.mulDiv(tokenInfo.weight, BASIS_POINTS_DIVISOR_BIGINT, totalTokenWeights!) + 1n) / 10n) * 10n;
 
-              weightDiffBps = currentWeightBps.sub(targetWeightBps).abs();
-              if (weightDiffBps.gt(bigMath.mulDiv(targetWeightBps, 35n, 100n))) {
+              weightDiffBps = bigMath.abs(currentWeightBps - targetWeightBps);
+              if (weightDiffBps > bigMath.mulDiv(targetWeightBps, 35n, 100n)) {
                 weightClassName = "warn";
-              } else if (weightDiffBps.gt(targetWeightBps.mul(25).div(100))) {
+              } else if (weightDiffBps > bigMath.mulDiv(targetWeightBps, 25n, 100n)) {
                 weightClassName = "warn";
               }
 

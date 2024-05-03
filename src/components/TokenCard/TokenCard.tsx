@@ -27,7 +27,7 @@ function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPR
   const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
   const aprValues = Object.values(totalApr || {});
 
-  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
+  const maxApr = aprValues.reduce((max, value) => (value > max ? value : max), aprValues[0]);
 
   return maxApr;
 }

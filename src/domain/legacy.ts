@@ -186,12 +186,12 @@ export function useAllPositions(chainId, signer) {
             account: dataItem.account,
           };
           position.fundingFee = await contract.getFundingFee(collateralToken, position.size, position.entryFundingRate);
-          position.marginFee = position.size.div(1000);
+          position.marginFee = position.size / 1000n;
           position.fee = position.fundingFee.add(position.marginFee);
 
           const THRESHOLD = 5000;
-          const collateralDiffPercent = position.fee.mul(10000).div(position.collateral);
-          position.danger = collateralDiffPercent.gt(THRESHOLD);
+          const collateralDiffPercent = bigMath.mulDiv(position.fee, 10000n, position.collateral);
+          position.danger = collateralDiffPercent > THRESHOLD;
 
           return position;
         } catch (ex) {
@@ -637,7 +637,7 @@ function useGmxPriceFromAvalanche() {
   const PRECISION = 10n ** 18n;
   let gmxPrice;
   if (avaxReserve && gmxReserve && avaxPrice) {
-    gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
+    gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
   }
 
   const mutate = useCallback(() => {

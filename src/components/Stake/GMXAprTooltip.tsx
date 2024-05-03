@@ -20,7 +20,7 @@ type Props = {
 };
 
 function renderEscrowedGMXApr(processedData) {
-  if (!processedData?.gmxAprForEsGmx?.gt(0)) return;
+  if (!processedData?.gmxAprForEsGmx || processedData.gmxAprForEsGmx <= 0) return;
   return (
     <StatsTooltipRow
       label={t`Escrowed GMX APR`}

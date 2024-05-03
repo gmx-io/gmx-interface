@@ -40,7 +40,7 @@ export function approveTokens({
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract
-    .approve(spender, ethers.constants.MaxUint256)
+    .approve(spender, ethers.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(

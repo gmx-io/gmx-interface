@@ -27,6 +27,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "config/tokens";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { bigMath } from "lib/bigmath";
 
 export default function OrderEditor(props) {
   const {
@@ -78,7 +79,7 @@ export default function OrderEditor(props) {
 
   let initialRatio = 0;
   if (order.triggerRatio) {
-    initialRatio = triggerRatioInverted ? PRECISION.mul(PRECISION).div(order.triggerRatio) : order.triggerRatio;
+    initialRatio = triggerRatioInverted ? bigMath.mulDiv(PRECISION, PRECISION, order.triggerRatio) : order.triggerRatio;
   }
   const [triggerRatioValue, setTriggerRatioValue] = useState(formatAmountFree(initialRatio, USD_DECIMALS, 6));
 
@@ -93,7 +94,7 @@ export default function OrderEditor(props) {
     }
     let ratio = parseValue(triggerRatioValue, USD_DECIMALS);
     if (triggerRatioInverted) {
-      ratio = PRECISION.mul(PRECISION).div(ratio);
+      ratio = bigMath.mulDiv(PRECISION, PRECISION, ratio);
     }
     return ratio;
   }, [triggerRatioValue, triggerRatioInverted]);
@@ -199,10 +200,10 @@ export default function OrderEditor(props) {
     }
 
     if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableValidationForTesting) {
-      if (order.triggerAboveThreshold && indexTokenMarkPrice.gt(triggerPrice)) {
+      if (order.triggerAboveThreshold && indexTokenMarkPrice > triggerPrice) {
         return t`Price below Mark Price`;
       }
-      if (!order.triggerAboveThreshold && indexTokenMarkPrice.lt(triggerPrice)) {
+      if (!order.triggerAboveThreshold && indexTokenMarkPrice < triggerPrice) {
         return t`Price above Mark Price`;
       }
     }

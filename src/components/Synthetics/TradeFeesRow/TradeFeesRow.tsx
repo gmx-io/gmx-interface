@@ -430,7 +430,7 @@ function mergePositionPriceImpactWithPriceImpactDiff(
   positionPriceImpact: FeeItem | undefined,
   priceImpactDiff: FeeItem | undefined
 ): [fullPositionPriceImpact: FeeItem | undefined, hasRebates: boolean] {
-  if (feesType !== "decrease" || !positionPriceImpact || !priceImpactDiff || priceImpactDiff.deltaUsd.lte(0)) {
+  if (feesType !== "decrease" || !positionPriceImpact || !priceImpactDiff || priceImpactDiff.deltaUsd <= 0) {
     return [positionPriceImpact, false];
   }
 

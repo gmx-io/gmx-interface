@@ -28,7 +28,7 @@ export default function useVolumeInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
       const { hourlyVolumeInfos, totalVolumeInfos } = data;
-      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc.add(volumeUsd), 0n);
+      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc + volumeUsd, 0n);
       return {
         dailyVolume,
         totalVolume: totalVolumeInfos[0].volumeUsd,

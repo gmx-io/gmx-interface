@@ -20,7 +20,7 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -57,6 +57,7 @@ import useWallet from "lib/wallets/useWallet";
 import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { bigMath } from "lib/bigmath";
 const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -164,23 +165,45 @@ export function getPositions(
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     }
 
-    const position: any = {
+    const position = {
       key,
       contractKey,
       collateralToken,
       indexToken,
       isLong: isLong[i],
-      size: positionData[i * propsLength],
-      collateral: positionData[i * propsLength + 1],
-      averagePrice: positionData[i * propsLength + 2],
-      entryFundingRate: positionData[i * propsLength + 3],
-      cumulativeFundingRate: collateralToken.cumulativeFundingRate,
-      hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
-      realisedPnl: positionData[i * propsLength + 5],
-      lastIncreasedTime: positionData[i * propsLength + 6].toNumber(),
-      hasProfit: positionData[i * propsLength + 7].eq(1),
-      delta: positionData[i * propsLength + 8],
+      size: positionData[i * propsLength] as bigint,
+      collateral: positionData[i * propsLength + 1] as bigint,
+      averagePrice: positionData[i * propsLength + 2] as bigint,
+      entryFundingRate: positionData[i * propsLength + 3] as bigint,
+      cumulativeFundingRate: collateralToken.cumulativeFundingRate as bigint,
+      hasRealisedProfit: positionData[i * propsLength + 4] == 1,
+      realisedPnl: positionData[i * propsLength + 5] as bigint,
+      lastIncreasedTime: Number(positionData[i * propsLength + 6]),
+      hasProfit: positionData[i * propsLength + 7] == 1,
+      delta: positionData[i * propsLength + 8] as bigint,
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice,
+      fundingFee: 0n,
+      collateralAfterFee: 0n,
+      closingFee: 0n,
+      positionFee: 0n,
+      totalFees: 0n,
+      pendingDelta: 0n,
+      hasPendingChanges: false,
+      pendingChanges: null,
+      hasLowCollateral: false,
+      deltaPercentage: 0n,
+      deltaPercentageStr: "",
+      deltaStr: "",
+      deltaBeforeFeesStr: "",
+      deltaAfterFeesStr: "",
+      deltaAfterFeesPercentageStr: "",
+      hasProfitAfterFees: false,
+      pendingDeltaAfterFees: 0n,
+      deltaPercentageAfterFees: 0n,
+      leverage: 0n as bigint | undefined,
+      leverageWithPnl: 0n as bigint | undefined,
+      leverageStr: "",
+      netValue: 0n,
     };
 
     if (
@@ -198,34 +221,43 @@ export function getPositions(
 
     let fundingFee = getFundingFee(position);
     position.fundingFee = fundingFee ? fundingFee : 0n;
-    position.collateralAfterFee = position.collateral.sub(position.fundingFee);
+    position.collateralAfterFee = position.collateral - position.fundingFee;
 
-    position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-    position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
-    position.totalFees = position.positionFee.add(position.fundingFee);
+    position.closingFee = bigMath.mulDiv(position.size, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
+    position.positionFee = bigMath.mulDiv(
+      position.size * 2n,
+      BigInt(MARGIN_FEE_BASIS_POINTS),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
+    position.totalFees = position.positionFee + position.fundingFee;
 
     position.pendingDelta = position.delta;
 
-    if (position.collateral.gt(0)) {
+    if (position.collateral > 0) {
       position.hasLowCollateral =
-        position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
+        position.collateralAfterFee < 0 || position.size / bigMath.abs(position.collateralAfterFee) > 50;
 
       if (position.averagePrice && position.markPrice) {
-        const priceDelta = position.averagePrice.gt(position.markPrice)
-          ? position.averagePrice.sub(position.markPrice)
-          : position.markPrice.sub(position.averagePrice);
-        position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+        const priceDelta =
+          position.averagePrice > position.markPrice
+            ? position.averagePrice - position.markPrice
+            : position.markPrice - position.averagePrice;
+        position.pendingDelta = bigMath.mulDiv(position.size, priceDelta, position.averagePrice);
 
         position.delta = position.pendingDelta;
 
         if (position.isLong) {
-          position.hasProfit = position.markPrice.gte(position.averagePrice);
+          position.hasProfit = position.markPrice >= position.averagePrice;
         } else {
-          position.hasProfit = position.markPrice.lte(position.averagePrice);
+          position.hasProfit = position.markPrice <= position.averagePrice;
         }
       }
 
-      position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
+      position.deltaPercentage = bigMath.mulDiv(
+        position.pendingDelta,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.collateral
+      );
 
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
         delta: position.pendingDelta,
@@ -241,24 +273,26 @@ export function getPositions(
       let pendingDeltaAfterFees;
 
       if (position.hasProfit) {
-        if (position.pendingDelta.gt(position.totalFees)) {
+        if (position.pendingDelta > position.totalFees) {
           hasProfitAfterFees = true;
-          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees);
+          pendingDeltaAfterFees = position.pendingDelta - position.totalFees;
         } else {
           hasProfitAfterFees = false;
-          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta);
+          pendingDeltaAfterFees = position.totalFees - position.pendingDelta;
         }
       } else {
         hasProfitAfterFees = false;
-        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees);
+        pendingDeltaAfterFees = position.pendingDelta + position.totalFees;
       }
 
       position.hasProfitAfterFees = hasProfitAfterFees;
       position.pendingDeltaAfterFees = pendingDeltaAfterFees;
       // while calculating delta percentage after fees, we need to add opening fee (which is equal to closing fee) to collateral
-      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(position.collateral.add(position.closingFee));
+      position.deltaPercentageAfterFees = bigMath.mulDiv(
+        position.pendingDeltaAfterFees,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.collateral + position.closingFee
+      );
 
       const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
         delta: position.pendingDeltaAfterFees,
@@ -275,10 +309,10 @@ export function getPositions(
       }
 
       let netValue = position.hasProfit
-        ? position.collateral.add(position.pendingDelta)
-        : position.collateral.sub(position.pendingDelta);
+        ? position.collateral + position.pendingDelta
+        : position.collateral - position.pendingDelta;
 
-      netValue = netValue.sub(position.fundingFee).sub(position.closingFee);
+      netValue = netValue - position.fundingFee - position.closingFee;
       position.netValue = netValue;
     }
 
@@ -305,7 +339,7 @@ export function getPositions(
 
     applyPendingChanges(position, pendingPositions);
 
-    if (position.size.gt(0) || position.hasPendingChanges) {
+    if (position.size > 0 || position.hasPendingChanges) {
       positions.push(position);
     }
   }

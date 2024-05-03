@@ -1133,8 +1133,8 @@ export function ConfirmationBox(p: Props) {
       return null;
     }
 
-    const borrowingRate = getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100);
-    const fundigRate = getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100);
+    const borrowingRate = getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]) * 100n;
+    const fundigRate = getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]) * 100n;
     const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
     const existingPriceDecimals = existingPosition?.indexToken?.priceDecimals;
     const toTokenPriceDecimals = toToken?.priceDecimals;
@@ -1354,9 +1354,11 @@ export function ConfirmationBox(p: Props) {
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
-              fundigRate && `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
+              (fundigRate &&
+                `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(bigMath.abs(fundigRate), 30, 4)}% / 1h`) ||
+              undefined
             }
-            borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
+            borrowFeeRateStr={(borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`) || undefined}
             feesType="increase"
           />
           <NetworkFeeRow executionFee={executionFee} />
@@ -1462,7 +1464,7 @@ export function ConfirmationBox(p: Props) {
         {renderMain()}
         {renderDifferentCollateralWarning()}
 
-        {existingPosition?.leverage && !decreaseAmounts?.isFullClose && (
+        {(existingPosition?.leverage && !decreaseAmounts?.isFullClose && (
           <ExchangeInfo.Group>
             {renderLeverage(
               existingPosition?.leverage,
@@ -1477,7 +1479,8 @@ export function ConfirmationBox(p: Props) {
               </ToggleSwitch>
             )}
           </ExchangeInfo.Group>
-        )}
+        )) ||
+          null}
 
         {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
           <ExchangeInfo.Group>{renderAcceptablePriceImpactInput()}</ExchangeInfo.Group>

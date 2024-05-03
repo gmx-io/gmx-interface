@@ -305,7 +305,7 @@ export default function GlpSwap(props) {
     aum = isBuying ? aums[0] : aums[1];
   }
   const glpPrice =
-    aum && aum.gt(0) && glpSupply.gt(0)
+    aum && aum > 0 && glpSupply > 0
       ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
       : expandDecimals(1, USD_DECIMALS);
   let glpBalanceUsd;
@@ -335,7 +335,7 @@ export default function GlpSwap(props) {
   const glpAmount = parseValue(glpValue, GLP_DECIMALS);
 
   const needApproval =
-    isBuying && swapTokenAddress !== ZeroAddress && tokenAllowance && swapAmount && swapAmount.gt(tokenAllowance);
+    isBuying && swapTokenAddress !== ZeroAddress && tokenAllowance && swapAmount && swapAmount > tokenAllowance;
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
@@ -343,14 +343,13 @@ export default function GlpSwap(props) {
   const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const showMaxButtonBasedOnBalance = swapTokenInfo?.isNative
-    ? minResidualAmount && swapTokenBalance.gt(minResidualAmount)
+    ? minResidualAmount && swapTokenBalance > minResidualAmount
     : true;
 
   let isSwapTokenCapReached;
   if (swapTokenInfo && swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
-    isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
-      adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
-    );
+    isSwapTokenCapReached =
+      swapTokenInfo.managedUsd > adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS);
   }
 
   const onSwapValueChange = (e) => {
@@ -381,7 +380,7 @@ export default function GlpSwap(props) {
     nativeToken &&
     nativeToken.minPrice &&
     glpSupplyUsd &&
-    glpSupplyUsd.gt(0)
+    glpSupplyUsd > 0
   ) {
     feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval
       .mul(SECONDS_PER_YEAR)
@@ -400,7 +399,7 @@ export default function GlpSwap(props) {
     stakingData.stakedGlpTracker &&
     stakingData.stakedGlpTracker.tokensPerInterval &&
     glpSupplyUsd &&
-    glpSupplyUsd.gt(0)
+    glpSupplyUsd > 0
   ) {
     stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval
       .mul(SECONDS_PER_YEAR)
@@ -605,7 +604,7 @@ export default function GlpSwap(props) {
         swapTokenInfo &&
         swapTokenInfo.balance &&
         swapAmount &&
-        swapAmount.gt(swapTokenInfo.balance)
+        swapAmount > swapTokenInfo.balance
       ) {
         return [t`Insufficient ${swapTokenInfo.symbol} balance`];
       }
@@ -613,24 +612,19 @@ export default function GlpSwap(props) {
       if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS);
         const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount);
-        if (swapTokenInfo.maxUsdgAmount.gt(0) && nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
+        if (swapTokenInfo.maxUsdgAmount > 0 && nextUsdgAmount > swapTokenInfo.maxUsdgAmount) {
           return [t`${swapTokenInfo.symbol} pool exceeded, try different token`, true];
         }
       }
     }
 
     if (!isBuying) {
-      if (maxSellAmount && glpAmount && glpAmount.gt(maxSellAmount)) {
+      if (maxSellAmount && glpAmount && glpAmount > maxSellAmount) {
         return [t`Insufficient GLP balance`];
       }
 
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
-      if (
-        swapTokenInfo &&
-        swapTokenInfo.availableAmount &&
-        swapAmount &&
-        swapAmount.gt(swapTokenInfo.availableAmount)
-      ) {
+      if (swapTokenInfo && swapTokenInfo.availableAmount && swapAmount && swapAmount > swapTokenInfo.availableAmount) {
         return [t`Insufficient liquidity`];
       }
     }
@@ -1334,10 +1328,10 @@ export default function GlpSwap(props) {
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
               }
-              let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
+              let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
 
               let amountLeftToDeposit = 0n;
-              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
                 amountLeftToDeposit = tokenInfo.maxUsdgAmount
                   .sub(tokenInfo.usdgAmount)
                   .mul(expandDecimals(1, USD_DECIMALS))
@@ -1372,7 +1366,7 @@ export default function GlpSwap(props) {
                         )}
                       />
                     );
-                  case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                  case (isBuying && !isCapReached) || (!isBuying && managedUsd > 0):
                     return `${formatAmount(tokenFeeBps, 2, 2, true, "-")}${
                       tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? "%" : ""
                     }`;
@@ -1490,7 +1484,7 @@ export default function GlpSwap(props) {
             }
 
             let amountLeftToDeposit = 0n;
-            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
               amountLeftToDeposit = tokenInfo.maxUsdgAmount
                 .sub(tokenInfo.usdgAmount)
                 .mul(expandDecimals(1, USD_DECIMALS))
@@ -1499,11 +1493,11 @@ export default function GlpSwap(props) {
             if (amountLeftToDeposit.lt(0)) {
               amountLeftToDeposit = 0n;
             }
-            let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
+            let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
 
             function renderFees() {
               switch (true) {
-                case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                case (isBuying && isCapReached) || (!isBuying && managedUsd < 1):
                   return (
                     <Tooltip
                       handle="NA"
@@ -1515,7 +1509,7 @@ export default function GlpSwap(props) {
                       )}
                     />
                   );
-                case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                case (isBuying && !isCapReached) || (!isBuying && managedUsd > 0):
                   return `${formatAmount(tokenFeeBps, 2, 2, true, "-")}${
                     tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? "%" : ""
                   }`;

@@ -47,7 +47,7 @@ export function getPendingDepositKey(data: PendingDepositData) {
       data.initialLongTokenAddress,
       data.longTokenSwapPath.join("-"),
       data.shouldUnwrapNativeToken,
-      data.initialLongTokenAmount.add(data.initialShortTokenAmount).toString(),
+      (data.initialLongTokenAmount + data.initialShortTokenAmount).toString(),
     ].join(":");
   }
 

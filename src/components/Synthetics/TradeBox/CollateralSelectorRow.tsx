@@ -76,7 +76,7 @@ export function CollateralSelectorRow(p: Props) {
       const aLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
       const bLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
 
-      return aLiquidity.gte(bLiquidity) ? -1 : 1;
+      return aLiquidity >= bLiquidity ? -1 : 1;
     });
 
     const getTokenState = (info: TokenInfo) => {

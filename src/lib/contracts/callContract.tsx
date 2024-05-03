@@ -52,7 +52,11 @@ export async function callContract(
 
     txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    await setGasPrice(txnOpts, contract.provider, chainId);
+    if (!contract.runner?.provider) {
+      throw new Error("No provider found on contract.");
+    }
+
+    await setGasPrice(txnOpts, contract.runner.provider, chainId);
 
     const res = await contract[method](...params, txnOpts);
 

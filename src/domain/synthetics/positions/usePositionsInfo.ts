@@ -164,7 +164,7 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
+      const hasLowCollateral = (leverage && leverage > MAX_ALLOWED_LEVERAGE) || false;
 
       const liquidationPrice = getLiquidationPrice({
         marketInfo,

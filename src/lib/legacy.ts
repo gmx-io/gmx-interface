@@ -691,7 +691,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
   let deltaStr;
   let deltaPercentageStr;
 
-  if (delta.gt(0)) {
+  if (delta > 0) {
     deltaStr = hasProfit ? "+" : "-";
     deltaPercentageStr = hasProfit ? "+" : "-";
   } else {
@@ -1281,7 +1281,7 @@ export function getProcessedData(
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
   data.boostBasisPoints = 0n;
-  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx.gt(0)) {
+  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx > 0) {
     data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR, data.bonusGmxInFeeGmx);
   }
 
@@ -1294,7 +1294,7 @@ export function getProcessedData(
   data.feeGmxTrackerAnnualRewardsUsd =
     (stakingData.feeGmxTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR) * nativeTokenPrice) / expandDecimals(1, 18);
   data.gmxAprForNativeToken =
-    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
+    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.feeGmxSupplyUsd)
       : 0n;
   data.gmxBoostAprForNativeToken = mulDiv(data.gmxAprForNativeToken, data.boostBasisPoints, BASIS_POINTS_DIVISOR);
@@ -1448,7 +1448,7 @@ export function getPositionForOrder(account, order, positionsMap) {
 
   const position = positionsMap[key];
 
-  return position && position.size && position.size.gt(0) ? position : null;
+  return position && position.size && position.size > 0 ? position : null;
 }
 
 export function getOrderError(account, order, positionsMap, position) {
@@ -1465,7 +1465,7 @@ export function getOrderError(account, order, positionsMap, position) {
     return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
-  if (positionForOrder.size.gt(order.sizeDelta)) {
+  if (positionForOrder.size > order.sizeDelta) {
     if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
       return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
