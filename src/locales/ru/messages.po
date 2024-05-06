@@ -3791,15 +3791,15 @@ msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
-msgstr "Допускаются только буквы, цифры и знаки подчеркивания.<<<<<<< HEAD"
+msgstr "Допускаются только буквы, цифры и знаки подчеркивания."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
-msgstr "======="
+msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
-msgstr "Открыть приложение Binance>>>>>>> 39b3c52d2 (Update dependencies and add Binance wallet connector)"
+msgstr "Открыть приложение Binance"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
