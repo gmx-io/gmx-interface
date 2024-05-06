@@ -912,7 +912,7 @@ export function TradeBox(p: Props) {
                 selectedMarketLabel={
                   toToken && (
                     <>
-                      <span className="inline-items-center">
+                      <span className="inline-flex items-center">
                         <TokenIcon className="mr-8" symbol={toToken.symbol} importSize={24} displaySize={20} />
                         <span className="Token-symbol-text">{toToken.symbol}</span>
                       </span>
