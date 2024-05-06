@@ -258,6 +258,8 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasExistingOrderWarning) {
+    const address = marketsOptions.collateralWithOrder!.address;
+
     warning.push(
       <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor={textColor}>
         <Trans>
@@ -267,7 +269,7 @@ export const useTradeboxPoolWarnings = (
               className="clickable underline muted"
               onClick={() => {
                 setMarketAddress(marketWithOrder.marketTokenAddress);
-                setCollateralAddress(marketsOptions.collateralWithOrder?.address);
+                setCollateralAddress(address);
               }}
             >
               Switch to {getMarketPoolName(marketWithOrder)} market pool

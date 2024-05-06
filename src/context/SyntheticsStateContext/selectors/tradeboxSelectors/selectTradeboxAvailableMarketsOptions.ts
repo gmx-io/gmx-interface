@@ -33,7 +33,6 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
-  isMarketIndexToken,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
@@ -50,11 +49,13 @@ import {
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { keyBy, values } from "lodash";
+import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   availableIndexTokenStat?: IndexTokenStat;
+  availableMarketsOpenFees?: { [marketTokenAddress: string]: BigNumber };
   marketWithPosition?: MarketInfo;
   /**
    * Collateral token of the position in `marketWithPosition`
@@ -98,7 +99,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
-  const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
+  const availableMarkets = q(selectTradeboxAvailableMarkets);
 
   const liquidMarkets = increaseSizeUsd
     ? availableMarkets.filter((marketInfo) => {
@@ -112,7 +113,12 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     marketsInfoData2IndexTokenStatsMap(keyBy(liquidMarkets, "marketTokenAddress")).indexMap
   )[0];
 
-  const result: AvailableMarketsOptions = { allMarkets, availableMarkets, availableIndexTokenStat };
+  const result: AvailableMarketsOptions = {
+    allMarkets,
+    availableMarkets,
+    availableIndexTokenStat,
+    availableMarketsOpenFees: {},
+  };
 
   if (isIncrease && liquidMarkets.length === 0) {
     result.isNoSufficientLiquidityInAnyMarket = true;
@@ -182,43 +188,47 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  for (const liquidMarket of liquidMarkets) {
-    const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
-    if (!marketIncreasePositionAmounts) {
-      continue;
-    }
+  if (increaseSizeUsd?.gt(0)) {
+    for (const liquidMarket of liquidMarkets) {
+      const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
+      if (!marketIncreasePositionAmounts) {
+        continue;
+      }
 
-    const positionFeeBeforeDiscount = getFeeItem(
-      marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
-      marketIncreasePositionAmounts.sizeDeltaUsd
-    );
+      const positionFeeBeforeDiscount = getFeeItem(
+        marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+        marketIncreasePositionAmounts.sizeDeltaUsd
+      );
 
-    const priceImpactDeltaUsd = getCappedPositionImpactUsd(
-      liquidMarket,
-      marketIncreasePositionAmounts.sizeDeltaUsd,
-      isLong
-    );
+      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
+        liquidMarket,
+        marketIncreasePositionAmounts.sizeDeltaUsd,
+        isLong
+      );
 
-    const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
-      isIncrease: true,
-      isLong,
-      indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
-      priceImpactDeltaUsd: priceImpactDeltaUsd,
-      sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
-    });
+      const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
+        isIncrease: true,
+        isLong,
+        indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+        priceImpactDeltaUsd: priceImpactDeltaUsd,
+        sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
+      });
 
-    const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+      const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
 
-    if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
-      result.minOpenFeesBps = openFees;
-      result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
+      result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
+
+      if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
+        result.minOpenFeesBps = openFees;
+        result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
+      }
     }
   }
 
   return result;
 });
 
-function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
+export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);

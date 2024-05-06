@@ -63,7 +63,7 @@ export function OrderItem(p: Props) {
     setEditingOrderKeyWithArg(p.order.key);
   }, [p.order.key, setEditingOrderKeyWithArg]);
 
-  const isCollateralSwap = initialCollateralToken.address !== targetCollateralToken.address;
+  const isCollateralSwap = shouldUnwrapNativeToken || initialCollateralToken.address !== targetCollateralToken.address;
 
   function getCollateralText() {
     const collateralUsd = convertToUsd(

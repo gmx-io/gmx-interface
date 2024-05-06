@@ -143,6 +143,7 @@ export function getOrderInfo(p: {
       initialCollateralAddress: order.initialCollateralTokenAddress,
       wrappedNativeTokenAddress: wrappedNativeToken.address,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      isIncrease: false,
     });
 
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
@@ -214,6 +215,7 @@ export function getOrderInfo(p: {
       initialCollateralAddress: order.initialCollateralTokenAddress,
       wrappedNativeTokenAddress: wrappedNativeToken.address,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      isIncrease: isIncreaseOrderType(order.orderType),
     });
 
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
