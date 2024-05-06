@@ -52,7 +52,7 @@ export function useOrdersInfoRequest(
 
         if (!orderInfo) {
           // eslint-disable-next-line no-console
-          console.warn(`OrderInfo parsing error`, JSON.stringify(order));
+          console.warn(`OrderInfo parsing error`, order);
 
           return acc;
         }
