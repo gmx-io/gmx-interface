@@ -10,7 +10,7 @@ import {
   getTwitterIntentURL,
   isAddressZero,
 } from "lib/legacy";
-import { bigNumberify, formatAmount, removeTrailingZeros } from "lib/numbers";
+import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
@@ -97,15 +97,7 @@ export function deserializeSampleStats(input) {
   return parsedData
     .map((data) => {
       if (!areObjectsWithSameKeys(getSampleReferrarStat(), data)) return null;
-      return Object.keys(data).reduce((acc, cv) => {
-        const currentValue = data[cv];
-        if (currentValue?.type === "BigNumber") {
-          acc[cv] = bigNumberify(currentValue.hex ?? 0);
-        } else {
-          acc[cv] = currentValue;
-        }
-        return acc;
-      }, {});
+      return deserializeBigIntsInObject(data);
     })
     .filter(Boolean);
 }

@@ -110,7 +110,10 @@ export const formatSwapMessage = (
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
-    : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(ARROW_SEPARATOR);
+    : tradeAction.swapPath
+        ?.filter((marketAddress) => marketsInfoData?.[marketAddress])
+        .map((marketAddress) => marketsInfoData?.[marketAddress].name)
+        .join(ARROW_SEPARATOR);
 
   const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
     ? undefined

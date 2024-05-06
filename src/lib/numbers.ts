@@ -396,3 +396,57 @@ export function removeTrailingZeros(amount: string | number) {
   if (!amountWithoutZeros) return amount;
   return amountWithoutZeros;
 }
+
+type SerializedBigIntsInObject<T> = {
+  [P in keyof T]: T[P] extends bigint
+    ? { type: "bigint"; value: bigint }
+    : T[P] extends object
+    ? SerializedBigIntsInObject<T[P]>
+    : T[P];
+};
+
+type DeserializeBigIntInObject<T> = {
+  [P in keyof T]: T[P] extends { type: "bigint"; value: bigint }
+    ? bigint
+    : T[P] extends object
+    ? DeserializeBigIntInObject<T[P]>
+    : T[P];
+};
+
+export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBigIntsInObject<T> {
+  const result: any = Array.isArray(obj) ? [] : {};
+  for (const key in obj) {
+    const value = obj[key];
+    if (typeof value === "bigint") {
+      result[key] = { type: "bigint", value: String(value) };
+    } else if (value && typeof value === "object") {
+      result[key] = serializeBigIntsInObject(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+export function deserializeBigIntsInObject<T extends object>(obj: T): DeserializeBigIntInObject<T> {
+  const result: any = Array.isArray(obj) ? [] : {};
+  for (const key in obj) {
+    const value = obj[key];
+    if (typeof value === "object" && value !== null && "type" in value && value.type === "bigint") {
+      if ("value" in value && typeof value.value === "string") {
+        result[key] = BigInt(value.value);
+      } else if ("hex" in value && typeof value.hex === "string") {
+        if (value.hex.startsWith("-")) {
+          result[key] = BigInt(value.hex.slice(1)) * -1n;
+        } else {
+          result[key] = BigInt(value.hex);
+        }
+      }
+    } else if (value && typeof value === "object") {
+      result[key] = deserializeBigIntsInObject(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}

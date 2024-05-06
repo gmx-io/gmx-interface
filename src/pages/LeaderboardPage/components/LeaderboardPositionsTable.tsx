@@ -3,7 +3,6 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { abs, formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -24,9 +23,10 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
+import { bigMath } from "lib/bigmath";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -535,7 +535,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {

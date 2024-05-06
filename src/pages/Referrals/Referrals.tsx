@@ -29,6 +29,7 @@ import "./Referrals.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { serializeBigIntsInObject } from "lib/numbers";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -52,7 +53,9 @@ function Referrals() {
     {
       raw: false,
       deserializer: deserializeSampleStats as any,
-      serializer: (value) => JSON.stringify(value),
+      serializer: (value) => {
+        return JSON.stringify(serializeBigIntsInObject(value));
+      },
     }
   );
   const { data: referralsData, loading } = useReferralsData(account);
