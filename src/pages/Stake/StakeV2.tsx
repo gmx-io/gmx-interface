@@ -284,7 +284,7 @@ function UnstakeModal(props) {
     burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
   }
 
-  const unstakeGmxPercentage = amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount);
+  const unstakeGmxPercentage = maxAmount?.gt(0) ? amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount) : BigNumber.from(0);
 
   let unstakeBonusLostPercentage;
   if (amount?.gt(0) && multiplierPointsAmount?.gt(0)) {
@@ -971,8 +971,12 @@ function ClaimModal(props) {
     true
   );
 
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const isUndelegatedGovToken = govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+
   const isPrimaryEnabled = () => {
-    return !isClaiming;
+    return !isClaiming && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
@@ -1024,6 +1028,16 @@ function ClaimModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+              </ExternalLink>
+              <span>&nbsp;voting power before compounding.</span>
+            </Trans>
+          </AlertInfo>
+        ) : null}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>

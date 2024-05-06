@@ -76,6 +76,7 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
 msgstr ""
 
