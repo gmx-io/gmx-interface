@@ -151,7 +151,7 @@ export function ClaimModal(p: Props) {
         </div>
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
-            className="ClaimSettleModal-tooltip-text-grey"
+            className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
             handle={t`FUNDING FEE`}
             renderContent={() => (

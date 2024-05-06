@@ -26,10 +26,7 @@ const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = BigNumber.from(10).pow(25); /
 
 const SPACE = " ";
 
-export const useTradeboxPoolWarnings = (
-  withActions = true,
-  textColor: "text-warning" | "text-gray" = "text-warning"
-) => {
+export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yellow" | "text-gray" = "text-yellow") => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useTradeboxIncreasePositionAmounts();

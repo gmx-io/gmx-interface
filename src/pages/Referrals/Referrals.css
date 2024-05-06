@@ -172,10 +172,6 @@
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
 }
 
-.text-center {
-  text-align: center;
-}
-
 .info-card {
   min-height: 13rem;
   background: var(--dark-blue-bg);

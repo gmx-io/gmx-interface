@@ -14,7 +14,7 @@ interface Props {
   /**
    * @default "text-gray"
    */
-  textColor?: "text-gray" | "text-warning";
+  textColor?: "text-gray" | "text-yellow";
 }
 
 export function AlertInfo({ compact = false, children, type, textColor = "text-gray", className }: Props) {

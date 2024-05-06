@@ -27,6 +27,7 @@ module.exports = {
       yellow: "rgb(243, 181, 12)",
       red: "#fa3c58",
       green: "#0ecc83",
+      white: "#ffffff",
     },
   },
   plugins: [],

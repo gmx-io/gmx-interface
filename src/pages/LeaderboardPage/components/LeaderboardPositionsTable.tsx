@@ -286,7 +286,7 @@ const TableRow = memo(
     const renderPositionTooltip = useCallback(() => {
       return (
         <>
-          <div className="items-top mr-xs lh-1">
+          <div className="items-top mr-8 lh-1">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>
