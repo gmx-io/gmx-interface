@@ -5,7 +5,7 @@ export default function GMListSkeletonStructure() {
     <tr>
       <td>
         <div className="flex items-center">
-          <Skeleton className="mr-16" height={40} width={40} circle />
+          <Skeleton className="mr-10" height={40} width={40} circle />
           <div>
             <Skeleton width={60} height={12} />
             <Skeleton width={40} height={12} />

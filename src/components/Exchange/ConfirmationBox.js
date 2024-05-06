@@ -888,7 +888,7 @@ export default function ConfirmationBox(props) {
           <Button
             variant="primary-action"
             onClick={onConfirmationClick}
-            className="w-full mt-16"
+            className="w-full mt-10"
             disabled={!isPrimaryEnabled()}
             type="submit"
           >

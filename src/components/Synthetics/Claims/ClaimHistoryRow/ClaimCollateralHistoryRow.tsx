@@ -66,7 +66,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-8"
+            className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />

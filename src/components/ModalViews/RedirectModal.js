@@ -49,7 +49,7 @@ export function RedirectPopupModal({
         <br />
         <br />
       </Trans>
-      <div className="mb-24">
+      <div className="mb-15">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
           <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>

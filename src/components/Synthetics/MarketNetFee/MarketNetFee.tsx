@@ -36,7 +36,7 @@ export default function MarketNetFee(props: Props) {
 
   return (
     <>
-      <div className="text-gray mb-8">
+      <div className="text-gray mb-5">
         {positionType} {netRate}:
       </div>
       <ul className="net-fees-over-time">
@@ -54,7 +54,7 @@ export default function MarketNetFee(props: Props) {
           );
         })}
       </ul>
-      <div className="mt-8">
+      <div className="mt-5">
         <NetFeeMessage {...props} />
       </div>
     </>

@@ -1021,7 +1021,7 @@ export function ConfirmationBox(p: Props) {
 
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
-        <div className="mb-16">
+        <div className="mb-10">
           <AlertInfo compact type="warning">
             <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
           </AlertInfo>
@@ -1078,7 +1078,7 @@ export function ConfirmationBox(p: Props) {
                 entriesInfo?.entries?.map((entry, index) => {
                   if (!entry || !entry.amounts) return;
                   return (
-                    <div className="flex justify-between mb-8" key={index}>
+                    <div className="flex justify-between mb-5" key={index}>
                       <span className="mr-15">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>

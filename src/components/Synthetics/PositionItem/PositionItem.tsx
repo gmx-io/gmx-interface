@@ -363,7 +363,7 @@ export function PositionItem(p: Props) {
                   errors.map((error) => (
                     <span
                       key={error.key}
-                      className={cx("mb-8", "position-order-error", {
+                      className={cx("mb-5", "position-order-error", {
                         "level-warning": level === "warning",
                         "level-error": level === "error",
                       })}

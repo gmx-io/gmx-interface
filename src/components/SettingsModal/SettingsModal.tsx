@@ -175,7 +175,7 @@ export function SettingsModal({
           </div>
           {parseFloat(executionFeeBufferBps) <
             (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-24">
+            <div className="mb-15">
               <AlertInfo type="warning">
                 <Trans>
                   Max Execution Fee buffer below{" "}

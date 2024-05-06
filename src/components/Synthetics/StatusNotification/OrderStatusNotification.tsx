@@ -376,7 +376,7 @@ export function OrdersStatusNotificiation({
           </div>
           <div className="inline-flex items-center">
             {createdTxnHashList?.map((txnHash) => (
-              <ExternalLink key={txnHash} className="ml-16" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+              <ExternalLink key={txnHash} className="ml-10" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
                 View
               </ExternalLink>
             ))}

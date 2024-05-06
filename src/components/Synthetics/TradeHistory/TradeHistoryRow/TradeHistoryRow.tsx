@@ -184,7 +184,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               </span>
             )}
             <ExternalLink
-              className="TradeHistoryRow-external-link ml-8"
+              className="TradeHistoryRow-external-link ml-5"
               href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
             >
               <NewLink20ReactComponent />

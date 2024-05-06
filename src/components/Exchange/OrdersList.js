@@ -34,7 +34,7 @@ function getOrderTitle(order, indexTokenSymbol) {
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
   const symbolWithIcon = (
     <>
-      <TokenIcon className="mx-4" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
+      <TokenIcon className="mx-[2.5px]" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
     </>
   );
 
