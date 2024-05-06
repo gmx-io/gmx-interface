@@ -448,8 +448,8 @@ export function getOrderErrors(p: {
       errors.push({
         msg: (
           <Trans>
-            The Order may not execute as the Max.&nbsp;Allowed&nbsp;Leverage is exceeded. Consider decreasing the
-            Order's Leverage by editing and decreasing its Size.{" "}
+            The order may not execute as the max.&nbsp;allowed&nbsp;leverage is exceeded. Consider decreasing the
+            order's leverage by editing and decreasing its size.{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
           </Trans>
         ),
@@ -524,7 +524,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
   });
 }
 
-export function getIsMaxLeverageError(
+function getIsMaxLeverageError(
   order: PositionOrderInfo,
   position: PositionInfo | undefined,
   findSwapPath: FindSwapPath,
@@ -550,8 +550,8 @@ export function getIsMaxLeverageError(
   const collateralDeltaAmount = swapAmounts.amountOut;
   const collateralDeltaUsd = convertToUsd(
     collateralDeltaAmount,
-    order.initialCollateralToken.decimals,
-    order.initialCollateralToken.prices.minPrice
+    order.targetCollateralToken.decimals,
+    order.targetCollateralToken.prices.minPrice
   );
 
   if (!collateralDeltaUsd) return false;
