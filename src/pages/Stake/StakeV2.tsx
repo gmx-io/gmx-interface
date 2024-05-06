@@ -1858,7 +1858,7 @@ export default function StakeV2() {
                     handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
-                      <GMXAprTooltip processedData={processedData!} nativeTokenSymbol={nativeTokenSymbol} />
+                      <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
                   />
                 </div>
@@ -1874,7 +1874,7 @@ export default function StakeV2() {
                       position="bottom-end"
                       renderContent={() => (
                         <GMXAprTooltip
-                          processedData={processedData!}
+                          processedData={processedData}
                           nativeTokenSymbol={nativeTokenSymbol}
                           recommendStakeGmx={recommendStakeGmx}
                           isUserConnected={true}
