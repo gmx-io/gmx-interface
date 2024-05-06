@@ -56,11 +56,27 @@ export function Providers({ children }: ProvidersProps) {
         border: 1px solid #ffffff29;
         border-radius: 10px;
      }
-     .input__container .input {
-      background : #1e1e1e;
+
+     .connect-button {
+      background : transparent;
+     }
+
+     .badge__container {
+      background-color : #302128;
+     }
+     .badge__container, .badge__dot{
+      border-radius: 6px;
+      
+     }
+
+     .input__container .input, .modal-card {
+      background : #111320;
+     }
+     .input__container .input:not(.input__error):focus, .input__container .input:not(.input__error):hover {
+      background : #111320;
      }
      .dynamic-widget-card, .evm-network-control__container, .dropdown{
-        background-color : #1e1e1e;
+        background-color : #111320;
      }
      
 `
