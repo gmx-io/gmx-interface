@@ -69,7 +69,7 @@ const SubaccountNotificationImpl = ({
         return (
           <div className="flex justify-between">
             <Trans>Pending Wallet transaction sign</Trans>
-            <SpinningLoader className="mr-8 self-center" />
+            <SpinningLoader className="mr-5 self-center" />
           </div>
         );
       return <Trans>Subaccount is updated</Trans>;
@@ -79,11 +79,11 @@ const SubaccountNotificationImpl = ({
       <div>
         <div className="flex justify-between">
           {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
-          {step === "generating" ? <SpinningLoader className="mr-8 self-center" /> : null}
+          {step === "generating" ? <SpinningLoader className="mr-5 self-center" /> : null}
         </div>
         <div className="flex justify-between">
           {step === "activated" ? <Trans>Subaccount activated</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
-          {step === "activating" ? <SpinningLoader className="mr-8 self-center" /> : null}
+          {step === "activating" ? <SpinningLoader className="mr-5 self-center" /> : null}
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ const SubaccountNotificationImpl = ({
       content = (
         <div className="flex justify-between">
           <Trans>Deactivating subaccount</Trans>
-          <SpinningLoader className="mr-8 self-center" />
+          <SpinningLoader className="mr-5 self-center" />
         </div>
       );
       break;

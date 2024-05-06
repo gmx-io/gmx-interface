@@ -591,7 +591,7 @@ export default function PositionEditor(props) {
                   {isDeposit ? (
                     <>
                       <TokenIcon
-                        className="mr-8"
+                        className="mr-5"
                         symbol={position.collateralToken.symbol}
                         displaySize={20}
                         importSize={24}

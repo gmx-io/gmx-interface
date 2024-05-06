@@ -1082,7 +1082,7 @@ export default function GlpSwap(props) {
                 topLeftValue={payBalance}
               >
                 <div className="selected-token inline-flex items-center">
-                  <img className="mr-8" width={20} src={glpIcon} alt="GLP" />
+                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>
@@ -1113,7 +1113,7 @@ export default function GlpSwap(props) {
                 preventFocusOnLabelClick="right"
               >
                 <div className="selected-token inline-flex items-center">
-                  <img className="mr-8" width={20} src={glpIcon} alt="GLP" />
+                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>

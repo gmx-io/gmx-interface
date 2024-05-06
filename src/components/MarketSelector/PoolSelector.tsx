@@ -248,7 +248,7 @@ export function PoolSelector({
         <div className="inline-flex items-center">
           {showIndexIcon && (
             <TokenIcon
-              className="mr-8"
+              className="mr-5"
               symbol={
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

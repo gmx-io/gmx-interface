@@ -14,7 +14,7 @@ export default function TokenWithIcon({ symbol, className, importSize, displaySi
   if (!symbol) return <></>;
   return (
     <span className={classNames}>
-      <TokenIcon className="mr-8" symbol={symbol} importSize={importSize} displaySize={displaySize} />
+      <TokenIcon className="mr-5" symbol={symbol} importSize={importSize} displaySize={displaySize} />
       {symbol}
     </span>
   );

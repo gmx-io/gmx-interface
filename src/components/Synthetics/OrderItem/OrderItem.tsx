@@ -240,7 +240,7 @@ export function OrderItem(p: Props) {
 
       const fromTokenWithIcon = (
         <span className="whitespace-nowrap">
-          <TokenIcon className="mr-8" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
+          <TokenIcon className="mr-5" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
           {initialCollateralToken.symbol}
         </span>
       );
@@ -249,7 +249,7 @@ export function OrderItem(p: Props) {
 
       const toTokenWithIcon = (
         <span className="whitespace-nowrap">
-          <TokenIcon className="mr-8" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
+          <TokenIcon className="mr-5" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
           {targetCollateralToken.symbol}
         </span>
       );
@@ -266,7 +266,7 @@ export function OrderItem(p: Props) {
 
       const symbolWithIcon = (
         <span>
-          {indexToken && <TokenIcon className="mr-8" symbol={indexToken?.symbol} displaySize={18} importSize={24} />}
+          {indexToken && <TokenIcon className="mr-5" symbol={indexToken?.symbol} displaySize={18} importSize={24} />}
           {indexToken?.symbol}
         </span>
       );

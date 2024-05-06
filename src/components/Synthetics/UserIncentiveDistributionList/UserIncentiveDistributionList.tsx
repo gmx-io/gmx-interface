@@ -78,7 +78,7 @@ export default function UserIncentiveDistributionList() {
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
-        className="mt-16"
+        className="!mt-10"
       >
         {!active && (
           <div className="mt-24">

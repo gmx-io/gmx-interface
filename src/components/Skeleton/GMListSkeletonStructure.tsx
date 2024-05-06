@@ -32,7 +32,7 @@ export default function GMListSkeletonStructure() {
           <Skeleton width={60} count={1} />
         </td>
         <td>
-          <Skeleton width={150} inline count={2} className="mr-8" />
+          <Skeleton width={150} inline count={2} className="mr-5" />
         </td>
       </>
     </tr>
