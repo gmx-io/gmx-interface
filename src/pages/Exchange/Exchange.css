@@ -725,7 +725,7 @@ table.Position-list .Exchange-list-item-active {
   outline-color: #3a3f79;
 }
 
-.Exchange-swap-option-tabs.Tab.block .Tab-option {
+.Exchange-swap-option-tabs.Tab.Tab__block .Tab-option {
   padding: 1.05rem;
 }
 
@@ -733,7 +733,7 @@ table.Position-list .Exchange-list-item-active {
   margin-top: 1.5rem;
 }
 
-.Exchange-swap-option-tabs.Tab.block .Tab-option-icon {
+.Exchange-swap-option-tabs.Tab.Tab__block .Tab-option-icon {
   margin-top: -0.155rem;
   transform: scale(0.75);
   vertical-align: middle;

@@ -71,7 +71,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   className="text-white ClaimHistoryRow-tooltip-row inline-flex items-start"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-none">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -99,7 +99,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   className="text-white ClaimHistoryRow-tooltip-row inline-flex items-start"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-none">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -143,7 +143,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
             label={
               <div className="flex items-start text-white">
                 <span>{indexName}</span>
-                <span className="subtext leading-none">[{poolName}]</span>
+                <span className="subtext leading-1">[{poolName}]</span>
               </div>
             }
             showDollar={false}

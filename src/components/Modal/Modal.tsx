@@ -87,7 +87,7 @@ export default function Modal({
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
                 <div className="Modal-title">{label}</div>
-                <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
+                <div className="Modal-close-button h-23" onClick={() => setIsVisible(false)}>
                   <MdClose fontSize={20} className="Modal-close-icon" />
                 </div>
               </div>

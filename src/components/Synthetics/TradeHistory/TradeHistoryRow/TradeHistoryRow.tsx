@@ -125,7 +125,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           value={
             <div className="flex items-center">
               <span>{msg.indexName!}</span>
-              <span className="subtext leading-none">[{msg.poolName!}]</span>
+              <span className="subtext leading-1">[{msg.poolName!}]</span>
             </div>
           }
           showDollar={false}
@@ -139,7 +139,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <span key={market.indexName}>
             {index > 0 && " → "}
             <span>{market.indexName}</span>
-            <span className="subtext leading-none">[{market.poolName}]</span>
+            <span className="subtext leading-1">[{market.poolName}]</span>
           </span>
         ))}
       </>

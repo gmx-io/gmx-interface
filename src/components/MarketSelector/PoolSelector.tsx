@@ -152,7 +152,7 @@ export function PoolSelector({
         label={label}
         headerContent={() => (
           <SearchInput
-            className="mt-24"
+            className="mt-15"
             value={searchKeyword}
             setValue={(e) => setSearchKeyword(e.target.value)}
             placeholder={t`Search Pool`}
@@ -214,7 +214,7 @@ export function PoolSelector({
                   <div className="Token-symbol">
                     <div className="Token-text">
                       {showAllPools ? (
-                        <div className="leading-none flex items-center">
+                        <div className="leading-1 flex items-center">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>

@@ -100,7 +100,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                 label={
                   <div className="flex items-start text-white">
                     <span>{indexName}</span>
-                    <span className="subtext leading-none">[{poolName}]</span>
+                    <span className="subtext leading-1">[{poolName}]</span>
                   </div>
                 }
                 showDollar={false}

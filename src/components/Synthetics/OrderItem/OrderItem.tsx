@@ -184,7 +184,7 @@ export function OrderItem(p: Props) {
                 value={
                   <div className="flex items-center">
                     <span>{indexName && indexName}</span>
-                    <span className="subtext leading-none">{poolName && `[${poolName}]`}</span>
+                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
                 showDollar={false}

@@ -809,7 +809,7 @@ export default function DashboardV2() {
           </div>
           <PageTitle
             title={t`Tokens`}
-            afterTitle={<VersionSwitch className="ml-24" />}
+            afterTitle={<VersionSwitch className="ml-15" />}
             subtitle={
               tradePageVersion === 1 ? (
                 <>

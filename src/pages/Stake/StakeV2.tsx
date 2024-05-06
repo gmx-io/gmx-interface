@@ -1874,7 +1874,7 @@ export default function StakeV2() {
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
               <div className="inline-flex items-center">
-                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
                 {t`GMX & Voting Power`}
               </div>
             </div>

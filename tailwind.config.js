@@ -20,6 +20,11 @@ module.exports = {
       lg: "2.4rem",
       xl: "3.4rem",
     },
+    lineHeight: {
+      1: "1",
+      // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
+      base: "normal",
+    },
     // @see https://tailwindcss.com/docs/customizing-colors
     colors: {
       blue: "#2d42fc",
@@ -28,6 +33,9 @@ module.exports = {
       red: "#fa3c58",
       green: "#0ecc83",
       white: "#ffffff",
+    },
+    placeholderColor: {
+      gray: "rgb(117, 117, 117)",
     },
   },
   plugins: [],

@@ -60,7 +60,7 @@ export default function ChartTokenSelector(props: Props) {
               <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
               <div className="inline-flex">
                 <span>{indexName}</span>
-                <span className="subtext gm-toast lh-1">[{poolName}]</span>
+                <span className="subtext gm-toast leading-1">[{poolName}]</span>
               </div>{" "}
               <span>market selected</span>
             </Trans>

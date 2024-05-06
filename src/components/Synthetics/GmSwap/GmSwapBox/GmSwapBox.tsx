@@ -741,7 +741,7 @@ export function GmSwapBox(p: Props) {
               <Trans>
                 <div className="inline-flex">
                   GM:&nbsp;<span>{indexName}</span>
-                  <span className="subtext gm-toast lh-1">[{poolName}]</span>
+                  <span className="subtext gm-toast leading-1">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
               </Trans>
