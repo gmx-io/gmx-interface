@@ -164,13 +164,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
         <ExchangeInfoRow
           label={
-            netRateHourly?.gt(0) ? (
-              t`Net Rebate`
-            ) : (
-              <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
-                <Trans>Net Rate</Trans>
-              </TooltipWithPortal>
-            )
+            <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate</Trans>
+            </TooltipWithPortal>
           }
           value={
             <TooltipWithPortal

@@ -3617,11 +3617,6 @@ msgstr "Taux net"
 msgid "Net Rate / 1h"
 msgstr "Taux net / 1h"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Rebate"
-msgstr ""
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
