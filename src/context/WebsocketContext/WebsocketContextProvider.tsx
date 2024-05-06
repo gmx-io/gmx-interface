@@ -74,14 +74,10 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
 
         if (isDevelopment() && isReconnectingIntervalPassed) {
+          let subsCount = 0;
+          wsProvider._forEachSubscriber(() => subsCount++);
           // eslint-disable-next-line no-console
-          console.log(
-            `ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${
-              // FIXME
-              // Object.keys(wsProvider._subs).length
-              "FIXME"
-            }`
-          );
+          console.log(`ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${subsCount}`);
         }
 
         if (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) {

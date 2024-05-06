@@ -11,6 +11,7 @@ import {
 } from "config/chains";
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { isDevelopment } from "config/env";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -76,6 +77,9 @@ export function useJsonRpcProvider(chainId: number) {
 
       const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
 
+      provider._start();
+      await provider._waitUntilReady();
+
       setProvider(provider);
     }
 
@@ -96,11 +100,26 @@ export enum WSReadyState {
   CLOSED = 3,
 }
 
+const readyStateByEnum = {
+  [WSReadyState.CONNECTING]: "connecting",
+  [WSReadyState.OPEN]: "open",
+  [WSReadyState.CLOSING]: "closing",
+  [WSReadyState.CLOSED]: "closed",
+};
+
 export function isProviderInClosedState(wsProvider: WebSocketProvider) {
   return [WSReadyState.CLOSED, WSReadyState.CLOSING].includes(wsProvider.websocket.readyState);
 }
 
 export function closeWsConnection(wsProvider: WebSocketProvider) {
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.log(
+      "closing ws connection, state =",
+      readyStateByEnum[wsProvider.websocket.readyState] ?? wsProvider.websocket.readyState
+    );
+  }
+
   if (isProviderInClosedState(wsProvider)) {
     return;
   }
