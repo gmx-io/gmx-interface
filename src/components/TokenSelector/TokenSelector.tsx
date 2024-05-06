@@ -170,7 +170,7 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         headerContent={() => (
           <SearchInput
-            className="mt-24"
+            className="mt-15"
             value={searchKeyword}
             setValue={onSearchKeywordChange}
             onKeyDown={_handleKeyDown}

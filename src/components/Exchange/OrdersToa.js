@@ -75,7 +75,7 @@ export default function OrdersToa(props) {
       <Button
         variant="primary-action"
         disabled={!isPrimaryEnabled()}
-        className="w-full mt-24"
+        className="w-full mt-15"
         onClick={onConfirmationClick}
       >
         {getPrimaryText()}

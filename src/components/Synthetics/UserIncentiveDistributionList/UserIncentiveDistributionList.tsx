@@ -81,7 +81,7 @@ export default function UserIncentiveDistributionList() {
         className="!mt-10"
       >
         {!active && (
-          <div className="mt-24">
+          <div className="mt-15">
             <Button variant="secondary" onClick={openConnectModal}>
               <Trans>Connect Wallet</Trans>
             </Button>

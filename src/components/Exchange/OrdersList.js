@@ -455,10 +455,10 @@ export default function OrdersList(props) {
                 <>
                   <div className="App-card-divider"></div>
                   <div className="remove-top-margin">
-                    <Button variant="secondary" className="mr-24 mt-24" onClick={() => onEditClick(order)}>
+                    <Button variant="secondary" className="mr-15 mt-15" onClick={() => onEditClick(order)}>
                       <Trans>Edit</Trans>
                     </Button>
-                    <Button variant="secondary" className="mt-24" onClick={() => onCancelClick(order)}>
+                    <Button variant="secondary" className="mt-15" onClick={() => onCancelClick(order)}>
                       <Trans>Cancel</Trans>
                     </Button>
                   </div>
@@ -543,10 +543,10 @@ export default function OrdersList(props) {
               <>
                 <div className="App-card-divider"></div>
                 <div className="remove-top-margin">
-                  <Button variant="secondary" className="mr-24 mt-24" onClick={() => onEditClick(order)}>
+                  <Button variant="secondary" className="mr-15 mt-15" onClick={() => onEditClick(order)}>
                     <Trans>Edit</Trans>
                   </Button>
-                  <Button variant="secondary" className="mt-24" onClick={() => onCancelClick(order)}>
+                  <Button variant="secondary" className="mt-15" onClick={() => onCancelClick(order)}>
                     <Trans>Cancel</Trans>
                   </Button>
                 </div>

@@ -449,12 +449,12 @@ export function OrderItem(p: Props) {
           <div className="App-card-actions">
             <div className="App-card-divider"></div>
             <div className="remove-top-margin">
-              <Button variant="secondary" className="mr-24 mt-24" onClick={setEditingOrderKey}>
+              <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
 
               {p.onCancelOrder && (
-                <Button variant="secondary" className="mt-24" onClick={p.onCancelOrder}>
+                <Button variant="secondary" className="mt-15" onClick={p.onCancelOrder}>
                   <Trans>Cancel</Trans>
                 </Button>
               )}

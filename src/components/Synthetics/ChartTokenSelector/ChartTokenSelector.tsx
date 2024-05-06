@@ -98,7 +98,7 @@ export default function ChartTokenSelector(props: Props) {
             <div className="chart-token-menu">
               <Popover.Panel as="div" className={cx("menu-items chart-token-menu-items", { isSwap: isSwap })}>
                 <SearchInput
-                  className="m-24"
+                  className="m-15"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {

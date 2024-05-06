@@ -1079,7 +1079,7 @@ export function ConfirmationBox(p: Props) {
                   if (!entry || !entry.amounts) return;
                   return (
                     <div className="flex justify-between mb-8" key={index}>
-                      <span className="mr-24">
+                      <span className="mr-15">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
                       <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>

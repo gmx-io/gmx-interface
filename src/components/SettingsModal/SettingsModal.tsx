@@ -220,7 +220,7 @@ export function SettingsModal({
         </div>
       )}
 
-      <Button variant="primary-action" className="w-full mt-24" onClick={saveAndCloseSettings}>
+      <Button variant="primary-action" className="w-full mt-15" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
     </Modal>
