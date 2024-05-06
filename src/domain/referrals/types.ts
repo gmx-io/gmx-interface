@@ -4,7 +4,7 @@ export type UserReferralInfo = {
   referralCodeForTxn: string;
   attachedOnChain: boolean;
   affiliate: string;
-  tierId: bigint;
+  tierId: number;
   totalRebate: bigint;
   totalRebateFactor: bigint;
   discountShare: bigint;
@@ -101,7 +101,7 @@ export type TraderReferralTotalStats = {
 
 export type TierInfo = {
   id: string;
-  tierId: bigint;
+  tierId: number;
   discountShare: bigint;
 };
 

@@ -25,7 +25,7 @@ import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   referralsData?: TotalReferralsStats;
-  traderTier?: bigint;
+  traderTier?: number;
   chainId: number;
   userReferralCodeString?: string;
   discountShare: bigint | undefined;

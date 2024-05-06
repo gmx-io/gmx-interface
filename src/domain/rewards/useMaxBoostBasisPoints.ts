@@ -15,5 +15,5 @@ export function useMaxBoostBasicPoints() {
     fetcher: contractFetcher(signer, RewardRouter),
   });
 
-  return maxBoostPoints;
+  return maxBoostPoints ?? 0n;
 }

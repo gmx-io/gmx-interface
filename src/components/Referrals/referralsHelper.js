@@ -72,8 +72,9 @@ export const tierDiscountInfo = {
 };
 
 export function getSharePercentage(tierId, discountShare, totalRebate, isRebate) {
-  if (!tierId || !totalRebate) return;
-  if (!discountShare) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+  if (tierId === undefined || totalRebate === undefined) return;
+  if (discountShare === undefined || discountShare === 0n)
+    return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
   const decimals = 4;
 
   const discount = bigMath.mulDiv(

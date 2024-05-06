@@ -107,7 +107,7 @@ export function useAffiliateTier(signer, chainId, account) {
     }
   );
   return {
-    affiliateTier,
+    affiliateTier: Number(affiliateTier),
     mutateReferrerTier,
   };
 }
