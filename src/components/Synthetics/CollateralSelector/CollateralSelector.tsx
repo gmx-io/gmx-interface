@@ -9,13 +9,13 @@ import { helperToast } from "lib/helperToast";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
-  Selector2Base,
-  Selector2BaseDesktopRow,
-  Selector2BaseMobileButton,
-  Selector2BaseMobileList,
-  Selector2BaseTableHeadRow,
-  useSelector2Close,
-} from "../Selector2Base/Selector2Base";
+  SelectorBase,
+  SelectorBaseDesktopRow,
+  SelectorBaseMobileButton,
+  SelectorBaseMobileList,
+  SelectorBaseTableHeadRow,
+  useSelectorClose,
+} from "../SelectorBase/SelectorBase";
 
 import "./CollateralSelector.scss";
 
@@ -31,23 +31,23 @@ export function CollateralSelector(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
-    <Selector2Base label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>
+    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
-    </Selector2Base>
+    </SelectorBase>
   );
 }
 
 function CollateralSelectorDesktop(props: Props) {
-  const close = useSelector2Close();
+  const close = useSelectorClose();
 
   return (
     <table className="CollateralSelector-table">
       <thead>
-        <Selector2BaseTableHeadRow>
+        <SelectorBaseTableHeadRow>
           <th>
             <Trans>Collateral In</Trans>
           </th>
-        </Selector2BaseTableHeadRow>
+        </SelectorBaseTableHeadRow>
       </thead>
       <tbody>
         {props.options?.map((option) => (
@@ -92,7 +92,7 @@ function CollateralListItemDesktop({
 
   if (disabled) {
     return (
-      <Selector2BaseDesktopRow
+      <SelectorBaseDesktopRow
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
@@ -105,12 +105,12 @@ function CollateralListItemDesktop({
           />
           <div>{tokenData.symbol}</div>
         </td>
-      </Selector2BaseDesktopRow>
+      </SelectorBaseDesktopRow>
     );
   }
 
   return (
-    <Selector2BaseDesktopRow onClick={handleClick}>
+    <SelectorBaseDesktopRow onClick={handleClick}>
       <td className="CollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}
@@ -120,15 +120,15 @@ function CollateralListItemDesktop({
         />
         <div>{tokenData.symbol}</div>
       </td>
-    </Selector2BaseDesktopRow>
+    </SelectorBaseDesktopRow>
   );
 }
 
 function CollateralSelectorMobile(props: Props) {
-  const close = useSelector2Close();
+  const close = useSelectorClose();
 
   return (
-    <Selector2BaseMobileList>
+    <SelectorBaseMobileList>
       {props.options?.map((option) => (
         <CollateralListItemMobile
           key={option.address}
@@ -142,7 +142,7 @@ function CollateralSelectorMobile(props: Props) {
       {props.disabledOptions?.map((option) => (
         <CollateralListItemMobile key={option.address} onSelect={noop} tokenData={option} disabled />
       ))}
-    </Selector2BaseMobileList>
+    </SelectorBaseMobileList>
   );
 }
 
@@ -174,7 +174,7 @@ function CollateralListItemMobile({
   }, [tokenData.symbol]);
 
   return (
-    <Selector2BaseMobileButton onSelect={handleSelect} disabled={disabled}>
+    <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
       <div className="CollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}
@@ -184,6 +184,6 @@ function CollateralListItemMobile({
         />
         <div>{tokenData.symbol}</div>
       </div>
-    </Selector2BaseMobileButton>
+    </SelectorBaseMobileButton>
   );
 }

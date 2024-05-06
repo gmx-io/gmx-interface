@@ -12,13 +12,13 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
-  Selector2Base,
-  Selector2BaseDesktopRow,
-  Selector2BaseMobileButton,
-  Selector2BaseMobileList,
-  Selector2BaseTableHeadRow,
-  useSelector2Close,
-} from "../Selector2Base/Selector2Base";
+  SelectorBase,
+  SelectorBaseDesktopRow,
+  SelectorBaseMobileButton,
+  SelectorBaseMobileList,
+  SelectorBaseTableHeadRow,
+  useSelectorClose,
+} from "../SelectorBase/SelectorBase";
 
 import "./PoolSelector2.scss";
 
@@ -38,20 +38,20 @@ export function PoolSelector2(props: Props) {
   const disabled = props.options?.length === 1;
 
   return (
-    <Selector2Base label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled}>
+    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled}>
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
-    </Selector2Base>
+    </SelectorBase>
   );
 }
 
 function PoolSelector2Desktop(props: Props) {
-  const close = useSelector2Close();
+  const close = useSelectorClose();
   const isLong = props.tradeType === TradeType.Long;
 
   return (
     <table className="PoolSelector2-table">
       <thead>
-        <Selector2BaseTableHeadRow>
+        <SelectorBaseTableHeadRow>
           <th>
             <Trans>Pool</Trans>
           </th>
@@ -62,7 +62,7 @@ function PoolSelector2Desktop(props: Props) {
           <th>
             <Trans>Open Fees</Trans>
           </th>
-        </Selector2BaseTableHeadRow>
+        </SelectorBaseTableHeadRow>
       </thead>
       <tbody>
         {props.options?.map((option) => (
@@ -116,7 +116,7 @@ function PoolListItemDesktop({
   );
 
   return (
-    <Selector2BaseDesktopRow onClick={handleClick}>
+    <SelectorBaseDesktopRow onClick={handleClick}>
       <td className="PoolSelector2-column-pool">
         <div className="PoolSelector2-collateral-logos">
           <>
@@ -161,15 +161,15 @@ function PoolListItemDesktop({
       >
         {formattedOpenFees}
       </td>
-    </Selector2BaseDesktopRow>
+    </SelectorBaseDesktopRow>
   );
 }
 
 function PoolSelector2Mobile(props: Props) {
-  const close = useSelector2Close();
+  const close = useSelectorClose();
 
   return (
-    <Selector2BaseMobileList>
+    <SelectorBaseMobileList>
       {props.options?.map((option) => (
         <PoolListItemMobile
           key={option.marketInfo.marketTokenAddress}
@@ -184,7 +184,7 @@ function PoolSelector2Mobile(props: Props) {
           }}
         />
       ))}
-    </Selector2BaseMobileList>
+    </SelectorBaseMobileList>
   );
 }
 
@@ -212,7 +212,7 @@ function PoolListItemMobile({
   const openFeesState = numberToState(openFees);
 
   return (
-    <Selector2BaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
+    <SelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
       <div className="PoolSelector2-column-pool">
         <div className="PoolSelector2-collateral-logos">
           <>
@@ -266,6 +266,6 @@ function PoolListItemMobile({
           {formattedOpenFees}
         </dd>
       </dl>
-    </Selector2BaseMobileButton>
+    </SelectorBaseMobileButton>
   );
 }

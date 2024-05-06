@@ -9,7 +9,7 @@ import { useMedia } from "react-use";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import "./Selector2Base.scss";
+import "./SelectorBase.scss";
 
 type Props = PropsWithChildren<{
   label: string | undefined;
@@ -18,31 +18,31 @@ type Props = PropsWithChildren<{
   disabled?: boolean;
 }>;
 
-type Selector2ContextType = () => void;
+type SelectorContextType = () => void;
 
-const selector2Context = React.createContext<Selector2ContextType>(noop);
-export const useSelector2Close = () => React.useContext(selector2Context);
-const Selector2ContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
-  return <selector2Context.Provider value={props.close}>{props.children}</selector2Context.Provider>;
+const selectorContext = React.createContext<SelectorContextType>(noop);
+export const useSelectorClose = () => React.useContext(selectorContext);
+const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
+  return <selectorContext.Provider value={props.close}>{props.children}</selectorContext.Provider>;
 };
 
-export function Selector2Base(props: Props) {
+export function SelectorBase(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   if (isMobile) {
-    return <Selector2BaseMobile {...props} />;
+    return <SelectorBaseMobile {...props} />;
   }
 
-  return <Selector2BaseDesktop {...props} />;
+  return <SelectorBaseDesktop {...props} />;
 }
 
 //#region Utility components
 
-export function Selector2BaseMobileList(props: PropsWithChildren) {
-  return <div className="Selector2BaseUtils-mobile-list">{props.children}</div>;
+export function SelectorBaseMobileList(props: PropsWithChildren) {
+  return <div className="SelectorBaseUtils-mobile-list">{props.children}</div>;
 }
 
-export function Selector2BaseMobileButton(
+export function SelectorBaseMobileButton(
   props: PropsWithChildren<{
     onSelect: () => void;
     disabled?: boolean;
@@ -50,8 +50,8 @@ export function Selector2BaseMobileButton(
 ) {
   return (
     <button
-      className={cx("Selector2BaseUtils-mobile-row", {
-        "Selector2BaseUtils-mobile-row-disabled": props.disabled,
+      className={cx("SelectorBaseUtils-mobile-row", {
+        "SelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
       type="button"
@@ -61,7 +61,7 @@ export function Selector2BaseMobileButton(
   );
 }
 
-export function Selector2BaseDesktopRow(
+export function SelectorBaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
     disabled?: boolean;
     disabledMessage?: ReactNode;
@@ -71,11 +71,11 @@ export function Selector2BaseDesktopRow(
     return (
       <Tooltip
         as="tr"
-        className={cx("Selector2BaseUtils-row", props.className)}
+        className={cx("SelectorBaseUtils-row", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
       >
-        <div className="Selector2BaseUtils-row-disabled">{props.children}</div>
+        <div className="SelectorBaseUtils-row-disabled">{props.children}</div>
       </Tooltip>
     );
   }
@@ -84,9 +84,9 @@ export function Selector2BaseDesktopRow(
     <tr
       {...props}
       className={cx(
-        "Selector2BaseUtils-row",
+        "SelectorBaseUtils-row",
         {
-          "Selector2BaseUtils-row-disabled": props.disabled,
+          "SelectorBaseUtils-row-disabled": props.disabled,
         },
         props.className
       )}
@@ -96,12 +96,12 @@ export function Selector2BaseDesktopRow(
   );
 }
 
-export function Selector2BaseTableHeadRow(props: PropsWithChildren) {
-  return <tr className="Selector2BaseUtils-table-head-row">{props.children}</tr>;
+export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
+  return <tr className="SelectorBaseUtils-table-head-row">{props.children}</tr>;
 }
 //#endregion
 
-function Selector2BaseDesktop(props: Props) {
+function SelectorBaseDesktop(props: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(), flip(), shift()],
     placement: "bottom-end",
@@ -119,7 +119,7 @@ function Selector2BaseDesktop(props: Props) {
         <>
           <Popover.Button
             as="button"
-            className="Selector2Base-button"
+            className="SelectorBase-button"
             ref={refs.setReference}
             disabled={props.disabled}
             type="button"
@@ -132,12 +132,12 @@ function Selector2BaseDesktop(props: Props) {
             <FloatingPortal>
               <Popover.Panel
                 static
-                className="Selector2Base-panel"
+                className="SelectorBase-panel"
                 ref={refs.setFloating}
                 style={floatingStyles}
                 onPointerDown={suppressPointerDown}
               >
-                <Selector2ContextProvider close={popoverProps.close}>{props.children}</Selector2ContextProvider>
+                <SelectorContextProvider close={popoverProps.close}>{props.children}</SelectorContextProvider>
               </Popover.Panel>
             </FloatingPortal>
           )}
@@ -147,7 +147,7 @@ function Selector2BaseDesktop(props: Props) {
   );
 }
 
-function Selector2BaseMobile(props: Props) {
+function SelectorBaseMobile(props: Props) {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = useCallback(() => {
@@ -157,7 +157,7 @@ function Selector2BaseMobile(props: Props) {
   return (
     <>
       <button
-        className="SwapBox-info-dropdown Selector2Base-button"
+        className="SwapBox-info-dropdown SelectorBase-button"
         onClick={toggleVisibility}
         disabled={props.disabled}
         type="button"
@@ -169,9 +169,9 @@ function Selector2BaseMobile(props: Props) {
         setIsVisible={setIsVisible}
         isVisible={isVisible}
         label={props.modalLabel}
-        className="Selector2Base-mobile-modal"
+        className="SelectorBase-mobile-modal"
       >
-        <Selector2ContextProvider close={toggleVisibility}>{props.children}</Selector2ContextProvider>
+        <SelectorContextProvider close={toggleVisibility}>{props.children}</SelectorContextProvider>
       </Modal>
     </>
   );
