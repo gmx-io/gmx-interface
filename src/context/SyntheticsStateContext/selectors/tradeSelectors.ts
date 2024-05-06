@@ -209,7 +209,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
 
         if (
-          !indexTokenAmount ||
+          indexTokenAmount === undefined ||
           !tradeFlags.isIncrease ||
           !indexToken ||
           !initialCollateralToken ||
@@ -311,7 +311,13 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
 
-        if (!closeSizeUsd || !marketInfo || !collateralToken || !minCollateralUsd || !minPositionSizeUsd) {
+        if (
+          closeSizeUsd === undefined ||
+          !marketInfo ||
+          !collateralToken ||
+          minCollateralUsd === undefined ||
+          minPositionSizeUsd === undefined
+        ) {
           return undefined;
         }
 
@@ -398,7 +404,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
 
-        if (!tradeFlags.isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
+        if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
           return undefined;
         }
 
@@ -471,7 +477,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
 
-        if (!tradeFlags.isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
+        if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
           return undefined;
         }
 
