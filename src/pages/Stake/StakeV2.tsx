@@ -109,7 +109,8 @@ function StakeModal(props) {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken = govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -381,7 +382,11 @@ function UnstakeModal(props) {
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 2, true)} Multiplier Points
               </ExternalLink>
-              <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
+              {chainId === ARBITRUM ? (
+                <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
+              ) : (
+                "."
+              )}
               <span>
                 You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                 this action.
@@ -753,7 +758,8 @@ function CompoundModal(props) {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken = govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -973,7 +979,8 @@ function ClaimModal(props) {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken = govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
 
   const isPrimaryEnabled = () => {
     return !isClaiming && !isUndelegatedGovToken;
@@ -1912,55 +1919,57 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "gmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Voting Power</Trans>
+              {chainId === ARBITRUM && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Voting Power</Trans>
+                  </div>
+                  <div>
+                    {govTokenAmount ? (
+                      <Tooltip
+                        position="bottom-end"
+                        className="nowrap"
+                        handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
+                        renderContent={() => (
+                          <>
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
+                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+                                <Trans>
+                                  <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                                    Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+                                  </ExternalLink>
+                                  <span>&nbsp;voting power.</span>
+                                </Trans>
+                              </AlertInfo>
+                            ) : null}
+                            <StatsTooltipRow
+                              label={t`Delegated to`}
+                              value={
+                                !govTokenDelegatesAddress || govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS ? (
+                                  <Trans>No delegate found</Trans>
+                                ) : (
+                                  <ExternalLink href={getGmxDAODelegateLink(govTokenDelegatesAddress)}>
+                                    {govTokenDelegatesAddress === account
+                                      ? t`Myself`
+                                      : govTokenDelegatesEns
+                                      ? shortenAddressOrEns(govTokenDelegatesEns, 25)
+                                      : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
+                                  </ExternalLink>
+                                )
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <ExternalLink href={GMX_DAO_LINKS.DELEGATES}>Explore the list of delegates</ExternalLink>.
+                          </>
+                        )}
+                      />
+                    ) : (
+                      "..."
+                    )}
+                  </div>
                 </div>
-                <div>
-                  {govTokenAmount ? (
-                    <Tooltip
-                      position="bottom-end"
-                      className="nowrap"
-                      handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
-                      renderContent={() => (
-                        <>
-                          {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
-                            <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
-                              <Trans>
-                                <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                                  Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
-                                </ExternalLink>
-                                <span>&nbsp;voting power.</span>
-                              </Trans>
-                            </AlertInfo>
-                          ) : null}
-                          <StatsTooltipRow
-                            label={t`Delegated to`}
-                            value={
-                              !govTokenDelegatesAddress || govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS ? (
-                                <Trans>No delegate found</Trans>
-                              ) : (
-                                <ExternalLink href={getGmxDAODelegateLink(govTokenDelegatesAddress)}>
-                                  {govTokenDelegatesAddress === account
-                                    ? t`Myself`
-                                    : govTokenDelegatesEns
-                                    ? shortenAddressOrEns(govTokenDelegatesEns, 25)
-                                    : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
-                                </ExternalLink>
-                              )
-                            }
-                            showDollar={false}
-                          />
-                          <br />
-                          <ExternalLink href={GMX_DAO_LINKS.DELEGATES}>Explore the list of delegates</ExternalLink>.
-                        </>
-                      )}
-                    />
-                  ) : (
-                    "..."
-                  )}
-                </div>
-              </div>
+              )}
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
@@ -2111,7 +2120,7 @@ export default function StakeV2() {
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
-                {active && (
+                {active && chainId === ARBITRUM && (
                   <Button variant="secondary" to={GMX_DAO_LINKS.VOTING_POWER} newTab>
                     <Trans>Delegate</Trans>
                   </Button>
