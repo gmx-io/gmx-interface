@@ -2,20 +2,13 @@
 
 .SelectorBase {
   &-button {
-    appearance: none;
-    border: unset;
-    background-color: unset;
-    padding: unset;
-    margin: unset;
+    cursor: pointer;
 
-    color: inherit;
-    font-size: inherit;
-
-    &:hover:not(:disabled) {
+    &:hover:not(&-disabled) {
       color: #7885ff;
     }
 
-    &:disabled {
+    &-disabled {
       cursor: text;
       opacity: 1;
     }

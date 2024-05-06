@@ -113,19 +113,17 @@ function SelectorBaseDesktop(props: Props) {
     e.preventDefault();
   }, []);
 
+  if (props.disabled) {
+    return <div className="SwapBox-info-dropdown SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+  }
+
   return (
     <Popover className="SwapBox-info-dropdown">
       {(popoverProps) => (
         <>
-          <Popover.Button
-            as="button"
-            className="SelectorBase-button"
-            ref={refs.setReference}
-            disabled={props.disabled}
-            type="button"
-          >
+          <Popover.Button as="div" className="SelectorBase-button" ref={refs.setReference}>
             {props.label}
-            {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
+            {<BiChevronDown className="TokenSelector-caret" />}
           </Popover.Button>
 
           {popoverProps.open && (
@@ -154,17 +152,16 @@ function SelectorBaseMobile(props: Props) {
     setIsVisible((prev) => !prev);
   }, []);
 
+  if (props.disabled) {
+    return <div className="SwapBox-info-dropdown SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+  }
+
   return (
     <>
-      <button
-        className="SwapBox-info-dropdown SelectorBase-button"
-        onClick={toggleVisibility}
-        disabled={props.disabled}
-        type="button"
-      >
+      <div className="SwapBox-info-dropdown SelectorBase-button" onClick={toggleVisibility}>
         {props.label}
         {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
-      </button>
+      </div>
       <Modal
         setIsVisible={setIsVisible}
         isVisible={isVisible}
