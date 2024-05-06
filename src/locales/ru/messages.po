@@ -1150,9 +1150,9 @@ msgstr "Залог ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Collateral In"
 msgstr "Залог Внесён"
 
@@ -3142,8 +3142,8 @@ msgstr "Лонг"
 msgid "Long Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
 msgstr ""
 
@@ -3169,8 +3169,8 @@ msgid "Longing..."
 msgstr "Лонгин..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Longs Net Fee / 1h"
-msgstr "Чистая коммиссия лонгов / 1ч"
+msgid "Longs Net Rate / 1h"
+msgstr "Чистая ставка лонгов / 1ч"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -3583,8 +3583,8 @@ msgid "NA"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "NET FEE / 1 H"
-msgstr "ЧИСТАЯ КОМИССИЯ / 1 Ч"
+msgid "NET RATE / 1 H"
+msgstr "ЧИСТАЯ СТАВКА / 1 Ч"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3608,17 +3608,14 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Fee"
-msgstr ""
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Net Rate"
+msgstr "Чистая ставка"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Net Fee / 1h"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-msgid "Net Rate"
-msgstr ""
+msgid "Net Rate / 1h"
+msgstr "Чистая ставка / 1ч"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
@@ -3645,8 +3642,8 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee -
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
-msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
-msgstr "Чистая комиссия объединяет комиссии финансирования и займа, но исключает открытые, обменные или комиссии влияния. <0/><1/> Комиссии финансирования помогают балансировать лонги и шорты и обмениваются между обеими сторонами. <2>Подробнее</2>. <3/><4/> Комиссии за займ помогают обеспечить доступную ликвидность. <5>Подробнее</5>."
+msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgstr "Чистая ставка объединяет финансовые и заемные комиссии, но исключает открытые, обменные или комиссии за влияние.<0/><1/>Финансовые комиссии помогают балансировать лонги и шорты и обмениваются между обеими сторонами. <2>Подробнее</2>.<3/><4/>Комиссии за заем помогают обеспечить доступную ликвидность. <5>Подробнее</5>."
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
@@ -3810,10 +3807,10 @@ msgstr "Открыть приложение Binance>>>>>>> 39b3c52d2 (Update dep
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Open Fees"
-msgstr ""
+msgstr "Комиссии за открытие"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
@@ -4158,8 +4155,8 @@ msgstr "PnL после уплаты комиссии и влияния цены"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "Пул"
@@ -4773,8 +4770,8 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "Выберите пул, содержащий {0}, чтобы использовать его в качестве залога."
 
@@ -4794,9 +4791,9 @@ msgstr "Выбрать опцию"
 msgid "Select different tokens"
 msgstr "Выбрать разные токены"
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
-msgstr ""
+msgstr "Выбрать пул"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
@@ -5007,8 +5004,8 @@ msgstr "Шорт"
 msgid "Short Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
 msgstr ""
 
@@ -5034,8 +5031,8 @@ msgid "Shorting..."
 msgstr "Шортинг..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Shorts Net Fee / 1h"
-msgstr "Чистая комиссия шортов / 1ч"
+msgid "Shorts Net Rate / 1h"
+msgstr "Чистая ставка шортов / 1ч"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
@@ -7149,9 +7146,9 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
-msgstr ""
+msgstr "{formattedNetRate} / 1ч"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts

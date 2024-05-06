@@ -1150,9 +1150,9 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Collateral In"
 msgstr ""
 
@@ -3142,8 +3142,8 @@ msgstr ""
 msgid "Long Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
 msgstr ""
 
@@ -3169,7 +3169,7 @@ msgid "Longing..."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Longs Net Fee / 1h"
+msgid "Longs Net Rate / 1h"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
@@ -3583,7 +3583,7 @@ msgid "NA"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "NET FEE / 1 H"
+msgid "NET RATE / 1 H"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
@@ -3608,16 +3608,13 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Fee"
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Net Rate"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Net Fee / 1h"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-msgid "Net Rate"
+msgid "Net Rate / 1h"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -3645,7 +3642,7 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee -
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
-msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
 msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3810,8 +3807,8 @@ msgstr ""
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Open Fees"
 msgstr ""
 
@@ -4158,8 +4155,8 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr ""
@@ -4773,8 +4770,8 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr ""
 
@@ -4794,7 +4791,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr ""
 
@@ -5007,8 +5004,8 @@ msgstr ""
 msgid "Short Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
 msgstr ""
 
@@ -5034,7 +5031,7 @@ msgid "Shorting..."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Shorts Net Fee / 1h"
+msgid "Shorts Net Rate / 1h"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -7149,7 +7146,7 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
 msgstr ""
 

@@ -58,7 +58,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               <Trans>LIQUIDITY</Trans>
             </th>
             <th>
-              <Tooltip handle={<Trans>NET FEE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
+              <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
             </th>
             <th>
               <Trans>UTILIZATION</Trans>
@@ -169,7 +169,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                 </div>
                 <div className="App-card-row">
                   <div className="label">
-                    <Tooltip handle={<Trans>Net Fee / 1h</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
+                    <Tooltip handle={<Trans>Net Rate / 1h</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
                   </div>
                   <div>
                     <TooltipWithPortal

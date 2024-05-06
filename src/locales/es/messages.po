@@ -1150,9 +1150,9 @@ msgstr "Garantía ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
 msgid "Collateral In"
 msgstr "Garantía En"
 
@@ -3142,8 +3142,8 @@ msgstr "Largo"
 msgid "Long Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
 msgstr ""
 
@@ -3169,8 +3169,8 @@ msgid "Longing..."
 msgstr "Entrando a largo..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Longs Net Fee / 1h"
-msgstr "Largos Net Fee / 1h"
+msgid "Longs Net Rate / 1h"
+msgstr "Largos Tasa Neta / 1h"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -3583,8 +3583,8 @@ msgid "NA"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "NET FEE / 1 H"
-msgstr ""
+msgid "NET RATE / 1 H"
+msgstr "NETO TASA / 1 H"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3608,17 +3608,14 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Fee"
-msgstr ""
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Net Rate"
+msgstr "Tasa Neta"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Net Fee / 1h"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-msgid "Net Rate"
-msgstr ""
+msgid "Net Rate / 1h"
+msgstr "Tasa Neta / 1h"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
@@ -3645,8 +3642,8 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee -
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
-msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
-msgstr "La comisión neta combina las comisiones de financiación y préstamo, pero excluye las comisiones de apertura, intercambio o impacto.<0/><1/>Las comisiones de financiación ayudan a equilibrar largos y cortos y se intercambian entre ambos lados. <2>Leer más</2>.<3/><4/>Las comisiones de préstamo ayudan a garantizar la liquidez disponible. <5>Leer más</5>."
+msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgstr "La tasa neta combina las comisiones de financiación y préstamo, pero excluye las comisiones de apertura, intercambio o impacto.<0/><1/>Las comisiones de financiación ayudan a equilibrar largos y cortos y se intercambian entre ambos lados. <2>Leer más</2>.<3/><4/>Las comisiones de préstamo ayudan a garantizar la liquidez disponible. <5>Leer más</5>."
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
@@ -3810,10 +3807,10 @@ msgstr "Abrir la app de Binance"
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Open Fees"
-msgstr ""
+msgstr "Comisiones de Apertura"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
@@ -4158,8 +4155,8 @@ msgstr "GyP después de Comisiones e Impacto de Precio"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "Reserva"
@@ -4773,8 +4770,8 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/NewCollateralSelector/NewCollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "Selecciona una reserva que contenga {0} para usarla como garantía."
 
@@ -4794,9 +4791,9 @@ msgstr "Seleccionar una opción"
 msgid "Select different tokens"
 msgstr "Selecciona tokens diferentes"
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
-msgstr ""
+msgstr "Seleccionar reserva"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
@@ -5007,8 +5004,8 @@ msgstr "Corto"
 msgid "Short Collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
 msgstr ""
 
@@ -5034,8 +5031,8 @@ msgid "Shorting..."
 msgstr "Entrando a corto..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Shorts Net Fee / 1h"
-msgstr "Comisión Neta de Cortos / 1h"
+msgid "Shorts Net Rate / 1h"
+msgstr "Tasa Neta de Cortos / 1h"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
@@ -7149,9 +7146,9 @@ msgstr "{existingTriggerOrderLength, plural, one {Tienes activa una orden de act
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Tienes activa una orden de activación que podría ejecutarse inmediatamente después de que abras esta posición. Por favor, cancela la orden o acepta la confirmación para continuar.} other {Tienes # órdenes de activación activas que podrían ejecutarse inmediatamente después de que abras la posición. Por favor, cancela las órdenes o acepta la confirmación para continuar.}}"
 
-#: src/components/Synthetics/TradeBox/NewPoolSelector/NewPoolSelector.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
-msgstr ""
+msgstr "{formattedNetRate} / 1h"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts

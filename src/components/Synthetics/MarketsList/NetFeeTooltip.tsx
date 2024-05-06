@@ -16,10 +16,10 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
             <Trans>Pool</Trans>
           </th>
           <th className="NetFeeTooltip-cell-center">
-            <Trans>Longs Net Fee / 1h</Trans>
+            <Trans>Longs Net Rate / 1h</Trans>
           </th>
           <th className="NetFeeTooltip-cell-right">
-            <Trans>Shorts Net Fee / 1h</Trans>
+            <Trans>Shorts Net Rate / 1h</Trans>
           </th>
         </tr>
       </thead>

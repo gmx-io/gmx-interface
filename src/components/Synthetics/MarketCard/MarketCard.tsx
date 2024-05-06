@@ -168,7 +168,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               t`Net Rebate`
             ) : (
               <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
-                <Trans>Net Fee</Trans>
+                <Trans>Net Rate</Trans>
               </TooltipWithPortal>
             )
           }

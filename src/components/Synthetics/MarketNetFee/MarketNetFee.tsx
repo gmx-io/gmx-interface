@@ -32,7 +32,7 @@ export default function MarketNetFee(props: Props) {
   const { borrowRateHourly, fundingRateHourly, isLong } = props;
   const netFeeHourly = borrowRateHourly.add(fundingRateHourly);
   const positionType = isLong ? t`Long Positions` : t`Short Positions`;
-  const feeOrRebate = netFeeHourly.gte(0) ? t`Net Rebate` : t`Net Fee`;
+  const feeOrRebate = netFeeHourly.gte(0) ? t`Net Rebate` : t`Net Rate`;
 
   return (
     <>
