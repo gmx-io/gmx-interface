@@ -25,6 +25,7 @@ import {
   getConstant,
   getHighExecutionFee,
   BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
 } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
@@ -169,7 +170,7 @@ export function useAllPositions(chainId, library) {
   const key = res ? `allPositions${count}__` : null;
 
   const { data: positions = [] } = useSWR(key, async () => {
-   // const provider = getProvider(library, chainId);
+    // const provider = getProvider(library, chainId);
     const vaultAddress = getContract(chainId, "Vault");
     const contract = new ethers.Contract(vaultAddress, Vault.abi, library);
     const ret = await Promise.all(
@@ -229,7 +230,7 @@ export function useAllOrders(chainId, library) {
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
   const { data: orders = [] } = useSWR(key, () => {
-   // const provider = getProvider(library, chainId);
+    // const provider = getProvider(library, chainId);
     const orderBookAddress = getContract(chainId, "OrderBook");
     const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
     return Promise.all(
@@ -397,7 +398,8 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
     chainId === ARBITRUM_TESTNET ||
     chainId === OPTIMISM_GOERLI_TESTNET ||
     chainId === OPTIMISM_MAINNET ||
-    chainId === BLAST_SEPOLIA_TESTNET
+    chainId === BLAST_SEPOLIA_TESTNET ||
+    chainId === MORPH_L2
   ) {
     multiplier = 2150000;
   }

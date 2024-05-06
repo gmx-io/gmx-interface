@@ -1,5 +1,5 @@
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { BLAST_SEPOLIA_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
+import { BLAST_SEPOLIA_TESTNET, MORPH_L2, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
 import * as React from "react";
 import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
@@ -20,6 +20,18 @@ export function Providers({ children }: ProvidersProps) {
         font-size : 14px;
         max-height : none;
         border-radius : 4px;
+      }
+
+      .wallet-list__scroll-container{
+        gap: 4px;
+      }
+      .wallet-list-item__tile{
+        padding: 7px;
+        
+      }
+
+      .dynamic-widget-card{
+        background-color : #ffffff; 
       }
   
       .dynamic-widget-modal {
@@ -44,6 +56,9 @@ export function Providers({ children }: ProvidersProps) {
         border: 1px solid #ffffff29;
         border-radius: 10px;
      }
+     .input__container .input {
+      background : #1e1e1e;
+     }
      .dynamic-widget-card, .evm-network-control__container, .dropdown{
         background-color : #1e1e1e;
      }
@@ -54,7 +69,7 @@ export function Providers({ children }: ProvidersProps) {
 
     `;
 
-  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, BLAST_SEPOLIA_TESTNET]);
+  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, BLAST_SEPOLIA_TESTNET, MORPH_L2]);
 
   return (
     <DynamicContextProvider
