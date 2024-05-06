@@ -10,6 +10,15 @@
 
     color: inherit;
     font-size: inherit;
+
+    &:hover:not(:disabled) {
+      color: #7885ff;
+    }
+
+    &:disabled {
+      cursor: text;
+      opacity: 1;
+    }
   }
 
   &-panel {
