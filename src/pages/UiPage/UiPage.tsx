@@ -1,7 +1,7 @@
 // {/* #2d42fc */}
 export default function UiPage() {
   return (
-    <main className="p-20">
+    <main className="p-20 max-w-prose mx-auto">
       <h1 className="text-xl font-bold">UI Page</h1>
       <p>This page demonstrates the use of the UI components in the app.</p>
 
@@ -71,7 +71,7 @@ export default function UiPage() {
 
       <h2 className="text-lg font-bold mt-24 mb-16">Line heights</h2>
       <div className="flex flex-col gap-16">
-        <p className="leading-1 w-[70ch]">
+        <p className="leading-1">
           leading-1
           <br />
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro
@@ -82,7 +82,7 @@ export default function UiPage() {
           consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque
           inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
         </p>
-        <p className="leading-base w-[70ch]">
+        <p className="leading-base">
           leading-base
           <br />
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro
