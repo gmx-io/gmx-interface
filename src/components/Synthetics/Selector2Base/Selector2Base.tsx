@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unused-prop-types */
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
@@ -10,38 +9,39 @@ import { useMedia } from "react-use";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import "./NewSelectorBase.scss";
+import "./Selector2Base.scss";
 
 type Props = PropsWithChildren<{
   label: string | undefined;
+  // eslint-disable-next-line react/no-unused-prop-types
   modalLabel: string;
 }>;
 
-type NewSelectorContextType = () => void;
+type Selector2ContextType = () => void;
 
-const newSelectorContext = React.createContext<NewSelectorContextType>(noop);
-export const useNewSelectorClose = () => React.useContext(newSelectorContext);
-const NewSelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
-  return <newSelectorContext.Provider value={props.close}>{props.children}</newSelectorContext.Provider>;
+const selector2Context = React.createContext<Selector2ContextType>(noop);
+export const useSelector2Close = () => React.useContext(selector2Context);
+const Selector2ContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
+  return <selector2Context.Provider value={props.close}>{props.children}</selector2Context.Provider>;
 };
 
-export function NewSelectorBase(props: Props) {
+export function Selector2Base(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   if (isMobile) {
-    return <NewSelectorBaseMobile {...props} />;
+    return <Selector2BaseMobile {...props} />;
   }
 
-  return <NewSelectorBaseDesktop {...props} />;
+  return <Selector2BaseDesktop {...props} />;
 }
 
 //#region Utility components
 
-export function NewSelectorBaseMobileList(props: PropsWithChildren) {
-  return <div className="NewSelectorBaseUtils-mobile-list">{props.children}</div>;
+export function Selector2BaseMobileList(props: PropsWithChildren) {
+  return <div className="Selector2BaseUtils-mobile-list">{props.children}</div>;
 }
 
-export function NewSelectorBaseMobileButton(
+export function Selector2BaseMobileButton(
   props: PropsWithChildren<{
     onSelect: () => void;
     disabled?: boolean;
@@ -49,8 +49,8 @@ export function NewSelectorBaseMobileButton(
 ) {
   return (
     <button
-      className={cx("NewSelectorBaseUtils-mobile-row", {
-        "NewSelectorBaseUtils-mobile-row-disabled": props.disabled,
+      className={cx("Selector2BaseUtils-mobile-row", {
+        "Selector2BaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
       type="button"
@@ -60,7 +60,7 @@ export function NewSelectorBaseMobileButton(
   );
 }
 
-export function NewSelectorBaseDesktopRow(
+export function Selector2BaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
     disabled?: boolean;
     disabledMessage?: ReactNode;
@@ -70,11 +70,11 @@ export function NewSelectorBaseDesktopRow(
     return (
       <Tooltip
         as="tr"
-        className={cx("NewSelectorBaseUtils-row", props.className)}
+        className={cx("Selector2BaseUtils-row", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
       >
-        <div className="NewSelectorBaseUtils-row-disabled">{props.children}</div>
+        <div className="Selector2BaseUtils-row-disabled">{props.children}</div>
       </Tooltip>
     );
   }
@@ -83,9 +83,9 @@ export function NewSelectorBaseDesktopRow(
     <tr
       {...props}
       className={cx(
-        "NewSelectorBaseUtils-row",
+        "Selector2BaseUtils-row",
         {
-          "NewSelectorBaseUtils-row-disabled": props.disabled,
+          "Selector2BaseUtils-row-disabled": props.disabled,
         },
         props.className
       )}
@@ -95,12 +95,12 @@ export function NewSelectorBaseDesktopRow(
   );
 }
 
-export function NewSelectorBaseTableHeadRow(props: PropsWithChildren) {
-  return <tr className="NewSelectorBaseUtils-table-head-row">{props.children}</tr>;
+export function Selector2BaseTableHeadRow(props: PropsWithChildren) {
+  return <tr className="Selector2BaseUtils-table-head-row">{props.children}</tr>;
 }
 //#endregion
 
-function NewSelectorBaseDesktop(props: Props) {
+function Selector2BaseDesktop(props: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(), flip(), shift()],
     placement: "bottom-end",
@@ -116,7 +116,7 @@ function NewSelectorBaseDesktop(props: Props) {
     <Popover className="SwapBox-info-dropdown">
       {(popoverProps) => (
         <>
-          <Popover.Button as="button" className="NewSelectorBase-button" ref={refs.setReference}>
+          <Popover.Button as="button" className="Selector2Base-button" ref={refs.setReference}>
             {props.label}
             <BiChevronDown className="TokenSelector-caret" />
           </Popover.Button>
@@ -125,12 +125,12 @@ function NewSelectorBaseDesktop(props: Props) {
             <FloatingPortal>
               <Popover.Panel
                 static
-                className="NewSelectorBase-panel"
+                className="Selector2Base-panel"
                 ref={refs.setFloating}
                 style={floatingStyles}
                 onPointerDown={suppressPointerDown}
               >
-                <NewSelectorContextProvider close={popoverProps.close}>{props.children}</NewSelectorContextProvider>
+                <Selector2ContextProvider close={popoverProps.close}>{props.children}</Selector2ContextProvider>
               </Popover.Panel>
             </FloatingPortal>
           )}
@@ -140,7 +140,7 @@ function NewSelectorBaseDesktop(props: Props) {
   );
 }
 
-function NewSelectorBaseMobile(props: Props) {
+function Selector2BaseMobile(props: Props) {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = useCallback(() => {
@@ -149,7 +149,7 @@ function NewSelectorBaseMobile(props: Props) {
 
   return (
     <>
-      <button className="SwapBox-info-dropdown NewSelectorBase-button" onClick={toggleVisibility} type="button">
+      <button className="SwapBox-info-dropdown Selector2Base-button" onClick={toggleVisibility} type="button">
         {props.label}
         <BiChevronDown className="TokenSelector-caret" />
       </button>
@@ -157,9 +157,9 @@ function NewSelectorBaseMobile(props: Props) {
         setIsVisible={setIsVisible}
         isVisible={isVisible}
         label={props.modalLabel}
-        className="NewSelectorBase-mobile-modal"
+        className="Selector2Base-mobile-modal"
       >
-        <NewSelectorContextProvider close={toggleVisibility}>{props.children}</NewSelectorContextProvider>
+        <Selector2ContextProvider close={toggleVisibility}>{props.children}</Selector2ContextProvider>
       </Modal>
     </>
   );

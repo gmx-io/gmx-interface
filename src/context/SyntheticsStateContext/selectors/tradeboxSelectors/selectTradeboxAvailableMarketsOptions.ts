@@ -33,7 +33,6 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
-  isMarketIndexToken,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
@@ -50,6 +49,7 @@ import {
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { keyBy, values } from "lodash";
+import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -99,7 +99,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
-  const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
+  const availableMarkets = q(selectTradeboxAvailableMarkets);
 
   const liquidMarkets = increaseSizeUsd
     ? availableMarkets.filter((marketInfo) => {

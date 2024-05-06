@@ -1,7 +1,5 @@
-/* eslint-disable react/no-unused-prop-types */
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { BigNumber } from "ethers";
 import React, { useCallback } from "react";
 import { useMedia } from "react-use";
 
@@ -10,51 +8,49 @@ import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
 import { formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
+import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
-  NewSelectorBase,
-  NewSelectorBaseDesktopRow,
-  NewSelectorBaseMobileButton,
-  NewSelectorBaseMobileList,
-  NewSelectorBaseTableHeadRow,
-  useNewSelectorClose,
-} from "../NewSelectorBase/NewSelectorBase";
+  Selector2Base,
+  Selector2BaseDesktopRow,
+  Selector2BaseMobileButton,
+  Selector2BaseMobileList,
+  Selector2BaseTableHeadRow,
+  useSelector2Close,
+} from "../Selector2Base/Selector2Base";
 
-import "./NewPoolSelector.scss";
+import "./PoolSelector2.scss";
 
 type Props = {
+  // eslint-disable-next-line react/no-unused-prop-types
   selectedPoolName: string | undefined;
   options: MarketStat[] | undefined;
   positionStats: {
-    [marketTokenAddress: string]: {
-      isEnoughLiquidity: boolean;
-      liquidity: BigNumber;
-      openFees: BigNumber | undefined;
-    };
+    [marketTokenAddress: string]: MarketLiquidityAndFeeStat;
   };
   tradeType: TradeType;
   onSelect: (marketAddress: string) => void;
 };
 
-export function NewPoolSelector(props: Props) {
+export function PoolSelector2(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
-    <NewSelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`}>
-      {isMobile ? <NewPoolSelectorMobile {...props} /> : <NewPoolSelectorDesktop {...props} />}
-    </NewSelectorBase>
+    <Selector2Base label={props.selectedPoolName} modalLabel={t`Select pool`}>
+      {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
+    </Selector2Base>
   );
 }
 
-function NewPoolSelectorDesktop(props: Props) {
-  const close = useNewSelectorClose();
+function PoolSelector2Desktop(props: Props) {
+  const close = useSelector2Close();
   const isLong = props.tradeType === TradeType.Long;
 
   return (
-    <table className="NewPoolSelector-table">
+    <table className="PoolSelector2-table">
       <thead>
-        <NewSelectorBaseTableHeadRow>
+        <Selector2BaseTableHeadRow>
           <th>
             <Trans>Pool</Trans>
           </th>
@@ -65,7 +61,7 @@ function NewPoolSelectorDesktop(props: Props) {
           <th>
             <Trans>Open Fees</Trans>
           </th>
-        </NewSelectorBaseTableHeadRow>
+        </Selector2BaseTableHeadRow>
       </thead>
       <tbody>
         {props.options?.map((option) => (
@@ -97,11 +93,8 @@ function PoolListItemDesktop({
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
-  openFees: BigNumber | undefined;
-  isEnoughLiquidity: boolean;
-  liquidity: BigNumber;
   onSelect: () => void;
-}) {
+} & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
@@ -122,22 +115,22 @@ function PoolListItemDesktop({
   );
 
   return (
-    <NewSelectorBaseDesktopRow onClick={handleClick}>
-      <td className="NewPoolSelector-column-pool">
-        <div className="NewPoolSelector-collateral-logos">
+    <Selector2BaseDesktopRow onClick={handleClick}>
+      <td className="PoolSelector2-column-pool">
+        <div className="PoolSelector2-collateral-logos">
           <>
             <TokenIcon
               symbol={longTokenSymbol}
               displaySize={24}
               importSize={24}
-              className="NewPoolSelector-collateral-logo-first"
+              className="PoolSelector2-collateral-logo-first"
             />
             {shortTokenSymbol && (
               <TokenIcon
                 symbol={shortTokenSymbol}
                 displaySize={24}
                 importSize={24}
-                className="NewPoolSelector-collateral-logo-second"
+                className="PoolSelector2-collateral-logo-second"
               />
             )}
           </>
@@ -160,22 +153,22 @@ function PoolListItemDesktop({
         <Trans>{formattedNetRate} / 1h</Trans>
       </td>
       <td
-        className={cx("NewPoolSelector-column-open-fees", {
+        className={cx("PoolSelector2-column-open-fees", {
           "text-red": openFeesState === "error",
           "text-green": openFeesState === "success",
         })}
       >
         {formattedOpenFees}
       </td>
-    </NewSelectorBaseDesktopRow>
+    </Selector2BaseDesktopRow>
   );
 }
 
-function NewPoolSelectorMobile(props: Props) {
-  const close = useNewSelectorClose();
+function PoolSelector2Mobile(props: Props) {
+  const close = useSelector2Close();
 
   return (
-    <NewSelectorBaseMobileList>
+    <Selector2BaseMobileList>
       {props.options?.map((option) => (
         <PoolListItemMobile
           key={option.marketInfo.marketTokenAddress}
@@ -190,7 +183,7 @@ function NewPoolSelectorMobile(props: Props) {
           }}
         />
       ))}
-    </NewSelectorBaseMobileList>
+    </Selector2BaseMobileList>
   );
 }
 
@@ -204,11 +197,8 @@ function PoolListItemMobile({
 }: {
   marketStat: MarketStat;
   tradeType: TradeType;
-  openFees: BigNumber | undefined;
-  isEnoughLiquidity: boolean;
-  liquidity: BigNumber;
   onSelect: () => void;
-}) {
+} & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
@@ -221,29 +211,29 @@ function PoolListItemMobile({
   const openFeesState = numberToState(openFees);
 
   return (
-    <NewSelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
-      <div className="NewPoolSelector-column-pool">
-        <div className="NewPoolSelector-collateral-logos">
+    <Selector2BaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
+      <div className="PoolSelector2-column-pool">
+        <div className="PoolSelector2-collateral-logos">
           <>
             <TokenIcon
               symbol={longTokenSymbol}
               displaySize={30}
               importSize={24}
-              className="NewPoolSelector-collateral-logo-first"
+              className="PoolSelector2-collateral-logo-first"
             />
             {shortTokenSymbol && (
               <TokenIcon
                 symbol={shortTokenSymbol}
                 displaySize={30}
                 importSize={24}
-                className="NewPoolSelector-mobile-collateral-logo-second"
+                className="PoolSelector2-mobile-collateral-logo-second"
               />
             )}
           </>
         </div>
         <div>{poolName}</div>
       </div>
-      <dl className="NewPoolSelector-mobile-info">
+      <dl className="PoolSelector2-mobile-info">
         <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>
         <dd
           className={cx({
@@ -275,6 +265,6 @@ function PoolListItemMobile({
           {formattedOpenFees}
         </dd>
       </dl>
-    </NewSelectorBaseMobileButton>
+    </Selector2BaseMobileButton>
   );
 }

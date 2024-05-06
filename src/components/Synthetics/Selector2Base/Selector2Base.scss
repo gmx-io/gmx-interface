@@ -1,6 +1,6 @@
 @use "src/styles/slide-up" as *;
 
-.NewSelectorBase {
+.Selector2Base {
   &-button {
     appearance: none;
     border: unset;
@@ -45,7 +45,7 @@
   }
 }
 
-.NewSelectorBaseUtils {
+.Selector2BaseUtils {
   &-table-head-row {
     th {
       text-align: left;

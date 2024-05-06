@@ -31,13 +31,12 @@ export function getSwapPathOutputAddresses(p: {
   } = p;
 
   if (swapPath.length === 0) {
-    // If the swap path is empty and is increase order,
-    // we do not care about the output token address during happy path,
-    // as user will not be getting any token in return.
-    // By this point shouldUnwrapNativeToken is already saved in the contract in case of cancelation or errors.
-
     // Increase
     if (isIncrease) {
+      // During increase target collateral token is always ERC20 token, it can not be native token.
+      // Thus we do not need to check if initial collateral token is wrapped token to unwrap it.
+      // So we can safely return initial collateral token address as out token address, when there is no swap path.
+
       return {
         outTokenAddress: initialCollateralAddress,
         outMarketAddress: undefined,

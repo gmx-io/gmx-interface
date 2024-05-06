@@ -1,94 +1,34 @@
 import { Trans, t } from "@lingui/macro";
-import { filter, flatMap, pickBy, uniqBy, values } from "lodash";
 import React, { useMemo } from "react";
 
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectTradeboxAvailableAndDisabledTokensForCollateral,
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxHasExistingOrder,
   selectTradeboxHasExistingPosition,
   selectTradeboxMarketAddress,
-  selectTradeboxMarketInfo,
+  selectTradeboxSelectedCollateralTokenSymbol,
   selectTradeboxSetCollateralAddress,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { NewCollateralSelector } from "./NewCollateralSelector/NewCollateralSelector";
+import { CollateralSelector } from "../CollateralSelector/CollateralSelector";
 
 export type Props = {
-  selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
 
-const selectSelectedCollateralTokenSymbol = createSelector((q) => {
-  const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
-  const tokensData = q(selectTokensData);
-  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
-
-  return symbol;
-});
-
-const selectAvailableAndDisabledTokens = createSelector((q) => {
-  const marketsInfo = q(selectMarketsInfoData);
-
-  if (!marketsInfo) {
-    return {
-      availableTokens: [],
-      disabledTokens: [],
-    };
-  }
-
-  const currentMarket = q(selectTradeboxMarketInfo);
-
-  if (!currentMarket) {
-    return {
-      availableTokens: [],
-      disabledTokens: [],
-    };
-  }
-
-  const availableTokens = currentMarket.isSameCollaterals
-    ? [currentMarket.longToken]
-    : [currentMarket.longToken, currentMarket.shortToken];
-
-  const disabledTokens = filter(
-    uniqBy(
-      flatMap(
-        values(pickBy(marketsInfo, (market) => market.indexTokenAddress === currentMarket.indexTokenAddress)),
-        (market) => [market.longToken, market.shortToken]
-      ),
-      (token) => token.address
-    ),
-    (token) => token.address !== currentMarket.longToken.address && token.address !== currentMarket.shortToken.address
-  ).sort((a, b) => {
-    if (a.isStable && !b.isStable) {
-      return -1;
-    }
-
-    if (!a.isStable && b.isStable) {
-      return 1;
-    }
-
-    return 0;
-  });
-
-  return {
-    availableTokens: availableTokens,
-    disabledTokens: disabledTokens,
-  };
-});
-
 export function CollateralSelectorRow(p: Props) {
-  const { selectedCollateralAddress, onSelectCollateralAddress } = p;
-  const selectedTokenName = useSelector(selectSelectedCollateralTokenSymbol);
+  const { onSelectCollateralAddress } = p;
+  const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
 
-  const { availableTokens, disabledTokens } = useSelector(selectAvailableAndDisabledTokens);
+  const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
   const warnings = useCollateralWarnings();
 
@@ -98,11 +38,10 @@ export function CollateralSelectorRow(p: Props) {
         label={t`Collateral In`}
         className="SwapBox-info-row"
         value={
-          <NewCollateralSelector
+          <CollateralSelector
             onSelect={onSelectCollateralAddress}
             options={availableTokens}
             disabledOptions={disabledTokens}
-            selectedTokenAddress={selectedCollateralAddress}
             selectedTokenSymbol={selectedTokenName}
           />
         }

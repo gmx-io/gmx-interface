@@ -50,6 +50,7 @@ export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxRelatedMarketsStats";
+export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -736,4 +737,12 @@ export const selectTradeboxExecutionPrice = createSelector(function selectTradeb
     decreaseAmounts.sizeDeltaUsd,
     isLong
   );
+});
+
+export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {
+  const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
+  const tokensData = q(selectTokensData);
+  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
+
+  return symbol;
 });

@@ -9,7 +9,7 @@ import type { Token } from "domain/tokens";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
-import { NewPoolSelector } from "./NewPoolSelector/NewPoolSelector";
+import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 
 export type Props = {
   indexToken?: Token;
@@ -33,7 +33,7 @@ export function MarketPoolSelectorRow(p: Props) {
         label={t`Pool`}
         value={
           <>
-            <NewPoolSelector
+            <PoolSelector2
               selectedPoolName={poolName}
               options={relatedMarketStats}
               tradeType={tradeType}

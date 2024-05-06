@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
+import { fromPairs, keyBy, values } from "lodash";
 
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   getMarketIncreasePositionAmounts,
   selectTradeboxIncreasePositionAmounts,
@@ -9,22 +10,24 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees/utils";
-import { getAvailableUsdLiquidityForPosition, isMarketIndexToken } from "domain/synthetics/markets";
-import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { values, keyBy, fromPairs } from "lodash";
+import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
+
+export type MarketLiquidityAndFeeStat = {
+  isEnoughLiquidity: boolean;
+  liquidity: BigNumber;
+  openFees: BigNumber | undefined;
+};
 
 export type RelatedMarketsStats = {
   relatedMarketsPositionStats: {
-    [marketTokenAddress: string]: {
-      isEnoughLiquidity: boolean;
-      liquidity: BigNumber;
-      openFees: BigNumber | undefined;
-    };
+    [marketTokenAddress: string]: MarketLiquidityAndFeeStat;
   };
   relatedMarketStats: MarketStat[];
 };
@@ -33,7 +36,6 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
   const tokensData = q(selectTokensData);
-  const marketsInfoData = q(selectMarketsInfoData);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
   const increaseSizeUsd = increaseAmounts?.sizeDeltaUsd;
 
@@ -48,16 +50,14 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
     } as RelatedMarketsStats;
   }
 
-  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
-
-  const relatedMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
+  const availableMarkets = q(selectTradeboxAvailableMarkets);
 
   const relatedMarketStats =
-    values(marketsInfoData2IndexTokenStatsMap(keyBy(relatedMarkets, "marketTokenAddress")).indexMap)[0]?.marketsStats ||
-    EMPTY_ARRAY;
+    values(marketsInfoData2IndexTokenStatsMap(keyBy(availableMarkets, "marketTokenAddress")).indexMap)[0]
+      ?.marketsStats || EMPTY_ARRAY;
 
   const defaultMarketsEnoughLiquidity = fromPairs(
-    relatedMarkets.map((market) => {
+    availableMarkets.map((market) => {
       const liquidity = getAvailableUsdLiquidityForPosition(market, isLong);
       return [market.marketTokenAddress, { isEnoughLiquidity: liquidity.gt(0), liquidity, openFees: undefined }];
     })
@@ -69,7 +69,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   };
 
   if (increaseSizeUsd?.gt(0)) {
-    for (const relatedMarket of relatedMarkets) {
+    for (const relatedMarket of availableMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, relatedMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {
         continue;
