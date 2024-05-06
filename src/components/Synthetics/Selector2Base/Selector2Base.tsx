@@ -15,6 +15,7 @@ type Props = PropsWithChildren<{
   label: string | undefined;
   // eslint-disable-next-line react/no-unused-prop-types
   modalLabel: string;
+  disabled?: boolean;
 }>;
 
 type Selector2ContextType = () => void;
@@ -116,9 +117,15 @@ function Selector2BaseDesktop(props: Props) {
     <Popover className="SwapBox-info-dropdown">
       {(popoverProps) => (
         <>
-          <Popover.Button as="button" className="Selector2Base-button" ref={refs.setReference}>
+          <Popover.Button
+            as="button"
+            className="Selector2Base-button"
+            ref={refs.setReference}
+            disabled={props.disabled}
+            type="button"
+          >
             {props.label}
-            <BiChevronDown className="TokenSelector-caret" />
+            {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
           </Popover.Button>
 
           {popoverProps.open && (
@@ -149,9 +156,14 @@ function Selector2BaseMobile(props: Props) {
 
   return (
     <>
-      <button className="SwapBox-info-dropdown Selector2Base-button" onClick={toggleVisibility} type="button">
+      <button
+        className="SwapBox-info-dropdown Selector2Base-button"
+        onClick={toggleVisibility}
+        disabled={props.disabled}
+        type="button"
+      >
         {props.label}
-        <BiChevronDown className="TokenSelector-caret" />
+        {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
       </button>
       <Modal
         setIsVisible={setIsVisible}

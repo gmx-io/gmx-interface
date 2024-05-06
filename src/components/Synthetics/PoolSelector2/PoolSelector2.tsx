@@ -35,9 +35,10 @@ type Props = {
 
 export function PoolSelector2(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
+  const disabled = props.options?.length === 1;
 
   return (
-    <Selector2Base label={props.selectedPoolName} modalLabel={t`Select pool`}>
+    <Selector2Base label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled}>
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </Selector2Base>
   );
