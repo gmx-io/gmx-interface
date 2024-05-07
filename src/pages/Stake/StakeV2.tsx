@@ -204,7 +204,7 @@ function StakeModal(props) {
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>
               <span>&nbsp;voting power before staking.</span>
             </Trans>
@@ -889,7 +889,7 @@ function CompoundModal(props) {
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>
               <span>&nbsp;voting power before compounding.</span>
             </Trans>
@@ -1039,7 +1039,7 @@ function ClaimModal(props) {
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>
               <span>&nbsp;voting power before compounding.</span>
             </Trans>
@@ -1936,7 +1936,7 @@ export default function StakeV2() {
                               <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                                    Delegate your {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO undelegated
+                                    Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
                                   </ExternalLink>
                                   <span>&nbsp;voting power.</span>
                                 </Trans>
