@@ -35,7 +35,7 @@ export function shortenAddressOrEns(address: string, length: number) {
   if (!address) {
     return address;
   }
-  if (address.length < 10) {
+  if (address.length < 10 || address.length < length) {
     return address;
   }
   let left = address.includes(".") ? address.split(".")[1].length : Math.floor((length - 3) / 2) + 1;
