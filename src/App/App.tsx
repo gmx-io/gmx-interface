@@ -406,7 +406,6 @@ function FullApp() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
-        icon={false}
       />
       <EventToastContainer />
       <RedirectPopupModal

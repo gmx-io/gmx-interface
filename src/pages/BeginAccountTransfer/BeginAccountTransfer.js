@@ -260,7 +260,7 @@ export default function BeginAccountTransfer() {
           <Trans>
             Please only use this for full account transfers.
             <br />
-            This will transfer all your GMX, esGMX, GLP and Multiplier Points and voting power to your new account.
+            This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.
             <br />
             Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
             <br />
