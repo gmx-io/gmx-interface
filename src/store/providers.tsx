@@ -48,6 +48,10 @@ export function Providers({ children }: ProvidersProps) {
         background-color : transparent;
      }
 
+     .input__container .input {
+      font-size : 1.3rem;
+     }
+
      ${
        themeContext.isDark
          ? `
