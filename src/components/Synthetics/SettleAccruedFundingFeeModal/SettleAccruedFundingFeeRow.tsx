@@ -55,7 +55,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
       <Checkbox
         isChecked={isSelected}
         setIsChecked={handleCheckboxChange}
-        className="flex self-center ClaimSettleModal-checkbox"
+        className="ClaimSettleModal-checkbox flex self-center"
       >
         <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{label}</div>
       </Checkbox>

@@ -1364,10 +1364,10 @@ export default function SwapBox(props) {
     const indexToken = getToken(chainId, indexTokenAddress);
     const successMsg = t`
       Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}: ${formatAmount(
-      toUsdMax,
-      USD_DECIMALS,
-      2
-    )} USD!
+        toUsdMax,
+        USD_DECIMALS,
+        2
+      )} USD!
     `;
     return Api.createIncreaseOrder(
       chainId,
@@ -2126,7 +2126,7 @@ export default function SwapBox(props) {
                             onClick={() => {
                               setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
                             }}
-                            className="text-gray underline cursor-pointer"
+                            className="cursor-pointer text-gray underline"
                           >
                             <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
                           </div>
@@ -2184,7 +2184,7 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
                       <BsArrowRight className="transition-arrow" />
                     </div>
@@ -2200,7 +2200,7 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
@@ -2215,7 +2215,7 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>

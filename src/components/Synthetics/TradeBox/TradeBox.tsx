@@ -855,7 +855,7 @@ export function TradeBox(p: Props) {
         </BuyInputSection>
 
         <div className="Exchange-swap-ball-container">
-          <button type="button" className="Exchange-swap-ball bg-blue" onClick={onSwitchTokens}>
+          <button type="button" className="Exchange-swap-ball bg-blue-500" onClick={onSwitchTokens}>
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
         </div>
@@ -1090,7 +1090,7 @@ export function TradeBox(p: Props) {
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-gray text-sm">
+              <span className="text-14 text-gray">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>
@@ -1142,8 +1142,8 @@ export function TradeBox(p: Props) {
                       displayDecimals: toToken?.priceDecimals,
                     })
                   : selectedPosition
-                  ? undefined
-                  : "-"
+                    ? undefined
+                    : "-"
               }
             />
           }
@@ -1196,10 +1196,10 @@ export function TradeBox(p: Props) {
                   decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                        displayDecimals: toToken?.priceDecimals,
-                      })
-                    : undefined
+                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                          displayDecimals: toToken?.priceDecimals,
+                        })
+                      : undefined
                 }
               />
             }

@@ -532,7 +532,7 @@ export function PositionItem(p: Props) {
               {displayedPnl && (
                 <div
                   onClick={p.openSettings}
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                     positive: displayedPnl.gt(0),
                     negative: displayedPnl.lt(0),
                     muted: displayedPnl.eq(0),
@@ -662,7 +662,7 @@ export function PositionItem(p: Props) {
               </div>
               <div>
                 <span
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                     positive: displayedPnl?.gt(0),
                     negative: displayedPnl?.lt(0),
                     muted: displayedPnl?.eq(0),

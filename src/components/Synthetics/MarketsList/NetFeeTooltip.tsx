@@ -30,7 +30,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           return (
             <tr key={market.marketTokenAddress}>
               <td>
-                <div className="inline-flex items-start flex-wrap text-white">
+                <div className="inline-flex flex-wrap items-start text-white">
                   <span>{getMarketIndexName(market)}</span>
                   <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
                 </div>

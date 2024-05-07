@@ -113,7 +113,7 @@ export default function Actions() {
                       </ExternalLink>{" "}
                       or{" "}
                       <span
-                        className="underline cursor-pointer"
+                        className="cursor-pointer underline"
                         onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
                       >
                         switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
@@ -213,7 +213,7 @@ export default function Actions() {
                         </ExternalLink>{" "}
                         or{" "}
                         <span
-                          className="underline cursor-pointer"
+                          className="cursor-pointer underline"
                           onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
                         >
                           switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}

@@ -167,7 +167,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithPosition.marketTokenAddress);
                 setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -190,7 +190,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           liquidity for this order.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithPosition.marketTokenAddress);
                 setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -221,7 +221,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           different pool for this market.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -242,7 +242,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           existing one.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(marketsOptions.minOpenFeesAvailableMarketAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -263,7 +263,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithOrder.marketTokenAddress);
                 setCollateralAddress(address);
@@ -286,7 +286,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -306,7 +306,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           {getMarketPoolName(bestNetFeeMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(bestNetFeeMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(bestNetFeeMarket)} market pool
@@ -327,7 +327,7 @@ export const useTradeboxPoolWarnings = (withActions = true, textColor: "text-yel
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool

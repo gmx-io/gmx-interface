@@ -227,7 +227,7 @@ function StakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-5 icon"
+              className="icon mr-5"
               height="22"
               src={icons[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
@@ -368,7 +368,7 @@ function UnstakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-5 icon"
+              className="icon mr-5"
               height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
@@ -516,7 +516,7 @@ function VesterDepositModal(props) {
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="mr-5 icon" height="22" src={icons.esgmx} alt="esGMX" />
+              <img className="icon mr-5" height="22" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>

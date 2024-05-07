@@ -29,7 +29,7 @@
   left: 1px solid var(--dark-blue-border);
   border-bottom: 2px solid transparent;
   user-select: none;
-  width: 4.0rem;
+  width: 4rem;
 }
 
 .pagination-btn-middle {

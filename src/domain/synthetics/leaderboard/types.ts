@@ -24,7 +24,7 @@ export type LeaderboardTimeframe = {
 export type LeaderboardTimeframeType = "all" | "30days" | "7days";
 export type LeaderboardDataType = "accounts" | "positions";
 
-export type LeaderboardPageKey = typeof LEADERBOARD_PAGES_ORDER[number];
+export type LeaderboardPageKey = (typeof LEADERBOARD_PAGES_ORDER)[number];
 
 export type LeaderboardPageConfig =
   | {

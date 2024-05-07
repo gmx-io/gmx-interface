@@ -68,7 +68,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="text-white ClaimHistoryRow-tooltip-row inline-flex items-start"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
@@ -96,7 +96,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="text-white ClaimHistoryRow-tooltip-row inline-flex items-start"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>

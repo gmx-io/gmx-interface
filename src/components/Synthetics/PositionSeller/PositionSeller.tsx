@@ -522,10 +522,10 @@ export function PositionSeller(p: Props) {
             decreaseAmounts?.isFullClose
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })
-              : undefined
+                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })
+                : undefined
           }
         />
       }

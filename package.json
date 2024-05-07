@@ -93,7 +93,8 @@
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit"
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}"
   },
   "eslintConfig": {
     "extends": [
@@ -139,13 +140,17 @@
     "eslint-plugin-react-perf": "3.3.2",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "prettier": "2.5.1",
+    "prettier": "3.2.5",
+    "prettier-plugin-tailwindcss": "0.5.14",
     "react-app-rewired": "2.2.1",
     "tailwindcss": "3.4.1"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix --max-warnings=0 ./src",
+      "prettier --write"
+    ],
+    "src/**/*.{css,scss}": [
       "prettier --write"
     ]
   },

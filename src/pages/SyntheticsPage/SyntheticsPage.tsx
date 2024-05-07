@@ -268,7 +268,7 @@ export function SyntheticsPage(p: Props) {
               <div className="align-right Exchange-should-show-position-lines">
                 {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
-                    className="muted text-base cancel-order-btn"
+                    className="muted cancel-order-btn text-15"
                     disabled={isCancelOrdersProcessig}
                     type="button"
                     onClick={onCancelOrdersClick}

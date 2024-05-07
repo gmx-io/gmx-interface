@@ -1078,7 +1078,7 @@ export function ConfirmationBox(p: Props) {
                 entriesInfo?.entries?.map((entry, index) => {
                   if (!entry || !entry.amounts) return;
                   return (
-                    <div className="flex justify-between mb-5" key={index}>
+                    <div className="mb-5 flex justify-between" key={index}>
                       <span className="mr-15">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
@@ -1368,7 +1368,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="text-yellow text-sm">
+                <span className="text-14 text-yellow">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1472,7 +1472,7 @@ export function ConfirmationBox(p: Props) {
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                <span className="text-gray text-sm">
+                <span className="text-14 text-gray">
                   <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
                 </span>
               </ToggleSwitch>

@@ -30,7 +30,11 @@ export default function LanguageModalContent({ currentLanguage }: Props) {
           >
             <div className="menu-item-group">
               <div className="menu-item-icon">
-                {isTestLanguage(item) ? "🫐" : <img className="network-dropdown-icon" src={image} alt={locales[item]} />}
+                {isTestLanguage(item) ? (
+                  "🫐"
+                ) : (
+                  <img className="network-dropdown-icon" src={image} alt={locales[item]} />
+                )}
               </div>
               <span className="language-item">{locales[item]}</span>
             </div>

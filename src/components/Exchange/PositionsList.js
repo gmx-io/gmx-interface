@@ -589,7 +589,7 @@ export default function PositionsList(props) {
 
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                      className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                         positive: hasPositionProfit && positionDelta.gt(0),
                         negative: !hasPositionProfit && positionDelta.gt(0),
                         muted: positionDelta.eq(0),

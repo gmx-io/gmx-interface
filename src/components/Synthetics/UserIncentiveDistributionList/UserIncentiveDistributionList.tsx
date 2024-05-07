@@ -113,9 +113,7 @@ export default function UserIncentiveDistributionList() {
               </tr>
             </thead>
             <tbody>
-              {currentIncentiveData?.map((incentive) => (
-                <IncentiveItem incentive={incentive} key={incentive.id} />
-              ))}
+              {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
             </tbody>
           </table>
         </div>

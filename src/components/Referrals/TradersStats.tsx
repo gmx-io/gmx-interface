@@ -217,17 +217,20 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 </thead>
                 <tbody>
                   {currentDiscountDistributions.map((rebate) => {
-                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] || BigNumber.from(0);
-                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
-                      return acc;
-                    }, {} as { [address: string]: BigNumber });
+                    const amountsByTokens = rebate.tokens.reduce(
+                      (acc, tokenAddress, i) => {
+                        let token;
+                        try {
+                          token = getToken(chainId, tokenAddress);
+                        } catch {
+                          token = getNativeToken(chainId);
+                        }
+                        acc[token.address] = acc[token.address] || BigNumber.from(0);
+                        acc[token.address] = acc[token.address].add(rebate.amounts[i]);
+                        return acc;
+                      },
+                      {} as { [address: string]: BigNumber }
+                    );
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {

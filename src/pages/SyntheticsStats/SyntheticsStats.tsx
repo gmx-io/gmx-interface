@@ -1098,7 +1098,7 @@ export function SyntheticsStats() {
         excludedFields={CSV_EXCLUDED_FIELDS}
         data={markets}
         fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
-        className="mt-15 download-csv"
+        className="download-csv mt-15"
       />
     </div>
   );

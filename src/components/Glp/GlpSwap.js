@@ -900,7 +900,7 @@ export default function GlpSwap(props) {
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
-          <span className="text-yellow text-sm">
+          <span className="text-sm text-yellow">
             <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
           </span>
         </Checkbox>

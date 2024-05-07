@@ -214,7 +214,7 @@ export function PoolSelector({
                   <div className="Token-symbol">
                     <div className="Token-text">
                       {showAllPools ? (
-                        <div className="leading-1 flex items-center">
+                        <div className="flex items-center leading-1">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>

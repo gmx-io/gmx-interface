@@ -663,7 +663,7 @@ export default function ConfirmationBox(props) {
           {orderOption === LIMIT && renderAvailableLiquidity()}
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
-              <div className="inline-block muted">
+              <div className="muted inline-block">
                 {formatAmount(existingPosition?.leverage, 4, 2)}x
                 <BsArrowRight className="transition-arrow" />
               </div>
@@ -681,7 +681,7 @@ export default function ConfirmationBox(props) {
           {isMarketOrder && (
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                <div className="inline-block muted">
+                <div className="muted inline-block">
                   ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow" />
                 </div>
@@ -703,7 +703,7 @@ export default function ConfirmationBox(props) {
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
-              <div className="inline-block muted">
+              <div className="muted inline-block">
                 ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow" />
               </div>
@@ -888,7 +888,7 @@ export default function ConfirmationBox(props) {
           <Button
             variant="primary-action"
             onClick={onConfirmationClick}
-            className="w-full mt-10"
+            className="mt-10 w-full"
             disabled={!isPrimaryEnabled()}
             type="submit"
           >

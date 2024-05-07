@@ -614,7 +614,7 @@ export default function PositionEditor(props) {
                       {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
                       {nextLeverage && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2, true)}x
                             <BsArrowRight className="transition-arrow" />
                           </div>
@@ -653,7 +653,7 @@ export default function PositionEditor(props) {
                       )}
                       {nextLiquidationPrice && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
@@ -678,7 +678,7 @@ export default function PositionEditor(props) {
                       )}
                       {nextCollateral && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
@@ -697,7 +697,7 @@ export default function PositionEditor(props) {
                         <Tooltip
                           handle={
                             <>
-                              <div className="inline-block muted">
+                              <div className="muted inline-block">
                                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
                                 <BsArrowRight className="transition-arrow" />
                               </div>

@@ -11,7 +11,7 @@ function Banner({ className }) {
         <img src={sparkle} alt="sparkle" className="Banner-text-sparkle" />
       </p>
       <a
-        className="Banner-link Banner-action items-center flex justify-between"
+        className="Banner-link Banner-action flex items-center justify-between"
         target="_blank"
         rel="noreferrer"
         href="https://gmxio.substack.com/p/gmx-v2-beta-is-now-live"

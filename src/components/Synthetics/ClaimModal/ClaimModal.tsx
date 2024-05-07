@@ -70,7 +70,7 @@ export function ClaimModal(p: Props) {
       <div key={market.marketTokenAddress} className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="flex items-start ClaimSettleModal-row-text">
+            <div className="ClaimSettleModal-row-text flex items-start">
               <span>{indexName}</span>
               {poolName ? <span className="subtext">[{poolName}]</span> : null}
             </div>

@@ -228,8 +228,8 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
   data.gmtUsdgApr = data.gmtUsdgSupplyUsd.eq(0)
     ? bigNumberify(0)
     : data.gmtUsdgFarmSupplyUsd.eq(0)
-    ? undefined
-    : gmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.gmtUsdgSupplyUsd);
+      ? undefined
+      : gmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.gmtUsdgSupplyUsd);
   data.gmtUsdgXgmtRewards = stakingData.gmtUsdgFarmXgmt.claimable;
   data.gmtUsdgNativeRewards = stakingData.gmtUsdgFarmNative.claimable;
   data.gmtUsdgTotalRewards = data.gmtUsdgXgmtRewards.add(data.gmtUsdgNativeRewards);

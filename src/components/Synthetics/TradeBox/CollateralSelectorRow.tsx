@@ -93,7 +93,7 @@ function useCollateralWarnings() {
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
               <span
-                className="clickable underline muted"
+                className="clickable muted underline"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
@@ -116,7 +116,7 @@ function useCollateralWarnings() {
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}
               <span
-                className="clickable underline muted"
+                className="clickable muted underline"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
@@ -139,7 +139,7 @@ function useCollateralWarnings() {
           <Trans>
             You have an existing order with {symbol} as collateral.{" "}
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 onSelectCollateralAddress(address);
               }}
