@@ -172,6 +172,7 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
     triggerPrice,
     closeSizeUsd,
     keepLeverage,
+    receiveTokenAddress: undefined,
   });
 
   return q(selector);
@@ -531,6 +532,7 @@ const selectNextValuesDecreaseArgs = createSelector((q) => {
     closeSizeUsd,
     keepLeverage,
     isPnlInLeverage,
+    receiveTokenAddress: undefined,
   };
 });
 

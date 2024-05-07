@@ -32,6 +32,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 type Props = {
   hideTitle?: boolean;
@@ -43,6 +44,8 @@ type Props = {
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
 };
+
+const tokenAddressStyle = { fontSize: 5 };
 
 export function GmList({
   hideTitle,
@@ -62,6 +65,7 @@ export function GmList({
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
+  const { showDebugValues } = useSettings();
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -123,14 +127,17 @@ export function GmList({
                       <p className="text-white">
                         <Trans>
                           <p>
-                            APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as
-                            actual Fees are auto-compounded into the pool in real-time.
-                          </p>
-                          <p>
-                            Check Pools performance against other LP Positions in{" "}
-                            <ExternalLink newTab href="https://dune.com/gmx-io/gmx-analytics">
-                              GMX Dune Dashboard
+                            APR is based on the fees collected for the past {daysConsidered} days while extrapolating
+                            the current borrowing fee.{" "}
+                            <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+                              Read more about GM token pricing
                             </ExternalLink>
+                            .
+                          </p>
+                          <p>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</p>
+                          <p>
+                            Check GM pools' performance against other LP Positions in the{" "}
+                            <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>
                             .
                           </p>
                         </Trans>
@@ -177,6 +184,7 @@ export function GmList({
                           <div className="App-card-title-info-text">
                             <div className="App-card-info-title">
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+
                               <div className="Asset-dropdown-container">
                                 <GmAssetDropdown
                                   token={token}
@@ -190,6 +198,7 @@ export function GmList({
                             </div>
                           </div>
                         </div>
+                        {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
@@ -225,7 +234,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={false} />
                       </td>
 
                       <td className="GmList-actions">
@@ -266,7 +275,7 @@ export function GmList({
           <div className="token-grid">
             {sortedMarketsByIndexToken.map((token, index) => {
               const apr = marketsTokensAPRData?.[token.address];
-              const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;

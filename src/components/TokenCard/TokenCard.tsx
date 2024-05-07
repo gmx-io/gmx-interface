@@ -16,7 +16,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import BannerButton from "components/Banner/BannerButton";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { mergeWith } from "lodash";
-import { formatPercentage } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 
 const glpIcon = getIcon("common", "glp");
@@ -61,8 +61,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
     const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
 
     return {
-      [ARBITRUM]: formatPercentage(maxArbApr),
-      [AVALANCHE]: formatPercentage(maxAvaxApr),
+      [ARBITRUM]: `${formatAmount(maxArbApr, 28, 2)}%`,
+      [AVALANCHE]: `${formatAmount(maxAvaxApr, 28, 2)}%`,
     };
   }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
 

@@ -18,16 +18,17 @@ export function AprInfo({
   showTooltip?: boolean;
 }) {
   const totalApr = (apr ?? 0n) + (incentiveApr ?? 0n);
-  const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
+  const aprNode = <>{apr !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
-      return <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />;
+      return <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 28, 2)}%`} />;
     }
 
     return (
       <>
-        <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />
-        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 2, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 28, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
         <Trans>
           The Bonus APR will be airdropped as ARB tokens.{" "}

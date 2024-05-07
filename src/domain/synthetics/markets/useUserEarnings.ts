@@ -10,6 +10,7 @@ import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { bigMath } from "lib/bigmath";
+import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -192,7 +193,8 @@ export const useUserEarnings = (chainId: number) => {
           if (!balance || balance == 0n) return;
 
           const price = token.prices.maxPrice;
-          const expected365d = bigMath.mulDiv(apr * balance, price, expandDecimals(1, 22));
+
+          const expected365d = bigMath.mulDiv(apr * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
           result.allMarkets.expected365d = result.allMarkets.expected365d + expected365d;
         }
       });

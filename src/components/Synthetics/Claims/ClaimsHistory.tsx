@@ -45,13 +45,20 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
-  const { claimActions, pageIndex, setPageIndex, isLoading } = useClaimCollateralHistory(chainId, {
+  const {
+    claimActions,
+    pageIndex,
+    setPageIndex,
+    isLoading: isHistoryLoading,
+  } = useClaimCollateralHistory(chainId, {
     pageSize: CLAIMS_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp: fromTxTimestamp,
     toTxTimestamp: toTxTimestamp,
     eventName: eventNameFilter,
     marketAddresses: marketAddressesFilter,
   });
+  const isConnected = Boolean(account);
+  const isLoading = isConnected && isHistoryLoading;
 
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
     String(account),
@@ -61,7 +68,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
   const currentPageData = getCurrentData();
 
   const isEmpty = !account || claimActions?.length === 0;
-  const hasFilters = Boolean(startDate || endDate || eventNameFilter.length);
+  const hasFilters = Boolean(startDate || endDate || eventNameFilter.length || marketAddressesFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;

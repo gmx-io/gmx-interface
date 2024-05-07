@@ -276,6 +276,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     closeSizeUsd,
     keepLeverage,
     fixedAcceptablePriceImpactBps,
+    receiveTokenAddress,
   }: {
     positionKey: string | undefined;
     tradeMode: TradeMode;
@@ -286,6 +287,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     closeSizeUsd: bigint | undefined;
     fixedAcceptablePriceImpactBps: bigint | undefined;
     keepLeverage: boolean | undefined;
+    receiveTokenAddress: string | undefined;
   }) =>
     createSelectorDeprecated(
       [
@@ -310,6 +312,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
+        const receiveToken = collateralTokenAddress ? getByKey(tokensData, receiveTokenAddress) : undefined;
 
         if (
           closeSizeUsd === undefined ||
@@ -335,6 +338,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,
+          receiveToken,
         });
       }
     )
@@ -440,6 +444,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeType,
     triggerPrice,
     isPnlInLeverage,
+    receiveTokenAddress,
   }: {
     closeSizeUsd: bigint | undefined;
     collateralTokenAddress: string | undefined;
@@ -451,6 +456,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeType: TradeType;
     triggerPrice: bigint | undefined;
     isPnlInLeverage: boolean;
+    receiveTokenAddress: string | undefined;
   }) =>
     createSelectorDeprecated(
       [
@@ -467,6 +473,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           tradeMode,
           tradeType,
           triggerPrice,
+          receiveTokenAddress,
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,
