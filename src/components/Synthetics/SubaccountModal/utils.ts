@@ -127,12 +127,12 @@ export function getApproxSubaccountActionsCountByBalance(
     return 0n;
   }
 
-  if (!executionFee || executionFee <= 0) {
+  if (executionFee == undefined || executionFee <= 0) {
     return null;
   }
 
-  const topUp = currentAutoTopUpAmount > executionFee ? executionFee : currentAutoTopUpAmount;
-  const reducedCost = executionFee - topUp;
+  const topUp = currentAutoTopUpAmount > executionFee ? executionFee : currentAutoTopUpAmount; // 0
+  const reducedCost = executionFee - topUp; // 10n
 
   // execution fee is fully reduced, calculating sum(countByMainAccBalance, subAccNativeTokenBalance / executionFee)
   if (reducedCost <= 0) {
@@ -141,14 +141,14 @@ export function getApproxSubaccountActionsCountByBalance(
     return countByMainAccBalance + subAccNativeTokenBalance / executionFee;
   }
 
-  const operationsWithReducedCost = subAccNativeTokenBalance / reducedCost;
-  const operationsBackedByMainAccBalance = topUp == 0n ? 0n : mainAccWrappedTokenBalance / topUp;
+  const operationsWithReducedCost = subAccNativeTokenBalance / reducedCost; // 10
+  const operationsBackedByMainAccBalance = topUp == 0n ? 0n : mainAccWrappedTokenBalance / topUp; // 0
 
   if (operationsWithReducedCost <= operationsBackedByMainAccBalance) {
     return (subAccNativeTokenBalance - executionFee) / reducedCost + 1n;
   } else {
     const operationsWithoutReduce =
-      subAccNativeTokenBalance - (reducedCost * operationsBackedByMainAccBalance) / executionFee;
+      (subAccNativeTokenBalance - reducedCost * operationsBackedByMainAccBalance) / executionFee;
 
     return operationsBackedByMainAccBalance + operationsWithoutReduce;
   }
