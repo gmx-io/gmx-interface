@@ -64,7 +64,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      function nextHealthCheck() {
+      async function nextHealthCheck() {
         if (!isWebsocketProvider(wsProvider)) {
           return;
         }
@@ -77,7 +77,11 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
           let subsCount = 0;
           wsProvider._forEachSubscriber(() => subsCount++);
           // eslint-disable-next-line no-console
-          console.log(`ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${subsCount}`);
+          console.log(
+            `ws provider health check, state: ${
+              wsProvider.websocket.readyState
+            }, subs: ${await wsProvider.listenerCount()}`
+          );
         }
 
         if (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) {
