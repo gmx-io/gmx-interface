@@ -113,6 +113,6 @@
 }
 
 .ClaimEsGmx-max-button:hover {
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }

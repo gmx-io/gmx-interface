@@ -23,7 +23,7 @@
 }
 
 .Tab.Tab__block .Tab-option:hover {
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
   background: #3a3f798f;
 }
 
@@ -31,7 +31,7 @@
   opacity: 1;
   pointer-events: none;
   background: var(--primary-btn-bg);
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
 }
 
 .Tab.Tab__block .Tab-option.active .Tab-option-icon {

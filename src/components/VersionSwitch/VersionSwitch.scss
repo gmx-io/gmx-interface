@@ -23,7 +23,7 @@
   }
 
   &:hover {
-    color: rgba(255, 255, 255, 1);
+    color: #ffffff;
     background: #3a3f798f;
   }
 
@@ -34,7 +34,7 @@
 
   &.v2.active {
     background: var(--primary-btn-bg);
-    color: rgba(255, 255, 255, 1);
+    color: #ffffff;
   }
 }
 

@@ -10,38 +10,62 @@ export default function UiPage() {
           blue
           <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
             <div className="bg-blue-100">100</div>
+            <div className="bg-blue-200">200</div>
+            <div className="bg-blue-400">400</div>
             <div className="bg-blue-500">500</div>
           </div>
         </div>
         <div>
+          cold-blue
+          <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className="bg-cold-blue-500">500</div>
+            <div className="bg-cold-blue-700">700*</div>
+          </div>
+        </div>
+        <div>
           gray
-          <div className="flex gap-8">
-            <div className=" size-64 self-center rounded-4 bg-gray-200" />
-            <div className="size-64 self-center rounded-4 bg-gray" />
+          <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className="bg-gray-100">100</div>
+            <div className="bg-gray-200">200</div>
+            <div className="bg-gray"></div>
+            <div className="bg-gray-300">300*</div>
+            <div className="bg-gray-400">400</div>
           </div>
         </div>
         <div>
           slate
           <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className="bg-slate-100">100</div>
+            <div className="bg-slate-400">400</div>
             <div className="bg-slate-500">500</div>
+            <div className="bg-slate-550">550</div>
             <div className="bg-slate-600">600</div>
             <div className="bg-slate-700">700</div>
             <div className="bg-slate-800">800</div>
-            <div className="bg-slate-850">850</div>
             <div className="bg-slate-900">900</div>
+            <div className="bg-slate-950">950</div>
           </div>
         </div>
         <div>
           yellow
-          <div className="size-64 self-center rounded-4 bg-yellow" />
+          <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className="bg-yellow-400" />
+            <div className="bg-yellow" />
+          </div>
         </div>
         <div>
           red
-          <div className="size-64 self-center rounded-4 bg-red" />
+          <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className=" bg-red" />
+            <div className=" bg-red-800">800*</div>
+          </div>
         </div>
         <div>
           green
-          <div className="size-64 self-center rounded-4 bg-green" />
+          <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
+            <div className="bg-green" />
+            <div className="bg-green-800">800*</div>
+          </div>
         </div>
       </div>
 
@@ -55,6 +79,9 @@ export default function UiPage() {
         <p className="text-green">Green text is green</p>
         <p className="text-white">White text is white</p>
       </div>
+      <p className="decoration-gray-400 mt-8 text-white underline decoration-dashed decoration-8">
+        Decoration is gray-400
+      </p>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Font sizes</h2>
       <div className="flex flex-col gap-16">

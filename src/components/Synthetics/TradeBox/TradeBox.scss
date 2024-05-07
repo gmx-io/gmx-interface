@@ -100,8 +100,8 @@
   position: relative;
 
   .Tooltip-handle {
-    color: rgb(243, 181, 12);
-    text-decoration-color: rgb(243, 181, 12);
+    color: #f3b50c;
+    text-decoration-color: #f3b50c;
   }
 
   &.error {
@@ -129,8 +129,8 @@
 }
 
 .LiqPrice-soft-warning {
-  color: rgb(243, 181, 12);
-  text-decoration-color: rgb(243, 181, 12);
+  color: #f3b50c;
+  text-decoration-color: #f3b50c;
 }
 
 .LiqPrice-hard-warning {
@@ -173,7 +173,7 @@
   color: rgba(255, 255, 255, 0.7);
 
   &:hover {
-    text-decoration-color: rgba(255, 255, 255);
-    color: rgba(255, 255, 255);
+    text-decoration-color: #ffffff;
+    color: #ffffff;
   }
 }

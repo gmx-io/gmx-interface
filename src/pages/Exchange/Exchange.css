@@ -515,7 +515,7 @@ button.Exchange-list-action {
 }
 
 button.Exchange-list-action:hover {
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
 }
 
 table.Exchange-list {
@@ -764,7 +764,7 @@ table.Position-list .Exchange-list-item-active {
   right: 1.25rem;
   top: 0;
   padding: 0.465rem 0.8rem;
-  color: #fff;
+  color: #ffffff;
   outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
@@ -775,7 +775,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-max:hover {
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
   background: var(--primary-btn-hover);
 }
 
