@@ -462,7 +462,7 @@ function AffiliatesStats({
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
-                      if (usdAmount == 0n && rebate.amounts[i] !== 0n) {
+                      if (usdAmount == 0n && rebate.amounts[i] != 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 

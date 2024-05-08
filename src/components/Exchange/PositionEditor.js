@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
 import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -169,8 +169,12 @@ export default function PositionEditor(props) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
 
       if (position.isLong && isDeposit) {
-        collateralDelta = bigMath.mulDiv(collateralDelta, BASIS_POINTS_DIVISOR - DEPOSIT_FEE, BASIS_POINTS_DIVISOR);
-        depositFeeUSD = bigMath.mulDiv(convertedAmount, DEPOSIT_FEE, BASIS_POINTS_DIVISOR);
+        collateralDelta = bigMath.mulDiv(
+          collateralDelta,
+          BASIS_POINTS_DIVISOR_BIGINT - DEPOSIT_FEE,
+          BASIS_POINTS_DIVISOR_BIGINT
+        );
+        depositFeeUSD = bigMath.mulDiv(convertedAmount, DEPOSIT_FEE, BASIS_POINTS_DIVISOR_BIGINT);
       }
 
       nextCollateral = isDeposit

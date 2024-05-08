@@ -329,7 +329,7 @@ function StakeModal(props) {
   const needApproval = tokenAllowance && amount && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount || amount == 0n) {
+    if (!amount) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {

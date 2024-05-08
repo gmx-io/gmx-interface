@@ -54,23 +54,25 @@ export const formatSwapMessage = (
     useCommas: true,
   });
 
-  const tokensExecutionRatio = tradeAction.executionAmountOut
-    ? getTokensRatioByAmounts({
-        fromToken: tokenIn,
-        toToken: tokenOut,
-        fromTokenAmount: amountIn,
-        toTokenAmount: tradeAction.executionAmountOut,
-      })
-    : undefined;
+  const tokensExecutionRatio =
+    tradeAction.executionAmountOut !== undefined
+      ? getTokensRatioByAmounts({
+          fromToken: tokenIn,
+          toToken: tokenOut,
+          fromTokenAmount: amountIn,
+          toTokenAmount: tradeAction.executionAmountOut,
+        })
+      : undefined;
 
-  const tokensMinRatio = tradeAction.minOutputAmount
-    ? getTokensRatioByAmounts({
-        fromToken: tokenIn,
-        toToken: tokenOut,
-        fromTokenAmount: amountIn,
-        toTokenAmount: tradeAction.minOutputAmount,
-      })
-    : undefined;
+  const tokensMinRatio =
+    tradeAction.minOutputAmount !== undefined
+      ? getTokensRatioByAmounts({
+          fromToken: tokenIn,
+          toToken: tokenOut,
+          fromTokenAmount: amountIn,
+          toTokenAmount: tradeAction.minOutputAmount,
+        })
+      : undefined;
 
   const acceptablePriceInequality =
     tokensMinRatio?.largestToken?.address === tokenOut?.address ? INEQUALITY_LT : INEQUALITY_GT;
@@ -172,14 +174,15 @@ export const formatSwapMessage = (
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
     const outputAmount = error?.args?.outputAmount as bigint | undefined;
-    const ratio = outputAmount
-      ? getTokensRatioByAmounts({
-          fromToken: tokenIn,
-          toToken: tokenOut,
-          fromTokenAmount: amountIn,
-          toTokenAmount: outputAmount,
-        })
-      : undefined;
+    const ratio =
+      outputAmount !== undefined
+        ? getTokensRatioByAmounts({
+            fromToken: tokenIn,
+            toToken: tokenOut,
+            fromTokenAmount: amountIn,
+            toTokenAmount: outputAmount,
+          })
+        : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.largestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
@@ -223,14 +226,15 @@ export const formatSwapMessage = (
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
     const outputAmount = error?.args?.outputAmount as bigint | undefined;
-    const ratio = outputAmount
-      ? getTokensRatioByAmounts({
-          fromToken: tokenIn,
-          toToken: tokenOut,
-          fromTokenAmount: amountIn,
-          toTokenAmount: outputAmount,
-        })
-      : undefined;
+    const ratio =
+      outputAmount !== undefined
+        ? getTokensRatioByAmounts({
+            fromToken: tokenIn,
+            toToken: tokenOut,
+            fromTokenAmount: amountIn,
+            toTokenAmount: outputAmount,
+          })
+        : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.smallestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,

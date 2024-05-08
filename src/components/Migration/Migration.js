@@ -132,7 +132,7 @@ function MigrationModal(props) {
 
   if (amount) {
     baseAmount = bigMath.mulDiv(amount, token.price, gmxPrice);
-    bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100);
+    bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100n);
     totalAmount = baseAmount + bonusAmount;
 
     baseAmountUsd = baseAmount * gmxPrice;
@@ -141,7 +141,7 @@ function MigrationModal(props) {
   }
 
   const getError = () => {
-    if (!amount || amount == 0n) {
+    if (!amount) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {

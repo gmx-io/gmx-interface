@@ -5,21 +5,15 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { bigMath } from "lib/bigmath";
 
 export default function ExchangeWalletTokens(props) {
-  const { tokens, mintingCap, infoTokens, onSelectToken } = props;
+  const { tokens, infoTokens, onSelectToken } = props;
 
   return (
     <div className="ExchangeWalletTokens App-box">
       {tokens.map((token) => {
         let info = infoTokens ? infoTokens[token.address] : {};
-        let mintAmount;
         let balance = info.balance;
-        if (mintingCap && info.usdgAmount) {
-          mintAmount = mintingCap - info.usdgAmount;
-        }
-        if (mintAmount && mintAmount < 0) {
-          mintAmount = 0n;
-        }
         let balanceUsd;
+
         if (balance && info.maxPrice) {
           balanceUsd = bigMath.mulDiv(balance, info.maxPrice, expandDecimals(1, token.decimals));
         }

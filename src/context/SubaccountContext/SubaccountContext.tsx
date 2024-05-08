@@ -359,8 +359,7 @@ export function useMainAccountInsufficientFunds(requiredBalance: bigint | undefi
 export function useSubaccountActionCounts() {
   const current = useSubaccountSelector((s) => s.contractData?.currentActionsCount ?? null);
   const max = useSubaccountSelector((s) => s.contractData?.maxAllowedActions ?? null);
-  // TODO check
-  const remaining = max !== null ? max - (current ?? 0n) ?? 0n : 0n;
+  const remaining = max !== null ? max - (current ?? 0n) : 0n;
 
   return {
     current,

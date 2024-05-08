@@ -209,11 +209,11 @@ export function OrderEditor(p: Props) {
       return t`Loading...`;
     }
 
-    if (!sizeDeltaUsd) {
+    if (!sizeDeltaUsd || sizeDeltaUsd < 0) {
       return t`Enter an amount`;
     }
 
-    if (!triggerPrice) {
+    if (!triggerPrice || triggerPrice < 0) {
       return t`Enter a price`;
     }
 

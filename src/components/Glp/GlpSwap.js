@@ -8,7 +8,6 @@ import {
   getBuyGlpToAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  GLP_COOLDOWN_DURATION,
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   SECONDS_PER_YEAR,
@@ -296,7 +295,7 @@ export default function GlpSwap(props) {
 
   const stakingData = getStakingData(stakingInfo);
 
-  const redemptionTime = lastPurchaseTime ? lastPurchaseTime + GLP_COOLDOWN_DURATION : undefined;
+  const redemptionTime = lastPurchaseTime;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
   const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : 0n;
@@ -389,7 +388,7 @@ export default function GlpSwap(props) {
       nativeToken.minPrice,
       expandDecimals(1, 18)
     );
-    feeGlpTrackerApr = bigMath.mulDiv(feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, glpSupplyUsd);
+    feeGlpTrackerApr = bigMath.mulDiv(feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
     totalApr = totalApr + feeGlpTrackerApr;
   }
 
@@ -409,7 +408,7 @@ export default function GlpSwap(props) {
       gmxPrice,
       expandDecimals(1, 18)
     );
-    stakedGlpTrackerApr = bigMath.mulDiv(stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, glpSupplyUsd);
+    stakedGlpTrackerApr = bigMath.mulDiv(stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
     totalApr = totalApr + stakedGlpTrackerApr;
   }
 
@@ -594,10 +593,10 @@ export default function GlpSwap(props) {
       return [t`Redemption time not yet reached`];
     }
 
-    if (!swapAmount || swapAmount == 0n) {
+    if (!swapAmount) {
       return [t`Enter an amount`];
     }
-    if (!glpAmount || glpAmount == 0n) {
+    if (!glpAmount) {
       return [t`Enter an amount`];
     }
 
@@ -721,7 +720,11 @@ export default function GlpSwap(props) {
   const buyGlp = () => {
     setIsSubmitting(true);
 
-    const minGlp = bigMath.mulDiv(glpAmount, BASIS_POINTS_DIVISOR - savedAllowedSlippage, BASIS_POINTS_DIVISOR_BIGINT);
+    const minGlp = bigMath.mulDiv(
+      glpAmount,
+      BigInt(BASIS_POINTS_DIVISOR - savedAllowedSlippage),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
@@ -747,7 +750,11 @@ export default function GlpSwap(props) {
   const sellGlp = () => {
     setIsSubmitting(true);
 
-    const minOut = bigMath.mulDiv(swapAmount, BASIS_POINTS_DIVISOR - savedAllowedSlippage, BASIS_POINTS_DIVISOR);
+    const minOut = bigMath.mulDiv(
+      swapAmount,
+      BigInt(BASIS_POINTS_DIVISOR - savedAllowedSlippage),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";

@@ -224,7 +224,7 @@ export function PoolSelector({
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {(showBalances && balance && (
+                  {(showBalances && balance !== undefined && (
                     <div className="Token-text">
                       {balance > 0 &&
                         formatTokenAmount(balance, marketToken?.decimals, "GM", {

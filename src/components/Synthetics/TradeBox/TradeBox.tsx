@@ -787,8 +787,10 @@ export function TradeBox(p: Props) {
     [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
   );
   const handleClosePercentageChange = useCallback(
-    (percent) =>
-      setCloseSizeInputValue(formatAmount(((selectedPosition?.sizeInUsd ?? 0n) * percent) / 100n, USD_DECIMALS, 2)),
+    (percent: number) =>
+      setCloseSizeInputValue(
+        formatAmount(((selectedPosition?.sizeInUsd ?? 0n) * BigInt(percent)) / 100n, USD_DECIMALS, 2)
+      ),
     [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
   );
 
@@ -1355,7 +1357,7 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd && (
+                {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                   <ExchangeInfoRow
                     className="SwapBox-info-row"
                     label={t`Receive`}

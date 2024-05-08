@@ -609,7 +609,8 @@ export function PositionEditor(p: Props) {
                 (isDeposit
                   ? collateralToken?.balance &&
                     showMaxOnDeposit &&
-                    ((collateralDeltaAmount !== undefined && collateralDeltaAmount != collateralToken?.balance) ||
+                    (collateralDeltaAmount === undefined ||
+                      collateralDeltaAmount != collateralToken?.balance ||
                       collateralDeltaAmount === undefined)
                   : maxWithdrawAmount &&
                     (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false

@@ -249,7 +249,7 @@ export default function PositionsList(props) {
               let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
                 const borrowFeeRate =
-                  (position.collateralToken.fundingRate * position.size * 24n) / FUNDING_RATE_PRECISION;
+                  (position.collateralToken.fundingRate * position.size * 24n) / BigInt(FUNDING_RATE_PRECISION);
                 borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
               }
 
@@ -521,7 +521,7 @@ export default function PositionsList(props) {
             let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
               const borrowFeeRate =
-                (position.collateralToken.fundingRate * position.size * 24n) / FUNDING_RATE_PRECISION;
+                (position.collateralToken.fundingRate * position.size * 24n) / BigInt(FUNDING_RATE_PRECISION);
               borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
             }
 

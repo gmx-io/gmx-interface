@@ -109,7 +109,7 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
   } else {
     divisor = hasProfit ? nextSize - delta : nextSize + delta;
   }
-  if (divisor === undefined || divisor == 0n) {
+  if (!divisor) {
     return;
   }
   const nextAveragePrice = bigMath.mulDiv(nextPrice, nextSize, divisor);
@@ -590,10 +590,10 @@ export default function SwapBox(props) {
             );
           }
 
-          const toNumerator = fromUsdMinAfterFee * leverageMultiplier * BASIS_POINTS_DIVISOR_BIGINT;
+          const toNumerator = fromUsdMinAfterFee * BigInt(leverageMultiplier) * BASIS_POINTS_DIVISOR_BIGINT;
           const toDenominator =
-            BigInt(MARGIN_FEE_BASIS_POINTS) * BigInt(leverageMultiplier) +
-            BASIS_POINTS_DIVISOR_BIGINT * BASIS_POINTS_DIVISOR_BIGINT;
+            (BigInt(MARGIN_FEE_BASIS_POINTS) * BigInt(leverageMultiplier) + BASIS_POINTS_DIVISOR_BIGINT) *
+            BASIS_POINTS_DIVISOR_BIGINT;
 
           const nextToUsd = toNumerator / toDenominator;
           const nextToAmount = bigMath.mulDiv(nextToUsd, expandDecimals(1, toToken.decimals), toTokenPriceUsd);
@@ -611,11 +611,11 @@ export default function SwapBox(props) {
 
       const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
       if (fromTokenInfo && fromTokenInfo.minPrice && toUsdMax && toUsdMax > 0) {
-        const leverageMultiplier = parseInt(leverageOption * BASIS_POINTS_DIVISOR_BIGINT);
+        const leverageMultiplier = parseInt(BigInt(leverageOption) * BASIS_POINTS_DIVISOR_BIGINT);
 
-        const baseFromAmountUsd = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, leverageMultiplier);
+        const baseFromAmountUsd = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, BigInt(leverageMultiplier));
 
-        let fees = bigMath.mulDiv(toUsdMax, MARGIN_FEE_BASIS_POINTS, BASIS_POINTS_DIVISOR_BIGINT);
+        let fees = bigMath.mulDiv(toUsdMax, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
 
         const { feeBasisPoints } = getNextToAmount(
           chainId,
@@ -631,7 +631,7 @@ export default function SwapBox(props) {
         );
 
         if (feeBasisPoints) {
-          const swapFees = bigMath.mulDiv(baseFromAmountUsd, feeBasisPoints, BASIS_POINTS_DIVISOR);
+          const swapFees = bigMath.mulDiv(baseFromAmountUsd, feeBasisPoints, BASIS_POINTS_DIVISOR_BIGINT);
           fees = fees + swapFees;
         }
 
@@ -696,7 +696,7 @@ export default function SwapBox(props) {
   if (fromUsdMin && toUsdMax && fromUsdMin > 0) {
     const fees = bigMath.mulDiv(toUsdMax, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
     if (fromUsdMin - fees > 0) {
-      leverage = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR, fromUsdMin - fees);
+      leverage = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, fromUsdMin - fees);
     }
   }
 
@@ -744,10 +744,10 @@ export default function SwapBox(props) {
       }
     }
 
-    if (!fromAmount || fromAmount == 0n) {
+    if (!fromAmount) {
       return [t`Enter an amount`];
     }
-    if (!toAmount || toAmount == 0n) {
+    if (!toAmount) {
       return [t`Enter an amount`];
     }
 
@@ -824,7 +824,7 @@ export default function SwapBox(props) {
       return [t`Page outdated, please refresh`];
     }
 
-    if (!toAmount || toAmount == 0n) {
+    if (!toAmount) {
       return [t`Enter an amount`];
     }
 
@@ -848,7 +848,7 @@ export default function SwapBox(props) {
       return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
-    if (leverage && leverage == 0n) {
+    if (leverage !== undefined && leverage == 0) {
       return [t`Enter an amount`];
     }
     if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd == 0n)) {
@@ -2211,7 +2211,7 @@ export default function SwapBox(props) {
                   )}
                   {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
                   {!toAmount && leverage && leverage > 0 && `-`}
-                  {leverage && leverage == 0n && `-`}
+                  {leverage !== undefined && leverage == 0n && `-`}
                 </div>
               </div>
               <div className="Exchange-info-row">

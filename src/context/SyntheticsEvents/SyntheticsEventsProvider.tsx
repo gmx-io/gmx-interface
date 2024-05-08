@@ -422,7 +422,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [currentAccount]);
 
       const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
-      // TODO check it
       const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
       const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
       const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;

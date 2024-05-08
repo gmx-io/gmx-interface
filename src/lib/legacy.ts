@@ -33,7 +33,7 @@ export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
-export const DEPOSIT_FEE = 30;
+export const DEPOSIT_FEE = 30n;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
@@ -89,11 +89,12 @@ export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
 }
 
-export function getMarginFee(sizeDelta) {
+export function getMarginFee(sizeDelta: bigint) {
   if (!sizeDelta) {
     return 0n;
   }
-  const afterFeeUsd = (sizeDelta * (BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS)) / BASIS_POINTS_DIVISOR;
+  const afterFeeUsd =
+    (sizeDelta * (BASIS_POINTS_DIVISOR_BIGINT - BigInt(MARGIN_FEE_BASIS_POINTS))) / BASIS_POINTS_DIVISOR_BIGINT;
   return sizeDelta - afterFeeUsd;
 }
 
@@ -639,8 +640,8 @@ export function getProfitPrice(closePrice, position) {
   let profitPrice;
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
-      ? mulDiv(position.averagePrice, BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS, BASIS_POINTS_DIVISOR)
-      : mulDiv(position.averagePrice, BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS, BASIS_POINTS_DIVISOR);
+      ? mulDiv(position.averagePrice, BigInt(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS), BASIS_POINTS_DIVISOR_BIGINT)
+      : mulDiv(position.averagePrice, BigInt(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS), BASIS_POINTS_DIVISOR_BIGINT);
   }
   return profitPrice;
 }
@@ -675,8 +676,8 @@ export function calculatePositionDelta(
     delta = 0n;
   }
 
-  const deltaPercentage = mulDiv(delta, BASIS_POINTS_DIVISOR, collateral);
-  const pendingDeltaPercentage = mulDiv(pendingDelta, BASIS_POINTS_DIVISOR, collateral);
+  const deltaPercentage = mulDiv(delta, BASIS_POINTS_DIVISOR_BIGINT, collateral);
+  const pendingDeltaPercentage = mulDiv(pendingDelta, BASIS_POINTS_DIVISOR_BIGINT, collateral);
 
   return {
     delta,
@@ -708,7 +709,7 @@ export function getFundingFee(data: { size: bigint; entryFundingRate?: bigint; c
   let { entryFundingRate, cumulativeFundingRate, size } = data;
 
   if (entryFundingRate !== undefined && cumulativeFundingRate !== undefined) {
-    return mulDiv(size, cumulativeFundingRate - entryFundingRate, FUNDING_RATE_PRECISION);
+    return mulDiv(size, cumulativeFundingRate - entryFundingRate, BigInt(FUNDING_RATE_PRECISION));
   }
 
   return;
@@ -1283,22 +1284,26 @@ export function getProcessedData(
 
   data.boostBasisPoints = 0n;
   if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx > 0) {
-    data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR, data.bonusGmxInFeeGmx);
+    data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR_BIGINT, data.bonusGmxInFeeGmx);
   }
 
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR) * gmxPrice) / expandDecimals(1, 18);
   data.gmxAprForEsGmx =
     data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd > 0
-      ? mulDiv(data.stakedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.stakedGmxTrackerSupplyUsd)
+      ? mulDiv(data.stakedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.stakedGmxTrackerSupplyUsd)
       : 0n;
   data.feeGmxTrackerAnnualRewardsUsd =
     (stakingData.feeGmxTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR) * nativeTokenPrice) / expandDecimals(1, 18);
   data.gmxAprForNativeToken =
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
-      ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.feeGmxSupplyUsd)
+      ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
       : 0n;
-  data.gmxBoostAprForNativeToken = mulDiv(data.gmxAprForNativeToken, data.boostBasisPoints, BASIS_POINTS_DIVISOR);
+  data.gmxBoostAprForNativeToken = mulDiv(
+    data.gmxAprForNativeToken,
+    data.boostBasisPoints,
+    BASIS_POINTS_DIVISOR_BIGINT
+  );
   data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
   data.gmxAprTotalWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken + data.gmxAprForEsGmx;
   data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken;
@@ -1330,7 +1335,7 @@ export function getProcessedData(
   );
   data.glpAprForEsGmx =
     data.glpSupplyUsd && data.glpSupplyUsd > 0
-      ? mulDiv(data.stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.glpSupplyUsd)
+      ? mulDiv(data.stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.glpSupplyUsd)
       : 0n;
   data.feeGlpTrackerAnnualRewardsUsd = mulMulDiv(
     stakingData.feeGlpTracker.tokensPerInterval,
@@ -1340,7 +1345,7 @@ export function getProcessedData(
   );
   data.glpAprForNativeToken =
     data.glpSupplyUsd && data.glpSupplyUsd > 0
-      ? mulDiv(data.feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.glpSupplyUsd)
+      ? mulDiv(data.feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.glpSupplyUsd)
       : 0n;
   data.glpAprTotal = data.glpAprForNativeToken + data.glpAprForEsGmx;
 
@@ -1360,11 +1365,11 @@ export function getProcessedData(
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
 
   data.avgBoostMultiplier = stakedBnGmxSupply
-    ? mulDiv(stakedBnGmxSupply, BASIS_POINTS_DIVISOR, stakedGmxSupply + (data?.stakedEsGmxSupply ?? 0n))
+    ? mulDiv(stakedBnGmxSupply, BASIS_POINTS_DIVISOR_BIGINT, stakedGmxSupply + (data?.stakedEsGmxSupply ?? 0n))
     : undefined;
 
   data.avgBoostAprForNativeToken = data.gmxAprForNativeToken
-    ? mulDiv(data.gmxAprForNativeToken, data.avgBoostMultiplier, BASIS_POINTS_DIVISOR)
+    ? mulDiv(data.gmxAprForNativeToken, data.avgBoostMultiplier, BASIS_POINTS_DIVISOR_BIGINT)
     : undefined;
   data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
     ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)

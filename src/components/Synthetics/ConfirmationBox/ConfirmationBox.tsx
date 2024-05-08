@@ -1469,7 +1469,7 @@ export function ConfirmationBox(p: Props) {
             {renderLeverage(
               existingPosition?.leverage,
               nextPositionValues?.nextLeverage,
-              nextPositionValues?.nextSizeUsd ? nextPositionValues?.nextSizeUsd <= 0 : undefined
+              nextPositionValues?.nextSizeUsd !== undefined ? nextPositionValues.nextSizeUsd <= 0 : undefined
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
@@ -1626,7 +1626,7 @@ export function ConfirmationBox(p: Props) {
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          {(existingPosition && decreaseAmounts?.receiveUsd && (
+          {(existingPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <ExchangeInfoRow
               label={t`Receive`}
               value={formatTokenAmountWithUsd(

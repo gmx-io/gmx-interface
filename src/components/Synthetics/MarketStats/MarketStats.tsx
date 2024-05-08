@@ -324,8 +324,8 @@ export function MarketStats(p: Props) {
             <CardRow
               label={t`Pool Amount`}
               value={formatTokenAmountWithUsd(
-                longPoolAmount ? longPoolAmount + (shortPoolAmount ?? BN_ZERO) : undefined,
-                longPoolAmountUsd ? longPoolAmountUsd + (shortPoolAmountUsd ?? BN_ZERO) : undefined,
+                (longPoolAmount ?? BN_ZERO) + (shortPoolAmount ?? BN_ZERO),
+                (longPoolAmountUsd ?? BN_ZERO) + (shortPoolAmountUsd ?? BN_ZERO),
                 longToken?.symbol,
                 longToken?.decimals
               )}

@@ -9,7 +9,6 @@ import { getTokenInfo, getUsd } from "domain/tokens";
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import {
-  BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DEFAULT_SLIPPAGE_AMOUNT,
@@ -181,7 +180,11 @@ export default function ConfirmationBox(props) {
     collateralAfterFees = fromUsdMin - feesUsd;
   }
   if (isSwap) {
-    minOut = bigMath.mulDiv(toAmount, BASIS_POINTS_DIVISOR - allowedSlippage, BASIS_POINTS_DIVISOR);
+    minOut = bigMath.mulDiv(
+      toAmount,
+      BASIS_POINTS_DIVISOR_BIGINT - BigInt(allowedSlippage ?? 0),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     fromTokenUsd = fromTokenInfo ? formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true) : 0;
     toTokenUsd = toTokenInfo ? formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true) : 0;
@@ -676,7 +679,7 @@ export default function ConfirmationBox(props) {
             )}
             {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
             {!toAmount && leverage && leverage > 0 && `-`}
-            {leverage && leverage == 0n && `-`}
+            {leverage !== undefined && leverage == 0n && `-`}
           </ExchangeInfoRow>
           {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
           {showCollateralSpread && (

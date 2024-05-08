@@ -231,7 +231,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
-                      if (amount == 0n && rebate.amounts[i] !== 0n) {
+                      if (amount == 0n && rebate.amounts[i] != 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 

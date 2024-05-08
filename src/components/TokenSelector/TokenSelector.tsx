@@ -225,7 +225,7 @@ export default function TokenSelector(props: Props) {
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {(showBalances && balance && (
+                  {(showBalances && balance !== undefined && (
                     <div className="Token-text">
                       {balance > 0 && formatAmount(balance, token.decimals, 4, true)}
                       {balance == 0n && "-"}

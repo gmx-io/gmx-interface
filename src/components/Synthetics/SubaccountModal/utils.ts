@@ -131,8 +131,8 @@ export function getApproxSubaccountActionsCountByBalance(
     return null;
   }
 
-  const topUp = currentAutoTopUpAmount > executionFee ? executionFee : currentAutoTopUpAmount; // 0
-  const reducedCost = executionFee - topUp; // 10n
+  const topUp = currentAutoTopUpAmount > executionFee ? executionFee : currentAutoTopUpAmount;
+  const reducedCost = executionFee - topUp;
 
   // execution fee is fully reduced, calculating sum(countByMainAccBalance, subAccNativeTokenBalance / executionFee)
   if (reducedCost <= 0) {
@@ -141,8 +141,8 @@ export function getApproxSubaccountActionsCountByBalance(
     return countByMainAccBalance + subAccNativeTokenBalance / executionFee;
   }
 
-  const operationsWithReducedCost = subAccNativeTokenBalance / reducedCost; // 10
-  const operationsBackedByMainAccBalance = topUp == 0n ? 0n : mainAccWrappedTokenBalance / topUp; // 0
+  const operationsWithReducedCost = subAccNativeTokenBalance / reducedCost;
+  const operationsBackedByMainAccBalance = topUp == 0n ? 0n : mainAccWrappedTokenBalance / topUp;
 
   if (operationsWithReducedCost <= operationsBackedByMainAccBalance) {
     return (subAccNativeTokenBalance - executionFee) / reducedCost + 1n;
@@ -163,7 +163,7 @@ export function getDefaultValues(tokenData: TokenData) {
     wntForAutoTopUps: notNullOrThrow(
       convertToTokenAmount(expandDecimals(20, 30), tokenData.decimals, tokenData.prices.maxPrice)
     ),
-    maxAllowedActions: notNullOrThrow(BigInt(10)),
+    maxAllowedActions: 10n,
   };
 }
 

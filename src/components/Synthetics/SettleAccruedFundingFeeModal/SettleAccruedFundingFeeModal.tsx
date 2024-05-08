@@ -111,7 +111,7 @@ export function SettleAccruedFundingFeeModal({
           account,
           marketAddress: position.marketAddress,
           initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: BigInt(1), // FIXME ?
+          initialCollateralDeltaAmount: BigInt(1),
           receiveTokenAddress: position.collateralToken.address,
           swapPath: [],
           sizeDeltaUsd: 0n,

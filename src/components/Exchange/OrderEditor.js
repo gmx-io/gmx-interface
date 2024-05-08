@@ -174,7 +174,7 @@ export default function OrderEditor(props) {
   };
 
   const getError = () => {
-    if ((!triggerRatio || triggerRatio == 0n) && (!triggerPrice || triggerPrice == 0n)) {
+    if (!triggerRatio && !triggerPrice) {
       return t`Enter Price`;
     }
     if (order.type === SWAP && triggerRatio == order.triggerRatio) {

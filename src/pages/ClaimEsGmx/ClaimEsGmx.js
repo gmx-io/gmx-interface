@@ -75,7 +75,7 @@ export function getVestingDataV2(vestingInfo) {
 }
 
 function getVestingValues({ minRatio, amount, vestingDataItem }) {
-  if (!vestingDataItem || !amount || amount == 0n) {
+  if (!vestingDataItem || !amount) {
     return;
   }
 
@@ -268,7 +268,7 @@ export default function ClaimEsGmx() {
       return t`No esGMX to claim`;
     }
 
-    if (!amount || amount == 0n) {
+    if (!amount) {
       return t`Enter an amount`;
     }
 

@@ -11,7 +11,6 @@ export async function withdrawFromSubaccount({
 }) {
   if (!subaccount) throw new Error("No subaccount available.");
 
-  // TODO check it
   const subaccountAddress = subaccount.address;
   const wallet = subaccount.wallet;
   const provider = ethers.getDefaultProvider();

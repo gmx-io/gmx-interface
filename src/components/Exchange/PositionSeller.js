@@ -15,6 +15,7 @@ import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config
 import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DEFAULT_SLIPPAGE_AMOUNT,
   EXCESSIVE_SLIPPAGE_AMOUNT,
@@ -446,7 +447,8 @@ export default function PositionSeller(props) {
     if (keepLeverage && sizeDelta && !isClosing) {
       // Calculating the collateralDelta needed to keep the next leverage same as current leverage
       collateralDelta =
-        position.collateral - bigMath.mulDiv(position.size - sizeDelta, BASIS_POINTS_DIVISOR, leverageWithoutDelta);
+        position.collateral -
+        bigMath.mulDiv(position.size - sizeDelta, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutDelta);
 
       /*
        In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether
@@ -520,7 +522,7 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = bigMath.mulDiv(receiveUsd, feeBasisPoints, BASIS_POINTS_DIVISOR);
+        swapFee = bigMath.mulDiv(receiveUsd, feeBasisPoints, BASIS_POINTS_DIVISOR_BIGINT);
         totalFees = totalFees + (swapFee || 0n);
         receiveUsd = receiveUsd - swapFee;
       }

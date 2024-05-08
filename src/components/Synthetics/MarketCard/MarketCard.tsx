@@ -242,7 +242,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 }
                 renderContent={() => (
                   <div>
-                    {(marketInfo && totalInterestUsd && (
+                    {(marketInfo && totalInterestUsd !== undefined && (
                       <>
                         <StatsTooltipRow
                           label={t`Long Open Interest`}

@@ -138,9 +138,7 @@ export function TradeFeesRow(p: Props) {
         className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green"),
       })) || [];
 
-    const swapProfitFeeRow = (
-      p.swapProfitFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapProfitFee?.deltaUsd) > 0
-    )
+    const swapProfitFeeRow = (p.swapProfitFee?.deltaUsd === undefined ? undefined : p.swapProfitFee?.deltaUsd !== 0n)
       ? {
           id: "swapProfitFee",
           label: (
@@ -158,9 +156,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
-    const positionFeeRow = (
-      p.positionFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.positionFee?.deltaUsd) > 0
-    )
+    const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)
       ? {
           id: "positionFee",
           label: (
@@ -174,7 +170,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const uiFeeRow = (p.uiFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.uiFee.deltaUsd) > 0)
+    const uiFeeRow = (p.uiFee?.deltaUsd === undefined ? undefined : p.uiFee.deltaUsd !== 0n)
       ? {
           id: "uiFee",
           label: (
@@ -192,7 +188,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const uiSwapFeeRow =
-      p.uiSwapFee && (p.uiSwapFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.uiSwapFee.deltaUsd) > 0)
+      p.uiSwapFee && (p.uiSwapFee?.deltaUsd === undefined ? undefined : p.uiSwapFee.deltaUsd !== 0n)
         ? {
             id: "swapUiFee",
             label: (
@@ -206,7 +202,7 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
-    const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd > 0)
+    const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd !== 0n)
       ? {
           id: "feeDiscount",
           label: (
@@ -220,7 +216,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const borrowFeeRow =
-      p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.borrowFee.deltaUsd) > 0)
+      p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
             label: (

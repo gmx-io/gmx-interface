@@ -11,7 +11,7 @@ import {
   getExchangeRateDisplay,
   INCREASE,
 } from "lib/legacy";
-import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR } from "config/factors";
+import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
 
@@ -57,7 +57,7 @@ function getOrderActionTitle(action) {
 }
 
 function renderLiquidationTooltip(liquidationData, label) {
-  const minCollateral = bigMath.mulDiv(liquidationData.size, BASIS_POINTS_DIVISOR, MAX_LEVERAGE);
+  const minCollateral = bigMath.mulDiv(liquidationData.size, BASIS_POINTS_DIVISOR_BIGINT, BigInt(MAX_LEVERAGE));
   const text =
     liquidationData.type === "full"
       ? t`This position was liquidated as the max leverage of 100x was exceeded.`
