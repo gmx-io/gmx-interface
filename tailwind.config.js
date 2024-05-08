@@ -4,6 +4,30 @@ const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
 
+/**
+ * @type {import('tailwindcss/types/config').PluginCreator}
+ */
+function injectColorsPlugin({ addBase, theme }) {
+  function extractColorVars(colorObj, colorGroup = "") {
+    return Object.keys(colorObj).reduce((vars, colorKey) => {
+      const value = colorObj[colorKey];
+
+      const visualColorKey = colorKey === "DEFAULT" ? "" : `-${colorKey}`;
+
+      const newVars =
+        typeof value === "string"
+          ? { [`--color${colorGroup}${visualColorKey}`]: value }
+          : extractColorVars(value, `-${colorKey}`);
+
+      return { ...vars, ...newVars };
+    }, {});
+  }
+
+  addBase({
+    ":root": extractColorVars(theme("colors")),
+  });
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -28,77 +52,56 @@ module.exports = {
     },
     // @see https://tailwindcss.com/docs/customizing-colors
     colors: {
-      // leverage slider gradient
-      // 46, 61, 205
-      // 45, 66, 252)
-      // leverage slider ticks
-      // 3d51ff
-      // leverage slider slider
-      // 45, 66, 252
-      // leverage slider rail
-      // linear-gradient(90deg, rgb(30, 34, 61) 0%, rgb(40, 45, 74) 100%)
-
-      // tradebox inputs gradiend
-      // linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%)
-
-      // long/short tabs monstosity
-      // background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-      // box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01)
-
-      // version tabs monstosity
-      // linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%)
-
-      // secondary button
-      // rgba(180, 187, 255, 0.1);
-
-      // divider
-      // #23263b
-
-      // text decoration color
-      // rgba(255, 255, 255, 0.6)
-
-      // red transparent
-      // rgba(231, 78, 93, 0.15)
-
-      // green transparent
-      // rgba(94, 201, 137, 0.15)
-
       blue: {
-        100: "#b4bcff",
-        200: "#7886ff",
-        400: "#3d51ff",
-        500: "#2d42fc",
+        200: "#b4bcff",
+        300: "#7885ff",
+        400: "#4d5ffa",
+        500: "#3d51ff",
+        600: "#2d42fc",
+        700: "#3040d0",
       },
       "cold-blue": {
         500: "#3a3f79",
         700: "#3a3f798f",
+        950: "#17182c",
+        //     17182e
+        990: "#0e0f1f",
       },
       slate: {
         100: "#a0a3c4",
         400: "#3e4361",
         500: "#3a3f5c",
         550: "#343756",
+        560: "#32344c",
+        565: "#303652",
+        570: "#2e3351",
         600: "#262941",
         700: "#23263b",
+        750: "#212540",
+        760: "#1e2136",
         800: "#16182e",
         900: "#101124",
         950: "#08091b",
       },
       gray: {
+        50: "#eeeeee",
         100: "#b7b7bd",
         200: "#babac0",
         300: "rgba(255, 255, 255, 0.7)",
         400: "#a9a9b0",
         DEFAULT: "#b8b8bd",
       },
-      // f3b50e
+      "transparent-gray": {
+        800: "#ffffff29",
+      },
       yellow: {
-        400: "#f3b50e",
+        500: "#f3b50c",
         DEFAULT: "#f3b50c",
       },
       red: { DEFAULT: "#fa3c58", 800: "rgba(231, 78, 93, 0.15)" },
       green: { DEFAULT: "#0ecc83", 800: "rgba(94, 201, 137, 0.15)" },
       white: "#ffffff",
+      black: "#000000",
     },
     textDecorationColor: {
       "gray-400": "rgba(255, 255, 255, 0.6)",
@@ -107,5 +110,5 @@ module.exports = {
       gray: "rgb(117, 117, 117)",
     },
   },
-  plugins: [],
+  plugins: [injectColorsPlugin],
 };
