@@ -212,8 +212,12 @@ export function useOptimisticPositions(p: {
     return allPositionsKeys.reduce((acc, key) => {
       const now = Date.now();
 
-      const lastIncreaseEvent = positionIncreaseEvents.filter((e) => e.positionKey === key).pop();
-      const lastDecreaseEvent = positionDecreaseEvents.filter((e) => e.positionKey === key).pop();
+      const lastIncreaseEvent = positionIncreaseEvents
+        ? positionIncreaseEvents.filter((e) => e.positionKey === key).pop()
+        : undefined;
+      const lastDecreaseEvent = positionDecreaseEvents
+        ? positionDecreaseEvents.filter((e) => e.positionKey === key).pop()
+        : undefined;
 
       const pendingUpdate =
         pendingPositionsUpdates[key] && pendingPositionsUpdates[key]!.updatedAt + MAX_PENDING_UPDATE_AGE > now

@@ -5,8 +5,8 @@ export type SyntheticsEventsContextType = {
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;
   pendingPositionsUpdates: PendingPositionsUpdates;
-  positionIncreaseEvents: PositionIncreaseEvent[];
-  positionDecreaseEvents: PositionDecreaseEvent[];
+  positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
+  positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   setPendingOrder: SetPendingOrder;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
   setPendingPosition: SetPendingPosition;
