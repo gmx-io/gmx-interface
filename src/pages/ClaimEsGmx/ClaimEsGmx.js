@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 import { getContract } from "config/contracts";
@@ -18,11 +18,12 @@ import avaIcon from "img/ic_avalanche_96.svg";
 
 import { Trans, t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract,  dynamicContractFetcher } from "lib/contracts";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -127,8 +128,16 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
 }
 
 export default function ClaimEsGmx({ setPendingTxns }) {
-  const { active, account, library } = useWeb3React();
-  const { chainId } = useChainId();
+  
+
+
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  
+  
+  const { chainId } = useDynamicChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);
   const [value, setValue] = useState("");
@@ -146,7 +155,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: dynamicContractFetcher(signer, Token),
     }
   );
 
@@ -165,7 +174,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [arbVesterAdddresses]),
+      fetcher: dynamicContractFetcher(undefined, RewardReader, [arbVesterAdddresses]),
     }
   );
 
@@ -178,7 +187,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [avaxVesterAdddresses]),
+      fetcher: dynamicContractFetcher(undefined, RewardReader, [avaxVesterAdddresses]),
     }
   );
 
@@ -315,7 +324,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       receiver = "0x28863Dd19fb52DF38A9f2C6dfed40eeB996e3818";
     }
 
-    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, library.getSigner());
+    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, signer);
     callContract(chainId, contract, "transfer", [receiver, amount], {
       sentMsg: t`Claim submitted!`,
       failMsg: t`Claim failed.`,

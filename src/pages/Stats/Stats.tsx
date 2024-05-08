@@ -1,9 +1,8 @@
-import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
 import { getWhitelistedTokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
+import {  useDynamicChainId } from "lib/chains";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import useSWR from "swr";
 import { getServerUrl } from "config/backend";
@@ -16,6 +15,8 @@ import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 
 import "./Stats.css";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useContext } from "react";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
   if (!share || !total || bigNumberify(total)!.eq(0)) {
@@ -45,8 +46,11 @@ function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: numb
 }
 
 export default function Stats() {
-  const { active, library } = useWeb3React();
-  const { chainId } = useChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const signer = dynamicContext.signer;
+ // const {  library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
 
   const readerAddress = getContract(chainId, "Reader");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -60,14 +64,14 @@ export default function Stats() {
   const { data: totalTokenWeights } = useSWR<BigNumber>(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: dynamicContractFetcher(signer, VaultV2),
     }
   );
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, fundingRateInfo as any);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, fundingRateInfo as any);
 
   let adjustedUsdgSupply = bigNumberify(0);
 

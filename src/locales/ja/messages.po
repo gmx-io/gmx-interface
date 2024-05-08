@@ -30,19 +30,35 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr "<0/>利益価格: {0} ${1} このルールはつぎの{2}のあいだ{3}まで適用されます。"
 
 #: src/app/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
+#~ msgid "<0>Install Coinbase Wallet</0> to start using GMX."
+#~ msgstr ""
+
+#: src/app/App.js
+msgid "<0>Install Coinbase Wallet</0> to start using TMX."
 msgstr ""
 
 #: src/app/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
+#~ msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
+#~ msgstr ""
+
+#: src/app/App.js
+msgid "<0>Install Coinbase Wallet</0>, and use TMX with its built-in browser."
 msgstr ""
 
 #: src/app/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
+#~ msgid "<0>Install MetaMask</0> to start using GMX."
+#~ msgstr ""
+
+#: src/app/App.js
+msgid "<0>Install MetaMask</0> to start using TMX."
 msgstr ""
 
 #: src/app/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+#~ msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+#~ msgstr ""
+
+#: src/app/App.js
+msgid "<0>Install MetaMask</0>, and use GTX with its built-in browser."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -58,19 +74,31 @@ msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>戻る </0><1>ホームページへ</1> <2>or </2> <3>トレードへ</3>"
 
 #: src/components/Glp/SwapErrorModal.tsx
-msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
-msgstr "<0>{0}についてプールの許容額に達しました。GLPを購入するには別のトークンを使用してください。</0><1>最も手数料の低いトークンを確認するには \"手数料を節約\" のセクションをチェックしてください。</1>"
+#~ msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
+#~ msgstr "<0>{0}についてプールの許容額に達しました。GLPを購入するには別のトークンを使用してください。</0><1>最も手数料の低いトークンを確認するには \"手数料を節約\" のセクションをチェックしてください。</1>"
+
+#: src/components/Glp/SwapErrorModal.tsx
+msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy TLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
+#~ msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+#~ msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
+
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esTMX tokens that have been converted to TMX will remain as TMX tokens.<3/><4/>To claim TMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+#~ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+#~ msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>Total value of tokens in TLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the TLP pool.</1>"
 msgstr ""
 
 #: src/lib/contracts/callContract.tsx
@@ -121,7 +149,11 @@ msgid "APRs are updated weekly on Wednesday and will depend on the fees collecte
 msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。"
 
 #: src/pages/Stake/StakeV2.js
-msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+#~ msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical TLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -204,12 +236,20 @@ msgid "Affiliates"
 msgstr "アフィリエイト"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "請求後、最大で{1} {stakingToken} 対 1esGMXトークンの比率でべスティングすることができます。"
+#~ msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
+#~ msgstr "請求後、最大で{1} {stakingToken} 対 1esGMXトークンの比率でべスティングすることができます。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-msgstr "請求後7日以内に指定のネットワーク上のあなたのアカウントにesGMXトークンがエアドロップされます"
+msgid "After claiming you will be able to vest a maximum of {0} esTMX at a ratio of {1} {stakingToken} to 1 esTMX."
+msgstr ""
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#~ msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
+#~ msgstr "請求後7日以内に指定のネットワーク上のあなたのアカウントにesGMXトークンがエアドロップされます"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "After claiming, the esTMX tokens will be airdropped to your account on the selected network within 7 days."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
@@ -277,8 +317,13 @@ msgstr "承認はキャンセルされました"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
-msgid "Approve GMX"
-msgstr "GMXを承認する"
+#~ msgid "Approve GMX"
+#~ msgstr "GMXを承認する"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
+msgid "Approve TMX"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -294,8 +339,12 @@ msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol}を承認する"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Approving GMX..."
-msgstr "GMXを承認中"
+#~ msgid "Approving GMX..."
+#~ msgstr "GMXを承認中"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Approving TMX..."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -320,16 +369,24 @@ msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
-msgstr "{0}から{swapTokenSymbol}に交換するための流動性がGLPに十分ないため、以下の選択肢を利用してください:"
+#~ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
+#~ msgstr "{0}から{swapTokenSymbol}に交換するための流動性がGLPに十分ないため、以下の選択肢を利用してください:"
+
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "As there is not enough liquidity in TLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Assets Under Management"
 msgstr "管理下の資産総額"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
+#~ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
+#~ msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Assets Under Management: TMX staked (All chains) + TLP pool ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -348,13 +405,23 @@ msgstr "利用可能な流動性"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Available amount to deposit into GLP."
-msgstr "GLPに入金可能な金額"
+#~ msgid "Available amount to deposit into GLP."
+#~ msgstr "GLPに入金可能な金額"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
-msgstr "GLPから引き出し可能な金額。現在オープンなポジションで利用されていない資金。"
+msgid "Available amount to deposit into TLP."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#~ msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+#~ msgstr "GLPから引き出し可能な金額。現在オープンなポジションで利用されていない資金。"
+
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+msgid "Available amount to withdraw from TLP. Funds not utilized by current open positions."
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
@@ -423,8 +490,12 @@ msgid "Borrow Fee / Day"
 msgstr "1日あたり借入手数料"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy / Sell GLP"
-msgstr "GLPの購入/売却"
+#~ msgid "Buy / Sell GLP"
+#~ msgstr "GLPの購入/売却"
+
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "Buy / Sell TLP"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
@@ -438,47 +509,94 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
-msgid "Buy GLP"
-msgstr "GLPを購入"
+#~ msgid "Buy GLP"
+#~ msgstr "GLPを購入"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Traderjoe:"
+#~ msgid "Buy GMX from Traderjoe:"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX from a Decentralized Exchange"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX from centralized exchanges:"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX from centralized services"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX on {0}"
+#~ msgstr ""
+
+#: src/pages/Buy/Buy.js
+#~ msgid "Buy GMX or GLP"
+#~ msgstr "GMXまたはGLPを購入"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX using Decentralized Exchange Aggregators:"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX using FIAT gateways:"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy GMX using any token from any network:"
+#~ msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+msgid "Buy TLP"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
+msgid "Buy TMX from Traderjoe:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from a Decentralized Exchange"
+msgid "Buy TMX from Uniswap (make sure to select Arbitrum):"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized exchanges:"
+msgid "Buy TMX from a Decentralized Exchange"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
+msgid "Buy TMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
+msgid "Buy TMX from centralized services"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy TMX on {0}"
 msgstr ""
 
 #: src/pages/Buy/Buy.js
-msgid "Buy GMX or GLP"
-msgstr "GMXまたはGLPを購入"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgid "Buy TMX or TLP"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using FIAT gateways:"
+msgid "Buy TMX using Decentralized Exchange Aggregators:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network:"
+msgid "Buy TMX using FIAT gateways:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy TMX using any token from any network:"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -594,12 +712,17 @@ msgstr "請求"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim GMX Rewards"
-msgstr "GMX報酬の請求"
+#~ msgid "Claim GMX Rewards"
+#~ msgstr "GMX報酬の請求"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim Rewards"
 msgstr "報酬の請求"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Claim TMX Rewards"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
@@ -607,13 +730,22 @@ msgid "Claim completed!"
 msgstr "請求完了!"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Claim esGMX"
-msgstr "esGMXの請求"
+#~ msgid "Claim esGMX"
+#~ msgstr "esGMXの請求"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim esGMX Rewards"
-msgstr "esGMX報酬の請求"
+#~ msgid "Claim esGMX Rewards"
+#~ msgstr "esGMX報酬の請求"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "Claim esTMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Claim esTMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Claim failed"
@@ -700,8 +832,8 @@ msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
 #: src/app/App.js
-msgid "Coinbase Wallet"
-msgstr "コインベースウォレット"
+#~ msgid "Coinbase Wallet"
+#~ msgstr "コインベースウォレット"
 
 #: src/app/App.js
 msgid "Coinbase Wallet not detected."
@@ -796,12 +928,12 @@ msgid "Confirm Swap"
 msgstr "スワップを確認する"
 
 #: src/components/Header/AppHeaderUser.tsx
-msgid "Connect"
-msgstr "接続"
+#~ msgid "Connect"
+#~ msgstr "接続"
 
 #: src/app/App.js
-msgid "Connect Metamask"
-msgstr ""
+#~ msgid "Connect Metamask"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
@@ -836,8 +968,12 @@ msgid "Continue"
 msgstr "続ける"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "esGMXトークンをGMXトークンに転換させる。<0/>ボールトを使用する前に <1>べスティングの詳細</1>を読んでください。"
+#~ msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+#~ msgstr "esGMXトークンをGMXトークンに転換させる。<0/>ボールトを使用する前に <1>べスティングの詳細</1>を読んでください。"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Convert esTMX tokens to TMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -969,8 +1105,12 @@ msgid "Dashboard"
 msgstr "ダッシュボード"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Dashboard for GMX referral stats"
-msgstr "GMXの紹介統計ダッシュボード"
+#~ msgid "Dashboard for GMX referral stats"
+#~ msgstr "GMXの紹介統計ダッシュボード"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Dashboard for TMX referral stats"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboards"
@@ -1327,13 +1467,23 @@ msgstr "エントリー価格"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Escrowed GMX"
-msgstr "esGMX (エスクローされたGMX)"
+#~ msgid "Escrowed GMX"
+#~ msgstr "esGMX (エスクローされたGMX)"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Escrowed GMX APR"
-msgstr "esGMXのAPR(実質年利)"
+#~ msgid "Escrowed GMX APR"
+#~ msgstr "esGMXのAPR(実質年利)"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Escrowed TMX"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Escrowed TMX APR"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
@@ -1385,16 +1535,28 @@ msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0} を {1}にスワップするには手数料が高額です。<0/>{2}が担保に必要です。"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Fees generated by GMX"
-msgstr "GMXが得た手数料"
+#~ msgid "Fees generated by GMX"
+#~ msgstr "GMXが得た手数料"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Fees generated by TMX"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
-msgstr "GLPを売却してどのアセットに交換するかにより手数料は異なります。<0/>売却を希望するGLP額を注文フォームに入力し、ここをクリックして手数料を比較してください。"
+#~ msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
+#~ msgstr "GLPを売却してどのアセットに交換するかにより手数料は異なります。<0/>売却を希望するGLP額を注文フォームに入力し、ここをクリックして手数料を比較してください。"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
-msgstr "GLPの購入にどのアセットを使うかにより手数料は異なります。<0/>購入を希望するGLP額を注文フォームに入力し、ここをクリックして手数料を比較してください。"
+msgid "Fees may vary depending on which asset you sell TLP for. <0/>Enter the amount of TLP you want to redeem in the order form, then check here to compare fees."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+#~ msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
+#~ msgstr "GLPの購入にどのアセットを使うかにより手数料は異なります。<0/>購入を希望するGLP額を注文フォームに入力し、ここをクリックして手数料を比較してください。"
+
+#: src/components/Glp/GlpSwap.js
+msgid "Fees may vary depending on which asset you use to buy TLP. <0/>Enter the amount of TLP you want to purchase in the order form, then check here to compare fees."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees since"
@@ -1442,123 +1604,123 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTのAPRトラッカーおよび報酬"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Index Composition"
-msgstr "GLPインデックス構成"
+#~ msgid "GLP Index Composition"
+#~ msgstr "GLPインデックス構成"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
-msgstr "GLPプール"
+#~ msgid "GLP Pool"
+#~ msgstr "GLPプール"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GLP Vault"
-msgstr "GLPボールト"
+#~ msgid "GLP Vault"
+#~ msgstr "GLPボールト"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GLP and GMX autocompounding vaults"
-msgstr ""
+#~ msgid "GLP and GMX autocompounding vaults"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GLP autocompounding vaults"
-msgstr ""
+#~ msgid "GLP autocompounding vaults"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。"
+#~ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+#~ msgstr "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。"
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP売却は停止中です"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Announcements and Updates"
-msgstr "GMXの告知と最新情報"
+#~ msgid "GMX Announcements and Updates"
+#~ msgstr "GMXの告知と最新情報"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Blueberry NFTs"
-msgstr "GMXブルーベリーNFT"
+#~ msgid "GMX Blueberry NFTs"
+#~ msgstr "GMXブルーベリーNFT"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Governance Page"
-msgstr "GMXのガバナンスページ"
+#~ msgid "GMX Governance Page"
+#~ msgstr "GMXのガバナンスページ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Pages"
-msgstr "GMXのページ"
+#~ msgid "GMX Pages"
+#~ msgstr "GMXのページ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Perpetuals Data"
-msgstr "GMXのパーペチュアルのデータ"
+#~ msgid "GMX Perpetuals Data"
+#~ msgstr "GMXのパーペチュアルのデータ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Proposals Voting page"
-msgstr "GMXのプロポーザル投票ページ"
+#~ msgid "GMX Proposals Voting page"
+#~ msgstr "GMXのプロポーザル投票ページ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Stats Page"
-msgstr "GMX統計ページ"
+#~ msgid "GMX Stats Page"
+#~ msgstr "GMX統計ページ"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GMX Vault"
-msgstr "GMXボールト"
+#~ msgid "GMX Vault"
+#~ msgstr "GMXボールト"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Weekly Updates"
-msgstr "GMXの週ごとの最新情報"
+#~ msgid "GMX Weekly Updates"
+#~ msgstr "GMXの週ごとの最新情報"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
-msgstr ""
+#~ msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX community discussion"
-msgstr "GMXのコミュニティ対話"
+#~ msgid "GMX community discussion"
+#~ msgstr "GMXのコミュニティ対話"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX dashboards and analytics."
-msgstr "GMXのダッシュボードと分析"
+#~ msgid "GMX dashboards and analytics."
+#~ msgstr "GMXのダッシュボードと分析"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX ecosystem pages."
-msgstr "GMXエコシステムのページ"
+#~ msgid "GMX ecosystem pages."
+#~ msgstr "GMXエコシステムのページ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX explorer for stats and traders"
-msgstr "統計とトレーダー情報のためのGMXエクスプローラー"
+#~ msgid "GMX explorer for stats and traders"
+#~ msgstr "統計とトレーダー情報のためのGMXエクスプローラー"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX fundamentals"
-msgstr "GMXの基本"
+#~ msgid "GMX fundamentals"
+#~ msgstr "GMXの基本"
 
 #: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMXは現在ArbitrumとAvalancheで稼働中です。"
+#~ msgid "GMX is currently live on Arbitrum and Avalanche."
+#~ msgstr "GMXは現在ArbitrumとAvalancheで稼働中です。"
 
 #: src/pages/Jobs/Jobs.js
-msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
-msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
+#~ msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+#~ msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-msgstr "GMXはユーティリティトークン兼ガバナンストークンです。プラットフォームが得た手数料の30%を獲得します。"
+#~ msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
+#~ msgstr "GMXはユーティリティトークン兼ガバナンストークンです。プラットフォームが得た手数料の30%を獲得します。"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking calculator"
-msgstr "GMXステーキング計算機"
+#~ msgid "GMX staking calculator"
+#~ msgstr "GMXステーキング計算機"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking rewards updates and insights"
-msgstr "GMXステーキング報酬の最新情報および見通し"
+#~ msgid "GMX staking rewards updates and insights"
+#~ msgstr "GMXステーキング報酬の最新情報および見通し"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GMX transfers not yet enabled"
-msgstr "GMX移転はまだ有効化されていません"
+#~ msgid "GMX transfers not yet enabled"
+#~ msgstr "GMX移転はまだ有効化されていません"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
@@ -1569,8 +1731,12 @@ msgid "Generating shareable image..."
 msgstr "シェア可能な画像を作成中..."
 
 #: src/pages/Referrals/Referrals.js
-msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
+#~ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+#~ msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
+
+#: src/pages/Referrals/Referrals.js
+msgid "Get fee discounts and earn rebates through the TMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -1667,8 +1833,8 @@ msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "{0}にスワップするには流動性が不足しています:"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Insufficient GLP balance"
-msgstr "GLP残高不足"
+#~ msgid "Insufficient GLP balance"
+#~ msgstr "GLP残高不足"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1693,6 +1859,10 @@ msgstr "GLP残高不足"
 #: src/components/Exchange/SwapTab.js
 #: src/components/Exchange/SwapTab.js
 msgid "Insufficient Liquidity"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+msgid "Insufficient TLP balance"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1750,8 +1920,12 @@ msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
 
 #: src/pages/Jobs/Jobs.js
-msgid "Job openings at GMX."
-msgstr "GMXの求人"
+#~ msgid "Job openings at GMX."
+#~ msgstr "GMXの求人"
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job openings at TMX."
+msgstr ""
 
 #: src/pages/Jobs/Jobs.js
 msgid "Jobs"
@@ -1776,8 +1950,12 @@ msgid "Leaderboard"
 msgstr "順位表"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Leaderboard for GMX traders"
-msgstr "GMXトレーダー順位表"
+#~ msgid "Leaderboard for GMX traders"
+#~ msgstr "GMXトレーダー順位表"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leaderboard for TMX traders"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2051,8 +2229,12 @@ msgid "Max leverage: {0}x"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
-msgstr "{0}の最大プールキャパシティ到達。別のトークンを使用してGLPをミントしてください"
+#~ msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
+#~ msgstr "{0}の最大プールキャパシティ到達。別のトークンを使用してGLPをミントしてください"
+
+#: src/components/Glp/GlpSwap.js
+msgid "Max pool capacity reached for {0}. Please mint TLP using another token"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
@@ -2230,8 +2412,12 @@ msgid "No PnLs found"
 msgstr "損益が見つかりません"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "No esGMX to claim"
-msgstr "請求できるesGMXはありません"
+#~ msgid "No esGMX to claim"
+#~ msgstr "請求できるesGMXはありません"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "No esTMX to claim"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2248,8 +2434,12 @@ msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
 #: src/pages/Jobs/Jobs.js
-msgid "No open positions at GMX currently"
-msgstr "現在GMXにオープンのポジションはありません"
+#~ msgid "No open positions at GMX currently"
+#~ msgstr "現在GMXにオープンのポジションはありません"
+
+#: src/pages/Jobs/Jobs.js
+msgid "No open positions at TMX currently"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"
@@ -2459,8 +2649,12 @@ msgid "Pay: {0} USD"
 msgstr "支払う: {0} USD"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Platform and GLP index tokens."
-msgstr "プラットフォームとGLPインデックストークン"
+#~ msgid "Platform and GLP index tokens."
+#~ msgstr "プラットフォームとGLPインデックストークン"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Platform and TLP index tokens."
+msgstr ""
 
 #: src/components/FaucetDropdown/FaucetDropdown.js
 msgid "Please connect to metamask"
@@ -2471,8 +2665,12 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "紹介コードを入力すると手数料割引を受けられます。"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr "アカウント全体を移行する場合だけこの機能を利用してください。<0/>この機能は、あなたのすべてのGMX、esGMX、GLP、マルチプライヤーポイントを新たなアカウントに移行します<1/>移行は、受け取り側のアカウントが過去にGMXトークンとGLPトークンを一度もステークしたことがない場合にのみ可能になります。<2/>移行は一方通行であり、いったん移行が完了すると、ステークされているトークンを元のアカウントに戻すことはできなくなります。"
+#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+#~ msgstr "アカウント全体を移行する場合だけこの機能を利用してください。<0/>この機能は、あなたのすべてのGMX、esGMX、GLP、マルチプライヤーポイントを新たなアカウントに移行します<1/>移行は、受け取り側のアカウントが過去にGMXトークンとGLPトークンを一度もステークしたことがない場合にのみ可能になります。<2/>移行は一方通行であり、いったん移行が完了すると、ステークされているトークンを元のアカウントに戻すことはできなくなります。"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Please only use this for full account transfers.<0/>This will transfer all your TMX, esTMX, TLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked TMX or TLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -2591,12 +2789,10 @@ msgid "Price is below Mark Price"
 msgstr "価格がマーク価格を下回っています"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Arbitrum上の価格"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Avalanche上の価格"
 
@@ -2609,12 +2805,20 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr "利益価格: {0} ${1} このルールは{3}まで{2}のあいだ適用されます。"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+#~ msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+#~ msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Projects developed by the TMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects integrated with GMX."
-msgstr "GMXと統合されているプロジェクト"
+#~ msgid "Projects integrated with GMX."
+#~ msgstr "GMXと統合されているプロジェクト"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Projects integrated with TMX."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
@@ -2630,8 +2834,12 @@ msgid "Protocol analytics"
 msgstr "プロトコルの分析"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
+#~ msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+#~ msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
+
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "Purchase <0>TLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -2678,12 +2886,20 @@ msgid "Receiver Address"
 msgstr "受け取り側アドレス"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has not staked GLP tokens before"
-msgstr "受け取り側でこれまでGLPトークンをステークしたことはありません"
+#~ msgid "Receiver has not staked GLP tokens before"
+#~ msgstr "受け取り側でこれまでGLPトークンをステークしたことはありません"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has not staked GMX tokens before"
-msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
+#~ msgid "Receiver has not staked GMX tokens before"
+#~ msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has not staked TLP tokens before"
+msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has not staked TMX tokens before"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -2793,8 +3009,12 @@ msgid "Reserved for Vesting"
 msgstr "べスティング用にリザーブ済"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Returns calculator for GMX and GLP"
-msgstr "GMXとGLPのリターンの計算機"
+#~ msgid "Returns calculator for GMX and GLP"
+#~ msgstr "GMXとGLPのリターンの計算機"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Returns calculator for TMX and TLP"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2873,8 +3093,16 @@ msgstr "自分への移転はサポートされていません"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
-msgid "Sell GLP"
-msgstr "GLP売却"
+#~ msgid "Sell GLP"
+#~ msgstr "GLP売却"
+
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+msgid "Sell TLP"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."
@@ -2894,12 +3122,20 @@ msgid "Selling..."
 msgstr "売却中..."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
-msgstr "送信側はGLPのべスティングボールトからすべてのトークンを引き出しました。"
+#~ msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
+#~ msgstr "送信側はGLPのべスティングボールトからすべてのトークンを引き出しました。"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
-msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
+#~ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
+#~ msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Sender has withdrawn all tokens from TLP Vesting Vault"
+msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Sender has withdrawn all tokens from TMX Vesting Vault"
+msgstr ""
 
 #: src/app/App.js
 #: src/components/Header/AppHeaderLinks.tsx
@@ -3023,28 +3259,48 @@ msgid "Stake"
 msgstr "ステーク"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
-msgstr "<0>GMX</0>と<1>GLP</1>をステークして報酬を稼ぐ。"
+#~ msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
+#~ msgstr "<0>GMX</0>と<1>GLP</1>をステークして報酬を稼ぐ。"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake GMX"
-msgstr "GMXをステーク"
+msgid "Stake <0>TMX</0> and <1>TLP</1> to earn rewards."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake GMX Rewards"
-msgstr "GMX報酬をステークする"
+#~ msgid "Stake GMX"
+#~ msgstr "GMXをステーク"
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Stake GMX Rewards"
+#~ msgstr "GMX報酬をステークする"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake Multiplier Points"
 msgstr "マルチプライヤーポイントをステークする"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX"
-msgstr "esGMXをステーク"
+msgid "Stake TMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX Rewards"
-msgstr "esGMX報酬をステークする"
+msgid "Stake TMX Rewards"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Stake esGMX"
+#~ msgstr "esGMXをステーク"
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Stake esGMX Rewards"
+#~ msgstr "esGMX報酬をステークする"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esTMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esTMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake failed"
@@ -3069,7 +3325,6 @@ msgstr "ステーク申し込み完了! <0>状況を確認する</0>"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3229,6 +3484,117 @@ msgstr "スワップ中..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためスワップが停止中です"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "TLP Index Composition"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "TLP Pool"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "TLP Vault"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TLP and TMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TLP autocompounding vaults"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "TLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Announcements and Updates"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Blueberry NFTs"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Governance Page"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Pages"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Perpetuals Data"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Proposals Voting page"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Stats Page"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "TMX Vault"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX Weekly Updates"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "TMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX community discussion"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX dashboards and analytics."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX ecosystem pages."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX explorer for stats and traders"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX fundamentals"
+msgstr ""
+
+#: src/pages/Home/Home.js
+msgid "TMX is currently live on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
+msgid "TMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>#</0>."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "TMX is the utility and governance token. Accrues 30% of the platform's generated fees."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX staking calculator"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "TMX staking rewards updates and insights"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "TMX transfers not yet enabled"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
@@ -3265,24 +3631,40 @@ msgid "Telegram Groups"
 msgstr "Telegramグループ"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX Swaps monitoring"
+#~ msgid "Telegram bot for GMX Swaps monitoring"
+#~ msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+#~ msgid "Telegram bot for GMX position updates"
+#~ msgstr "GMXポジション情報提供Telegramボット"
+
+#: src/pages/Ecosystem/Ecosystem.js
+#~ msgid "Telegram bot for Open Interest on GMX"
+#~ msgstr "GMX建玉情報提供Telegramボット"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for Open Interest on TMX"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX position updates"
-msgstr "GMXポジション情報提供Telegramボット"
+msgid "Telegram bot for TMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for Open Interest on GMX"
-msgstr "GMX建玉情報提供Telegramボット"
+msgid "Telegram bot for TMX position updates"
+msgstr ""
 
 #: src/components/Footer/constants.ts
 msgid "Terms and Conditions"
 msgstr "規約"
 
 #: src/pages/Stake/StakeV1.js
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
-msgstr "<0>GMXの移行</0>は進行中です。GMT、xGMT、GMT-USDG、xGMT-USDGトークンを移行してください。<1/>USDGトークンは従来と同様に機能するため移行する必要はありません。"
+#~ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+#~ msgstr "<0>GMXの移行</0>は進行中です。GMT、xGMT、GMT-USDG、xGMT-USDGトークンを移行してください。<1/>USDGトークンは従来と同様に機能するため移行する必要はありません。"
+
+#: src/pages/Stake/StakeV1.js
+msgid "The <0>TMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -3293,8 +3675,12 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Gambitプロトコルはベータ版であり、参加する前に<0>ステーキングの詳細</0>を読んでください。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
+#~ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+#~ msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "The address of the esTMX (IOU) token is {esGmxIouAddress}."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
@@ -3302,12 +3688,20 @@ msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool
 msgstr "借入手数料は1時間につき、(借入アセット額 ÷ プール内アセット総額) × 0.01% の式で計算されます。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "esGMX (IOU)は移転可能です。自分のウォレットに加えてから別のアドレスに移してトークンを請求することもできます。"
+#~ msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+#~ msgstr "esGMX (IOU)は移転可能です。自分のウォレットに加えてから別のアドレスに移してトークンを請求することもできます。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
-msgstr "esGMXトークンはいつでもステークまたはべスティングすることができます。"
+#~ msgid "The esGMX tokens can be staked or vested at any time."
+#~ msgstr "esGMXトークンはいつでもステークまたはべスティングすることができます。"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "The esTMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+msgstr ""
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "The esTMX tokens can be staked or vested at any time."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
@@ -3339,8 +3733,12 @@ msgid "The spread is > 1%, please ensure the trade details are acceptable before
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
-msgstr "ウェブサイトはオープンソースの<0>GMXフロントエンド</0>を利用してコミュニティが設置し維持しているものであり、P2Pの<1>IPFSネットワーク</1>上にホストされ提供されています。"
+#~ msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+#~ msgstr "ウェブサイトはオープンソースの<0>GMXフロントエンド</0>を利用してコミュニティが設置し維持しているものであり、P2Pの<1>IPFSネットワーク</1>上にホストされ提供されています。"
+
+#: src/components/ModalViews/RedirectModal.js
+msgid "The website is a community deployed and maintained instance of the open source <0>TMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
@@ -3407,7 +3805,11 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "移転を完了するには、{receiver}のアカウントに接続しなおす必要があります。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+#~ msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "To purchase TMX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -3521,8 +3923,12 @@ msgid "Trade Now"
 msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
-msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
-msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月30日まで。詳細は<1>ここをクリック</1> "
+#~ msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+#~ msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月30日まで。詳細は<1>ここをクリック</1> "
+
+#: src/components/Exchange/ExchangeBanner.js
+msgid "Trade on TMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
@@ -3678,16 +4084,24 @@ msgid "Unstake"
 msgstr "アンステーク"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake GMX"
-msgstr "GMXをアンステークする"
+#~ msgid "Unstake GMX"
+#~ msgstr "GMXをアンステークする"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake TMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake completed!"
 msgstr "アンステーク完了!"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake esGMX"
-msgstr "esGMXをアンステークする"
+#~ msgid "Unstake esGMX"
+#~ msgstr "esGMXをアンステークする"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake esTMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
@@ -3787,20 +4201,36 @@ msgid "Vest with GLP on Avalanche"
 msgstr "AvalancheでGLPを使ってべスティングする"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Arbitrum"
-msgstr "ArbitrumでGMXを使ってべスティングする"
+#~ msgid "Vest with GMX on Arbitrum"
+#~ msgstr "ArbitrumでGMXを使ってべスティングする"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Avalanche"
-msgstr "AvalancheでGMXを使ってべスティングする"
+#~ msgid "Vest with GMX on Avalanche"
+#~ msgstr "AvalancheでGMXを使ってべスティングする"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "Vest with TMX on Arbitrum"
+msgstr ""
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "Vest with TMX on Avalanche"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Vested GLP not withdrawn"
-msgstr "べスティングされたGLPで引き出されていないもの"
+#~ msgid "Vested GLP not withdrawn"
+#~ msgstr "べスティングされたGLPで引き出されていないもの"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Vested GMX not withdrawn"
-msgstr "べスティングされたGMXで引き出されていないもの"
+#~ msgid "Vested GMX not withdrawn"
+#~ msgstr "べスティングされたGMXで引き出されていないもの"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Vested TLP not withdrawn"
+msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Vested TMX not withdrawn"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3880,8 +4310,8 @@ msgid "Wallet"
 msgstr "ウォレット"
 
 #: src/app/App.js
-msgid "Wallet Connect"
-msgstr ""
+#~ msgid "Wallet Connect"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -3924,12 +4354,20 @@ msgid "Withdraw failed."
 msgstr "出金できませんでした"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GLP Vault"
-msgstr "GLPボールトから出金"
+#~ msgid "Withdraw from GLP Vault"
+#~ msgstr "GLPボールトから出金"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GMX Vault"
-msgstr "GMXボールトから出金"
+#~ msgid "Withdraw from GMX Vault"
+#~ msgstr "GMXボールトから出金"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from TLP Vault"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from TMX Vault"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw submitted."
@@ -3969,8 +4407,12 @@ msgid "Yield Vaults"
 msgstr "イールドボールト"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Yield simulator for GMX"
-msgstr "GMXのイールドシミュレーター"
+#~ msgid "Yield simulator for GMX"
+#~ msgstr "GMXのイールドシミュレーター"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield simulator for TMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
@@ -3981,8 +4423,12 @@ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {
 msgstr "あなたは{nativeTokenSymbol}報酬を{0}トークンで稼いでいます。<0/>トークン: {amountStr}."
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
-msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
+#~ msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
+#~ msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
+
+#: src/components/ModalViews/RedirectModal.js
+msgid "You are leaving t3.money and will be redirected to a third party, independent website."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
@@ -4007,8 +4453,12 @@ msgid "You can check your claim history <0>here</0>."
 msgstr "<0>こちら</0>で請求履歴を確認できます。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを現在べスティングすることができます。"
+#~ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
+#~ msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを現在べスティングすることができます。"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "You can currently vest a maximum of {0} esTMX tokens at a ratio of {1} {stakingToken} to 1 esTMX."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -4044,12 +4494,20 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "べスティング用のトークンが入金されていません。"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You have {0} esGMX (IOU) tokens."
-msgstr "あなたは{0} esGMX (IOU)トークンを保有しています。"
+#~ msgid "You have {0} esGMX (IOU) tokens."
+#~ msgstr "あなたは{0} esGMX (IOU)トークンを保有しています。"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "You have {0} esTMX (IOU) tokens."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
-msgstr "{1} esGMXをべスティングするには合計で最低{0} {stakeTokenLabel}が必要です。"
+#~ msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+#~ msgstr "{1} esGMXをべスティングするには合計で最低{0} {stakeTokenLabel}が必要です。"
+
+#: src/pages/Stake/StakeV2.js
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esTMX."
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -4080,8 +4538,12 @@ msgid "Your email notification is successfully enabled!"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-msgstr "あなたのesGMX (IOU)残高は請求後に請求額分だけ減少しますが、これは想定通りの挙動です。"
+#~ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+#~ msgstr "あなたのesGMX (IOU)残高は請求後に請求額分だけ減少しますが、これは想定通りの挙動です。"
+
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+msgid "Your esTMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Your position's collateral after deducting fees."
@@ -4157,25 +4619,25 @@ msgid "{0} Capacity Reached"
 msgstr "{0}のキャパシティに到達しました"
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
+#~ msgid "{0} GLP (${1})"
+#~ msgstr "{0} GLP (${1})"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP bought with {1} {2}!"
 msgstr "{1} {2}で{0} GLPを購入しました!"
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP have been reserved for vesting."
-msgstr "{0} GLPがべスティングのためにリザーブされました。"
+#~ msgid "{0} GLP have been reserved for vesting."
+#~ msgstr "{0} GLPがべスティングのためにリザーブされました。"
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP sold for {1} {2}!"
-msgstr "{0} GLPを売却し、{1} {2}を得ました!"
+#~ msgid "{0} GLP sold for {1} {2}!"
+#~ msgstr "{0} GLPを売却し、{1} {2}を得ました!"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} GMXトークンを請求可能です。総報酬セクションの下の選択肢を使用して請求してください。"
+#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+#~ msgstr "{0} GMXトークンを請求可能です。総報酬セクションの下の選択肢を使用して請求してください。"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
@@ -4194,13 +4656,34 @@ msgstr "{0} 価格"
 msgid "{0} Required"
 msgstr "{0}が必要です"
 
+#: src/components/Glp/GlpSwap.js
+msgid "{0} TLP (${1})"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+msgid "{0} TLP have been reserved for vesting."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+msgid "{0} TLP sold for {1} {2}!"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} TMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>\"してください。"
+#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+#~ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>\"してください。"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy TLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
@@ -4222,8 +4705,13 @@ msgstr "{0}が注文フォームで選択されました"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0}トークンがべスティング用に入金された{1} esGMXからGMXに変換されました。"
+#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+#~ msgstr "{0}トークンがべスティング用に入金された{1} esGMXからGMXに変換されました。"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} tokens have been converted to TMX from the {1} esTMX deposited for vesting."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapTab.js
@@ -4303,6 +4791,7 @@ msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select a
 msgstr ""
 
 #: src/components/UserOnboardSection/UserOnboardSection.js
+#: src/components/WalletConnectSection/WalletConnectSection.js
 msgid "{text}"
 msgstr ""
 

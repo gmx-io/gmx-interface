@@ -1,6 +1,6 @@
 import { getContract } from "config/contracts";
 import useSWR from "swr";
-import { contractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import VaultReader from "abis/VaultReader.json";
 import {
   BASIS_POINTS_DIVISOR,
@@ -14,11 +14,11 @@ import { InfoTokens, Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
-import { Web3Provider } from "@ethersproject/providers";
+
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  library: Web3Provider | undefined,
+  library:  undefined | any,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
@@ -34,10 +34,11 @@ export function useInfoTokens(
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
+  
   const { data: vaultTokenInfo } = useSWR<BigNumber[], any>(
     [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
-      fetcher: contractFetcher(library, VaultReader, [
+      fetcher: dynamicContractFetcher(library, VaultReader, [
         vaultAddress,
         positionRouterAddress,
         nativeTokenAddress,

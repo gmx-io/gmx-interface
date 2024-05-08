@@ -2,6 +2,8 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall } from "./utils";
+import { useContext } from "react";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -23,6 +25,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
 ) {
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
   const { library } = useWeb3React();
 
   const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;

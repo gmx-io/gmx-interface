@@ -1,26 +1,30 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
 
 import { isHomeSite } from "lib/legacy";
 
-import { useWeb3React } from "@web3-react/core";
+
 
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET } from "config/chains";
 import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const glpIcon = getIcon(SEPOLIA_TESTNET, "glp");
 const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
-  const { chainId } = useChainId();
-  const { active } = useWeb3React();
+  const { chainId } = useDynamicChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+ 
+
 
   const changeNetwork = useCallback(
     (network) => {

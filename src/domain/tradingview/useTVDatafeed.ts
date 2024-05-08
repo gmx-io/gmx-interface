@@ -1,7 +1,7 @@
 import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
 import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { SymbolInfo } from "./types";
@@ -20,7 +20,7 @@ type Props = {
 };
 
 export default function useTVDatafeed({ dataProvider }: Props) {
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | undefined>();

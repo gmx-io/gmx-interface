@@ -3,20 +3,24 @@ import { t, Trans } from "@lingui/macro";
 import { helperToast } from "lib/helperToast";
 import { FaChevronDown, FaParachuteBox } from "react-icons/fa";
 import "./FaucetDropdown.css";
-import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { getExplorerUrl } from "config/chains";
 import Token from "abis/Token.json";
 import { getTokenBySymbol, getTokens } from "config/tokens";
-import { useChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import WETH from "abis/WETH.json";
 import BN from "bignumber.js";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 function FaucetDropdown() {
-  const { active, account, library } = useWeb3React();
-  const { chainId } = useChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+ // const { active, account, library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
 
   const [amount] = useState(1000);
   const [wbtcamount] = useState("0.01");
@@ -47,7 +51,7 @@ function FaucetDropdown() {
       }
 
       if (tokenSymbol === "ETH") {
-        const contract = new ethers.Contract(token.address, WETH.abi, library.getSigner());
+        const contract = new ethers.Contract(token.address, WETH.abi, signer);
         contract
           .deposit({
             value: ethers.utils.parseEther(wbtcamount),
@@ -88,7 +92,7 @@ function FaucetDropdown() {
             helperToast.error(failMsg);
           });
       } else {
-        const contract = new ethers.Contract(token.address, Token.abi, library.getSigner());
+        const contract = new ethers.Contract(token.address, Token.abi, signer);
         contract
           .mint(account, ethamount.toString())
           .then(async (res) => {
@@ -145,10 +149,10 @@ function FaucetDropdown() {
       <div>
         <>
           <Menu.Items as="div" className="menu">
-            {tokens?.map((token) => (
-              <>
+            {tokens?.map((token,index) => (
+              <div key={index}> 
                 {!token.isNative && (
-                  <Menu.Item>
+                  <Menu.Item key={index}>
                     <div
                       key={token.symbol}
                       className="menu-item"
@@ -163,7 +167,7 @@ function FaucetDropdown() {
                     </div>
                   </Menu.Item>
                 )}
-              </>
+              </div>
             ))}
           </Menu.Items>
         </>

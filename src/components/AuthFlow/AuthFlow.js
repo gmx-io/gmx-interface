@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+
 import Button from "components/Button/Button";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
@@ -23,7 +23,7 @@ const AuthFlow = ({ account, setModalVisible, isNewUser, emailExists }) => {
   const [authStep, setAuthStep] = useState(flow[0]);
   const [emailText, setEmailText] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState(0);
-  const { deactivate } = useWeb3React();
+  //const { deactivate } = useWeb3React();
 
   const handleEmailEntered = (email) => {
     // Regular expression for email validation
@@ -37,7 +37,7 @@ const AuthFlow = ({ account, setModalVisible, isNewUser, emailExists }) => {
   };
 
   const handleWalletDisconnect = () => {
-    deactivate();
+    //deactivate();
     setModalVisible(false);
   };
 

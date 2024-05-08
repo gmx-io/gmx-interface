@@ -1,7 +1,16 @@
 import { ethers } from "ethers";
 import { sample } from "lodash";
-import { NetworkMetadata } from "lib/wallets";
+import { DynamicWalletNetworkMetadata, NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
+
+import arbitrum from "img/ic_arbitrum_24.svg";
+import avalanche from "img/ic_avalanche_24.svg";
+import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
+
+import optimismIcn from "img/icn_opt_24.svg";
+import blastIcn from "img/icn_blast.svg";
+import morphIcn from 'img/ic_morph_l2.svg'
 
 const { parseEther } = ethers.utils;
 
@@ -251,6 +260,174 @@ export const FALLBACK_PROVIDERS = {
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
+export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
+  {
+    blockExplorerUrls: ["https://bscscan.com"],
+    chainId: MAINNET,
+    iconUrls: ["https://app.dynamic.xyz/assets/networks/eth.svg"],
+    name: "MAINNET",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    networkId: MAINNET,
+    rpcUrls: RPC_PROVIDERS[MAINNET],
+    vanityName: "Mainnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[MAINNET],
+  },
+  {
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+    chainId: TESTNET,
+    iconUrls: [""],
+    name: "BSC Testnet",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    networkId: TESTNET,
+    rpcUrls: RPC_PROVIDERS[TESTNET],
+    vanityName: "BSC Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[TESTNET],
+  },
+  {
+    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
+    chainId: ARBITRUM_TESTNET,
+    iconUrls: [arbitrum],
+    name: "Arbitrum Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: ARBITRUM_TESTNET,
+    rpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
+    vanityName: "Arbitrum Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
+    chainId: ARBITRUM,
+    iconUrls: [arbitrum],
+    name: "Arbitrum",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: ARBITRUM,
+    rpcUrls: RPC_PROVIDERS[ARBITRUM],
+    vanityName: "Arbitrum",
+    privateCustomerRpcUrls: RPC_PROVIDERS[ARBITRUM],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+    chainId: AVALANCHE,
+    iconUrls: [avalanche],
+    name: "Avalanche",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    networkId: AVALANCHE,
+    rpcUrls: RPC_PROVIDERS[AVALANCHE],
+    vanityName: "Avalanche",
+    privateCustomerRpcUrls: RPC_PROVIDERS[AVALANCHE],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
+    chainId: AVALANCHE_FUJI,
+    iconUrls: [avalancheTestnet],
+    name: "Avalanche Fuji",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    networkId: AVALANCHE_FUJI,
+    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
+    vanityName: "Avalanche Fuji",
+    privateCustomerRpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(SEPOLIA_TESTNET)],
+    chainId: SEPOLIA_TESTNET,
+    iconUrls: [sepoliaTesnet],
+    name: "Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: SEPOLIA_TESTNET,
+    rpcUrls: RPC_PROVIDERS[SEPOLIA_TESTNET],
+    vanityName: "Sepolia",
+    privateCustomerRpcUrls: RPC_PROVIDERS[SEPOLIA_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(OPTIMISM_GOERLI_TESTNET)],
+    chainId: OPTIMISM_GOERLI_TESTNET,
+    iconUrls: [optimismIcn],
+    name: "Optimism Goreli Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: OPTIMISM_GOERLI_TESTNET,
+    rpcUrls: RPC_PROVIDERS[OPTIMISM_GOERLI_TESTNET],
+    vanityName: "Optimism Goreli Testnet",
+    privateCustomerRpcUrls: RPC_PROVIDERS[OPTIMISM_GOERLI_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(OPTIMISM_MAINNET)],
+    chainId: OPTIMISM_MAINNET,
+    iconUrls: [optimismIcn],
+    name: "Optimism",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: OPTIMISM_MAINNET,
+    rpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
+    vanityName: "Optimism",
+    privateCustomerRpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
+    chainId: BLAST_SEPOLIA_TESTNET,
+    iconUrls: [blastIcn],
+    name: "Blast Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: BLAST_SEPOLIA_TESTNET,
+    rpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
+    vanityName: "Blast Sepolia",
+    privateCustomerRpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
+  },
+  {
+    blockExplorerUrls: [getExplorerUrl(MORPH_L2)],
+    chainId: MORPH_L2,
+    iconUrls: [morphIcn],
+    name: "Morph L2",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: MORPH_L2,
+    rpcUrls: RPC_PROVIDERS[MORPH_L2],
+    vanityName: "Morph L2",
+    privateCustomerRpcUrls: RPC_PROVIDERS[MORPH_L2],
+  },
+];
+
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   [MAINNET]: {
     chainId: "0x" + MAINNET.toString(16),
@@ -374,6 +551,16 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     blockExplorerUrls: [getExplorerUrl(MORPH_L2)],
   },
 };
+
+export function getDynamicChain(chainNames: number[]) {
+  const networksForDynamicWallet: DynamicWalletNetworkMetadata[] = [];
+
+  chainNames.forEach((chain) => {
+    const filteredNetwork = DYNAMIC_NETWORK_METADATA.filter((network) => network.chainId === chain);
+    if (filteredNetwork.length > 0) networksForDynamicWallet.push(filteredNetwork[0]);
+  });
+  return networksForDynamicWallet;
+}
 
 export const getConstant = (chainId: number, key: string) => {
   if (!constants[chainId]) {

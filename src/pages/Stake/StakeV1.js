@@ -25,7 +25,7 @@ import { helperToast } from "lib/helperToast";
 import { getInjectedHandler } from "lib/wallets";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const BASIS_POINTS_DIVISOR = 10000;
@@ -535,7 +535,7 @@ function UnstakeModal(props) {
 }
 
 export default function StakeV1() {
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState(undefined);

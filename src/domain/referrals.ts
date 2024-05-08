@@ -9,7 +9,7 @@ import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract,  dynamicContractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
@@ -292,14 +292,14 @@ export function useReferralsData(chainId, account) {
 export async function registerReferralCode(chainId, referralCode, library, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library);
   return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
 
-export async function setTraderReferralCodeByUser(chainId, referralCode, library, opts) {
+export async function setTraderReferralCodeByUser(chainId, referralCode, signer, opts) {
   const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, signer);
   const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {
     const errorMsg = "Referral code does not exist";
@@ -322,14 +322,14 @@ export function useUserReferralCode(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(library, ReferralStorage) }
+    { fetcher: dynamicContractFetcher(library, ReferralStorage) }
   );
 
   const { data: localStorageCodeOwner } = useSWR(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
-    { fetcher: contractFetcher(library, ReferralStorage) }
+    { fetcher: dynamicContractFetcher(library, ReferralStorage) }
   );
 
   const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
@@ -353,7 +353,7 @@ export function useReferrerTier(library, chainId, account) {
   const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
-      fetcher: contractFetcher(library, ReferralStorage),
+      fetcher: dynamicContractFetcher(library, ReferralStorage),
     }
   );
   return {
@@ -367,7 +367,7 @@ export function useCodeOwner(library, chainId, account, code) {
   const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
-      fetcher: contractFetcher(library, ReferralStorage),
+      fetcher: dynamicContractFetcher(library, ReferralStorage),
     }
   );
   return {

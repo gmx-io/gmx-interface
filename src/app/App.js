@@ -1,12 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
+import { useState, useEffect, useRef, useMemo, useContext } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
-import useScrollToTop from "lib/useScrollToTop";
-import Tour from "reactour";
 
+import useScrollToTop from "lib/useScrollToTop";
 import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
 
 import {
@@ -14,7 +11,6 @@ import {
   BASIS_POINTS_DIVISOR,
   getAppBaseUrl,
   isHomeSite,
-  isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
 
@@ -45,10 +41,6 @@ import "styles/Shared.css";
 import "styles/Font.css";
 import "./App.scss";
 import "styles/Input.css";
-
-import metamaskImg from "img/metamask.png";
-import coinbaseImg from "img/coinbaseWallet.png";
-import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useEventToast from "components/EventToast/useEventToast";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
@@ -73,7 +65,7 @@ import { Trans, t } from "@lingui/macro";
 
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, getAlchemyWsUrl } from "config/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import {
@@ -87,39 +79,23 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
-import {
-  activateInjectedProvider,
-  clearWalletConnectData,
-  clearWalletLinkData,
-  getInjectedHandler,
-  getWalletConnectHandler,
-  hasCoinBaseWalletExtension,
-  hasMetaMaskWalletExtension,
-  useEagerConnect,
-  useHandleUnsupportedNetwork,
-  useInactiveListener,
-} from "lib/wallets";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import { useDynamicChainId } from "lib/chains";
+
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import ApproveTokens from "components/ApproveTokens/ApproveTokens";
 import { useInfoTokens } from "domain/tokens";
-import { contractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
 import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
 import ThemeProvider, { ThemeContext } from "store/theme-provider";
-import WalletConnectSection from "components/WalletConnectSection/WalletConnectSection";
-import AuthFlow from "components/AuthFlow/AuthFlow";
+import DynamicWalletProvider, { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { Providers } from "store/providers";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
-}
-
-function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  return library;
 }
 
 const Zoom = cssTransition({
@@ -152,23 +128,27 @@ function getWsProvider(active, chainId) {
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, library, deactivate, activate, active, account } = useWeb3React();
+  const walletContext = useContext(DynamicWalletContext);
 
-  const { chainId } = useChainId();
+  const active = walletContext.active;
+  const account = walletContext.account;
+  const signer = walletContext.signer;
+  // const { library } = useWeb3React();
+
+  const { chainId } = useDynamicChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
-  const [activatingConnector, setActivatingConnector] = useState();
 
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector, chainId]);
-  const triedEager = useEagerConnect(setActivatingConnector);
-  useInactiveListener(!triedEager || !!activatingConnector);
+  // useEffect(() => {
+  //   if (activatingConnector && activatingConnector === connector) {
+  //     setActivatingConnector(undefined);
+  //   }
+  // }, [activatingConnector, connector, chainId]);
+  //const triedEager = useEagerConnect(setActivatingConnector);
+  //useInactiveListener(!triedEager || !!activatingConnector);
 
-  useHandleUnsupportedNetwork();
+  //useHandleUnsupportedNetwork();
 
   const query = useRouteQuery();
 
@@ -194,95 +174,93 @@ function FullApp() {
     }
   }, [query, history, location]);
 
-  const disconnectAccount = useCallback(() => {
-    // only works with WalletConnect
-    clearWalletConnectData();
-    // force clear localStorage connection for MM/CB Wallet (Brave legacy)
-    clearWalletLinkData();
-    deactivate();
-  }, [deactivate]);
+  // const disconnectAccount = useCallback(() => {
+  //   // only works with WalletConnect
+  //   clearWalletConnectData();
+  //   // force clear localStorage connection for MM/CB Wallet (Brave legacy)
+  //   clearWalletLinkData();
+  //   deactivate();
+  // }, [deactivate]);
 
   const disconnectAccountAndCloseSettings = () => {
-    disconnectAccount();
+    //disconnectAccount();
     localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
     setIsSettingsVisible(false);
   };
 
-  const connectInjectedWallet = getInjectedHandler(activate, deactivate);
-  const activateWalletConnect = () => {
-    getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
-    setActiveStep(2);
-  };
+  // const connectInjectedWallet = getInjectedHandler(activate, deactivate);
+  // const activateWalletConnect = () => {
+  //   getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
+  //   setActiveStep(2);
+  // };
 
+  //const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
-  const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
+  // const activateMetaMask = () => {
+  //   if (!hasMetaMaskWalletExtension()) {
+  //     helperToast.error(
+  //       <div>
+  //         <Trans>MetaMask not detected.</Trans>
+  //         <br />
+  //         <br />
+  //         {userOnMobileDevice ? (
+  //           <Trans>
+  //             <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GTX with its built-in
+  //             browser.
+  //           </Trans>
+  //         ) : (
+  //           <Trans>
+  //             <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using TMX.
+  //           </Trans>
+  //         )}
+  //       </div>
+  //     );
+  //     return false;
+  //   }
+  //   attemptActivateWallet("MetaMask");
+  // };
+  // const activateCoinBase = () => {
+  //   if (!hasCoinBaseWalletExtension()) {
+  //     helperToast.error(
+  //       <div>
+  //         <Trans>Coinbase Wallet not detected.</Trans>
+  //         <br />
+  //         <br />
+  //         {userOnMobileDevice ? (
+  //           <Trans>
+  //             <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use TMX
+  //             with its built-in browser.
+  //           </Trans>
+  //         ) : (
+  //           <Trans>
+  //             <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
+  //             TMX.
+  //           </Trans>
+  //         )}
+  //       </div>
+  //     );
+  //     return false;
+  //   }
+  //   attemptActivateWallet("CoinBase");
+  // };
 
-  const activateMetaMask = () => {
-    if (!hasMetaMaskWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>MetaMask not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GTX with its built-in
-              browser.
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using TMX.
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("MetaMask");
-  };
-  const activateCoinBase = () => {
-    if (!hasCoinBaseWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>Coinbase Wallet not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use TMX
-              with its built-in browser.
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
-              TMX.
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("CoinBase");
-  };
-
-  const [walletModalVisible, setWalletModalVisible] = useState(false);
-  const [authFlowModal, setAuthFlowModalVisible] = useState(false);
+  //const [walletModalVisible, setWalletModalVisible] = useState(false);
+  //const [authFlowModal, setAuthFlowModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
-  const [, setShowConnectOptions] = useState(false);
-  const [isNewUser, setNewUser] = useState(false);
+
   const [, setHasTokens] = useState(false);
 
-  const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
+  const [, setDoesUserHaveEmail] = useState(false);
   const [, setActiveStep] = useState(1);
+  const [, setNewUser] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
 
-  
-  const connectWallet = () => setWalletModalVisible(true);
+  const connectWallet = () => {};
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
@@ -311,16 +289,16 @@ function FullApp() {
     false
   );
 
-  const attemptActivateWallet = (providerName) => {
-    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
-    localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
-    activateInjectedProvider(providerName);
-    connectInjectedWallet();
-    setActiveStep(2);
-    // updateAuthFlow("signup");
-    setShowConnectOptions(false);
-    // setWalletModalVisible(false);
-  };
+  // const attemptActivateWallet = (providerName) => {
+  //   localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
+  //   localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
+  //   activateInjectedProvider(providerName);
+  //   // connectInjectedWallet();
+  //   setActiveStep(2);
+  //   // updateAuthFlow("signup");
+  //   setShowConnectOptions(false);
+  //   // setWalletModalVisible(false);
+  // };
 
   const openSettings = () => {
     const slippage = parseInt(savedSlippageAmount);
@@ -376,13 +354,12 @@ function FullApp() {
   const tokens = getTokens(chainId);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [tokenAddresses]),
   });
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances); //todo
   const nonZeroBalanceTokens = useMemo(() => {
     return [];
   }, []);
-
 
   useEffect(() => {
     if (active && account) {
@@ -399,13 +376,13 @@ function FullApp() {
           // eslint-disable-next-line no-console
         }
 
-        setWalletModalVisible(false);
-        setAuthFlowModalVisible(true);
+        // setWalletModalVisible(false);
+        // setAuthFlowModalVisible(true);
       };
 
       checkAndCreateUser();
     }
-  }, [active,account]);
+  }, [active, account]);
 
   useEffect(() => {
     for (let key in infoTokens) {
@@ -422,51 +399,51 @@ function FullApp() {
     }
   }, [infoTokens, nonZeroBalanceTokens]);
 
-  useEffect(() => {
-    const checkPendingTxns = async () => {
-      const updatedPendingTxns = [];
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i];
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash);
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.error(
-              <div>
-                <Trans>
-                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
-                </Trans>
-                <br />
-              </div>
-            );
-          }
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.success(
-              <div>
-                {pendingTxn.message}{" "}
-                <ExternalLink href={txUrl}>
-                  <Trans>View</Trans>
-                </ExternalLink>
-                <br />
-              </div>
-            );
-          }
-          continue;
-        }
-        updatedPendingTxns.push(pendingTxn);
-      }
+  // useEffect(() => {
+  //   const checkPendingTxns = async () => {
+  //     const updatedPendingTxns = [];
+  //     for (let i = 0; i < pendingTxns.length; i++) {
+  //       const pendingTxn = pendingTxns[i];
+  //       const receipt = await library.getTransactionReceipt(pendingTxn.hash); //todo
+  //       if (receipt) {
+  //         if (receipt.status === 0) {
+  //           const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+  //           helperToast.error(
+  //             <div>
+  //               <Trans>
+  //                 Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+  //               </Trans>
+  //               <br />
+  //             </div>
+  //           );
+  //         }
+  //         if (receipt.status === 1 && pendingTxn.message) {
+  //           const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+  //           helperToast.success(
+  //             <div>
+  //               {pendingTxn.message}{" "}
+  //               <ExternalLink href={txUrl}>
+  //                 <Trans>View</Trans>
+  //               </ExternalLink>
+  //               <br />
+  //             </div>
+  //           );
+  //         }
+  //         continue;
+  //       }
+  //       updatedPendingTxns.push(pendingTxn);
+  //     }
 
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns);
-      }
-    };
+  //     if (updatedPendingTxns.length !== pendingTxns.length) {
+  //       setPendingTxns(updatedPendingTxns);
+  //     }
+  //   };
 
-    const interval = setInterval(() => {
-      checkPendingTxns();
-    }, 2 * 1000);
-    return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId]);
+  //   const interval = setInterval(() => {
+  //     checkPendingTxns();
+  //   }, 2 * 1000);
+  //   return () => clearInterval(interval);
+  // }, [library, pendingTxns, chainId]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -516,132 +493,132 @@ function FullApp() {
   }, [active, chainId, vaultAddress, positionRouterAddress]);
   const themeContext = useContext(ThemeContext);
 
-  const [isTourOpen, setIsTourOpen] = useState(true);
+  // const [isTourOpen, setIsTourOpen] = useState(true);
 
-  const steps = [
-    {
-      selector: '[data-tour="step-1"]',
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div class="tour-title">Trade (Step 1/4)</div>
-          <br />
-          <div class="tour-content">Trade and exchange currencies optionally with leverage.</div>
-          <br />
-          <div class="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(1)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "172px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: '[data-tour="step-2"]',
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div class="tour-title">Earn (Step 2/4)</div>
-          <br />
-          <div class="tour-content">Stake TMX and TLP to earn rewards.</div>
-          <br />
-          <div class="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(2)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "180px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: ".third-step",
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div class="tour-title">Settings (Step 3/4)</div>
-          <br />
-          <div class="tour-content">Manage Trade settings here.</div>
-          <br />
-          <div class="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
-              Close
-            </a>
-            <button onClick={() => goTo(3)}>Next</button>
-          </div>
-        </div>
-      ),
-      position: "bottom",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "172px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    {
-      selector: ".fourth-step",
-      title: "Email Notifications",
-      // eslint-disable-next-line no-dupe-keys
-      action: (node) => {
-        setActiveModal("SETTINGS");
-      },
-      content: ({ goTo, inDOM }) => (
-        <div>
-          <div class="tour-title">Email Notifications</div>
-          <br />
-          <div class="tour-content">
-            Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
-            and light/dark mode here.
-          </div>
-          <br />
-          <div class="tour-control">
-            <a
-              href="#"
-              onClick={() => {
-                setIsTourOpen(false);
-                setActiveModal(null);
-              }}
-            >
-              Close
-            </a>
-            <button
-              onClick={() => {
-                setIsTourOpen(false);
-                setActiveModal(null);
-              }}
-            >
-              Got it
-            </button>
-          </div>
-        </div>
-      ),
-      position: "left",
-      style: {
-        backgroundColor: "#242424",
-        width: "312px",
-        height: "220px",
-        padding: "16px",
-        fontSize: "18px",
-      },
-    },
-    // ...
-  ];
+  // const steps = [
+  //   {
+  //     selector: '[data-tour="step-1"]',
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Trade (Step 1/4)</div>
+  //         <br />
+  //         <div className="tour-content">Trade and exchange currencies optionally with leverage.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(1)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "172px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: '[data-tour="step-2"]',
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Earn (Step 2/4)</div>
+  //         <br />
+  //         <div className="tour-content">Stake TMX and TLP to earn rewards.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(2)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "180px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: ".third-step",
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Settings (Step 3/4)</div>
+  //         <br />
+  //         <div className="tour-content">Manage Trade settings here.</div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a href="#" onClick={() => setIsTourOpen(false)}>
+  //             Close
+  //           </a>
+  //           <button onClick={() => goTo(3)}>Next</button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "bottom",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "172px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   {
+  //     selector: ".fourth-step",
+  //     title: "Email Notifications",
+  //     // eslint-disable-next-line no-dupe-keys
+  //     action: (node) => {
+  //       setActiveModal("SETTINGS");
+  //     },
+  //     content: ({ goTo, inDOM }) => (
+  //       <div>
+  //         <div className="tour-title">Email Notifications</div>
+  //         <br />
+  //         <div className="tour-content">
+  //           Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
+  //           and light/dark mode here.
+  //         </div>
+  //         <br />
+  //         <div className="tour-control">
+  //           <a
+  //             href="#"
+  //             onClick={() => {
+  //               setIsTourOpen(false);
+  //               setActiveModal(null);
+  //             }}
+  //           >
+  //             Close
+  //           </a>
+  //           <button
+  //             onClick={() => {
+  //               setIsTourOpen(false);
+  //               setActiveModal(null);
+  //             }}
+  //           >
+  //             Got it
+  //           </button>
+  //         </div>
+  //       </div>
+  //     ),
+  //     position: "left",
+  //     style: {
+  //       backgroundColor: "#242424",
+  //       width: "312px",
+  //       height: "220px",
+  //       padding: "16px",
+  //       fontSize: "18px",
+  //     },
+  //   },
+  //   // ...
+  // ];
 
   return (
     <>
@@ -651,7 +628,7 @@ function FullApp() {
             <Header
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}
-              setWalletModalVisible={setWalletModalVisible}
+              // setWalletModalVisible={setWalletModalVisible}
               setApprovalsModalVisible={setApprovalsModalVisible}
               setDoesUserHaveEmail={setDoesUserHaveEmail}
               redirectPopupTimestamp={redirectPopupTimestamp}
@@ -795,20 +772,15 @@ function FullApp() {
           setShouldHideRedirectModal={setShouldHideRedirectModal}
           shouldHideRedirectModal={shouldHideRedirectModal}
         />
-        <Modal
+        {/* <Modal
           className="auth-flow-modal"
           isVisible={authFlowModal}
           setIsVisible={setAuthFlowModalVisible}
           isWalletConnect={false}
         >
-          <AuthFlow
-            account={account}
-            setModalVisible={setAuthFlowModalVisible}
-            isNewUser={isNewUser}
-            emailExists={doesUserHaveEmail}
-          />
-        </Modal>
-        <Modal
+          
+        </Modal> */}
+        {/* <Modal
           className="Connect-wallet-modal"
           isVisible={walletModalVisible}
           setIsVisible={setWalletModalVisible}
@@ -823,26 +795,8 @@ function FullApp() {
               Select your favourite wallet to log in T3 Finance
             </label>
           </div>
-          <div className="Modal-content-wrapper">
-            <WalletConnectSection
-              walletIco={metamaskImg}
-              text={`Connect Metamask`}
-              handleClick={activateMetaMask}
-            />
-            <WalletConnectSection
-              walletIco={coinbaseImg}
-             
-              text={`Coinbase wallet`}
-              handleClick={activateCoinBase}
-            />
-            <WalletConnectSection
-              
-              walletIco={walletConnectImg}
-              text={`Wallet Connect`}
-              handleClick={activateWalletConnect}
-            />
-          </div>
-        </Modal>
+         
+        </Modal> */}
 
         <Modal
           className="Approve-tokens-modal"
@@ -857,7 +811,7 @@ function FullApp() {
             nonZeroBalanceTokens={nonZeroBalanceTokens}
             closeApprovalsModal={() => {
               setApprovalsModalVisible(false);
-              setWalletModalVisible(true);
+              // setWalletModalVisible(true);
               setActiveStep(3);
             }}
           />
@@ -916,7 +870,7 @@ function FullApp() {
           </Button>
         </Modal>
       </div>
-      <Tour
+      {/* <Tour
         steps={steps}
         isOpen={isTourOpen && active && account && !walletModalVisible && !authFlowModal}
         showCloseButton={false}
@@ -924,7 +878,7 @@ function FullApp() {
         showNavigation={false}
         showNavigationNumber={false}
         showButtons={false}
-      />
+      /> */}
     </>
   );
 }
@@ -938,17 +892,19 @@ function App() {
 
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <SEO>
-          <Router>
-            <I18nProvider i18n={i18n}>
-              <ThemeProvider>
-                <FullApp />
-              </ThemeProvider>
-            </I18nProvider>
-          </Router>
-        </SEO>
-      </Web3ReactProvider>
+      <SEO>
+        <ThemeProvider>
+          <Providers>
+            <DynamicWalletProvider>
+              <Router>
+                <I18nProvider i18n={i18n}>
+                  <FullApp />
+                </I18nProvider>
+              </Router>
+            </DynamicWalletProvider>
+          </Providers>
+        </ThemeProvider>
+      </SEO>
     </SWRConfig>
   );
 }

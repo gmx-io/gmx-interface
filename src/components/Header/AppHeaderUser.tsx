@@ -1,15 +1,10 @@
-import { useWeb3React } from "@web3-react/core";
-import AddressDropdown from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
 import { useCallback, useContext } from "react";
 import { HeaderLink } from "./HeaderLink";
-import connectWalletImgDrk from "img/ic_wallet_24-dark.svg";
-import connectWalletImglight from "img/ic_wallet_24-light.svg";
+
 import "./Header.css";
-import { isHomeSite, getAccountUrl } from "lib/legacy";
+import { isHomeSite } from "lib/legacy";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import {
   BLAST_SEPOLIA_TESTNET,
@@ -17,20 +12,23 @@ import {
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
+  MORPH_L2,
   getChainName,
 } from "config/chains";
 import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
-import { ThemeContext } from "store/theme-provider";
+
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 type Props = {
   openSettings: () => void;
   small?: boolean;
-  setWalletModalVisible: (visible: boolean) => void;
+
   setApprovalsModalVisible: (visible: boolean) => void;
   setDoesUserHaveEmail: (visible: boolean) => void;
   disconnectAccountAndCloseSettings: () => void;
@@ -74,7 +72,7 @@ if (isDevelopment()) {
 export function AppHeaderUser({
   openSettings,
   small,
-  setWalletModalVisible,
+
   setApprovalsModalVisible,
   setDoesUserHaveEmail,
   disconnectAccountAndCloseSettings,
@@ -84,8 +82,12 @@ export function AppHeaderUser({
   setActiveModal,
   setNewUser,
 }: Props) {
-  const { chainId } = useChainId();
-  const { active, account } = useWeb3React();
+  const { chainId } = useDynamicChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  //const signer = dynamicContext.signer;
+  //const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
 
   const onNetworkSelect = useCallback(
@@ -100,7 +102,8 @@ export function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
-  const themeContext = useContext(ThemeContext);
+  //const themeContext = useContext(ThemeContext);
+  //const imgSrc = themeContext.theme === "light" ? connectWalletImgDrk : connectWalletImglight;
 
   if (!active || !account) {
     return (
@@ -115,10 +118,22 @@ export function AppHeaderUser({
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
-
+        <DynamicWidget
+          variant="modal"
+          buttonClassName="connect-wallet-btn-dynamic"
+          buttonContainerClassName="connect-wallet-btn"
+          innerButtonComponent={
+            <button className="connect-wallet-btn">
+              {/* {imgSrc && <img className="btn-icon" src={imgSrc} alt="Connect Wallet" />} */}
+              <span className="btn-label">
+                <Trans>Connect Wallet</Trans>
+              </span>
+            </button>
+          }
+        />
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton
+            {/* <ConnectWalletButton
               onClick={() => setWalletModalVisible(true)}
               imgSrc={themeContext.theme === "light" ? connectWalletImgDrk : connectWalletImglight}
             >
@@ -131,7 +146,7 @@ export function AppHeaderUser({
               onNetworkSelect={onNetworkSelect}
               openSettings={openSettings}
               setApprovalsModalVisible={setApprovalsModalVisible}
-            />
+            /> */}
           </>
         ) : (
           <LanguagePopupHome />
@@ -140,11 +155,12 @@ export function AppHeaderUser({
     );
   }
 
-  const accountUrl = getAccountUrl(chainId, account);
-
   return (
     <div className="App-header-user">
-      {chainId === OPTIMISM_GOERLI_TESTNET || chainId === SEPOLIA_TESTNET || chainId === BLAST_SEPOLIA_TESTNET || chainId === MORPH_L2? (
+      {chainId === OPTIMISM_GOERLI_TESTNET ||
+      chainId === SEPOLIA_TESTNET ||
+      chainId === BLAST_SEPOLIA_TESTNET ||
+      chainId === MORPH_L2 ? (
         <div className="App-header-faucet">
           <FaucetDropdown />
         </div>
@@ -152,18 +168,26 @@ export function AppHeaderUser({
 
       {showConnectionOptions ? (
         <>
-          <NetworkDropdown
+          {/* <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}
             selectorLabel={selectorLabel}
             onNetworkSelect={onNetworkSelect}
             openSettings={openSettings}
-          />
-          <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+          /> */}
+          <div>
+            <DynamicWidget
+              variant="modal"
+              buttonClassName="connect-wallet-btn-dynamic"
+              buttonContainerClassName="connect-wallet-btn"
+              innerButtonComponent={
+                <button className="connect-wallet-btn">
+                  {/* {imgSrc && <img className="btn-icon" src={imgSrc} alt="Connect Wallet" />} */}
+                  <span className="btn-label">
+                    <Trans>Connect Wallet</Trans>
+                  </span>
+                </button>
+              }
             />
           </div>
           <SettingDropdown

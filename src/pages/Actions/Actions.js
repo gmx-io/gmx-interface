@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 
 import "./Actions.css";
@@ -19,20 +18,25 @@ import Reader from "abis/Reader.json";
 
 import { Trans, t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";
-import { contractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const USD_DECIMALS = 30;
 
 export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees }) {
   const { account } = useParams();
-  const { active, library } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  //const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  // const {  library } = useWeb3React();
 
-  const { chainId } = useChainId();
+  const { chainId } = useDynamicChainId();
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const vaultAddress = getContract(chainId, "Vault");
   const readerAddress = getContract(chainId, "Reader");
@@ -55,11 +59,11 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: contractFetcher(library, Reader, [
+    fetcher: dynamicContractFetcher(signer, Reader, [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -67,10 +71,10 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: dynamicContractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -134,7 +138,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
             active={active}
             orders={orders}
             account={checkSummedAccount}
-            library={library}
+            library={signer}
             flagOrdersEnabled={false}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}

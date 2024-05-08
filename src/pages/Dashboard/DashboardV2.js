@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
 import useSWR from "swr";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
@@ -38,14 +37,15 @@ import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getServerUrl } from "config/backend";
-import { contractFetcher } from "lib/contracts";
+import {  dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
 import { ThemeContext } from "store/theme-provider";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -89,8 +89,12 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 }
 
 export default function DashboardV2() {
-  const { active, library } = useWeb3React();
-  const { chainId } = useChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+ 
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
   const totalVolume = useTotalVolume();
 
   const chainName = getChainName(chainId);
@@ -129,24 +133,24 @@ export default function DashboardV2() {
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(library, GlpManager),
+    fetcher: dynamicContractFetcher(signer, GlpManager),
   });
 
   const { data: totalSupplies } = useSWR(
     [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
     {
-      fetcher: contractFetcher(library, ReaderV2, [tokensForSupplyQuery]),
+      fetcher: dynamicContractFetcher(signer, ReaderV2, [tokensForSupplyQuery]),
     }
   );
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: dynamicContractFetcher(signer, VaultV2),
     }
   );
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
   const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
   const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
 
@@ -158,7 +162,7 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            dynamicContractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
@@ -212,7 +216,7 @@ export default function DashboardV2() {
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
-    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    { arbitrum: chainId === ARBITRUM ? signer : undefined },
     active
   );
 

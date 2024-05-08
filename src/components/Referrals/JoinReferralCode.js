@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
+
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { useDynamicChainId } from "lib/chains";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
@@ -35,7 +37,12 @@ export function ReferralCodeForm({
   userReferralCodeString = "",
   type = "join",
 }) {
-  const { account, library, chainId } = useWeb3React();
+  const dynamicContext = useContext(DynamicWalletContext);
+  //const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  const chainId = useDynamicChainId();
+  
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef("");
   const [isValidating, setIsValidating] = useState(false);
@@ -86,7 +93,7 @@ export function ReferralCodeForm({
     setIsSubmitting(true);
 
     try {
-      const tx = await setTraderReferralCodeByUser(chainId, referralCode, library, {
+      const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
         successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
         failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,

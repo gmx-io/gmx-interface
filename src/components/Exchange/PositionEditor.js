@@ -22,7 +22,7 @@ import Token from "abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
@@ -81,7 +81,7 @@ export default function PositionEditor(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: dynamicContractFetcher(library, Token),
     }
   );
 
@@ -344,7 +344,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library);
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: t`Deposit submitted.`,
@@ -402,7 +402,7 @@ export default function PositionEditor(props) {
 
     const method = "createDecreasePosition";
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library);
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
       sentMsg: t`Withdrawal submitted.`,

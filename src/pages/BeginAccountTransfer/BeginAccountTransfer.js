@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+
 
 import { getContract } from "config/contracts";
 
@@ -18,10 +18,11 @@ import { FiX, FiCheck } from "react-icons/fi";
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract,  dynamicContractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import Button from "components/Button/Button";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -37,8 +38,12 @@ function ValidationRow({ isValid, children }) {
 
 export default function BeginAccountTransfer(props) {
   const { setPendingTxns } = props;
-  const { active, library, account } = useWeb3React();
-  const { chainId } = useChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
+  const { chainId } = useDynamicChainId();
 
   const [receiver, setReceiver] = useState("");
   const [isTransferring, setIsTransferring] = useState(false);
@@ -56,18 +61,18 @@ export default function BeginAccountTransfer(props) {
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: dynamicContractFetcher(signer, Token),
   });
 
   const { data: glpVesterBalance } = useSWR(active && [active, chainId, glpVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: dynamicContractFetcher(signer, Token),
   });
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: dynamicContractFetcher(signer, RewardTracker),
     }
   );
 
@@ -75,42 +80,42 @@ export default function BeginAccountTransfer(props) {
   const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: dynamicContractFetcher(signer, RewardTracker),
     }
   );
 
   const { data: transferredCumulativeGmxRewards } = useSWR(
     [active, chainId, gmxVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, Vester),
+      fetcher: dynamicContractFetcher(signer, Vester),
     }
   );
 
   const { data: transferredCumulativeGlpRewards } = useSWR(
     [active, chainId, glpVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, Vester),
+      fetcher: dynamicContractFetcher(signer, Vester),
     }
   );
 
   const { data: pendingReceiver } = useSWR(
     active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
     {
-      fetcher: contractFetcher(library, RewardRouter),
+      fetcher: dynamicContractFetcher(signer, RewardRouter),
     }
   );
 
   const { data: gmxAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: dynamicContractFetcher(signer, Token),
     }
   );
 
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: dynamicContractFetcher(signer, RewardTracker),
     }
   );
 
@@ -193,7 +198,7 @@ export default function BeginAccountTransfer(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
@@ -202,7 +207,7 @@ export default function BeginAccountTransfer(props) {
     }
 
     setIsTransferring(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
       sentMsg: t`Transfer submitted!`,

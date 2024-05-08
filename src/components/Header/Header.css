@@ -83,6 +83,9 @@
   color: white;
 }
 
+
+
+
 .App-header-links-header {
   height: 6.2rem;
   display: flex;
@@ -231,6 +234,7 @@
   border : #D7D8D9 2px solid;
   border-radius: 10px !important;
 }
+
 
 .App-header-faucet {
   border: 1px solid #ffffff29;

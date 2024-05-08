@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
@@ -23,18 +22,24 @@ import { t, Trans } from "@lingui/macro";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
-import { useChainId } from "lib/chains";
+import {  useDynamicChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
+import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import { useContext } from "react";
 
 export default function OrdersOverview() {
-  const { chainId } = useChainId();
-  const { library, account, active } = useWeb3React();
+  const { chainId } = useDynamicChainId();
+  const dynamicContext = useContext(DynamicWalletContext);
+  const active = dynamicContext.active;
+  const account = dynamicContext.account;
+  const signer = dynamicContext.signer;
+  //const { library } = useWeb3React();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
 
-  const orders = useAllOrders(chainId, library);
+  const orders = useAllOrders(chainId, signer);
   const stats = useAllOrdersStats(chainId);
   const ORDER_TYPE_LABELS = {
     Increase: t`Increase`,
@@ -44,7 +49,7 @@ export default function OrdersOverview() {
 
   const positionsForOrders = usePositionsForOrders(
     chainId,
-    library,
+    signer,
     orders.filter((order) => order.type === DECREASE)
   );
 
@@ -63,7 +68,7 @@ export default function OrdersOverview() {
   const executeOrder = (evt, order) => {
     evt.preventDefault();
 
-    const params = [chainId, library, order.account, order.index, account];
+    const params = [chainId, signer, order.account, order.index, account];
     let method;
     if (order.type === "Swap") {
       method = "executeSwapOrder";
