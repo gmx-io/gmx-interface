@@ -260,10 +260,11 @@ function UnstakeModal(props) {
 
   let unstakeBonusLostPercentage;
   if (amount && amount > 0 && multiplierPointsAmount && multiplierPointsAmount > 0) {
-    unstakeBonusLostPercentage =
-      bigMath.mulDiv(amount + burnAmount, BASIS_POINTS_DIVISOR_BIGINT, multiplierPointsAmount) +
-      processedData.esGmxInStakedGmx +
-      processedData.gmxInStakedGmx;
+    unstakeBonusLostPercentage = bigMath.mulDiv(
+      amount + burnAmount,
+      BASIS_POINTS_DIVISOR_BIGINT,
+      multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx
+    );
   }
 
   const getError = () => {

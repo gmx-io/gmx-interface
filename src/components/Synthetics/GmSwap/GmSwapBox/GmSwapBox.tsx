@@ -960,8 +960,9 @@ export function GmSwapBox(p: Props) {
                   secondToken?.balance &&
                   (secondTokenAmount === undefined || secondTokenAmount !== secondToken.balance) &&
                   (secondToken?.isNative
-                    ? minResidualAmount &&
-                      (secondToken?.balance === undefined || secondToken.balance > minResidualAmount)
+                    ? minResidualAmount !== undefined &&
+                      secondToken?.balance !== undefined &&
+                      secondToken.balance > minResidualAmount
                     : true)) ||
                 false
               }

@@ -123,7 +123,7 @@ export default function APRLabel({ chainId, label }) {
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0] + aums[1] / 2n;
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances);

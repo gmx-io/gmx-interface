@@ -103,7 +103,7 @@ export function getTradeFees(p: {
 
   const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);
 
-  const positionFeeBeforeDiscount = getFeeItem(positionFeeUsd + feeDiscountUsd * -1n, sizeDeltaUsd);
+  const positionFeeBeforeDiscount = getFeeItem((positionFeeUsd + feeDiscountUsd) * -1n, sizeDeltaUsd);
   const positionFeeAfterDiscount = getFeeItem(positionFeeUsd * -1n, sizeDeltaUsd);
 
   const borrowFee = getFeeItem(borrowingFeeUsd * -1n, initialCollateralUsd);
