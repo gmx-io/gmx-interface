@@ -140,7 +140,7 @@ export function useReferralsData(account?: string | null) {
           //#region Code Ownership Info
           // Getting all owners of the referral codes on other chains
 
-          const referralCodes = res.data.affiliateStats.map((e) => e.referralCode);
+          const referralCodes = res.data.referralCodes.map((e) => e.code);
           const allCodesOwnersOnOtherChains = await Promise.allSettled(
             SUPPORTED_CHAIN_IDS.filter((otherChainId) => otherChainId !== chainId).map(async (otherChainId) => ({
               chainId: otherChainId,
@@ -175,31 +175,35 @@ export function useReferralsData(account?: string | null) {
           }
           //#endregion
 
-          const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats.map(
-            (e): ReferralCodeStats => ({
-              referralCode: decodeReferralCode(e.referralCode),
-              trades: parseInt(e.trades),
-              tradedReferralsCount: parseInt(e.tradedReferralsCount),
-              registeredReferralsCount: parseInt(e.registeredReferralsCount),
-              allOwnersOnOtherChains: allOwnersOnOtherChainsMap[e.referralCode],
-              volume: BigNumber.from(e.volume),
-              totalRebateUsd: BigNumber.from(e.totalRebateUsd),
-              affiliateRebateUsd: getAffiliateRebateUsd(e),
-              discountUsd: BigNumber.from(e.discountUsd),
-              v1Data: {
-                volume: BigNumber.from(e.v1Data.volume),
-                totalRebateUsd: BigNumber.from(e.v1Data.totalRebateUsd),
-                discountUsd: BigNumber.from(e.v1Data.discountUsd),
-                affiliateRebateUsd: getAffiliateRebateUsd(e.v1Data),
-              },
-              v2Data: {
-                volume: BigNumber.from(e.v2Data.volume),
-                totalRebateUsd: BigNumber.from(e.v2Data.totalRebateUsd),
-                discountUsd: BigNumber.from(e.v2Data.discountUsd),
-                affiliateRebateUsd: getAffiliateRebateUsd(e.v2Data),
-              },
+          const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats
+            .filter((e) => {
+              return res.data.referralCodes.some((c) => c.code === e.referralCode);
             })
-          );
+            .map(
+              (e): ReferralCodeStats => ({
+                referralCode: decodeReferralCode(e.referralCode),
+                trades: parseInt(e.trades),
+                tradedReferralsCount: parseInt(e.tradedReferralsCount),
+                registeredReferralsCount: parseInt(e.registeredReferralsCount),
+                allOwnersOnOtherChains: allOwnersOnOtherChainsMap[e.referralCode],
+                volume: BigNumber.from(e.volume),
+                totalRebateUsd: BigNumber.from(e.totalRebateUsd),
+                affiliateRebateUsd: getAffiliateRebateUsd(e),
+                discountUsd: BigNumber.from(e.discountUsd),
+                v1Data: {
+                  volume: BigNumber.from(e.v1Data.volume),
+                  totalRebateUsd: BigNumber.from(e.v1Data.totalRebateUsd),
+                  discountUsd: BigNumber.from(e.v1Data.discountUsd),
+                  affiliateRebateUsd: getAffiliateRebateUsd(e.v1Data),
+                },
+                v2Data: {
+                  volume: BigNumber.from(e.v2Data.volume),
+                  totalRebateUsd: BigNumber.from(e.v2Data.totalRebateUsd),
+                  discountUsd: BigNumber.from(e.v2Data.discountUsd),
+                  affiliateRebateUsd: getAffiliateRebateUsd(e.v2Data),
+                },
+              })
+            );
 
           const affiliateTotalStats: AffiliateTotalStats = res.data.affiliateStats.reduce(
             (acc: AffiliateTotalStats, cv) => {
