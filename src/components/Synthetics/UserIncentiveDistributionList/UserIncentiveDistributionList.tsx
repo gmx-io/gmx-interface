@@ -1,6 +1,5 @@
 import { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
-import { Trans as TransReact } from "@lingui/react";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
@@ -133,10 +132,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
 
   const isCompetition = typeId >= 2000 && typeId < 3000;
-  const typeStr = isCompetition ? t`COMPETITION Airdrop` : i18n._(INCENTIVE_TYPE_MAP[typeId]);
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId]);
   const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
 
   const renderTotalTooltipContent = useCallback(() => {
@@ -155,10 +154,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     () =>
       tooltipData ? (
         <Link className="link-underline" to={tooltipData.link}>
-          <TransReact id={tooltipData.text.id} />
+          {_(tooltipData.text.id)}
         </Link>
       ) : null,
-    [tooltipData]
+    [_, tooltipData]
   );
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 

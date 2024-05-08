@@ -163,11 +163,11 @@ type Props = {
 };
 
 export function ActionFilter({ value, onChange }: Props) {
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
       return {
-        groupName: i18n._(group.groupName),
+        groupName: _(group.groupName),
         items: group.items.map((item) => {
           return {
             data: {
@@ -175,12 +175,12 @@ export function ActionFilter({ value, onChange }: Props) {
               eventName: item.eventName,
               isDepositOrWithdraw: Boolean(item.isDepositOrWithdraw),
             },
-            text: item.text ? i18n._(item.text) : getActionTitle(item.orderType, item.eventName),
+            text: item.text ? _(item.text) : getActionTitle(item.orderType, item.eventName),
           };
         }),
       };
     });
-  }, [i18n]);
+  }, [_]);
 
   return (
     <TableOptionsFilter<Props["value"][number]>

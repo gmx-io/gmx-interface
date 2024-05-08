@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
-import { Trans as TransReact } from "@lingui/react";
+import { useLingui } from "@lingui/react";
 
 import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
@@ -91,6 +91,7 @@ export default function PositionEditor(props) {
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   const submitButtonRef = useRef(null);
+  const { _ } = useLingui();
   const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
 
   const routerAddress = getContract(chainId, "Router");
@@ -535,7 +536,7 @@ export default function PositionEditor(props) {
           }
           className="Tooltip-flex"
           position="top"
-          content={<TransReact id={ERROR_TOOLTIP_MSG[errorCode]} />}
+          content={_(ERROR_TOOLTIP_MSG[errorCode])}
         />
       );
     }

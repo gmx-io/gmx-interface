@@ -31,11 +31,11 @@ export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName
 };
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
   const { chainId } = useChainId();
   const { claimAction } = p;
 
-  const eventTitle = i18n._(claimCollateralEventTitles[claimAction.eventName]);
+  const eventTitle = useMemo(() => _(claimCollateralEventTitles[claimAction.eventName]), [_, claimAction.eventName]);
 
   const marketNamesJoined = useMemo(() => {
     return claimAction.claimItems

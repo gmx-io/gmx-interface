@@ -34,8 +34,7 @@ export async function dynamicActivate(locale: string) {
 }
 
 export function useLocalizedMap<T extends Record<string, MessageDescriptor>>(map: T): Record<keyof T, string> {
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => mapValues(map, (value) => i18n._(value)), [i18n.locale, map]);
+  return useMemo(() => mapValues(map, (value) => _(value)), [_, map]);
 }

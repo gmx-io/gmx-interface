@@ -152,7 +152,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 
 function useDownloadAsCsv(claimActions?: ClaimAction[]) {
   const { chainId } = useChainId();
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
 
   const handleCsvDownload = useCallback(() => {
     if (!claimActions) {
@@ -161,7 +161,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
     const fullFormattedData = claimActions.flatMap((claimAction) => {
       if (claimAction.type === "collateral") {
-        let action: string = i18n._(claimCollateralEventTitles[claimAction.eventName]);
+        let action: string = _(claimCollateralEventTitles[claimAction.eventName]);
 
         return claimAction.claimItems.flatMap((claimItem) => {
           return [
@@ -191,7 +191,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
         });
       }
 
-      let action: string = i18n._(claimFundingFeeEventTitles[claimAction.eventName]);
+      let action: string = _(claimFundingFeeEventTitles[claimAction.eventName]);
       return claimAction.markets.map((market, index) => ({
         explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
         timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
@@ -217,7 +217,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
       size: t`Size`,
       explorerUrl: t`Transaction ID`,
     });
-  }, [chainId, claimActions, i18n]);
+  }, [chainId, claimActions, _]);
 
   return handleCsvDownload;
 }

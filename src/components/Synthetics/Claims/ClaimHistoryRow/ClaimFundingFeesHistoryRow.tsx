@@ -1,5 +1,5 @@
 import { msg, t } from "@lingui/macro";
-import { Trans as TransReact } from "@lingui/react";
+import { useLingui } from "@lingui/react";
 import { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -35,6 +35,7 @@ const NBSP = String.fromCharCode(160);
 
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
   const { chainId } = useChainId();
+  const { _ } = useLingui();
 
   const eventTitleDescriptor = claimFundingFeeEventTitles[claimAction.eventName];
 
@@ -188,9 +189,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     <tr>
       <td>
         <div className="flex">
-          <div className="ClaimHistoryRow-action-handle">
-            <TransReact id={eventTitleDescriptor.id} />
-          </div>
+          <div className="ClaimHistoryRow-action-handle">{_(eventTitleDescriptor)}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-xs"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}

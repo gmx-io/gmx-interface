@@ -19,7 +19,7 @@ import {
 
 import "./OrdersOverview.css";
 import { t, Trans, msg } from "@lingui/macro";
-import { Trans as TransReact } from "@lingui/react";
+import { useLingui } from "@lingui/react";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
@@ -38,6 +38,7 @@ const closeToExecutionPriceStyle = { color: "orange" };
 export default function OrdersOverview() {
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
+  const { _ } = useLingui();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -186,9 +187,7 @@ export default function OrdersOverview() {
 
               return (
                 <tr key={key}>
-                  <td>
-                    <TransReact id={ORDER_TYPE_LABELS[order.type].id} />
-                  </td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -268,9 +267,7 @@ export default function OrdersOverview() {
               }
               return (
                 <tr key={key}>
-                  <td>
-                    <TransReact id={ORDER_TYPE_LABELS[order.type].id} />
-                  </td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td>
                     {order.isLong ? t`Long` : t`Short`} {indexToken && indexToken.symbol}
                   </td>
