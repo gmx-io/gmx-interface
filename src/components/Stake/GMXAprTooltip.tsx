@@ -4,17 +4,11 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DOCS_LINKS } from "config/links";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { BigNumber } from "ethers";
+import { ProcessedData } from "lib/legacy";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
 
 type Props = {
-  processedData: {
-    gmxAprForEsGmx: BigNumber;
-    gmxAprForNativeToken: BigNumber;
-    maxGmxAprForNativeToken: BigNumber;
-    gmxAprForNativeTokenWithBoost: BigNumber;
-    gmxBoostAprForNativeToken?: BigNumber;
-    avgBoostMultiplier?: BigNumber;
-  };
+  processedData?: ProcessedData;
   nativeTokenSymbol: string;
   isUserConnected?: boolean;
   recommendStakeGmx?: BigNumber;
@@ -41,8 +35,8 @@ export default function GMXAprTooltip({
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
-  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(
-    processedData.gmxAprForNativeTokenWithBoost
+  const maxGmxAprPercentageDifference = processedData?.maxGmxAprForNativeToken?.sub(
+    processedData?.gmxAprForNativeTokenWithBoost ?? 0
   );
 
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;

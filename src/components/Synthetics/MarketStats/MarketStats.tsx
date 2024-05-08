@@ -226,42 +226,41 @@ export function MarketStats(p: Props) {
                   }
                 )}
                 position="bottom-end"
-                renderContent={() => {
-                  return (
-                    <div>
-                      {marketInfo?.isSameCollaterals ? (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified
-                          buying caps.
-                        </Trans>
-                      ) : (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
-                          this market up to the specified buying caps.
-                        </Trans>
-                      )}
+                content={
+                  <div>
+                    {marketInfo?.isSameCollaterals ? (
+                      <Trans>
+                        {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified buying
+                        caps.
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
+                        this market up to the specified buying caps.
+                      </Trans>
+                    )}
 
-                      <br />
-                      <br />
+                    <br />
+                    <br />
 
-                      <StatsTooltipRow
-                        label={t`Max ${marketInfo?.longToken.symbol}`}
-                        value={maxLongTokenValue}
-                        showDollar={false}
-                      />
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.longToken.symbol}`}
+                      value={maxLongTokenValue}
+                      showDollar={false}
+                    />
 
-                      <br />
-
-                      {!marketInfo?.isSameCollaterals && (
+                    {!marketInfo?.isSameCollaterals && (
+                      <>
+                        <br />
                         <StatsTooltipRow
                           label={t`Max ${marketInfo?.shortToken.symbol}`}
                           value={maxShortTokenValue}
                           showDollar={false}
                         />
-                      )}
-                    </div>
-                  );
-                }}
+                      </>
+                    )}
+                  </div>
+                }
               />
             ) : (
               "..."
@@ -284,12 +283,20 @@ export function MarketStats(p: Props) {
                 }
               )}
               position="bottom-end"
-              renderContent={() => (
+              content={
                 <div>
-                  <Trans>
-                    GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the specified
-                    selling caps. The remaining tokens in the pool are reserved for currently open Positions.
-                  </Trans>
+                  {marketInfo?.isSameCollaterals ? (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} for this market up to the specified selling caps. The
+                      remaining tokens in the pool are reserved for currently open positions.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the
+                      specified selling caps. The remaining tokens in the pool are reserved for currently open
+                      positions.
+                    </Trans>
+                  )}
                   <br />
                   <br />
                   <StatsTooltipRow
@@ -302,18 +309,20 @@ export function MarketStats(p: Props) {
                     )}
                     showDollar={false}
                   />
-                  <StatsTooltipRow
-                    label={t`Max ${marketInfo?.shortToken.symbol}`}
-                    value={formatTokenAmountWithUsd(
-                      maxShortSellableTokenAmount,
-                      sellableInfo?.maxShortSellableUsd,
-                      shortToken?.symbol,
-                      shortToken?.decimals
-                    )}
-                    showDollar={false}
-                  />
+                  {!marketInfo?.isSameCollaterals && (
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.shortToken.symbol}`}
+                      value={formatTokenAmountWithUsd(
+                        maxShortSellableTokenAmount,
+                        sellableInfo?.maxShortSellableUsd,
+                        shortToken?.symbol,
+                        shortToken?.decimals
+                      )}
+                      showDollar={false}
+                    />
+                  )}
                 </div>
-              )}
+              }
             />
           }
         />

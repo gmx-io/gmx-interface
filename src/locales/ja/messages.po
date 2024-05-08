@@ -60,10 +60,6 @@ msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.<
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
-#~ msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
 msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
 msgstr ""
 
@@ -74,6 +70,32 @@ msgstr ""
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before staking.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>GM Pools total value ({chainName}).</0>"
@@ -1154,7 +1176,8 @@ msgstr "担保  ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "担保の種類"
@@ -1589,6 +1612,18 @@ msgstr "{tokenSymbol} {longOrShortText}の減額 -{0} USD"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Delegate"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Delegated to"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "Delegated to:"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2353,12 +2388,20 @@ msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and 
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
+msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM can be sold for {0} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX & Voting Power"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3141,6 +3184,11 @@ msgstr "ロング"
 msgid "Long Collateral"
 msgstr ""
 
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Long Liq."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -3163,8 +3211,8 @@ msgid "Longing..."
 msgstr "ロング中..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Longs Net Fee / 1h"
-msgstr "ロングの純手数料 / 1時間"
+msgid "Longs Net Rate / 1h"
+msgstr "ロングネットレート / 1時間"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -3566,6 +3614,10 @@ msgstr ""
 msgid "Multiplier Points APR"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Myself"
+msgstr ""
+
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3577,8 +3629,8 @@ msgid "NA"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "NET FEE / 1 H"
-msgstr ""
+msgid "NET RATE / 1 H"
+msgstr "1時間あたりのネットレート"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3602,17 +3654,14 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Fee"
-msgstr ""
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Net Rate"
+msgstr "ネットレート"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Net Fee / 1h"
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Net Rebate"
-msgstr ""
+msgid "Net Rate / 1h"
+msgstr "ネットレート / 1時間"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -3634,8 +3683,8 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee -
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
-msgid "Net fee combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
-msgstr "純手数料はファンディング手数料と借入手数料を組み合わせますが、オープン、スワップ、インパクト手数料は除外されます。<0/><1/>ファンディング手数料はロングとショートをバランスさせ、両側で交換されます。<2>詳細を読む</2>。<3/><4/>借入手数料は利用可能な流動性を確保します。<5>詳細を読む</5>。"
+msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
+msgstr "ネットレートはファンディング料金と借入料金を組み合わせますが、オープン、スワップ、またはインパクト料金は除外されます。<0/><1/>ファンディング料金はロングとショートをバランスさせ、両側で交換されます。<2>詳細を読む</2>。<3/><4/>借入料金は利用可能な流動性を確保します。<5>詳細を読む</5>。"
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Network Fee"
@@ -3673,6 +3722,10 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "No delegate found"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -3798,6 +3851,11 @@ msgstr "Binanceアプリを開く"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Open Fee"
 msgstr ""
+
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Open Fees"
+msgstr "オープン手数料"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
@@ -4094,8 +4152,16 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "紹介コードを入力すると手数料割引を受けられます。"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr "アカウント全体を移行する場合だけこの機能を利用してください。<0/>この機能は、あなたのすべてのGMX、esGMX、GLP、マルチプライヤーポイントを新たなアカウントに移行します<1/>移行は、受け取り側のアカウントが過去にGMXトークンとGLPトークンを一度もステークしたことがない場合にのみ可能になります。<2/>移行は一方通行であり、いったん移行が完了すると、ステークされているトークンを元のアカウントに戻すことはできなくなります。"
+#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+#~ msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+#~ msgstr "アカウント全体を移行する場合だけこの機能を利用してください。<0/>この機能は、あなたのすべてのGMX、esGMX、GLP、マルチプライヤーポイントを新たなアカウントに移行します<1/>移行は、受け取り側のアカウントが過去にGMXトークンとGLPトークンを一度もステークしたことがない場合にのみ可能になります。<2/>移行は一方通行であり、いったん移行が完了すると、ステークされているトークンを元のアカウントに戻すことはできなくなります。"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -4142,7 +4208,7 @@ msgstr "手数料と価格インパクトを差し引いた損益"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
@@ -4757,7 +4823,8 @@ msgstr ""
 msgid "Select a market"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "担保として使用する{0}を含むプールを選択してください。"
 
@@ -4776,6 +4843,10 @@ msgstr "選択肢を選ぶ"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select different tokens"
 msgstr "別のトークンを選択"
+
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Select pool"
+msgstr "プールを選択"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
@@ -4986,6 +5057,11 @@ msgstr "ショート"
 msgid "Short Collateral"
 msgstr ""
 
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Short Liq."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr ""
@@ -5008,8 +5084,8 @@ msgid "Shorting..."
 msgstr "ショート中..."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
-msgid "Shorts Net Fee / 1h"
-msgstr "ショートのネット手数料 / 1時間"
+msgid "Shorts Net Rate / 1h"
+msgstr "1時間あたりのショートネットレート"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
@@ -5526,8 +5602,8 @@ msgid "The Max Execution Fee is set to a higher value to handle potential increa
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
-msgstr ""
+#~ msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
@@ -5584,6 +5660,10 @@ msgstr "現在ネットワーク手数料が高いです。これは{chainName}�
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "現在ネットワーク手数料が非常に高いです。これは{chainName}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -6187,7 +6267,19 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "アンステーク申し込み完了! <0>状況を確認する。</0>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -6436,6 +6528,10 @@ msgstr "あなたが紹介したトレーダーによる取引高"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Voting Power"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -7122,6 +7218,10 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
+
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "{formattedNetRate} / 1h"
+msgstr "{formattedNetRate} / 1 時間"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts

@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 
-import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectTradeboxRelatedMarketsStats } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
-import { EMPTY_ARRAY } from "lib/objects";
-import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { type MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
+import type { Token } from "domain/tokens";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 
 export type Props = {
   indexToken?: Token;
@@ -20,10 +20,11 @@ export type Props = {
 };
 
 export function MarketPoolSelectorRow(p: Props) {
-  const { selectedMarket, indexToken, onSelectMarketAddress } = p;
-  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
-  const { availableMarkets } = marketsOptions || {};
-  const indexName = indexToken ? getMarketIndexName({ indexToken, isSpotOnly: false }) : undefined;
+  const { selectedMarket, onSelectMarketAddress } = p;
+  const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
+  const tradeType = useTradeboxTradeType();
+
+  const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
   return (
     <>
@@ -32,14 +33,12 @@ export function MarketPoolSelectorRow(p: Props) {
         label={t`Pool`}
         value={
           <>
-            <PoolSelector
-              label={t`Pool`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={indexName}
-              selectedMarketAddress={selectedMarket?.marketTokenAddress}
-              markets={availableMarkets || EMPTY_ARRAY}
-              isSideMenu
-              onSelectMarket={(marketInfo) => onSelectMarketAddress(marketInfo.marketTokenAddress)}
+            <PoolSelector2
+              selectedPoolName={poolName}
+              options={relatedMarketStats}
+              tradeType={tradeType}
+              positionStats={relatedMarketsPositionStats}
+              onSelect={onSelectMarketAddress}
             />
           </>
         }

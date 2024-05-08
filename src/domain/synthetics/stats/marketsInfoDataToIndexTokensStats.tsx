@@ -1,8 +1,9 @@
 import { BigNumber, constants } from "ethers";
+
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getUsedLiquidity, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { getMidPrice, TokenData } from "domain/synthetics/tokens";
+import { MarketInfo, MarketsInfoData, getUsedLiquidity } from "domain/synthetics/markets";
+import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import { BN_ZERO } from "lib/numbers";
 
