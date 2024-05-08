@@ -8,7 +8,6 @@ import { Trans } from "@lingui/macro";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import {
   BLAST_SEPOLIA_TESTNET,
-  MORPH_L2,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
