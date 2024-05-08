@@ -288,7 +288,13 @@ function UnstakeModal(props) {
   const unstakeGmxPercentage = maxAmount?.gt(0) ? amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount) : BigNumber.from(0);
 
   let unstakeBonusLostPercentage;
-  if (amount?.gt(0) && multiplierPointsAmount?.gt(0)) {
+  if (
+    amount?.gt(0) &&
+    multiplierPointsAmount?.gt(0) &&
+    burnAmount?.gt(0) &&
+    processedData.esGmxInStakedGmx &&
+    processedData.gmxInStakedGmx
+  ) {
     unstakeBonusLostPercentage = amount
       ?.add(burnAmount)
       .mul(BASIS_POINTS_DIVISOR)
