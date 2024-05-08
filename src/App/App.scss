@@ -30,7 +30,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid #ffffff10;
+  border-bottom: 1px solid var(--color-transparent-gray-950);
   z-index: 1;
 }
 
@@ -38,7 +38,7 @@ $app-card-padding: 1.5rem;
   height: 1.3rem;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -97,7 +97,7 @@ $app-card-padding: 1.5rem;
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
   background: #303fd024;
-  color: white;
+  color: var(--color-white);
 }
 
 .App-header-links-header {
@@ -130,7 +130,7 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-menu-icon {
-  color: white;
+  color: var(--color-white);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -274,7 +274,7 @@ $app-card-padding: 1.5rem;
 
 .App-card-long_sub__subtitle {
   letter-spacing: 0.36px;
-  color: white;
+  color: var(--color-white);
   font-size: 2rem;
   line-height: 2.6rem;
   font-weight: normal;
@@ -335,7 +335,7 @@ $app-card-padding: 1.5rem;
   border: 1px solid var(--dark-blue-border);
   border-radius: 0.3rem;
   position: relative;
-  color: white;
+  color: var(--color-white);
   font-size: 2rem;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -383,7 +383,7 @@ button.App-connect-wallet {
   font-weight: 500;
   padding: 0.9rem 2.4rem;
   height: 3.6rem;
-  color: var(--color-cold-blue-950);
+  color: var(--color-slate-800);
   background: #03cfcd 0% 0% no-repeat padding-box;
   border-radius: 0.4rem;
 }
@@ -402,13 +402,13 @@ button.App-connect-wallet:hover {
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: white;
+  color: var(--color-white);
   position: relative;
 }
 
 .mobile-menu-divider {
   height: 1px;
-  background: #4e516a;
+  background: var(--color-slate-600);
 }
 
 .App-card-divider {
@@ -473,7 +473,7 @@ button.App-connect-wallet:hover {
 .section-title-content .section-title-content__title {
   font-size: var(--font-lg);
   line-height: 3.1rem;
-  color: white;
+  color: var(--color-white);
   letter-spacing: 0px;
 }
 
@@ -488,7 +488,7 @@ button.App-connect-wallet:hover {
 
 .section-title-content .section-title-content__description span {
   cursor: pointer;
-  color: white;
+  color: var(--color-white);
 }
 
 .Page-title-section {
@@ -515,7 +515,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  color: var(--color-gray-100);
+  color: var(--color-gray);
   line-height: 2.15rem;
   font-size: var(--font-base);
 }
@@ -686,7 +686,7 @@ button.App-connect-wallet:hover {
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: white;
+  color: var(--color-white);
 }
 
 .Toastify {
@@ -830,9 +830,9 @@ button.App-connect-wallet:hover {
 
 a.App-cta,
 button.App-cta {
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-550) 100%);
   &:hover:enabled {
     background: var(--primary-btn-hover);
   }
@@ -849,13 +849,13 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: var(--color-gray-300);
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: white;
+  color: var(--color-white);
   box-shadow: none;
   background: none;
 }
@@ -874,7 +874,7 @@ button.App-button-option {
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: white;
+  color: var(--color-white);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -918,7 +918,7 @@ button.App-button-option:disabled {
   border-radius: 1.5rem;
   font-size: var(--font-base);
   background: none;
-  color: white;
+  color: var(--color-white);
   padding: 0;
   width: 2.4rem;
   height: 2.4rem;
@@ -955,7 +955,7 @@ a.App-social-link {
   margin-left: 1.1rem;
   margin-right: 1.1rem;
   font-size: 2.635rem;
-  color: white;
+  color: var(--color-white);
   opacity: 0.8;
 }
 
@@ -1020,29 +1020,29 @@ button.App-button {
 
 .Toastify__toast--error {
   background: #333957;
-  color: white;
+  color: var(--color-white);
   border-radius: 0.6rem;
 }
 
 .Toastify__toast--success {
   background: transparent linear-gradient(90deg, #19836c 0%, #177c66 100%) 0% 0% no-repeat padding-box;
-  color: white;
+  color: var(--color-white);
   box-shadow: 0px 0.3rem 0.6rem #0000005c;
   border-radius: 0.4rem;
 }
 
 .Toastify__toast--default {
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
-  color: white;
+  color: var(--color-white);
   border-radius: 0.6rem;
 }
 
 .Toastify__toast--default .Toastify__close-button {
-  color: white;
+  color: var(--color-white);
 }
 
 .Toastify__toast--default .Toastify__close-button:hover {
-  color: white;
+  color: var(--color-white);
   background: transparent;
 }
 
@@ -1164,7 +1164,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-handle {
-  background: var(--color-slate-565);
+  background: var(--color-slate-400);
   border: 2px solid var(--color-blue-600);
 }
 
@@ -1174,7 +1174,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: white;
+  color: var(--color-white);
   opacity: 0.5;
 }
 
@@ -1190,15 +1190,15 @@ button.App-button {
 .rc-slider-tooltip-inner {
   box-shadow: none;
   padding: 0.465rem 0.8rem;
-  background: var(--color-slate-565);
+  background: var(--color-slate-400);
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-  border-top-color: var(--color-slate-565);
+  border-top-color: var(--color-slate-400);
 }
 
 .header-connect-btn {
-  background: #3b43e3;
+  background: var(--color-blue-600);
 }
 
 .header-connect-btn:hover {
@@ -1207,7 +1207,7 @@ button.App-button {
 
 .header-connect-btn:focus {
   background: #7a7fec;
-  border: 1px solid #3b43e3;
+  border: 1px solid var(--color-blue-600);
   box-sizing: border-box;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -1318,14 +1318,14 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid #ffffff10;
+    border-bottom: 1px solid var(--color-transparent-gray-950);
   }
 
   .App-header.small::after {
     height: 1.3rem;
     width: 100%;
     content: " ";
-    background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
     position: absolute;
     bottom: -1.3rem;
     left: 0;
@@ -1474,7 +1474,7 @@ button.App-button {
 
 @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .App-header-drawer {
-    background: #0e0f1f;
+    background: var(--color-slate-950);
   }
 }
 

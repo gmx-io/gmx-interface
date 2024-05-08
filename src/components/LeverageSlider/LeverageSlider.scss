@@ -6,7 +6,7 @@
   .rc-slider-tooltip-inner {
     box-shadow: none;
     padding: 0.465rem 0.8rem;
-    background: var(--color-slate-565);
+    background: var(--color-slate-400);
   }
 
   .rc-slider-tooltip {
@@ -14,15 +14,15 @@
   }
 
   .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-    border-top-color: var(--color-slate-565);
+    border-top-color: var(--color-slate-400);
   }
 
   .rc-slider-rail {
-    background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
+    background: linear-gradient(90deg, rgb(30, 34, 61) 0%, rgb(40, 45, 74) 100%);
   }
 
   .rc-slider-track {
-    background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
+    background: linear-gradient(90deg, var(--color-blue-550) 0%, var(--color-blue-600) 100%);
   }
   .rc-slider-dot {
     border: none;
@@ -35,16 +35,18 @@
     background: var(--color-blue-500);
   }
   .rc-slider-handle {
-    background: var(--color-slate-565);
-    border: solid 2px rgba(45, 66, 252, 1);
+    background: var(--color-slate-400);
+    border: solid 2px var(--color-blue-600);
   }
 
   .rc-slider-handle:active {
-    box-shadow: 0 0 0.4rem 0.6rem rgba(45, 66, 252, 0.2);
+    // box-shadow: 0 0 0.4rem 0.6rem rgba(45, 66, 252, 0.2);
+    // var(--color-blue-600);
+    box-shadow: 0 0 0.4rem 0.6rem color-mix(in srgb, var(--color-blue-600), transparent 80%);
   }
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
-    color: white;
+    color: var(--color-white);
     opacity: 0.5;
   }
 

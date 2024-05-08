@@ -1,4 +1,4 @@
-$left-arrow-bg: var(--color-slate-570);
+$left-arrow-bg: var(--color-slate-400);
 
 .Tooltip {
   position: relative;
@@ -87,7 +87,7 @@ $left-arrow-bg: var(--color-slate-570);
       display: block;
       bottom: -4px;
       right: 8px;
-      background: var(--color-slate-570);
+      background: var(--color-slate-400);
     }
   }
 
@@ -138,7 +138,7 @@ $left-arrow-bg: var(--color-slate-570);
       display: block;
       right: -4px;
       top: 50%;
-      background: var(--color-slate-570);
+      background: var(--color-slate-400);
     }
   }
 
@@ -189,7 +189,7 @@ $left-arrow-bg: var(--color-slate-570);
   text-decoration-style: dashed;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: rgba(255, 255, 255, 0.6);
+  text-decoration-color: var(--color-transparent-gray-400);
 }
 
 .Tooltip-handle.plain:after {
@@ -209,7 +209,7 @@ $left-arrow-bg: var(--color-slate-570);
 
 .Tooltip-divider {
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: var(--color-transparent-gray-500);
   margin: 0.5rem 0;
 }
 
@@ -235,7 +235,7 @@ $left-arrow-bg: var(--color-slate-570);
 }
 
 .Tooltip-number {
-  color: white;
+  color: var(--color-white);
 }
 
 .Tooltip-flex {

@@ -16,7 +16,7 @@
   color: var(--color-slate-100);
 }
 .go-back a {
-  color: white;
+  color: var(--color-white);
 }
 
 @media (max-width: 500px) {

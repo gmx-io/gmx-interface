@@ -30,7 +30,7 @@
 }
 
 .BeginAccountTransfer .soft-error {
-  color: var(--color-gray-100);
+  color: var(--color-gray);
   line-height: 2.15rem;
   font-size: 14px;
   margin: -0.5rem 0 1rem 3rem;

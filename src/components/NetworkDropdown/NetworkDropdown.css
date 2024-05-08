@@ -6,7 +6,7 @@
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: white;
+  color: var(--color-white);
 }
 
 .App-header-language {

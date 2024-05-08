@@ -14,7 +14,7 @@
     align-items: center;
     flex: 1;
 
-    background-color: var(--color-slate-550);
+    background-color: var(--color-slate-400);
     .clickable &:not([disabled]):hover {
       background: rgba(80, 87, 126, 0.6);
     }
@@ -26,7 +26,7 @@
 
   &-button-text {
     flex: 1;
-    color: white;
+    color: var(--color-white);
     font-size: 1.3rem;
     padding: 0.8rem 1rem;
   }
@@ -45,7 +45,7 @@
     padding: 0 0.7rem;
     cursor: pointer;
 
-    background-color: var(--color-slate-550);
+    background-color: var(--color-slate-400);
     &:not([disabled]):hover {
       background: rgba(80, 87, 126, 0.6);
     }

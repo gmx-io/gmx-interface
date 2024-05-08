@@ -5,7 +5,7 @@
 
     overscroll-behavior: contain;
 
-    border-top: 1px solid var(--color-slate-560);
+    border-top: 1px solid var(--color-slate-400);
   }
 
   &-group-name {
@@ -46,7 +46,7 @@
     cursor: pointer;
 
     &:hover {
-      color: white;
+      color: var(--color-white);
     }
 
     &:last-child {

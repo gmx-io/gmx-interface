@@ -12,11 +12,11 @@
     }
 
     .SLTP-price {
-      border: 1px solid var(--color-slate-750);
+      border: 1px solid var(--color-slate-700);
       border-radius: var(--border-radius-sm);
       padding-left: 0.5rem;
       line-height: 1;
-      background: var(--color-slate-750);
+      background: var(--color-slate-700);
       position: relative;
 
       .price-input {
@@ -127,7 +127,7 @@
     }
 
     .action-remove {
-      background-color: rgba(231, 78, 93, 0.15);
+      background-color: color-mix(in srgb, var(--color-pink-500) 15%, transparent);
       opacity: 0.7;
 
       &:hover:not(:disabled) {
@@ -136,7 +136,7 @@
     }
 
     .action-add {
-      background-color: rgba(94, 201, 137, 0.15);
+      background-color: color-mix(in srgb, var(--color-emerald-400) 15%, transparent);
       opacity: 0.7;
 
       &:hover:not(:disabled) {

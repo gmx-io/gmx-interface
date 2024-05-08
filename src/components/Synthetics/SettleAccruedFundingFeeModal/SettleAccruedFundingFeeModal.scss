@@ -3,7 +3,7 @@
 }
 
 .ClaimSettleModal-alert {
-  color: var(--color-gray-300);
+  color: var(--color-gray);
   padding-bottom: 1rem;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .ClaimSettleModal-row-text {
-  color: white;
+  color: var(--color-white);
 }
 
 .ClaimSettleModal-info-row {
@@ -29,7 +29,7 @@
 .ClaimSettleModal-header {
   margin-bottom: 1.5rem;
   display: flex;
-  color: var(--color-gray-300);
+  color: var(--color-gray);
   font-size: var(--font-sm);
 }
 

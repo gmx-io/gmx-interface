@@ -57,7 +57,7 @@
 
   .Exchange-info-label {
     opacity: 1;
-    color: var(--color-gray-300);
+    color: var(--color-gray-400);
   }
 }
 
@@ -112,7 +112,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: white;
+    color: var(--color-white);
   }
 
   .MarketSelector-tooltip-row-action {
@@ -168,9 +168,9 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray-300);
+  text-decoration-color: var(--color-gray-400);
   user-select: none;
-  color: var(--color-gray-300);
+  color: var(--color-gray-400);
 
   &:hover {
     text-decoration-color: var(--color-white);

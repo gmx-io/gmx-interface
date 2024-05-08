@@ -16,14 +16,14 @@
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid #ffffff10;
+  border-bottom: 1px solid var(--color-transparent-gray-950);
 }
 
 .App-header.large::after {
   height: 1.3rem;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -77,7 +77,7 @@
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
   background: #303fd024;
-  color: white;
+  color: var(--color-white);
 }
 
 .App-header.large .App-header-link-container {
@@ -113,7 +113,7 @@
 }
 
 .App-header-menu-icon {
-  color: white;
+  color: var(--color-white);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -180,7 +180,7 @@
 }
 
 .App-header-container-left a.active {
-  color: white;
+  color: var(--color-white);
 }
 
 .App-header-container-right {
@@ -200,7 +200,7 @@
   border-radius: 1.5rem;
   font-size: var(--font-base);
   background: none;
-  color: white;
+  color: var(--color-white);
   padding: 0;
   width: 2.4rem;
   height: 2.4rem;
@@ -225,7 +225,7 @@
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: white;
+  color: var(--color-white);
   position: relative;
 }
 
@@ -276,14 +276,14 @@
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid #ffffff10;
+    border-bottom: 1px solid var(--color-transparent-gray-950);
   }
 
   .App-header.small::after {
     height: 1.3rem;
     width: 100%;
     content: " ";
-    background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
     position: absolute;
     bottom: -1.3rem;
     left: 0;
@@ -335,6 +335,6 @@
 
 @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .App-header-drawer {
-    background: #0e0f1f;
+    background: var(--color-slate-950);
   }
 }

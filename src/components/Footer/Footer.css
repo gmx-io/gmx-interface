@@ -8,7 +8,7 @@
   left: 50%;
   height: 20rem;
   bottom: 0;
-  border-top: 1px solid #282b4c57;
+  border-top: 1px solid var(--color-transparent-gray-950);
 }
 
 .Footer-logo {
@@ -37,7 +37,7 @@
   cursor: pointer;
 }
 .Footer-link:hover {
-  color: white;
+  color: var(--color-white);
 }
 
 .Footer-social-link-block .App-social-link {

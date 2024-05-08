@@ -17,14 +17,14 @@
     top: -5px;
   }
   .Banner-action {
-    background: rgba(180, 187, 255, 0.1);
+    background: var(--color-transparent-gray-from);
     padding: 0.65rem 1.5rem;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
 
     &:hover {
       background: rgba(80, 87, 126, 0.6);
-      color: white;
+      color: var(--color-white);
     }
   }
   .Banner-link {

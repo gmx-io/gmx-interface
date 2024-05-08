@@ -43,7 +43,7 @@
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: white;
+  color: var(--color-white);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -74,7 +74,7 @@
   height: 0;
   background-color: transparent;
 
-  color: var(--color-gray-300);
+  color: var(--color-gray);
   &:hover {
     color: var(--color-white);
   }

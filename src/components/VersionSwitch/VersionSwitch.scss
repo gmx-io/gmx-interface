@@ -1,6 +1,6 @@
 .VersionSwitch {
   display: inline-flex;
-  background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
+  background: linear-gradient(90deg, var(--color-transparent-gray-from2) 0%, var(--color-transparent-gray-to2) 100%);
   border-radius: 3px;
 }
 

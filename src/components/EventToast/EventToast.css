@@ -24,7 +24,7 @@
 .single-toast {
   background: rgba(43, 49, 85, 0.85);
   backdrop-filter: blur(4px);
-  color: white;
+  color: var(--color-white);
   border: none;
   position: relative;
   border-radius: 4px;
@@ -62,7 +62,7 @@
 .single-toast header .announcement-icon {
   width: 2rem;
   height: 2rem;
-  color: white;
+  color: var(--color-white);
   flex-shrink: 0;
 }
 .single-toast header p {

@@ -24,10 +24,7 @@ export default function UiPage() {
             <div className="bg-gray-50">
               <span className="text-slate-950">50</span>
             </div>
-            <div className="bg-gray-100">100</div>
-            <div className="bg-gray-200">200</div>
             <div className="bg-gray"></div>
-            <div className="bg-gray-300">300*</div>
             <div className="bg-gray-400">400</div>
           </div>
         </div>
@@ -36,7 +33,6 @@ export default function UiPage() {
           <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
             <div className="bg-cold-blue-500">500</div>
             <div className="bg-cold-blue-700">700*</div>
-            <div className="bg-cold-blue-950">950</div>
             <div className="bg-cold-blue-990">990</div>
           </div>
         </div>
@@ -44,16 +40,8 @@ export default function UiPage() {
           slate
           <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
             <div className="bg-slate-100">100</div>
-            <div className="bg-slate-400">400</div>
-            <div className="bg-slate-500">500</div>
-            <div className="bg-slate-550">550</div>
-            <div className="bg-slate-560">560</div>
-            <div className="bg-slate-565">565</div>
-            <div className="bg-slate-570">570</div>
             <div className="bg-slate-600">600</div>
             <div className="bg-slate-700">700</div>
-            <div className="bg-slate-750">750</div>
-            <div className="bg-slate-760">760</div>
             <div className="bg-slate-800">800</div>
             <div className="bg-slate-900">900</div>
             <div className="bg-slate-950">950</div>
@@ -75,6 +63,7 @@ export default function UiPage() {
         <div>
           green
           <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
+            <div className="bg-green-300">300</div>
             <div className="bg-green" />
             <div className="bg-green-800">800*</div>
           </div>

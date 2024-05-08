@@ -4,7 +4,7 @@
 
 .asset-menu-items {
   position: absolute;
-  border: 1px solid var(--color-slate-560);
+  border: 1px solid var(--color-slate-400);
   border-radius: 0.4rem;
   background: var(--dark-blue);
   outline: none;
@@ -21,7 +21,7 @@
 .dropdown-arrow {
   margin-left: 0.8rem;
   cursor: pointer;
-  color: white;
+  color: var(--color-white);
   opacity: 0.8;
 
   &:hover {
@@ -41,7 +41,7 @@
 
   &:hover {
     background: var(--dark-blue-hover);
-    color: white;
+    color: var(--color-white);
     border-radius: 0.4rem;
   }
 

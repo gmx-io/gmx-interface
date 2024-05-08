@@ -43,7 +43,7 @@
 }
 
 .referral-card .card-action input {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-transparent-gray-800);
   font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;
@@ -115,7 +115,7 @@
   align-items: center;
   background: transparent;
   padding: 0.75rem 1.25rem;
-  color: white;
+  color: var(--color-white);
   font-size: var(--font-sm);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -155,7 +155,7 @@
   margin: 3.1rem 0;
 }
 .create-referrar-code form input {
-  border: 1px solid var(--color-slate-760);
+  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
   padding: 1.1625rem;
   font-size: var(--font-base);
@@ -276,7 +276,7 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 1.5rem;
-  border: 1px solid var(--color-slate-760);
+  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
   background: var(--color-slate-800);
   font-size: var(--font-base);

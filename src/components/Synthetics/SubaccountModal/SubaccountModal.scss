@@ -16,7 +16,7 @@
 
 .SubaccountModal-subaccount {
   align-items: center;
-  background-color: rgba(38, 43, 71, 0.9);
+  background-color: var(--color-transparent-gray-to2);
   border-radius: 4px;
   cursor: default;
   justify-content: space-between;
@@ -34,7 +34,7 @@
 
 .SubaccountModal-button-icon {
   align-items: center;
-  background-color: var(--color-slate-550);
+  background-color: var(--color-slate-400);
   border-radius: 4px;
   display: inline-flex;
   height: 2.2rem;
@@ -59,10 +59,10 @@
 }
 
 .SubaccountModal-mini-button {
-  background-color: rgba(180, 187, 255, 0.1);
+  background-color: var(--color-transparent-gray-from);
   border-radius: 0.4rem;
   font-size: 1.4rem;
-  color: white;
+  color: var(--color-white);
   padding: 0.5rem 0.8rem;
   flex: 1;
   text-decoration: none;
@@ -122,7 +122,7 @@
   .SubaccountModal-field-info {
     display: none;
     min-width: auto;
-    color: white;
+    color: var(--color-white);
   }
 
   &:hover {
@@ -133,11 +133,11 @@
 
   .SubaccountModal-input {
     display: flex;
-    border: 1px solid var(--color-slate-750);
+    border: 1px solid var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    background: var(--color-slate-750);
+    background: var(--color-slate-700);
 
     label {
       cursor: pointer;

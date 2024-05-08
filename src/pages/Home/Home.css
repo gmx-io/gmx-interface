@@ -50,7 +50,7 @@
 }
 
 .Home-benefits-section {
-  background: var(--color-cold-blue-950);
+  background: var(--color-slate-800);
 }
 
 .Home-benefits {
@@ -168,7 +168,7 @@
   max-width: 58.9rem;
   width: 100%;
   box-shadow: 0px 0.7rem 1.2rem #0000004d;
-  border: 1px solid var(--color-slate-760);
+  border: 1px solid var(--color-slate-700);
   padding: 1.6rem;
   background-position: center;
   background-repeat: no-repeat;
@@ -201,7 +201,7 @@
 .Home-token-card-section {
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
-  background: var(--color-cold-blue-950);
+  background: var(--color-slate-800);
   margin-bottom: -4.65rem;
 }
 
@@ -296,7 +296,7 @@
 }
 
 .Home-latest-info-block {
-  /* background: var(--color-cold-blue-950) 0% 0% no-repeat padding-box; */
+  /* background: var(--color-slate-800) 0% 0% no-repeat padding-box; */
   box-shadow: 0px 0.5rem 2.2rem #0000001f;
   box-shadow: 0px 1.2rem 1.7rem #00000024;
   box-shadow: 0px 0.7rem 0.8rem #00000033;
@@ -327,7 +327,7 @@
 
 .Home-latest-info__value {
   font-family: "RelativeNumber";
-  color: white;
+  color: var(--color-white);
   font-size: 2.9rem;
   line-height: 3.9rem;
   letter-spacing: 0px;
@@ -394,8 +394,8 @@
 }
 
 .Home-faqs-content {
-  background: var(--color-cold-blue-950);
-  border: 1px solid var(--color-slate-760);
+  background: var(--color-slate-800);
+  border: 1px solid var(--color-slate-700);
   border-radius: 4px;
   cursor: pointer;
   padding: 3.7rem 7.75rem;
@@ -420,7 +420,7 @@
   align-items: center;
   margin-right: 1.765rem;
   font-size: 1.3795rem;
-  color: #3041da;
+  color: var(--color-blue-700);
 }
 
 .Home-faqs-content-header__text {

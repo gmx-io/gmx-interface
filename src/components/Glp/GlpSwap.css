@@ -171,7 +171,6 @@
 
 .token-table td {
   letter-spacing: 0.25px;
-  color: #ffffffde;
 }
 
 .token-table th:first-child,
@@ -236,7 +235,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  color: white;
+  color: var(--color-white);
 }
 
 .AppOrder-ball:hover {
