@@ -206,7 +206,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
     const openFees = positionFeeBeforeDiscount!.bps + acceptablePriceDeltaBps;
 
-    if (!result.minOpenFeesBps || openFees > result.minOpenFeesBps) {
+    if (result.minOpenFeesBps === undefined || openFees > result.minOpenFeesBps) {
       result.minOpenFeesBps = openFees;
       result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
     }

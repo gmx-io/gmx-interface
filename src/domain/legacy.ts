@@ -571,7 +571,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = BigInt(stakedGmxSupplyArbitrum) + stakedGmxSupplyAvax;
+    let total = BigInt(stakedGmxSupplyArbitrum) + BigInt(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 
@@ -606,7 +606,7 @@ export function useTotalGmxInLiquidity() {
   }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
 
   if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
-    let total = bigNumberify(gmxInLiquidityOnArbitrum)! + gmxInLiquidityOnAvax;
+    let total = bigNumberify(gmxInLiquidityOnArbitrum)! + bigNumberify(gmxInLiquidityOnAvax)!;
     totalGMX.current = total;
   }
   return {

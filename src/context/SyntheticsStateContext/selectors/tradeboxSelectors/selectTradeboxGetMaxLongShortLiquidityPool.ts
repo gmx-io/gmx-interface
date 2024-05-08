@@ -13,7 +13,7 @@ export type TokenOption = {
   indexTokenAddress: string;
 };
 
-export function bnClampMin(value: bigint, min: bigint) {
+function bnClampMin(value: bigint, min: bigint) {
   return value < min ? min : value;
 }
 
