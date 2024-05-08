@@ -42,7 +42,8 @@ export function useGasPrice(chainId: number) {
               );
               gasPrice = gasPrice + buffer;
             }
-            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
+
+            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] ?? 0n;
 
             resolve(gasPrice + premium);
           } catch (e) {
