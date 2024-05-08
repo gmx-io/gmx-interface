@@ -23,18 +23,18 @@
   }
 
   &:hover {
-    color: #ffffff;
-    background: #3a3f798f;
+    color: var(--color-white);
+    background: var(--color-cold-blue-700);
   }
 
   &.v1.active {
-    background: #f3b50c;
-    color: #000000;
+    background: var(--color-yellow-500);
+    color: var(--color-black);
   }
 
   &.v2.active {
     background: var(--primary-btn-bg);
-    color: #ffffff;
+    color: var(--color-white);
   }
 }
 

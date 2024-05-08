@@ -34,7 +34,7 @@
 
 .SubaccountModal-button-icon {
   align-items: center;
-  background-color: rgb(52, 55, 86);
+  background-color: var(--color-slate-550);
   border-radius: 4px;
   display: inline-flex;
   height: 2.2rem;
@@ -106,7 +106,7 @@
 }
 
 .SubaccountModal-section {
-  border-bottom: 1px solid #ffffff29;
+  border-bottom: 1px solid var(--color-transparent-gray-800);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
 }
@@ -133,11 +133,11 @@
 
   .SubaccountModal-input {
     display: flex;
-    border: 1px solid #212540;
+    border: 1px solid var(--color-slate-750);
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    background: #212540;
+    background: var(--color-slate-750);
 
     label {
       cursor: pointer;
@@ -148,14 +148,14 @@
 
     &:hover,
     &:focus {
-      border-color: #3a3f798f;
+      border-color: var(--color-cold-blue-700);
     }
     &:focus-within {
-      border-color: #3a3f79;
+      border-color: var(--color-cold-blue-500);
     }
 
     &.input-error {
-      border-color: #f3b50e;
+      border-color: var(--color-yellow-500);
     }
 
     input {

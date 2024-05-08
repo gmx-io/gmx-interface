@@ -64,7 +64,7 @@
   line-height: 1.8rem;
   font-weight: normal;
   letter-spacing: 0.1px;
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   padding: 1.5rem 1.6rem;
   text-decoration: none;
   display: block;
@@ -155,20 +155,20 @@
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
-  color: #eeeeee;
+  color: var(--color-gray-50);
 }
 
 .App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
-  color: #eeeeee;
+  color: var(--color-gray-50);
 }
 
 .App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
@@ -220,7 +220,7 @@
 }
 
 .App-header-user-address {
-  border: 1px solid #ffffff29;
+  border: 1px solid var(--color-transparent-gray-800);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;

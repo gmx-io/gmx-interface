@@ -1,7 +1,7 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 4rem;
-  background: #16182e;
+  background: var(--color-slate-800);
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
@@ -29,7 +29,7 @@
   margin-bottom: 2.4rem;
 }
 .Footer-link {
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   font-size: var(--font-base);
   line-height: 1.85rem;
   font-weight: normal;
@@ -62,7 +62,7 @@
   font-size: 1.3rem;
   line-height: 1.3rem;
   letter-spacing: -0.41px;
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   display: block;
 }
 .Footer-links {

@@ -7,12 +7,12 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: rgba(255, 255, 255, 0.7);
+  text-decoration-color: var(--color-gray-300);
   user-select: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 
   &:hover {
-    text-decoration-color: #ffffff;
-    color: #ffffff;
+    text-decoration-color: var(--color-white);
+    color: var(--color-white);
   }
 }

@@ -32,8 +32,8 @@
   width: 100%;
   transform-origin: top right;
   border-radius: 0.4rem;
-  background: #16182e;
-  border: 1px solid #32344c;
+  background: var(--color-slate-800);
+  border: 1px solid var(--color-slate-560);
   list-style: none;
   cursor: pointer;
   outline: none;
@@ -43,7 +43,7 @@
     display: flex !important;
     align-items: center;
     font-size: var(--font-base);
-    color: #a0a3c4;
+    color: var(--color-slate-100);
     padding-bottom: 1.5rem;
     font-size: var(--font-sm);
     padding: 0.85rem 0.8rem;
@@ -53,7 +53,7 @@
       background: #808aff14 !important;
       border-radius: 0.4rem;
       opacity: 1;
-      color: #eeeeee;
+      color: var(--color-gray-50);
     }
 
     > p {

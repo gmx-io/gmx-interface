@@ -6,7 +6,7 @@
   .rc-slider-tooltip-inner {
     box-shadow: none;
     padding: 0.465rem 0.8rem;
-    background: #303652;
+    background: var(--color-slate-565);
   }
 
   .rc-slider-tooltip {
@@ -14,7 +14,7 @@
   }
 
   .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-    border-top-color: #303652;
+    border-top-color: var(--color-slate-565);
   }
 
   .rc-slider-rail {
@@ -32,10 +32,10 @@
     background: rgba(40, 45, 74, 1);
   }
   .rc-slider-dot-active {
-    background: #3d51ff;
+    background: var(--color-blue-500);
   }
   .rc-slider-handle {
-    background: #303652;
+    background: var(--color-slate-565);
     border: solid 2px rgba(45, 66, 252, 1);
   }
 

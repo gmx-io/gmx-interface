@@ -5,8 +5,8 @@
 }
 
 .Exchange-trigger-order-info {
-  color: rgba(255, 255, 255, 0.7);
-  border: 1px solid #23263b;
+  color: var(--color-gray-300);
+  border: 1px solid var(--color-slate-700);
 }
 
 .Exchange-list-tab-container {
@@ -333,7 +333,7 @@ body.dragging .ExchangeChart iframe {
   z-index: 2;
 }
 .ExchangeChart-bottom-stats-label {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
   font-weight: bold;
 }
 .ExchangeChart-bottom-stats-value {
@@ -510,12 +510,12 @@ button.Exchange-list-action {
   border-radius: 3px;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
   margin: 0 0.3rem;
 }
 
 button.Exchange-list-action:hover {
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 table.Exchange-list {
@@ -541,7 +541,7 @@ table.Exchange-list.Orders td {
 }
 
 table.Exchange-list tr {
-  border-bottom: 1px solid #23263b;
+  border-bottom: 1px solid var(--color-slate-700);
 }
 
 table.Exchange-list tbody tr:last-child {
@@ -577,7 +577,7 @@ table.Exchange-list .Exchange-list-item td:first-child {
 }
 
 table.Position-list .Exchange-list-item-active {
-  border-left: 2px solid #3a3f79;
+  border-left: 2px solid var(--color-cold-blue-500);
 }
 
 .Position-card-title {
@@ -586,7 +586,7 @@ table.Position-list .Exchange-list-item-active {
 
 .Position-active-card::before {
   content: "";
-  border-left: 2px solid #3a3f79;
+  border-left: 2px solid var(--color-cold-blue-500);
   position: absolute;
   left: -10px;
   bottom: -1px;
@@ -615,7 +615,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-row.top-line {
-  border-top: 1px solid #23263b;
+  border-top: 1px solid var(--color-slate-700);
   margin-top: 1.5rem;
   padding-top: 1.5rem;
 }
@@ -722,7 +722,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-section:focus-within {
-  outline-color: #3a3f79;
+  outline-color: var(--color-cold-blue-500);
 }
 
 .Exchange-swap-option-tabs.Tab.Tab__block .Tab-option {
@@ -764,7 +764,7 @@ table.Position-list .Exchange-list-item-active {
   right: 1.25rem;
   top: 0;
   padding: 0.465rem 0.8rem;
-  color: #ffffff;
+  color: var(--color-white);
   outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
@@ -775,7 +775,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-max:hover {
-  color: #ffffff;
+  color: var(--color-white);
   background: var(--primary-btn-hover);
 }
 

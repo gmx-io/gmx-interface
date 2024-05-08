@@ -14,7 +14,7 @@
     align-items: center;
     flex: 1;
 
-    background-color: rgb(52, 55, 86);
+    background-color: var(--color-slate-550);
     .clickable &:not([disabled]):hover {
       background: rgba(80, 87, 126, 0.6);
     }
@@ -45,7 +45,7 @@
     padding: 0 0.7rem;
     cursor: pointer;
 
-    background-color: rgb(52, 55, 86);
+    background-color: var(--color-slate-550);
     &:not([disabled]):hover {
       background: rgba(80, 87, 126, 0.6);
     }

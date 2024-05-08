@@ -35,7 +35,7 @@
     }
 
     &.level-warning {
-      color: #f3b50c;
+      color: var(--color-yellow-500);
     }
   }
 }

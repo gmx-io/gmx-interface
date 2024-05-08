@@ -109,10 +109,10 @@
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 }
 
 .ClaimEsGmx-max-button:hover {
-  color: #ffffff;
+  color: var(--color-white);
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }

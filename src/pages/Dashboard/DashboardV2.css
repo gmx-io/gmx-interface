@@ -19,7 +19,7 @@
 
 .token-table-wrapper {
   border-radius: 0.4rem;
-  background: #17182c;
+  background: var(--color-cold-blue-950);
   margin-bottom: 1.5rem;
   text-align: left;
 }

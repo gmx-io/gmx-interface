@@ -40,12 +40,12 @@ input {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #17182e;
+  background: var(--color-slate-800);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #a0a3c4;
+  background: var(--color-slate-100);
   border-radius: 1.5rem;
 }
 
@@ -54,18 +54,18 @@ input {
   background: #b3b4c2;
 }
 :root {
-  --main-bg-color: #101124;
-  --dark-blue: #17182c;
-  --dark-blue-bg: #16182e;
-  --dark-blue-accent: #a0a3c4;
-  --primary-btn-bg: #2d42fc;
+  --main-bg-color: var(--color-slate-900);
+  --dark-blue: var(--color-cold-blue-950);
+  --dark-blue-bg: var(--color-slate-800);
+  --dark-blue-accent: var(--color-slate-100);
+  --primary-btn-bg: var(--color-blue-600);
   --primary-btn-hover: #4d5ffa;
   --primary-btn-active: #5264fc;
   --dark-blue-hover: #808aff14;
-  --dark-blue-border: #ffffff29;
+  --dark-blue-border: var(--color-transparent-gray-800);
   --dark-blue-active: #818cef33;
-  --text-gray: rgba(255, 255, 255, 0.7);
-  --warning-yellow: #f3b50c;
+  --text-gray: var(--color-gray-300);
+  --warning-yellow: var(--color-yellow-500);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
@@ -171,7 +171,7 @@ td {
 
 .label,
 .label a {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 }
 
 ul {
@@ -192,13 +192,13 @@ a.plain {
 }
 
 .default-btn {
-  background: #2d42fc;
+  background: var(--color-blue-600);
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */

@@ -3,11 +3,11 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 2rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 }
 
 .jobs-page-body a {
-  color: #b7b7bd;
+  color: var(--color-gray-100);
 }
 
 .body-para .subheading {

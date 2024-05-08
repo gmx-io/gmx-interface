@@ -1,4 +1,4 @@
-$left-arrow-bg: #2e3351;
+$left-arrow-bg: var(--color-slate-570);
 
 .Tooltip {
   position: relative;
@@ -87,7 +87,7 @@ $left-arrow-bg: #2e3351;
       display: block;
       bottom: -4px;
       right: 8px;
-      background: #2e3351;
+      background: var(--color-slate-570);
     }
   }
 
@@ -138,7 +138,7 @@ $left-arrow-bg: #2e3351;
       display: block;
       right: -4px;
       top: 50%;
-      background: #2e3351;
+      background: var(--color-slate-570);
     }
   }
 

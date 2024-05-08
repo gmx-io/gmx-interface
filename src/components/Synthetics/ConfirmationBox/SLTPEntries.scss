@@ -12,11 +12,11 @@
     }
 
     .SLTP-price {
-      border: 1px solid #212540;
+      border: 1px solid var(--color-slate-750);
       border-radius: var(--border-radius-sm);
       padding-left: 0.5rem;
       line-height: 1;
-      background: #212540;
+      background: var(--color-slate-750);
       position: relative;
 
       .price-input {
@@ -30,10 +30,10 @@
 
       &:hover,
       &:focus {
-        border-color: #3a3f798f;
+        border-color: var(--color-cold-blue-700);
       }
       &:focus-within {
-        border-color: #3a3f79;
+        border-color: var(--color-cold-blue-500);
       }
 
       &.input-error {

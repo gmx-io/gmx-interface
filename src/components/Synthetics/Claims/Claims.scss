@@ -7,7 +7,7 @@
 }
 
 .Claims-card {
-  background: #16182e;
+  background: var(--color-slate-800);
   font-size: var(--font-base);
   margin-bottom: 0.8rem;
   padding-bottom: 1rem;
@@ -15,7 +15,7 @@
 }
 
 .Claims-title {
-  border-bottom: 1px solid #23263b;
+  border-bottom: 1px solid var(--color-slate-700);
   padding: 1rem 1.5rem;
   font-size: 1.5rem;
 }
@@ -74,9 +74,9 @@
   height: 0;
   background-color: transparent;
 
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
   &:hover {
-    color: #ffffff;
+    color: var(--color-white);
   }
 }
 
@@ -98,12 +98,12 @@
 
 .Claims-hr {
   margin: 0.4rem 1.4rem 0;
-  border-bottom: 1px solid #23263b;
+  border-bottom: 1px solid var(--color-slate-700);
 }
 
 .Claims-hr-horizontal {
   margin: 0.8rem 0 0;
-  border-left: 1px solid #23263b;
+  border-left: 1px solid var(--color-slate-700);
 }
 
 .Claims-loading {

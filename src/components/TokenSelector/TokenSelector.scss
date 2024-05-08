@@ -44,7 +44,7 @@
 }
 
 .TokenSelector-box:hover {
-  color: #7885ff;
+  color: var(--color-blue-300);
 }
 
 .Token-info {
@@ -81,7 +81,7 @@
 
 .TokenSelector-token-row {
   cursor: pointer;
-  border: 1px solid #ffffff29;
+  border: 1px solid var(--color-transparent-gray-800);
   position: relative;
   background: transparent;
   border-radius: var(--border-radius-sm);
@@ -121,7 +121,7 @@
 
 .TokenSelector-token-row .Token-text {
   font-size: var(--font-md);
-  color: #ffffff;
+  color: var(--color-white);
   font-weight: 500;
   letter-spacing: 0px;
 }

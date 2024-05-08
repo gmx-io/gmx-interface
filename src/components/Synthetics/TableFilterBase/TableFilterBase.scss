@@ -6,7 +6,7 @@
 
     &.active,
     &:hover {
-      color: #7885ff;
+      color: var(--color-blue-300);
     }
   }
 
@@ -16,6 +16,6 @@
 
     border-radius: var(--border-radius-sm);
     background-color: var(--dark-blue-bg);
-    border: 1px solid #32344c;
+    border: 1px solid var(--color-slate-560);
   }
 }

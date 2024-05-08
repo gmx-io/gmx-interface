@@ -3,7 +3,7 @@
 
   .Exchange-info-label {
     opacity: 1;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-gray-300);
   }
 }
 
@@ -19,8 +19,8 @@
 
 .TradeFeesRow-warning-tooltip {
   .Tooltip-handle {
-    color: #f3b50c;
-    text-decoration-color: #f3b50c;
+    color: var(--color-yellow-500);
+    text-decoration-color: var(--color-yellow-500);
   }
 
   .Tooltip-popup {

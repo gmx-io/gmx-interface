@@ -34,12 +34,12 @@
   max-width: 100%;
   max-height: 90vh;
   overflow: auto;
-  background: #16182e;
+  background: var(--color-slate-800);
   border-radius: 4px;
 }
 
 .divider {
-  border-bottom: 1px solid #ffffff29;
+  border-bottom: 1px solid var(--color-transparent-gray-800);
 }
 
 .Modal.non-scrollable .Modal-content {

@@ -18,14 +18,14 @@
       display: flex;
       align-items: center;
       border-radius: 0.4rem;
-      color: #ffffff;
+      color: var(--color-white);
       min-width: 4.65rem;
       font-size: 2.1rem;
       line-height: 2.5rem;
       justify-content: flex-end;
 
       &:hover {
-        color: #7885ff;
+        color: var(--color-blue-300);
       }
 
       &-symbol {

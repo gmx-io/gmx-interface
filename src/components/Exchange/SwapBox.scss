@@ -34,7 +34,7 @@
   }
 
   .SwapBox-leverage-toggle[data-is-on="true"] {
-    background-color: #3d51ff;
+    background-color: var(--color-blue-500);
   }
   .SwapBox-leverage-toggle[data-is-on="true"] .handle {
     left: calc(15px - 2px);

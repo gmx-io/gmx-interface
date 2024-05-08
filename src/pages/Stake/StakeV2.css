@@ -53,7 +53,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--color-gray-300);
 }
 
 .StakeV2-cards {
