@@ -201,7 +201,7 @@ function StakeModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -892,7 +892,7 @@ function CompoundModal(props) {
           </AlertInfo>
         )}
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1042,7 +1042,7 @@ function ClaimModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1939,7 +1939,7 @@ export default function StakeV2() {
                         renderContent={() => (
                           <>
                             {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
-                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow">
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                                     Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
