@@ -438,10 +438,10 @@ export default function TradeHistory(props) {
       ) {
         const order = deserialize(params.order);
         const indexToken = getTokenInfo(infoTokens, order.indexToken);
-        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         const increase = tradeData.action.includes("Increase");
         const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(
           order.triggerPrice,
