@@ -320,7 +320,7 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
-    if (spreadInfo && spreadInfo.isHigh) {
+    if (spreadInfo && spreadInfo?.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before confirming</Trans>
@@ -354,7 +354,7 @@ export default function ConfirmationBox(props) {
   }, [toTokenInfo, collateralTokenAddress, infoTokens]);
 
   const renderCollateralSpreadWarning = useCallback(() => {
-    if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
+    if (collateralSpreadInfo && collateralSpreadInfo?.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
@@ -683,8 +683,8 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
           {showCollateralSpread && (
-            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
-              {formatAmount(collateralSpreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
+            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh} isTop>
+              {formatAmount(collateralSpreadInfo?.value * 100n, USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {isMarketOrder && (
@@ -788,8 +788,8 @@ export default function ConfirmationBox(props) {
     leverage,
     savedSlippageAmount,
     showCollateralSpread,
-    collateralSpreadInfo.isHigh,
-    collateralSpreadInfo.value,
+    collateralSpreadInfo?.isHigh,
+    collateralSpreadInfo?.value,
     existingPositionPriceDecimal,
     nextAveragePrice,
     entryMarkPrice,

@@ -585,7 +585,7 @@ export default function SwapBox(props) {
           if (feeBasisPoints) {
             fromUsdMinAfterFee = bigMath.mulDiv(
               fromUsdMin,
-              BASIS_POINTS_DIVISOR_BIGINT - feeBasisPoints,
+              BASIS_POINTS_DIVISOR_BIGINT - BigInt(feeBasisPoints),
               BASIS_POINTS_DIVISOR_BIGINT
             );
           }
@@ -631,7 +631,7 @@ export default function SwapBox(props) {
         );
 
         if (feeBasisPoints) {
-          const swapFees = bigMath.mulDiv(baseFromAmountUsd, feeBasisPoints, BASIS_POINTS_DIVISOR_BIGINT);
+          const swapFees = bigMath.mulDiv(baseFromAmountUsd, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
           fees = fees + swapFees;
         }
 
