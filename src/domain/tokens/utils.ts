@@ -13,7 +13,7 @@ import {
   adjustForDecimals,
   getFeeBasisPoints,
 } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
@@ -58,7 +58,7 @@ export function getUsd(
   orderOption?: string,
   triggerPriceUsd?: bigint
 ) {
-  if (!amount) {
+  if (amount === undefined) {
     return;
   }
   if (tokenAddress === USDG_ADDRESS) {
