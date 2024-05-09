@@ -57,9 +57,8 @@ module.exports = {
         300: "#7885ff",
         400: "#4d5ffa",
         500: "#3d51ff",
-        550: "#2e3dcd",
         600: "#2d42fc",
-        700: "#3040d0",
+        700: "#2e3dcd",
       },
       "cold-blue": {
         500: "#3a3f79",
@@ -80,7 +79,7 @@ module.exports = {
         400: "#a9a9b0",
         DEFAULT: "#b8b8bd",
       },
-      "transparent-gray": {
+      "transparent-white": {
         100: "rgba(255, 255, 255, 0.9)",
         200: "rgba(255, 255, 255, 0.8)",
         300: "rgba(255, 255, 255, 0.7)",
@@ -91,7 +90,8 @@ module.exports = {
         800: "rgba(255, 255, 255, 0.2)",
         900: "rgba(255, 255, 255, 0.1)",
         950: "rgba(255, 255, 255, 0.05)",
-
+      },
+      "transparent-gray": {
         from: "rgba(180, 187, 255, 0.1)",
         from2: "rgba(30, 34, 61, 0.9)",
         to2: "rgba(38, 43, 71, 0.9)",
@@ -100,7 +100,11 @@ module.exports = {
         500: "#f3b50c",
         DEFAULT: "#f3b50c",
       },
-      red: { DEFAULT: "#fa3c58", 800: "rgba(231, 78, 93, 0.15)" },
+      red: {
+        400: "#ff687e",
+        800: "rgba(231, 78, 93, 0.15)",
+        DEFAULT: "#fa3c58",
+      },
       pink: {
         500: "#e74e5d",
       },
