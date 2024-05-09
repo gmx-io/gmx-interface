@@ -178,7 +178,12 @@ export function GmList({
                       <td>
                         <div className="App-card-title-info">
                           <div className="App-card-title-info-icon">
-                            <TokenIcon symbol={tokenIconName} displaySize={40} importSize={40} />
+                            <TokenIcon
+                              symbol={tokenIconName}
+                              displaySize={40}
+                              importSize={40}
+                              className="min-h-40 min-w-40"
+                            />
                           </div>
 
                           <div className="App-card-title-info-text">
