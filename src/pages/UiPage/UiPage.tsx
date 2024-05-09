@@ -1,5 +1,5 @@
 import Tooltip from "components/Tooltip/Tooltip";
-import { entries, mapValues } from "lodash";
+import { entries } from "lodash";
 
 const colors = {
   blue: {
