@@ -120,7 +120,8 @@ export function AffiliateCodeForm({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
-    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+    const trimmedCode = referralCode.trim();
+    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
     if (["all", "current", "other"].includes(takenStatus)) {
       setIsProcessing(false);
     }
@@ -128,13 +129,13 @@ export function AffiliateCodeForm({
     if (takenStatus === "none" || takenStatus === "other") {
       const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       try {
-        const tx = await handleCreateReferralCode(referralCode);
+        const tx = await handleCreateReferralCode(trimmedCode);
         if (callAfterSuccess) {
           callAfterSuccess();
         }
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
+          recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork, account));
 
           helperToast.success(t`Referral code created!`);
           setRecentlyAddedCodes(recentlyAddedCodes);
