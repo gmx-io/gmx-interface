@@ -1,5 +1,5 @@
 .ClaimEsGmx input {
-  border: 1px solid var(--color-transparent-gray-800);
+  border: 1px solid var(--color-transparent-white-800);
   font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;
@@ -102,7 +102,7 @@
 .ClaimEsGmx-max-button {
   position: absolute;
   padding: 0.465rem 0.8rem;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-550) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
   left: 29.75rem;
   top: 0.93rem;
   font-size: var(--font-sm);

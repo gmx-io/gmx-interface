@@ -16,7 +16,7 @@
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-transparent-gray-950);
+  border-bottom: 1px solid var(--color-transparent-white-950);
 }
 
 .App-header.large::after {
@@ -220,7 +220,7 @@
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-transparent-gray-800);
+  border: 1px solid var(--color-transparent-white-800);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -276,7 +276,7 @@
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-transparent-gray-950);
+    border-bottom: 1px solid var(--color-transparent-white-950);
   }
 
   .App-header.small::after {

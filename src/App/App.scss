@@ -30,7 +30,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-transparent-gray-950);
+  border-bottom: 1px solid var(--color-transparent-white-950);
   z-index: 1;
 }
 
@@ -397,7 +397,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-transparent-gray-800);
+  border: 1px solid var(--color-transparent-white-800);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -832,7 +832,7 @@ a.App-cta,
 button.App-cta {
   color: var(--color-white);
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-550) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
   &:hover:enabled {
     background: var(--primary-btn-hover);
   }
@@ -1318,7 +1318,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-transparent-gray-950);
+    border-bottom: 1px solid var(--color-transparent-white-950);
   }
 
   .App-header.small::after {

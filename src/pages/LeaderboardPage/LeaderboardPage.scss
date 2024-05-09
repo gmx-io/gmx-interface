@@ -482,14 +482,14 @@ $tabs-threshold: 990px;
   background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0.4rem 0.4rem 0 0;
-  border-bottom: 1px solid var(--color-transparent-gray-900);
+  border-bottom: 1px solid var(--color-transparent-white-900);
 }
 
 .TableBox__footer {
   background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0 0 0.4rem 0.4rem;
-  border-top: 1px solid var(--color-transparent-gray-900);
+  border-top: 1px solid var(--color-transparent-white-900);
   height: 5.8rem;
 
   & .pagination {

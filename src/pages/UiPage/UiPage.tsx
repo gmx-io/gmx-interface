@@ -1,3 +1,131 @@
+import { entries } from "lodash";
+
+const colors = {
+  blue: {
+    200: "#b4bcff",
+    300: "#7885ff",
+    400: "#4d5ffa",
+    500: "#3d51ff",
+    600: "#2d42fc",
+    700: "#2e3dcd",
+  },
+  "cold-blue": {
+    500: "#3a3f79",
+    700: "#3a3f798f",
+    990: "#0e0f1f",
+  },
+
+  slate: {
+    100: "#a0a3c4",
+    600: "#3e4361",
+    700: "#23263b",
+    800: "#16182e",
+    900: "#101124",
+    950: "#08091b",
+  },
+  gray: {
+    50: "#eeeeee",
+    400: "#a9a9b0",
+    DEFAULT: "#b8b8bd",
+  },
+  "transparent-white": {
+    100: "rgba(255, 255, 255, 0.9)",
+    200: "rgba(255, 255, 255, 0.8)",
+    300: "rgba(255, 255, 255, 0.7)",
+    400: "rgba(255, 255, 255, 0.6)",
+    500: "rgba(255, 255, 255, 0.5)",
+    600: "rgba(255, 255, 255, 0.4)",
+    700: "rgba(255, 255, 255, 0.3)",
+    800: "rgba(255, 255, 255, 0.2)",
+    900: "rgba(255, 255, 255, 0.1)",
+    950: "rgba(255, 255, 255, 0.05)",
+  },
+  "transparent-gray": {
+    from: "rgba(180, 187, 255, 0.1)",
+    from2: "rgba(30, 34, 61, 0.9)",
+    to2: "rgba(38, 43, 71, 0.9)",
+  },
+  yellow: {
+    500: "#f3b50c",
+    DEFAULT: "#f3b50c",
+  },
+  red: {
+    400: "#ff687e",
+    800: "rgba(231, 78, 93, 0.15)",
+    DEFAULT: "#fa3c58",
+  },
+  pink: {
+    500: "#e74e5d",
+  },
+  emerald: {
+    400: "#5ec989",
+  },
+  green: {
+    300: "#56dba8",
+    DEFAULT: "#0ecc83",
+    800: "rgba(94, 201, 137, 0.15)",
+  },
+  white: "#ffffff",
+  black: "#000000",
+};
+
+console.log(
+  entries(colors).flatMap(([color, shades]) => {
+    if (typeof shades === "string") return `bg-${color}`;
+
+    return entries(shades).map(([shade, value]) => {
+      if (shade === "DEFAULT") return `bg-${color}`;
+      return `bg-${color}-${shade}`;
+    });
+  })
+);
+
+const hack = [
+  "bg-blue-200",
+  "bg-blue-300",
+  "bg-blue-400",
+  "bg-blue-500",
+  "bg-blue-600",
+  "bg-blue-700",
+  "bg-cold-blue-500",
+  "bg-cold-blue-700",
+  "bg-cold-blue-990",
+  "bg-slate-100",
+  "bg-slate-600",
+  "bg-slate-700",
+  "bg-slate-800",
+  "bg-slate-900",
+  "bg-slate-950",
+  "bg-gray-50",
+  "bg-gray-400",
+  "bg-gray",
+  "bg-transparent-white-100",
+  "bg-transparent-white-200",
+  "bg-transparent-white-300",
+  "bg-transparent-white-400",
+  "bg-transparent-white-500",
+  "bg-transparent-white-600",
+  "bg-transparent-white-700",
+  "bg-transparent-white-800",
+  "bg-transparent-white-900",
+  "bg-transparent-white-950",
+  "bg-transparent-gray-from",
+  "bg-transparent-gray-from2",
+  "bg-transparent-gray-to2",
+  "bg-yellow-500",
+  "bg-yellow",
+  "bg-red-400",
+  "bg-red-800",
+  "bg-red",
+  "bg-pink-500",
+  "bg-emerald-400",
+  "bg-green-300",
+  "bg-green-800",
+  "bg-green",
+  "bg-white",
+  "bg-black",
+];
+
 export default function UiPage() {
   return (
     <main className="mx-auto max-w-prose p-20">
@@ -6,68 +134,34 @@ export default function UiPage() {
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
       <div className="flex flex-col gap-8">
-        <div>
-          blue
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-blue-200">200</div>
-            <div className="bg-blue-300">300</div>
-            <div className="bg-blue-400">400</div>
-            <div className="bg-blue-500">500</div>
-            <div className="bg-blue-600">600</div>
-            <div className="bg-blue-700">700</div>
-          </div>
-        </div>
+        {entries(colors).map(([color, shades]) => {
+          if (typeof shades === "string") {
+            return (
+              <div key={color}>
+                <div>{color}</div>
+                <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
+                  <div className={`bg-${color}`}></div>
+                </div>
+              </div>
+            );
+          }
 
-        <div>
-          gray
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-gray-50">
-              <span className="text-slate-950">50</span>
+          return (
+            <div key={color}>
+              {color}
+              <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
+                {entries(shades).map(([shade, value]) => {
+                  if (shade === "DEFAULT") return <div key={shade + value} className={`bg-${color}`}></div>;
+                  return (
+                    <div key={shade + value} className={`bg-${color}-${shade}`}>
+                      {shade}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="bg-gray"></div>
-            <div className="bg-gray-400">400</div>
-          </div>
-        </div>
-        <div>
-          cold-blue
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-cold-blue-500">500</div>
-            <div className="bg-cold-blue-700">700*</div>
-            <div className="bg-cold-blue-990">990</div>
-          </div>
-        </div>
-        <div>
-          slate
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-slate-100">100</div>
-            <div className="bg-slate-600">600</div>
-            <div className="bg-slate-700">700</div>
-            <div className="bg-slate-800">800</div>
-            <div className="bg-slate-900">900</div>
-            <div className="bg-slate-950">950</div>
-          </div>
-        </div>
-        <div>
-          yellow
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-yellow" />
-          </div>
-        </div>
-        <div>
-          red
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className=" bg-red" />
-            <div className=" bg-red-800">800*</div>
-          </div>
-        </div>
-        <div>
-          green
-          <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-            <div className="bg-green-300">300</div>
-            <div className="bg-green" />
-            <div className="bg-green-800">800*</div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Text colors</h2>

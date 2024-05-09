@@ -32,8 +32,9 @@
   width: 100%;
   transform-origin: top right;
   border-radius: 0.4rem;
+  overflow: hidden;
   background: var(--color-slate-800);
-  border: 1px solid var(--color-slate-400);
+  border: 1px solid var(--color-transparent-white-800);
   list-style: none;
   cursor: pointer;
   outline: none;

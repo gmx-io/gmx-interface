@@ -37,7 +37,7 @@
   border-radius: 2px;
   width: 1.5rem;
   height: 0.8rem;
-  border: 1px solid var(--color-transparent-gray-500);
+  border: 1px solid var(--color-transparent-white-500);
   display: inline-block;
   position: relative;
 }

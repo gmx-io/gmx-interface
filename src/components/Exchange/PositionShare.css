@@ -72,7 +72,7 @@
 }
 .position-share .referral-code {
   display: flex;
-  background: var(--color-transparent-gray-950);
+  background: var(--color-transparent-white-950);
   max-width: 18rem;
   border-radius: 5px;
   align-items: center;

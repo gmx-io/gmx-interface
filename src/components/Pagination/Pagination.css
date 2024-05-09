@@ -43,7 +43,7 @@
 }
 
 .pagination-btn:hover {
-  border-color: var(--color-transparent-gray-800);
+  border-color: var(--color-transparent-white-800);
 }
 
 .pagination-btn.active {
