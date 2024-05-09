@@ -162,7 +162,7 @@ export default function UiPage() {
             return (
               <div key={color}>
                 <div>{color}</div>
-                <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
+                <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
                   <div className={shades} />
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function UiPage() {
           return (
             <div key={color}>
               {color}
-              <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
+              <div className="flex w-fit overflow-hidden rounded-4 border *:size-64">
                 {entries(shades).map(([shade, value]) => {
                   if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
                   return (

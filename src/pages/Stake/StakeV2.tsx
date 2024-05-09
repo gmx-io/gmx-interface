@@ -120,7 +120,7 @@ function StakeModal(props) {
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
       fetcher: contractFetcher(signer, Token),
-    },
+    }
   );
 
   let amount = parseValue(value, 18);
@@ -538,7 +538,7 @@ function VesterDepositModal(props) {
                     maxVestableAmount,
                     18,
                     2,
-                    true,
+                    true
                   )}`}
                   position="top-end"
                   renderContent={() => {
@@ -576,7 +576,7 @@ function VesterDepositModal(props) {
                         : additionalReserveAmount,
                       18,
                       2,
-                      true,
+                      true
                     )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
                     position="top-end"
                     renderContent={() => {
@@ -738,28 +738,28 @@ function CompoundModal(props) {
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-gmx"],
-    true,
+    true
   );
   const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-stake-gmx"],
-    true,
+    true
   );
   const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-es-gmx"],
-    true,
+    true
   );
   const [shouldStakeEsGmx, setShouldStakeEsGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
-    true,
+    true
   );
   const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
-    true,
+    true
   );
   const [shouldConvertWeth, setShouldConvertWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-convert-weth"],
-    true,
+    true
   );
 
   const govTokenAmount = useGovTokenAmount(chainId);
@@ -776,7 +776,7 @@ function CompoundModal(props) {
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
       fetcher: contractFetcher(signer, Token),
-    },
+    }
   );
 
   const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
@@ -831,7 +831,7 @@ function CompoundModal(props) {
         failMsg: t`Compound failed.`,
         successMsg: t`Compound completed!`,
         setPendingTxns,
-      },
+      }
     )
       .then(() => {
         setIsVisible(false);
@@ -876,7 +876,7 @@ function CompoundModal(props) {
     {
       shouldStakeGmx,
       shouldStakeEsGmx,
-    },
+    }
   );
 
   return (
@@ -968,19 +968,19 @@ function ClaimModal(props) {
   const [isClaiming, setIsClaiming] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-claim-should-claim-gmx"],
-    true,
+    true
   );
   const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-claim-should-claim-es-gmx"],
-    true,
+    true
   );
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-claim-should-claim-weth"],
-    true,
+    true
   );
   const [shouldConvertWeth, setShouldConvertWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-claim-should-convert-weth"],
-    true,
+    true
   );
 
   const govTokenAmount = useGovTokenAmount(chainId);
@@ -1021,7 +1021,7 @@ function ClaimModal(props) {
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
         setPendingTxns,
-      },
+      }
     )
       .then(() => {
         setIsVisible(false);
@@ -1276,7 +1276,7 @@ export default function StakeV2() {
     ],
     {
       fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
-    },
+    }
   );
 
   const { data: depositBalances } = useSWR(
@@ -1289,21 +1289,21 @@ export default function StakeV2() {
     ],
     {
       fetcher: contractFetcher(signer, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
-    },
+    }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
-    },
+    }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
       fetcher: contractFetcher(signer, Token),
-    },
+    }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
@@ -1314,14 +1314,14 @@ export default function StakeV2() {
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
       fetcher: contractFetcher(signer, Vault),
-    },
+    }
   );
 
   const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
       fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
-    },
+    }
   );
 
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
@@ -1331,7 +1331,7 @@ export default function StakeV2() {
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active,
+    active
   );
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
@@ -1377,7 +1377,7 @@ export default function StakeV2() {
     stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
-    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR),
+    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
   );
 
   let hasMultiplierPoints = false;
@@ -1580,7 +1580,7 @@ export default function StakeV2() {
     }
 
     let remainingVestableAmount = vestingData?.affiliateVester?.maxVestableAmount?.sub(
-      vestingData?.affiliateVester?.vestedAmount,
+      vestingData?.affiliateVester?.vestedAmount
     );
     if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance;
@@ -1631,7 +1631,7 @@ export default function StakeV2() {
     {
       shouldStakeGmx: true,
       shouldStakeEsGmx: true,
-    },
+    }
   );
 
   const renderBoostPercentageTooltip = useCallback(() => {
@@ -1723,7 +1723,7 @@ export default function StakeV2() {
       "Staked on Arbitrum": arbitrumGmxStaked,
       "Staked on Avalanche": avaxGmxStaked,
     }),
-    [arbitrumGmxStaked, avaxGmxStaked],
+    [arbitrumGmxStaked, avaxGmxStaked]
   );
 
   return (
@@ -2029,7 +2029,7 @@ export default function StakeV2() {
                               processedData,
                               "feeGmxTrackerRewards",
                               18,
-                              4,
+                              4
                             )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
                             showDollar={false}
                           />
@@ -2039,13 +2039,13 @@ export default function StakeV2() {
                               processedData,
                               "stakedGmxTrackerRewards",
                               18,
-                              4,
+                              4
                             )} ($${formatKeyAmount(
                               processedData,
                               "stakedGmxTrackerRewardsUsd",
                               USD_DECIMALS,
                               2,
-                              true,
+                              true
                             )})`}
                             showDollar={false}
                           />
@@ -2305,13 +2305,13 @@ export default function StakeV2() {
                                 processedData,
                                 "feeGlpTrackerRewards",
                                 18,
-                                4,
+                                4
                               )} ($${formatKeyAmount(
                                 processedData,
                                 "feeGlpTrackerRewardsUsd",
                                 USD_DECIMALS,
                                 2,
-                                true,
+                                true
                               )})`}
                               showDollar={false}
                             />
@@ -2321,13 +2321,13 @@ export default function StakeV2() {
                                 processedData,
                                 "stakedGlpTrackerRewards",
                                 18,
-                                4,
+                                4
                               )} ($${formatKeyAmount(
                                 processedData,
                                 "stakedGlpTrackerRewardsUsd",
                                 USD_DECIMALS,
                                 2,
-                                true,
+                                true
                               )})`}
                               showDollar={false}
                             />
@@ -2589,7 +2589,7 @@ export default function StakeV2() {
                         "gmxVesterVestedAmount",
                         18,
                         4,
-                        true,
+                        true
                       )}`}
                       position="bottom-end"
                       renderContent={() => {
@@ -2679,7 +2679,7 @@ export default function StakeV2() {
                         "glpVesterVestedAmount",
                         18,
                         4,
-                        true,
+                        true
                       )}`}
                       position="bottom-end"
                       renderContent={() => {
@@ -2755,7 +2755,7 @@ export default function StakeV2() {
                           "affiliateVesterClaimSum",
                           18,
                           4,
-                          true,
+                          true
                         )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
                         position="bottom-end"
                         renderContent={() => {
