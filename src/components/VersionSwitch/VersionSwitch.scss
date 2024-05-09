@@ -1,6 +1,10 @@
 .VersionSwitch {
   display: inline-flex;
-  background: linear-gradient(90deg, var(--color-cold-blue-900) 0%, var(--color-slate-700) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-cold-blue-900) 0%,
+    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
+  );
   border-radius: 3px;
 }
 
