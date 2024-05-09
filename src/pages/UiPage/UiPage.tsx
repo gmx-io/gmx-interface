@@ -125,7 +125,7 @@ export default function UiPage() {
           if (typeof shades === "string") {
             return (
               <div key={color}>
-                <div className="*:size-64 flex w-fit overflow-hidden">
+                <div className="flex w-fit overflow-hidden *:size-64">
                   <div className="!w-96 text-12">{color}</div>
                   <div className={shades} />
                 </div>
@@ -135,7 +135,7 @@ export default function UiPage() {
 
           return (
             <div key={color}>
-              <div className="*:size-64 flex w-fit overflow-hidden">
+              <div className="flex w-fit overflow-hidden *:size-64">
                 <div className="!w-96 text-12"> {color}</div>
                 {entries(shades).map(([shade, value]) => {
                   if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;

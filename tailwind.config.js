@@ -62,7 +62,7 @@ module.exports = {
       "cold-blue": {
         500: "#3a3f79",
         700: "#3a3f798f",
-        900: "#808aff14",
+        900: "#1e203e",
       },
       slate: {
         100: "#a0a3c4",
