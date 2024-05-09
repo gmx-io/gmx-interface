@@ -887,7 +887,7 @@ export default function PositionSeller(props) {
       ? BASIS_POINTS_DIVISOR - allowedSlippage
       : BASIS_POINTS_DIVISOR + allowedSlippage;
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
-    let priceLimit = bigMath.mulDiv(refPrice, priceBasisPoints, BASIS_POINTS_DIVISOR);
+    let priceLimit = bigMath.mulDiv(refPrice, BigInt(priceBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
 

@@ -592,8 +592,8 @@ export default function SwapBox(props) {
 
           const toNumerator = fromUsdMinAfterFee * BigInt(leverageMultiplier) * BASIS_POINTS_DIVISOR_BIGINT;
           const toDenominator =
-            (BigInt(MARGIN_FEE_BASIS_POINTS) * BigInt(leverageMultiplier) + BASIS_POINTS_DIVISOR_BIGINT) *
-            BASIS_POINTS_DIVISOR_BIGINT;
+            BigInt(MARGIN_FEE_BASIS_POINTS) * BigInt(leverageMultiplier) +
+            BASIS_POINTS_DIVISOR_BIGINT * BASIS_POINTS_DIVISOR_BIGINT;
 
           const nextToUsd = toNumerator / toDenominator;
           const nextToAmount = bigMath.mulDiv(nextToUsd, expandDecimals(1, toToken.decimals), toTokenPriceUsd);

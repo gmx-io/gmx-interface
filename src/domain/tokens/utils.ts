@@ -13,7 +13,7 @@ import {
   adjustForDecimals,
   getFeeBasisPoints,
 } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
@@ -82,7 +82,7 @@ export function getTokenAmountFromUsd(
     overridePrice?: bigint;
   } = {}
 ) {
-  if (!usdAmount) {
+  if (usdAmount === undefined) {
     return;
   }
 
