@@ -28,7 +28,6 @@ function stringToNumber(value: string, decimals: number) {
   fraction = (fraction ?? "").slice(0, decimals);
 
   const fractionLength = fraction.length;
-  // const multiplier = BigInt(10).pow(fractionLength);
   const multiplier = 10n ** BigInt(fractionLength);
   try {
     return (BigInt(int || 0) * multiplier + BigInt(fraction || 0)) * 10n ** BigInt(decimals - fractionLength);
