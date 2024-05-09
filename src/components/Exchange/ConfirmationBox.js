@@ -816,7 +816,7 @@ export default function ConfirmationBox(props) {
         {renderFeeWarning()}
         {renderSwapSpreadWarning()}
         {showSwapSpread && (
-          <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh}>
+          <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo?.isHigh}>
             {formatAmount(spreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
         )}
@@ -864,8 +864,8 @@ export default function ConfirmationBox(props) {
     renderFeeWarning,
     renderSwapSpreadWarning,
     showSwapSpread,
-    spreadInfo.isHigh,
-    spreadInfo.value,
+    spreadInfo?.isHigh,
+    spreadInfo?.value,
     orderOption,
     renderAvailableLiquidity,
     isMarketOrder,

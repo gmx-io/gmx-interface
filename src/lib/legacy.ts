@@ -908,7 +908,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount?: string) {
 
       const fetchLastIndex = async (type) => {
         const method = type.toLowerCase() + "OrdersIndex";
-        return await orderBookContract[method](account).then((res) => Number(BigInt(res._hex)));
+        return await orderBookContract[method](account).then((res) => Number(res));
       };
 
       const fetchLastIndexes = async () => {

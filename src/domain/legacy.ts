@@ -399,14 +399,8 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise<bigint | undefined>(async (resolve) => {
-        const provider = getProvider(signer, chainId);
-        if (!provider) {
-          resolve(undefined);
-          return;
-        }
-
         try {
-          const gasPrice = (await provider.getFeeData()).gasPrice;
+          const gasPrice = (await signer.provider.getFeeData()).gasPrice;
           resolve(gasPrice ?? undefined);
         } catch (e) {
           // eslint-disable-next-line no-console
