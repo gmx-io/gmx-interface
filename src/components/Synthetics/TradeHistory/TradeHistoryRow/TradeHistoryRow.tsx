@@ -42,8 +42,8 @@ function LineSpan({ span }: { span: TooltipString }) {
   return (
     <span
       className={cx({
-        "text-red": span.state === "error",
-        "text-green": span.state === "success",
+        "text-red-500": span.state === "error",
+        "text-green-500": span.state === "success",
         muted: span.state === "muted",
       })}
     >
@@ -177,7 +177,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             ) : (
               <span
                 className={cx("TradeHistoryRow-action-handle", {
-                  "text-red": msg.isActionError,
+                  "text-red-500": msg.isActionError,
                 })}
               >
                 {msg.action}

@@ -21,7 +21,7 @@ export function useHighExecutionFeeConsent(executionFeeUsd: BigNumber | undefine
     element: shouldAccept ? (
       <div>
         <Checkbox asRow isChecked={isHighExecutionFeeAccepted} setIsChecked={setIsHighExecutionFeeAccepted}>
-          <span className="text-14 text-yellow">
+          <span className="text-yellow-500 text-14">
             <Trans>Acknowledge very high network Fees</Trans>
           </span>
         </Checkbox>

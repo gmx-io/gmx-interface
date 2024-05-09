@@ -25,7 +25,7 @@ $left-arrow-bg: var(--color-slate-400);
   z-index: 10000;
 
   a {
-    color: var(--text-gray);
+    color: var(--text-gray-300);
     text-decoration: underline;
   }
 
@@ -189,7 +189,7 @@ $left-arrow-bg: var(--color-slate-400);
   text-decoration-style: dashed;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: var(--color-transparent-white-400);
+  text-decoration-color: var(--color-gray-400);
 }
 
 .Tooltip-handle.plain:after {
@@ -209,7 +209,7 @@ $left-arrow-bg: var(--color-slate-400);
 
 .Tooltip-divider {
   height: 1px;
-  background-color: var(--color-transparent-white-500);
+  background-color: var(--color-gray-500);
   margin: 0.5rem 0;
 }
 

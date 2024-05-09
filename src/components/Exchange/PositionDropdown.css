@@ -1,7 +1,7 @@
 .PositionDropdown-dots-icon {
   font-size: 1rem;
   border: none;
-  color: var(--color-gray);
+  color: var(--color-gray-300);
   display: inline-flex;
   align-items: center;
   background: transparent;
@@ -11,7 +11,7 @@
 
 .PositionDropdown-dots-icon:hover {
   color: var(--color-white);
-  background: var(--color-transparent-white-900);
+  background: var(--color-gray-900);
 }
 
 .PositionDropdown-extra-options {

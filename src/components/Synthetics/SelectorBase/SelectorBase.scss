@@ -22,7 +22,7 @@
 
     border-radius: var(--border-radius-sm);
     background-color: var(--dark-blue-bg);
-    border: 1px solid var(--color-transparent-white-800);
+    border: 1px solid var(--color-gray-800);
   }
 
   &-mobile-modal {
@@ -64,7 +64,7 @@
 
     &:hover,
     &:active {
-      background: var(--color-transparent-gray-from);
+      background: var(--color-cold-blue-900);
       box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
     }
 
@@ -95,13 +95,13 @@
     color: inherit;
     font-size: var(--font-md);
 
-    border: 1px solid var(--color-transparent-white-800);
+    border: 1px solid var(--color-gray-800);
     border-radius: var(--border-radius-sm);
     padding: 0.8rem;
 
     &:hover,
     &:active {
-      background: var(--color-transparent-gray-from);
+      background: var(--color-cold-blue-900);
       box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
     }
 

@@ -1072,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
                 signed: true,
               })})`}
               position="bottom-end"
-              handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red-500" : "text-green-500"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
                 entriesInfo?.entries?.map((entry, index) => {
@@ -1082,7 +1082,7 @@ export function ConfirmationBox(p: Props) {
                       <span className="mr-15">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
-                      <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                      <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red-500" : "text-green-500"}>
                         {formatUsd(entry.amounts?.realizedPnl)} (
                         {formatPercentage(entry.amounts?.realizedPnlPercentage, {
                           signed: true,
@@ -1368,7 +1368,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="text-14 text-yellow">
+                <span className="text-yellow-500 text-14">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>

@@ -5,7 +5,7 @@
 }
 
 .Exchange-trigger-order-info {
-  color: var(--color-gray);
+  color: var(--color-gray-300);
   border: 1px solid var(--color-slate-700);
 }
 
@@ -333,7 +333,7 @@ body.dragging .ExchangeChart iframe {
   z-index: 2;
 }
 .ExchangeChart-bottom-stats-label {
-  color: var(--color-gray);
+  color: var(--color-gray-300);
   font-weight: bold;
 }
 .ExchangeChart-bottom-stats-value {
@@ -449,7 +449,7 @@ body.dragging .ExchangeChart iframe {
 }
 
 .active-order-tooltip {
-  background: var(--color-transparent-gray-from);
+  background: var(--color-cold-blue-900);
   padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
@@ -510,7 +510,7 @@ button.Exchange-list-action {
   border-radius: 3px;
   background: none;
   border: none;
-  color: var(--color-gray);
+  color: var(--color-gray-300);
   margin: 0 0.3rem;
 }
 
@@ -549,7 +549,7 @@ table.Exchange-list tbody tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: var(--color-transparent-gray-from);
+  background: var(--color-cold-blue-900);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
   cursor: pointer;
 }
@@ -621,7 +621,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-label {
-  color: var(--text-gray);
+  color: var(--text-gray-300);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
@@ -708,7 +708,7 @@ table.Position-list .Exchange-list-item-active {
   padding: 1.5rem;
   margin-bottom: 1.05rem;
   border-radius: 0.3rem;
-  background: linear-gradient(90deg, var(--color-transparent-gray-from2) 0%, var(--color-transparent-gray-to2) 100%);
+  background: linear-gradient(90deg, var(--color-cold-blue-900) 0%, var(--color-slate-700) 100%);
   outline: 0.05rem solid transparent;
   outline-offset: -0.1rem;
 }

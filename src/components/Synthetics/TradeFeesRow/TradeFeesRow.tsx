@@ -82,7 +82,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
-          className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -96,7 +96,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
-          className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -110,7 +110,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapPriceImpact.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -129,7 +129,7 @@ export function TradeFeesRow(p: Props) {
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
-        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green"),
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
       })) || [];
 
     const swapProfitFeeRow = p.swapProfitFee?.deltaUsd.abs().gt(0)
@@ -142,7 +142,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapProfitFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapProfitFee.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.swapProfitFee.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -157,7 +157,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.positionFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.positionFee.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.positionFee.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -173,7 +173,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.uiFee.deltaUsd),
-          className: "text-red",
+          className: "text-red-500",
         }
       : undefined;
 
@@ -187,7 +187,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
-          className: "text-red",
+          className: "text-red-500",
         }
       : undefined;
 
@@ -200,7 +200,7 @@ export function TradeFeesRow(p: Props) {
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
-          className: "text-green",
+          className: "text-green-500",
         }
       : undefined;
 
@@ -214,7 +214,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.borrowFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -228,7 +228,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.fundingFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -237,7 +237,7 @@ export function TradeFeesRow(p: Props) {
           id: "borrowFeeRate",
           label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
-          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -246,7 +246,7 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFeeRate",
           label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
-          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -266,7 +266,7 @@ export function TradeFeesRow(p: Props) {
             value: formatDeltaUsd(
               p.positionFee?.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
             ),
-            className: "text-green",
+            className: "text-green-500",
             id: "rebate",
           }
         : undefined;

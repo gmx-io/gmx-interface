@@ -87,7 +87,7 @@ function useCollateralWarnings() {
             key="showHasExistingPositionWithDifferentCollateral_1"
             type="warning"
             compact
-            textColor="text-yellow"
+            textColor="text-yellow-500"
           >
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
@@ -110,7 +110,7 @@ function useCollateralWarnings() {
             key="showHasExistingPositionWithDifferentCollateral_2"
             type="warning"
             compact
-            textColor="text-yellow"
+            textColor="text-yellow-500"
           >
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
@@ -135,7 +135,7 @@ function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-yellow" compact>
+        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-yellow-500" compact>
           <Trans>
             You have an existing order with {symbol} as collateral.{" "}
             <span

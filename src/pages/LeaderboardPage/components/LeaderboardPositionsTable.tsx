@@ -441,7 +441,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
+    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });

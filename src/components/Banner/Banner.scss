@@ -17,13 +17,13 @@
     top: -5px;
   }
   .Banner-action {
-    background: var(--color-transparent-gray-from);
+    background: var(--color-cold-blue-900);
     padding: 0.65rem 1.5rem;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
 
     &:hover {
-      background: var(--color-transparent-gray-400);
+      background: var(--color-slate-600);
       color: var(--color-white);
     }
   }

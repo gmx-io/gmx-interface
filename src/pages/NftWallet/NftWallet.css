@@ -1,5 +1,5 @@
 .NftWallet input {
-  border: 1px solid var(--color-transparent-white-800);
+  border: 1px solid var(--color-gray-800);
   font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;

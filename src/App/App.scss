@@ -30,7 +30,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-transparent-white-950);
+  border-bottom: 1px solid var(--color-gray-950);
   z-index: 1;
 }
 
@@ -397,7 +397,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-transparent-white-800);
+  border: 1px solid var(--color-gray-800);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -408,7 +408,7 @@ button.App-connect-wallet:hover {
 
 .mobile-menu-divider {
   height: 1px;
-  background: var(--color-slate-600);
+  background: var(--color-slate-500);
 }
 
 .App-card-divider {
@@ -515,7 +515,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  color: var(--color-gray);
+  color: var(--color-gray-300);
   line-height: 2.15rem;
   font-size: var(--font-base);
 }
@@ -1059,7 +1059,7 @@ button.App-button {
   z-index: 2;
 }
 .Toastify__close-button:hover {
-  background: var(--color-transparent-white-700) 0% 0% no-repeat padding-box;
+  background: var(--color-gray-700) 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
   font: normal normal normal 1.4rem/1.6rem Relative;
@@ -1111,7 +1111,7 @@ button.App-button {
 }
 
 .positive {
-  color: var(--green);
+  color: var(--color-green);
 }
 
 .positive-background {
@@ -1318,7 +1318,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-transparent-white-950);
+    border-bottom: 1px solid var(--color-gray-950);
   }
 
   .App-header.small::after {

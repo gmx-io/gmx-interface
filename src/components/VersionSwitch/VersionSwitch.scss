@@ -1,6 +1,6 @@
 .VersionSwitch {
   display: inline-flex;
-  background: linear-gradient(90deg, var(--color-transparent-gray-from2) 0%, var(--color-transparent-gray-to2) 100%);
+  background: linear-gradient(90deg, var(--color-cold-blue-900) 0%, var(--color-slate-700) 100%);
   border-radius: 3px;
 }
 
@@ -9,7 +9,7 @@
   text-decoration: none;
   font-size: var(--font-sm);
   cursor: pointer;
-  color: var(--text-gray);
+  color: var(--text-gray-300);
   line-height: 1;
 
   &.v1 {

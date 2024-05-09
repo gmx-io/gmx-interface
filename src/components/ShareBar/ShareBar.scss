@@ -1,5 +1,5 @@
 .ShareBar {
-  background: var(--color-transparent-white-800);
+  background: var(--color-gray-800);
   position: relative;
   height: 2px;
   width: 100%;
@@ -39,7 +39,7 @@
   }
 
   .ShareBar-fill__left {
-    background-color: color-mix(in srgb, var(--color-green) 15%, transparent);
+    background-color: color-mix(in srgb, var(--color-green-500) 15%, transparent);
     color: var(--green);
     border-top-left-radius: var(--border-radius-sm);
     border-bottom-left-radius: var(--border-radius-sm);

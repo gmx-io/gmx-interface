@@ -99,7 +99,7 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
               className={cx({
-                "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+                "text-red-500": !p.position.pendingBorrowingFeesUsd.isZero(),
               })}
             />
             <StatsTooltipRow
@@ -107,21 +107,21 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
               className={cx({
-                "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+                "text-red-500": !p.position.pendingFundingFeesUsd.isZero(),
               })}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
-              className="text-red"
+              className="text-red-500"
             />
             {p.position.uiFeeUsd.gt(0) && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
                 value={formatUsd(p.position.uiFeeUsd.mul(-1))}
-                className="text-red"
+                className="text-red-500"
               />
             )}
             <br />
@@ -196,7 +196,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
                     className={cx({
-                      "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+                      "text-red-500": !p.position.pendingBorrowingFeesUsd.isZero(),
                     })}
                   />
                   <StatsTooltipRow
@@ -204,7 +204,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
                     className={cx({
-                      "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+                      "text-red-500": !p.position.pendingFundingFeesUsd.isZero(),
                     })}
                   />
                   <StatsTooltipRow
@@ -212,7 +212,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                     className={cx({
-                      "text-green": p.position.pendingClaimableFundingFeesUsd.gt(0),
+                      "text-green-500": p.position.pendingClaimableFundingFeesUsd.gt(0),
                     })}
                   />
                   <br />
@@ -221,7 +221,7 @@ export function PositionItem(p: Props) {
                     label={t`Current Borrow Fee / Day`}
                     value={formatUsd(borrowingFeeRateUsd.mul(-1))}
                     className={cx({
-                      "text-red": borrowingFeeRateUsd.gt(0),
+                      "text-red-500": borrowingFeeRateUsd.gt(0),
                     })}
                   />
                   <StatsTooltipRow

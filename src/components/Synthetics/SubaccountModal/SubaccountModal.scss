@@ -1,6 +1,6 @@
 .SubaccountModal-alert {
   font-size: 1.2rem;
-  color: var(--text-gray);
+  color: var(--text-gray-300);
   display: flex;
   margin-bottom: 1.6rem;
   align-items: flex-start;
@@ -16,7 +16,7 @@
 
 .SubaccountModal-subaccount {
   align-items: center;
-  background-color: var(--color-transparent-gray-to2);
+  background-color: var(--color-slate-700);
   border-radius: 4px;
   cursor: default;
   justify-content: space-between;
@@ -45,11 +45,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: var(--color-transparent-gray-400);
+    background: var(--color-slate-600);
   }
 
   &:not([disabled]):active {
-    background: var(--color-transparent-gray-300);
+    background: var(--color-slate-500);
   }
 }
 
@@ -59,7 +59,7 @@
 }
 
 .SubaccountModal-mini-button {
-  background-color: var(--color-transparent-gray-from);
+  background-color: var(--color-cold-blue-900);
   border-radius: 0.4rem;
   font-size: 1.4rem;
   color: var(--color-white);
@@ -70,11 +70,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: var(--color-transparent-gray-400);
+    background: var(--color-slate-600);
   }
 
   &:not([disabled]):active {
-    background: var(--color-transparent-gray-300);
+    background: var(--color-slate-500);
   }
 
   &:first-child {
@@ -106,7 +106,7 @@
 }
 
 .SubaccountModal-section {
-  border-bottom: 1px solid var(--color-transparent-white-800);
+  border-bottom: 1px solid var(--color-gray-800);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
 }

@@ -63,7 +63,7 @@ export function GmFees(p: Props) {
                   }
                   value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
                   showDollar={false}
-                  className="text-red"
+                  className="text-red-500"
                 />
               )}
             </div>

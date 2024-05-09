@@ -62,16 +62,16 @@ input {
   --primary-btn-hover: var(--color-blue-400);
   --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
   --dark-blue-hover: var(--color-cold-blue-900);
-  --dark-blue-border: var(--color-transparent-white-800);
-  --dark-blue-active: var(--color-cold-blue-800);
-  --text-gray: var(--color-gray);
+  --dark-blue-border: var(--color-gray-800);
+  --dark-blue-active: var(--color-cold-blue-700);
+  --text-gray: var(--color-gray-300);
   --warning-yellow: var(--color-yellow-500);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem; // 4px
   --error-red: var(--color-red-500);
   --error-red-hover: var(--color-red-400);
-  --green: var(--color-green);
+  --green: var(--color-green-500);
   --font-sm: 1.4rem;
   --font-base: 1.5rem; // 15px
   --font-md: 1.6rem;
@@ -143,7 +143,7 @@ td {
 }
 
 .border {
-  border: 1px solid var(--color-transparent-white-900);
+  border: 1px solid var(--color-gray-900);
 }
 
 .align-right {
@@ -171,7 +171,7 @@ td {
 
 .label,
 .label a {
-  color: var(--color-gray);
+  color: var(--color-gray-300);
 }
 
 ul {
@@ -388,7 +388,7 @@ button.btn-link:hover .logout-icon {
 
 .subtext {
   font-size: 1.2rem;
-  color: var(--text-gray);
+  color: var(--text-gray-300);
   margin-left: 0.25rem;
 }
 

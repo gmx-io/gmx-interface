@@ -31,7 +31,7 @@
 }
 
 .Checkbox-icon.inactive {
-  color: var(--color-gray);
+  color: var(--color-gray-300);
 }
 
 .Checkbox-label {

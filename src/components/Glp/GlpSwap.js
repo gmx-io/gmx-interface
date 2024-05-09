@@ -861,13 +861,13 @@ export default function GlpSwap(props) {
           label="Base Fee"
           value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
           showDollar={false}
-          className="text-red"
+          className="text-red-500"
         />
         <StatsTooltipRow
           label="Max Bonus Rebate"
           value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
           showDollar={false}
-          className="text-green"
+          className="text-green-500"
         />
         <br />
         <div className="text-white">
@@ -900,7 +900,7 @@ export default function GlpSwap(props) {
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
-          <span className="text-sm text-yellow">
+          <span className="text-sm text-yellow-500">
             <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
           </span>
         </Checkbox>

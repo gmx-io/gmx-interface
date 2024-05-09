@@ -53,7 +53,6 @@ module.exports = {
     // @see https://tailwindcss.com/docs/customizing-colors
     colors: {
       blue: {
-        200: "#b4bcff",
         300: "#7885ff",
         400: "#4d5ffa",
         500: "#3d51ff",
@@ -63,25 +62,19 @@ module.exports = {
       "cold-blue": {
         500: "#3a3f79",
         700: "#3a3f798f",
-        800: "#818cef33",
         900: "#808aff14",
-        990: "#0e0f1f",
       },
-
       slate: {
         100: "#a0a3c4",
-        600: "#3e4361",
+        500: "#3e4361",
+        600: "#373c58",
         700: "#23263b",
         800: "#16182e",
         900: "#101124",
         950: "#08091b",
       },
       gray: {
-        50: "#eeeeee",
-        400: "#a9a9b0",
-        DEFAULT: "#b8b8bd",
-      },
-      "transparent-white": {
+        50: "rgba(255, 255, 255, 0.95)",
         100: "rgba(255, 255, 255, 0.9)",
         200: "rgba(255, 255, 255, 0.8)",
         300: "rgba(255, 255, 255, 0.7)",
@@ -93,28 +86,16 @@ module.exports = {
         900: "rgba(255, 255, 255, 0.1)",
         950: "rgba(255, 255, 255, 0.05)",
       },
-      "transparent-gray": {
-        300: "rgba(80, 87, 126, 0.7)",
-        400: "rgba(80, 87, 126, 0.6)",
-
-        from: "rgba(180, 187, 255, 0.1)",
-        from2: "rgba(30, 34, 61, 0.9)",
-        to2: "rgba(38, 43, 71, 0.9)",
-      },
       yellow: {
         500: "#f3b50c",
-        DEFAULT: "#f3b50c",
       },
       red: {
         400: "#ff637a",
         500: "#ff506a",
-        DEFAULT: "#ff506a",
-        800: "rgba(231, 78, 93, 0.15)",
       },
       green: {
         300: "#56dba8",
-        DEFAULT: "#0ecc83",
-        800: "rgba(94, 201, 137, 0.15)",
+        500: "#0ecc83",
       },
       white: "#ffffff",
       black: "#000000",

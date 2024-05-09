@@ -100,9 +100,9 @@ export function NetworkFeeRow({ executionFee }: Props) {
               label={t`Estimated Fee Refund`}
               showDollar={false}
               value={estimatedRefundText}
-              className="text-green"
+              className="text-green-500"
             />
-            {executionFee?.warning && <p className="text-yellow">{executionFee?.warning}</p>}
+            {executionFee?.warning && <p className="text-yellow-500">{executionFee?.warning}</p>}
           </>
         )}
       >

@@ -242,7 +242,7 @@ $tabs-threshold: 990px;
     }
 
     &-title {
-      color: var(--color-gray);
+      color: var(--color-gray-300);
       margin-bottom: 0.5rem;
       font-size: 1.5rem;
 
@@ -373,7 +373,7 @@ $tabs-threshold: 990px;
     right: 0;
     top: 0;
 
-    color: var(--color-gray);
+    color: var(--color-gray-300);
     white-space: nowrap;
 
     @media screen and (max-width: $tabs-threshold) {
@@ -417,7 +417,7 @@ $tabs-threshold: 990px;
   white-space: nowrap;
 
   &_selected {
-    background: var(--color-transparent-gray-300) !important;
+    background: var(--color-slate-500) !important;
   }
 }
 
@@ -482,14 +482,14 @@ $tabs-threshold: 990px;
   background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0.4rem 0.4rem 0 0;
-  border-bottom: 1px solid var(--color-transparent-white-900);
+  border-bottom: 1px solid var(--color-gray-900);
 }
 
 .TableBox__footer {
   background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0 0 0.4rem 0.4rem;
-  border-top: 1px solid var(--color-transparent-white-900);
+  border-top: 1px solid var(--color-gray-900);
   height: 5.8rem;
 
   & .pagination {

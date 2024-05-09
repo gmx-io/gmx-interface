@@ -7,9 +7,9 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray);
+  text-decoration-color: var(--color-gray-300);
   user-select: none;
-  color: var(--color-gray);
+  color: var(--color-gray-300);
 
   &:hover {
     text-decoration-color: var(--color-white);
