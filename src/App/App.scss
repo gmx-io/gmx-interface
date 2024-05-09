@@ -1059,7 +1059,7 @@ button.App-button {
   z-index: 2;
 }
 .Toastify__close-button:hover {
-  background: #ffffff47 0% 0% no-repeat padding-box;
+  background: var(--color-transparent-white-700) 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
   font: normal normal normal 1.4rem/1.6rem Relative;

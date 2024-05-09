@@ -1,5 +1,5 @@
 .ShareBar {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--color-transparent-white-800);
   position: relative;
   height: 2px;
   width: 100%;
@@ -39,14 +39,14 @@
   }
 
   .ShareBar-fill__left {
-    background-color: color-mix(in srgb, var(--color-emerald-400) 15%, transparent);
+    background-color: color-mix(in srgb, var(--color-green) 15%, transparent);
     color: var(--green);
     border-top-left-radius: var(--border-radius-sm);
     border-bottom-left-radius: var(--border-radius-sm);
   }
 
   .ShareBar-fill__right {
-    background-color: color-mix(in srgb, var(--color-pink-500) 15%, transparent);
+    background-color: color-mix(in srgb, var(--color-red-500) 15%, transparent);
     color: var(--error-red);
     border-top-right-radius: var(--border-radius-sm);
     border-bottom-right-radius: var(--border-radius-sm);

@@ -52,7 +52,7 @@
   flex-shrink: 0;
 }
 .single-toast header .cross-icon:hover {
-  background: #ffffff47;
+  background: var(--color-transparent-white-700);
 }
 .single-toast header {
   display: flex;

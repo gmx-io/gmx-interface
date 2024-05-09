@@ -1,130 +1,153 @@
+import Tooltip from "components/Tooltip/Tooltip";
 import { entries } from "lodash";
 
 const colors = {
   blue: {
-    200: "#b4bcff",
-    300: "#7885ff",
-    400: "#4d5ffa",
-    500: "#3d51ff",
-    600: "#2d42fc",
-    700: "#2e3dcd",
+    "200": "bg-blue-200",
+    "300": "bg-blue-300",
+    "400": "bg-blue-400",
+    "500": "bg-blue-500",
+    "600": "bg-blue-600",
+    "700": "bg-blue-700",
   },
   "cold-blue": {
-    500: "#3a3f79",
-    700: "#3a3f798f",
-    990: "#0e0f1f",
+    "500": "bg-cold-blue-500",
+    "700": "bg-cold-blue-700",
+    "800": "bg-cold-blue-800",
+    "900": "bg-cold-blue-900",
+    "990": "bg-cold-blue-990",
   },
-
   slate: {
-    100: "#a0a3c4",
-    600: "#3e4361",
-    700: "#23263b",
-    800: "#16182e",
-    900: "#101124",
-    950: "#08091b",
+    "100": "bg-slate-100",
+    "600": "bg-slate-600",
+    "700": "bg-slate-700",
+    "800": "bg-slate-800",
+    "900": "bg-slate-900",
+    "950": "bg-slate-950",
   },
   gray: {
-    50: "#eeeeee",
-    400: "#a9a9b0",
-    DEFAULT: "#b8b8bd",
+    "50": "bg-gray-50",
+    "400": "bg-gray-400",
+    DEFAULT: "bg-gray",
   },
   "transparent-white": {
-    100: "rgba(255, 255, 255, 0.9)",
-    200: "rgba(255, 255, 255, 0.8)",
-    300: "rgba(255, 255, 255, 0.7)",
-    400: "rgba(255, 255, 255, 0.6)",
-    500: "rgba(255, 255, 255, 0.5)",
-    600: "rgba(255, 255, 255, 0.4)",
-    700: "rgba(255, 255, 255, 0.3)",
-    800: "rgba(255, 255, 255, 0.2)",
-    900: "rgba(255, 255, 255, 0.1)",
-    950: "rgba(255, 255, 255, 0.05)",
+    "100": "bg-transparent-white-100",
+    "200": "bg-transparent-white-200",
+    "300": "bg-transparent-white-300",
+    "400": "bg-transparent-white-400",
+    "500": "bg-transparent-white-500",
+    "600": "bg-transparent-white-600",
+    "700": "bg-transparent-white-700",
+    "800": "bg-transparent-white-800",
+    "900": "bg-transparent-white-900",
+    "950": "bg-transparent-white-950",
   },
   "transparent-gray": {
-    from: "rgba(180, 187, 255, 0.1)",
-    from2: "rgba(30, 34, 61, 0.9)",
-    to2: "rgba(38, 43, 71, 0.9)",
+    "300": "bg-transparent-gray-300",
+    "400": "bg-transparent-gray-400",
+    from: "bg-transparent-gray-from",
+    from2: "bg-transparent-gray-from2",
+    to2: "bg-transparent-gray-to2",
   },
   yellow: {
-    500: "#f3b50c",
-    DEFAULT: "#f3b50c",
+    "500": "bg-yellow-500",
+    DEFAULT: "bg-yellow",
   },
   red: {
-    400: "#ff687e",
-    800: "rgba(231, 78, 93, 0.15)",
-    DEFAULT: "#fa3c58",
-  },
-  pink: {
-    500: "#e74e5d",
-  },
-  emerald: {
-    400: "#5ec989",
+    "400": "bg-red-400",
+    "500": "bg-red-500",
+    "800": "bg-red-800",
+    DEFAULT: "bg-red",
   },
   green: {
-    300: "#56dba8",
-    DEFAULT: "#0ecc83",
-    800: "rgba(94, 201, 137, 0.15)",
+    "300": "bg-green-300",
+    "800": "bg-green-800",
+    DEFAULT: "bg-green",
   },
-  white: "#ffffff",
-  black: "#000000",
+  white: "bg-white",
+  black: "bg-black",
 };
 
-console.log(
-  entries(colors).flatMap(([color, shades]) => {
-    if (typeof shades === "string") return `bg-${color}`;
+// console.log(
+//   mapValues(
+//     {
+//       blue: {
+//         200: "#b4bcff",
+//         300: "#7885ff",
+//         400: "#4d5ffa",
+//         500: "#3d51ff",
+//         600: "#2d42fc",
+//         700: "#2e3dcd",
+//       },
+//       "cold-blue": {
+//         500: "#3a3f79",
+//         700: "#3a3f798f",
+//         800: "#818cef33",
+//         900: "#808aff14",
+//         990: "#0e0f1f",
+//       },
 
-    return entries(shades).map(([shade, value]) => {
-      if (shade === "DEFAULT") return `bg-${color}`;
-      return `bg-${color}-${shade}`;
-    });
-  })
-);
+//       slate: {
+//         100: "#a0a3c4",
+//         600: "#3e4361",
+//         700: "#23263b",
+//         800: "#16182e",
+//         900: "#101124",
+//         950: "#08091b",
+//       },
+//       gray: {
+//         50: "#eeeeee",
+//         400: "#a9a9b0",
+//         DEFAULT: "#b8b8bd",
+//       },
+//       "transparent-white": {
+//         100: "rgba(255, 255, 255, 0.9)",
+//         200: "rgba(255, 255, 255, 0.8)",
+//         300: "rgba(255, 255, 255, 0.7)",
+//         400: "rgba(255, 255, 255, 0.6)",
+//         500: "rgba(255, 255, 255, 0.5)",
+//         600: "rgba(255, 255, 255, 0.4)",
+//         700: "rgba(255, 255, 255, 0.3)",
+//         800: "rgba(255, 255, 255, 0.2)",
+//         900: "rgba(255, 255, 255, 0.1)",
+//         950: "rgba(255, 255, 255, 0.05)",
+//       },
+//       "transparent-gray": {
+//         300: "rgba(80, 87, 126, 0.7)",
+//         400: "rgba(80, 87, 126, 0.6)",
 
-const hack = [
-  "bg-blue-200",
-  "bg-blue-300",
-  "bg-blue-400",
-  "bg-blue-500",
-  "bg-blue-600",
-  "bg-blue-700",
-  "bg-cold-blue-500",
-  "bg-cold-blue-700",
-  "bg-cold-blue-990",
-  "bg-slate-100",
-  "bg-slate-600",
-  "bg-slate-700",
-  "bg-slate-800",
-  "bg-slate-900",
-  "bg-slate-950",
-  "bg-gray-50",
-  "bg-gray-400",
-  "bg-gray",
-  "bg-transparent-white-100",
-  "bg-transparent-white-200",
-  "bg-transparent-white-300",
-  "bg-transparent-white-400",
-  "bg-transparent-white-500",
-  "bg-transparent-white-600",
-  "bg-transparent-white-700",
-  "bg-transparent-white-800",
-  "bg-transparent-white-900",
-  "bg-transparent-white-950",
-  "bg-transparent-gray-from",
-  "bg-transparent-gray-from2",
-  "bg-transparent-gray-to2",
-  "bg-yellow-500",
-  "bg-yellow",
-  "bg-red-400",
-  "bg-red-800",
-  "bg-red",
-  "bg-pink-500",
-  "bg-emerald-400",
-  "bg-green-300",
-  "bg-green-800",
-  "bg-green",
-  "bg-white",
-  "bg-black",
-];
+//         from: "rgba(180, 187, 255, 0.1)",
+//         from2: "rgba(30, 34, 61, 0.9)",
+//         to2: "rgba(38, 43, 71, 0.9)",
+//       },
+//       yellow: {
+//         500: "#f3b50c",
+//         DEFAULT: "#f3b50c",
+//       },
+//       red: {
+//         400: "#ff637a",
+//         500: "#ff506a",
+//         DEFAULT: "#ff506a",
+//         800: "rgba(231, 78, 93, 0.15)",
+//       },
+//       green: {
+//         300: "#56dba8",
+//         DEFAULT: "#0ecc83",
+//         800: "rgba(94, 201, 137, 0.15)",
+//       },
+//       white: "#ffffff",
+//       black: "#000000",
+//     },
+//     (shades, color) => {
+//       if (typeof shades === "string") return `bg-${color}`;
+
+//       return mapValues(shades, (value, shade) => {
+//         if (shade === "DEFAULT") return `bg-${color}`;
+//         return `bg-${color}-${shade}`;
+//       });
+//     }
+//   )
+// );
 
 export default function UiPage() {
   return (
@@ -140,7 +163,7 @@ export default function UiPage() {
               <div key={color}>
                 <div>{color}</div>
                 <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
-                  <div className={`bg-${color}`}></div>
+                  <div className={shades} />
                 </div>
               </div>
             );
@@ -151,9 +174,9 @@ export default function UiPage() {
               {color}
               <div className="*:size-64 flex w-fit overflow-hidden rounded-4 border">
                 {entries(shades).map(([shade, value]) => {
-                  if (shade === "DEFAULT") return <div key={shade + value} className={`bg-${color}`}></div>;
+                  if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
                   return (
-                    <div key={shade + value} className={`bg-${color}-${shade}`}>
+                    <div key={shade + value} className={value}>
                       {shade}
                     </div>
                   );
@@ -232,6 +255,22 @@ export default function UiPage() {
           inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
         </p>
       </div>
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Tooltips</h2>
+
+      <Tooltip
+        content={
+          <>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab
+            qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis. Libero,
+            et.
+          </>
+        }
+        handle={"Lorem ipsum dolor."}
+        closeDelay={100000000000}
+      />
+
+      <div className="h-50"></div>
     </main>
   );
 }

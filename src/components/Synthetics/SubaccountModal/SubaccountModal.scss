@@ -45,11 +45,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: rgba(80, 87, 126, 0.6);
+    background: var(--color-transparent-gray-400);
   }
 
   &:not([disabled]):active {
-    background: rgba(80, 87, 126, 0.7);
+    background: var(--color-transparent-gray-300);
   }
 }
 
@@ -70,11 +70,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: rgba(80, 87, 126, 0.6);
+    background: var(--color-transparent-gray-400);
   }
 
   &:not([disabled]):active {
-    background: rgba(80, 87, 126, 0.7);
+    background: var(--color-transparent-gray-300);
   }
 
   &:first-child {

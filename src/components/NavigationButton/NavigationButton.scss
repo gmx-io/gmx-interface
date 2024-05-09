@@ -16,11 +16,11 @@
 
     background-color: var(--color-slate-400);
     .clickable &:not([disabled]):hover {
-      background: rgba(80, 87, 126, 0.6);
+      background: var(--color-transparent-gray-400);
     }
 
     .clickable &:not([disabled]):active {
-      background: rgba(80, 87, 126, 0.7);
+      background: var(--color-transparent-gray-300);
     }
   }
 
@@ -47,11 +47,11 @@
 
     background-color: var(--color-slate-400);
     &:not([disabled]):hover {
-      background: rgba(80, 87, 126, 0.6);
+      background: var(--color-transparent-gray-400);
     }
 
     &:not([disabled]):active {
-      background: rgba(80, 87, 126, 0.7);
+      background: var(--color-transparent-gray-300);
     }
   }
 }

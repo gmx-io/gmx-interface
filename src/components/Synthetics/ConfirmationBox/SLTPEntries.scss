@@ -127,7 +127,7 @@
     }
 
     .action-remove {
-      background-color: color-mix(in srgb, var(--color-pink-500) 15%, transparent);
+      background-color: color-mix(in srgb, var(--color-red-500) 15%, transparent);
       opacity: 0.7;
 
       &:hover:not(:disabled) {
@@ -136,7 +136,7 @@
     }
 
     .action-add {
-      background-color: color-mix(in srgb, var(--color-emerald-400) 15%, transparent);
+      background-color: color-mix(in srgb, var(--color-green) 15%, transparent);
       opacity: 0.7;
 
       &:hover:not(:disabled) {

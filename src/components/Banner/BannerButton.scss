@@ -37,7 +37,7 @@
     line-height: 1.5;
 
     &:hover {
-      background: rgba(80, 87, 126, 0.6);
+      background: var(--color-transparent-gray-400);
       color: var(--color-white);
     }
 

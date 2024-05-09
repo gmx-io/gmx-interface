@@ -51,7 +51,7 @@
   }
 
   &-prevButton:hover {
-    background-color: rgba(80, 87, 126, 0.6);
+    background-color: var(--color-transparent-gray-400);
   }
 
   &-nextButton i {
@@ -59,7 +59,7 @@
   }
 
   &-nextButton:hover {
-    background-color: rgba(80, 87, 126, 0.6);
+    background-color: var(--color-transparent-gray-400);
   }
 
   &-startEdge,

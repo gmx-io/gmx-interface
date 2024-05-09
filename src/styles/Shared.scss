@@ -61,19 +61,19 @@ input {
   --primary-btn-bg: var(--color-blue-600);
   --primary-btn-hover: var(--color-blue-400);
   --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
-  --dark-blue-hover: #808aff14;
+  --dark-blue-hover: var(--color-cold-blue-900);
   --dark-blue-border: var(--color-transparent-white-800);
-  --dark-blue-active: #818cef33;
+  --dark-blue-active: var(--color-cold-blue-800);
   --text-gray: var(--color-gray);
   --warning-yellow: var(--color-yellow-500);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
-  --border-radius-sm: 0.4rem;
-  --error-red: var(--color-red);
-  --error-red-hover: #ff687e;
+  --border-radius-sm: 0.4rem; // 4px
+  --error-red: var(--color-red-500);
+  --error-red-hover: var(--color-red-400);
   --green: var(--color-green);
   --font-sm: 1.4rem;
-  --font-base: 1.5rem;
+  --font-base: 1.5rem; // 15px
   --font-md: 1.6rem;
   --font-lg: 2.4rem;
   --font-xl: 3.4rem;

@@ -417,7 +417,7 @@ $tabs-threshold: 990px;
   white-space: nowrap;
 
   &_selected {
-    background: rgba(80, 87, 126, 0.7) !important;
+    background: var(--color-transparent-gray-300) !important;
   }
 }
 

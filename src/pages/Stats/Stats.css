@@ -11,7 +11,7 @@
 }
 
 .Stats td .Stats-share-bar {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--color-transparent-white-800);
   position: relative;
   margin-top: 5px;
   height: 2px;
