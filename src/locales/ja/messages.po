@@ -127,6 +127,7 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "タイプ"
 
@@ -211,6 +212,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -991,6 +993,10 @@ msgstr "移転中..."
 msgid "Total"
 msgstr "総計"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
+msgstr "スワップ アクティブ: {0} 執行済: {1}  キャンセル済: {2}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
@@ -1088,6 +1094,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Created At"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1391,6 +1401,10 @@ msgstr "{0}の最大ロングキャパシティ"
 msgid "Enter a  price"
 msgstr ""
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Account"
+msgstr "アカウント"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
 msgstr ""
@@ -1405,6 +1419,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Close to execution price"
+msgstr "執行価格に近すぎます"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
@@ -1557,6 +1575,7 @@ msgstr "シェア可能な画像を作成中..."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -1638,6 +1657,7 @@ msgstr ""
 msgid "Buy GMX on {chainName}"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1822,6 +1842,10 @@ msgstr ""
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "最大実行手数料"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Index"
+msgstr "インデックス"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
@@ -2548,6 +2572,7 @@ msgid "Network Fee"
 msgstr "ネットワーク手数料"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3411,6 +3436,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -3693,6 +3719,7 @@ msgstr "ストップロス注文の執行"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "注文"
 
@@ -3897,6 +3924,10 @@ msgstr "12月"
 msgid "GMX Weekly Updates"
 msgstr "GMXの週ごとの最新情報"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+msgstr "合計 アクティブ: {openTotal} 執行済: {executedTotal} キャンセル済: {cancelledTotal}"
+
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
@@ -4060,6 +4091,7 @@ msgid "V1 Avalanche"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4190,6 +4222,7 @@ msgid "Share"
 msgstr "シェア"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "執行"
 
@@ -4272,6 +4305,7 @@ msgstr "紹介コードが更新できませんでした。"
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4436,6 +4470,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound Rewards"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Diff"
+msgstr "差異"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboard for GMX referral stats"
@@ -5689,6 +5727,10 @@ msgstr ""
 msgid "GMX Stats Page"
 msgstr "GMX統計ページ"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Can't execute because of an error"
+msgstr "エラーにより執行できません"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
 msgstr ""
@@ -5843,6 +5885,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vault Capacity"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
+msgstr "減額 アクティブ: {0} 執行済: {1} キャンセル済] {2}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
@@ -6394,6 +6440,10 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -6590,6 +6640,7 @@ msgid "Vested GLP not withdrawn"
 msgstr "べスティングされたGLPで引き出されていないもの"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6952,6 +7003,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6966,6 +7018,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "マーク価格"
 
@@ -7235,6 +7288,10 @@ msgstr "承認はキャンセルされました"
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
+msgstr "増加 アクティブ: {0} 執行済: {1} キャンセル済: {2}"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"
 msgstr "GMXのページ"
@@ -7283,6 +7340,10 @@ msgstr "貯蓄証明"
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Price conditions are met"
+msgstr "価格の条件が満たされていません"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"

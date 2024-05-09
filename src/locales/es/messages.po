@@ -127,6 +127,7 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "Tipo"
 
@@ -211,6 +212,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -991,6 +993,10 @@ msgstr ""
 msgid "Total"
 msgstr "Total"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
@@ -1088,6 +1094,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Created At"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1391,6 +1401,10 @@ msgstr "Capacidad Máx. {0} largos"
 msgid "Enter a  price"
 msgstr ""
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Account"
+msgstr "Cuenta"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
 msgstr ""
@@ -1405,6 +1419,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Close to execution price"
+msgstr "Cerrar al precio de ejecución"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
@@ -1557,6 +1575,7 @@ msgstr "Generando imagen para compartir..."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -1638,6 +1657,7 @@ msgstr ""
 msgid "Buy GMX on {chainName}"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1822,6 +1842,10 @@ msgstr ""
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "Máx. Comisión de Ejecución"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Index"
+msgstr "Índice"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
@@ -2548,6 +2572,7 @@ msgid "Network Fee"
 msgstr "Comisión de Red"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3411,6 +3436,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -3693,6 +3719,7 @@ msgstr "Ejecutar Orden de Stop-Loss"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Orden"
 
@@ -3897,6 +3924,10 @@ msgstr "Dic."
 msgid "GMX Weekly Updates"
 msgstr "Actualizaciones semanales de GMX"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+msgstr "Total activo: {openTotal}, ejecutado: {executedTotal}, cancelado: {cancelledTotal}"
+
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
@@ -4060,6 +4091,7 @@ msgid "V1 Avalanche"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4190,6 +4222,7 @@ msgid "Share"
 msgstr "Compartir"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "Ejecutar"
 
@@ -4272,6 +4305,7 @@ msgstr "Falló la actualización del código de referido."
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4436,6 +4470,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound Rewards"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Diff"
+msgstr "Dif"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboard for GMX referral stats"
@@ -5689,6 +5727,10 @@ msgstr ""
 msgid "GMX Stats Page"
 msgstr "Página de estadísticas de GMX"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Can't execute because of an error"
+msgstr "No se puede ejecutar debido a un error"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
 msgstr ""
@@ -5843,6 +5885,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vault Capacity"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Reducción activa: {0}, ejecutada: {1}, cancelada: {2}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
@@ -6394,6 +6440,10 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -6590,6 +6640,7 @@ msgid "Vested GLP not withdrawn"
 msgstr "GLP adquirido no retirado"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6952,6 +7003,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6966,6 +7018,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Precio de Referencia"
 
@@ -7235,6 +7288,10 @@ msgstr "Aprobación cancelada"
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Incrementar activo: {0}, ejecutado: {1}, cancelado: {2}"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"
 msgstr "Páginas GMX"
@@ -7283,6 +7340,10 @@ msgstr "Prueba de reservas"
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Price conditions are met"
+msgstr "Las condiciones de precio se cumplen"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"

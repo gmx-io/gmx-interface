@@ -127,6 +127,7 @@ msgstr "You have not deposited any tokens for vesting."
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "Type"
 
@@ -211,6 +212,7 @@ msgstr "No incentives distribution history yet."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -991,6 +993,10 @@ msgstr "Tranferring..."
 msgid "Total"
 msgstr "Total"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
@@ -1089,6 +1095,10 @@ msgstr "Arbitrum Avg. APR:"
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "Insufficient Available Liquidity to swap to {0}:"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Created At"
+msgstr "Created At"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
@@ -1391,6 +1401,10 @@ msgstr "Max {0} long capacity"
 msgid "Enter a  price"
 msgstr "Enter a  price"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Account"
+msgstr "Account"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
 msgstr "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
@@ -1405,6 +1419,10 @@ msgstr "Close Fee"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Close to execution price"
+msgstr "Close to execution price"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
@@ -1557,6 +1575,7 @@ msgstr "Generating shareable image..."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -1638,6 +1657,7 @@ msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {
 msgid "Buy GMX on {chainName}"
 msgstr "Buy GMX on {chainName}"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1822,6 +1842,10 @@ msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "Max Execution Fee"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Index"
+msgstr "Index"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
@@ -2548,6 +2572,7 @@ msgid "Network Fee"
 msgstr "Network Fee"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3414,6 +3439,7 @@ msgstr "EIP-4844 Competition"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -3696,6 +3722,7 @@ msgstr "Execute Stop-Loss Order"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Order"
 
@@ -3900,6 +3927,10 @@ msgstr "Dec."
 msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
@@ -4063,6 +4094,7 @@ msgid "V1 Avalanche"
 msgstr "V1 Avalanche"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4193,6 +4225,7 @@ msgid "Share"
 msgstr "Share"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "Execute"
 
@@ -4275,6 +4308,7 @@ msgstr "Referral code updated failed."
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4439,6 +4473,10 @@ msgstr "Allowed Slippage below {0}% may result in failed orders."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound Rewards"
 msgstr "Compound Rewards"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Diff"
+msgstr "Diff"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboard for GMX referral stats"
@@ -5695,6 +5733,10 @@ msgstr "Sending order request"
 msgid "GMX Stats Page"
 msgstr "GMX Stats Page"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Can't execute because of an error"
+msgstr "Can't execute because of an error"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
 msgstr "Keep Leverage is not possible"
@@ -5849,6 +5891,10 @@ msgstr "Max auto top-up amount"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Decrease active: {0}, executed: {1}, cancelled: {2}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
@@ -6400,6 +6446,10 @@ msgstr "Success claimings"
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Decentralized Perpetual Exchange | GMX"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr "The pending borrow fee will be charged on this transaction."
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -6596,6 +6646,7 @@ msgid "Vested GLP not withdrawn"
 msgstr "Vested GLP not withdrawn"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6958,6 +7009,7 @@ msgstr "Deposit amount is insufficient to bring leverage below the max allowed l
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6972,6 +7024,7 @@ msgstr "Deposit amount is insufficient to bring leverage below the max allowed l
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
 
@@ -7241,6 +7294,10 @@ msgstr "Approval was cancelled"
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
+msgstr "Increase active: {0}, executed: {1}, cancelled: {2}"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"
 msgstr "GMX Pages"
@@ -7289,6 +7346,10 @@ msgstr "Proof of Reserves"
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Price conditions are met"
+msgstr "Price conditions are met"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
