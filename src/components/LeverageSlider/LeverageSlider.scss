@@ -6,7 +6,7 @@
   .rc-slider-tooltip-inner {
     box-shadow: none;
     padding: 0.465rem 0.8rem;
-    background: var(--color-slate-400);
+    background: var(--color-slate-600);
   }
 
   .rc-slider-tooltip {
@@ -14,7 +14,7 @@
   }
 
   .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-    border-top-color: var(--color-slate-400);
+    border-top-color: var(--color-slate-600);
   }
 
   .rc-slider-rail {
@@ -35,7 +35,7 @@
     background: var(--color-blue-500);
   }
   .rc-slider-handle {
-    background: var(--color-slate-400);
+    background: var(--color-slate-600);
     border: solid 2px var(--color-blue-600);
   }
 

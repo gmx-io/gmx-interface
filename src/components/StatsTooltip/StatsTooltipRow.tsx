@@ -50,7 +50,7 @@ export default function StatsTooltipRow({
 
   return (
     <div className={cx("Tooltip-row", className)}>
-      <span className="Tooltip-row-label text-gray">{renderLabel()}</span>
+      <span className="Tooltip-row-label text-gray-300">{renderLabel()}</span>
       {renderValue()}
     </div>
   );

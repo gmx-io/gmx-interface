@@ -14,13 +14,13 @@
     align-items: center;
     flex: 1;
 
-    background-color: var(--color-slate-400);
+    background-color: var(--color-slate-600);
     .clickable &:not([disabled]):hover {
-      background: var(--color-slate-600);
+      background: var(--color-slate-500);
     }
 
     .clickable &:not([disabled]):active {
-      background: var(--color-slate-500);
+      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
     }
   }
 
@@ -45,13 +45,13 @@
     padding: 0 0.7rem;
     cursor: pointer;
 
-    background-color: var(--color-slate-400);
+    background-color: var(--color-slate-600);
     &:not([disabled]):hover {
-      background: var(--color-slate-600);
+      background: var(--color-slate-500);
     }
 
     &:not([disabled]):active {
-      background: var(--color-slate-500);
+      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
     }
   }
 }

@@ -62,7 +62,7 @@ export default function BuyGMX() {
           <div className="section-title-content">
             <div className="Page-title">
               <Trans>Buy GMX on {chainName}</Trans>
-              <img className="Page-title-icon ml-5" src={icons.network} alt={chainName} />
+              <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
@@ -84,7 +84,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
-                <img className="Page-title-icon ml-5" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
@@ -96,7 +96,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>
-                <img className="Page-title-icon ml-5" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>

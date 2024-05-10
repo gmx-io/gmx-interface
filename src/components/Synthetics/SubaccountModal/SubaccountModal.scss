@@ -1,6 +1,6 @@
 .SubaccountModal-alert {
   font-size: 1.2rem;
-  color: var(--text-gray-300);
+  color: var(--color-gray-300);
   display: flex;
   margin-bottom: 1.6rem;
   align-items: flex-start;
@@ -34,7 +34,7 @@
 
 .SubaccountModal-button-icon {
   align-items: center;
-  background-color: var(--color-slate-400);
+  background-color: var(--color-slate-600);
   border-radius: 4px;
   display: inline-flex;
   height: 2.2rem;
@@ -45,11 +45,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: var(--color-slate-600);
+    background: var(--color-slate-500);
   }
 
   &:not([disabled]):active {
-    background: var(--color-slate-500);
+    background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
   }
 }
 

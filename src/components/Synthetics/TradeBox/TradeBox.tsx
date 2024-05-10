@@ -1090,7 +1090,7 @@ export function TradeBox(p: Props) {
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-14 text-gray">
+              <span className="text-14 text-gray-300">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>

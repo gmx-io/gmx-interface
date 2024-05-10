@@ -15,7 +15,7 @@ export function ValueTransition(p: Props) {
     <div className="ValueTransition">
       <div className="muted inline-block">
         {p.from}
-        <BsArrowRight className="transition-arrow" />
+        <BsArrowRight className="transition-arrow inline-block" />
       </div>
       {p.to}
     </div>

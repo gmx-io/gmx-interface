@@ -1111,7 +1111,7 @@ button.App-button {
 }
 
 .positive {
-  color: var(--color-green);
+  color: var(--color-green-500);
 }
 
 .positive-background {
@@ -1164,7 +1164,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-handle {
-  background: var(--color-slate-400);
+  background: var(--color-slate-600);
   border: 2px solid var(--color-blue-600);
 }
 
@@ -1190,11 +1190,11 @@ button.App-button {
 .rc-slider-tooltip-inner {
   box-shadow: none;
   padding: 0.465rem 0.8rem;
-  background: var(--color-slate-400);
+  background: var(--color-slate-600);
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-  border-top-color: var(--color-slate-400);
+  border-top-color: var(--color-slate-600);
 }
 
 .header-connect-btn {

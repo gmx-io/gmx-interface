@@ -1128,7 +1128,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
-  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false, "text-gray");
+  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false, "text-gray-300");
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
@@ -1368,7 +1368,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="text-yellow-500 text-14">
+                <span className="text-14 text-yellow-500">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1472,7 +1472,7 @@ export function ConfirmationBox(p: Props) {
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                <span className="text-14 text-gray">
+                <span className="text-14 text-gray-300">
                   <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
                 </span>
               </ToggleSwitch>

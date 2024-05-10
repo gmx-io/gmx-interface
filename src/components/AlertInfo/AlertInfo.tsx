@@ -12,12 +12,12 @@ interface Props {
   className?: string;
   compact?: boolean;
   /**
-   * @default "text-gray"
+   * @default "text-gray-300"
    */
-  textColor?: "text-gray" | "text-yellow-500";
+  textColor?: "text-gray-300" | "text-yellow-500";
 }
 
-export function AlertInfo({ compact = false, children, type, textColor = "text-gray", className }: Props) {
+export function AlertInfo({ compact = false, children, type, textColor = "text-gray-300", className }: Props) {
   const Icon = type === "warning" ? WarnIconComponent : InfoIconComponent;
   return (
     <div className={cx("AlertInfo", { compact }, textColor, className)}>

@@ -28,7 +28,7 @@ const SPACE = " ";
 
 export const useTradeboxPoolWarnings = (
   withActions = true,
-  textColor: "text-yellow-500" | "text-gray" = "text-yellow-500"
+  textColor: "text-yellow-500" | "text-gray-300" = "text-yellow-500"
 ) => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);

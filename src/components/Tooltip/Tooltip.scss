@@ -1,4 +1,4 @@
-$left-arrow-bg: var(--color-slate-400);
+$left-arrow-bg: var(--color-slate-600);
 
 .Tooltip {
   position: relative;
@@ -25,7 +25,7 @@ $left-arrow-bg: var(--color-slate-400);
   z-index: 10000;
 
   a {
-    color: var(--text-gray-300);
+    color: var(--color-gray-300);
     text-decoration: underline;
   }
 
@@ -87,7 +87,7 @@ $left-arrow-bg: var(--color-slate-400);
       display: block;
       bottom: -4px;
       right: 8px;
-      background: var(--color-slate-400);
+      background: var(--color-slate-600);
     }
   }
 
@@ -138,7 +138,7 @@ $left-arrow-bg: var(--color-slate-400);
       display: block;
       right: -4px;
       top: 50%;
-      background: var(--color-slate-400);
+      background: var(--color-slate-600);
     }
   }
 

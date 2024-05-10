@@ -96,6 +96,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
               </ExternalLink>
               .
             </p>
+            <br />
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
