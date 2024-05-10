@@ -412,6 +412,7 @@ function FullApp() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
+        theme="dark"
         icon={false}
       />
       <EventToastContainer />
