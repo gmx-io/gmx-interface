@@ -208,7 +208,7 @@ export function getLiquidationPrice(p: {
 }
 
 export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (!liquidationPrice || liquidationPrice <= 0) {
+  if (!liquidationPrice || liquidationPrice < 0) {
     return "NA";
   }
 
@@ -216,7 +216,7 @@ export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displa
 }
 
 export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (acceptablePrice && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
+  if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }
 

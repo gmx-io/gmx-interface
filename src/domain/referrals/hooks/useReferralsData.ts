@@ -211,19 +211,19 @@ export function useReferralsData(account?: string | null) {
               acc.tradedReferralsCount = acc.tradedReferralsCount + parseInt(cv.tradedReferralsCount);
               acc.registeredReferralsCount = acc.registeredReferralsCount + parseInt(cv.registeredReferralsCount);
 
-              acc.totalRebateUsd = acc.totalRebateUsd + cv.totalRebateUsd;
-              acc.volume = acc.volume + cv.volume;
-              acc.discountUsd = acc.discountUsd + cv.discountUsd;
+              acc.totalRebateUsd = acc.totalRebateUsd + BigInt(cv.totalRebateUsd);
+              acc.volume = acc.volume + BigInt(cv.volume);
+              acc.discountUsd = acc.discountUsd + BigInt(cv.discountUsd);
               acc.affiliateRebateUsd = acc.affiliateRebateUsd + getAffiliateRebateUsd(cv);
 
-              acc.v1Data.volume = acc.v1Data.volume + cv.v1Data.volume;
-              acc.v1Data.totalRebateUsd = acc.v1Data.totalRebateUsd + cv.v1Data.totalRebateUsd;
-              acc.v1Data.discountUsd = acc.v1Data.discountUsd + cv.v1Data.discountUsd;
+              acc.v1Data.volume = acc.v1Data.volume + BigInt(cv.v1Data.volume);
+              acc.v1Data.totalRebateUsd = acc.v1Data.totalRebateUsd + BigInt(cv.v1Data.totalRebateUsd);
+              acc.v1Data.discountUsd = acc.v1Data.discountUsd + BigInt(cv.v1Data.discountUsd);
               acc.v1Data.affiliateRebateUsd = acc.v1Data.affiliateRebateUsd + getAffiliateRebateUsd(cv.v1Data);
 
-              acc.v2Data.volume = acc.v2Data.volume + cv.v2Data.volume;
-              acc.v2Data.totalRebateUsd = acc.v2Data.totalRebateUsd + cv.v2Data.totalRebateUsd;
-              acc.v2Data.discountUsd = acc.v2Data.discountUsd + cv.v2Data.discountUsd;
+              acc.v2Data.volume = acc.v2Data.volume + BigInt(cv.v2Data.volume);
+              acc.v2Data.totalRebateUsd = acc.v2Data.totalRebateUsd + BigInt(cv.v2Data.totalRebateUsd);
+              acc.v2Data.discountUsd = acc.v2Data.discountUsd + BigInt(cv.v2Data.discountUsd);
               acc.v2Data.affiliateRebateUsd = acc.v2Data.affiliateRebateUsd + getAffiliateRebateUsd(cv.v2Data);
               return acc;
             },

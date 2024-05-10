@@ -30,7 +30,7 @@ export const MIN_PROFIT_TIME = 0;
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
-export const SECONDS_PER_YEAR = 31536000;
+export const SECONDS_PER_YEAR = 31536000n;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 export const DEPOSIT_FEE = 30n;
@@ -1288,13 +1288,13 @@ export function getProcessedData(
   }
 
   data.stakedGmxTrackerAnnualRewardsUsd =
-    (stakingData.stakedGmxTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR) * gmxPrice) / expandDecimals(1, 18);
+    (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
   data.gmxAprForEsGmx =
     data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd > 0
       ? mulDiv(data.stakedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.stakedGmxTrackerSupplyUsd)
       : 0n;
   data.feeGmxTrackerAnnualRewardsUsd =
-    (stakingData.feeGmxTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR) * nativeTokenPrice) / expandDecimals(1, 18);
+    (stakingData.feeGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * nativeTokenPrice) / expandDecimals(1, 18);
   data.gmxAprForNativeToken =
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
@@ -1327,9 +1327,8 @@ export function getProcessedData(
   data.feeGlpTrackerRewards = stakingData.feeGlpTracker.claimable;
   data.feeGlpTrackerRewardsUsd = mulDiv(stakingData.feeGlpTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
-  data.stakedGlpTrackerAnnualRewardsUsd = mulMulDiv(
-    stakingData.stakedGlpTracker.tokensPerInterval,
-    SECONDS_PER_YEAR,
+  data.stakedGlpTrackerAnnualRewardsUsd = mulDiv(
+    stakingData.stakedGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
     gmxPrice,
     expandDecimals(1, 18)
   );
@@ -1337,9 +1336,8 @@ export function getProcessedData(
     data.glpSupplyUsd && data.glpSupplyUsd > 0
       ? mulDiv(data.stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.glpSupplyUsd)
       : 0n;
-  data.feeGlpTrackerAnnualRewardsUsd = mulMulDiv(
-    stakingData.feeGlpTracker.tokensPerInterval,
-    SECONDS_PER_YEAR,
+  data.feeGlpTrackerAnnualRewardsUsd = mulDiv(
+    stakingData.feeGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
     nativeTokenPrice,
     expandDecimals(1, 18)
   );
@@ -1497,13 +1495,4 @@ function mulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | 
   b = BigInt(b);
   c = BigInt(c);
   return (a * b) / c;
-}
-
-function mulMulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | number, d: bigint | number) {
-  if (a === undefined) return undefined;
-  a = BigInt(a);
-  b = BigInt(b);
-  c = BigInt(c);
-  d = BigInt(d);
-  return (a * b * c) / d;
 }

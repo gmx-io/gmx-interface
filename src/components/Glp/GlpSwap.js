@@ -384,7 +384,7 @@ export default function GlpSwap(props) {
     glpSupplyUsd > 0
   ) {
     feeGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
-      stakingData.feeGlpTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR),
+      stakingData.feeGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
       nativeToken.minPrice,
       expandDecimals(1, 18)
     );

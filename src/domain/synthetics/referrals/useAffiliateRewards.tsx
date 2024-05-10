@@ -49,8 +49,8 @@ export function useAffiliateRewards(chainId: number) {
 
         result[marketAddress] = {
           marketAddress,
-          longTokenAmount: BigInt(longTokenAmount),
-          shortTokenAmount: BigInt(shortTokenAmount),
+          longTokenAmount,
+          shortTokenAmount,
         };
       });
 
