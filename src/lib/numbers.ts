@@ -109,7 +109,7 @@ export const formatAmount = (
   if (!defaultValue) {
     defaultValue = "...";
   }
-  if (amount === undefined || amount === null) {
+  if (amount === undefined || amount === null || amount === "") {
     return defaultValue;
   }
   if (displayDecimals === undefined) {
