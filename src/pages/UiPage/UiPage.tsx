@@ -1,7 +1,8 @@
+import { entries } from "lodash";
+
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { entries } from "lodash";
 
 const colors = {
   blue: {
