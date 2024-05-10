@@ -453,103 +453,90 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestUsd,
           longInterestInTokens,
           shortInterestInTokens,
-          longPoolAmount: BigInt(dataStoreValues.longPoolAmount.returnValues[0]) / marketDivisor,
-          shortPoolAmount: BigInt(dataStoreValues.shortPoolAmount.returnValues[0]) / marketDivisor,
-          maxLongPoolAmountForDeposit: BigInt(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
-          maxShortPoolAmountForDeposit: BigInt(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
-          maxLongPoolAmount: BigInt(dataStoreValues.maxLongPoolAmount.returnValues[0]),
-          maxShortPoolAmount: BigInt(dataStoreValues.maxShortPoolAmount.returnValues[0]),
-          longPoolAmountAdjustment: BigInt(dataStoreValues.longPoolAmountAdjustment.returnValues[0]),
-          shortPoolAmountAdjustment: BigInt(dataStoreValues.shortPoolAmountAdjustment.returnValues[0]),
-          poolValueMin: BigInt(poolValueInfoMin.poolValue),
-          poolValueMax: BigInt(poolValueInfoMax.poolValue),
-          reserveFactorLong: BigInt(dataStoreValues.reserveFactorLong.returnValues[0]),
-          reserveFactorShort: BigInt(dataStoreValues.reserveFactorShort.returnValues[0]),
-          openInterestReserveFactorLong: BigInt(dataStoreValues.openInterestReserveFactorLong.returnValues[0]),
-          openInterestReserveFactorShort: BigInt(dataStoreValues.openInterestReserveFactorShort.returnValues[0]),
-          maxOpenInterestLong: BigInt(dataStoreValues.maxOpenInterestLong.returnValues[0]),
-          maxOpenInterestShort: BigInt(dataStoreValues.maxOpenInterestShort.returnValues[0]),
-          totalBorrowingFees: BigInt(poolValueInfoMax.totalBorrowingFees),
-          positionImpactPoolAmount: BigInt(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
-          minPositionImpactPoolAmount: BigInt(dataStoreValues.minPositionImpactPoolAmount.returnValues[0]),
-          positionImpactPoolDistributionRate: BigInt(
-            dataStoreValues.positionImpactPoolDistributionRate.returnValues[0]
-          ),
-          swapImpactPoolAmountLong: BigInt(dataStoreValues.swapImpactPoolAmountLong.returnValues[0]),
-          swapImpactPoolAmountShort: BigInt(dataStoreValues.swapImpactPoolAmountShort.returnValues[0]),
-          borrowingFactorLong: BigInt(dataStoreValues.borrowingFactorLong.returnValues[0]),
-          borrowingFactorShort: BigInt(dataStoreValues.borrowingFactorShort.returnValues[0]),
-          borrowingExponentFactorLong: BigInt(dataStoreValues.borrowingExponentFactorLong.returnValues[0]),
-          borrowingExponentFactorShort: BigInt(dataStoreValues.borrowingExponentFactorShort.returnValues[0]),
-          fundingFactor: BigInt(dataStoreValues.fundingFactor.returnValues[0]),
-          fundingExponentFactor: BigInt(dataStoreValues.fundingExponentFactor.returnValues[0]),
-          fundingIncreaseFactorPerSecond: BigInt(dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0]),
-          fundingDecreaseFactorPerSecond: BigInt(dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0]),
-          thresholdForDecreaseFunding: BigInt(dataStoreValues.thresholdForDecreaseFunding.returnValues[0]),
-          thresholdForStableFunding: BigInt(dataStoreValues.thresholdForStableFunding.returnValues[0]),
-          minFundingFactorPerSecond: BigInt(dataStoreValues.minFundingFactorPerSecond.returnValues[0]),
-          maxFundingFactorPerSecond: BigInt(dataStoreValues.maxFundingFactorPerSecond.returnValues[0]),
-          pnlLongMax: BigInt(poolValueInfoMax.longPnl),
-          pnlLongMin: BigInt(poolValueInfoMin.longPnl),
-          pnlShortMax: BigInt(poolValueInfoMax.shortPnl),
-          pnlShortMin: BigInt(poolValueInfoMin.shortPnl),
-          netPnlMax: BigInt(poolValueInfoMax.netPnl),
-          netPnlMin: BigInt(poolValueInfoMin.netPnl),
+          longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
+          shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
+          maxLongPoolAmountForDeposit: dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0],
+          maxShortPoolAmountForDeposit: dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0],
+          maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
+          maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
+          longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],
+          shortPoolAmountAdjustment: dataStoreValues.shortPoolAmountAdjustment.returnValues[0],
+          poolValueMin: poolValueInfoMin.poolValue,
+          poolValueMax: poolValueInfoMax.poolValue,
+          reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
+          reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
+          openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],
+          openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
+          maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
+          maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+          totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
+          positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
+          minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
+          positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
+          swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
+          swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
+          borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
+          borrowingFactorShort: dataStoreValues.borrowingFactorShort.returnValues[0],
+          borrowingExponentFactorLong: dataStoreValues.borrowingExponentFactorLong.returnValues[0],
+          borrowingExponentFactorShort: dataStoreValues.borrowingExponentFactorShort.returnValues[0],
+          fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
+          fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
+          fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+          fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
+          thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
+          thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
+          minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
+          maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+          pnlLongMax: poolValueInfoMax.longPnl,
+          pnlLongMin: poolValueInfoMin.longPnl,
+          pnlShortMax: poolValueInfoMax.shortPnl,
+          pnlShortMin: poolValueInfoMin.shortPnl,
+          netPnlMax: poolValueInfoMax.netPnl,
+          netPnlMin: poolValueInfoMin.netPnl,
 
-          maxPnlFactorForTradersLong: BigInt(dataStoreValues.maxPnlFactorForTradersLong.returnValues[0]),
-          maxPnlFactorForTradersShort: BigInt(dataStoreValues.maxPnlFactorForTradersShort.returnValues[0]),
+          maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
+          maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
 
-          minCollateralFactor: BigInt(dataStoreValues.minCollateralFactor.returnValues[0]),
-          minCollateralFactorForOpenInterestLong: BigInt(
-            dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0]
-          ),
+          minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+          minCollateralFactorForOpenInterestLong:
+            dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
 
-          minCollateralFactorForOpenInterestShort: BigInt(
-            dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0]
-          ),
+          minCollateralFactorForOpenInterestShort:
+            dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigInt(dataStoreValues.claimableFundingAmountLong?.returnValues[0]) / marketDivisor
+            ? dataStoreValues.claimableFundingAmountLong?.returnValues[0] / marketDivisor
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigInt(dataStoreValues.claimableFundingAmountShort?.returnValues[0]) / marketDivisor
+            ? dataStoreValues.claimableFundingAmountShort?.returnValues[0] / marketDivisor
             : undefined,
 
-          positionFeeFactorForPositiveImpact: BigInt(
-            dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0]
-          ),
-          positionFeeFactorForNegativeImpact: BigInt(
-            dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0]
-          ),
-          positionImpactFactorPositive: BigInt(dataStoreValues.positionImpactFactorPositive.returnValues[0]),
-          positionImpactFactorNegative: BigInt(dataStoreValues.positionImpactFactorNegative.returnValues[0]),
-          maxPositionImpactFactorPositive: BigInt(dataStoreValues.maxPositionImpactFactorPositive.returnValues[0]),
-          maxPositionImpactFactorNegative: BigInt(dataStoreValues.maxPositionImpactFactorNegative.returnValues[0]),
-          maxPositionImpactFactorForLiquidations: BigInt(
-            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0]
-          ),
-          positionImpactExponentFactor: BigInt(dataStoreValues.positionImpactExponentFactor.returnValues[0]),
-          swapFeeFactorForPositiveImpact: BigInt(dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0]),
-          swapFeeFactorForNegativeImpact: BigInt(dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0]),
-          swapImpactFactorPositive: BigInt(dataStoreValues.swapImpactFactorPositive.returnValues[0]),
-          swapImpactFactorNegative: BigInt(dataStoreValues.swapImpactFactorNegative.returnValues[0]),
-          swapImpactExponentFactor: BigInt(dataStoreValues.swapImpactExponentFactor.returnValues[0]),
+          positionFeeFactorForPositiveImpact: dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0],
+          positionFeeFactorForNegativeImpact: dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0],
+          positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
+          positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
+          maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorForLiquidations:
+            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+          positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
+          swapFeeFactorForPositiveImpact: dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0],
+          swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
+          swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
+          swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
+          swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
 
-          borrowingFactorPerSecondForLongs: BigInt(
-            readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs
-          ),
+          borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
 
-          borrowingFactorPerSecondForShorts: BigInt(
-            readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts
-          ),
+          borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
 
-          fundingFactorPerSecond: BigInt(nextFunding.fundingFactorPerSecond),
+          fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
           longsPayShorts: nextFunding.longsPayShorts,
 
-          virtualPoolAmountForLongToken: BigInt(virtualInventory.virtualPoolAmountForLongToken),
-          virtualPoolAmountForShortToken: BigInt(virtualInventory.virtualPoolAmountForShortToken),
-          virtualInventoryForPositions: BigInt(virtualInventory.virtualInventoryForPositions),
+          virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
+          virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
+          virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
 
           virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
           virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],

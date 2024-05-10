@@ -304,7 +304,7 @@ function createErrorHandlers({
       }
     }
 
-    if (inputPrice && (!entry.percentage || parseFloat(entry.percentage) === 0)) {
+    if (inputPrice && inputPrice > 0 && !entry.percentage) {
       return {
         ...entry,
         error: {
