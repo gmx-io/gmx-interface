@@ -92,13 +92,13 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnl)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
-              className={cx({
+              textClassName={cx({
                 "text-red-500": !p.position.pendingBorrowingFeesUsd.isZero(),
               })}
             />
@@ -106,7 +106,7 @@ export function PositionItem(p: Props) {
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
-              className={cx({
+              textClassName={cx({
                 "text-red-500": !p.position.pendingFundingFeesUsd.isZero(),
               })}
             />
@@ -114,14 +114,14 @@ export function PositionItem(p: Props) {
               label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
-              className="text-red-500"
+              textClassName="text-red-500"
             />
             {p.position.uiFeeUsd.gt(0) && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
                 value={formatUsd(p.position.uiFeeUsd.mul(-1))}
-                className="text-red-500"
+                textClassName="text-red-500"
               />
             )}
             <br />
@@ -129,7 +129,7 @@ export function PositionItem(p: Props) {
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}
@@ -195,7 +195,7 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
-                    className={cx({
+                    textClassName={cx({
                       "text-red-500": !p.position.pendingBorrowingFeesUsd.isZero(),
                     })}
                   />
@@ -203,7 +203,7 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
-                    className={cx({
+                    textClassName={cx({
                       "text-red-500": !p.position.pendingFundingFeesUsd.isZero(),
                     })}
                   />
@@ -211,7 +211,7 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    className={cx({
+                    textClassName={cx({
                       "text-green-500": p.position.pendingClaimableFundingFeesUsd.gt(0),
                     })}
                   />
@@ -220,7 +220,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
                     value={formatUsd(borrowingFeeRateUsd.mul(-1))}
-                    className={cx({
+                    textClassName={cx({
                       "text-red-500": borrowingFeeRateUsd.gt(0),
                     })}
                   />
@@ -228,7 +228,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                    textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>

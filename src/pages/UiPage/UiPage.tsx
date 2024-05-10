@@ -1,3 +1,5 @@
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { entries } from "lodash";
 
@@ -228,6 +230,10 @@ export default function UiPage() {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab
             qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis. Libero,
             et.
+            <br />
+            <br />
+            <ExchangeInfoRow label="Some label" value="Some value" />
+            <StatsTooltipRow label="Some other label" value="100" />
           </>
         }
         handle={"Lorem ipsum dolor."}

@@ -1339,7 +1339,7 @@ export function ConfirmationBox(p: Props) {
                             : "0.00$"
                         }
                         showDollar={false}
-                        className={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
+                        textClassName={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow

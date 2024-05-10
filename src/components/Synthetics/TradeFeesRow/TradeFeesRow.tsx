@@ -398,7 +398,7 @@ export function TradeFeesRow(p: Props) {
               {feeRows.map((feeRow) => (
                 <StatsTooltipRow
                   key={feeRow.id}
-                  className={feeRow.className}
+                  textClassName={feeRow.className}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}

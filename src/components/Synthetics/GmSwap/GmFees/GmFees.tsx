@@ -39,7 +39,7 @@ export function GmFees(p: Props) {
                   label={t`Price Impact`}
                   value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                   showDollar={false}
-                  className={getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd)}
+                  textClassName={getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd)}
                 />
               )}
 
@@ -49,7 +49,7 @@ export function GmFees(p: Props) {
                     label={p.isDeposit ? t`Buy Fee` : t`Sell Fee`}
                     value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
                     showDollar={false}
-                    className={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
+                    textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                   />
                 </>
               )}
@@ -63,7 +63,7 @@ export function GmFees(p: Props) {
                   }
                   value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
                   showDollar={false}
-                  className="text-red-500"
+                  textClassName="text-red-500"
                 />
               )}
             </div>

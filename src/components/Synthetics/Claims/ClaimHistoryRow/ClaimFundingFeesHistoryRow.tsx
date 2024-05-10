@@ -138,7 +138,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
         return (
           <StatsTooltipRow
-            className="ClaimHistoryRow-tooltip-row"
+            textClassName="whitespace-nowrap mb-5"
             key={market.marketTokenAddress}
             label={
               <div className="flex items-start text-white">

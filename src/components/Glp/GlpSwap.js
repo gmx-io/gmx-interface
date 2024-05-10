@@ -861,13 +861,13 @@ export default function GlpSwap(props) {
           label="Base Fee"
           value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
           showDollar={false}
-          className="text-red-500"
+          textClassName="text-red-500"
         />
         <StatsTooltipRow
           label="Max Bonus Rebate"
           value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
           showDollar={false}
-          className="text-green-500"
+          textClassName="text-green-500"
         />
         <br />
         <div className="text-white">

@@ -338,13 +338,13 @@ export default function PositionsList(props) {
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
                                     value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                    className="text-red-500"
+                                    textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
                                     value={`-$${borrowFeeUSD}`}
-                                    className="text-red-500"
+                                    textClassName="text-red-500"
                                   />
 
                                   {!hideActions && (
@@ -677,13 +677,13 @@ export default function PositionsList(props) {
                               label={t`Borrow Fee`}
                               showDollar={false}
                               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                              className="text-red-500"
+                              textClassName="text-red-500"
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label={t`Borrow Fee / Day`}
                               value={`-$${borrowFeeUSD}`}
-                              className="text-red-500"
+                              textClassName="text-red-500"
                             />
                             {!hideActions && (
                               <>

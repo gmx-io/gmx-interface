@@ -84,7 +84,7 @@ export function SwapCard(p: Props) {
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
-                    className="al-swap"
+                    textClassName="al-swap"
                     label={t`Max ${toToken?.symbol} out`}
                     value={maxOutValue}
                     showDollar={false}

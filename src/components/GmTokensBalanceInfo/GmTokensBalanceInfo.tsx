@@ -47,14 +47,14 @@ export const GmTokensBalanceInfo = ({
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
-            className={getPositiveOrNegativeClass(earnedTotal)}
+            textClassName={getPositiveOrNegativeClass(earnedTotal)}
             value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
         {earnedRecently && (
           <StatsTooltipRow
             showDollar={false}
-            className={getPositiveOrNegativeClass(earnedRecently)}
+            textClassName={getPositiveOrNegativeClass(earnedRecently)}
             label={t`${daysConsidered}d accrued Fees`}
             value={formatDeltaUsd(earnedRecently, undefined)}
           />
@@ -107,13 +107,13 @@ export const GmTokensTotalBalanceInfo = ({
           <>
             <StatsTooltipRow
               label={t`Wallet total accrued Fees`}
-              className={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
+              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
               value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`Wallet ${daysConsidered}d accrued Fees `}
-              className={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
+              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
               value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
@@ -121,7 +121,7 @@ export const GmTokensTotalBalanceInfo = ({
               <>
                 <StatsTooltipRow
                   label={t`Wallet 365d expected Fees`}
-                  className={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
+                  textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
                   value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                   showDollar={false}
                 />

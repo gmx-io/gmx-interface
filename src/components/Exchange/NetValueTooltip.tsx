@@ -36,32 +36,32 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
               label={t`PnL`}
               value={position.deltaBeforeFeesStr}
               showDollar={false}
-              className={position.hasProfit ? "text-green-500" : "text-red-500"}
+              textClassName={position.hasProfit ? "text-green-500" : "text-red-500"}
             />
             <StatsTooltipRow
               label={t`Borrow Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red-500"
+              textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Open Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red-500"
+              textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red-500"
+              textClassName="text-red-500"
             />
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
               value={pnlAfterFees}
               showDollar={false}
-              className={position.hasProfitAfterFees ? "text-green-500" : "text-red-500"}
+              textClassName={position.hasProfitAfterFees ? "text-green-500" : "text-red-500"}
             />
           </>
         );

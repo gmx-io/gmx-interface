@@ -84,12 +84,12 @@ function renderLiquidationTooltip(liquidationData, label) {
             label={t`Borrow Fee`}
             showDollar
             value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
-            className="text-red-500"
+            textClassName="text-red-500"
           />
           <StatsTooltipRow
             label={t`PnL`}
             showDollar={false}
-            className="text-red-500"
+            textClassName="text-red-500"
             value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
           />
           {liquidationData.type === "full" && (
