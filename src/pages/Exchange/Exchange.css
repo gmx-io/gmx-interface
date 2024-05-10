@@ -1004,7 +1004,7 @@ table.Exchange-list-small td {
 }
 
 .Position-pnl.negative:hover {
-  color: #fb5971;
+  color: var(--color-red-400);
 }
 
 .Position-pnl.positive:hover {
