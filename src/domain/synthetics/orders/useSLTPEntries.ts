@@ -248,7 +248,7 @@ function createErrorHandlers({
     const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
 
     if (isStopLoss) {
-      if (inputPrice === liqPrice && isLong) {
+      if ((inputPrice === undefined ? false : inputPrice <= liqPrice) && isLong) {
         return {
           ...entry,
           error: {
@@ -256,7 +256,7 @@ function createErrorHandlers({
           },
         };
       }
-      if (inputPrice === liqPrice && !isLong) {
+      if ((inputPrice === undefined ? false : inputPrice >= liqPrice) && !isLong) {
         return {
           ...entry,
           error: {
