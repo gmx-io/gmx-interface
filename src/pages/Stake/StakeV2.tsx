@@ -110,7 +110,7 @@ function StakeModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -305,7 +305,7 @@ function UnstakeModal(props) {
   }
 
   const votingPowerBurnAmount =
-    unstakeGmxPercentage && govTokenAmount && unstakeGmxPercentage > 0 && govTokenAmount.gt(0)
+    unstakeGmxPercentage && govTokenAmount && unstakeGmxPercentage > 0 && govTokenAmount > 0
       ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
       : 0n;
 
@@ -768,7 +768,7 @@ function CompoundModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -989,7 +989,7 @@ function ClaimModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const isPrimaryEnabled = () => {
     return !isClaiming && !isUndelegatedGovToken;
@@ -1941,7 +1941,9 @@ export default function StakeV2() {
                         handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
                         renderContent={() => (
                           <>
-                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
+                            govTokenAmount &&
+                            govTokenAmount > 0 ? (
                               <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
