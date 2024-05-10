@@ -2186,7 +2186,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="muted inline-block">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
@@ -2202,7 +2202,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="muted inline-block">
                       ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
@@ -2217,7 +2217,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="muted inline-block">
                       ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount &&

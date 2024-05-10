@@ -1218,7 +1218,7 @@ export default function PositionSeller(props) {
                       <div>
                         <div className="muted inline-block">
                           ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                          <BsArrowRight className="transition-arrow" />
+                          <BsArrowRight className="transition-arrow inline-block" />
                         </div>
                         ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
@@ -1236,7 +1236,7 @@ export default function PositionSeller(props) {
                   <div>
                     <div className="muted inline-block">
                       ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                     ${formatAmount(position.size.sub(fromAmount), USD_DECIMALS, 2, true)}
                   </div>
@@ -1266,7 +1266,7 @@ export default function PositionSeller(props) {
                   <div>
                     <div className="muted inline-block">
                       ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                     ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
@@ -1289,7 +1289,7 @@ export default function PositionSeller(props) {
                         <div>
                           <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2)}x
                         </div>
