@@ -208,7 +208,6 @@ export function TradeBox(p: Props) {
     switchTokenAddresses,
     tradeMode,
     tradeType,
-    collateralAddress,
     collateralToken,
     fromTokenAddress,
     marketInfo,
@@ -1049,7 +1048,6 @@ export function TradeBox(p: Props) {
 
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
-          selectedCollateralAddress={collateralAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />

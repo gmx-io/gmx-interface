@@ -16,13 +16,12 @@ import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import { useMemo, useRef, useState } from "react";
-import { BiCopy, BiErrorCircle } from "react-icons/bi";
+import { BiCopy } from "react-icons/bi";
 import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import "./AffiliatesStats.scss";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
@@ -38,6 +37,7 @@ import {
 } from "./referralsHelper";
 import usePagination from "./usePagination";
 import useWallet from "lib/wallets/useWallet";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 
 type Props = {
   chainId: number;
@@ -299,7 +299,6 @@ function AffiliatesStats({
               </thead>
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
-                  const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   return (
                     <tr key={index}>
                       <td data-label="Referral Code">
@@ -322,45 +321,7 @@ function AffiliatesStats({
                           >
                             <FiTwitter />
                           </a>
-                          {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
-                            <div className="info">
-                              <TooltipWithPortal
-                                position="right"
-                                handle={<IoWarningOutline color="#ffba0e" size={16} />}
-                                renderContent={() => (
-                                  <div>
-                                    <Trans>
-                                      This code is not yet registered on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                      there.
-                                      <br />
-                                      <br />
-                                      Switch your network to create this code on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
-                                    </Trans>
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          )}
-                          {ownerOnOtherChain && ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
-                            <div className="info">
-                              <TooltipWithPortal
-                                position="right"
-                                handle={<BiErrorCircle color="#e82e56" size={16} />}
-                                renderContent={() => (
-                                  <div>
-                                    <Trans>
-                                      This code has been taken by someone else on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                      from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}
-                                      .
-                                    </Trans>
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          )}
+                          <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
                       </td>
                       <td data-label="Total Volume">

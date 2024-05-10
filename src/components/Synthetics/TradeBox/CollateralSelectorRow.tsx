@@ -1,105 +1,67 @@
 import { Trans, t } from "@lingui/macro";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import { convertTokenAddress } from "config/tokens";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import {
-  selectTradeboxAvailableMarketsOptions,
-  selectTradeboxHasExistingOrder,
-  selectTradeboxHasExistingPosition,
-  selectTradeboxMarketInfo,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
-import { TokenData } from "domain/synthetics/tokens";
-import { TokenInfo } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import pickBy from "lodash/pickBy";
 import React, { useMemo } from "react";
 
+import {
+  selectTradeboxAvailableAndDisabledTokensForCollateral,
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxCollateralTokenAddress,
+  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingPosition,
+  selectTradeboxMarketAddress,
+  selectTradeboxSelectedCollateralTokenSymbol,
+  selectTradeboxSetCollateralAddress,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { CollateralSelector } from "../CollateralSelector/CollateralSelector";
+
 export type Props = {
-  selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
-  const { selectedCollateralAddress, selectedMarketAddress, onSelectCollateralAddress, isMarket } = p;
-  const marketsInfo = useMarketsInfoData();
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const { isLong } = useTradeboxTradeFlags();
+  const { onSelectCollateralAddress } = p;
+  const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
 
-  const { allRelatedTokensArr, allRelatedTokensMap, getTokenState } = useMemo(() => {
-    if (!marketInfo) {
-      return { allRelatedTokensArr: [], allRelatedTokensMap: {} };
-    }
+  const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
-    const allRelatedTokensMap: Record<string, TokenData> = {};
-    const otherPoolsFlagMap: Record<string, boolean | undefined> = {};
+  const warnings = useCollateralWarnings();
 
-    allRelatedTokensMap[marketInfo.longTokenAddress] = marketInfo.longToken;
-    allRelatedTokensMap[marketInfo.shortTokenAddress] = marketInfo.shortToken;
+  return (
+    <>
+      <ExchangeInfoRow
+        label={t`Collateral In`}
+        className="SwapBox-info-row"
+        value={
+          <CollateralSelector
+            onSelect={onSelectCollateralAddress}
+            options={availableTokens}
+            disabledOptions={disabledTokens}
+            selectedTokenSymbol={selectedTokenName}
+          />
+        }
+      />
+      {warnings}
+    </>
+  );
+}
 
-    const relatedMarkets = pickBy(marketsInfo, (market) => market.indexTokenAddress === marketInfo.indexTokenAddress);
-
-    Object.values(relatedMarkets).forEach((market) => {
-      if (!allRelatedTokensMap[market.longTokenAddress]) {
-        allRelatedTokensMap[market.longTokenAddress] = market.longToken;
-        otherPoolsFlagMap[market.longTokenAddress] = true;
-      }
-      if (!allRelatedTokensMap[market.shortTokenAddress]) {
-        allRelatedTokensMap[market.shortTokenAddress] = market.shortToken;
-        otherPoolsFlagMap[market.shortTokenAddress] = true;
-      }
-    });
-
-    const allRelatedTokensArr = Object.values(allRelatedTokensMap).sort((a, b) => {
-      if (otherPoolsFlagMap[a.address] && !otherPoolsFlagMap[b.address]) {
-        return 1;
-      }
-
-      if (!otherPoolsFlagMap[a.address] && otherPoolsFlagMap[b.address]) {
-        return -1;
-      }
-
-      if (a.isStable && !b.isStable) {
-        return -1;
-      }
-
-      if (!a.isStable && b.isStable) {
-        return 1;
-      }
-
-      const aLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
-      const bLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isLong);
-
-      return aLiquidity >= bLiquidity ? -1 : 1;
-    });
-
-    const getTokenState = (info: TokenInfo) => {
-      if (otherPoolsFlagMap[info.address]) {
-        return { disabled: true, message: t`Select a pool containing ${info.symbol} to use it as collateral.` };
-      }
-    };
-
-    return { allRelatedTokensMap, allRelatedTokensArr, getTokenState };
-  }, [isLong, marketInfo, marketsInfo]);
+function useCollateralWarnings() {
+  const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
+  const { isMarket } = useSelector(selectTradeboxTradeFlags);
+  const onSelectCollateralAddress = useSelector(selectTradeboxSetCollateralAddress);
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+
   const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
-  const {
-    collateralWithOrder,
-    marketWithOrder,
-    marketWithPosition,
-    collateralWithPosition,
-    collateralWithOrderShouldUnwrapNativeToken,
-  } = marketsOptions || {};
-
-  const { chainId } = useChainId();
+  const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const showHasExistingPositionWithDifferentCollateral =
     !hasExistingPosition &&
@@ -169,10 +131,9 @@ export function CollateralSelectorRow(p: Props) {
     }
 
     if (showHasExistingOrderWithDifferentCollateral) {
+      const address = collateralWithOrder.address;
       const symbol = collateralWithOrder.symbol;
-      const address = collateralWithOrderShouldUnwrapNativeToken
-        ? convertTokenAddress(chainId, collateralWithOrder.address, "wrapped")
-        : collateralWithOrder.address;
+
       messages.push(
         <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-warning" compact>
           <Trans>
@@ -199,37 +160,9 @@ export function CollateralSelectorRow(p: Props) {
     collateralWithPosition?.symbol,
     collateralWithPosition?.address,
     onSelectCollateralAddress,
-    collateralWithOrder?.symbol,
     collateralWithOrder?.address,
-    collateralWithOrderShouldUnwrapNativeToken,
-    chainId,
+    collateralWithOrder?.symbol,
   ]);
 
-  return (
-    <>
-      <ExchangeInfoRow
-        label={t`Collateral In`}
-        className="SwapBox-info-row"
-        value={
-          selectedCollateralAddress &&
-          allRelatedTokensArr.length !== 0 && (
-            <TokenSelector
-              label={t`Collateral In`}
-              className="GlpSwap-from-token SwapBox-info-dropdown"
-              chainId={chainId}
-              tokenAddress={selectedCollateralAddress}
-              onSelectToken={(token) => {
-                onSelectCollateralAddress(token.address);
-              }}
-              tokens={allRelatedTokensArr}
-              infoTokens={allRelatedTokensMap}
-              showTokenImgInDropdown={true}
-              getTokenState={getTokenState}
-            />
-          )
-        }
-      />
-      {messages}
-    </>
-  );
+  return messages;
 }

@@ -47,7 +47,9 @@ import { selectIsPnlInLeverage } from "../settingsSelectors";
 
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxChooseSuitableMarket";
-export * from "./selectTradeboxAvailableMarketOptions";
+export * from "./selectTradeboxAvailableMarketsOptions";
+export * from "./selectTradeboxRelatedMarketsStats";
+export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -637,111 +639,6 @@ export type AvailableMarketsOptions = {
 export const selectTradeboxHasExistingOrder = createSelector((q) => !!q(selectTradeboxExistingOrder));
 export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
 
-// export const selectTradeboxAvailableMarketsOptions = createSelector(function selectTradeboxAvailableMarketsOptions(
-//   q
-// ): AvailableMarketsOptions {
-//   const { isIncrease, isPosition, isLong } = q(selectTradeboxTradeFlags);
-//   const toTokenAddress = q(selectTradeboxToTokenAddress);
-//   if (!toTokenAddress) return {};
-//   const indexToken = q((s) => selectTokensData(s)?.[toTokenAddress]);
-
-//   if (!isPosition || !indexToken) return {};
-
-//   const marketsInfoData = q(selectMarketsInfoData);
-
-//   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-//   const increaseSizeUsd = increaseAmounts?.sizeDeltaUsd;
-
-//   const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
-
-//   const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
-
-//   const liquidMarkets = increaseSizeUsd
-//     ? availableMarkets.filter((marketInfo) => {
-//         const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
-
-//         return liquidity.gt(increaseSizeUsd);
-//       })
-//     : availableMarkets;
-
-//   const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
-
-//   if (isIncrease && liquidMarkets.length === 0) {
-//     result.isNoSufficientLiquidityInAnyMarket = true;
-
-//     return result;
-//   }
-
-//   result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
-
-//   const hasExistingPosition = q(selectTradeboxHasExistingPosition);
-
-//   if (!hasExistingPosition) {
-//     const positionsInfo = q(selectPositionsInfoData);
-
-//     const positions = Object.values(positionsInfo || {});
-//     const availablePosition = positions.find(
-//       (pos) =>
-//         pos.isLong === isLong && availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
-//     );
-
-//     if (availablePosition) {
-//       result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
-//       result.collateralWithPosition = availablePosition.collateralToken;
-//     }
-//   }
-
-//   const hasExistingOrder = q(selectTradeboxHasExistingOrder);
-
-//   if (!result.marketWithPosition && !hasExistingOrder) {
-//     const ordersInfo = q(selectOrdersInfoData);
-//     const orders = Object.values(ordersInfo || {});
-//     const availableOrder = orders.find(
-//       (order) =>
-//         isIncreaseOrderType(order.orderType) &&
-//         order.isLong === isLong &&
-//         availableMarkets.some((market) => market.marketTokenAddress === order.marketAddress)
-//     ) as PositionOrderInfo;
-
-//     if (availableOrder) {
-//       result.marketWithOrder = getByKey(marketsInfoData, availableOrder.marketAddress);
-//       result.collateralWithOrder = availableOrder.targetCollateralToken;
-//       result.collateralWithOrderShouldUnwrapNativeToken = availableOrder.shouldUnwrapNativeToken;
-//     }
-//   }
-
-//   if (
-//     increaseSizeUsd &&
-//     !hasExistingPosition &&
-//     !hasExistingOrder &&
-//     !result.marketWithPosition &&
-//     !result.marketWithOrder
-//   ) {
-//     const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
-//       liquidMarkets,
-//       indexToken.address,
-//       isLong,
-//       isIncrease,
-//       increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
-//     );
-
-//     if (bestMarket && bestImpactDeltaUsd) {
-//       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
-//         isIncrease: true,
-//         isLong,
-//         indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
-//         priceImpactDeltaUsd: bestImpactDeltaUsd,
-//         sizeDeltaUsd: increaseSizeUsd,
-//       });
-
-//       result.minPriceImpactMarket = bestMarket;
-//       result.minPriceImpactBps = acceptablePriceDeltaBps;
-//     }
-//   }
-
-//   return result;
-// });
-
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
   const { isSwap } = q(selectTradeboxTradeFlags);
 
@@ -839,4 +736,12 @@ export const selectTradeboxExecutionPrice = createSelector(function selectTradeb
     decreaseAmounts.sizeDeltaUsd,
     isLong
   );
+});
+
+export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {
+  const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
+  const tokensData = q(selectTokensData);
+  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
+
+  return symbol;
 });

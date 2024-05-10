@@ -19,16 +19,40 @@ export function getSwapPathOutputAddresses(p: {
   swapPath: string[];
   wrappedNativeTokenAddress: string;
   shouldUnwrapNativeToken: boolean;
+  isIncrease: boolean;
 }) {
-  const { marketsInfoData, initialCollateralAddress, swapPath, wrappedNativeTokenAddress, shouldUnwrapNativeToken } = p;
+  const {
+    marketsInfoData,
+    initialCollateralAddress,
+    swapPath,
+    wrappedNativeTokenAddress,
+    shouldUnwrapNativeToken,
+    isIncrease,
+  } = p;
 
   if (swapPath.length === 0) {
-    return {
-      outTokenAddress:
-        shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress
-          ? NATIVE_TOKEN_ADDRESS
-          : initialCollateralAddress,
+    // Increase
+    if (isIncrease) {
+      // During increase target collateral token is always ERC20 token, it can not be native token.
+      // Thus we do not need to check if initial collateral token is wrapped token to unwrap it.
+      // So we can safely return initial collateral token address as out token address, when there is no swap path.
 
+      return {
+        outTokenAddress: initialCollateralAddress,
+        outMarketAddress: undefined,
+      };
+    }
+
+    // Decrease
+    if (shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress) {
+      return {
+        outTokenAddress: NATIVE_TOKEN_ADDRESS,
+        outMarketAddress: undefined,
+      };
+    }
+
+    return {
+      outTokenAddress: initialCollateralAddress,
       outMarketAddress: undefined,
     };
   }
@@ -61,8 +85,18 @@ export function getSwapPathOutputAddresses(p: {
     outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }
 
-  const outTokenAddress =
-    shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress ? NATIVE_TOKEN_ADDRESS : outToken.address;
+  let outTokenAddress: string;
+  if (isIncrease) {
+    // Here swap path is not empty, this means out token came from swapping tokens,
+    // thus it can not be native token by design.
+    outTokenAddress = outToken.address;
+  } else {
+    if (shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress) {
+      outTokenAddress = NATIVE_TOKEN_ADDRESS;
+    } else {
+      outTokenAddress = outToken.address;
+    }
+  }
 
   return {
     outTokenAddress,

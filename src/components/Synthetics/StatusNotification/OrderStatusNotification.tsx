@@ -72,6 +72,7 @@ export function OrderStatusNotification({
       swapPath: pendingOrderData.swapPath,
       wrappedNativeTokenAddress: wrappedNativeToken.address,
       shouldUnwrapNativeToken: pendingOrderData.shouldUnwrapNativeToken,
+      isIncrease: isIncreaseOrderType(pendingOrderData.orderType),
     });
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
 

@@ -7546,6 +7546,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
+  languageName: node
+  linkType: hard
+
 "cluster-key-slot@npm:^1.1.0":
   version: 1.1.2
   resolution: "cluster-key-slot@npm:1.1.2"
@@ -10778,7 +10785,7 @@ __metadata:
     react-scripts: 5.0.1
     react-select: 5.2.1
     react-tabs: 3.2.3
-    react-toastify: 6.0.9
+    react-toastify: 10.0.5
     react-use: 17.3.1
     recharts: 2.1.8
     reselect: 5.1.0
@@ -17003,16 +17010,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-toastify@npm:6.0.9":
-  version: 6.0.9
-  resolution: "react-toastify@npm:6.0.9"
+"react-toastify@npm:10.0.5":
+  version: 10.0.5
+  resolution: "react-toastify@npm:10.0.5"
   dependencies:
-    classnames: ^2.2.6
-    prop-types: ^15.7.2
-    react-transition-group: ^4.4.1
+    clsx: ^2.1.0
   peerDependencies:
-    react: ">=16"
-  checksum: f5efca148f79cb68b58f486b7b87d3fa91c379480097b42501db8ef9d6463e5506264f5fd0873cccc854bd436d4b8e2d0bdd11bca20baa1c39e9424b8d6a80e5
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 982d33918c63e99464623a1b3b023ab5fe18fe341143cb0cb04287e37fd0611c560d9ef451e151ac8ade15a1cda09df09d4c442b3db582965d71aaf42d49b230
   languageName: node
   linkType: hard
 
@@ -17031,7 +17037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^4.3.0, react-transition-group@npm:^4.4.1":
+"react-transition-group@npm:^4.3.0":
   version: 4.4.5
   resolution: "react-transition-group@npm:4.4.5"
   dependencies:

@@ -1151,7 +1151,7 @@ export function getStakingData(stakingInfo) {
   return data;
 }
 
-type ProcessedData = Partial<{
+export type ProcessedData = Partial<{
   gmxBalance: bigint;
   gmxBalanceUsd: bigint;
   gmxSupply: bigint;

@@ -1,3 +1,5 @@
+@use "src/styles/slide-up" as *;
+
 .TokenSelector .Modal .Modal-content {
   width: 42rem;
   position: absolute;
@@ -169,6 +171,10 @@
 @media (max-width: 700px) {
   .TokenSelector .Modal .Modal-content {
     bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    @include slide-up;
   }
 
   .TokenSelector.right .Modal {

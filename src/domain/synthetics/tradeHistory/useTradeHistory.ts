@@ -6,7 +6,7 @@ import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
-import { isSwapOrderType, OrderType } from "domain/synthetics/orders";
+import { isIncreaseOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";
 import { parseContractPrice, TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
 import { Token } from "domain/tokens";
@@ -138,6 +138,7 @@ function createRawTradeActionTransformer(
         initialCollateralAddress: initialCollateralTokenAddress,
         wrappedNativeTokenAddress: wrappedToken.address,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+        isIncrease: false,
       });
 
       const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress)!;
@@ -179,6 +180,7 @@ function createRawTradeActionTransformer(
         initialCollateralAddress: initialCollateralTokenAddress,
         wrappedNativeTokenAddress: wrappedToken.address,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+        isIncrease: isIncreaseOrderType(rawAction.orderType),
       });
       const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress);
       const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress);

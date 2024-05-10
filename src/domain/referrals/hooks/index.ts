@@ -6,7 +6,6 @@ import useSWR from "swr";
 import ReferralStorage from "abis/ReferralStorage.json";
 import Timelock from "abis/Timelock.json";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -20,39 +19,7 @@ import { UserReferralInfo } from "../types";
 import { decodeReferralCode, encodeReferralCode } from "../utils";
 
 export * from "./useReferralsData";
-
-async function getCodeOwnersData(network, account, codes = []) {
-  if (codes.length === 0 || !account || !network) {
-    return undefined;
-  }
-  const query = gql`
-    query allCodes($codes: [String!]!) {
-      referralCodes(where: { code_in: $codes }) {
-        owner
-        id
-      }
-    }
-  `;
-  return getReferralsGraphClient(network)
-    .query({ query, variables: { codes } })
-    .then(({ data }) => {
-      const { referralCodes } = data;
-      const codeOwners = referralCodes.reduce((acc, cv) => {
-        acc[cv.id] = cv.owner;
-        return acc;
-      }, {});
-      return codes.map((code) => {
-        const owner = codeOwners[code];
-        return {
-          code,
-          codeString: decodeReferralCode(code),
-          owner,
-          isTaken: Boolean(owner),
-          isTakenByCurrentUser: owner && owner.toLowerCase() === account.toLowerCase(),
-        };
-      });
-    });
-}
+export * from "./useUserCodesOnAllChain";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,
@@ -128,50 +95,6 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
     totalRebate,
     discountShare,
   };
-}
-
-export function useUserCodesOnAllChain(account) {
-  const [data, setData] = useState<any>(null);
-  const query = gql`
-    query referralCodesOnAllChain($account: String!) {
-      referralCodes(first: 1000, where: { owner: $account }) {
-        code
-      }
-    }
-  `;
-  useEffect(() => {
-    async function main() {
-      const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
-          try {
-            const client = getReferralsGraphClient(chainId);
-            const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
-            return data.referralCodes.map((c) => c.code);
-          } catch (ex) {
-            return [];
-          }
-        })
-      );
-      const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
-        getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
-        getCodeOwnersData(ARBITRUM, account, avalancheCodes),
-      ]);
-
-      setData({
-        [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
-          acc[cv.code] = cv;
-          return acc;
-        }, {} as any),
-        [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
-          acc[cv.code] = cv;
-          return acc;
-        }, {} as any),
-      });
-    }
-
-    main();
-  }, [account, query]);
-  return data;
 }
 
 export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, signer, opts) {

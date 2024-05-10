@@ -45,7 +45,12 @@ export type ReferralCodeStats = {
   trades: number;
   tradedReferralsCount: number;
   registeredReferralsCount: number;
-  ownerOnOtherChain?: CodeOwnershipInfo;
+  /**
+   * This includes available testnets
+   */
+  allOwnersOnOtherChains?: {
+    [chainId: number]: CodeOwnershipInfo;
+  };
   volume: bigint;
   totalRebateUsd: bigint;
   affiliateRebateUsd: bigint;

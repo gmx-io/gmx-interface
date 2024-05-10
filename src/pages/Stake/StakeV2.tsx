@@ -14,11 +14,13 @@ import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
+import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
+import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -30,31 +32,42 @@ import {
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
+import { getIcons } from "config/icons";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
+import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
+import useVestingData from "domain/vesting/useVestingData";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
+import { useENS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   BN_ZERO,
@@ -65,18 +78,12 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import "./StakeV2.css";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import PageTitle from "components/PageTitle/PageTitle";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import useVestingData from "domain/vesting/useVestingData";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
-import { bigMath } from "lib/bigmath";
+import { shortenAddressOrEns } from "lib/wallets";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
+import "./StakeV2.css";
+import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 const { ZeroAddress } = ethers;
 
@@ -99,6 +106,11 @@ function StakeModal(props) {
     stakeMethodName,
     setPendingTxns,
   } = props;
+
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -162,6 +174,9 @@ function StakeModal(props) {
     if (isStaking) {
       return false;
     }
+    if (isUndelegatedGovToken) {
+      return false;
+    }
     return true;
   };
 
@@ -185,6 +200,16 @@ function StakeModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              </ExternalLink>
+              <span>&nbsp;voting power before staking.</span>
+            </Trans>
+          </AlertInfo>
+        ) : null}
         <BuyInputSection
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
@@ -247,6 +272,8 @@ function UnstakeModal(props) {
   let amount = parseValue(value, 18);
   let burnAmount;
 
+  const govTokenAmount = useGovTokenAmount(chainId);
+
   if (
     multiplierPointsAmount &&
     multiplierPointsAmount > 0 &&
@@ -258,14 +285,29 @@ function UnstakeModal(props) {
     burnAmount = bigMath.mulDiv(multiplierPointsAmount, amount, bonusGmxInFeeGmx);
   }
 
+  const unstakeGmxPercentage =
+    maxAmount > 0 && amount ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount) : 0n;
+
   let unstakeBonusLostPercentage;
-  if (amount && amount > 0 && multiplierPointsAmount && multiplierPointsAmount > 0) {
+  if (
+    amount &&
+    amount > 0 &&
+    multiplierPointsAmount &&
+    multiplierPointsAmount > 0 &&
+    processedData.esGmxInStakedGmx !== undefined &&
+    processedData.gmxInStakedGmx !== undefined
+  ) {
     unstakeBonusLostPercentage = bigMath.mulDiv(
       amount + burnAmount,
       BASIS_POINTS_DIVISOR_BIGINT,
       multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx
     );
   }
+
+  const votingPowerBurnAmount =
+    unstakeGmxPercentage && govTokenAmount && unstakeGmxPercentage > 0 && govTokenAmount.gt(0)
+      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
 
   const getError = () => {
     if (!amount) {
@@ -347,9 +389,13 @@ function UnstakeModal(props) {
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
-                {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
+                {formatAmount(burnAmount, 18, 2, true)} Multiplier Points
               </ExternalLink>
-              .&nbsp;
+              {chainId === ARBITRUM ? (
+                <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
+              ) : (
+                "."
+              )}
               <span>
                 You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                 this action.
@@ -719,6 +765,11 @@ function CompoundModal(props) {
     true
   );
 
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
 
@@ -734,7 +785,7 @@ function CompoundModal(props) {
   const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards > tokenAllowance;
 
   const isPrimaryEnabled = () => {
-    return !isCompounding && !isApproving && !isCompounding;
+    return !isCompounding && !isApproving && !isCompounding && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
@@ -843,6 +894,16 @@ function CompoundModal(props) {
             </Trans>
           </AlertInfo>
         )}
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              </ExternalLink>
+              <span>&nbsp;voting power before compounding.</span>
+            </Trans>
+          </AlertInfo>
+        ) : null}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox
@@ -925,8 +986,13 @@ function ClaimModal(props) {
     true
   );
 
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const isUndelegatedGovToken =
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+
   const isPrimaryEnabled = () => {
-    return !isClaiming;
+    return !isClaiming && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
@@ -978,6 +1044,16 @@ function ClaimModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              </ExternalLink>
+              <span>&nbsp;voting power before compounding.</span>
+            </Trans>
+          </AlertInfo>
+        ) : null}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
@@ -1189,6 +1265,9 @@ export default function StakeV2() {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
   const vestingData = useVestingData(account);
+  const govTokenAmount = useGovTokenAmount(chainId);
+  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
+  const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
   const { data: walletBalances } = useSWR(
     [
@@ -1799,7 +1878,7 @@ export default function StakeV2() {
             <div className="App-card-title">
               <div className="inline-items-center">
                 <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
-                GMX
+                {t`GMX & Voting Power`}
               </div>
             </div>
             <div className="App-card-divider"></div>
@@ -1849,6 +1928,57 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "gmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
+              {chainId === ARBITRUM && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Voting Power</Trans>
+                  </div>
+                  <div>
+                    {govTokenAmount ? (
+                      <Tooltip
+                        position="bottom-end"
+                        className="nowrap"
+                        handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
+                        renderContent={() => (
+                          <>
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
+                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+                                <Trans>
+                                  <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                                    Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+                                  </ExternalLink>
+                                  <span>&nbsp;voting power.</span>
+                                </Trans>
+                              </AlertInfo>
+                            ) : null}
+                            <StatsTooltipRow
+                              label={t`Delegated to`}
+                              value={
+                                !govTokenDelegatesAddress || govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS ? (
+                                  <Trans>No delegate found</Trans>
+                                ) : (
+                                  <ExternalLink href={getGmxDAODelegateLink(govTokenDelegatesAddress)}>
+                                    {govTokenDelegatesAddress === account
+                                      ? t`Myself`
+                                      : govTokenDelegatesEns
+                                      ? shortenAddressOrEns(govTokenDelegatesEns, 25)
+                                      : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
+                                  </ExternalLink>
+                                )
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <ExternalLink href={GMX_DAO_LINKS.DELEGATES}>Explore the list of delegates</ExternalLink>.
+                          </>
+                        )}
+                      />
+                    ) : (
+                      "..."
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
@@ -1859,7 +1989,7 @@ export default function StakeV2() {
                     handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
-                      <GMXAprTooltip processedData={processedData!} nativeTokenSymbol={nativeTokenSymbol} />
+                      <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
                   />
                 </div>
@@ -1875,7 +2005,7 @@ export default function StakeV2() {
                       position="bottom-end"
                       renderContent={() => (
                         <GMXAprTooltip
-                          processedData={processedData!}
+                          processedData={processedData}
                           nativeTokenSymbol={nativeTokenSymbol}
                           recommendStakeGmx={recommendStakeGmx}
                           isUserConnected={true}
@@ -1999,6 +2129,11 @@ export default function StakeV2() {
                 {active && (
                   <Button variant="secondary" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
+                  </Button>
+                )}
+                {active && chainId === ARBITRUM && (
+                  <Button variant="secondary" to={GMX_DAO_LINKS.VOTING_POWER} newTab>
+                    <Trans>Delegate</Trans>
                   </Button>
                 )}
                 {active && (
