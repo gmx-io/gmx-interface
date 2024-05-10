@@ -449,14 +449,14 @@ body.dragging .ExchangeChart iframe {
 }
 
 .active-order-tooltip {
-  background: var(--color-cold-blue-900);
+  background: var(--color-gray-900);
   padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
 }
 
 .active-order-tooltip:hover {
-  background: rgba(108, 121, 173, 0.6);
+  background: var(--color-gray-800);
 }
 
 .active-order-tooltip > .active-order-error {

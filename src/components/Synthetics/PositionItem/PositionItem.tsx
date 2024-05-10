@@ -412,7 +412,7 @@ export function PositionItem(p: Props) {
             "Exchange-position-list-orders",
             "plain",
             "clickable",
-            "text-gray",
+            "text-gray-300",
           ])}
           renderContent={() => (
             <div className="order__list">
