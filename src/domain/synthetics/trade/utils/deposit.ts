@@ -201,7 +201,7 @@ function getMarketTokenAmountByCollateral(p: {
       usdToMarketTokenAmount(marketInfo, marketToken, usdValue);
   } else {
     const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
-    amountInAfterFees = amountInAfterFees + negativeImpactAmount * -1n;
+    amountInAfterFees = amountInAfterFees + negativeImpactAmount;
   }
 
   const usdValue = convertToUsd(amountInAfterFees, tokenIn.decimals, tokenIn.prices.minPrice)!;

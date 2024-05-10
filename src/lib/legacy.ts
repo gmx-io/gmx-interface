@@ -261,7 +261,7 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
   // is calculated
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
-    (swapToken?.usdgAmount ?? 0n) - usdgAmount,
+    swapToken?.usdgAmount === undefined ? undefined : swapToken.usdgAmount - usdgAmount,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
