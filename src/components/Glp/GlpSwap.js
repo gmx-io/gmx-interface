@@ -15,7 +15,8 @@ import {
   USDG_DECIMALS,
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useLingui } from "@lingui/react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
@@ -157,8 +158,6 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
   );
 }
 
-const tabOptions = [t`Buy GLP`, t`Sell GLP`];
-
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
   const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
@@ -168,6 +167,9 @@ export default function GlpSwap(props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
+  const { _ } = useLingui();
+  const tabOptions = useMemo(() => [_`Buy GLP`, _`Sell GLP`], [_]);
+
   const { active, signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { chainId } = useChainId();

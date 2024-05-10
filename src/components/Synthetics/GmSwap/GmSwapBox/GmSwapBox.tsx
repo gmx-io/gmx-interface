@@ -1,8 +1,7 @@
 import { msg, t, Trans } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import mapValues from "lodash/mapValues";
+import { isAddress } from "ethers";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
@@ -40,6 +39,7 @@ import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { getMinResidualAmount, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BN_ZERO, formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey, getMatchingValueFromObject } from "lib/objects";
@@ -56,17 +56,17 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import Tab from "components/Tab/Tab";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import "./GmSwapBox.scss";
 import { bigMath } from "lib/bigmath";
-import { isAddress } from "ethers";
+
 
 type SearchParams = {
   market?: string;
@@ -111,7 +111,6 @@ const MODE_LABELS = {
 
 export function GmSwapBox(p: Props) {
   const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
-  const { i18n } = useLingui();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
@@ -864,12 +863,9 @@ export function GmSwapBox(p: Props) {
     }
   }
 
-  const { localizedOperationLabels, localizedModeLabels } = useMemo(() => {
-    return {
-      localizedOperationLabels: mapValues(OPERATION_LABELS, (label) => i18n._(label)),
-      localizedModeLabels: mapValues(MODE_LABELS, (label) => i18n._(label)),
-    };
-  }, [i18n]);
+  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS)
+  const localizedModeLabels = useLocalizedMap(MODE_LABELS)
+
 
   return (
     <div className={`App-box GmSwapBox`}>
