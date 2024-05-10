@@ -57,7 +57,6 @@ import {
   formatTokenAmount,
   formatUsd,
   numberWithCommas,
-  sumBigNumbers,
 } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
@@ -649,7 +648,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers("1", currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        sumBigInts(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -667,8 +666,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
-                          "2",
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.openInterest,
                           v2MarketsOverview?.[chainId]?.openInterest
                         ),
@@ -689,8 +687,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
-                          "3",
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
@@ -711,8 +708,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
-                          "4",
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
@@ -734,7 +730,7 @@ export default function DashboardV2() {
                         position="bottom-end"
                         className="nowrap"
                         handle={`$${formatAmount(
-                          sumBigNumbers("4", currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          sumBigInts(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
                           2,
                           true
@@ -761,8 +757,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${numberWithCommas(
-                        sumBigNumbers(
-                          "5",
+                        sumBigInts(
                           totalFees?.[chainId],
                           // FIXME
                           BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
@@ -783,7 +778,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers("6", totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        sumBigInts(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -801,7 +796,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={formatAmount(
-                        sumBigNumbers("7", uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
+                        sumBigInts(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
                         0,
                         0,
                         true
@@ -1307,4 +1302,8 @@ function GMCard() {
       <InteractivePieChart data={chartData} label={t`GM Markets`} />
     </div>
   );
+}
+
+function sumBigInts(...args: (bigint | number | undefined)[]) {
+  return args.reduce<bigint>((acc, value) => acc + BigInt(value ?? 0n), 0n);
 }
