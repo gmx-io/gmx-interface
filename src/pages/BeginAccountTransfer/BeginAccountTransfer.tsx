@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
-
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import { getContract } from "config/contracts";
 
 import Modal from "components/Modal/Modal";
@@ -25,6 +25,8 @@ import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
 import Checkbox from "components/Checkbox/Checkbox";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { zeroAddress } from "viem";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -238,6 +240,25 @@ export default function BeginAccountTransfer() {
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
 
+  const feeGmxTracker = getContract(chainId, "FeeGmxTracker");
+
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: parsedReceiver,
+    tokenAddresses: [feeGmxTracker],
+  });
+  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTracker }], 1000);
+
+  const feeGmxTrackerBalance = balancesData?.[feeGmxTracker];
+  const needFeeGmxTrackerApproval = useMemo(
+    () =>
+      parsedReceiver &&
+      feeGmxTrackerBalance &&
+      parsedReceiver !== zeroAddress &&
+      tokensAllowanceData &&
+      getNeedTokenApprove(tokensAllowanceData, feeGmxTracker, feeGmxTrackerBalance),
+    [feeGmxTracker, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
+  );
+
   return (
     <div className="BeginAccountTransfer Page page-layout">
       <Modal
@@ -327,6 +348,18 @@ export default function BeginAccountTransfer() {
               <Trans>Receiver has not staked GLP tokens before</Trans>
             </ValidationRow>
           </div>
+
+          {needFeeGmxTrackerApproval && (
+            <>
+              <ApproveTokenButton
+                tokenAddress={feeGmxTracker}
+                tokenSymbol={"sbfGMX"}
+                spenderAddress={parsedReceiver}
+                approveAmount={feeGmxTrackerBalance}
+              />
+              <br />
+            </>
+          )}
           <div className="input-row">
             <Button
               variant="primary-action"
