@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import {
   selectClaimsFundingFeesClaimableTotal,
@@ -7,6 +7,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CSSProperties, useMemo } from "react";
 import { ClaimableCardUI } from "./ClaimableCardUI";
+import { useLingui } from "@lingui/react";
 
 type Props = {
   onClaimClick: () => void;
@@ -14,20 +15,26 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = t`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
-const buttonText = t`Claim`;
-const title = t`Claimable`;
+const tooltipText = msg`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
+const buttonText = msg`Claim`;
+const title = msg`Claimable`;
 
 export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImpactFeesClick }: Props) {
   const totalClaimableFundingUsd = useSelector(selectClaimsFundingFeesClaimableTotal);
   const priceImpactRebateUsd = useSelector(selectClaimsPriceImpactClaimableTotal);
+  const { _ } = useLingui();
 
   const sections = useMemo(
     () =>
       [
-        { buttonText, tooltipText, onButtonClick: onClaimClick, usd: totalClaimableFundingUsd },
         {
-          buttonText,
+          buttonText: _(buttonText),
+          tooltipText: _(tooltipText),
+          onButtonClick: onClaimClick,
+          usd: totalClaimableFundingUsd,
+        },
+        {
+          buttonText: _(buttonText),
           tooltipText: (
             <Trans>
               Claimable Price Impact Rebates.
@@ -43,8 +50,8 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           usd: priceImpactRebateUsd,
         },
       ] as const,
-    [onClaimClick, onClaimablePositionPriceImpactFeesClick, priceImpactRebateUsd, totalClaimableFundingUsd]
+    [_, onClaimClick, onClaimablePositionPriceImpactFeesClick, priceImpactRebateUsd, totalClaimableFundingUsd]
   );
 
-  return <ClaimableCardUI sections={sections} title={title} style={style} />;
+  return <ClaimableCardUI sections={sections} title={_(title)} style={style} />;
 }
