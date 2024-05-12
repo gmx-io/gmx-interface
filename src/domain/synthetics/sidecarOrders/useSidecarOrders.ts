@@ -54,7 +54,8 @@ export function useSidecarOrders() {
     (entry: SidecarLimitOrderEntry) =>
       handleEntryError(entry, "limit", {
         liqPrice: nextPositionValues?.nextLiqPrice,
-        entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        triggerPrice,
+        isExistingLimits: true,
         markPrice,
         isLong,
         isLimit,
@@ -70,8 +71,12 @@ export function useSidecarOrders() {
     enablePercentage: false,
   });
 
+  const existingLimits = useMemo(() => {
+    return limitEntriesInfo.entries.filter((e) => e.txnType !== "cancel");
+  }, [limitEntriesInfo.entries]);
+
   const [maxLimitTrigerPrice, minLimitTrigerPrice] = useMemo(() => {
-    const prices = limitEntriesInfo.entries.reduce<BigNumber[]>(
+    const prices = existingLimits.reduce<BigNumber[]>(
       (acc, { price }) => (price.value ? [...acc, price.value] : acc),
       []
     );
@@ -86,17 +91,17 @@ export function useSidecarOrders() {
       ([min, max], num) => [num.lt(min) ? num : min, num.gt(max) ? num : max],
       [prices[0], prices[0]]
     );
-  }, [limitEntriesInfo.entries, isLimit, triggerPrice]);
+  }, [existingLimits, isLimit, triggerPrice]);
 
   const handleSLErrors = useCallback(
     (entry: SidecarSlTpOrderEntry) =>
       handleEntryError(entry, "sl", {
         liqPrice: nextPositionValues?.nextLiqPrice,
-        entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        triggerPrice,
         markPrice,
         isLong,
         isLimit,
-        isAnyLimits: !!limitEntriesInfo.entries.length || isLimit,
+        isExistingLimits: !!existingLimits.length,
         isExistingPosition: !!existingPosition,
         maxLimitTrigerPrice,
         minLimitTrigerPrice,
@@ -110,7 +115,7 @@ export function useSidecarOrders() {
       nextPositionValues,
       maxLimitTrigerPrice,
       minLimitTrigerPrice,
-      limitEntriesInfo.entries.length,
+      existingLimits,
     ]
   );
 
@@ -118,11 +123,11 @@ export function useSidecarOrders() {
     (entry: SidecarSlTpOrderEntry) =>
       handleEntryError(entry, "tp", {
         liqPrice: nextPositionValues?.nextLiqPrice,
-        entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
+        triggerPrice,
         markPrice,
         isLong,
         isLimit,
-        isAnyLimits: !!limitEntriesInfo.entries.length || isLimit,
+        isExistingLimits: !!existingLimits.length,
         isExistingPosition: !!existingPosition,
         maxLimitTrigerPrice,
         minLimitTrigerPrice,
@@ -136,7 +141,7 @@ export function useSidecarOrders() {
       nextPositionValues,
       maxLimitTrigerPrice,
       minLimitTrigerPrice,
-      limitEntriesInfo.entries.length,
+      existingLimits,
     ]
   );
 

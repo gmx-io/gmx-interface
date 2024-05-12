@@ -408,6 +408,24 @@ export function ConfirmationBox(p: Props) {
       };
     }
 
+    if (isLimit) {
+      if (isLong) {
+        if (markPrice && triggerPrice?.gt(markPrice)) {
+          return {
+            text: t`Limit price above Mark Price`,
+            disabled: true,
+          };
+        }
+      } else {
+        if (markPrice && triggerPrice?.lt(markPrice)) {
+          return {
+            text: t`Limit price below Mark Price`,
+            disabled: true,
+          };
+        }
+      }
+    }
+
     if (isSubmitting) {
       return {
         text: t`Creating Order...`,
@@ -483,6 +501,8 @@ export function ConfirmationBox(p: Props) {
     sidecarEntries,
     stopLoss,
     takeProfit,
+    markPrice,
+    triggerPrice,
   ]);
 
   useKey(

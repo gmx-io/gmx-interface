@@ -3028,6 +3028,14 @@ msgstr "Échec de la création d'un ordre limite."
 msgid "Limit order submitted!"
 msgstr "Ordre de limite soumis !"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price above Mark Price"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price below Mark Price"
+msgstr ""
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
 msgstr ""
@@ -4345,9 +4353,12 @@ msgid "Price Impact not yet acknowledged"
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above Entry Price."
-msgstr ""
+#~ msgid "Price above Entry Price."
+#~ msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr ""
@@ -4378,13 +4389,17 @@ msgstr "Prix supérieur à celui de la marque"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price below Entry Price."
-msgstr ""
+#~ msgid "Price below Entry Price."
+#~ msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
 msgstr ""
@@ -4413,6 +4428,7 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "Prix inférieur à celui de la marque"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
