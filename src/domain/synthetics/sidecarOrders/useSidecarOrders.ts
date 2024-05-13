@@ -206,11 +206,7 @@ export function useSidecarOrders() {
     };
   }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
 
-  const canCalculatePnL = useMemo(() => {
-    const displayableEntries = limit.entries.filter((e) => e.txnType !== "cancel");
-
-    return !displayableEntries.length;
-  }, [limit]);
+  const canCalculatePnL = !existingLimits.length && (!isLimit || !existingPosition);
 
   const mockPositionInfoWithLimits = useMemo(() => {
     if (!mockPositionInfo || !limit.entries.length) return mockPositionInfo;

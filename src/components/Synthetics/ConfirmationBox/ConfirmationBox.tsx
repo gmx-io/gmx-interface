@@ -1097,7 +1097,7 @@ export function ConfirmationBox(p: Props) {
 
   function renderSidecar(type: "stopLoss" | "takeProfit" | "limit") {
     const isStopLoss = type === "stopLoss";
-    const isLimit = type === "limit";
+    const isLimitGroup = type === "limit";
 
     const entriesInfo: SidecarOrderEntryGroup = {
       stopLoss: stopLoss,
@@ -1130,7 +1130,7 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        {!isLimit && entriesInfo?.totalPnL && entriesInfo?.totalPnLPercentage && (
+        {!isLimitGroup && entriesInfo?.totalPnL && entriesInfo?.totalPnLPercentage && (
           <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
             {entriesInfo?.totalPnL?.isZero() ? (
               "-"
