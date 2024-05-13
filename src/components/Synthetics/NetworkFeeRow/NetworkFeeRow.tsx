@@ -94,18 +94,19 @@ export function NetworkFeeRow({ executionFee }: Props) {
                 The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any
                 excess execution fee is sent back to your account.
               </Trans>{" "}
-              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
+              <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
                 <Trans>Read more</Trans>
               </ExternalLink>
               .
             </p>
+            <br />
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
               value={estimatedRefundText}
-              className="text-green"
+              textClassName="text-green-500"
             />
-            {executionFee?.warning && <p className="text-warning">{executionFee?.warning}</p>}
+            {executionFee?.warning && <p className="text-yellow-500">{executionFee?.warning}</p>}
           </>
         )}
       >

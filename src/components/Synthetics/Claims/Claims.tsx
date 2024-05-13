@@ -109,7 +109,7 @@ export function Claims({
         )}
         <div
           className={cx("flex", "w-full", {
-            "flex-column": isMobile,
+            "flex-col": isMobile,
           })}
         >
           {account && !isLoading && (

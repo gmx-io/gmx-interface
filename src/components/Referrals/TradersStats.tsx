@@ -217,17 +217,20 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 </thead>
                 <tbody>
                   {currentDiscountDistributions.map((rebate) => {
-                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] ?? 0n;
-                      acc[token.address] = acc[token.address] + rebate.amounts[i];
-                      return acc;
-                    }, {} as { [address: string]: bigint });
+                    const amountsByTokens = rebate.tokens.reduce(
+                      (acc, tokenAddress, i) => {
+                        let token;
+                        try {
+                          token = getToken(chainId, tokenAddress);
+                        } catch {
+                          token = getNativeToken(chainId);
+                        }
+                        acc[token.address] = acc[token.address] ?? 0n;
+                        acc[token.address] = acc[token.address] + rebate.amounts[i];
+                        return acc;
+                      },
+                      {} as { [address: string]: bigint }
+                    );
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
@@ -246,7 +249,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                         <td data-label="Amount" className="Rebate-amount">
                           <Tooltip
                             position="bottom"
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

@@ -175,7 +175,7 @@ export function SettingsModal({
           </div>
           {parseFloat(executionFeeBufferBps) <
             (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-base">
+            <div className="mb-15">
               <AlertInfo type="warning">
                 <Trans>
                   Max Execution Fee buffer below{" "}
@@ -220,7 +220,7 @@ export function SettingsModal({
         </div>
       )}
 
-      <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
+      <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
     </Modal>

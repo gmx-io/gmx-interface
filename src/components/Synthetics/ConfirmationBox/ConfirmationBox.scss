@@ -14,13 +14,13 @@
   }
 
   .trade-token-amount {
-    color: white;
+    color: var(--color-white);
     font-size: 1.8rem;
   }
 
   .trade-amount-usd {
     font-size: 1.6rem;
-    color: var(--text-gray);
+    color: var(--color-gray-300);
   }
 }
 

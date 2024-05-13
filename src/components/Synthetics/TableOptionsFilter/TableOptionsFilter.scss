@@ -5,7 +5,7 @@
 
     overscroll-behavior: contain;
 
-    border-top: 1px solid #32344c;
+    border-top: 1px solid var(--color-gray-800);
   }
 
   &-group-name {
@@ -41,12 +41,12 @@
     padding: 0.5rem 1rem;
     padding-top: 1rem;
 
-    color: var(--text-gray);
+    color: var(--color-gray-300);
 
     cursor: pointer;
 
     &:hover {
-      color: white;
+      color: var(--color-white);
     }
 
     &:last-child {

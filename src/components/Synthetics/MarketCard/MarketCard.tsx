@@ -106,7 +106,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <ExchangeInfoRow
           label={t`Market`}
           value={
-            <div className="items-top">
+            <div className="flex items-start">
               <span>{indexName && indexName}</span>
               <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>

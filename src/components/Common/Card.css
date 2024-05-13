@@ -1,6 +1,6 @@
 .card {
   border-radius: 0.4rem;
-  background: #16182e;
+  background: var(--color-slate-800);
 }
 
 .card-header {
@@ -8,7 +8,7 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,7 +17,7 @@
 
 .card-divider {
   height: 1px;
-  background: #23263b;
+  background: var(--color-slate-700);
 }
 .card-body {
   padding: 1.5rem;

@@ -598,7 +598,7 @@ export default function PositionEditor(props) {
                   {isDeposit ? (
                     <>
                       <TokenIcon
-                        className="mr-xs"
+                        className="mr-5"
                         symbol={position.collateralToken.symbol}
                         displaySize={20}
                         importSize={24}
@@ -621,9 +621,9 @@ export default function PositionEditor(props) {
                       {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
                       {nextLeverage && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2, true)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2, true)}x
                         </div>
@@ -660,9 +660,9 @@ export default function PositionEditor(props) {
                       )}
                       {nextLiquidationPrice && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
@@ -685,9 +685,9 @@ export default function PositionEditor(props) {
                       )}
                       {nextCollateral && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
@@ -704,9 +704,9 @@ export default function PositionEditor(props) {
                         <Tooltip
                           handle={
                             <>
-                              <div className="inline-block muted">
+                              <div className="muted inline-block">
                                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                                <BsArrowRight className="transition-arrow" />
+                                <BsArrowRight className="transition-arrow inline-block" />
                               </div>
                               $0
                             </>

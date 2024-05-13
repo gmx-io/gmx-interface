@@ -94,7 +94,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                     </button>
                   }
                   portalClassName="SLTP-helper-text"
-                  handleClassName="mr-xs"
+                  handleClassName="mr-5"
                   position="right"
                   renderContent={() => <span>Add Row</span>}
                   openDelay={1500}

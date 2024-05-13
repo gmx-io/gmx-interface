@@ -386,9 +386,9 @@ export default function SwapBox(props) {
       toTokenInfo?.availableAmount === undefined
         ? undefined
         : toTokenInfo?.availableAmount >
-          (toTokenInfo.poolAmount === undefined ? undefined : toTokenInfo.poolAmount - toTokenInfo.bufferAmount)
-        ? toTokenInfo.poolAmount - toTokenInfo.bufferAmount
-        : toTokenInfo?.availableAmount;
+            (toTokenInfo.poolAmount === undefined ? undefined : toTokenInfo.poolAmount - toTokenInfo.bufferAmount)
+          ? toTokenInfo.poolAmount - toTokenInfo.bufferAmount
+          : toTokenInfo?.availableAmount;
 
     if (!value) {
       return 0n;
@@ -1386,10 +1386,10 @@ export default function SwapBox(props) {
     const indexToken = getToken(chainId, indexTokenAddress);
     const successMsg = t`
       Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}: ${formatAmount(
-      toUsdMax,
-      USD_DECIMALS,
-      2
-    )} USD!
+        toUsdMax,
+        USD_DECIMALS,
+        2
+      )} USD!
     `;
     return Api.createIncreaseOrder(
       chainId,
@@ -2146,7 +2146,7 @@ export default function SwapBox(props) {
                             onClick={() => {
                               setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
                             }}
-                            className="text-gray underline cursor-pointer"
+                            className="cursor-pointer text-gray-300 underline"
                           >
                             <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
                           </div>
@@ -2204,9 +2204,9 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount > 0 && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
@@ -2220,9 +2220,9 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount > 0 && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
@@ -2235,9 +2235,9 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount > 0 && (
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount &&

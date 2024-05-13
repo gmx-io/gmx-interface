@@ -41,8 +41,8 @@ function LineSpan({ span }: { span: TooltipString }) {
   return (
     <span
       className={cx({
-        "text-red": span.state === "error",
-        "text-green": span.state === "success",
+        "text-red-500": span.state === "error",
+        "text-green-500": span.state === "success",
         muted: span.state === "muted",
       })}
     >
@@ -122,9 +122,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <StatsTooltipRow
           label={t`Market`}
           value={
-            <div className="items-center">
+            <div className="flex items-center">
               <span>{msg.indexName!}</span>
-              <span className="subtext lh-1">[{msg.poolName!}]</span>
+              <span className="subtext leading-1">[{msg.poolName!}]</span>
             </div>
           }
           showDollar={false}
@@ -138,7 +138,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <span key={market.indexName}>
             {index > 0 && " → "}
             <span>{market.indexName}</span>
-            <span className="subtext lh-1">[{market.poolName}]</span>
+            <span className="subtext leading-1">[{market.poolName}]</span>
           </span>
         ))}
       </>
@@ -176,14 +176,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             ) : (
               <span
                 className={cx("TradeHistoryRow-action-handle", {
-                  "text-red": msg.isActionError,
+                  "text-red-500": msg.isActionError,
                 })}
               >
                 {msg.action}
               </span>
             )}
             <ExternalLink
-              className="TradeHistoryRow-external-link ml-xs"
+              className="TradeHistoryRow-external-link ml-5"
               href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
             >
               <NewLink20ReactComponent />
@@ -196,7 +196,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
-            <Link className="TradeHistoryRow-account muted" to={`/actions/${tradeAction.account}`}>
+            <Link className="TradeHistoryRow-account muted underline" to={`/actions/${tradeAction.account}`}>
               {tradeAction.account}
             </Link>
           )}

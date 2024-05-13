@@ -77,18 +77,18 @@ export function TradeFeesRow(p: Props) {
       fullPositionPriceImpact === undefined
         ? undefined
         : bigMath.abs(fullPositionPriceImpact.deltaUsd) > 0
-        ? {
-            id: "positionPriceImpact",
-            label: (
-              <>
-                <div className="text-white">{t`Position Price Impact`}:</div>
-                <div>({formatPercentage(bigMath.abs(fullPositionPriceImpact.bps))} of position size)</div>
-              </>
-            ),
-            value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
-            className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green"),
-          }
-        : undefined;
+          ? {
+              id: "positionPriceImpact",
+              label: (
+                <>
+                  <div className="text-white">{t`Position Price Impact`}:</div>
+                  <div>({formatPercentage(bigMath.abs(fullPositionPriceImpact.bps))} of position size)</div>
+                </>
+              ),
+              value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
+              className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green-500"),
+            }
+          : undefined;
 
     const priceImpactDiffUsd = (p.priceImpactDiff ? bigMath.abs(p.priceImpactDiff.deltaUsd) > 0 : false)
       ? {
@@ -100,7 +100,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.priceImpactDiff!.deltaUsd),
-          className: getPositiveOrNegativeClass(p.priceImpactDiff!.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.priceImpactDiff!.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -116,7 +116,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapPriceImpact!.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -135,7 +135,7 @@ export function TradeFeesRow(p: Props) {
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
-        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green"),
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
       })) || [];
 
     const swapProfitFeeRow = (p.swapProfitFee?.deltaUsd === undefined ? undefined : p.swapProfitFee?.deltaUsd !== 0n)
@@ -151,7 +151,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -166,7 +166,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.positionFee?.deltaUsd),
-          className: getPositiveOrNegativeClass(p.positionFee?.deltaUsd, "text-green"),
+          className: getPositiveOrNegativeClass(p.positionFee?.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -183,7 +183,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.uiFee?.deltaUsd),
-          className: "text-red",
+          className: "text-red-500",
         }
       : undefined;
 
@@ -198,7 +198,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
-            className: "text-red",
+            className: "text-red-500",
           }
         : undefined;
 
@@ -211,7 +211,7 @@ export function TradeFeesRow(p: Props) {
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
-          className: "text-green",
+          className: "text-green-500",
         }
       : undefined;
 
@@ -226,7 +226,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
-            className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green"),
+            className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
         : undefined;
 
@@ -241,7 +241,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
-            className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green"),
+            className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
         : undefined;
 
@@ -250,7 +250,7 @@ export function TradeFeesRow(p: Props) {
           id: "borrowFeeRate",
           label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
-          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -259,7 +259,7 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFeeRate",
           label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
-          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -281,7 +281,7 @@ export function TradeFeesRow(p: Props) {
                 bigMath.mulDiv(p.positionFee.deltaUsd, tradingIncentives.rebatePercent, BASIS_POINTS_DIVISOR_BIGINT) *
                   -1n
             ),
-            className: "text-green",
+            className: "text-green-500",
             id: "rebate",
           }
         : undefined;
@@ -396,7 +396,7 @@ export function TradeFeesRow(p: Props) {
               {feeRows.map((feeRow) => (
                 <StatsTooltipRow
                   key={feeRow.id}
-                  className={feeRow.className}
+                  textClassName={feeRow.className}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}

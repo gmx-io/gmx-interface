@@ -68,10 +68,13 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
     ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
-    SUPPORTED_CHAIN_IDS.reduce((acc, chainId) => {
-      acc[chainId] = getOracleKeeperRandomIndex(chainId);
-      return acc;
-    }, {} as { [chainId: number]: number })
+    SUPPORTED_CHAIN_IDS.reduce(
+      (acc, chainId) => {
+        acc[chainId] = getOracleKeeperRandomIndex(chainId);
+        return acc;
+      },
+      {} as { [chainId: number]: number }
+    )
   );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(

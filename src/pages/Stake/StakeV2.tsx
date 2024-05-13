@@ -201,7 +201,7 @@ function StakeModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -227,7 +227,7 @@ function StakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="icon mr-5 h-22"
               height="22"
               src={icons[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
@@ -371,7 +371,7 @@ function UnstakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="icon mr-5 h-22"
               height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
@@ -388,7 +388,7 @@ function UnstakeModal(props) {
           <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
+              <ExternalLink className="inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 2, true)} Multiplier Points
               </ExternalLink>
               {chainId === ARBITRUM ? (
@@ -519,7 +519,7 @@ function VesterDepositModal(props) {
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="mr-xs icon" height="22" src={icons.esgmx} alt="esGMX" />
+              <img className="icon mr-5 h-22" height="22" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -550,6 +550,7 @@ function VesterDepositModal(props) {
                         <p className="text-white">
                           <Trans>Vault Capacity for your Account:</Trans>
                         </p>
+                        <br />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
@@ -895,7 +896,7 @@ function CompoundModal(props) {
           </AlertInfo>
         )}
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1045,7 +1046,7 @@ function ClaimModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1876,8 +1877,8 @@ export default function StakeV2() {
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
                 {t`GMX & Voting Power`}
               </div>
             </div>
@@ -1892,7 +1893,7 @@ export default function StakeV2() {
                   {gmxPrice && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
                         <>
@@ -1944,7 +1945,11 @@ export default function StakeV2() {
                             {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
                             govTokenAmount &&
                             govTokenAmount > 0 ? (
-                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+                              <AlertInfo
+                                type="warning"
+                                className={cx("DelegateGMXAlertInfo")}
+                                textColor="text-yellow-500"
+                              >
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                                     Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1963,8 +1968,8 @@ export default function StakeV2() {
                                     {govTokenDelegatesAddress === account
                                       ? t`Myself`
                                       : govTokenDelegatesEns
-                                      ? shortenAddressOrEns(govTokenDelegatesEns, 25)
-                                      : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
+                                        ? shortenAddressOrEns(govTokenDelegatesEns, 25)
+                                        : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
                                   </ExternalLink>
                                 )
                               }
@@ -2086,7 +2091,7 @@ export default function StakeV2() {
                   {(totalGmxStaked && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={
                         formatAmount(totalGmxStaked, 18, 0, true) +
                         " GMX" +
@@ -2220,8 +2225,8 @@ export default function StakeV2() {
           <div className="App-card App-card-space-between">
             <div>
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
                   GLP
                 </div>
               </div>
@@ -2389,8 +2394,8 @@ export default function StakeV2() {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-5 h-20" alt="GLP" src={icons.esgmx} height={20} />
                 <span>
                   <Trans>Escrowed GMX</Trans>
                 </span>
@@ -2536,8 +2541,8 @@ export default function StakeV2() {
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
                   <Trans>GMX Vault</Trans>
                 </div>
               </div>
@@ -2653,8 +2658,8 @@ export default function StakeV2() {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
                   <Trans>GLP Vault</Trans>
                 </div>
               </div>
@@ -2744,8 +2749,8 @@ export default function StakeV2() {
             {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0 && (
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
-                  <div className="inline-items-center">
-                    <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                  <div className="inline-flex items-center">
+                    <img className="mr-5 h-20" alt="GLP" src={icons.gmx} height={20} />
                     <Trans>Affiliate Vault</Trans>
                   </div>
                 </div>
@@ -2816,7 +2821,7 @@ export default function StakeV2() {
           </div>
         </div>
       </div>
-      <div className="mt-sm">
+      <div className="mt-10">
         <PageTitle
           title={t`Incentives & Prizes`}
           subtitle={

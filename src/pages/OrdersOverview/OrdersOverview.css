@@ -19,7 +19,7 @@
 }
 
 .Orders-overview td {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-gray-900);
   padding: 0.8rem 1.5rem 0.8rem 0;
 }
 
@@ -31,12 +31,12 @@
   background: none;
   border: none;
   text-decoration: underline;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .Orders-overview-action {
   background: none;
   border: none;
   text-decoration: underline;
-  color: #fff;
+  color: var(--color-white);
 }

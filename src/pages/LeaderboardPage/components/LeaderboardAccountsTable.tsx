@@ -367,7 +367,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
           />
         </TableCell>
@@ -379,7 +379,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}
@@ -433,7 +433,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
+    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });

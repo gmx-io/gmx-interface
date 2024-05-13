@@ -182,9 +182,9 @@ export function OrderItem(p: Props) {
               <StatsTooltipRow
                 label={t`Market`}
                 value={
-                  <div className="items-center">
+                  <div className="flex items-center">
                     <span>{indexName && indexName}</span>
-                    <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
                 showDollar={false}
@@ -239,8 +239,8 @@ export function OrderItem(p: Props) {
       const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
 
       const fromTokenWithIcon = (
-        <span className="nobr">
-          <TokenIcon className="mr-xs" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
+        <span className="whitespace-nowrap">
+          <TokenIcon className="mr-5" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
           {initialCollateralToken.symbol}
         </span>
       );
@@ -248,8 +248,8 @@ export function OrderItem(p: Props) {
       const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
 
       const toTokenWithIcon = (
-        <span className="nobr">
-          <TokenIcon className="mr-xs" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
+        <span className="whitespace-nowrap">
+          <TokenIcon className="mr-5" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
           {targetCollateralToken.symbol}
         </span>
       );
@@ -266,7 +266,7 @@ export function OrderItem(p: Props) {
 
       const symbolWithIcon = (
         <span>
-          {indexToken && <TokenIcon className="mr-xs" symbol={indexToken?.symbol} displaySize={18} importSize={24} />}
+          {indexToken && <TokenIcon className="mr-5" symbol={indexToken?.symbol} displaySize={18} importSize={24} />}
           {indexToken?.symbol}
         </span>
       );
@@ -449,12 +449,12 @@ export function OrderItem(p: Props) {
           <div className="App-card-actions">
             <div className="App-card-divider"></div>
             <div className="remove-top-margin">
-              <Button variant="secondary" className="mr-md mt-md" onClick={setEditingOrderKey}>
+              <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
 
               {p.onCancelOrder && (
-                <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>
+                <Button variant="secondary" className="mt-15" onClick={p.onCancelOrder}>
                   <Trans>Cancel</Trans>
                 </Button>
               )}

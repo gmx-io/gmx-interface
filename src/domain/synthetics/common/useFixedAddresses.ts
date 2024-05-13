@@ -6,10 +6,13 @@ export function useFixedAddreseses(marketsData: MarketsData | undefined, tokensD
   return useMemo(() => {
     return Object.keys(marketsData || {})
       .concat(Object.keys(tokensData || {}))
-      .reduce((acc, address) => {
-        acc[address.toLowerCase()] = address;
+      .reduce(
+        (acc, address) => {
+          acc[address.toLowerCase()] = address;
 
-        return acc;
-      }, {} as { [lowerAddress: string]: string });
+          return acc;
+        },
+        {} as { [lowerAddress: string]: string }
+      );
   }, [marketsData, tokensData]);
 }

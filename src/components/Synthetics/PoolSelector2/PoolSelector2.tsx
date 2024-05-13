@@ -140,23 +140,23 @@ function PoolListItemDesktop({
       </td>
       <td
         className={cx({
-          "text-red": !isEnoughLiquidity,
+          "text-red-500": !isEnoughLiquidity,
         })}
       >
         {formattedLiquidity}
       </td>
       <td
         className={cx({
-          "text-red": netRateState === "error",
-          "text-green": netRateState === "success",
+          "text-red-500": netRateState === "error",
+          "text-green-500": netRateState === "success",
         })}
       >
         <Trans>{formattedNetRate} / 1h</Trans>
       </td>
       <td
         className={cx("PoolSelector2-column-open-fees", {
-          "text-red": openFeesState === "error",
-          "text-green": openFeesState === "success",
+          "text-red-500": openFeesState === "error",
+          "text-green-500": openFeesState === "success",
         })}
       >
         {formattedOpenFees}
@@ -238,7 +238,7 @@ function PoolListItemMobile({
         <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>
         <dd
           className={cx({
-            "text-red": !isEnoughLiquidity,
+            "text-red-500": !isEnoughLiquidity,
           })}
         >
           {formattedLiquidity}
@@ -248,8 +248,8 @@ function PoolListItemMobile({
         </dt>
         <dd
           className={cx({
-            "text-red": netRateState === "error",
-            "text-green": netRateState === "success",
+            "text-red-500": netRateState === "error",
+            "text-green-500": netRateState === "success",
           })}
         >
           {formattedNetRate} / 1h
@@ -259,8 +259,8 @@ function PoolListItemMobile({
         </dt>
         <dd
           className={cx({
-            "text-red": openFeesState === "error",
-            "text-green": openFeesState === "success",
+            "text-red-500": openFeesState === "error",
+            "text-green-500": openFeesState === "success",
           })}
         >
           {formattedOpenFees}

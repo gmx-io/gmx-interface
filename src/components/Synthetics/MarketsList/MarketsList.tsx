@@ -126,9 +126,9 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                               key={marketInfo.marketTokenAddress}
                               showDollar={false}
                               label={
-                                <div className="items-top">
+                                <div className="inline-flex items-start">
                                   <span className="text-white">{getMarketIndexName(marketInfo)}</span>
-                                  <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
+                                  <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
                                 </div>
                               }
                               value={formatUsd(poolValueUsd)}
@@ -154,9 +154,9 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                               key={marketInfo.marketTokenAddress}
                               showDollar={false}
                               label={
-                                <div className="items-top">
+                                <div className="inline-flex items-start">
                                   <span className="text-white">{getMarketIndexName(marketInfo)}</span>
-                                  <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
+                                  <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
                                 </div>
                               }
                               value={formatUsd(maxLiquidity)}
@@ -208,7 +208,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
     <tr key={stats.token.symbol}>
       <td>
         <div className="token-symbol-wrapper">
-          <div className="items-center">
+          <div className="flex items-center">
             <div className="App-card-title-info-icon">
               <img
                 src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
@@ -238,9 +238,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   showDollar={false}
                   showColon
                   label={
-                    <div className="items-top">
+                    <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={formatUsd(poolValueUsd)}
@@ -262,9 +262,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   showDollar={false}
                   showColon
                   label={
-                    <div className="items-top">
+                    <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={formatUsd(maxLiquidity)}

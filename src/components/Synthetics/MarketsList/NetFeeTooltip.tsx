@@ -30,23 +30,23 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           return (
             <tr key={market.marketTokenAddress}>
               <td>
-                <div className="items-top flex-wrap text-white">
+                <div className="inline-flex flex-wrap items-start text-white">
                   <span>{getMarketIndexName(market)}</span>
-                  <span className="subtext lh-1">[{getMarketPoolName(market)}]</span>
+                  <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
                 </div>
               </td>
               <td
                 className={cx("NetFeeTooltip-cell-center", {
-                  "text-green": netFeeLong > 0,
-                  "text-red": netFeeLong < 0,
+                  "text-green-500": netFeeLong > 0,
+                  "text-red-500": netFeeLong < 0,
                 })}
               >
                 {formatRatePercentage(netFeeLong)}
               </td>
               <td
                 className={cx("NetFeeTooltip-cell-right", {
-                  "text-green": netFeeShort > 0,
-                  "text-red": netFeeShort < 0,
+                  "text-green-500": netFeeShort > 0,
+                  "text-red-500": netFeeShort < 0,
                 })}
               >
                 {formatRatePercentage(netFeeShort)}

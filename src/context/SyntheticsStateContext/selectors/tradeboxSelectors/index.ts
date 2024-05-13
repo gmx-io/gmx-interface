@@ -262,28 +262,28 @@ export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLe
   BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
 
-export const selectTradeboxTradeFeesType = createSelector(function selectTradeboxTradeFeesType(
-  q
-): TradeFeesType | null {
-  const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
+export const selectTradeboxTradeFeesType = createSelector(
+  function selectTradeboxTradeFeesType(q): TradeFeesType | null {
+    const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
-  if (isSwap) {
-    const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
-    if (swapAmounts) return "swap";
+    if (isSwap) {
+      const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
+      if (swapAmounts) return "swap";
+    }
+
+    if (isIncrease) {
+      const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+      if (increaseAmounts) return "increase";
+    }
+
+    if (isTrigger) {
+      const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+      if (decreaseAmounts) return "decrease";
+    }
+
+    return null;
   }
-
-  if (isIncrease) {
-    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    if (increaseAmounts) return "increase";
-  }
-
-  if (isTrigger) {
-    const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
-    if (decreaseAmounts) return "decrease";
-  }
-
-  return null;
-});
+);
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);

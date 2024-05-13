@@ -92,36 +92,36 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnl)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd) || "..."}
               showDollar={false}
-              className={cx({
-                "text-red": p.position.pendingBorrowingFeesUsd !== 0n,
+              textClassName={cx({
+                "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
               })}
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
               showDollar={false}
-              className={cx({
-                "text-red": p.position.pendingFundingFeesUsd !== 0n,
+              textClassName={cx({
+                "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
               })}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(-p.position.closingFeeUsd) || "..."}
-              className="text-red"
+              textClassName="text-red-500"
             />
             {p.position.uiFeeUsd > 0 && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
                 value={formatUsd(-p.position.uiFeeUsd)}
-                className="text-red"
+                textClassName="text-red-500"
               />
             )}
             <br />
@@ -129,7 +129,7 @@ export function PositionItem(p: Props) {
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}
@@ -195,24 +195,24 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
-                    className={cx({
-                      "text-red": p.position.pendingBorrowingFeesUsd !== 0n,
+                    textClassName={cx({
+                      "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
                     })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
-                    className={cx({
-                      "text-red": p.position.pendingFundingFeesUsd !== 0n,
+                    textClassName={cx({
+                      "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                     })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    className={cx({
-                      "text-green": p.position.pendingClaimableFundingFeesUsd > 0,
+                    textClassName={cx({
+                      "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                     })}
                   />
                   <br />
@@ -220,15 +220,15 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
                     value={formatUsd(-borrowingFeeRateUsd)}
-                    className={cx({
-                      "text-red": borrowingFeeRateUsd > 0,
+                    textClassName={cx({
+                      "text-red-500": borrowingFeeRateUsd > 0,
                     })}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                    textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
@@ -363,7 +363,7 @@ export function PositionItem(p: Props) {
                   errors.map((error) => (
                     <span
                       key={error.key}
-                      className={cx("mb-xs", "position-order-error", {
+                      className={cx("mb-5", "position-order-error", {
                         "level-warning": level === "warning",
                         "level-error": level === "error",
                       })}
@@ -412,7 +412,7 @@ export function PositionItem(p: Props) {
             "Exchange-position-list-orders",
             "plain",
             "clickable",
-            "text-gray",
+            "text-gray-300",
           ])}
           renderContent={() => (
             <div className="order__list">
@@ -480,9 +480,9 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Market`}
                     value={
-                      <div className="items-center">
+                      <div className="flex items-center">
                         <span>{indexName && indexName}</span>
-                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                        <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                       </div>
                     }
                     showDollar={false}
@@ -532,7 +532,7 @@ export function PositionItem(p: Props) {
               {displayedPnl && (
                 <div
                   onClick={p.openSettings}
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -644,7 +644,7 @@ export function PositionItem(p: Props) {
                 <Trans>Market</Trans>
               </div>
               <div onClick={() => p.onSelectPositionClick?.()}>
-                <div className="items-top">
+                <div className="flex items-start">
                   <span>{indexName && indexName}</span>
                   <span className="subtext">{poolName && `[${poolName}]`}</span>
                 </div>
@@ -662,7 +662,7 @@ export function PositionItem(p: Props) {
               </div>
               <div>
                 <span
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,

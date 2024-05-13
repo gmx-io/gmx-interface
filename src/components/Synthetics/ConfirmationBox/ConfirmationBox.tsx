@@ -1018,7 +1018,7 @@ export function ConfirmationBox(p: Props) {
 
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
-        <div className="mb-sm">
+        <div className="mb-10">
           <AlertInfo compact type="warning">
             <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
           </AlertInfo>
@@ -1069,17 +1069,17 @@ export function ConfirmationBox(p: Props) {
                 signed: true,
               })})`}
               position="bottom-end"
-              handleClassName={entriesInfo.totalPnL < 0 ? "text-red" : "text-green"}
+              handleClassName={entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
                 entriesInfo?.entries?.map((entry, index) => {
                   if (!entry || !entry.amounts) return;
                   return (
-                    <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">
+                    <div className="mb-5 flex justify-between" key={index}>
+                      <span className="mr-15">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
-                      <span className={entry.amounts?.realizedPnl < 0 ? "text-red" : "text-green"}>
+                      <span className={entry.amounts?.realizedPnl < 0 ? "text-red-500" : "text-green-500"}>
                         {formatUsd(entry.amounts?.realizedPnl)} (
                         {formatPercentage(entry.amounts?.realizedPnlPercentage, {
                           signed: true,
@@ -1126,7 +1126,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
-  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false, "text-gray");
+  const tradeboxPoolWarnings = useTradeboxPoolWarnings(false, "text-gray-300");
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
@@ -1337,7 +1337,7 @@ export function ConfirmationBox(p: Props) {
                             : "0.00$"
                         }
                         showDollar={false}
-                        className={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
+                        textClassName={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
@@ -1368,7 +1368,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="text-warning font-sm">
+                <span className="text-14 text-yellow-500">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1473,7 +1473,7 @@ export function ConfirmationBox(p: Props) {
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                <span className="text-gray font-sm">
+                <span className="text-14 text-gray-300">
                   <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
                 </span>
               </ToggleSwitch>

@@ -172,7 +172,7 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         headerContent={() => (
           <SearchInput
-            className="mt-md"
+            className="mt-15"
             value={searchKeyword}
             setValue={onSearchKeywordChange}
             onKeyDown={_handleKeyDown}
@@ -252,9 +252,9 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          <span className="inline-items-center">
+          <span className="inline-flex items-center">
             {showSymbolImage && (
-              <TokenIcon className="mr-xs" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+              <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
             <span className="Token-symbol-text">{tokenInfo.symbol}</span>
           </span>

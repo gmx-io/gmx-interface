@@ -43,9 +43,9 @@ export const selectLeaderboardIsCompetitionOver = createSelector(function select
   return q(selectLeaderboardIsCompetition);
 });
 
-export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(
-  q
-): LeaderboardAccount | undefined {
+export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(q):
+  | LeaderboardAccount
+  | undefined {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);
   const leaderboardAccount = accounts?.find((a) => a.account === currentAccount);
@@ -87,13 +87,16 @@ const selectPositionBasesByAccount = createSelector(function selectPositionBases
 
   if (!positionBases) return {};
 
-  return positionBases.reduce((acc, position) => {
-    if (!acc[position.account]) {
-      acc[position.account] = [];
-    }
-    acc[position.account].push(position);
-    return acc;
-  }, {} as Record<string, LeaderboardPositionBase[]>);
+  return positionBases.reduce(
+    (acc, position) => {
+      if (!acc[position.account]) {
+        acc[position.account] = [];
+      }
+      acc[position.account].push(position);
+      return acc;
+    },
+    {} as Record<string, LeaderboardPositionBase[]>
+  );
 });
 
 const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccounts(q) {

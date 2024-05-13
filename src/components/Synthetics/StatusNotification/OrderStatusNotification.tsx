@@ -374,9 +374,9 @@ export function OrdersStatusNotificiation({
               </button>
             )}
           </div>
-          <div className="inline-items-center">
+          <div className="inline-flex items-center">
             {createdTxnHashList?.map((txnHash) => (
-              <ExternalLink key={txnHash} className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+              <ExternalLink key={txnHash} className="ml-10" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
                 View
               </ExternalLink>
             ))}

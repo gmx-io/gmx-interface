@@ -15,7 +15,7 @@ import YieldFarm from "abis/YieldFarm.json";
 import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
 
-import "./Stake.css";
+import "./Stake.scss";
 import { t, Trans } from "@lingui/macro";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
@@ -236,8 +236,8 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     data.gmtUsdgSupplyUsd == 0n
       ? 0n
       : data.gmtUsdgFarmSupplyUsd == 0n
-      ? undefined
-      : bigMath.mulDiv(gmtUsdgTotalAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.gmtUsdgSupplyUsd);
+        ? undefined
+        : bigMath.mulDiv(gmtUsdgTotalAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.gmtUsdgSupplyUsd);
   data.gmtUsdgXgmtRewards = stakingData.gmtUsdgFarmXgmt.claimable;
   data.gmtUsdgNativeRewards = stakingData.gmtUsdgFarmNative.claimable;
   data.gmtUsdgTotalRewards = data.gmtUsdgXgmtRewards + data.gmtUsdgNativeRewards;

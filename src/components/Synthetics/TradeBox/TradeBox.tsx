@@ -863,7 +863,7 @@ export function TradeBox(p: Props) {
         </BuyInputSection>
 
         <div className="Exchange-swap-ball-container">
-          <button type="button" className="Exchange-swap-ball" onClick={onSwitchTokens}>
+          <button type="button" className="Exchange-swap-ball bg-blue-500" onClick={onSwitchTokens}>
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
         </div>
@@ -920,8 +920,8 @@ export function TradeBox(p: Props) {
                 selectedMarketLabel={
                   toToken && (
                     <>
-                      <span className="inline-items-center">
-                        <TokenIcon className="mr-xs" symbol={toToken.symbol} importSize={24} displaySize={20} />
+                      <span className="inline-flex items-center">
+                        <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
                         <span className="Token-symbol-text">{toToken.symbol}</span>
                       </span>
                     </>
@@ -1100,7 +1100,7 @@ export function TradeBox(p: Props) {
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-gray font-sm">
+              <span className="text-14 text-gray-300">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>
@@ -1152,8 +1152,8 @@ export function TradeBox(p: Props) {
                       displayDecimals: toToken?.priceDecimals,
                     })
                   : selectedPosition
-                  ? undefined
-                  : "-"
+                    ? undefined
+                    : "-"
               }
             />
           }
@@ -1206,10 +1206,10 @@ export function TradeBox(p: Props) {
                   decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0
-                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                        displayDecimals: toToken?.priceDecimals,
-                      })
-                    : undefined
+                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                          displayDecimals: toToken?.priceDecimals,
+                        })
+                      : undefined
                 }
               />
             }

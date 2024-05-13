@@ -672,9 +672,9 @@ export default function ConfirmationBox(props) {
           {orderOption === LIMIT && renderAvailableLiquidity()}
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount > 0 && (
-              <div className="inline-block muted">
+              <div className="muted inline-block">
                 {formatAmount(existingPosition?.leverage, 4, 2)}x
-                <BsArrowRight className="transition-arrow" />
+                <BsArrowRight className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
@@ -690,9 +690,9 @@ export default function ConfirmationBox(props) {
           {isMarketOrder && (
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount > 0 && (
-                <div className="inline-block muted">
+                <div className="muted inline-block">
                   ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                  <BsArrowRight className="transition-arrow" />
+                  <BsArrowRight className="transition-arrow inline-block" />
                 </div>
               )}
               {nextAveragePrice &&
@@ -712,9 +712,9 @@ export default function ConfirmationBox(props) {
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount > 0 && (
-              <div className="inline-block muted">
+              <div className="muted inline-block">
                 ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                <BsArrowRight className="transition-arrow" />
+                <BsArrowRight className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount &&
@@ -757,7 +757,7 @@ export default function ConfirmationBox(props) {
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted font-sm">
+                <span className="muted text-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -897,7 +897,7 @@ export default function ConfirmationBox(props) {
           <Button
             variant="primary-action"
             onClick={onConfirmationClick}
-            className="w-full mt-sm"
+            className="mt-10 w-full"
             disabled={!isPrimaryEnabled()}
             type="submit"
           >
