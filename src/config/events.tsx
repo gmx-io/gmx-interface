@@ -1,12 +1,15 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
+import type { JSX } from "react";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 export type EventData = {
   id: string;
   title: string;
   isActive?: boolean;
   startDate?: string;
   endDate: string;
-  bodyText: string | string[];
+  bodyText: string | string[] | JSX.Element;
   chains?: number[];
   link?: {
     text: string;
@@ -71,5 +74,18 @@ export const appEventsData: EventData[] = [
       text: "View GM pools",
       href: "/#/pools",
     },
+  },
+  {
+    id: "delegate-voting-power",
+    title: "Delegate your GMX Voting Power",
+    isActive: true,
+    endDate: "6 Jun 2024, 23:59",
+    bodyText: (
+      <>
+        <ExternalLink href="https://www.tally.xyz/gov/gmx">The GMX DAO is now live on Tally</ExternalLink>. Please{" "}
+        <ExternalLink href="https://www.tally.xyz/gov/gmx/my-voting-power">delegate your voting power</ExternalLink>{" "}
+        before staking or claiming GMX rewards.
+      </>
+    ),
   },
 ];
