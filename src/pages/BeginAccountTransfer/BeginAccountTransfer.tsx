@@ -84,6 +84,22 @@ export default function BeginAccountTransfer() {
     }
   );
 
+  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
+  const { data: cumulativeBonusGmxTrackerRewards } = useSWR(
+    [active, chainId, bonusGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, RewardTracker),
+    }
+  );
+
+  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const { data: cumulativeFeeGlpTrackerRewards } = useSWR(
+    [active, chainId, feeGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, RewardTracker),
+    }
+  );
+
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
   const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
@@ -134,10 +150,12 @@ export default function BeginAccountTransfer() {
   const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
   const hasStakedGmx =
     (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0));
+    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0)) ||
+    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards.gt(0));
   const hasStakedGlp =
     (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0));
+    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0)) ||
+    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards.gt(0));
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
 
   const getError = () => {
