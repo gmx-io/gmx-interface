@@ -1,11 +1,10 @@
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { BigNumber } from "ethers";
-import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import { MarketsInfoData } from "../markets";
+import { MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
@@ -169,7 +168,9 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
+      const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+
+      const hasLowCollateral = leverage?.gt(maxAllowedLeverage) || false;
 
       const liquidationPrice = getLiquidationPrice({
         marketInfo,
