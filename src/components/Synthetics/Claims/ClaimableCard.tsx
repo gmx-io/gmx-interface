@@ -1,4 +1,4 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, msg } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import {
   selectClaimsFundingFeesClaimableTotal,

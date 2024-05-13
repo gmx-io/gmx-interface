@@ -167,8 +167,7 @@ export default function GlpSwap(props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
-  const { _ } = useLingui();
-  const tabOptions = useMemo(() => [_`Buy GLP`, _`Sell GLP`], [_]);
+  const tabOptions = useMemo(() => [t`Buy GLP`, t`Sell GLP`], []);
 
   const { active, signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
