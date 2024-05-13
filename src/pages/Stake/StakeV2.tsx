@@ -547,6 +547,7 @@ function VesterDepositModal(props) {
                         <p className="text-white">
                           <Trans>Vault Capacity for your Account:</Trans>
                         </p>
+                        <br />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
