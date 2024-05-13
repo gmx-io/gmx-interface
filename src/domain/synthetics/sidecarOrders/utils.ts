@@ -160,20 +160,20 @@ export function handleEntryError<T extends SidecarOrderEntry>(
           if (type === "tp") {
             priceError = isLong
               ? inputPrice.lt(maxLimitTrigerPrice)
-                ? t`Price below Limit Price.`
+                ? t`Price below highest Limit Price.`
                 : priceError
               : inputPrice.gt(minLimitTrigerPrice)
-              ? t`Price above Limit Price.`
+              ? t`Price above lowes Limit Price.`
               : priceError;
           }
 
           if (type === "sl") {
             priceError = isLong
               ? inputPrice.gt(maxLimitTrigerPrice)
-                ? t`Price above Limit Price.`
+                ? t`Price above highest Limit Price.`
                 : priceError
               : inputPrice.lt(minLimitTrigerPrice)
-              ? t`Price below Limit Price.`
+              ? t`Price below lowes Limit Price.`
               : priceError;
           }
         }

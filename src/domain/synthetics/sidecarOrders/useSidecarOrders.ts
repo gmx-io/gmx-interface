@@ -75,7 +75,7 @@ export function useSidecarOrders() {
     return limitEntriesInfo.entries.filter((e) => e.txnType !== "cancel");
   }, [limitEntriesInfo.entries]);
 
-  const [maxLimitTrigerPrice, minLimitTrigerPrice] = useMemo(() => {
+  const [minLimitTrigerPrice, maxLimitTrigerPrice] = useMemo(() => {
     const prices = existingLimits.reduce<BigNumber[]>(
       (acc, { price }) => (price.value ? [...acc, price.value] : acc),
       []

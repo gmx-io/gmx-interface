@@ -4361,8 +4361,6 @@ msgstr "Price Impact not yet acknowledged"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr "Price above Limit Price."
 
@@ -4397,11 +4395,17 @@ msgid "Price above Mark Price."
 msgstr "Price above Mark Price."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above highest Limit Price."
+msgstr "Price above highest Limit Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above lowes Limit Price."
+msgstr "Price above lowes Limit Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #~ msgid "Price below Entry Price."
 #~ msgstr "Price below Entry Price."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
@@ -4436,6 +4440,14 @@ msgstr "Price below Mark Price"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
 msgstr "Price below Mark Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below highest Limit Price."
+msgstr "Price below highest Limit Price."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below lowes Limit Price."
+msgstr "Price below lowes Limit Price."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."
