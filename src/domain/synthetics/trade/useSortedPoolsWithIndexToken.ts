@@ -34,13 +34,13 @@ function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketT
         const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
         acc = acc + (totalSupplyUsd ?? 0n);
         return acc;
-      }, 0n!);
+      }, 0n);
 
       const totalMarketSupplyB = b.reduce((acc, market) => {
         const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
         acc = acc + (totalSupplyUsd ?? 0n);
         return acc;
-      }, 0n!);
+      }, 0n);
 
       return totalMarketSupplyA > totalMarketSupplyB ? -1 : 1;
     });

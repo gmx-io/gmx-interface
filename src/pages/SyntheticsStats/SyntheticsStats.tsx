@@ -639,7 +639,7 @@ export function SyntheticsStats() {
                 const isLongLabel = isLong ? "Long" : "Short";
                 let availableLiquidity = maxLiquidity - liquidity;
                 if (availableLiquidity < 0) {
-                  availableLiquidity = 0n!;
+                  availableLiquidity = 0n;
                 }
 
                 return (

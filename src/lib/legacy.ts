@@ -505,7 +505,7 @@ export function getNextToAmount(
 
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
-  let toAmountBasedOnRatio = 0n!;
+  let toAmountBasedOnRatio = 0n;
   if (ratio) {
     toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
@@ -993,7 +993,7 @@ export function getTotalVolumeSum(volumes) {
     return;
   }
 
-  let volume = 0n!;
+  let volume = 0n;
 
   for (let i = 0; i < volumes.length; i++) {
     volume = volume + BigInt(volumes[i].data.volume);

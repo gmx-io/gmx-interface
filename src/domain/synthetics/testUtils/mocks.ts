@@ -170,8 +170,8 @@ export function mockMarketsInfoData(
       maxOpenInterestShort: expandDecimals(5, 29),
 
       positionImpactPoolAmount: usdToToken(1000, indexToken),
-      positionImpactPoolDistributionRate: 0n!,
-      minPositionImpactPoolAmount: 0n!,
+      positionImpactPoolDistributionRate: 0n,
+      minPositionImpactPoolAmount: 0n,
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),

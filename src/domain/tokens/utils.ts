@@ -175,7 +175,7 @@ export function getLowestFeeTokenForBuyGlp(
       totalTokenWeights
     );
 
-    let amountLeftToDeposit = 0n!;
+    let amountLeftToDeposit = 0n;
 
     if (fromToken.maxUsdgAmount && fromToken.maxUsdgAmount > 0 && fromToken.usdgAmount && fromToken.usdgAmount > 0) {
       amountLeftToDeposit =

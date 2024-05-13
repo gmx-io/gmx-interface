@@ -125,7 +125,7 @@ function getInfoTokens(
       token.contractMinPrice = token.minPrice;
       token.contractMaxPrice = token.maxPrice;
 
-      token.maxAvailableShort = 0n!;
+      token.maxAvailableShort = 0n;
 
       token.hasMaxAvailableShort = false;
       if (token.maxGlobalShortSize > 0) {
@@ -143,7 +143,7 @@ function getInfoTokens(
         ? bigMath.mulDiv(token.poolAmount, token.minPrice, expandDecimals(1, token.decimals))
         : bigMath.mulDiv(token.availableAmount, token.minPrice, expandDecimals(1, token.decimals));
 
-      token.maxAvailableLong = 0n!;
+      token.maxAvailableLong = 0n;
       token.hasMaxAvailableLong = false;
       if (token.maxGlobalLongSize > 0) {
         token.hasMaxAvailableLong = true;
