@@ -71,20 +71,9 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: Props) {
             </>
           ) : null;
 
-        /* eslint-disable react-perf/jsx-no-new-object-as-prop */
         return (
           <div key={entry.id}>
-            <div className="SidecarEntry-row" key={entry.id} style={{ position: "relative" }}>
-              <div style={{ position: "absolute", right: "100%" }}>
-                {
-                  {
-                    keepSize: "ks",
-                    keepPercentage: "kp",
-                    fitPercentage: "fp",
-                  }[entry.mode]
-                }
-              </div>
-
+            <div className="SidecarEntry-row" key={entry.id}>
               <div className={cx("Sidecar-price", { "input-error": priceError })}>
                 <span className="price-symbol">$</span>
 
