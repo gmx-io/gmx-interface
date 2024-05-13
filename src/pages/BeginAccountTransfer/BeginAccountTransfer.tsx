@@ -1,32 +1,32 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import useSWR from "swr";
-import { ethers } from "ethers";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import { getContract } from "config/contracts";
+import { ethers } from "ethers";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import useSWR from "swr";
 
-import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
 
+import RewardRouter from "abis/RewardRouter.json";
+import RewardTracker from "abis/RewardTracker.json";
 import Token from "abis/Token.json";
 import Vester from "abis/Vester.json";
-import RewardTracker from "abis/RewardTracker.json";
-import RewardRouter from "abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { Trans, t } from "@lingui/macro";
 
-import "./BeginAccountTransfer.css";
-import { callContract, contractFetcher } from "lib/contracts";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import Button from "components/Button/Button";
-import useWallet from "lib/wallets/useWallet";
-import Checkbox from "components/Checkbox/Checkbox";
+import { callContract, contractFetcher } from "lib/contracts";
 import { usePendingTxns } from "lib/usePendingTxns";
-import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
+import useWallet from "lib/wallets/useWallet";
 import { zeroAddress } from "viem";
+import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -188,6 +188,10 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
+
+    if (needFeeGmxTrackerApproval) {
+      return false;
+    }
     return true;
   };
 
@@ -204,6 +208,10 @@ export default function BeginAccountTransfer() {
     }
     if (isTransferring) {
       return t`Transferring`;
+    }
+
+    if (needFeeGmxTrackerApproval) {
+      return t`Pending Transfer Approval`;
     }
 
     return t`Begin Transfer`;
@@ -240,23 +248,23 @@ export default function BeginAccountTransfer() {
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
 
-  const feeGmxTracker = getContract(chainId, "FeeGmxTracker");
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: parsedReceiver,
-    tokenAddresses: [feeGmxTracker],
+    tokenAddresses: [feeGmxTrackerAddress],
   });
-  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTracker }], 1000);
+  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTrackerAddress }], 1000);
 
-  const feeGmxTrackerBalance = balancesData?.[feeGmxTracker];
+  const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
   const needFeeGmxTrackerApproval = useMemo(
     () =>
       parsedReceiver &&
       feeGmxTrackerBalance &&
       parsedReceiver !== zeroAddress &&
       tokensAllowanceData &&
-      getNeedTokenApprove(tokensAllowanceData, feeGmxTracker, feeGmxTrackerBalance),
-    [feeGmxTracker, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
+      getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance),
+    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
   );
 
   return (
@@ -352,8 +360,9 @@ export default function BeginAccountTransfer() {
           {needFeeGmxTrackerApproval && (
             <>
               <ApproveTokenButton
-                tokenAddress={feeGmxTracker}
+                tokenAddress={feeGmxTrackerAddress}
                 tokenSymbol={"sbfGMX"}
+                customLabel={t`Allow all my tokens to be transferred to a new account`}
                 spenderAddress={parsedReceiver}
                 approveAmount={feeGmxTrackerBalance}
               />

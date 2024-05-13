@@ -433,6 +433,10 @@ msgstr ""
 msgid "All time"
 msgstr ""
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Allow all my tokens to be transferred to a new account"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -4131,6 +4135,10 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
+msgstr ""
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Pending Transfer Approval"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx

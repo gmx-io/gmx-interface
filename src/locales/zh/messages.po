@@ -433,6 +433,10 @@ msgstr "全部"
 msgid "All time"
 msgstr "所有时间"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Allow all my tokens to be transferred to a new account"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -4132,6 +4136,10 @@ msgstr "支付"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr "支付金额"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Pending Transfer Approval"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
