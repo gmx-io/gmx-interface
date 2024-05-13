@@ -82,11 +82,11 @@
     }
 
     &:not([disabled]):hover {
-      background: var(--color-slate-600);
+     background-color: #50577e99;
     }
 
     &:not([disabled]):active {
-      background: var(--color-slate-500);
+      background: #50577eb3;
     }
   }
 
