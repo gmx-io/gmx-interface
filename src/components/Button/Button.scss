@@ -56,7 +56,7 @@
   }
 
   &.secondary {
-    background-color: var(--color-slate-700);
+    background-color: color-mix(in srgb, var(--color-slate-600) 47%, transparent);
     border-radius: var(--border-radius-sm);
     color: var(--color-white);
     padding: 1.1rem 1.25rem;
