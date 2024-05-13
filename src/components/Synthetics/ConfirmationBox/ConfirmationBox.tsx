@@ -256,6 +256,8 @@ export function ConfirmationBox(p: Props) {
     return { cancelSltpEntries, createSltpEntries, updateSltpEntries };
   }, [sidecarEntries]);
 
+  const subaccountRequiredActions = 1 + cancelSltpEntries.length + createSltpEntries.length + updateSltpEntries.length;
+
   const getOrderExecutionFee = useCallback(
     (swapsCount?: number) => {
       if (!gasLimits || !tokensData || !gasPrice) return;
@@ -547,7 +549,7 @@ export function ConfirmationBox(p: Props) {
   const isAdditionOrdersMsg =
     summaryExecutionFee && executionFee && summaryExecutionFee.feeTokenAmount.gt(executionFee.feeTokenAmount);
 
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, 1 + sidecarEntries.length);
+  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, subaccountRequiredActions);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(summaryExecutionFee?.feeTokenAmount, 1);
 
   function onCancelOrderClick(key: string): void {
@@ -808,7 +810,7 @@ export function ConfirmationBox(p: Props) {
         isNativeToken={fromToken?.isNative || toToken?.isNative}
         isWrapOrUnwrap={isWrapOrUnwrap}
         tradeFlags={tradeFlags}
-        requiredActions={1 + sidecarEntries.length}
+        requiredActions={subaccountRequiredActions}
       />
     );
   }
