@@ -337,20 +337,20 @@ export function OrdersStatusNotificiation({
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const isMarketOrLimitOrderFailed = useMemo(() => {
+  const isMainOrderFailed = useMemo(() => {
     return pendingOrders.some((pendingOrder) => {
       if (isMarketOrderType(pendingOrder.orderType) || isLimitOrderType(pendingOrder.orderType)) {
         const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, pendingOrder);
 
-        return pendingOrder.txnType !== "cancel" && orderStatus?.cancelledTxnHash !== undefined;
+        return pendingOrder.txnType === "create" && orderStatus?.cancelledTxnHash !== undefined;
       }
       return false;
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const triggerOrderKeys = useMemo(() => {
+  const newlyCreatedTriggerOrderKeys = useMemo(() => {
     return pendingOrders.reduce((result, order) => {
-      if (isTriggerDecreaseOrderType(order.orderType)) {
+      if (isTriggerDecreaseOrderType(order.orderType) && order.txnType === "create") {
         const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, order);
 
         if (orderStatus?.createdTxnHash && orderStatus?.key) {
@@ -361,15 +361,18 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSubaccount(null, triggerOrderKeys.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, triggerOrderKeys.length);
+  const subaccount = useSubaccount(null, newlyCreatedTriggerOrderKeys.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(
+    undefined,
+    newlyCreatedTriggerOrderKeys.length
+  );
 
   function onCancelOrdersClick() {
-    if (!signer || !triggerOrderKeys.length || !setPendingTxns) return;
+    if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: triggerOrderKeys,
+      orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
@@ -413,7 +416,7 @@ export function OrdersStatusNotificiation({
       {pendingOrders.length > 1 && (
         <div className="StatusNotification-actions">
           <div>
-            {isMarketOrLimitOrderFailed && triggerOrderKeys.length > 0 && (
+            {isMainOrderFailed && newlyCreatedTriggerOrderKeys.length > 0 && (
               <button
                 disabled={isCancelOrderProcessing}
                 onClick={onCancelOrdersClick}
