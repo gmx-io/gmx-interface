@@ -437,6 +437,10 @@ msgstr "すべて"
 msgid "All time"
 msgstr "すべての時間"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Allow all my tokens to be transferred to a new account"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -508,7 +512,7 @@ msgstr "承認が提出されました! <0>状況を確認する</0>"
 msgid "Approval was cancelled"
 msgstr "承認はキャンセルされました"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Approve GMX"
 msgstr "GMXを承認する"
@@ -541,7 +545,7 @@ msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol}を承認中..."
 
 #: src/components/Migration/Migration.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "承認中"
 
@@ -663,7 +667,7 @@ msgstr ""
 msgid "Base {nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin Transfer"
 msgstr "移転開始"
 
@@ -1321,7 +1325,7 @@ msgstr ""
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "続ける"
@@ -1910,7 +1914,7 @@ msgstr "NFT IDを入力"
 msgid "Enter Price"
 msgstr "価格を入力"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter Receiver Address"
 msgstr "受け取りアドレスを入力"
@@ -2595,7 +2599,7 @@ msgstr "USDGスリッページが大きいです。ともかくロングする"
 msgid "I am aware of the trigger orders"
 msgstr "トリガー注文について承知しています"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
@@ -2799,7 +2803,7 @@ msgstr ""
 msgid "Invalid NFT Address"
 msgstr "無効なNFTアドレス"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
@@ -4161,6 +4165,10 @@ msgstr "支払い"
 msgid "Pay Amount"
 msgstr "支払い額"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Pending Transfer Approval"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
 msgstr ""
@@ -4187,7 +4195,7 @@ msgstr "紹介コードを入力すると手数料割引を受けられます。
 #~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 #~ msgstr "アカウント全体を移行する場合だけこの機能を利用してください。<0/>この機能は、あなたのすべてのGMX、esGMX、GLP、マルチプライヤーポイントを新たなアカウントに移行します<1/>移行は、受け取り側のアカウントが過去にGMXトークンとGLPトークンを一度もステークしたことがない場合にのみ可能になります。<2/>移行は一方通行であり、いったん移行が完了すると、ステークされているトークンを元のアカウントに戻すことはできなくなります。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
@@ -4632,20 +4640,20 @@ msgstr ""
 msgid "Receive"
 msgstr "受け取る"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "受け取り側アドレス"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "受け取り側でこれまでGLPトークンをステークしたことはありません"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
 
@@ -4922,7 +4930,7 @@ msgstr "プールを選択"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "べスティングオプションを選択して\"請求\"をクリック。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "自分への移転はサポートされていません"
 
@@ -4986,15 +4994,15 @@ msgstr ""
 msgid "Selling..."
 msgstr "売却中..."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "送信側はGLPのべスティングボールトからすべてのトークンを引き出しました。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
 
@@ -6159,7 +6167,7 @@ msgstr "取引は送信済です。"
 msgid "Transaction was cancelled."
 msgstr "取引はキャンセルされました。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Transfer Account"
 msgstr "アカウント移転"
@@ -6168,21 +6176,21 @@ msgstr "アカウント移転"
 msgid "Transfer NFT"
 msgstr "NFTを送信する"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Submitted"
 msgstr "移転申し込み完了"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "移転はすでに開始されています"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer failed."
 msgstr "移転できませんでした。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
@@ -6192,7 +6200,7 @@ msgstr "移転申し込み完了!"
 msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
 msgstr "移転中..."
 
@@ -6538,12 +6546,12 @@ msgstr "ArbitrumでGMXを使ってべスティングする"
 msgid "Vest with GMX on Avalanche"
 msgstr "AvalancheでGMXを使ってべスティングする"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "べスティングされたGLPで引き出されていないもの"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "べスティングされたGMXで引き出されていないもの"
 
@@ -6659,7 +6667,7 @@ msgstr "ウォレット"
 msgid "Wallet 365d expected Fees"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "ウォレットが接続されていません"
@@ -6892,7 +6900,7 @@ msgstr "以下の選択肢のいずれかを使い、ETHを他のネットワー
 msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "{pendingReceiver}への<0>未完了の移転</0> があります。"
 
@@ -6944,7 +6952,7 @@ msgstr "あなたは{0}を担保として持つ既存のポジションがあり
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
@@ -7047,7 +7055,7 @@ msgstr "手数料差引後のあなたのポジションの担保"
 msgid "Your transfer has been completed."
 msgstr "移転は完了しました。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "移転が開始されました。"
 
