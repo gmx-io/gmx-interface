@@ -102,6 +102,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     setEntries(initialState);
   });
 
+  useEffect(() => {
+    setEntries((prevEntries) => prevEntries.map((entry) => errorHandler(entry)));
+  }, [errorHandler, setEntries]);
+
   const totalPercentage = useSelector(makeSelectConfirmationBoxSidecarOrdersTotalPercentage(prefix));
 
   const clampEntryPercentage = useCallback(
