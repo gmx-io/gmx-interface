@@ -28,6 +28,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "domain/legacy";
+import { mustNeverExist } from "lib/types";
 
 type Props = {
   toastTimestamp: number;
@@ -333,7 +334,7 @@ export function OrdersStatusNotificiation({
       if (pendingOrder.txnType === "cancel") {
         return Boolean(orderStatus?.cancelledTxnHash);
       }
-      return false;
+      throw mustNeverExist(pendingOrder.txnType);
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
@@ -440,8 +441,10 @@ export function OrdersStatusNotificiation({
 }
 
 function findMatchedOrderStatus(orderList: OrderStatus[], orderData: PendingOrderData) {
+  const matchingOrderKey = getPendingOrderKey(orderData);
+
   return orderList.find((status) => {
-    const isPendingOrderMatch = status.data && getPendingOrderKey(orderData) === getPendingOrderKey(status.data);
+    const isPendingOrderMatch = status.data && matchingOrderKey === getPendingOrderKey(status.data);
     const isContractOrderMatch = orderData.orderKey && orderData.orderKey === status.key;
 
     return isPendingOrderMatch || isContractOrderMatch;

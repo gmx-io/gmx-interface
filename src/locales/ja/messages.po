@@ -356,6 +356,10 @@ msgstr "アクティブな注文"
 msgid "Active Referral Code"
 msgstr "有効な紹介コード"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Add Row"
+msgstr ""
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "メタマスクに追加"
@@ -4708,6 +4712,10 @@ msgstr "紹介コードの更新完了!"
 msgid "Referrals"
 msgstr "紹介アカウント"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Remove Row"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "入金リクエスト"
@@ -7247,8 +7255,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
-msgid "{0} {1} {2} by {3} at {4}."
-msgstr ""
+#~ msgid "{0} {1} {2} by {3} at {4}."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"

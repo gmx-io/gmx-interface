@@ -110,93 +110,77 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   if (inputPrice?.gt(0)) {
     if (markPrice) {
       if (type === "limit") {
-        priceError = isLong
-          ? inputPrice.gt(markPrice)
-            ? t`Price above Mark Price.`
-            : priceError
-          : inputPrice.lt(markPrice)
-          ? t`Price below Mark Price.`
-          : priceError;
+        const nextError = isLong
+          ? inputPrice.gt(markPrice) && t`Price above Mark Price.`
+          : inputPrice.lt(markPrice) && t`Price below Mark Price.`;
+
+        priceError = nextError || priceError;
       }
     }
 
     if (!isExistingLimits && liqPrice) {
       if (type === "sl") {
-        priceError = isLong
-          ? inputPrice.lt(liqPrice)
-            ? t`Price below Liq. Price.`
-            : priceError
-          : inputPrice.gt(liqPrice)
-          ? t`Price above Liq. Price.`
-          : priceError;
+        const nextError = isLong
+          ? inputPrice.lt(liqPrice) && t`Price below Liq. Price.`
+          : inputPrice.gt(liqPrice) && t`Price above Liq. Price.`;
+
+        priceError = nextError || priceError;
       }
     }
 
     if (isExistingPosition || !isLimit) {
       if (markPrice) {
         if (type === "tp") {
-          priceError = isLong
-            ? inputPrice.lt(markPrice)
-              ? t`Price below Mark Price.`
-              : priceError
-            : inputPrice.gt(markPrice)
-            ? t`Price above Mark Price.`
-            : priceError;
+          const nextError = isLong
+            ? inputPrice.lt(markPrice) && t`Price below Mark Price.`
+            : inputPrice.gt(markPrice) && t`Price above Mark Price.`;
+
+          priceError = nextError || priceError;
         }
 
         if (type === "sl") {
-          priceError = isLong
-            ? inputPrice.gt(markPrice)
-              ? t`Price above Mark Price.`
-              : priceError
-            : inputPrice.lt(markPrice)
-            ? t`Price below Mark Price.`
-            : priceError;
+          const nextError = isLong
+            ? inputPrice.gt(markPrice) && t`Price above Mark Price.`
+            : inputPrice.lt(markPrice) && t`Price below Mark Price.`;
+
+          priceError = nextError || priceError;
         }
       }
     } else {
       if (isExistingLimits) {
         if (maxLimitTrigerPrice && minLimitTrigerPrice) {
           if (type === "tp") {
-            priceError = isLong
-              ? inputPrice.lt(maxLimitTrigerPrice)
-                ? t`Price below highest Limit Price.`
-                : priceError
-              : inputPrice.gt(minLimitTrigerPrice)
-              ? t`Price above lowest Limit Price.`
-              : priceError;
+            const nextError = isLong
+              ? inputPrice.lt(maxLimitTrigerPrice) && t`Price below highest Limit Price.`
+              : inputPrice.gt(minLimitTrigerPrice) && t`Price above lowest Limit Price.`;
+
+            priceError = nextError || priceError;
           }
 
           if (type === "sl") {
-            priceError = isLong
-              ? inputPrice.gt(maxLimitTrigerPrice)
-                ? t`Price above highest Limit Price.`
-                : priceError
-              : inputPrice.lt(minLimitTrigerPrice)
-              ? t`Price below lowest Limit Price.`
-              : priceError;
+            const nextError = isLong
+              ? inputPrice.gt(maxLimitTrigerPrice) && t`Price above highest Limit Price.`
+              : inputPrice.lt(minLimitTrigerPrice) && t`Price below lowest Limit Price.`;
+
+            priceError = nextError || priceError;
           }
         }
       } else {
         if (triggerPrice) {
           if (type === "tp") {
-            priceError = isLong
-              ? inputPrice.lt(triggerPrice)
-                ? t`Price below Limit Price.`
-                : priceError
-              : inputPrice.gt(triggerPrice)
-              ? t`Price above Limit Price.`
-              : priceError;
+            const nextError = isLong
+              ? inputPrice.lt(triggerPrice) && t`Price below Limit Price.`
+              : inputPrice.gt(triggerPrice) && t`Price above Limit Price.`;
+
+            priceError = nextError || priceError;
           }
 
           if (type === "sl") {
-            priceError = isLong
-              ? inputPrice.gt(triggerPrice)
-                ? t`Price above Limit Price.`
-                : priceError
-              : inputPrice.lt(triggerPrice)
-              ? t`Price below Limit Price.`
-              : priceError;
+            const nextError = isLong
+              ? inputPrice.gt(triggerPrice) && t`Price above Limit Price.`
+              : inputPrice.lt(triggerPrice) && t`Price below Limit Price.`;
+
+            priceError = nextError || priceError;
           }
         }
       }

@@ -31,14 +31,26 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
 
-  const { executionFeeText, estimatedRefundText, additionalOrdersMsg } = useMemo(() => {
-    const executionFeeText = formatTokenAmountWithUsd(
-      executionFee?.feeTokenAmount.mul(-1),
-      executionFee?.feeUsd.mul(-1),
-      executionFee?.feeToken.symbol,
-      executionFee?.feeToken.decimals
-    );
+  const executionFeeText = formatTokenAmountWithUsd(
+    executionFee?.feeTokenAmount.mul(-1),
+    executionFee?.feeUsd.mul(-1),
+    executionFee?.feeToken.symbol,
+    executionFee?.feeToken.decimals
+  );
 
+  const additionalOrdersMsg = useMemo(
+    () =>
+      isAdditionOrdersMsg && (
+        <Trans>
+          Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they
+          don't trigger and are cancelled.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
+        </Trans>
+      ),
+    [isAdditionOrdersMsg]
+  );
+
+  const estimatedRefundText = useMemo(() => {
     let estimatedRefundTokenAmount: BigNumber | undefined;
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
@@ -72,16 +84,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
       }
     );
 
-    const additionalOrdersMsg = isAdditionOrdersMsg && (
-      <Trans>
-        Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they
-        don't trigger and are cancelled.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
-      </Trans>
-    );
-
-    return { executionFeeText, estimatedRefundText, additionalOrdersMsg };
-  }, [executionFee, executionFeeBufferBps, tokenData, isAdditionOrdersMsg]);
+    return estimatedRefundText;
+  }, [executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
     if (!executionFee?.feeUsd) {

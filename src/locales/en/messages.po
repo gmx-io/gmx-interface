@@ -356,6 +356,10 @@ msgstr "Active Orders"
 msgid "Active Referral Code"
 msgstr "Active Referral Code"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Add Row"
+msgstr "Add Row"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
@@ -4711,6 +4715,10 @@ msgstr "Referral code updated!"
 msgid "Referrals"
 msgstr "Referrals"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Remove Row"
+msgstr "Remove Row"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Request Deposit"
@@ -7250,8 +7258,8 @@ msgstr "{0} {1} not supported"
 #~ msgstr "{0} {1} {2} by {3} at ${4}."
 
 #: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
-msgid "{0} {1} {2} by {3} at {4}."
-msgstr "{0} {1} {2} by {3} at {4}."
+#~ msgid "{0} {1} {2} by {3} at {4}."
+#~ msgstr "{0} {1} {2} by {3} at {4}."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"

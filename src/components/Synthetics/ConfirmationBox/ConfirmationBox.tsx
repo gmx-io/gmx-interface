@@ -1107,7 +1107,7 @@ export function ConfirmationBox(p: Props) {
       limit: limit,
     }[type];
 
-    if (!entriesInfo || !entriesInfo.entries.some((e) => e.txnType !== "cancel")) return;
+    if (!entriesInfo || entriesInfo.entries.every((e) => e.txnType === "cancel")) return;
 
     const label = {
       stopLoss: t`Stop-Loss`,
