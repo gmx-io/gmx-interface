@@ -195,6 +195,14 @@ export default function BeginAccountTransfer() {
     }
   };
 
+  const isReadyForSbfGmxTokenApproval = !(
+    hasVestedGlp ||
+    hasVestedGmx ||
+    (hasVestedAffiliate && !isAffiliateVesterSkipValidation) ||
+    hasStakedGmx ||
+    hasStakedGlp
+  );
+
   const isPrimaryEnabled = () => {
     const error = getError();
     if (error) {
@@ -375,7 +383,7 @@ export default function BeginAccountTransfer() {
             </ValidationRow>
           </div>
 
-          {needFeeGmxTrackerApproval && (
+          {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
             <>
               <ApproveTokenButton
                 tokenAddress={feeGmxTrackerAddress}
