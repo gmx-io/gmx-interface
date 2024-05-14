@@ -334,7 +334,8 @@ export function OrdersStatusNotificiation({
       if (pendingOrder.txnType === "cancel") {
         return Boolean(orderStatus?.cancelledTxnHash);
       }
-      throw mustNeverExist(pendingOrder.txnType);
+
+      mustNeverExist(pendingOrder.txnType);
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
