@@ -14,7 +14,6 @@ import { useMarketTokensData } from "./useMarketTokensData";
 import useIncentiveStats from "../common/useIncentiveStats";
 import { useTokensDataRequest } from "../tokens";
 import { getTokenBySymbol } from "config/tokens";
-import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
 import { expandDecimals } from "lib/numbers";
 
 type RawCollectedFee = {
@@ -64,8 +63,7 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
       arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
     }
 
-    const shouldCalcBonusApr =
-      arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) && rawIncentivesStats?.lp.isActive;
+    const shouldCalcBonusApr = arbTokenPrice && rawIncentivesStats?.lp.isActive;
 
     return marketAddresses.reduce((acc, marketAddress) => {
       if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)

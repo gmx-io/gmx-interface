@@ -234,7 +234,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={false} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </td>
 
                       <td className="GmList-actions">
