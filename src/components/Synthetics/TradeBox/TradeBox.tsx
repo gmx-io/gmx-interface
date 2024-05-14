@@ -19,9 +19,9 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { MAX_METAMASK_MOBILE_DECIMALS, V2_LEVERAGE_SLIDER_MARKS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useMarketsInfoData,
@@ -39,10 +39,8 @@ import {
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
-  selectTradeboxLeverageSliderMarks,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
-  selectTradeboxMaxLeverage,
   selectTradeboxNextLeverageWithoutPnl,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
@@ -248,10 +246,6 @@ export function TradeBox(p: Props) {
   const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
-  const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
-  const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-
-  const maxAllowedLeverage = maxLeverage / 2;
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -294,7 +288,7 @@ export function TradeBox(p: Props) {
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<BigNumber | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
+      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
       (lev) => {
         const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
@@ -375,7 +369,6 @@ export function TradeBox(p: Props) {
     isLeverageEnabled,
     isLong,
     marketInfo,
-    maxAllowedLeverage,
     minCollateralUsd,
     selectedPosition,
     selectedTriggerAcceptablePriceImpactBps,
@@ -674,15 +667,6 @@ export function TradeBox(p: Props) {
       setTriggerPriceInputValue("");
     },
     [setTriggerPriceInputValue, toTokenAddress, tradeMode]
-  );
-
-  useEffect(
-    function validateLeverageOption() {
-      if (leverageOption && leverageOption > maxAllowedLeverage / BASIS_POINTS_DIVISOR) {
-        setLeverageOption(maxAllowedLeverage / BASIS_POINTS_DIVISOR);
-      }
-    },
-    [leverageOption, maxAllowedLeverage, setLeverageOption]
   );
 
   const onSwitchTokens = useCallback(() => {
@@ -1019,7 +1003,7 @@ export function TradeBox(p: Props) {
 
             {isLeverageEnabled && (
               <LeverageSlider
-                marks={leverageSliderMarks}
+                marks={V2_LEVERAGE_SLIDER_MARKS}
                 value={leverageOption}
                 onChange={setLeverageOption}
                 isPositive={isLong}
