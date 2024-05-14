@@ -4396,7 +4396,11 @@ msgid "Price above highest Limit Price."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above lowes Limit Price."
+#~ msgid "Price above lowes Limit Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above lowest Limit Price."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -4443,7 +4447,11 @@ msgid "Price below highest Limit Price."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price below lowes Limit Price."
+#~ msgid "Price below lowes Limit Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below lowest Limit Price."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx

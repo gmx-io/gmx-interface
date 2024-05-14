@@ -163,7 +163,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
                 ? t`Price below highest Limit Price.`
                 : priceError
               : inputPrice.gt(minLimitTrigerPrice)
-              ? t`Price above lowes Limit Price.`
+              ? t`Price above lowest Limit Price.`
               : priceError;
           }
 
@@ -173,7 +173,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
                 ? t`Price above highest Limit Price.`
                 : priceError
               : inputPrice.lt(minLimitTrigerPrice)
-              ? t`Price below lowes Limit Price.`
+              ? t`Price below lowest Limit Price.`
               : priceError;
           }
         }
