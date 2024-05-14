@@ -55,7 +55,6 @@ import {
   getExecutionFee,
   getFeeItem,
 } from "domain/synthetics/fees";
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -473,12 +472,4 @@ export const selectOrderEditorSwapRoutes = createSelector((q) => {
   const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
 
   return q(selectSwapRoutes);
-});
-
-export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
-  const order = q(selectEditingOrder);
-  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
-
-  const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 });

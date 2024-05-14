@@ -13,6 +13,7 @@ export const CLAIMS_HISTORY_PER_PAGE = 25;
 export const UI_FEE_RECEIVER_ACCOUNT = process.env.REACT_APP_UI_FEE_RECEIVER || null;
 
 export const DEFAULT_TOOLTIP_POSITION = "bottom-start";
+export const V2_LEVERAGE_SLIDER_MARKS = [0.1, 1, 2, 5, 10, 15, 20, 25, 30, 40, 50];
 
 export const TOOLTIP_OPEN_DELAY = 100; // ms
 export const TOOLTIP_CLOSE_DELAY = 100; // ms
