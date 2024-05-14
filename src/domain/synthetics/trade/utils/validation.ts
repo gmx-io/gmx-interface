@@ -1,7 +1,12 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
-import { MarketInfo, getMintableMarketTokens, getOpenInterestUsd } from "domain/synthetics/markets";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import {
+  MarketInfo,
+  getMaxAllowedLeverageByMinCollateralFactor,
+  getMintableMarketTokens,
+  getOpenInterestUsd,
+} from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
@@ -255,8 +260,10 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (nextLeverageWithoutPnl?.gt(MAX_ALLOWED_LEVERAGE)) {
-    return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+
+  if (nextLeverageWithoutPnl?.gt(maxAllowedLeverage)) {
+    return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
   if (priceImpactWarning.validationError) {
@@ -371,8 +378,10 @@ export function getDecreaseError(p: {
     }
   }
 
-  if (nextPositionValues?.nextLeverage && nextPositionValues?.nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-    return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+
+  if (nextPositionValues?.nextLeverage && nextPositionValues?.nextLeverage.gt(maxAllowedLeverage)) {
+    return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
   if (existingPosition) {
@@ -440,8 +449,10 @@ export function getEditCollateralError(p: {
     }
   }
 
-  if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-    return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+
+  if (nextLeverage && nextLeverage.gt(maxAllowedLeverage)) {
+    return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
   if (position && minCollateralFactor && !isDeposit) {
