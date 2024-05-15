@@ -81,8 +81,8 @@ export function DailyAndCumulativePnL() {
           <div className="inline-block size-10 rounded-full bg-[#468AE3]" />{" "}
           <Trans>
             Cumulative PnL:{" "}
-            <span className={getPositiveOrNegativeClass(clusteredPnlData.at(-1)?.pnl)}>
-              {formatUsd(clusteredPnlData.at(-1)?.pnl)}
+            <span className={getPositiveOrNegativeClass(clusteredPnlData.at(-1)?.cumulativePnl)}>
+              {formatUsd(clusteredPnlData.at(-1)?.cumulativePnl)}
             </span>
           </Trans>
         </div>
