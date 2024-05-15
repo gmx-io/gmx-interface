@@ -221,12 +221,13 @@ function usePnlHistoricalData(
     // Pad start
     if (fromTxTimestamp && clustered.length) {
       const startDaysSinceLocalEpoch = Math.floor((fromTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
-      const startGapLength = clustered[0].daysSinceLocalEpoch - startDaysSinceLocalEpoch;
+      const firstDaysSinceLocalEpoch = clustered[0].daysSinceLocalEpoch;
+      const startGapLength = firstDaysSinceLocalEpoch - startDaysSinceLocalEpoch;
 
-      for (let count = 0; count < startGapLength; count++) {
+      for (let count = 1; count <= startGapLength; count++) {
         clustered.unshift({
-          date: formatDate((startDaysSinceLocalEpoch + count) * 24 * 60 * 60 + 1),
-          daysSinceLocalEpoch: startDaysSinceLocalEpoch + count,
+          date: formatDate((firstDaysSinceLocalEpoch - count) * 24 * 60 * 60),
+          daysSinceLocalEpoch: firstDaysSinceLocalEpoch - count,
           pnl: 0n,
           cumulativePnl: 0n,
         });
@@ -238,22 +239,23 @@ function usePnlHistoricalData(
       const endDaysSinceLocalEpoch = Math.floor((toTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
       const lastDaysSinceLocalEpoch = clustered.at(-1)!.daysSinceLocalEpoch;
       const endGapLength = endDaysSinceLocalEpoch - clustered.at(-1)!.daysSinceLocalEpoch;
+      const lastCumulativePnl = clustered.at(-1)!.cumulativePnl;
 
       for (let count = 1; count <= endGapLength; count++) {
         clustered.push({
           date: formatDate((lastDaysSinceLocalEpoch + count) * 24 * 60 * 60),
           daysSinceLocalEpoch: lastDaysSinceLocalEpoch + count,
           pnl: 0n,
-          cumulativePnl: clustered.at(-1)!.cumulativePnl,
+          cumulativePnl: lastCumulativePnl,
         });
       }
     }
 
     const compressed: PnlHistoricalData = clustered.map(({ date, pnl, cumulativePnl }) => ({
       date,
-      pnlFloat: Number(pnl / 10n ** BigInt(USD_DECIMALS)),
+      pnlFloat: Number((pnl * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000,
       pnl: pnl,
-      cumulativePnlFloat: Number(cumulativePnl / 10n ** BigInt(USD_DECIMALS)),
+      cumulativePnlFloat: Number((cumulativePnl * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000,
       cumulativePnl: cumulativePnl,
     }));
 
