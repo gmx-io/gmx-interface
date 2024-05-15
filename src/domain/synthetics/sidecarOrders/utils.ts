@@ -5,7 +5,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const MAX_PERCENTAGE = BigNumber.from(100);
 export const PERCENTAGE_DECEMALS = 0;
@@ -89,6 +89,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     isExistingPosition,
     maxLimitTrigerPrice,
     minLimitTrigerPrice,
+    maxLeverage,
   }: {
     liqPrice?: BigNumber;
     triggerPrice?: BigNumber;
@@ -99,6 +100,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     isExistingPosition?: boolean;
     maxLimitTrigerPrice?: BigNumber;
     minLimitTrigerPrice?: BigNumber;
+    maxLeverage?: number;
   }
 ): T {
   let sizeError: string | null = null;
@@ -192,8 +194,12 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       sizeError = t`Limit size is required.`;
     }
 
-    if (entry?.increaseAmounts?.estimatedLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
-      sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+    if (
+      entry?.increaseAmounts?.estimatedLeverage !== undefined &&
+      typeof maxLeverage === "number" &&
+      entry?.increaseAmounts?.estimatedLeverage?.gt(maxLeverage)
+    ) {
+      sizeError = t`Max leverage: ${(maxLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
   } else {
     if (!entry.percentage?.value || entry.percentage.value?.eq(0)) {

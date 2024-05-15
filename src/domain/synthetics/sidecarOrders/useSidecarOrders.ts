@@ -18,6 +18,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxNextPositionValues,
+  selectTradeboxMaxLeverage,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectConfirmationBoxSidecarOrdersExistingSlEntries,
@@ -45,6 +46,7 @@ export function useSidecarOrders() {
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const maxLeverage = useSelector(selectTradeboxMaxLeverage) / 2;
 
   const existingLimitOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingLimitEntries);
   const existingSlOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingSlEntries);
@@ -59,8 +61,9 @@ export function useSidecarOrders() {
         markPrice,
         isLong,
         isLimit,
+        maxLeverage,
       }),
-    [isLong, isLimit, markPrice, triggerPrice, nextPositionValues]
+    [nextPositionValues?.nextLiqPrice, triggerPrice, markPrice, isLong, isLimit, maxLeverage]
   );
 
   const limitEntriesInfo = useSidecarOrdersGroup<SidecarLimitOrderEntry>({
