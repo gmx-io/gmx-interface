@@ -14,7 +14,7 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
-import { entries, identity, keyBy, pickBy, set, values } from "lodash";
+import { entries, keyBy, pickBy, set, values } from "lodash";
 import { MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrderType } from "../orders/types";
@@ -337,17 +337,13 @@ export function useTradeboxState(
 
   const switchTokenAddresses = useCallback(() => {
     setStoredOptions((oldState) => {
-      const isSwap = oldState.tradeType === TradeType.Swap;
-      const fromTokenAddress = oldState.tokens.fromTokenAddress;
-      const toTokenAddress = oldState.tokens.indexTokenAddress;
-
-      if (isSwap) {
+      if (oldState.tradeType === TradeType.Swap) {
         return {
           ...oldState,
           tokens: {
             ...oldState.tokens,
-            fromTokenAddress: toTokenAddress,
-            swapToTokenAddress: fromTokenAddress,
+            fromTokenAddress: oldState.tokens.swapToTokenAddress,
+            swapToTokenAddress: oldState.tokens.fromTokenAddress,
           },
         };
       }
@@ -356,8 +352,8 @@ export function useTradeboxState(
         ...oldState,
         tokens: {
           ...oldState.tokens,
-          fromTokenAddress: toTokenAddress,
-          indexTokenAddress: fromTokenAddress,
+          fromTokenAddress: oldState.tokens.indexTokenAddress,
+          indexTokenAddress: oldState.tokens.fromTokenAddress,
         },
       };
     });
@@ -499,7 +495,7 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptions(identity);
+      setStoredOptions(copy);
     },
     [availableSwapTokenAddresses.length, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );

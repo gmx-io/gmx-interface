@@ -1,8 +1,8 @@
-.SLTPEntries-wrapper {
+.SidecarEntries-wrapper {
   display: grid;
   grid-row-gap: 0.35rem;
 
-  .SLTPEntry-row {
+  .SidecarEntry-row {
     display: grid;
     grid-template-columns: auto auto auto;
     grid-column-gap: 1rem;
@@ -11,7 +11,8 @@
       margin-bottom: 1rem;
     }
 
-    .SLTP-price {
+    .Sidecar-size,
+    .Sidecar-price {
       border: 1px solid #212540;
       border-radius: var(--border-radius-sm);
       padding-left: 0.5rem;
@@ -19,6 +20,7 @@
       background: #212540;
       position: relative;
 
+      .size-input,
       .price-input {
         padding: 0.2rem 0.5rem 0.2rem;
         font-size: 1.4rem;
@@ -43,7 +45,8 @@
         cursor: pointer;
         opacity: 0.7;
       }
-      .SLTP-price-error {
+      .Sidecar-price-error,
+      .Sidecar-size-error {
         display: none;
         &.Tooltip-popup {
           min-width: 0;
@@ -52,12 +55,35 @@
       }
 
       &:hover {
-        .SLTP-price-error {
+        .Sidecar-price-error,
+        .Sidecar-size-error {
+          display: block;
+        }
+      }
+
+      .Sidecar-size-info {
+        display: none;
+        &.Tooltip-popup {
+          min-width: 25rem;
+        }
+      }
+
+      &:focus-within {
+        .Sidecar-size-info {
+          display: none;
+        }
+      }
+
+      &:hover {
+        .Sidecar-size-info {
           display: block;
         }
       }
     }
-    .SLTP-percentage {
+    .Sidecar-size .size-input {
+      max-width: 8rem;
+    }
+    .Sidecar-percentage {
       position: relative;
 
       &.input-error {
@@ -72,7 +98,7 @@
         }
       }
 
-      .SLTP-percent-info {
+      .Sidecar-size-info {
         display: none;
         &.Tooltip-popup {
           min-width: 25rem;
@@ -80,26 +106,13 @@
       }
 
       &:focus-within {
-        .SLTP-percent-info {
+        .Sidecar-size-info {
           display: none;
         }
       }
 
       &:hover {
-        .SLTP-percent-info {
-          display: block;
-        }
-      }
-      .SLTP-percent-error {
-        display: none;
-        &.Tooltip-popup {
-          min-width: 0;
-          width: max-content;
-        }
-      }
-
-      &:hover {
-        .SLTP-percent-error {
+        .Sidecar-size-info {
           display: block;
         }
       }
@@ -113,7 +126,7 @@
     padding-right: 0.5rem;
   }
 
-  .SLTP-actions {
+  .Sidecar-actions {
     display: flex;
     align-items: center;
     height: 100%;
@@ -150,7 +163,7 @@
   }
 }
 
-.SLTP-helper-text .Tooltip-popup {
+.Sidecar-helper-text .Tooltip-popup {
   min-width: min-content;
   text-wrap: nowrap;
 

@@ -1,7 +1,7 @@
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder } from "context/SyntheticsEvents";
+import { SetPendingOrder, PendingOrderData } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { TokensData } from "../tokens";
@@ -50,7 +50,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
-  const swapOrder = {
+  const swapOrder: PendingOrderData = {
     account: p.account,
     marketAddress: ZeroAddress,
     initialCollateralTokenAddress,
@@ -61,6 +61,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     isLong: false,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativeReceive,
+    txnType: "create",
   };
 
   if (subaccount) {

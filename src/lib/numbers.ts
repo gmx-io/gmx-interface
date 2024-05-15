@@ -387,6 +387,18 @@ export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
+export function minBigNumber(...args: bigint[]) {
+  if (!args.length) return undefined;
+
+  return args.reduce((acc, num) => (num < acc ? num : acc), args[0]);
+}
+
+export function maxbigint(...args: bigint[]) {
+  if (!args.length) return undefined;
+
+  return args.reduce((acc, num) => (num > acc ? num : acc), args[0]);
+}
+
 export function removeTrailingZeros(amount: string | number) {
   const amountWithoutZeros = Number(amount);
   if (!amountWithoutZeros) return amount;

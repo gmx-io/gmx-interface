@@ -6,7 +6,11 @@ import {
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  getAvailableUsdLiquidityForPosition,
+  getMaxLeverageByMinCollateralFactor,
+} from "domain/synthetics/markets";
 import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
 import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
@@ -744,4 +748,41 @@ export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) =>
   const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
 
   return symbol;
+});
+
+export const selectTradeboxMaxLeverage = createSelector((q) => {
+  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
+  return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
+});
+
+/*
+  100x max: mincollfactor < 1/150
+  0.1, 1, 2, 5, 10, 15, 25, 50
+  150x max: mincollfactor >= 1/150 and < 1/200
+  0.1, 1, 2, 5, 10, 15, 25, 50, 75
+  200x max: mincollfactor >= 1/200 and <1/250
+  0.1, 1, 2, 5, 10, 15, 25, 50, 75, 100
+  250x max: mincollfactor >= 1/250
+  0.1, 1, 2, 5, 10, 15, 25, 50, 75, 100, 125
+*/
+const x250 = [0.1, 1, 2, 5, 10, 15, 25, 50, 75, 100, 125];
+const x200 = [0.1, 1, 2, 5, 10, 15, 25, 50, 75, 100];
+const x150 = [0.1, 1, 2, 5, 10, 15, 25, 50, 75];
+const x100 = [0.1, 1, 2, 5, 10, 15, 25, 50];
+
+export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
+  const maxAllowedLeverage = q(selectTradeboxMaxLeverage);
+
+  switch (maxAllowedLeverage) {
+    case 100 * BASIS_POINTS_DIVISOR:
+      return x100;
+    case 150 * BASIS_POINTS_DIVISOR:
+      return x150;
+    case 200 * BASIS_POINTS_DIVISOR:
+      return x200;
+    case 250 * BASIS_POINTS_DIVISOR:
+      return x250;
+    default:
+      return x100;
+  }
 });

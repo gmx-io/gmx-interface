@@ -10,14 +10,25 @@ type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
-export function useTokenBalances(chainId: number, overrideAccount?: string | undefined): BalancesDataResult {
+export function useTokenBalances(
+  chainId: number,
+  overrideAccount?: string | undefined,
+  overrideTokenList?: {
+    address: string;
+    isSynthetic?: boolean;
+  }[],
+  refreshInterval?: number
+): BalancesDataResult {
   const { account: currentAccount } = useWallet();
   const account = overrideAccount ?? currentAccount;
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
-    key: account ? [account] : null,
+    key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
+
+    refreshInterval,
+
     request: () =>
-      getV2Tokens(chainId).reduce((acc, token) => {
+      (overrideTokenList ?? getV2Tokens(chainId)).reduce((acc, token) => {
         // Skip synthetic tokens
         if (token.isSynthetic) return acc;
 

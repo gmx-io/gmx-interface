@@ -38,7 +38,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -71,6 +71,7 @@ import {
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
   selectOrderEditorMarkRatio,
+  selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
@@ -165,6 +166,7 @@ export function OrderEditor(p: Props) {
   const initialAcceptablePriceImpactBps = useSelector(selectOrderEditorInitialAcceptablePriceImpactBps);
   const setAcceptablePriceImpactBps = useSelector(selectOrderEditorSetAcceptablePriceImpactBps);
   const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
+  const maxAllowedLeverage = useSelector(selectOrderEditorMaxAllowedLeverage);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
@@ -281,10 +283,10 @@ export function OrderEditor(p: Props) {
 
     if (isLimitIncreaseOrder) {
       if (
-        nextPositionValuesForIncrease?.nextLeverage &&
-        nextPositionValuesForIncrease?.nextLeverage > MAX_ALLOWED_LEVERAGE
+        nextPositionValuesForIncrease?.nextLeverage !== undefined &&
+        nextPositionValuesForIncrease?.nextLeverage > maxAllowedLeverage
       ) {
-        return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+        return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
       }
     }
   }
@@ -318,7 +320,7 @@ export function OrderEditor(p: Props) {
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
+      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
       (lev) => {
         const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({

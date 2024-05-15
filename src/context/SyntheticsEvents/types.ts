@@ -1,4 +1,4 @@
-import { OrderType } from "../../domain/synthetics/orders";
+import { OrderType, OrderTxnType } from "../../domain/synthetics/orders";
 
 export type SyntheticsEventsContextType = {
   orderStatuses: OrderStatuses;
@@ -51,6 +51,7 @@ export type OrderCreatedEventData = {
 };
 
 export type PendingOrderData = {
+  orderKey?: string;
   account: string;
   marketAddress: string;
   initialCollateralTokenAddress: string;
@@ -61,6 +62,7 @@ export type PendingOrderData = {
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
+  txnType: OrderTxnType;
 };
 
 export type DepositCreatedEventData = {
@@ -121,9 +123,10 @@ export type PendingWithdrawalData = {
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
-  data: TEventData;
-  createdTxnHash: string;
+  data?: TEventData;
+  createdTxnHash?: string;
   cancelledTxnHash?: string;
+  updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
   isViewed?: boolean;
