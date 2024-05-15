@@ -1133,7 +1133,7 @@ export function ConfirmationBox(p: Props) {
         />
         {(!isLimitGroup && entriesInfo?.totalPnL !== undefined && entriesInfo?.totalPnLPercentage !== undefined && (
           <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
-            {entriesInfo?.totalPnL && entriesInfo?.totalPnL !== 0n ? (
+            {entriesInfo?.totalPnL && entriesInfo?.totalPnL > 0n ? (
               "-"
             ) : (
               <Tooltip
