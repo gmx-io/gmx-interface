@@ -386,6 +386,18 @@ export function sumBigNumbers(...args) {
   return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigNumber.from(0));
 }
 
+export function minBigNumber(...args: BigNumber[]) {
+  if (!args.length) return undefined;
+
+  return args.reduce((acc, num) => (num.lt(acc) ? num : acc), args[0]);
+}
+
+export function maxBigNumber(...args: BigNumber[]) {
+  if (!args.length) return undefined;
+
+  return args.reduce((acc, num) => (num.gt(acc) ? num : acc), args[0]);
+}
+
 export function removeTrailingZeros(amount: string | number) {
   const amountWithoutZeros = Number(amount);
   if (!amountWithoutZeros) return amount;

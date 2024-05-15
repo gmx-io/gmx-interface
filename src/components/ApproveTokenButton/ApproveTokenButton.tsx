@@ -7,12 +7,15 @@ import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
 import "./ApproveTokenButton.scss";
 import useWallet from "lib/wallets/useWallet";
+import { BigNumber } from "ethers";
 
 type Props = {
   spenderAddress: string;
   tokenAddress: string;
   tokenSymbol: string;
   isApproved?: boolean;
+  approveAmount?: BigNumber;
+  customLabel?: string;
 };
 
 export function ApproveTokenButton(p: Props) {
@@ -35,6 +38,7 @@ export function ApproveTokenButton(p: Props) {
       setPendingTxns: () => null,
       infoTokens: {},
       chainId,
+      approveAmount: p.approveAmount,
       onApproveSubmitted: () => setIsApproveSubmitted(true),
     });
   }
@@ -43,9 +47,7 @@ export function ApproveTokenButton(p: Props) {
 
   return (
     <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
-      <span className="text-warning">
-        <Trans>Allow {p.tokenSymbol} to be spent</Trans>
-      </span>
+      <span className="text-warning">{p.customLabel ?? <Trans>Allow {p.tokenSymbol} to be spent</Trans>}</span>
 
       <div className="ApproveTokenButton-checkbox">
         {isLoading ? (

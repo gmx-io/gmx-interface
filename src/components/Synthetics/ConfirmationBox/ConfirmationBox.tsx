@@ -31,8 +31,6 @@ import {
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  isLimitOrderType,
-  isOrderForPosition,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -41,7 +39,6 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
-  getPositionKey,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
@@ -49,9 +46,9 @@ import {
   formatTokensRatio,
   getNeedTokenApprove,
   useTokensAllowanceData,
+  convertToUsd,
 } from "domain/synthetics/tokens";
 import {
-  DecreasePositionAmounts,
   TriggerThresholdType,
   applySlippageToMinOut,
   applySlippageToPrice,
@@ -66,13 +63,16 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
-import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
+  useSidecarOrders,
+  SidecarOrderEntryGroup,
+  SidecarSlTpOrderEntryValid,
+  SidecarLimitOrderEntryValid,
+  SidecarLimitOrderEntry,
+  SidecarSlTpOrderEntry,
+} from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -97,11 +97,13 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import SLTPEntries from "./SLTPEntries";
+import SidecarEntries from "./SidecarEntries";
+import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralToken,
@@ -118,8 +120,7 @@ import {
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
-  selectTradeboxNextPositionValuesForDecrease,
-  selectTradeboxNextPositionValuesForIncrease,
+  selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetKeepLeverage,
@@ -130,6 +131,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxSelectedPositionKey,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
@@ -145,7 +147,6 @@ export type Props = {
 export function ConfirmationBox(p: Props) {
   const { error, onClose, onSubmitted, setPendingTxns } = p;
   const tokensData = useTokensData();
-  const ordersData = useOrdersInfoData();
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -165,8 +166,7 @@ export function ConfirmationBox(p: Props) {
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const nextPositionValuesForIncrease = useSelector(selectTradeboxNextPositionValuesForIncrease);
-  const nextPositionValuesForDecrease = useSelector(selectTradeboxNextPositionValuesForDecrease);
+  const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
@@ -179,10 +179,6 @@ export function ConfirmationBox(p: Props) {
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
   );
-
-  const nextPositionValues = useMemo(() => {
-    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
-  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -205,21 +201,6 @@ export function ConfirmationBox(p: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
-
-  const { stopLoss, takeProfit } = useSLTPEntries({
-    marketInfo,
-    tradeFlags,
-    collateralToken,
-    increaseAmounts,
-    nextPositionValues,
-    triggerPrice,
-  });
-
-  const { sltpEntries, sltpAmounts } = useMemo(() => {
-    const entries = (stopLoss?.entries || []).concat(takeProfit?.entries || []);
-    const amounts = entries.map((entry) => entry.amounts).filter(Boolean) as DecreasePositionAmounts[];
-    return { sltpEntries: entries, sltpAmounts: amounts };
-  }, [stopLoss, takeProfit]);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -246,39 +227,69 @@ export function ConfirmationBox(p: Props) {
     payAmount &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
-  const positionKey = useMemo(() => {
-    if (!account || !marketInfo || !collateralToken) {
-      return undefined;
-    }
+  const positionKey = useSelector(selectTradeboxSelectedPositionKey);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
 
-    return getPositionKey(account, marketInfo.marketTokenAddress, collateralToken.address, isLong);
-  }, [account, collateralToken, isLong, marketInfo]);
+  const { stopLoss, takeProfit, limit } = useSidecarOrders();
 
-  const positionOrders = useMemo(() => {
-    if (!positionKey || !ordersData) {
-      return [];
-    }
+  const sidecarEntries = useMemo(
+    () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
+    [stopLoss, takeProfit, limit]
+  );
 
-    return Object.values(ordersData).filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
-  }, [ordersData, positionKey]);
+  const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useMemo(() => {
+    const [cancelSltpEntries, createSltpEntries, updateSltpEntries] = sidecarEntries.reduce(
+      ([cancel, create, update], e) => {
+        if (e.txnType === "cancel") cancel.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
+        if (e.txnType === "create" && !!e.decreaseAmounts) create.push(e as SidecarSlTpOrderEntryValid);
+        if (e.txnType === "update" && (!!e.decreaseAmounts || !!e.increaseAmounts))
+          update.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
+        return [cancel, create, update];
+      },
+      [[], [], []] as [
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
+        SidecarSlTpOrderEntryValid[],
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[]
+      ]
+    );
 
-  const getDecreaseExecutionFee = useCallback(
-    (decreaseAmounts?: DecreasePositionAmounts) => {
-      if (!decreaseAmounts || !gasLimits || !tokensData || !gasPrice) return;
-      const swapsCount = decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
+    return { cancelSltpEntries, createSltpEntries, updateSltpEntries };
+  }, [sidecarEntries]);
 
-      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapsCount,
-      });
+  const subaccountRequiredActions = 1 + cancelSltpEntries.length + createSltpEntries.length + updateSltpEntries.length;
+
+  const getOrderExecutionFee = useCallback(
+    (swapsCount?: number) => {
+      if (!gasLimits || !tokensData || !gasPrice) return;
+
+      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, { swapsCount });
 
       return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
     },
     [gasLimits, tokensData, gasPrice, chainId]
   );
 
-  const existingLimitOrders = useMemo(
-    () => positionOrders.filter((order) => isLimitOrderType(order.orderType)),
-    [positionOrders]
+  const getExecutionFeeAmountForEntry = useCallback(
+    (entry: SidecarSlTpOrderEntry | SidecarLimitOrderEntry) => {
+      if (!entry.txnType || entry.txnType === "cancel") return undefined;
+      const securedExecutionFee = entry.order?.executionFee || BigNumber.from(0);
+
+      let swapsCount = 0;
+
+      if (entry.decreaseAmounts) {
+        swapsCount = entry.decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
+      }
+      if (entry.increaseAmounts) {
+        swapsCount = entry.increaseAmounts?.swapPathStats?.swapPath.length ?? 0;
+      }
+
+      const executionFee = getOrderExecutionFee(swapsCount);
+
+      if (!executionFee || securedExecutionFee.gte(executionFee.feeTokenAmount)) return undefined;
+
+      return executionFee.feeTokenAmount.sub(securedExecutionFee);
+    },
+    [getOrderExecutionFee]
   );
 
   const existingTriggerOrders = useMemo(
@@ -392,6 +403,31 @@ export function ConfirmationBox(p: Props) {
       };
     }
 
+    if (stopLoss.error?.percentage || takeProfit.error?.percentage) {
+      return {
+        text: t`TP/SL orders exceed the position`,
+        disabled: true,
+      };
+    }
+
+    if (isLimit) {
+      if (isLong) {
+        if (markPrice && triggerPrice?.gt(markPrice)) {
+          return {
+            text: t`Limit price above Mark Price`,
+            disabled: true,
+          };
+        }
+      } else {
+        if (markPrice && triggerPrice?.lt(markPrice)) {
+          return {
+            text: t`Limit price below Mark Price`,
+            disabled: true,
+          };
+        }
+      }
+    }
+
     if (isSubmitting) {
       return {
         text: t`Creating Order...`,
@@ -431,8 +467,13 @@ export function ConfirmationBox(p: Props) {
       text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
-    if (sltpEntries.length > 0) {
-      const isError = sltpEntries.some((entry) => entry.error);
+    if (sidecarEntries.length > 0) {
+      const isError = sidecarEntries.some((e) => {
+        if (e.txnType === "cancel") return false;
+
+        return e.sizeUsd?.error || e.percentage?.error || e.price?.error;
+      });
+
       return {
         text,
         disabled: isError,
@@ -459,7 +500,11 @@ export function ConfirmationBox(p: Props) {
     isSwap,
     isLong,
     fixedTriggerOrderType,
-    sltpEntries,
+    sidecarEntries,
+    stopLoss,
+    takeProfit,
+    markPrice,
+    triggerPrice,
   ]);
 
   useKey(
@@ -474,23 +519,44 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, submitButtonState.disabled, onSubmit]
   );
 
-  const subaccountRequiredBalance =
-    executionFee?.feeTokenAmount.add(
-      sltpAmounts.reduce(
-        (acc, amount) => acc.add(getDecreaseExecutionFee(amount)?.feeTokenAmount || 0),
-        BigNumber.from(0)
-      )
-    ) ?? null;
-  const subaccount = useSubaccount(subaccountRequiredBalance, 1 + sltpAmounts.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction(1 + sltpAmounts.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(subaccountRequiredBalance ?? undefined, 1);
+  const summaryExecutionFee = useMemo(() => {
+    if (!executionFee) return undefined;
+
+    const { feeUsd, feeTokenAmount, feeToken, warning } = executionFee;
+
+    const feeTokenData = getByKey(tokensData, feeToken?.address);
+
+    let summaryFeeUsd = feeUsd ?? BigNumber.from(0);
+    let summaryFeeTokenAmount = feeTokenAmount ?? BigNumber.from(0);
+
+    sidecarEntries.forEach((entry) => {
+      const entryFee = getExecutionFeeAmountForEntry(entry) ?? BigNumber.from(0);
+
+      summaryFeeTokenAmount = summaryFeeTokenAmount.add(entryFee);
+      summaryFeeUsd = summaryFeeUsd.add(
+        convertToUsd(entryFee, feeToken?.decimals, feeTokenData?.prices?.minPrice) ?? BigNumber.from(0)
+      );
+    });
+
+    return {
+      feeUsd: summaryFeeUsd,
+      feeTokenAmount: summaryFeeTokenAmount,
+      feeToken,
+      warning,
+    };
+  }, [executionFee, sidecarEntries, getExecutionFeeAmountForEntry, tokensData]);
+
+  const isAdditionOrdersMsg =
+    summaryExecutionFee && executionFee && summaryExecutionFee.feeTokenAmount.gt(executionFee.feeTokenAmount);
+
+  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, subaccountRequiredActions);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(summaryExecutionFee?.feeTokenAmount, 1);
 
   function onCancelOrderClick(key: string): void {
     if (!signer) return;
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
       setPendingTxns: p.setPendingTxns,
-      isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     });
   }
@@ -555,11 +621,22 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(
+    const commonSecondaryOrderParams = {
+      account,
+      marketAddress: marketInfo.marketTokenAddress,
+      swapPath: [],
+      allowedSlippage,
+      initialCollateralAddress: collateralToken.address,
+      receiveTokenAddress: collateralToken.address,
+      isLong,
+      indexToken: marketInfo.indexToken,
+    };
+
+    return createIncreaseOrderTxn({
       chainId,
       signer,
       subaccount,
-      {
+      createIncreaseOrderParams: {
         account,
         marketAddress: marketInfo.marketTokenAddress,
         initialCollateralAddress: fromToken?.address,
@@ -583,31 +660,46 @@ export function ConfirmationBox(p: Props) {
         setPendingOrder,
         setPendingPosition,
       },
-      sltpAmounts.map((entry) => {
+      createDecreaseOrderParams: createSltpEntries.map((entry) => {
         return {
-          account,
-          marketAddress: marketInfo.marketTokenAddress,
-          initialCollateralAddress: collateralToken?.address,
-          initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
-          receiveTokenAddress: collateralToken.address,
-          swapPath: [],
-          sizeDeltaUsd: entry.sizeDeltaUsd,
-          sizeDeltaInTokens: entry.sizeDeltaInTokens,
-          isLong,
-          acceptablePrice: entry.acceptablePrice,
-          triggerPrice: entry.triggerPrice,
+          ...commonSecondaryOrderParams,
+          initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? BigNumber.from(0),
+          sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
+          acceptablePrice: entry.decreaseAmounts.acceptablePrice,
+          triggerPrice: entry.decreaseAmounts.triggerPrice,
           minOutputUsd: BigNumber.from(0),
-          decreasePositionSwapType: entry.decreaseSwapType,
-          orderType: entry.triggerOrderType!,
+          decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
+          orderType: entry.decreaseAmounts.triggerOrderType!,
           referralCode: referralCodeForTxn,
-          executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
-          allowedSlippage,
-          indexToken: marketInfo.indexToken,
+          executionFee: getExecutionFeeAmountForEntry(entry) ?? BigNumber.from(0),
           tokensData,
+          txnType: entry.txnType!,
           skipSimulation: isLimit || shouldDisableValidationForTesting,
         };
-      })
-    );
+      }),
+      cancelOrderParams: cancelSltpEntries.map((entry) => ({
+        ...commonSecondaryOrderParams,
+        orderKey: entry.order!.key,
+        orderType: entry.order!.orderType,
+        minOutputAmount: BigNumber.from(0),
+        sizeDeltaUsd: entry.order!.sizeDeltaUsd,
+        txnType: entry.txnType!,
+        initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+      })),
+      updateOrderParams: updateSltpEntries.map((entry) => ({
+        ...commonSecondaryOrderParams,
+        orderKey: entry.order!.key,
+        orderType: entry.order!.orderType,
+        sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
+        acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
+        triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
+        executionFee: getExecutionFeeAmountForEntry(entry) ?? BigNumber.from(0),
+        minOutputAmount: BigNumber.from(0),
+        txnType: entry.txnType!,
+        initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+      })),
+    });
   }
 
   function onSubmitDecreaseOrder() {
@@ -704,9 +796,10 @@ export function ConfirmationBox(p: Props) {
         setIsTriggerWarningAccepted(false);
         stopLoss?.reset();
         takeProfit?.reset();
+        limit?.reset();
       }
     },
-    [p.isVisible, prevIsVisible, takeProfit, stopLoss]
+    [p.isVisible, prevIsVisible, takeProfit, stopLoss, limit]
   );
 
   function renderSubaccountNavigationButton() {
@@ -717,7 +810,7 @@ export function ConfirmationBox(p: Props) {
         isNativeToken={fromToken?.isNative || toToken?.isNative}
         isWrapOrUnwrap={isWrapOrUnwrap}
         tradeFlags={tradeFlags}
-        requiredActions={1 + sltpAmounts.length}
+        requiredActions={subaccountRequiredActions}
       />
     );
   }
@@ -902,23 +995,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderExistingLimitOrdersWarning() {
-    if (!existingLimitOrders?.length || !toToken) {
-      return;
-    }
-    return (
-      <div className="Existing-limit-order">
-        <AlertInfo compact type="warning">
-          <Plural
-            value={existingLimitOrders.length}
-            one="You have an active Limit Order to Increase"
-            other="You have multiple active Limit Orders to Increase"
-          />
-        </AlertInfo>
-        <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
-      </div>
-    );
-  }
   function renderExistingTriggerErrors() {
     if (!decreaseOrdersThatWillBeExecuted?.length) {
       return;
@@ -936,28 +1012,6 @@ export function ConfirmationBox(p: Props) {
         </AlertInfo>
         <ul className="order-list">{decreaseOrdersThatWillBeExecuted.map(renderOrderItem)}</ul>
       </>
-    );
-  }
-
-  function renderExistingTriggerWarning() {
-    if (
-      !existingTriggerOrders?.length ||
-      decreaseOrdersThatWillBeExecuted.length > 0 ||
-      renderExistingLimitOrdersWarning()
-    ) {
-      return;
-    }
-
-    const existingTriggerOrderLength = existingTriggerOrders.length;
-
-    return (
-      <AlertInfo compact type="info">
-        <Plural
-          value={existingTriggerOrderLength}
-          one="You have an active trigger order that could impact this position."
-          other="You have # active trigger orders that could impact this position."
-        />
-      </AlertInfo>
     );
   }
 
@@ -1043,13 +1097,24 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadInfo]);
 
-  function renderSLTP(type: "stopLoss" | "takeProfit") {
+  function renderSidecar(type: "stopLoss" | "takeProfit" | "limit") {
     const isStopLoss = type === "stopLoss";
-    const entriesInfo = isStopLoss ? stopLoss : takeProfit;
+    const isLimitGroup = type === "limit";
 
-    if (existingPosition || !entriesInfo) return;
+    const entriesInfo: SidecarOrderEntryGroup = {
+      stopLoss: stopLoss,
+      takeProfit: takeProfit,
+      limit: limit,
+    }[type];
 
-    const label = isStopLoss ? t`Stop-Loss` : t`Take-Profit`;
+    if (!entriesInfo || entriesInfo.entries.every((e) => e.txnType === "cancel")) return;
+
+    const label = {
+      stopLoss: t`Stop-Loss`,
+      takeProfit: t`Take-Profit`,
+      limit: t`Limit`,
+    }[type];
+
     const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take-Profit PnL`;
 
     return (
@@ -1059,43 +1124,57 @@ export function ConfirmationBox(p: Props) {
           label={label}
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={entriesInfo} marketInfo={marketInfo} />
+              <SidecarEntries
+                entriesInfo={entriesInfo}
+                marketInfo={marketInfo}
+                displayMode={type === "limit" ? "sizeUsd" : "percentage"}
+              />
             </div>
           }
         />
-        <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
-          {entriesInfo?.totalPnL?.isZero() ? (
-            "-"
-          ) : (
-            <Tooltip
-              handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
-                signed: true,
-              })})`}
-              position="bottom-end"
-              handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
-              className="SLTP-pnl-tooltip"
-              renderContent={() =>
-                entriesInfo?.entries?.map((entry, index) => {
-                  if (!entry || !entry.amounts) return;
-                  return (
-                    <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">
-                        At ${entry.price}, SL {entry?.percentage}%:
-                      </span>
-                      <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(entry.amounts?.realizedPnl)} (
-                        {formatPercentage(entry.amounts?.realizedPnlPercentage, {
-                          signed: true,
-                        })}
-                        )
-                      </span>
-                    </div>
-                  );
-                })
-              }
-            />
-          )}
-        </ExchangeInfoRow>
+        {!isLimitGroup && entriesInfo?.totalPnL && entriesInfo?.totalPnLPercentage && (
+          <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
+            {entriesInfo?.totalPnL?.isZero() ? (
+              "-"
+            ) : (
+              <Tooltip
+                handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
+                  signed: true,
+                })})`}
+                position="bottom-end"
+                handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
+                className="SLTP-pnl-tooltip"
+                renderContent={() =>
+                  entriesInfo?.entries?.map((entry, index) => {
+                    if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
+
+                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, 2);
+                    const percentage =
+                      entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
+
+                    return (
+                      <div className="space-between mb-xs" key={index}>
+                        {price && percentage && (
+                          <span className="mr-md">
+                            At ${price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
+                          </span>
+                        )}
+
+                        <span className={entry.decreaseAmounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                          {formatUsd(entry.decreaseAmounts?.realizedPnl)} (
+                          {formatPercentage(entry.decreaseAmounts?.realizedPnlPercentage, {
+                            signed: true,
+                          })}
+                          )
+                        </span>
+                      </div>
+                    );
+                  })
+                }
+              />
+            )}
+          </ExchangeInfoRow>
+        )}
       </div>
     );
   }
@@ -1160,15 +1239,15 @@ export function ConfirmationBox(p: Props) {
         <ExchangeInfo.Group>
           {tradeboxPoolWarnings}
           {renderCollateralSpreadWarning()}
-          {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
-          {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
         </ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSLTP("takeProfit")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSidecar("limit")}</ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSLTP("stopLoss")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSidecar("takeProfit")}</ExchangeInfo.Group>
+
+        <ExchangeInfo.Group>{renderSidecar("stopLoss")}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
@@ -1361,7 +1440,7 @@ export function ConfirmationBox(p: Props) {
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             feesType="increase"
           />
-          <NetworkFeeRow executionFee={executionFee} />
+          <NetworkFeeRow executionFee={summaryExecutionFee} isAdditionOrdersMsg={isAdditionOrdersMsg} />
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>

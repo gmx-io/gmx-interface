@@ -187,7 +187,7 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>마켓 선택됨</4>"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A Size percentage is required."
 msgstr ""
 
@@ -356,6 +356,10 @@ msgstr "활성화된 주문"
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Add Row"
+msgstr ""
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "메타마스크에 추가해주세요"
@@ -433,6 +437,10 @@ msgstr "모두"
 msgid "All time"
 msgstr "모든 시간"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Allow all my tokens to be transferred to a new account"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -504,7 +512,7 @@ msgstr "승인 제출완료! <0>상태 보기</0>"
 msgid "Approval was cancelled"
 msgstr "제출 취소되었습니다"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Approve GMX"
 msgstr "GMX 승인"
@@ -537,7 +545,7 @@ msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol} 승인중..."
 
 #: src/components/Migration/Migration.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인중..."
 
@@ -659,7 +667,7 @@ msgstr ""
 msgid "Base {nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin Transfer"
 msgstr "전송시작"
 
@@ -867,6 +875,7 @@ msgstr "에러로 인해 실행되지 못했습니다"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "취소"
@@ -895,6 +904,10 @@ msgstr "취소 실패"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "취소 실패"
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Cancel newly created orders"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel submitted"
@@ -1312,7 +1325,7 @@ msgstr ""
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "계속하기"
@@ -1373,6 +1386,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1597,8 +1611,8 @@ msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-msgid "Decrease {0} Long by {1} at ${2}."
-msgstr ""
+#~ msgid "Decrease {0} Long by {1} at ${2}."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -1900,7 +1914,7 @@ msgstr "NFT ID 입력"
 msgid "Enter Price"
 msgstr "가격 입력"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter Receiver Address"
 msgstr "수령 주소 입력"
@@ -2585,7 +2599,7 @@ msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
 msgid "I am aware of the trigger orders"
 msgstr "트리거 주문에 대해 충분히 인지하고 있습니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
@@ -2789,7 +2803,7 @@ msgstr ""
 msgid "Invalid NFT Address"
 msgstr "유요하지 않은 NFT 주소"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "유효하지 않은 수령 주소"
@@ -2972,6 +2986,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -3014,12 +3029,24 @@ msgid "Limit order creation failed."
 msgstr "지정가 주문 생성 실패."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Limit order for"
-msgstr ""
+#~ msgid "Limit order for"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order submitted!"
 msgstr "지정가 주문 제출 완료!"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price above Mark Price"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price below Mark Price"
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Limit size is required."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3380,6 +3407,10 @@ msgstr ""
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max In"
 msgstr ""
@@ -3434,6 +3465,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4133,6 +4165,10 @@ msgstr "지불"
 msgid "Pay Amount"
 msgstr "지불액"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Pending Transfer Approval"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
 msgstr ""
@@ -4159,7 +4195,7 @@ msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해
 #~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 #~ msgstr "계정 전체 이전을 위해서만 해당 기능을 사용해주세요.<0/>이 기능은, 귀하의 GMX, esGMX, GLP 및 멀티플라이어 포인트 전부를 새로운 계정으로 전송합니다.<1/>이전은 수취 게정이 이전에 GMX, GLP를 스테이킹한 적이 없는 경우에만 지원됩니다.<2/>이전은 단방향이며, 발송 계정으로 다시 이전하는 것이 불가능합니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
@@ -4328,7 +4364,12 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above Entry Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr ""
 
@@ -4339,7 +4380,7 @@ msgstr ""
 msgid "Price above Liq. Price"
 msgstr "청산가 초과 가격"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."
 msgstr ""
 
@@ -4356,11 +4397,30 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr "시장 평균가 초과 가격"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above highest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above lowes Limit Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above lowest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below Entry Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
 msgstr ""
 
@@ -4371,7 +4431,7 @@ msgstr ""
 msgid "Price below Liq. Price"
 msgstr "청산가 미만 가격"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Liq. Price."
 msgstr ""
 
@@ -4388,8 +4448,22 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "시장 평균가 미만 가격"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below highest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below lowes Limit Price."
+#~ msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below lowest Limit Price."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4566,20 +4640,20 @@ msgstr ""
 msgid "Receive"
 msgstr "수령하기"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "수령할 주소"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
 
@@ -4645,6 +4719,10 @@ msgstr "추천인 코드 업데이트 완료!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "추천"
+
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Remove Row"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
@@ -4852,7 +4930,7 @@ msgstr "풀 선택"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해주세요."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 
@@ -4916,15 +4994,15 @@ msgstr ""
 msgid "Selling..."
 msgstr "판매중..."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
@@ -5492,6 +5570,10 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "TP/SL orders exceed the position"
+msgstr ""
+
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "TRADING Airdrop"
 msgstr ""
@@ -5805,13 +5887,13 @@ msgstr ""
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
-msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되었습니다. {1}에서는 해당 코드를 통해 트레이더로부터의 소개 보수는 받을 수 없습니다."
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from traders using this code on {takenNetworkNames}."
+msgstr "이 코드는 다른 사람에 의해 {takenNetworkNames}에서 사용되었습니다. {takenNetworkNames}에서 이 코드를 사용하는 트레이더로부터 소개 보수를 받을 수 없습니다."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr "이 코드는 아직 {nonTakenNetworkNames}에 등록되지 않았습니다. 여기서는 소개 보수를 받을 수 없습니다.<0/><1/>이 코드를 {nonTakenNetworkNames}에 등록하려면 네트워크를 전환하세요."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
@@ -6085,7 +6167,7 @@ msgstr "트랜잭션 전송됨."
 msgid "Transaction was cancelled."
 msgstr "트랜잭션 실패됨."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Transfer Account"
 msgstr "계정 이전"
@@ -6094,21 +6176,21 @@ msgstr "계정 이전"
 msgid "Transfer NFT"
 msgstr "NFT 전송하기"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Submitted"
 msgstr "전송 제출 완료"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "이전이 이미 시작됐습니다"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer failed."
 msgstr "이전 실패."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
@@ -6118,7 +6200,7 @@ msgstr "이전 제출 완료!"
 msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
 msgstr "이전중"
 
@@ -6293,6 +6375,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -6463,12 +6546,12 @@ msgstr "Arbitrum에서 GMX로 베스팅하기"
 msgid "Vest with GMX on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "베스트팅된 GLP에서 인출되지 않은 양"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "베스트팅된 GMX에서 인출되지 않은 양"
 
@@ -6479,6 +6562,7 @@ msgid "Vesting Status"
 msgstr ""
 
 #: src/App/App.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6583,7 +6667,7 @@ msgstr "지갑"
 msgid "Wallet 365d expected Fees"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "지갑이 연결되지 않았습니다"
@@ -6816,7 +6900,7 @@ msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 �
 msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "{pendingReceiver}로 <0>전송 보류중</0>"
 
@@ -6868,7 +6952,7 @@ msgstr "{0}을 담보로 사용한 기존 포지션이 있습니다. 이 액션�
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
@@ -6971,7 +7055,7 @@ msgstr "수수료를 제외한 귀하의 포지션 담보입니다:"
 msgid "Your transfer has been completed."
 msgstr "이전이 완료되었습니다."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "이전이 시작되었습니다."
 
@@ -7059,8 +7143,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
-msgstr ""
+#~ msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
+#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
@@ -7143,8 +7227,8 @@ msgid "{0} is required for collateral."
 msgstr "담보를 위해 {0}이 필요합니다."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{0} order for"
-msgstr ""
+#~ msgid "{0} order for"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
@@ -7173,6 +7257,14 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+#~ msgid "{0} {1} {2} by {3} at ${4}."
+#~ msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+#~ msgid "{0} {1} {2} by {3} at {4}."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
@@ -7210,7 +7302,6 @@ msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
@@ -7329,6 +7420,14 @@ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} limit order for"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} {0} order for"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
