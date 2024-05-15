@@ -52,7 +52,7 @@ const INCLUDING_CURRENT_DAY_DURATION = {
   hours: 23,
   minutes: 59,
   seconds: 59,
-  milliseconds: 999,
+  milliseconds: 0,
 };
 
 function normalizeDateRange(start: Date | undefined, end: Date | undefined): [number | undefined, number | undefined] {

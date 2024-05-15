@@ -22,8 +22,8 @@ export type MarketFilterLongShortItemData = {
 };
 
 export type MarketFilterLongShortProps = {
-  value: Array<MarketFilterLongShortItemData>;
-  onChange: (value: Array<MarketFilterLongShortItemData>) => void;
+  value: MarketFilterLongShortItemData[];
+  onChange: (value: MarketFilterLongShortItemData[]) => void;
 };
 
 export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShortProps) {

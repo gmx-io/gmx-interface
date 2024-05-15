@@ -1,6 +1,7 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
-import { useMemo } from "react";
+import { toPng } from "html-to-image";
+import { useCallback, useMemo, useRef } from "react";
 import { useRouteMatch } from "react-router-dom";
 import {
   Bar,
@@ -12,17 +13,21 @@ import {
   TooltipProps,
 } from "recharts";
 
+import { TIMEZONE_OFFSET_SEC } from "domain/prices";
+import type { FromOldToNewArray } from "domain/tradingview/types";
 import { useChainId } from "lib/chains";
 import { formatDate, useDateRange, useNormalizeDateRange } from "lib/dates";
+import downloadImage from "lib/downloadImage";
+import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
-import { FromOldToNewArray } from "domain/tradingview/types";
 
 export function DailyAndCumulativePnL() {
   const account = useRouteMatch<{ account: string }>()?.params.account;
@@ -32,20 +37,27 @@ export function DailyAndCumulativePnL() {
 
   const clusteredPnlData = usePnlHistoricalData(chainId, account, fromTxTimestamp, toTxTimestamp);
 
+  const { cardRef, handleImageDownload } = useImageDownload();
+
   return (
-    <div className="flex flex-col rounded-4 bg-slate-800">
+    <div className="flex flex-col rounded-4 bg-slate-800" ref={cardRef}>
       <div className="flex items-center justify-between border-b border-b-gray-950 px-16">
         <div className="py-16">
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
-
-        <DateRangeSelect
-          startDate={startDate}
-          endDate={endDate}
-          onChange={setDateRange}
-          handleClassName="!px-10 !py-6"
-        />
+        <div className="flex items-stretch justify-end gap-8">
+          <Button variant="secondary" data-exclude className="!px-10 !py-6" onClick={handleImageDownload}>
+            PNG
+          </Button>
+          <DateRangeSelect
+            startDate={startDate}
+            endDate={endDate}
+            onChange={setDateRange}
+            handleClassName="!px-10 !py-6"
+          />
+        </div>
       </div>
+
       <div className="flex flex-wrap gap-24 px-16 pt-16">
         <div className="text-gray-300">
           <div className="inline-block size-10 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
@@ -68,7 +80,7 @@ export function DailyAndCumulativePnL() {
         <div className="absolute size-full">
           <ResponsiveContainer debounce={500}>
             <ComposedChart width={500} height={300} data={clusteredPnlData}>
-              <RechartsTooltip active content={ChartTooltip} />
+              <RechartsTooltip content={ChartTooltip} />
               <Bar dataKey="pnlFloat" minPointSize={1}>
                 {clusteredPnlData.map((entry) => {
                   let fill;
@@ -170,40 +182,71 @@ function usePnlHistoricalData(
   );
 
   const clusteredPnlData = useMemo(() => {
-    const clustered: Array<{
+    const clustered: {
       date: string;
-      daysSinceEpoch: number;
+      daysSinceLocalEpoch: number;
       pnl: bigint;
       cumulativePnl: bigint;
-    }> = [];
+    }[] = [];
 
     for (const { timestampSec, pnlUsd } of pnlData) {
-      const daysSinceEpoch = Math.floor(timestampSec / (24 * 60 * 60));
+      const daysSinceLocalEpoch = Math.floor((timestampSec + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
       const prev = clustered.at(-1);
 
       if (!prev) {
         const utcDate = formatDate(timestampSec);
-        clustered.push({ date: utcDate, daysSinceEpoch, pnl: pnlUsd, cumulativePnl: pnlUsd });
+        clustered.push({ date: utcDate, daysSinceLocalEpoch, pnl: pnlUsd, cumulativePnl: pnlUsd });
         continue;
       }
 
-      if (prev.daysSinceEpoch !== daysSinceEpoch) {
+      if (prev.daysSinceLocalEpoch !== daysSinceLocalEpoch) {
         const utcDate = formatDate(timestampSec);
-        for (let pointer = prev.daysSinceEpoch + 1; pointer < daysSinceEpoch; pointer++) {
+        for (let pointer = prev.daysSinceLocalEpoch + 1; pointer < daysSinceLocalEpoch; pointer++) {
           clustered.push({
             date: formatDate(pointer * 24 * 60 * 60),
-            daysSinceEpoch: pointer,
+            daysSinceLocalEpoch: pointer,
             pnl: 0n,
             cumulativePnl: prev.cumulativePnl,
           });
         }
 
-        clustered.push({ date: utcDate, daysSinceEpoch, pnl: pnlUsd, cumulativePnl: prev.cumulativePnl + pnlUsd });
+        clustered.push({ date: utcDate, daysSinceLocalEpoch, pnl: pnlUsd, cumulativePnl: prev.cumulativePnl + pnlUsd });
         continue;
       }
 
       prev.pnl += pnlUsd;
       prev.cumulativePnl += pnlUsd;
+    }
+
+    // Pad start
+    if (fromTxTimestamp && clustered.length) {
+      const startDaysSinceLocalEpoch = Math.floor((fromTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
+      const startGapLength = clustered[0].daysSinceLocalEpoch - startDaysSinceLocalEpoch;
+
+      for (let count = 0; count < startGapLength; count++) {
+        clustered.unshift({
+          date: formatDate((startDaysSinceLocalEpoch + count) * 24 * 60 * 60 + 1),
+          daysSinceLocalEpoch: startDaysSinceLocalEpoch + count,
+          pnl: 0n,
+          cumulativePnl: 0n,
+        });
+      }
+    }
+
+    // Pad end
+    if (toTxTimestamp && clustered.length) {
+      const endDaysSinceLocalEpoch = Math.floor((toTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
+      const lastDaysSinceLocalEpoch = clustered.at(-1)!.daysSinceLocalEpoch;
+      const endGapLength = endDaysSinceLocalEpoch - clustered.at(-1)!.daysSinceLocalEpoch;
+
+      for (let count = 1; count <= endGapLength; count++) {
+        clustered.push({
+          date: formatDate((lastDaysSinceLocalEpoch + count) * 24 * 60 * 60),
+          daysSinceLocalEpoch: lastDaysSinceLocalEpoch + count,
+          pnl: 0n,
+          cumulativePnl: clustered.at(-1)!.cumulativePnl,
+        });
+      }
     }
 
     const compressed: PnlHistoricalData = clustered.map(({ date, pnl, cumulativePnl }) => ({
@@ -215,6 +258,30 @@ function usePnlHistoricalData(
     }));
 
     return compressed;
-  }, [pnlData]);
+  }, [fromTxTimestamp, pnlData, toTxTimestamp]);
   return clusteredPnlData;
+}
+
+function useImageDownload() {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleImageDownload = useCallback(() => {
+    if (!cardRef.current) {
+      helperToast.error("Error in downloading image");
+      return;
+    }
+
+    toPng(cardRef.current, {
+      filter: (element) => {
+        if (element.dataset?.exclude) {
+          return false;
+        }
+        return true;
+      },
+    }).then((dataUri) => {
+      downloadImage(dataUri, "daily-and-cumulative-pnl.png");
+    });
+  }, []);
+
+  return { cardRef, handleImageDownload };
 }
