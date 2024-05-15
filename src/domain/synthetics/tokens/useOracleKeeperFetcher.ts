@@ -24,28 +24,30 @@ export type DayPriceCandle = {
   close: number;
 };
 
+type OnlyWhenActive<Data> =
+  | ({
+      isActive: true;
+    } & Data)
+  | {
+      isActive: false;
+    };
+
 export type RawIncentivesStats = {
-  lp: {
-    isActive: boolean;
+  lp: OnlyWhenActive<{
     totalRewards: string;
     period: number;
     rewardsPerMarket: Record<string, string>;
-  };
-  migration: {
-    isActive: boolean;
+    token: string;
+  }>;
+  migration: OnlyWhenActive<{
     maxRebateBps: number;
     period: number;
-  };
-  trading:
-    | {
-        isActive: true;
-        rebatePercent: number;
-        allocation: string;
-        period: number;
-      }
-    | {
-        isActive: false;
-      };
+  }>;
+  trading: OnlyWhenActive<{
+    rebatePercent: number;
+    allocation: string;
+    period: number;
+  }>;
 };
 
 function parseOracleCandle(rawCandle: number[]): Bar {
@@ -199,7 +201,7 @@ class OracleKeeperFetcher implements OracleFetcher {
 
   async fetchIncentivesRewards(): Promise<RawIncentivesStats | null> {
     return fetch(
-      buildUrl(this.url!, "/incentives/stip", {
+      buildUrl(this.url!, "/incentives", {
         ignoreStartDate: this.forceIncentivesActive ? "1" : undefined,
       })
     )

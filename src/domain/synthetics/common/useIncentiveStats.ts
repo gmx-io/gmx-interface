@@ -6,6 +6,7 @@ import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
+import { mapValues } from "lodash";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();
@@ -27,6 +28,20 @@ type RawResponse = {
   tradingIncentivesStat: {
     eligibleFeesInArb: string;
   };
+};
+
+export const useLiquidityProvidersIncentives = (chainId: number) => {
+  const lpStats = useIncentiveStats(chainId)?.lp;
+
+  return useMemo(() => {
+    if (!lpStats || !lpStats.isActive) return null;
+    return {
+      totalRewards: BigNumber.from(lpStats.totalRewards),
+      period: lpStats.period,
+      rewardsPerMarket: mapValues(lpStats.rewardsPerMarket, BigNumber.from),
+      token: lpStats.token,
+    };
+  }, [lpStats]);
 };
 
 export type TradingIncentives = ReturnType<typeof useTradingIncentives>;

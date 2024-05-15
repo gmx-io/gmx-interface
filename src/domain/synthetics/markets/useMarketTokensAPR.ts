@@ -2,19 +2,18 @@ import { gql } from "@apollo/client";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { BN_ZERO, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfoRequest } from ".";
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
-import { MarketInfo, MarketTokensAPRData } from "./types";
+import { useTokensDataRequest } from "../tokens";
+import { MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import useIncentiveStats from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
-import { getTokenBySymbol } from "config/tokens";
-import { expandDecimals } from "lib/numbers";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -36,64 +35,47 @@ type SwrResult = {
   avgMarketsAPR: BigNumber;
 };
 
-function useMarketAddresses(chainId: number) {
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+function useMarketAddresses(marketsInfoData: MarketsInfoData | undefined) {
   return useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
   );
 }
 
-function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
-  const rawIncentivesStats = useIncentiveStats(chainId);
+function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData | undefined): MarketTokensAPRData {
+  const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
-  const marketAddresses = useMarketAddresses(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const marketAddresses = useMarketAddresses(marketsInfoData);
+  const token = liquidityProvidersIncentives ? tokensData?.[liquidityProvidersIncentives.token] : undefined;
 
   return useMemo(() => {
-    let arbTokenAddress: null | string = null;
-    try {
-      arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
-    } catch (err) {
-      // ignore
-    }
-    let arbTokenPrice = BigNumber.from(0);
-
-    if (arbTokenAddress && tokensData) {
-      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
-    }
-
-    const shouldCalcBonusApr = arbTokenPrice && rawIncentivesStats?.lp.isActive;
+    if (!liquidityProvidersIncentives || !token) return {};
 
     return marketAddresses.reduce((acc, marketAddress) => {
-      if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)
-        return { ...acc, [marketAddress]: BigNumber.from(0) };
-
-      const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
-      const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
-      let incentivesApr = BigNumber.from(0);
+      if (!poolValue || poolValue.eq(0)) return acc;
 
-      if (poolValue?.gt(0)) {
-        incentivesApr = arbTokensAmount
-          .mul(arbTokenPrice)
-          .div(poolValue)
-          .mul(yearMultiplier)
-          .div(expandDecimals(1, 14));
-      }
+      const tokensAmount = liquidityProvidersIncentives.rewardsPerMarket[marketAddress] ?? BN_ZERO;
+      const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / liquidityProvidersIncentives.period);
+      const apr = tokensAmount
+        .mul(token.prices.minPrice)
+        .div(expandDecimals(1, token.decimals))
+        .mul(PRECISION)
+        .div(poolValue)
+        .mul(yearMultiplier);
 
       return {
         ...acc,
-        [marketAddress]: incentivesApr,
+        [marketAddress]: apr,
       };
     }, {} as MarketTokensAPRData);
-  }, [chainId, marketAddresses, marketsInfoData, rawIncentivesStats, tokensData]);
+  }, [liquidityProvidersIncentives, marketAddresses, marketsInfoData, token]);
 }
 
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const marketAddresses = useMarketAddresses(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const marketAddresses = useMarketAddresses(marketsInfoData);
 
   const client = getSubsquidGraphClient(chainId);
 
@@ -200,7 +182,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     },
   });
 
-  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId);
+  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
 
   return {
     marketsTokensIncentiveAprData,
