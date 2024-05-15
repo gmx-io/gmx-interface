@@ -17,6 +17,10 @@ const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 interface SidecarEntryProps {
   entry: SidecarOrderEntry;
+  commonError?: {
+    price?: string;
+    percentage?: string;
+  } | null;
   indexToken?: TokenData;
   displayMode: "sizeUsd" | "percentage";
   updateEntry: (id: string, field: "sizeUsd" | "percentage" | "price", value: string) => void;
@@ -29,6 +33,7 @@ interface SidecarEntryProps {
 
 function SidecarEntry({
   entry,
+  commonError,
   indexToken,
   displayMode,
   entriesCount,
@@ -38,8 +43,8 @@ function SidecarEntry({
   allowAddEntry,
   handleAddEntry,
 }: SidecarEntryProps) {
-  const percentageError = entry.percentage?.error;
-  const priceError = entry.price?.error;
+  const percentageError = commonError?.percentage || entry.percentage?.error;
+  const priceError = commonError?.price || entry.price?.error;
   const sizeError = displayMode === "percentage" ? percentageError : entry.sizeUsd?.error;
 
   const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);
@@ -203,6 +208,7 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: SidecarEntries
         <SidecarEntry
           key={entry.id}
           entry={entry}
+          commonError={entriesInfo.error}
           entriesCount={entriesInfo.entries.length}
           indexToken={marketInfo?.indexToken}
           displayMode={displayMode}
