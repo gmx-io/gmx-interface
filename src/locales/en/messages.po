@@ -5573,8 +5573,12 @@ msgid "The Available Liquidity will be the lesser of the difference between the 
 msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
 #: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+#~ msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+#~ msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
+msgstr "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
 
 #: src/components/Glp/GlpSwap.js
 msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
