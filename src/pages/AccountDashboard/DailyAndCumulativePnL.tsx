@@ -29,6 +29,12 @@ import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
+import downloadIcon from "img/ic_download_simple.svg";
+
+const CSV_ICON_INFO = {
+  src: downloadIcon,
+};
+
 export function DailyAndCumulativePnL() {
   const account = useRouteMatch<{ account: string }>()?.params.account;
   const { chainId } = useChainId();
@@ -46,7 +52,13 @@ export function DailyAndCumulativePnL() {
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
         <div className="flex items-stretch justify-end gap-8">
-          <Button variant="secondary" data-exclude className="!px-10 !py-6" onClick={handleImageDownload}>
+          <Button
+            variant="secondary"
+            data-exclude
+            className="!px-10 !py-6"
+            imgInfo={CSV_ICON_INFO}
+            onClick={handleImageDownload}
+          >
             PNG
           </Button>
           <DateRangeSelect
