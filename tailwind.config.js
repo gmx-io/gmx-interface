@@ -102,6 +102,8 @@ module.exports = {
     },
     textDecorationColor: {
       "gray-400": "rgba(255, 255, 255, 0.6)",
+      green: "#56dba880",
+      red: "#ff637a80",
     },
     placeholderColor: {
       gray: "rgb(117, 117, 117)",

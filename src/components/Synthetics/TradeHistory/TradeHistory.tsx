@@ -15,7 +15,7 @@ import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { MarketFilterLongShort } from "../TableMarketFilter/MarketFilterLongShort";
+import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
@@ -43,7 +43,7 @@ export function TradeHistory(p: Props) {
   const { chainId } = useChainId();
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
-  const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
       orderType: OrderType;
@@ -51,7 +51,6 @@ export function TradeHistory(p: Props) {
       isDepositOrWithdraw: boolean;
     }[]
   >([]);
-  const [isLongFilter, setIsLongFilter] = useState<boolean | undefined>(undefined);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -67,9 +66,8 @@ export function TradeHistory(p: Props) {
     pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
-    isLong: isLongFilter,
   });
 
   const isConnected = Boolean(account);
@@ -82,7 +80,7 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(startDate || endDate || marketAddressesFilter.length || actionFilter.length);
+  const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -100,7 +98,7 @@ export function TradeHistory(p: Props) {
     forAllAccounts,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
   });
@@ -135,12 +133,7 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilterLongShort
-                    value={marketAddressesFilter}
-                    onChange={setMarketAddressesFilter}
-                    valueIsLong={isLongFilter}
-                    onChangeIsLong={setIsLongFilter}
-                  />
+                  <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
                 </th>
                 <th>
                   <Trans>Size</Trans>

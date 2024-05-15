@@ -47,6 +47,7 @@ type Props = {
   startDate?: Date;
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
+  handleClassName?: string;
 };
 
 const CALENDAR_ICON_INFO = {
@@ -82,7 +83,7 @@ const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
 
 const RANGE_COLORS = ["#262843", "#3ecf8e", "#fed14c"];
 
-export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
   const rangeState = useMemo<[Range]>(
     () => [{ key: "selection", startDate, endDate, color: endDate && startDate ? RANGE_COLORS[0] : "transparent" }],
     [endDate, startDate]
@@ -139,7 +140,13 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button as={Button} variant="secondary" imgInfo={CALENDAR_ICON_INFO} refName="buttonRef">
+        <Popover.Button
+          as={Button}
+          className={handleClassName}
+          variant="secondary"
+          imgInfo={CALENDAR_ICON_INFO}
+          refName="buttonRef"
+        >
           {buttonText}
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>

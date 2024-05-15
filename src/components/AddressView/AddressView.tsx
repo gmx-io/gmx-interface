@@ -6,16 +6,16 @@ import { useMemo } from "react";
 import useWallet from "lib/wallets/useWallet";
 import { t } from "@lingui/macro";
 
+const lengths = { S: 9, M: 13, L: 13, XL: 13 };
+
 type AddressViewProps = {
   address: string;
   size: number;
   ensName?: string;
   avatarUrl?: string;
-  breakpoint?: string;
+  breakpoint?: keyof typeof lengths;
   maxLength?: number;
 };
-
-const lengths = { S: 9, M: 13, L: 13, XL: 13 };
 
 export default function AddressView({
   address,

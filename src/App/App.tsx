@@ -85,6 +85,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
@@ -369,7 +370,7 @@ function FullApp() {
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
                 <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode={false}>
-                  <SyntheticsActions />
+                  <AccountDashboard />
                 </SyntheticsStateContextProvider>
               </Route>
               <Route path="/actions/v2/:account">
