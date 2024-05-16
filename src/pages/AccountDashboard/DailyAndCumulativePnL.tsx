@@ -51,7 +51,7 @@ export function DailyAndCumulativePnL() {
         <div className="py-16">
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
-        <div className="flex items-stretch justify-end gap-8">
+        <div className="flex flex-wrap items-stretch justify-end gap-8 py-10">
           <Button
             variant="secondary"
             data-exclude

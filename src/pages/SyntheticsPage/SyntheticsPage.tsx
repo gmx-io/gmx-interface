@@ -27,7 +27,7 @@ import Helmet from "react-helmet";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useAccount, useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
@@ -42,6 +42,8 @@ import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { DailyAndCumulativePnL } from "pages/AccountDashboard/DailyAndCumulativePnL";
+import { GeneralPerformanceDetails } from "pages/AccountDashboard/GeneralPerformanceDetails";
 
 export type Props = {
   openSettings: () => void;
@@ -52,6 +54,7 @@ enum ListSection {
   Orders = "Orders",
   Trades = "Trades",
   Claims = "Claims",
+  Dashboard = "Dashboard",
 }
 
 export function SyntheticsPage(p: Props) {
@@ -205,6 +208,7 @@ export function SyntheticsPage(p: Props) {
       [ListSection.Orders]: renderOrdersTabTitle(),
       [ListSection.Trades]: t`Trades`,
       [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
+      [ListSection.Dashboard]: t`Dashboard`,
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
@@ -294,6 +298,7 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
             {listSection === ListSection.Claims && renderClaims()}
+            {listSection === ListSection.Dashboard && <SyntheticsPageEmbeddedAccountDashboard />}
           </div>
         </div>
 
@@ -308,7 +313,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="Exchange-lists small">
+        <div className="Exchange-lists small min-w-0">
           <div className="Exchange-list-tab-container">
             <Tab
               options={tabOptions}
@@ -339,6 +344,7 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
           {listSection === ListSection.Claims && renderClaims()}
+          {listSection === ListSection.Dashboard && <SyntheticsPageEmbeddedAccountDashboard />}
         </div>
       </div>
 
@@ -351,6 +357,25 @@ export function SyntheticsPage(p: Props) {
       <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
 
       <Footer />
+    </div>
+  );
+}
+
+function SyntheticsPageEmbeddedAccountDashboard() {
+  const account = useAccount();
+
+  if (!account) {
+    return (
+      <div className="rounded-4 bg-slate-800 p-16">
+        <Trans>Connect Wallet</Trans>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-12">
+      <GeneralPerformanceDetails />
+      <DailyAndCumulativePnL />
     </div>
   );
 }
