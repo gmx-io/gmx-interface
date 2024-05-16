@@ -85,7 +85,7 @@ const DATA = [
 
 export function GeneralPerformanceDetails() {
   return (
-    <div className="rounded-4 bg-slate-800">
+    <div className="overflow-hidden rounded-4 bg-slate-800">
       <div className="border-b border-b-gray-950 p-16">
         <Trans>General Performance Details</Trans>
       </div>
