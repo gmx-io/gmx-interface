@@ -9,6 +9,7 @@ import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMi
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
 import { PositionInfo } from "../positions";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -504,4 +505,17 @@ export function getTotalGmInfo(tokensData?: TokensData) {
     acc.balanceUsd = acc.balanceUsd.add(balanceUsd || 0);
     return acc;
   }, defaultResult);
+}
+
+export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: BigNumber | undefined) {
+  if (!minCollateralFactor) return 100 * BASIS_POINTS_DIVISOR;
+  if (minCollateralFactor.gte(PRECISION.div(100))) return 100 * BASIS_POINTS_DIVISOR;
+  else if (minCollateralFactor.gte(PRECISION.div(150))) return 150 * BASIS_POINTS_DIVISOR;
+  else if (minCollateralFactor.gte(PRECISION.div(200))) return 200 * BASIS_POINTS_DIVISOR;
+  else if (minCollateralFactor.gte(PRECISION.div(250))) return 250 * BASIS_POINTS_DIVISOR;
+  else return 100 * BASIS_POINTS_DIVISOR;
+}
+
+export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: BigNumber | undefined) {
+  return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
