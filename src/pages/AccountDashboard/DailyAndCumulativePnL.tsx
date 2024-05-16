@@ -2,7 +2,6 @@ import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef } from "react";
-import { useRouteMatch } from "react-router-dom";
 import {
   Bar,
   Cell,
@@ -13,6 +12,7 @@ import {
   TooltipProps,
 } from "recharts";
 
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import type { FromOldToNewArray } from "domain/tradingview/types";
 import { useChainId } from "lib/chains";
@@ -36,7 +36,7 @@ const CSV_ICON_INFO = {
 };
 
 export function DailyAndCumulativePnL() {
-  const account = useRouteMatch<{ account: string }>()?.params.account;
+  const account = useAccount()!;
   const { chainId } = useChainId();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
