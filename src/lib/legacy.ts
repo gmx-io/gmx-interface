@@ -1162,7 +1162,6 @@ export type ProcessedData = Partial<{
   stakedGmxTrackerAnnualRewardsUsd: BigNumber;
   feeGmxTrackerAnnualRewardsUsd: BigNumber;
   gmxAprTotal: BigNumber;
-  gmxAprTotalWithBoost: BigNumber;
   totalGmxRewardsUsd: BigNumber;
   glpSupply: BigNumber;
   glpPrice: BigNumber;
@@ -1188,15 +1187,9 @@ export type ProcessedData = Partial<{
   totalNativeTokenRewards: BigNumber;
   totalNativeTokenRewardsUsd: BigNumber;
   totalRewardsUsd: BigNumber;
-  avgBoostAprForNativeToken: BigNumber;
-  avgGMXAprForNativeToken: BigNumber;
 }> & {
   gmxAprForEsGmx: BigNumber;
   gmxAprForNativeToken: BigNumber;
-  maxGmxAprForNativeToken: BigNumber;
-  gmxAprForNativeTokenWithBoost: BigNumber;
-  gmxBoostAprForNativeToken?: BigNumber;
-  avgBoostMultiplier?: BigNumber;
 };
 
 export function getProcessedData(
@@ -1210,8 +1203,7 @@ export function getProcessedData(
   stakedGmxSupply,
   stakedBnGmxSupply,
   gmxPrice,
-  gmxSupply,
-  maxBoostMultiplier
+  gmxSupply
 ): ProcessedData | undefined {
   if (
     !balanceData ||
@@ -1224,8 +1216,7 @@ export function getProcessedData(
     !stakedGmxSupply ||
     !stakedBnGmxSupply ||
     !gmxPrice ||
-    !gmxSupply ||
-    !maxBoostMultiplier
+    !gmxSupply
   ) {
     return undefined;
   }
@@ -1285,12 +1276,7 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
       ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
       : bigNumberify(0);
-  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken.mul(data.boostBasisPoints).div(BASIS_POINTS_DIVISOR);
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
-  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
-  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken);
-
-  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken.add(data.gmxAprForNativeToken.mul(maxBoostMultiplier));
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 

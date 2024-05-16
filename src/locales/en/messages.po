@@ -158,6 +158,10 @@ msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
+msgstr "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
+
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
@@ -203,6 +207,8 @@ msgstr "A snapshot of the USD value of your {0} collateral is taken when the pos
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.tsx
+#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "APR"
 msgstr "APR"
@@ -630,8 +636,8 @@ msgstr "Average position size."
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Avg. APR"
-msgstr "Avg. APR"
+#~ msgid "Avg. APR"
+#~ msgstr "Avg. APR"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
@@ -664,8 +670,8 @@ msgid "Base APR"
 msgstr "Base APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Base {nativeTokenSymbol} APR"
-msgstr "Base {nativeTokenSymbol} APR"
+#~ msgid "Base {nativeTokenSymbol} APR"
+#~ msgstr "Base {nativeTokenSymbol} APR"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin Transfer"
@@ -681,8 +687,8 @@ msgid "Bonus Tokens"
 msgstr "Bonus Tokens"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Boost Percentage"
-msgstr "Boost Percentage"
+#~ msgid "Boost Percentage"
+#~ msgstr "Boost Percentage"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
@@ -1776,8 +1782,8 @@ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity 
 msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
-msgstr "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
+#~ msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
+#~ msgstr "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Earn prizes by participating in GMX Trading Competitions."
@@ -3543,8 +3549,8 @@ msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR"
-msgstr "Max. {nativeTokenSymbol} APR"
+#~ msgid "Max. {nativeTokenSymbol} APR"
+#~ msgstr "Max. {nativeTokenSymbol} APR"
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3642,12 +3648,12 @@ msgid "More Options"
 msgstr "More Options"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Multiplier Points"
-msgstr "Multiplier Points"
+#~ msgid "Multiplier Points"
+#~ msgstr "Multiplier Points"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Multiplier Points APR"
-msgstr "Multiplier Points APR"
+#~ msgid "Multiplier Points APR"
+#~ msgstr "Multiplier Points APR"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Myself"
@@ -5308,8 +5314,8 @@ msgid "Staked"
 msgstr "Staked"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Staked Multiplier Points"
-msgstr "Staked Multiplier Points"
+#~ msgid "Staked Multiplier Points"
+#~ msgstr "Staked Multiplier Points"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5699,8 +5705,8 @@ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
-msgstr "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+#~ msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+#~ msgstr "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
@@ -6364,8 +6370,8 @@ msgstr "Unstake submitted! <0>View status.</0>"
 #~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
-msgstr "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
+#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.tsx
@@ -6436,8 +6442,8 @@ msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr "Use the \"Close\" button to reduce your Position Size."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Use the \"Compound\" button to stake your Multiplier Points."
-msgstr "Use the \"Compound\" button to stake your Multiplier Points."
+#~ msgid "Use the \"Compound\" button to stake your Multiplier Points."
+#~ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6838,8 +6844,8 @@ msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
-msgstr "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+#~ msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+#~ msgstr "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -6980,12 +6986,12 @@ msgstr "You have not traded during the selected period."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
-msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+#~ msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+#~ msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
-msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
+#~ msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
+#~ msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
@@ -7042,8 +7048,8 @@ msgstr "You will receive at least {toAmountText} if this order is executed. This
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Your APR"
-msgstr "Your APR"
+#~ msgid "Your APR"
+#~ msgstr "Your APR"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
@@ -7369,16 +7375,21 @@ msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} Base APR"
-msgstr "{nativeTokenSymbol} Base APR"
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "{nativeTokenSymbol} APR"
+msgstr "{nativeTokenSymbol} APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} Boosted APR"
-msgstr "{nativeTokenSymbol} Boosted APR"
+#~ msgid "{nativeTokenSymbol} Base APR"
+#~ msgstr "{nativeTokenSymbol} Base APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} Total APR"
-msgstr "{nativeTokenSymbol} Total APR"
+#~ msgid "{nativeTokenSymbol} Boosted APR"
+#~ msgstr "{nativeTokenSymbol} Boosted APR"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+#~ msgid "{nativeTokenSymbol} Total APR"
+#~ msgstr "{nativeTokenSymbol} Total APR"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
