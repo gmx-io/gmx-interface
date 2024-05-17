@@ -2300,23 +2300,26 @@ export default function StakeV2() {
                   )
                 </div>
               </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-buttons m-0">
-                {active && (
-                  <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
-                    <Trans>Stake</Trans>
-                  </Button>
-                )}
-                {active && (
-                  <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
-                    <Trans>Unstake</Trans>
-                  </Button>
-                )}
-                {!active && (
-                  <Button variant="secondary" onClick={openConnectModal}>
-                    <Trans> Connect Wallet</Trans>
-                  </Button>
-                )}
+              <div className="App-card-footer">
+                <div className="App-card-divider"></div>
+                <div className="App-card-buttons m-0">
+                  <br />
+                  {active && (
+                    <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
+                      <Trans>Stake</Trans>
+                    </Button>
+                  )}
+                  {active && (
+                    <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
+                      <Trans>Unstake</Trans>
+                    </Button>
+                  )}
+                  {!active && (
+                    <Button variant="secondary" onClick={openConnectModal}>
+                      <Trans> Connect Wallet</Trans>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
