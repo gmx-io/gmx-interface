@@ -67,7 +67,7 @@ let fallbackThrottleTimerId: any;
 export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
   const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
-  const [forceIncentivesActive] = useLocalStorageSerializeKey("forceIncentivesActive", false);
+  const [forceIncentivesActive] = useLocalStorageSerializeKey([chainId, "forceIncentivesActive"], false);
 
   return useMemo(() => {
     const instance = new OracleKeeperFetcher({
