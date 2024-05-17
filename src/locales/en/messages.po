@@ -159,8 +159,8 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
-msgstr "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgstr "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
@@ -7282,6 +7282,10 @@ msgstr "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr "{0}: {1}, Price: {priceDisplay}"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
+msgstr "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"

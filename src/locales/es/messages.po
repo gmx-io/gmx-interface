@@ -159,8 +159,8 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
-msgstr ""
+#~ msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
@@ -7278,6 +7278,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: {1}, Price: {priceDisplay}"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
