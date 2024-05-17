@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -30,11 +30,12 @@ import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { serializeBigIntsInObject } from "lib/numbers";
+import { useLocalizedMap } from "lib/i18n";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
-const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
+const TAB_OPTION_LABELS = { [TRADERS]: msg`Traders`, [AFFILIATES]: msg`Affiliates` };
 
 function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
@@ -64,6 +65,7 @@ function Referrals() {
   const { affiliateTier: traderTier } = useAffiliateTier(signer, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
   const [pendingTxns] = usePendingTxns();
+  const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -136,7 +138,7 @@ function Referrals() {
         <div className="referral-tab-container">
           <Tab
             options={TAB_OPTIONS}
-            optionLabels={TAB_OPTION_LABELS}
+            optionLabels={localizedTabOptionLabels}
             option={activeTab}
             setOption={setActiveTab}
             onChange={setActiveTab}

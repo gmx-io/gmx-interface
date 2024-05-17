@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
@@ -114,8 +114,10 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { helperToast } from "lib/helperToast";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
+import { useLocalizedMap } from "lib/i18n";
 import "./TradeBox.scss";
 import { bigMath } from "lib/bigmath";
+
 
 export type Props = {
   allowedSlippage: number;
@@ -131,18 +133,21 @@ const tradeTypeIcons = {
 };
 
 const tradeModeLabels = {
-  [TradeMode.Market]: t`Market`,
-  [TradeMode.Limit]: t`Limit`,
-  [TradeMode.Trigger]: t`TP/SL`,
+  [TradeMode.Market]: msg`Market`,
+  [TradeMode.Limit]: msg`Limit`,
+  [TradeMode.Trigger]: msg`TP/SL`,
 };
 
 const tradeTypeLabels = {
-  [TradeType.Long]: t`Long`,
-  [TradeType.Short]: t`Short`,
-  [TradeType.Swap]: t`Swap`,
+  [TradeType.Long]: msg`Long`,
+  [TradeType.Short]: msg`Short`,
+  [TradeType.Swap]: msg`Swap`,
 };
 
 export function TradeBox(p: Props) {
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
+
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
@@ -551,7 +556,7 @@ export function TradeBox(p: Props) {
       if (isSwap) {
         return t`Swap ${fromToken?.symbol}`;
       } else {
-        return `${tradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
+        return `${localizedTradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
       }
     } else if (isLimit) {
       return t`Create Limit order`;
@@ -559,14 +564,15 @@ export function TradeBox(p: Props) {
       return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
     }
   }, [
-    decreaseAmounts?.triggerOrderType,
     buttonErrorText,
-    fromToken?.symbol,
-    isLimit,
     isMarket,
+    isLimit,
     isSwap,
-    toToken?.symbol,
+    fromToken?.symbol,
+    localizedTradeTypeLabels,
     tradeType,
+    toToken?.symbol,
+    decreaseAmounts?.triggerOrderType,
   ]);
 
   const onSubmit = useCallback(() => {
@@ -917,7 +923,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={tradeTypeLabels[tradeType!]}
+            topLeftLabel={localizedTradeTypeLabels[tradeType!]}
             topLeftValue={
               increaseAmounts?.sizeDeltaUsd && increaseAmounts.sizeDeltaUsd > 0
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
@@ -931,7 +937,7 @@ export function TradeBox(p: Props) {
           >
             {toTokenAddress && (
               <MarketSelector
-                label={tradeTypeLabels[tradeType!]}
+                label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
                   toToken && (
@@ -1328,7 +1334,7 @@ export function TradeBox(p: Props) {
           <Tab
             icons={tradeTypeIcons}
             options={Object.values(TradeType)}
-            optionLabels={tradeTypeLabels}
+            optionLabels={localizedTradeTypeLabels}
             option={tradeType}
             onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"
@@ -1336,7 +1342,7 @@ export function TradeBox(p: Props) {
 
           <Tab
             options={availalbleTradeModes}
-            optionLabels={tradeModeLabels}
+            optionLabels={localizedTradeModeLabels}
             className="SwapBox-asset-options-tabs"
             type="inline"
             option={tradeMode}
