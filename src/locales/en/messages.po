@@ -620,9 +620,17 @@ msgstr "Avalanche Avg. APR:"
 msgid "Avalanche GM Pools are incentivized."
 msgstr "Avalanche GM Pools are incentivized."
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche LP incentives"
+msgstr "Avalanche LP incentives"
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APR: {0}"
 msgstr "Avalanche Max. APR: {0}"
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche trading incentives"
+msgstr "Avalanche trading incentives"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
@@ -1753,12 +1761,12 @@ msgstr "Download"
 msgid "EIP-4844 Competition"
 msgstr "EIP-4844 Competition"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
@@ -2371,7 +2379,7 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "GLP to GM Airdrop"
 
@@ -2379,7 +2387,7 @@ msgstr "GLP to GM Airdrop"
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GM Airdrop"
 msgstr "GM Airdrop"
 
@@ -4762,6 +4770,14 @@ msgstr "SL"
 msgid "SOON"
 msgstr "SOON"
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b LP incentives"
+msgstr "STIP.b LP incentives"
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b trading incentives"
+msgstr "STIP.b trading incentives"
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "Same as current active code"
@@ -5507,7 +5523,7 @@ msgstr "TP"
 msgid "TP/SL"
 msgstr "TP/SL"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr "TRADING Airdrop"
 

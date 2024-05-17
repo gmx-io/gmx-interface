@@ -620,8 +620,16 @@ msgstr ""
 msgid "Avalanche GM Pools are incentivized."
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche LP incentives"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APR: {0}"
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche trading incentives"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1753,12 +1761,12 @@ msgstr "下载"
 msgid "EIP-4844 Competition"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
@@ -2371,7 +2379,7 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP售卖已禁止，等待{0}升级"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr ""
 
@@ -2379,7 +2387,7 @@ msgstr ""
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GM Airdrop"
 msgstr ""
 
@@ -4759,6 +4767,14 @@ msgstr ""
 msgid "SOON"
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b LP incentives"
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b trading incentives"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "与当前的有效代码相同"
@@ -5504,7 +5520,7 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr ""
 
