@@ -648,3 +648,7 @@ a:hover .text-red {
 .gap-right-xs > *:not(:last-child) {
   margin-right: 0.5rem;
 }
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}

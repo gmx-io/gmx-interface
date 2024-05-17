@@ -47,6 +47,8 @@ export type RawIncentivesStats = {
     rebatePercent: number;
     allocation: string;
     period: number;
+    // not yet implemented on keeper side
+    token?: string;
   }>;
 };
 
