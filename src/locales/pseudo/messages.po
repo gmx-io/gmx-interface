@@ -550,7 +550,15 @@ msgid "Arbitrum Avg. APR:"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum GM Pools are incentivized."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum Max. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum and Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -606,6 +614,10 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Avg. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx

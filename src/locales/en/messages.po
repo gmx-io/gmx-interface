@@ -550,8 +550,16 @@ msgid "Arbitrum Avg. APR:"
 msgstr "Arbitrum Avg. APR:"
 
 #: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum GM Pools are incentivized."
+msgstr "Arbitrum GM Pools are incentivized."
+
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum Max. APR:"
 msgstr "Arbitrum Max. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum and Avalanche GM Pools are incentivized."
+msgstr "Arbitrum and Avalanche GM Pools are incentivized."
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional execution fee is needed."
@@ -607,6 +615,10 @@ msgstr "Avalanche APR:"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Avg. APR:"
 msgstr "Avalanche Avg. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche GM Pools are incentivized."
+msgstr "Avalanche GM Pools are incentivized."
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APR: {0}"
