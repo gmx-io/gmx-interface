@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
@@ -41,6 +41,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
+  const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
   const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
   const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
     useMarketTokensAPR(AVALANCHE);
@@ -93,6 +94,18 @@ export default function TokenCard({ showRedirectModal }: Props) {
     );
   };
 
+  const poolsIncentivizedLabel = useMemo(() => {
+    if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
+      return t`Arbitrum and Avalanche GM Pools are incentivized.`;
+    } else if (arbitrumIncentiveState?.lp?.isActive) {
+      return t`Arbitrum GM Pools are incentivized.`;
+    } else if (avalancheIncentiveState?.lp?.isActive) {
+      return t`Avalanche GM Pools are incentivized.`;
+    } else {
+      return null;
+    }
+  }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
+
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -139,10 +152,10 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
           </div>
-          {arbitrumIncentiveState?.lp?.isActive && (
+          {poolsIncentivizedLabel && (
             <BannerButton
               className="mt-md"
-              label="Arbitrum GM Pools are incentivized."
+              label={poolsIncentivizedLabel}
               link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
             />
           )}
