@@ -1,8 +1,10 @@
+import { useKey } from "react-use";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import useSWR from "swr";
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
+import { useLingui } from "@lingui/react";
 
 import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
@@ -31,8 +33,8 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useKey } from "react-use";
 import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -41,12 +43,13 @@ const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
 const { ZeroAddress } = ethers;
 
 const EDIT_OPTIONS_LABELS = {
-  [DEPOSIT]: t`Deposit`,
-  [WITHDRAW]: t`Withdraw`,
+  [DEPOSIT]: msg`Deposit`,
+  [WITHDRAW]: msg`Withdraw`,
 };
+
 const ERROR_TOOLTIP_MSG = {
-  [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
-  [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
+  [ErrorCode.InvalidLiqPrice]: msg`Liquidation price would cross mark price.`,
+  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
 };
 
 export default function PositionEditor(props) {
@@ -88,6 +91,8 @@ export default function PositionEditor(props) {
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   const submitButtonRef = useRef(null);
+  const { _ } = useLingui();
+  const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -531,7 +536,7 @@ export default function PositionEditor(props) {
           }
           className="Tooltip-flex"
           position="top"
-          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+          content={_(ERROR_TOOLTIP_MSG[errorCode])}
         />
       );
     }
@@ -563,7 +568,7 @@ export default function PositionEditor(props) {
           <div>
             <Tab
               options={EDIT_OPTIONS}
-              optionLabels={EDIT_OPTIONS_LABELS}
+              optionLabels={localizedEditOptionLabels}
               option={option}
               setOption={setOption}
               onChange={resetForm}

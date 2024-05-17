@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import "./SwapBox.scss";
@@ -89,6 +89,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
 import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -117,12 +118,12 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
 }
 
 const SWAP_LABELS = {
-  [LONG]: t`Long`,
-  [SHORT]: t`Short`,
-  [SWAP]: t`Swap`,
+  [LONG]: msg`Long`,
+  [SHORT]: msg`Short`,
+  [SWAP]: msg`Swap`,
 };
 
-const ORDER_OPTION_LABELS = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
+const ORDER_OPTION_LABELS = { [STOP]: msg`Trigger`, [MARKET]: msg`Market`, [LIMIT]: msg`Limit` };
 
 export default function SwapBox(props) {
   const {
@@ -185,6 +186,8 @@ export default function SwapBox(props) {
   const { attachedOnChain, userReferralCode } = useUserReferralCode(signer, chainId, account);
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
+  const localizedSwapLabels = useLocalizedMap(SWAP_LABELS);
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1984,7 +1987,7 @@ export default function SwapBox(props) {
             <Tab
               icons={SWAP_ICONS}
               options={SWAP_OPTIONS}
-              optionLabels={SWAP_LABELS}
+              optionLabels={localizedSwapLabels}
               option={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
@@ -1992,7 +1995,7 @@ export default function SwapBox(props) {
             {flagOrdersEnabled && (
               <Tab
                 options={orderOptions}
-                optionLabels={ORDER_OPTION_LABELS}
+                optionLabels={localizedOrderOptionLabels}
                 className="Exchange-swap-order-type-tabs"
                 type="inline"
                 option={orderOption}

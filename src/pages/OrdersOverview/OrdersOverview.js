@@ -18,7 +18,8 @@ import {
 } from "lib/legacy";
 
 import "./OrdersOverview.css";
-import { t, Trans } from "@lingui/macro";
+import { t, Trans, msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
@@ -28,15 +29,16 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "lib/bigmath";
 
 const ORDER_TYPE_LABELS = {
-  Increase: t`Increase`,
-  Decrease: t`Decrease`,
-  Swap: t`Swap`,
+  Increase: msg`Increase`,
+  Decrease: msg`Decrease`,
+  Swap: msg`Swap`,
 };
 const closeToExecutionPriceStyle = { color: "orange" };
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
+  const { _ } = useLingui();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -185,7 +187,7 @@ export default function OrdersOverview() {
 
               return (
                 <tr key={key}>
-                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -265,7 +267,7 @@ export default function OrdersOverview() {
               }
               return (
                 <tr key={key}>
-                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td>
                     {order.isLong ? t`Long` : t`Short`} {indexToken && indexToken.symbol}
                   </td>

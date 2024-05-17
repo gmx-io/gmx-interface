@@ -1,63 +1,69 @@
-import { i18n } from "@lingui/core";
-import { t } from "@lingui/macro";
+import { i18n, type MessageDescriptor } from "@lingui/core";
+import { msg, t } from "@lingui/macro";
+
 import { isLimitOrderType, OrderType } from "domain/synthetics/orders";
 import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
 import { mustNeverExist } from "lib/types";
+
 import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 
 type OrderTypes = keyof typeof OrderType;
 
-export const actionTextMapBase: Partial<Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, string>> = {
-  "MarketSwap-OrderCreated": /*i18n*/ "Request Market Swap",
-  "MarketSwap-OrderExecuted": /*i18n*/ "Execute Market Swap",
-  "MarketSwap-OrderCancelled": /*i18n*/ "Failed Market Swap",
+export const actionTextMapBase: Partial<
+  Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, MessageDescriptor>
+> = {
+  "MarketSwap-OrderCreated": msg`Request Market Swap`,
+  "MarketSwap-OrderExecuted": msg`Execute Market Swap`,
+  "MarketSwap-OrderCancelled": msg`Failed Market Swap`,
 
-  "LimitSwap-OrderCreated": /*i18n*/ "Create Limit Swap",
-  "LimitSwap-OrderExecuted": /*i18n*/ "Execute Limit Swap",
-  "LimitSwap-OrderCancelled": /*i18n*/ "Cancel Limit Swap",
-  "LimitSwap-OrderUpdated": /*i18n*/ "Update Limit Swap",
-  "LimitSwap-OrderFrozen": /*i18n*/ "Failed Limit Swap",
+  "LimitSwap-OrderCreated": msg`Create Limit Swap`,
+  "LimitSwap-OrderExecuted": msg`Execute Limit Swap`,
+  "LimitSwap-OrderCancelled": msg`Cancel Limit Swap`,
+  "LimitSwap-OrderUpdated": msg`Update Limit Swap`,
+  "LimitSwap-OrderFrozen": msg`Failed Limit Swap`,
 
-  "MarketIncrease-OrderCreated": /*i18n*/ "Request Market Increase",
-  "MarketIncrease-OrderExecuted": /*i18n*/ "Market Increase",
-  "MarketIncrease-OrderCancelled": /*i18n*/ "Failed Market Increase",
+  "MarketIncrease-OrderCreated": msg`Request Market Increase`,
+  "MarketIncrease-OrderExecuted": msg`Market Increase`,
+  "MarketIncrease-OrderCancelled": msg`Failed Market Increase`,
 
-  "LimitIncrease-OrderCreated": /*i18n*/ "Create Limit Order",
-  "LimitIncrease-OrderExecuted": /*i18n*/ "Execute Limit Order",
-  "LimitIncrease-OrderCancelled": /*i18n*/ "Cancel Limit Order",
-  "LimitIncrease-OrderUpdated": /*i18n*/ "Update Limit Order",
-  "LimitIncrease-OrderFrozen": /*i18n*/ "Failed Limit Order",
+  "LimitIncrease-OrderCreated": msg`Create Limit Order`,
+  "LimitIncrease-OrderExecuted": msg`Execute Limit Order`,
+  "LimitIncrease-OrderCancelled": msg`Cancel Limit Order`,
+  "LimitIncrease-OrderUpdated": msg`Update Limit Order`,
+  "LimitIncrease-OrderFrozen": msg`Failed Limit Order`,
 
-  "MarketDecrease-OrderCreated": /*i18n*/ "Request Market Decrease",
-  "MarketDecrease-OrderExecuted": /*i18n*/ "Market Decrease",
-  "MarketDecrease-OrderCancelled": /*i18n*/ "Failed Market Decrease",
+  "MarketDecrease-OrderCreated": msg`Request Market Decrease`,
+  "MarketDecrease-OrderExecuted": msg`Market Decrease`,
+  "MarketDecrease-OrderCancelled": msg`Failed Market Decrease`,
 
-  "LimitDecrease-OrderCreated": /*i18n*/ "Create Take-Profit Order",
-  "LimitDecrease-OrderExecuted": /*i18n*/ "Execute Take-Profit Order",
-  "LimitDecrease-OrderCancelled": /*i18n*/ "Cancel Take-Profit Order",
-  "LimitDecrease-OrderUpdated": /*i18n*/ "Update Take-Profit Order",
-  "LimitDecrease-OrderFrozen": /*i18n*/ "Failed Take-Profit Order",
+  "LimitDecrease-OrderCreated": msg`Create Take-Profit Order`,
+  "LimitDecrease-OrderExecuted": msg`Execute Take-Profit Order`,
+  "LimitDecrease-OrderCancelled": msg`Cancel Take-Profit Order`,
+  "LimitDecrease-OrderUpdated": msg`Update Take-Profit Order`,
+  "LimitDecrease-OrderFrozen": msg`Failed Take-Profit Order`,
 
-  "StopLossDecrease-OrderCreated": /*i18n*/ "Create Stop-Loss Order",
-  "StopLossDecrease-OrderExecuted": /*i18n*/ "Execute Stop-Loss Order",
-  "StopLossDecrease-OrderCancelled": /*i18n*/ "Cancel Stop-Loss Order",
-  "StopLossDecrease-OrderUpdated": /*i18n*/ "Update Stop-Loss Order",
-  "StopLossDecrease-OrderFrozen": /*i18n*/ "Failed Stop-Loss Order",
+  "StopLossDecrease-OrderCreated": msg`Create Stop-Loss Order`,
+  "StopLossDecrease-OrderExecuted": msg`Execute Stop-Loss Order`,
+  "StopLossDecrease-OrderCancelled": msg`Cancel Stop-Loss Order`,
+  "StopLossDecrease-OrderUpdated": msg`Update Stop-Loss Order`,
+  "StopLossDecrease-OrderFrozen": msg`Failed Stop-Loss Order`,
 
-  "Liquidation-OrderExecuted": /*i18n*/ "Liquidated",
+  "Liquidation-OrderExecuted": msg`Liquidated`,
 };
 
-export const actionTextMap: Partial<Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, string>> = {
+export const actionTextMap: Partial<
+  Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, MessageDescriptor>
+> = {
   ...actionTextMapBase,
 
-  "Deposit-OrderCreated": /*i18n*/ "Request Deposit",
-  "Deposit-OrderExecuted": /*i18n*/ "Deposit",
-  "Deposit-OrderCancelled": /*i18n*/ "Failed Deposit",
+  "Deposit-OrderCreated": msg`Request Deposit`,
+  "Deposit-OrderExecuted": msg`Deposit`,
+  "Deposit-OrderCancelled": msg`Failed Deposit`,
 
-  "Withdraw-OrderCreated": /*i18n*/ "Request Withdraw",
-  "Withdraw-OrderExecuted": /*i18n*/ "Withdraw",
-  "Withdraw-OrderCancelled": /*i18n*/ "Failed Withdraw",
+  "Withdraw-OrderCreated": msg`Request Withdraw`,
+  "Withdraw-OrderExecuted": msg`Withdraw`,
+  "Withdraw-OrderCancelled": msg`Failed Withdraw`,
 };
 
 export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {

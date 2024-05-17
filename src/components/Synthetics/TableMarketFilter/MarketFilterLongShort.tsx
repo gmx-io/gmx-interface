@@ -1,13 +1,12 @@
-import { useLingui } from "@lingui/react";
 import { defineMessage } from "@lingui/macro";
-import mapValues from "lodash/mapValues";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import type { MessageDescriptor } from "@lingui/core";
 
 import Tab from "components/Tab/Tab";
 import { MarketFilterBase, MarketFilterBaseProps } from "./MarketFilterBase";
 
 import "./MarketFilterLongShort.scss";
+import { useLocalizedMap } from "lib/i18n";
 
 type MarketFilterProps = Omit<MarketFilterBaseProps, "beforeContent" | "forceIsActive"> & {
   valueIsLong: boolean | undefined;
@@ -23,8 +22,7 @@ const OPTION_LABELS: Record<Option, MessageDescriptor> = {
 };
 
 export const MarketFilterLongShort = ({ onChangeIsLong, valueIsLong, ...restProps }: MarketFilterProps) => {
-  const { i18n } = useLingui();
-  const localizedOptionLabels = useMemo(() => mapValues(OPTION_LABELS, (label) => i18n._(label)), [i18n]);
+  const localizedOptionLabels = useLocalizedMap(OPTION_LABELS);
   const onChange = useCallback(
     (option: Option) => {
       if (option === "all") {
