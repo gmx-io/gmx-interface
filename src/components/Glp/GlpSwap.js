@@ -16,7 +16,6 @@ import {
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useEffect, useState, useMemo } from "react";
-import { useLingui } from "@lingui/react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
