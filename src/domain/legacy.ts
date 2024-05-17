@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
@@ -14,7 +14,15 @@ import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_GOERLI,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  getChainName,
+  getConstant,
+  getHighExecutionFee,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
 
@@ -32,6 +40,7 @@ import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
+import { bigMath } from "lib/bigmath";
 
 export * from "./prices";
 
@@ -43,7 +52,7 @@ export type PendingTransaction = {
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{
@@ -185,12 +194,12 @@ export function useAllPositions(chainId, signer) {
             account: dataItem.account,
           };
           position.fundingFee = await contract.getFundingFee(collateralToken, position.size, position.entryFundingRate);
-          position.marginFee = position.size.div(1000);
-          position.fee = position.fundingFee.add(position.marginFee);
+          position.marginFee = position.size / 1000n;
+          position.fee = position.fundingFee + position.marginFee;
 
           const THRESHOLD = 5000;
-          const collateralDiffPercent = position.fee.mul(10000).div(position.collateral);
-          position.danger = collateralDiffPercent.gt(THRESHOLD);
+          const collateralDiffPercent = bigMath.mulDiv(position.fee, 10000n, position.collateral);
+          position.danger = collateralDiffPercent > THRESHOLD;
 
           return position;
         } catch (ex) {
@@ -244,7 +253,7 @@ export function useAllOrders(chainId, signer) {
             ret[key] = val;
           }
           if (order.type === "swap") {
-            ret.path = [ret.path0, ret.path1, ret.path2].filter((address) => address !== AddressZero);
+            ret.path = [ret.path0, ret.path1, ret.path2].filter((address) => address !== ZeroAddress);
           }
           ret.type = type;
           ret.index = order.index;
@@ -277,7 +286,7 @@ export function usePositionsForOrders(chainId, signer, orders) {
             order.indexToken,
             order.isLong
           );
-          if (position[0].eq(0)) {
+          if (position[0] == 0n) {
             return [null, order];
           }
           return [position, order];
@@ -383,22 +392,25 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
+  const { data: minExecutionFee } = useSWR<bigint>([active, chainId, positionRouterAddress, "minExecutionFee"], {
     fetcher: contractFetcher(signer, PositionRouter) as any,
   });
 
-  const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
+  const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise<BigNumber | undefined>(async (resolve) => {
-        const provider = getProvider(signer, chainId);
+      return new Promise<bigint | undefined>(async (resolve) => {
+        let provider = signer?.provider;
+
         if (!provider) {
-          resolve(undefined);
-          return;
+          // eslint-disable-next-line no-console
+          console.warn("signer.provider is undefined, falling back to getProvider(signer, chainId)");
+
+          provider = getProvider(signer, chainId);
         }
 
         try {
-          const gasPrice = await provider.getGasPrice();
-          resolve(gasPrice);
+          const gasPrice = (await provider.getFeeData()).gasPrice;
+          resolve(gasPrice ?? undefined);
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);
@@ -407,28 +419,30 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
     },
   });
 
-  let multiplier;
+  let multiplier = 0n;
 
   if (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) {
-    multiplier = 2150000;
+    multiplier = 2150000n;
   }
 
   // multiplier for Avalanche is just the average gas usage
-  if (chainId === AVALANCHE) {
-    multiplier = 700000;
+  if (chainId === AVALANCHE || chainId === AVALANCHE_FUJI) {
+    multiplier = 700000n;
   }
 
   let finalExecutionFee = minExecutionFee;
 
   if (gasPrice && minExecutionFee) {
-    const estimatedExecutionFee = gasPrice.mul(multiplier);
-    if (estimatedExecutionFee.gt(minExecutionFee)) {
+    const estimatedExecutionFee = gasPrice * multiplier;
+    if (estimatedExecutionFee > minExecutionFee) {
       finalExecutionFee = estimatedExecutionFee;
     }
   }
 
   const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
-  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
+  const isFeeHigh =
+    finalExecutionFeeUSD !== undefined &&
+    finalExecutionFeeUSD > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
   const errorMessage =
     isFeeHigh &&
     t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
@@ -465,7 +479,7 @@ export function useStakedGmxSupply(signer, active) {
 
   let data;
   if (arbData && avaxData) {
-    data = arbData.add(avaxData);
+    data = arbData + avaxData;
   }
 
   const mutate = () => {
@@ -537,7 +551,7 @@ export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
   let totalStakedGmx = useRef(BN_ZERO);
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<bigint>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
       ARBITRUM,
@@ -549,7 +563,7 @@ export function useTotalGmxStaked() {
       fetcher: contractFetcher(undefined, Token) as any,
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<bigint>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
       AVALANCHE,
@@ -568,7 +582,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = BigNumber.from(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    let total = BigInt(stakedGmxSupplyArbitrum) + BigInt(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 
@@ -603,7 +617,7 @@ export function useTotalGmxInLiquidity() {
   }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
 
   if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
-    let total = bigNumberify(gmxInLiquidityOnArbitrum)!.add(gmxInLiquidityOnAvax);
+    let total = bigNumberify(gmxInLiquidityOnArbitrum)! + bigNumberify(gmxInLiquidityOnAvax)!;
     totalGMX.current = total;
   }
   return {
@@ -631,10 +645,10 @@ function useGmxPriceFromAvalanche() {
     }
   );
 
-  const PRECISION = bigNumberify(10)!.pow(18);
+  const PRECISION = 10n ** 18n;
   let gmxPrice;
   if (avaxReserve && gmxReserve && avaxPrice) {
-    gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
+    gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
   }
 
   const mutate = useCallback(() => {
@@ -656,7 +670,7 @@ function useGmxPriceFromArbitrum(signer, active) {
 
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<bigint>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
       fetcher: contractFetcher(signer, Vault) as any,
@@ -674,15 +688,17 @@ function useGmxPriceFromArbitrum(signer, active) {
         tokenA, // tokenA
         tokenB, // tokenB
         10000, // fee
-        uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
+        uniPoolSlot0.sqrtPriceX96.toString(), // sqrtRatioX96
         1, // liquidity
-        uniPoolSlot0.tick, // tickCurrent
+        Number(uniPoolSlot0.tick), // tickCurrent
         []
       );
 
       const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
       const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
-      return poolTokenPriceAmount?.mul(ethPrice).div(expandDecimals(1, 18));
+      return poolTokenPriceAmount === undefined
+        ? undefined
+        : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
     }
   }, [ethPrice, uniPoolSlot0, ethAddress]);
 
@@ -720,11 +736,11 @@ export async function createSwapOrder(
   let shouldUnwrap = false;
   opts.value = executionFee;
 
-  if (path[0] === AddressZero) {
+  if (path[0] === ZeroAddress) {
     shouldWrap = true;
-    opts.value = opts.value.add(amountIn);
+    opts.value = opts.value + amountIn;
   }
-  if (path[path.length - 1] === AddressZero) {
+  if (path[path.length - 1] === ZeroAddress) {
     shouldUnwrap = true;
   }
   path = replaceNativeTokenAddress(path, nativeTokenAddress);
@@ -752,10 +768,10 @@ export async function createIncreaseOrder(
   opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
-  invariant(indexTokenAddress !== AddressZero, "indexToken is 0");
-  invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0");
+  invariant(indexTokenAddress !== ZeroAddress, "indexToken is 0");
+  invariant(collateralTokenAddress !== ZeroAddress, "collateralToken is 0");
 
-  const fromETH = path[0] === AddressZero;
+  const fromETH = path[0] === ZeroAddress;
 
   path = replaceNativeTokenAddress(path, nativeTokenAddress);
   const shouldWrap = fromETH;
@@ -777,7 +793,7 @@ export async function createIncreaseOrder(
   ];
 
   if (!opts.value) {
-    opts.value = fromETH ? amountIn.add(executionFee) : executionFee;
+    opts.value = fromETH ? amountIn + executionFee : executionFee;
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -799,8 +815,8 @@ export async function createDecreaseOrder(
   opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
-  invariant(indexTokenAddress !== AddressZero, "indexToken is 0");
-  invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0");
+  invariant(indexTokenAddress !== ZeroAddress, "indexToken is 0");
+  invariant(collateralTokenAddress !== ZeroAddress, "collateralToken is 0");
 
   const executionFee = getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE");
 

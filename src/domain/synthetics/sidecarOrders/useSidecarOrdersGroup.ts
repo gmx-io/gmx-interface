@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, SetStateAction, Dispatch } from "react";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePrevious } from "lib/usePrevious";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -11,6 +10,7 @@ import { selectConfirmationBoxSidecarOrdersTotalSizeUsd } from "context/Syntheti
 import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntryField, getDefaultEntry } from "./utils";
 import { SidecarOrderEntryBase, EntryField, SidecarOrderEntryGroupBase, GroupPrefix } from "./types";
 import useEffectOnce from "lib/useEffectOnce";
+import { bigMath } from "lib/bigmath";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -28,23 +28,23 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const totalPositionSizeUsd = useSelector(selectConfirmationBoxSidecarOrdersTotalSizeUsd);
 
   const getPercentageBySizeUsd = useCallback(
-    (sizeUsd: BigNumber | null) => {
-      if (!sizeUsd || !totalPositionSizeUsd?.gt(0)) {
+    (sizeUsd: bigint | null) => {
+      if (!sizeUsd || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
         return null;
       }
 
-      return sizeUsd.mul(MAX_PERCENTAGE).div(totalPositionSizeUsd);
+      return bigMath.mulDiv(sizeUsd, MAX_PERCENTAGE, totalPositionSizeUsd);
     },
     [totalPositionSizeUsd]
   );
 
   const getSizeUsdByPercentage = useCallback(
-    (percentage: BigNumber | null) => {
-      if (!percentage || !totalPositionSizeUsd?.gt(0)) {
+    (percentage: bigint | null) => {
+      if (!percentage || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
         return null;
       }
 
-      return totalPositionSizeUsd.mul(percentage).div(MAX_PERCENTAGE);
+      return bigMath.mulDiv(totalPositionSizeUsd, percentage, MAX_PERCENTAGE);
     },
     [totalPositionSizeUsd]
   );
@@ -114,14 +114,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
       const totalPercentageExcludingCurrent = entries
         .filter((ent) => ent.txnType !== "cancel")
-        .reduce(
-          (total, ent) => total.add(ent.id !== entry.id && ent.percentage?.value ? ent.percentage.value : 0),
-          BigNumber.from(0)
-        );
+        .reduce((total, ent) => total + (ent.id !== entry.id && ent.percentage?.value ? ent.percentage.value : 0n), 0n);
 
-      const remainingPercentage = MAX_PERCENTAGE.gt(totalPercentageExcludingCurrent)
-        ? MAX_PERCENTAGE.sub(totalPercentageExcludingCurrent)
-        : BigNumber.from(0);
+      const remainingPercentage =
+        MAX_PERCENTAGE > totalPercentageExcludingCurrent ? MAX_PERCENTAGE - totalPercentageExcludingCurrent : 0n;
 
       return recalculateEntryByField(entry, "percentage", { value: remainingPercentage });
     },
@@ -129,9 +125,9 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   );
 
   const addEntry = useCallback(() => {
-    const leftPercentage = MAX_PERCENTAGE.sub(totalPercentage);
+    const leftPercentage = MAX_PERCENTAGE - totalPercentage;
 
-    if (leftPercentage.gt(0)) {
+    if (leftPercentage > 0) {
       setEntries((prevEntries) => [
         ...prevEntries,
         recalculateEntryByField(
@@ -209,7 +205,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
   useEffect(() => {
-    if (enablePercentage && totalPositionSizeUsd && !totalPositionSizeUsd.eq(prevTotalPositionSizeUsd ?? 0)) {
+    if (enablePercentage && totalPositionSizeUsd && totalPositionSizeUsd != (prevTotalPositionSizeUsd ?? 0n)) {
       setEntries((prevEntries) => {
         const recalculatedEntries = prevEntries.map((entry) => {
           if (entry.txnType === "cancel") return entry;
@@ -245,6 +241,6 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     deleteEntry,
     reset,
     canAddEntry,
-    allowAddEntry: canAddEntry && totalPercentage.lte(MAX_PERCENTAGE),
+    allowAddEntry: canAddEntry && totalPercentage <= MAX_PERCENTAGE,
   };
 }

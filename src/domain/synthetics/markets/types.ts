@@ -1,5 +1,4 @@
 import { TokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -27,99 +26,99 @@ export type MarketInfo = Market & {
   shortToken: TokenData;
   indexToken: TokenData;
 
-  longPoolAmount: BigNumber;
-  shortPoolAmount: BigNumber;
+  longPoolAmount: bigint;
+  shortPoolAmount: bigint;
 
-  maxLongPoolAmount: BigNumber;
-  maxShortPoolAmount: BigNumber;
-  maxLongPoolAmountForDeposit: BigNumber;
-  maxShortPoolAmountForDeposit: BigNumber;
+  maxLongPoolAmount: bigint;
+  maxShortPoolAmount: bigint;
+  maxLongPoolAmountForDeposit: bigint;
+  maxShortPoolAmountForDeposit: bigint;
 
-  longPoolAmountAdjustment: BigNumber;
-  shortPoolAmountAdjustment: BigNumber;
+  longPoolAmountAdjustment: bigint;
+  shortPoolAmountAdjustment: bigint;
 
-  poolValueMax: BigNumber;
-  poolValueMin: BigNumber;
+  poolValueMax: bigint;
+  poolValueMin: bigint;
 
-  reserveFactorLong: BigNumber;
-  reserveFactorShort: BigNumber;
+  reserveFactorLong: bigint;
+  reserveFactorShort: bigint;
 
-  openInterestReserveFactorLong: BigNumber;
-  openInterestReserveFactorShort: BigNumber;
+  openInterestReserveFactorLong: bigint;
+  openInterestReserveFactorShort: bigint;
 
-  maxOpenInterestLong: BigNumber;
-  maxOpenInterestShort: BigNumber;
+  maxOpenInterestLong: bigint;
+  maxOpenInterestShort: bigint;
 
-  borrowingFactorLong: BigNumber;
-  borrowingFactorShort: BigNumber;
-  borrowingExponentFactorLong: BigNumber;
-  borrowingExponentFactorShort: BigNumber;
+  borrowingFactorLong: bigint;
+  borrowingFactorShort: bigint;
+  borrowingExponentFactorLong: bigint;
+  borrowingExponentFactorShort: bigint;
 
-  fundingFactor: BigNumber;
-  fundingExponentFactor: BigNumber;
-  fundingIncreaseFactorPerSecond: BigNumber;
-  fundingDecreaseFactorPerSecond: BigNumber;
-  thresholdForStableFunding: BigNumber;
-  thresholdForDecreaseFunding: BigNumber;
-  minFundingFactorPerSecond: BigNumber;
-  maxFundingFactorPerSecond: BigNumber;
+  fundingFactor: bigint;
+  fundingExponentFactor: bigint;
+  fundingIncreaseFactorPerSecond: bigint;
+  fundingDecreaseFactorPerSecond: bigint;
+  thresholdForStableFunding: bigint;
+  thresholdForDecreaseFunding: bigint;
+  minFundingFactorPerSecond: bigint;
+  maxFundingFactorPerSecond: bigint;
 
-  totalBorrowingFees: BigNumber;
+  totalBorrowingFees: bigint;
 
-  positionImpactPoolAmount: BigNumber;
-  minPositionImpactPoolAmount: BigNumber;
-  positionImpactPoolDistributionRate: BigNumber;
+  positionImpactPoolAmount: bigint;
+  minPositionImpactPoolAmount: bigint;
+  positionImpactPoolDistributionRate: bigint;
 
-  minCollateralFactor: BigNumber;
-  minCollateralFactorForOpenInterestLong: BigNumber;
-  minCollateralFactorForOpenInterestShort: BigNumber;
+  minCollateralFactor: bigint;
+  minCollateralFactorForOpenInterestLong: bigint;
+  minCollateralFactorForOpenInterestShort: bigint;
 
-  swapImpactPoolAmountLong: BigNumber;
-  swapImpactPoolAmountShort: BigNumber;
+  swapImpactPoolAmountLong: bigint;
+  swapImpactPoolAmountShort: bigint;
 
-  maxPnlFactorForTradersLong: BigNumber;
-  maxPnlFactorForTradersShort: BigNumber;
+  maxPnlFactorForTradersLong: bigint;
+  maxPnlFactorForTradersShort: bigint;
 
-  pnlLongMin: BigNumber;
-  pnlLongMax: BigNumber;
-  pnlShortMin: BigNumber;
-  pnlShortMax: BigNumber;
+  pnlLongMin: bigint;
+  pnlLongMax: bigint;
+  pnlShortMin: bigint;
+  pnlShortMax: bigint;
 
-  netPnlMin: BigNumber;
-  netPnlMax: BigNumber;
+  netPnlMin: bigint;
+  netPnlMax: bigint;
 
-  claimableFundingAmountLong?: BigNumber;
-  claimableFundingAmountShort?: BigNumber;
+  claimableFundingAmountLong?: bigint;
+  claimableFundingAmountShort?: bigint;
 
-  longInterestUsd: BigNumber;
-  shortInterestUsd: BigNumber;
-  longInterestInTokens: BigNumber;
-  shortInterestInTokens: BigNumber;
+  longInterestUsd: bigint;
+  shortInterestUsd: bigint;
+  longInterestInTokens: bigint;
+  shortInterestInTokens: bigint;
 
-  positionFeeFactorForPositiveImpact: BigNumber;
-  positionFeeFactorForNegativeImpact: BigNumber;
-  positionImpactFactorPositive: BigNumber;
-  positionImpactFactorNegative: BigNumber;
-  maxPositionImpactFactorPositive: BigNumber;
-  maxPositionImpactFactorNegative: BigNumber;
-  maxPositionImpactFactorForLiquidations: BigNumber;
-  positionImpactExponentFactor: BigNumber;
+  positionFeeFactorForPositiveImpact: bigint;
+  positionFeeFactorForNegativeImpact: bigint;
+  positionImpactFactorPositive: bigint;
+  positionImpactFactorNegative: bigint;
+  maxPositionImpactFactorPositive: bigint;
+  maxPositionImpactFactorNegative: bigint;
+  maxPositionImpactFactorForLiquidations: bigint;
+  positionImpactExponentFactor: bigint;
 
-  swapFeeFactorForPositiveImpact: BigNumber;
-  swapFeeFactorForNegativeImpact: BigNumber;
-  swapImpactFactorPositive: BigNumber;
-  swapImpactFactorNegative: BigNumber;
-  swapImpactExponentFactor: BigNumber;
+  swapFeeFactorForPositiveImpact: bigint;
+  swapFeeFactorForNegativeImpact: bigint;
+  swapImpactFactorPositive: bigint;
+  swapImpactFactorNegative: bigint;
+  swapImpactExponentFactor: bigint;
 
-  borrowingFactorPerSecondForLongs: BigNumber;
-  borrowingFactorPerSecondForShorts: BigNumber;
+  borrowingFactorPerSecondForLongs: bigint;
+  borrowingFactorPerSecondForShorts: bigint;
 
-  fundingFactorPerSecond: BigNumber;
+  fundingFactorPerSecond: bigint;
   longsPayShorts: boolean;
 
-  virtualPoolAmountForLongToken: BigNumber;
-  virtualPoolAmountForShortToken: BigNumber;
-  virtualInventoryForPositions: BigNumber;
+  virtualPoolAmountForLongToken: bigint;
+  virtualPoolAmountForShortToken: bigint;
+  virtualInventoryForPositions: bigint;
 
   virtualMarketId?: string;
   virtualLongTokenId?: string;
@@ -135,35 +134,35 @@ export type MarketsInfoData = {
 };
 
 export type MarketTokensAPRData = {
-  [marketTokenAddress: string]: BigNumber;
+  [marketTokenAddress: string]: bigint;
 };
 
 export type UserEarningsData = {
   byMarketAddress: {
     [marketTokenAddress: string]: {
-      total: BigNumber;
-      recent: BigNumber;
+      total: bigint;
+      recent: bigint;
     };
   };
 
   allMarkets: {
-    total: BigNumber;
-    recent: BigNumber;
-    expected365d: BigNumber;
+    total: bigint;
+    recent: bigint;
+    expected365d: bigint;
   };
 };
 
 export type ContractMarketPrices = {
   indexTokenPrice: {
-    min: BigNumber;
-    max: BigNumber;
+    min: bigint;
+    max: bigint;
   };
   longTokenPrice: {
-    min: BigNumber;
-    max: BigNumber;
+    min: bigint;
+    max: bigint;
   };
   shortTokenPrice: {
-    min: BigNumber;
-    max: BigNumber;
+    min: bigint;
+    max: bigint;
   };
 };

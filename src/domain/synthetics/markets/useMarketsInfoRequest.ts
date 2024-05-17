@@ -43,7 +43,6 @@ import {
   positionImpactPoolDistributionRateKey,
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { TokensData, useTokensDataRequest } from "../tokens";
@@ -408,39 +407,31 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           return acc;
         }
         const market = getByKey(marketsData, marketAddress)!;
-        const marketDivisor = market.isSameCollaterals ? BigNumber.from(2) : BN_ONE;
+        const marketDivisor = market.isSameCollaterals ? BigInt(2) : BN_ONE;
 
-        const longInterestUsingLongToken = BigNumber.from(
-          dataStoreValues.longInterestUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const longInterestUsingShortToken = BigNumber.from(
-          dataStoreValues.longInterestUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestUsingLongToken = BigNumber.from(
-          dataStoreValues.shortInterestUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestUsingShortToken = BigNumber.from(
-          dataStoreValues.shortInterestUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
+        const longInterestUsingLongToken =
+          BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;
+        const longInterestUsingShortToken =
+          BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]) / marketDivisor;
+        const shortInterestUsingLongToken =
+          BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]) / marketDivisor;
+        const shortInterestUsingShortToken =
+          BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]) / marketDivisor;
 
-        const longInterestUsd = longInterestUsingLongToken.add(longInterestUsingShortToken);
-        const shortInterestUsd = shortInterestUsingLongToken.add(shortInterestUsingShortToken);
+        const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
+        const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
 
-        const longInterestInTokensUsingLongToken = BigNumber.from(
-          dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const longInterestInTokensUsingShortToken = BigNumber.from(
-          dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestInTokensUsingLongToken = BigNumber.from(
-          dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]
-        ).div(marketDivisor);
-        const shortInterestInTokensUsingShortToken = BigNumber.from(
-          dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]
-        ).div(marketDivisor);
+        const longInterestInTokensUsingLongToken =
+          BigInt(dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+        const longInterestInTokensUsingShortToken =
+          BigInt(dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
+        const shortInterestInTokensUsingLongToken =
+          BigInt(dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+        const shortInterestInTokensUsingShortToken =
+          BigInt(dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
 
-        const longInterestInTokens = longInterestInTokensUsingLongToken.add(longInterestInTokensUsingShortToken);
-        const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
+        const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
+        const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
 
         const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
 
@@ -462,117 +453,90 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestUsd,
           longInterestInTokens,
           shortInterestInTokens,
-          longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]).div(marketDivisor),
-          shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]).div(marketDivisor),
-          maxLongPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
-          maxShortPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
-          maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]),
-          maxShortPoolAmount: BigNumber.from(dataStoreValues.maxShortPoolAmount.returnValues[0]),
-          longPoolAmountAdjustment: BigNumber.from(dataStoreValues.longPoolAmountAdjustment.returnValues[0]),
-          shortPoolAmountAdjustment: BigNumber.from(dataStoreValues.shortPoolAmountAdjustment.returnValues[0]),
-          poolValueMin: BigNumber.from(poolValueInfoMin.poolValue),
-          poolValueMax: BigNumber.from(poolValueInfoMax.poolValue),
-          reserveFactorLong: BigNumber.from(dataStoreValues.reserveFactorLong.returnValues[0]),
-          reserveFactorShort: BigNumber.from(dataStoreValues.reserveFactorShort.returnValues[0]),
-          openInterestReserveFactorLong: BigNumber.from(dataStoreValues.openInterestReserveFactorLong.returnValues[0]),
-          openInterestReserveFactorShort: BigNumber.from(
-            dataStoreValues.openInterestReserveFactorShort.returnValues[0]
-          ),
-          maxOpenInterestLong: BigNumber.from(dataStoreValues.maxOpenInterestLong.returnValues[0]),
-          maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]),
-          totalBorrowingFees: BigNumber.from(poolValueInfoMax.totalBorrowingFees),
-          positionImpactPoolAmount: BigNumber.from(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
-          minPositionImpactPoolAmount: BigNumber.from(dataStoreValues.minPositionImpactPoolAmount.returnValues[0]),
-          positionImpactPoolDistributionRate: BigNumber.from(
-            dataStoreValues.positionImpactPoolDistributionRate.returnValues[0]
-          ),
-          swapImpactPoolAmountLong: BigNumber.from(dataStoreValues.swapImpactPoolAmountLong.returnValues[0]),
-          swapImpactPoolAmountShort: BigNumber.from(dataStoreValues.swapImpactPoolAmountShort.returnValues[0]),
-          borrowingFactorLong: BigNumber.from(dataStoreValues.borrowingFactorLong.returnValues[0]),
-          borrowingFactorShort: BigNumber.from(dataStoreValues.borrowingFactorShort.returnValues[0]),
-          borrowingExponentFactorLong: BigNumber.from(dataStoreValues.borrowingExponentFactorLong.returnValues[0]),
-          borrowingExponentFactorShort: BigNumber.from(dataStoreValues.borrowingExponentFactorShort.returnValues[0]),
-          fundingFactor: BigNumber.from(dataStoreValues.fundingFactor.returnValues[0]),
-          fundingExponentFactor: BigNumber.from(dataStoreValues.fundingExponentFactor.returnValues[0]),
-          fundingIncreaseFactorPerSecond: BigNumber.from(
-            dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0]
-          ),
-          fundingDecreaseFactorPerSecond: BigNumber.from(
-            dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0]
-          ),
-          thresholdForDecreaseFunding: BigNumber.from(dataStoreValues.thresholdForDecreaseFunding.returnValues[0]),
-          thresholdForStableFunding: BigNumber.from(dataStoreValues.thresholdForStableFunding.returnValues[0]),
-          minFundingFactorPerSecond: BigNumber.from(dataStoreValues.minFundingFactorPerSecond.returnValues[0]),
-          maxFundingFactorPerSecond: BigNumber.from(dataStoreValues.maxFundingFactorPerSecond.returnValues[0]),
-          pnlLongMax: BigNumber.from(poolValueInfoMax.longPnl),
-          pnlLongMin: BigNumber.from(poolValueInfoMin.longPnl),
-          pnlShortMax: BigNumber.from(poolValueInfoMax.shortPnl),
-          pnlShortMin: BigNumber.from(poolValueInfoMin.shortPnl),
-          netPnlMax: BigNumber.from(poolValueInfoMax.netPnl),
-          netPnlMin: BigNumber.from(poolValueInfoMin.netPnl),
+          longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
+          shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
+          maxLongPoolAmountForDeposit: dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0],
+          maxShortPoolAmountForDeposit: dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0],
+          maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
+          maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
+          longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],
+          shortPoolAmountAdjustment: dataStoreValues.shortPoolAmountAdjustment.returnValues[0],
+          poolValueMin: poolValueInfoMin.poolValue,
+          poolValueMax: poolValueInfoMax.poolValue,
+          reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
+          reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
+          openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],
+          openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
+          maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
+          maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+          totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
+          positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
+          minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
+          positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
+          swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
+          swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
+          borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
+          borrowingFactorShort: dataStoreValues.borrowingFactorShort.returnValues[0],
+          borrowingExponentFactorLong: dataStoreValues.borrowingExponentFactorLong.returnValues[0],
+          borrowingExponentFactorShort: dataStoreValues.borrowingExponentFactorShort.returnValues[0],
+          fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
+          fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
+          fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+          fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
+          thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
+          thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
+          minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
+          maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+          pnlLongMax: poolValueInfoMax.longPnl,
+          pnlLongMin: poolValueInfoMin.longPnl,
+          pnlShortMax: poolValueInfoMax.shortPnl,
+          pnlShortMin: poolValueInfoMin.shortPnl,
+          netPnlMax: poolValueInfoMax.netPnl,
+          netPnlMin: poolValueInfoMin.netPnl,
 
-          maxPnlFactorForTradersLong: BigNumber.from(dataStoreValues.maxPnlFactorForTradersLong.returnValues[0]),
-          maxPnlFactorForTradersShort: BigNumber.from(dataStoreValues.maxPnlFactorForTradersShort.returnValues[0]),
+          maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
+          maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
 
-          minCollateralFactor: BigNumber.from(dataStoreValues.minCollateralFactor.returnValues[0]),
-          minCollateralFactorForOpenInterestLong: BigNumber.from(
-            dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0]
-          ),
+          minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+          minCollateralFactorForOpenInterestLong:
+            dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
 
-          minCollateralFactorForOpenInterestShort: BigNumber.from(
-            dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0]
-          ),
+          minCollateralFactorForOpenInterestShort:
+            dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
 
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountLong?.returnValues[0]).div(marketDivisor)
+            ? dataStoreValues.claimableFundingAmountLong?.returnValues[0] / marketDivisor
             : undefined,
 
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-            ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0]).div(marketDivisor)
+            ? dataStoreValues.claimableFundingAmountShort?.returnValues[0] / marketDivisor
             : undefined,
 
-          positionFeeFactorForPositiveImpact: BigNumber.from(
-            dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0]
-          ),
-          positionFeeFactorForNegativeImpact: BigNumber.from(
-            dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0]
-          ),
-          positionImpactFactorPositive: BigNumber.from(dataStoreValues.positionImpactFactorPositive.returnValues[0]),
-          positionImpactFactorNegative: BigNumber.from(dataStoreValues.positionImpactFactorNegative.returnValues[0]),
-          maxPositionImpactFactorPositive: BigNumber.from(
-            dataStoreValues.maxPositionImpactFactorPositive.returnValues[0]
-          ),
-          maxPositionImpactFactorNegative: BigNumber.from(
-            dataStoreValues.maxPositionImpactFactorNegative.returnValues[0]
-          ),
-          maxPositionImpactFactorForLiquidations: BigNumber.from(
-            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0]
-          ),
-          positionImpactExponentFactor: BigNumber.from(dataStoreValues.positionImpactExponentFactor.returnValues[0]),
-          swapFeeFactorForPositiveImpact: BigNumber.from(
-            dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0]
-          ),
-          swapFeeFactorForNegativeImpact: BigNumber.from(
-            dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0]
-          ),
-          swapImpactFactorPositive: BigNumber.from(dataStoreValues.swapImpactFactorPositive.returnValues[0]),
-          swapImpactFactorNegative: BigNumber.from(dataStoreValues.swapImpactFactorNegative.returnValues[0]),
-          swapImpactExponentFactor: BigNumber.from(dataStoreValues.swapImpactExponentFactor.returnValues[0]),
+          positionFeeFactorForPositiveImpact: dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0],
+          positionFeeFactorForNegativeImpact: dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0],
+          positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
+          positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
+          maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorForLiquidations:
+            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+          positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
+          swapFeeFactorForPositiveImpact: dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0],
+          swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
+          swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
+          swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
+          swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
 
-          borrowingFactorPerSecondForLongs: BigNumber.from(
-            readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs
-          ),
+          borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
 
-          borrowingFactorPerSecondForShorts: BigNumber.from(
-            readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts
-          ),
+          borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
 
-          fundingFactorPerSecond: BigNumber.from(nextFunding.fundingFactorPerSecond),
+          fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
           longsPayShorts: nextFunding.longsPayShorts,
 
-          virtualPoolAmountForLongToken: BigNumber.from(virtualInventory.virtualPoolAmountForLongToken),
-          virtualPoolAmountForShortToken: BigNumber.from(virtualInventory.virtualPoolAmountForShortToken),
-          virtualInventoryForPositions: BigNumber.from(virtualInventory.virtualInventoryForPositions),
+          virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
+          virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
+          virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
 
           virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
           virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],

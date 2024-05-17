@@ -6,7 +6,7 @@ import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type Props = {
   chainId: number;
@@ -30,10 +30,10 @@ export default function NoLiquidityErrorModal({
   setModalError,
 }: Props) {
   const nativeToken = getNativeToken(chainId);
-  const inputCurrency = fromToken.address === AddressZero ? nativeToken.symbol : fromToken.address;
+  const inputCurrency = fromToken.address === ZeroAddress ? nativeToken.symbol : fromToken.address;
   let outputCurrency;
   if (isLong) {
-    outputCurrency = toToken.address === AddressZero ? nativeToken.symbol : toToken.address;
+    outputCurrency = toToken.address === ZeroAddress ? nativeToken.symbol : toToken.address;
   } else {
     outputCurrency = shortCollateralToken.address;
   }

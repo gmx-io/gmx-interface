@@ -1,4 +1,4 @@
-import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, WebSocketProvider } from "ethers";
 import { isDevelopment } from "config/env";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useChainId } from "lib/chains";
@@ -64,7 +64,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      function nextHealthCheck() {
+      async function nextHealthCheck() {
         if (!isWebsocketProvider(wsProvider)) {
           return;
         }
@@ -74,11 +74,13 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
 
         if (isDevelopment() && isReconnectingIntervalPassed) {
+          let subsCount = 0;
+          wsProvider._forEachSubscriber(() => subsCount++);
           // eslint-disable-next-line no-console
           console.log(
-            `ws provider health check, state: ${wsProvider._websocket.readyState}, subs: ${
-              Object.keys(wsProvider._subs).length
-            }`
+            `ws provider health check, state: ${
+              wsProvider.websocket.readyState
+            }, subs: ${await wsProvider.listenerCount()}`
           );
         }
 

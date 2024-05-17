@@ -49,8 +49,8 @@ export default function BeginAccountTransfer() {
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
-  let parsedReceiver = ethers.constants.AddressZero;
-  if (ethers.utils.isAddress(receiver)) {
+  let parsedReceiver = ethers.ZeroAddress;
+  if (ethers.isAddress(receiver)) {
     parsedReceiver = receiver;
   }
 
@@ -143,20 +143,20 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance && gmxStaked && gmxStaked.gt(gmxAllowance);
+  const needApproval = gmxAllowance && gmxStaked && gmxStaked > gmxAllowance;
 
-  const hasVestedGmx = gmxVesterBalance?.gt(0);
-  const hasVestedGlp = glpVesterBalance?.gt(0);
-  const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
+  const hasVestedGmx = gmxVesterBalance > 0;
+  const hasVestedGlp = glpVesterBalance > 0;
+  const hasVestedAffiliate = affiliateVesterBalance > 0;
   const hasStakedGmx =
-    (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0)) ||
-    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards.gt(0));
+    (cumulativeGmxRewards && cumulativeGmxRewards > 0) ||
+    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards > 0) ||
+    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards > 0);
   const hasStakedGlp =
-    (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0)) ||
-    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards.gt(0));
-  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
+    (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
+    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0) ||
+    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards > 0);
+  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.ZeroAddress;
 
   const getError = () => {
     if (!account) {
@@ -171,7 +171,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
     }
-    if (!ethers.utils.isAddress(receiver)) {
+    if (!ethers.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
 
@@ -285,11 +285,13 @@ export default function BeginAccountTransfer() {
   const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
   const needFeeGmxTrackerApproval = useMemo(
     () =>
-      parsedReceiver &&
-      feeGmxTrackerBalance &&
-      parsedReceiver !== zeroAddress &&
-      tokensAllowanceData &&
-      getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance),
+      Boolean(
+        parsedReceiver &&
+          feeGmxTrackerBalance &&
+          parsedReceiver !== zeroAddress &&
+          tokensAllowanceData &&
+          getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)
+      ),
     [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
   );
 

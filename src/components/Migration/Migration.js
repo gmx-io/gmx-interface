@@ -29,8 +29,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { bigMath } from "lib/bigmath";
 
-const { MaxUint256, AddressZero } = ethers.constants;
+const { MaxUint256, ZeroAddress } = ethers;
 
 const precision = 1000000;
 const decimals = 6;
@@ -119,7 +120,7 @@ function MigrationModal(props) {
   }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
-  const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval = tokenAllowance && amount && amount > tokenAllowance;
 
   let baseAmount;
   let bonusAmount;
@@ -130,20 +131,20 @@ function MigrationModal(props) {
   let totalAmountUsd;
 
   if (amount) {
-    baseAmount = amount.mul(token.price).div(gmxPrice);
-    bonusAmount = baseAmount.mul(token.bonus).div(100);
-    totalAmount = baseAmount.add(bonusAmount);
+    baseAmount = bigMath.mulDiv(amount, token.price, gmxPrice);
+    bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100n);
+    totalAmount = baseAmount + bonusAmount;
 
-    baseAmountUsd = baseAmount.mul(gmxPrice);
-    bonusAmountUsd = bonusAmount.mul(gmxPrice);
-    totalAmountUsd = totalAmount.mul(gmxPrice);
+    baseAmountUsd = baseAmount * gmxPrice;
+    bonusAmountUsd = bonusAmount * gmxPrice;
+    totalAmountUsd = totalAmount * gmxPrice;
   }
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -321,14 +322,14 @@ export default function Migration() {
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
 
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
-    ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [iouTokenAddresses]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
-    ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
     }
@@ -346,15 +347,15 @@ export default function Migration() {
   let totalMigratedUsd;
 
   if (iouBalances) {
-    gmxBalance = bigNumberify(0);
-    totalMigratedGmx = bigNumberify(0);
+    gmxBalance = 0n;
+    totalMigratedGmx = 0n;
 
     for (let i = 0; i < iouBalances.length / 2; i++) {
-      gmxBalance = gmxBalance.add(iouBalances[i * 2]);
-      totalMigratedGmx = totalMigratedGmx.add(iouBalances[i * 2 + 1]);
+      gmxBalance = gmxBalance + iouBalances[i * 2];
+      totalMigratedGmx = totalMigratedGmx + iouBalances[i * 2 + 1];
     }
 
-    totalMigratedUsd = totalMigratedGmx.mul(gmxPrice);
+    totalMigratedUsd = totalMigratedGmx * gmxPrice;
   }
 
   useEffect(() => {
@@ -408,7 +409,7 @@ export default function Migration() {
       <div className="Migration-cards">
         {tokens.map((token, index) => {
           const { cap, price, bonus } = token;
-          const hasCap = cap.lt(MaxUint256);
+          const hasCap = cap < MaxUint256;
           return (
             <div className={cx("border", "App-card", { primary: index === 0 })} key={index}>
               <div className="Stake-card-title App-card-title">{token.name}</div>

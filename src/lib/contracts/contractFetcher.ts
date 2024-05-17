@@ -8,7 +8,7 @@ export const contractFetcher =
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = getProvider(signer, chainId);
 
-    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+    const method = ethers.isAddress(arg0) ? arg1 : arg0;
 
     const contractCall = getContractCall({
       provider,
@@ -75,7 +75,7 @@ export const contractFetcher =
   };
 
 function getContractCall({ provider, contractInfo, arg0, arg1, method, params, additionalArgs }) {
-  if (ethers.utils.isAddress(arg0)) {
+  if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
 

@@ -1,8 +1,7 @@
-import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { useCallback, useState } from "react";
 
-function numberToString(value: BigNumber | null, decimals: number, displayDecimals: number) {
+function numberToString(value: bigint | null, decimals: number, displayDecimals: number) {
   if (value === null) return "";
   return formatAmount(value, decimals, displayDecimals);
 }
@@ -29,23 +28,20 @@ function stringToNumber(value: string, decimals: number) {
   fraction = (fraction ?? "").slice(0, decimals);
 
   const fractionLength = fraction.length;
-  const multiplier = BigNumber.from(10).pow(fractionLength);
+  const multiplier = 10n ** BigInt(fractionLength);
   try {
-    return BigNumber.from(int || 0)
-      .mul(multiplier)
-      .add(BigNumber.from(fraction || 0))
-      .mul(BigNumber.from(10).pow(decimals - fractionLength));
+    return (BigInt(int || 0) * multiplier + BigInt(fraction || 0)) * 10n ** BigInt(decimals - fractionLength);
   } catch (e) {
     return null;
   }
 }
 
-export function useBigNumberInput(initialValue: BigNumber | null, decimals: number, displayDecimals: number) {
+export function useBigNumberInput(initialValue: bigint | null, decimals: number, displayDecimals: number) {
   const [value, setValue] = useState(initialValue);
   const [displayValue, setDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
 
   const setValueWrapped = useCallback(
-    (newValue: BigNumber | null) => {
+    (newValue: bigint | null) => {
       setValue(newValue);
       setDisplayValue(numberToString(newValue, decimals, displayDecimals));
     },

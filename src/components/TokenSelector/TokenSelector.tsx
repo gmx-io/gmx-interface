@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode, useMemo } from "react";
+import { useState, useEffect, ReactNode, useMemo } from "react";
 import cx from "classnames";
 
 import { BiChevronDown } from "react-icons/bi";
@@ -8,13 +8,13 @@ import Modal from "../Modal/Modal";
 import dropDownIcon from "img/DROP_DOWN.svg";
 import "./TokenSelector.scss";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { bigMath } from "lib/bigmath";
 
 type TokenState = {
   disabled?: boolean;
@@ -29,7 +29,7 @@ type Props = {
   tokens: Token[];
   infoTokens?: InfoTokens;
   showMintingCap?: boolean;
-  mintingCap?: BigNumber;
+  mintingCap?: bigint;
   disabled?: boolean;
   selectedTokenLabel?: ReactNode | string;
   showBalances?: boolean;
@@ -98,7 +98,7 @@ export default function TokenSelector(props: Props) {
     for (const token of filteredTokens) {
       const info = infoTokens?.[token.address];
       if (showBalances) {
-        if (info?.balance?.gt(0)) {
+        if (info?.balance && info?.balance > 0) {
           tokensWithBalance.push(token);
         } else {
           tokensWithoutBalance.push(token);
@@ -116,7 +116,9 @@ export default function TokenSelector(props: Props) {
         const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
         const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
 
-        return bBalanceUsd?.sub(aBalanceUsd || 0).gt(0) ? 1 : -1;
+        if (bBalanceUsd === undefined) return -1;
+
+        return bBalanceUsd - (aBalanceUsd ?? 0n) > 0 ? 1 : -1;
       }
       return 0;
     });
@@ -184,14 +186,14 @@ export default function TokenSelector(props: Props) {
             let mintAmount;
             let balance = info.balance;
             if (showMintingCap && mintingCap && info.usdgAmount) {
-              mintAmount = mintingCap.sub(info.usdgAmount);
+              mintAmount = mintingCap - info.usdgAmount;
             }
-            if (mintAmount && mintAmount.lt(0)) {
-              mintAmount = bigNumberify(0);
+            if (mintAmount && mintAmount < 0) {
+              mintAmount = 0n;
             }
-            let balanceUsd;
+            let balanceUsd: bigint | undefined = undefined;
             if (balance && info.maxPrice) {
-              balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals));
+              balanceUsd = bigMath.mulDiv(balance, info.maxPrice, expandDecimals(1, token.decimals));
             }
 
             const tokenState = getTokenState(info) || {};
@@ -223,16 +225,17 @@ export default function TokenSelector(props: Props) {
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {showBalances && balance && (
+                  {(showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
-                      {balance.eq(0) && "-"}
+                      {balance > 0 && formatAmount(balance, token.decimals, 4, true)}
+                      {balance == 0n && "-"}
                     </div>
-                  )}
+                  )) ||
+                    null}
                   <span className="text-accent">
                     {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
                     {showMintingCap && !mintAmount && <div>-</div>}
-                    {!showMintingCap && showBalances && balanceUsd && balanceUsd.gt(0) && (
+                    {!showMintingCap && showBalances && balanceUsd && balanceUsd > 0 && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
                   </span>

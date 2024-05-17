@@ -1,6 +1,5 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { BigNumber } from "ethers";
 import {
   selectTradeboxTradeFlags,
   selectTradeboxIncreasePositionAmounts,
@@ -64,10 +63,7 @@ export const makeSelectConfirmationBoxSidecarOrdersTotalPercentage = createSelec
 
       return entries
         .filter((entry) => entry.txnType !== "cancel")
-        .reduce<BigNumber>(
-          (total, entry) => (entry.percentage?.value ? total.add(entry.percentage.value) : total),
-          BigNumber.from(0)
-        );
+        .reduce<bigint>((total, entry) => (entry.percentage?.value ? total + entry.percentage.value : total), 0n);
     })
 );
 
@@ -76,19 +72,19 @@ export const selectConfirmationBoxSidecarOrdersTotalSizeUsd = createSelector((q)
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
   const limitEntries = q(selectConfirmationBoxSidecarOrdersLimitEntries);
 
-  let result = BigNumber.from(0);
+  let result = 0n;
 
   if (existingPosition?.sizeInUsd) {
-    result = result.add(existingPosition?.sizeInUsd ?? 0);
+    result = result + (existingPosition?.sizeInUsd ?? 0n);
   }
 
   if (increaseAmounts?.sizeDeltaUsd) {
-    result = result.add(increaseAmounts?.sizeDeltaUsd ?? 0);
+    result = result + (increaseAmounts?.sizeDeltaUsd ?? 0n);
   }
 
   limitEntries?.forEach((e) => {
     if (e.txnType !== "cancel") {
-      result = result.add(e.sizeUsd.value ?? 0);
+      result = result + (e.sizeUsd.value ?? 0n);
     }
   });
 

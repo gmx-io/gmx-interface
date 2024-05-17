@@ -1,7 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
@@ -36,12 +35,12 @@ export function useAvailableTokenOptions(
     const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
     const indexTokens = new Set<TokenData>();
-    const indexTokensWithPoolValue: { [address: string]: BigNumber } = {};
+    const indexTokensWithPoolValue: { [address: string]: bigint } = {};
 
     const collaterals = new Set<TokenData>();
 
-    const longTokensWithPoolValue: { [address: string]: BigNumber } = {};
-    const shortTokensWithPoolValue: { [address: string]: BigNumber } = {};
+    const longTokensWithPoolValue: { [address: string]: bigint } = {};
+    const shortTokensWithPoolValue: { [address: string]: bigint } = {};
 
     for (const marketInfo of marketsInfo) {
       const longToken = marketInfo.longToken;
@@ -71,25 +70,22 @@ export function useAvailableTokenOptions(
         getMidPrice(marketInfo.shortToken.prices)
       )!;
 
-      longTokensWithPoolValue[longToken.address] = (
-        longTokensWithPoolValue[longToken.address] || BigNumber.from(0)
-      ).add(longPoolAmountUsd);
+      longTokensWithPoolValue[longToken.address] =
+        (longTokensWithPoolValue[longToken.address] || 0n) + longPoolAmountUsd;
 
-      shortTokensWithPoolValue[shortToken.address] = (
-        shortTokensWithPoolValue[shortToken.address] || BigNumber.from(0)
-      ).add(shortPoolAmountUsd);
+      shortTokensWithPoolValue[shortToken.address] =
+        (shortTokensWithPoolValue[shortToken.address] || 0n) + shortPoolAmountUsd;
 
       if (!marketInfo.isSpotOnly) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
-        indexTokensWithPoolValue[indexToken.address] = (
-          indexTokensWithPoolValue[indexToken.address] || BigNumber.from(0)
-        ).add(marketInfo.poolValueMax);
+        indexTokensWithPoolValue[indexToken.address] =
+          (indexTokensWithPoolValue[indexToken.address] || 0n) + marketInfo.poolValueMax;
       }
     }
 
     const sortedIndexTokensWithPoolValue = Object.keys(indexTokensWithPoolValue).sort((a, b) => {
-      return indexTokensWithPoolValue[b].gt(indexTokensWithPoolValue[a]) ? 1 : -1;
+      return indexTokensWithPoolValue[b] > indexTokensWithPoolValue[a] ? 1 : -1;
     });
 
     const sortedAllMarkets = Array.from(allMarkets).sort((a, b) => {
@@ -100,11 +96,11 @@ export function useAvailableTokenOptions(
     });
 
     const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
-      return longTokensWithPoolValue[b].gt(longTokensWithPoolValue[a]) ? 1 : -1;
+      return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
     });
 
     const sortedShortTokens = Object.keys(shortTokensWithPoolValue).sort((a, b) => {
-      return shortTokensWithPoolValue[b].gt(shortTokensWithPoolValue[a]) ? 1 : -1;
+      return shortTokensWithPoolValue[b] > shortTokensWithPoolValue[a] ? 1 : -1;
     });
 
     const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);

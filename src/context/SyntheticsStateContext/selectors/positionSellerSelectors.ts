@@ -132,11 +132,11 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
 
   if (!decreaseAmountsWithKeepLeverage) return false;
 
-  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd >= position.sizeInUsd) return false;
 
   const minCollateralFactor = getMinCollateralFactorForPosition(
     position,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 
   if (!minCollateralFactor) return false;
@@ -146,7 +146,7 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,
     minCollateralFactor,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 });
 

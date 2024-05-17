@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
 
@@ -8,7 +8,7 @@ import OrderBook from "abis/OrderBook.json";
 
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains";
 import { getServerBaseUrl } from "config/backend";
-import { getMostAbundantStableToken } from "domain/tokens";
+import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { getProvider } from "./rpc";
 import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
@@ -17,10 +17,10 @@ import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
 import { isLocal } from "config/env";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import useWallet from "./wallets/useWallet";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -30,10 +30,10 @@ export const MIN_PROFIT_TIME = 0;
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
-export const SECONDS_PER_YEAR = 31536000;
+export const SECONDS_PER_YEAR = 31536000n;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
-export const DEPOSIT_FEE = 30;
+export const DEPOSIT_FEE = 30n;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
@@ -73,10 +73,13 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;
 
+// FIXME check me
 export function deserialize(data) {
   for (const [key, value] of Object.entries(data) as any) {
-    if (value._type === "BigNumber") {
-      data[key] = bigNumberify(value.value);
+    try {
+      data[key] = BigInt(value);
+    } catch (err) {
+      // not a bigint
     }
   }
   return data;
@@ -86,18 +89,19 @@ export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
 }
 
-export function getMarginFee(sizeDelta) {
+export function getMarginFee(sizeDelta: bigint) {
   if (!sizeDelta) {
-    return bigNumberify(0);
+    return 0n;
   }
-  const afterFeeUsd = sizeDelta.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-  return sizeDelta.sub(afterFeeUsd);
+  const afterFeeUsd =
+    (sizeDelta * (BASIS_POINTS_DIVISOR_BIGINT - BigInt(MARGIN_FEE_BASIS_POINTS))) / BASIS_POINTS_DIVISOR_BIGINT;
+  return sizeDelta - afterFeeUsd;
 }
 
 export function isTriggerRatioInverted(fromTokenInfo, toTokenInfo) {
   if (!toTokenInfo || !fromTokenInfo) return false;
   if (toTokenInfo.isStable || toTokenInfo.isUsdg) return true;
-  if (toTokenInfo.maxPrice) return toTokenInfo.maxPrice.lt(fromTokenInfo.maxPrice);
+  if (toTokenInfo.maxPrice) return toTokenInfo.maxPrice < fromTokenInfo.maxPrice;
   return false;
 }
 
@@ -106,22 +110,22 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
     return;
   }
   if (inverted) {
-    return tokenAInfo.minPrice.mul(PRECISION).div(tokenBInfo.maxPrice);
+    return (tokenAInfo.minPrice * PRECISION) / tokenBInfo.maxPrice;
   }
-  return tokenBInfo.maxPrice.mul(PRECISION).div(tokenAInfo.minPrice);
+  return (tokenBInfo.maxPrice * PRECISION) / tokenAInfo.minPrice;
 }
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {
   if ((tokenB.isStable || tokenB.isUsdg) && !tokenA.isStable) return true;
-  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice)) return true;
+  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice < tokenA.maxPrice) return true;
   return false;
 }
 
 export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
-  if (!rate || rate.isZero() || !tokenA || !tokenB) return "...";
+  if (!rate || rate == 0 || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
-    rate = PRECISION.mul(PRECISION).div(rate);
+    rate = (PRECISION * PRECISION) / rate;
   }
   const rateValue = formatAmount(rate, USD_DECIMALS, tokenA.isStable || tokenA.isUsdg ? 2 : 4, true);
   if (opts.omitSymbols) {
@@ -130,80 +134,78 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
   return `${rateValue} ${tokenA.symbol} / ${tokenB.symbol}`;
 }
 
-const adjustForDecimalsFactory = (n) => (number) => {
+const adjustForDecimalsFactory = (n: number) => (number: bigint) => {
   if (n === 0) {
     return number;
   }
   if (n > 0) {
-    return number.mul(expandDecimals(1, n));
+    return number * expandDecimals(1, n);
   }
-  return number.div(expandDecimals(1, -n));
+  return number / expandDecimals(1, -n);
 };
 
-export function adjustForDecimals(amount, divDecimals, mulDecimals) {
-  return amount.mul(expandDecimals(1, mulDecimals)).div(expandDecimals(1, divDecimals));
+export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecimals: number) {
+  return (amount * expandDecimals(1, mulDecimals)) / expandDecimals(1, divDecimals);
 }
 
-export function getTargetUsdgAmount(token, usdgSupply, totalTokenWeights) {
+export function getTargetUsdgAmount(token, usdgSupply: bigint, totalTokenWeights): bigint | undefined {
   if (!token || !token.weight || !usdgSupply) {
     return;
   }
 
-  if (usdgSupply.eq(0)) {
-    return bigNumberify(0);
+  if (usdgSupply == 0n) {
+    return 0n;
   }
 
-  return token.weight.mul(usdgSupply).div(totalTokenWeights);
+  return (token.weight * usdgSupply) / totalTokenWeights;
 }
 
 export function getFeeBasisPoints(
-  token,
-  tokenUsdgAmount,
-  usdgDelta,
-  feeBasisPoints,
-  taxBasisPoints,
-  increment,
-  usdgSupply,
+  token: TokenInfo,
+  tokenUsdgAmount: bigint | undefined,
+  usdgDelta: bigint,
+  feeBasisPoints: number | bigint,
+  taxBasisPoints: number | bigint,
+  increment: boolean,
+  usdgSupply: bigint,
   totalTokenWeights
-) {
+): number {
   if (!token || !tokenUsdgAmount || !usdgSupply || !totalTokenWeights) {
     return 0;
   }
 
-  feeBasisPoints = bigNumberify(feeBasisPoints);
-  taxBasisPoints = bigNumberify(taxBasisPoints);
+  feeBasisPoints = BigInt(feeBasisPoints);
+  taxBasisPoints = BigInt(taxBasisPoints);
 
   const initialAmount = tokenUsdgAmount;
-  let nextAmount = initialAmount.add(usdgDelta);
+  let nextAmount = initialAmount + usdgDelta;
   if (!increment) {
-    nextAmount = usdgDelta.gt(initialAmount) ? bigNumberify(0) : initialAmount.sub(usdgDelta);
+    nextAmount = usdgDelta > initialAmount ? 0n : initialAmount - usdgDelta;
   }
 
   const targetAmount = getTargetUsdgAmount(token, usdgSupply, totalTokenWeights);
-  if (!targetAmount || targetAmount.eq(0)) {
-    return feeBasisPoints.toNumber();
+  if (!targetAmount) {
+    return Number(feeBasisPoints);
   }
 
-  const initialDiff = initialAmount.gt(targetAmount)
-    ? initialAmount.sub(targetAmount)
-    : targetAmount.sub(initialAmount);
-  const nextDiff = nextAmount.gt(targetAmount) ? nextAmount.sub(targetAmount) : targetAmount.sub(nextAmount);
+  const initialDiff = initialAmount > targetAmount ? initialAmount - targetAmount : targetAmount - initialAmount;
+  const nextDiff = nextAmount > targetAmount ? nextAmount - targetAmount : targetAmount - nextAmount;
 
-  if (nextDiff.lt(initialDiff)) {
-    const rebateBps = taxBasisPoints.mul(initialDiff).div(targetAmount);
-    return rebateBps.gt(feeBasisPoints) ? 0 : feeBasisPoints.sub(rebateBps).toNumber();
+  if (nextDiff < initialDiff) {
+    const rebateBps = (taxBasisPoints * initialDiff) / targetAmount;
+    return rebateBps > feeBasisPoints ? 0 : Number(feeBasisPoints - rebateBps);
   }
 
-  let averageDiff = initialDiff.add(nextDiff).div(2);
-  if (averageDiff.gt(targetAmount)) {
+  let averageDiff = (initialDiff + nextDiff) / 2n;
+  if (averageDiff > targetAmount) {
     averageDiff = targetAmount;
   }
-  const taxBps = taxBasisPoints.mul(averageDiff).div(targetAmount);
-  return feeBasisPoints.add(taxBps).toNumber();
+  const taxBps = (taxBasisPoints * averageDiff) / targetAmount;
+  return Number(feeBasisPoints + taxBps);
 }
 
 export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
-  const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
+  const defaultValue = { amount: 0n, feeBasisPoints: 0 };
   if (!fromAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
@@ -213,10 +215,10 @@ export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpP
     return defaultValue;
   }
 
-  let glpAmount = fromAmount.mul(swapToken.minPrice).div(glpPrice);
+  let glpAmount: bigint = (fromAmount * swapToken.minPrice) / glpPrice;
   glpAmount = adjustForDecimals(glpAmount, swapToken.decimals, USDG_DECIMALS);
 
-  let usdgAmount = fromAmount.mul(swapToken.minPrice).div(PRECISION);
+  let usdgAmount = (fromAmount * swapToken.minPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, swapToken.decimals, USDG_DECIMALS);
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
@@ -229,13 +231,13 @@ export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpP
     totalTokenWeights
   );
 
-  glpAmount = glpAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+  glpAmount = (glpAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT;
 
   return { amount: glpAmount, feeBasisPoints };
 }
 
 export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
-  const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
+  const defaultValue = { amount: 0n, feeBasisPoints: 0 };
   if (!toAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
@@ -245,21 +247,21 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
     return defaultValue;
   }
 
-  let glpAmount = toAmount.mul(swapToken.maxPrice).div(glpPrice);
+  let glpAmount = (toAmount * swapToken.maxPrice) / glpPrice;
   glpAmount = adjustForDecimals(glpAmount, swapToken.decimals, USDG_DECIMALS);
 
-  let usdgAmount = toAmount.mul(swapToken.maxPrice).div(PRECISION);
+  let usdgAmount = (toAmount * swapToken.maxPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, swapToken.decimals, USDG_DECIMALS);
 
   // in the Vault contract, the USDG supply is reduced before the fee basis points
   // is calculated
-  usdgSupply = usdgSupply.sub(usdgAmount);
+  usdgSupply = usdgSupply - usdgAmount;
 
   // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
   // is calculated
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
-    swapToken?.usdgAmount?.sub(usdgAmount),
+    swapToken?.usdgAmount === undefined ? undefined : swapToken.usdgAmount - usdgAmount,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -268,13 +270,20 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
     totalTokenWeights
   );
 
-  glpAmount = glpAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints);
+  glpAmount = (glpAmount * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT - BigInt(feeBasisPoints));
 
   return { amount: glpAmount, feeBasisPoints };
 }
 
-export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
-  const defaultValue = { amount: bigNumberify(0) };
+export function getBuyGlpFromAmount(
+  toAmount,
+  fromTokenAddress,
+  infoTokens,
+  glpPrice: bigint,
+  usdgSupply,
+  totalTokenWeights
+) {
+  const defaultValue = { amount: 0n };
   if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
@@ -284,10 +293,10 @@ export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpP
     return defaultValue;
   }
 
-  let fromAmount = toAmount.mul(glpPrice).div(fromToken.minPrice);
+  let fromAmount = (toAmount * glpPrice) / fromToken.minPrice;
   fromAmount = adjustForDecimals(fromAmount, GLP_DECIMALS, fromToken.decimals);
 
-  const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
+  const usdgAmount = (toAmount * glpPrice) / PRECISION;
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
     fromToken.usdgAmount,
@@ -299,13 +308,20 @@ export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpP
     totalTokenWeights
   );
 
-  fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints);
+  fromAmount = (fromAmount * BASIS_POINTS_DIVISOR_BIGINT) / BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints);
 
   return { amount: fromAmount, feeBasisPoints };
 }
 
-export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
-  const defaultValue = { amount: bigNumberify(0) };
+export function getSellGlpToAmount(
+  toAmount,
+  fromTokenAddress,
+  infoTokens,
+  glpPrice: bigint,
+  usdgSupply,
+  totalTokenWeights
+) {
+  const defaultValue = { amount: 0n };
   if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
@@ -315,20 +331,20 @@ export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPr
     return defaultValue;
   }
 
-  let fromAmount = toAmount.mul(glpPrice).div(fromToken.maxPrice);
+  let fromAmount = (toAmount * glpPrice) / fromToken.maxPrice;
   fromAmount = adjustForDecimals(fromAmount, GLP_DECIMALS, fromToken.decimals);
 
-  const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
+  const usdgAmount = (toAmount * glpPrice) / PRECISION;
 
   // in the Vault contract, the USDG supply is reduced before the fee basis points
   // is calculated
-  usdgSupply = usdgSupply.sub(usdgAmount);
+  usdgSupply = usdgSupply - usdgAmount;
 
   // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
   // is calculated
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
-    fromToken?.usdgAmount?.sub(usdgAmount),
+    fromToken?.usdgAmount !== undefined ? fromToken.usdgAmount - usdgAmount : undefined,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -337,7 +353,7 @@ export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPr
     totalTokenWeights
   );
 
-  fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+  fromAmount = (fromAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT;
 
   return { amount: fromAmount, feeBasisPoints };
 }
@@ -349,12 +365,12 @@ export function getNextFromAmount(
   toTokenAddress,
   infoTokens,
   toTokenPriceUsd,
-  ratio,
+  ratio: bigint,
   usdgSupply,
   totalTokenWeights,
   forSwap
 ) {
-  const defaultValue = { amount: bigNumberify(0) };
+  const defaultValue = { amount: 0n };
 
   if (!toAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
     return defaultValue;
@@ -395,15 +411,14 @@ export function getNextFromAmount(
 
   const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals);
 
-  let fromAmountBasedOnRatio;
-  if (ratio && !ratio.isZero()) {
-    fromAmountBasedOnRatio = toAmount.mul(ratio).div(PRECISION);
+  let fromAmountBasedOnRatio = 0n;
+  if (ratio) {
+    fromAmountBasedOnRatio = (toAmount * ratio) / PRECISION;
   }
 
-  const fromAmount =
-    ratio && !ratio.isZero() ? fromAmountBasedOnRatio : toAmount.mul(toTokenMaxPrice).div(fromTokenMinPrice);
+  const fromAmount: bigint = ratio ? fromAmountBasedOnRatio : BigInt(toAmount * toTokenMaxPrice) / fromTokenMinPrice;
 
-  let usdgAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
+  let usdgAmount = (fromAmount * fromTokenMinPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
     fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
@@ -431,24 +446,26 @@ export function getNextFromAmount(
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
   return {
-    amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints)),
+    amount: adjustDecimals(
+      (fromAmount * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT - BigInt(feeBasisPoints))
+    ),
     feeBasisPoints,
   };
 }
 
 export function getNextToAmount(
-  chainId,
-  fromAmount,
-  fromTokenAddress,
-  toTokenAddress,
+  chainId: number,
+  fromAmount: bigint,
+  fromTokenAddress: string,
+  toTokenAddress: string,
   infoTokens,
-  toTokenPriceUsd,
-  ratio,
-  usdgSupply,
+  toTokenPriceUsd: bigint,
+  ratio: bigint,
+  usdgSupply: bigint,
   totalTokenWeights,
   forSwap
 ) {
-  const defaultValue = { amount: bigNumberify(0) };
+  const defaultValue = { amount: 0n };
   if (!fromAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
     return defaultValue;
   }
@@ -472,12 +489,12 @@ export function getNextToAmount(
   // or if the transaction involves doing a swap and opening / closing a position
   // otherwise use the contract price instead of realtime price for swaps
 
-  let fromTokenMinPrice;
+  let fromTokenMinPrice: undefined | bigint = 0n;
   if (fromToken) {
     fromTokenMinPrice = forSwap ? fromToken.contractMinPrice : fromToken.minPrice;
   }
 
-  let toTokenMaxPrice;
+  let toTokenMaxPrice: undefined | bigint = 0n;
   if (toToken) {
     toTokenMaxPrice = forSwap ? toToken.contractMaxPrice : toToken.maxPrice;
   }
@@ -488,44 +505,48 @@ export function getNextToAmount(
 
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
-  let toAmountBasedOnRatio = bigNumberify(0)!;
-  if (ratio && !ratio.isZero()) {
-    toAmountBasedOnRatio = fromAmount.mul(PRECISION).div(ratio);
+  let toAmountBasedOnRatio = 0n;
+  if (ratio) {
+    toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
 
   if (toTokenAddress === USDG_ADDRESS) {
     const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable);
 
-    if (ratio && !ratio.isZero()) {
+    if (ratio) {
       const toAmount = toAmountBasedOnRatio;
       return {
-        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        amount: adjustDecimals(
+          (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT
+        ),
         feeBasisPoints,
       };
     }
 
-    const toAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
+    const toAmount = (fromAmount * fromTokenMinPrice) / PRECISION;
+
     return {
-      amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+      amount: adjustDecimals((toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT),
       feeBasisPoints,
     };
   }
 
   if (fromTokenAddress === USDG_ADDRESS) {
     const redemptionValue = toToken.redemptionAmount
-      ?.mul(toTokenPriceUsd || toTokenMaxPrice)
-      .div(expandDecimals(1, toToken.decimals));
+      ? (toToken.redemptionAmount * (toTokenPriceUsd ?? toTokenMaxPrice)) / expandDecimals(1, toToken.decimals)
+      : undefined;
 
-    if (redemptionValue && redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
+    if (redemptionValue && redemptionValue > THRESHOLD_REDEMPTION_VALUE) {
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
 
-      const toAmount =
-        ratio && !ratio.isZero()
-          ? toAmountBasedOnRatio
-          : fromAmount.mul(toToken.redemptionAmount).div(expandDecimals(1, toToken.decimals));
+      const toAmount = ratio
+        ? toAmountBasedOnRatio
+        : (fromAmount * (toToken.redemptionAmount ?? 0n)) / expandDecimals(1, toToken.decimals);
 
       return {
-        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        amount: adjustDecimals(
+          (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT
+        ),
         feeBasisPoints,
       };
     }
@@ -533,14 +554,15 @@ export function getNextToAmount(
     const expectedAmount = fromAmount;
 
     const stableToken = getMostAbundantStableToken(chainId, infoTokens);
-    if (!stableToken?.availableAmount || stableToken.availableAmount.lt(expectedAmount)) {
-      const toAmount =
-        ratio && !ratio.isZero()
-          ? toAmountBasedOnRatio
-          : fromAmount.mul(toToken.redemptionAmount).div(expandDecimals(1, toToken.decimals));
+    if (!stableToken?.availableAmount || stableToken.availableAmount < expectedAmount) {
+      const toAmount = ratio
+        ? toAmountBasedOnRatio
+        : (fromAmount * (toToken.redemptionAmount ?? 0n)) / expandDecimals(1, toToken.decimals);
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
       return {
-        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        amount: adjustDecimals(
+          (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT
+        ),
         feeBasisPoints,
       };
     }
@@ -548,10 +570,11 @@ export function getNextToAmount(
     const feeBasisPoints0 = getSwapFeeBasisPoints(true);
     const feeBasisPoints1 = getSwapFeeBasisPoints(false);
 
-    if (ratio && !ratio.isZero()) {
-      const toAmount = toAmountBasedOnRatio
-        .mul(BASIS_POINTS_DIVISOR - feeBasisPoints0 - feeBasisPoints1)
-        .div(BASIS_POINTS_DIVISOR);
+    if (ratio) {
+      const toAmount =
+        (toAmountBasedOnRatio * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0 - feeBasisPoints1)) /
+        BASIS_POINTS_DIVISOR_BIGINT;
+
       return {
         amount: adjustDecimals(toAmount),
         path: [USDG_ADDRESS, stableToken.address, toToken.address],
@@ -560,14 +583,14 @@ export function getNextToAmount(
     }
 
     // get toAmount for USDG => stableToken
-    let toAmount = fromAmount.mul(PRECISION).div(stableToken.maxPrice);
+    let toAmount = stableToken.maxPrice === undefined ? 0n : (fromAmount * PRECISION) / stableToken.maxPrice;
     // apply USDG => stableToken fees
-    toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints0).div(BASIS_POINTS_DIVISOR);
+    toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0)) / BASIS_POINTS_DIVISOR_BIGINT;
 
     // get toAmount for stableToken => toToken
-    toAmount = toAmount.mul(stableToken.minPrice).div(toTokenPriceUsd || toTokenMaxPrice);
+    toAmount = (toAmount * (stableToken.minPrice ?? 0n)) / (toTokenPriceUsd || toTokenMaxPrice);
     // apply stableToken => toToken fees
-    toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints1).div(BASIS_POINTS_DIVISOR);
+    toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints1)) / BASIS_POINTS_DIVISOR_BIGINT;
 
     return {
       amount: adjustDecimals(toAmount),
@@ -576,12 +599,11 @@ export function getNextToAmount(
     };
   }
 
-  const toAmount =
-    ratio && !ratio.isZero()
-      ? toAmountBasedOnRatio
-      : fromAmount.mul(fromTokenMinPrice).div(toTokenPriceUsd || toTokenMaxPrice);
+  const toAmount = ratio
+    ? toAmountBasedOnRatio
+    : (fromAmount * fromTokenMinPrice) / (toTokenPriceUsd || toTokenMaxPrice);
 
-  let usdgAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
+  let usdgAmount = (fromAmount * fromTokenMinPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
     fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
@@ -609,7 +631,7 @@ export function getNextToAmount(
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
   return {
-    amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+    amount: adjustDecimals((toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints)) / BASIS_POINTS_DIVISOR_BIGINT),
     feeBasisPoints,
   };
 }
@@ -618,14 +640,14 @@ export function getProfitPrice(closePrice, position) {
   let profitPrice;
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
-      ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR)
-      : position.averagePrice.mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR);
+      ? mulDiv(position.averagePrice, BigInt(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS), BASIS_POINTS_DIVISOR_BIGINT)
+      : mulDiv(position.averagePrice, BigInt(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS), BASIS_POINTS_DIVISOR_BIGINT);
   }
   return profitPrice;
 }
 
 export function calculatePositionDelta(
-  price: BigNumber,
+  price: bigint,
   {
     size,
     collateral,
@@ -633,29 +655,29 @@ export function calculatePositionDelta(
     averagePrice,
     lastIncreasedTime,
   }: {
-    size: BigNumber;
-    collateral: BigNumber;
+    size: bigint;
+    collateral: bigint;
     isLong: boolean;
-    averagePrice: BigNumber;
+    averagePrice: bigint;
     lastIncreasedTime: number;
   },
-  sizeDelta?: BigNumber
+  sizeDelta?: bigint
 ) {
   if (!sizeDelta) {
     sizeDelta = size;
   }
-  const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice);
-  let delta = sizeDelta.mul(priceDelta).div(averagePrice);
+  const priceDelta = averagePrice > price ? averagePrice - price : price - averagePrice;
+  let delta = mulDiv(sizeDelta, priceDelta, averagePrice)!;
   const pendingDelta = delta;
 
   const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
-  const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice);
-  if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))) {
-    delta = bigNumberify(0)!;
+  const hasProfit = isLong ? price > averagePrice : price < averagePrice;
+  if (!minProfitExpired && hasProfit && delta * BASIS_POINTS_DIVISOR_BIGINT <= size * BigInt(MIN_PROFIT_BIPS)) {
+    delta = 0n;
   }
 
-  const deltaPercentage = delta.mul(BASIS_POINTS_DIVISOR).div(collateral);
-  const pendingDeltaPercentage = pendingDelta.mul(BASIS_POINTS_DIVISOR).div(collateral);
+  const deltaPercentage = mulDiv(delta, BASIS_POINTS_DIVISOR_BIGINT, collateral);
+  const pendingDeltaPercentage = mulDiv(pendingDelta, BASIS_POINTS_DIVISOR_BIGINT, collateral);
 
   return {
     delta,
@@ -670,7 +692,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
   let deltaStr;
   let deltaPercentageStr;
 
-  if (delta.gt(0)) {
+  if (delta > 0) {
     deltaStr = hasProfit ? "+" : "-";
     deltaPercentageStr = hasProfit ? "+" : "-";
   } else {
@@ -683,15 +705,11 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
   return { deltaStr, deltaPercentageStr };
 }
 
-export function getFundingFee(data: {
-  size: BigNumber;
-  entryFundingRate?: BigNumber;
-  cumulativeFundingRate?: BigNumber;
-}) {
+export function getFundingFee(data: { size: bigint; entryFundingRate?: bigint; cumulativeFundingRate?: bigint }) {
   let { entryFundingRate, cumulativeFundingRate, size } = data;
 
-  if (entryFundingRate && cumulativeFundingRate) {
-    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
+  if (entryFundingRate !== undefined && cumulativeFundingRate !== undefined) {
+    return mulDiv(size, cumulativeFundingRate - entryFundingRate, BigInt(FUNDING_RATE_PRECISION));
   }
 
   return;
@@ -704,13 +722,13 @@ export function getPositionKey(
   isLong: boolean,
   nativeTokenAddress?: string
 ) {
-  const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
-  const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
+  const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
+  const tokenAddress1 = indexTokenAddress === ZeroAddress ? nativeTokenAddress : indexTokenAddress;
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
 export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
-  return ethers.utils.solidityKeccak256(
+  return ethers.solidityPackedKeccak256(
     ["address", "address", "address", "bool"],
     [account, collateralToken, indexToken, isLong]
   );
@@ -743,7 +761,7 @@ export function useENS(address) {
   useEffect(() => {
     async function resolveENS() {
       if (address) {
-        const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
+        const provider = new ethers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
         const name = await provider.lookupAddress(address.toLowerCase());
         if (name) setENSName(name);
       }
@@ -767,7 +785,7 @@ function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLeng
       .slice(addressPropsLength * i, addressPropsLength * (i + 1))
       .concat(uintProps.slice(uintPropsLength * i, uintPropsLength * (i + 1)));
 
-    if (sliced[0] === AddressZero && sliced[1] === AddressZero) {
+    if (sliced[0] === ZeroAddress && sliced[1] === ZeroAddress) {
       continue;
     }
 
@@ -833,7 +851,7 @@ function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
     const shouldUnwrap = sliced[7].toString() === "1";
 
     return {
-      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== AddressZero),
+      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== ZeroAddress),
       amountIn: sliced[3],
       minOut: sliced[4],
       triggerRatio: sliced[5],
@@ -890,7 +908,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount?: string) {
 
       const fetchLastIndex = async (type) => {
         const method = type.toLowerCase() + "OrdersIndex";
-        return await orderBookContract[method](account).then((res) => bigNumberify(res._hex)!.toNumber());
+        return await orderBookContract[method](account).then((res) => Number(res));
       };
 
       const fetchLastIndexes = async () => {
@@ -975,10 +993,10 @@ export function getTotalVolumeSum(volumes) {
     return;
   }
 
-  let volume = bigNumberify(0)!;
+  let volume = 0n;
 
   for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume);
+    volume = volume + BigInt(volumes[i].data.volume);
   }
 
   return volume;
@@ -1028,53 +1046,53 @@ export function getDepositBalanceData(depositBalances) {
 
 type RawVestingData = {
   gmxVester: {
-    pairAmount: BigNumber;
-    vestedAmount: BigNumber;
-    escrowedBalance: BigNumber;
-    claimedAmounts: BigNumber;
-    claimable: BigNumber;
-    maxVestableAmount: BigNumber;
-    averageStakedAmount: BigNumber;
+    pairAmount: bigint;
+    vestedAmount: bigint;
+    escrowedBalance: bigint;
+    claimedAmounts: bigint;
+    claimable: bigint;
+    maxVestableAmount: bigint;
+    averageStakedAmount: bigint;
   };
-  gmxVesterPairAmount: BigNumber;
-  gmxVesterVestedAmount: BigNumber;
-  gmxVesterEscrowedBalance: BigNumber;
-  gmxVesterClaimSum: BigNumber;
-  gmxVesterClaimable: BigNumber;
-  gmxVesterMaxVestableAmount: BigNumber;
-  gmxVesterAverageStakedAmount: BigNumber;
+  gmxVesterPairAmount: bigint;
+  gmxVesterVestedAmount: bigint;
+  gmxVesterEscrowedBalance: bigint;
+  gmxVesterClaimSum: bigint;
+  gmxVesterClaimable: bigint;
+  gmxVesterMaxVestableAmount: bigint;
+  gmxVesterAverageStakedAmount: bigint;
   glpVester: {
-    pairAmount: BigNumber;
-    vestedAmount: BigNumber;
-    escrowedBalance: BigNumber;
-    claimedAmounts: BigNumber;
-    claimable: BigNumber;
-    maxVestableAmount: BigNumber;
-    averageStakedAmount: BigNumber;
+    pairAmount: bigint;
+    vestedAmount: bigint;
+    escrowedBalance: bigint;
+    claimedAmounts: bigint;
+    claimable: bigint;
+    maxVestableAmount: bigint;
+    averageStakedAmount: bigint;
   };
-  glpVesterPairAmount: BigNumber;
-  glpVesterVestedAmount: BigNumber;
-  glpVesterEscrowedBalance: BigNumber;
-  glpVesterClaimSum: BigNumber;
-  glpVesterClaimable: BigNumber;
-  glpVesterMaxVestableAmount: BigNumber;
-  glpVesterAverageStakedAmount: BigNumber;
+  glpVesterPairAmount: bigint;
+  glpVesterVestedAmount: bigint;
+  glpVesterEscrowedBalance: bigint;
+  glpVesterClaimSum: bigint;
+  glpVesterClaimable: bigint;
+  glpVesterMaxVestableAmount: bigint;
+  glpVesterAverageStakedAmount: bigint;
   affiliateVester: {
-    pairAmount: BigNumber;
-    vestedAmount: BigNumber;
-    escrowedBalance: BigNumber;
-    claimedAmounts: BigNumber;
-    claimable: BigNumber;
-    maxVestableAmount: BigNumber;
-    averageStakedAmount: BigNumber;
+    pairAmount: bigint;
+    vestedAmount: bigint;
+    escrowedBalance: bigint;
+    claimedAmounts: bigint;
+    claimable: bigint;
+    maxVestableAmount: bigint;
+    averageStakedAmount: bigint;
   };
-  affiliateVesterPairAmount: BigNumber;
-  affiliateVesterVestedAmount: BigNumber;
-  affiliateVesterEscrowedBalance: BigNumber;
-  affiliateVesterClaimSum: BigNumber;
-  affiliateVesterClaimable: BigNumber;
-  affiliateVesterMaxVestableAmount: BigNumber;
-  affiliateVesterAverageStakedAmount: BigNumber;
+  affiliateVesterPairAmount: bigint;
+  affiliateVesterVestedAmount: bigint;
+  affiliateVesterEscrowedBalance: bigint;
+  affiliateVesterClaimSum: bigint;
+  affiliateVesterClaimable: bigint;
+  affiliateVesterMaxVestableAmount: bigint;
+  affiliateVesterAverageStakedAmount: bigint;
 };
 
 export function getVestingData(vestingInfo): RawVestingData | undefined {
@@ -1101,7 +1119,7 @@ export function getVestingData(vestingInfo): RawVestingData | undefined {
     data[key + "PairAmount"] = data[key]!.pairAmount;
     data[key + "VestedAmount"] = data[key]!.vestedAmount;
     data[key + "EscrowedBalance"] = data[key]!.escrowedBalance;
-    data[key + "ClaimSum"] = data[key]!.claimedAmounts.add(data[key]!.claimable);
+    data[key + "ClaimSum"] = data[key]!.claimedAmounts + data[key]!.claimable;
     data[key + "Claimable"] = data[key]!.claimable;
     data[key + "MaxVestableAmount"] = data[key]!.maxVestableAmount;
     data[key + "AverageStakedAmount"] = data[key]!.averageStakedAmount;
@@ -1134,69 +1152,69 @@ export function getStakingData(stakingInfo) {
 }
 
 export type ProcessedData = Partial<{
-  gmxBalance: BigNumber;
-  gmxBalanceUsd: BigNumber;
-  gmxSupply: BigNumber;
-  gmxSupplyUsd: BigNumber;
-  stakedGmxSupply: BigNumber;
-  stakedGmxSupplyUsd: BigNumber;
-  gmxInStakedGmx: BigNumber;
-  gmxInStakedGmxUsd: BigNumber;
-  esGmxBalance: BigNumber;
-  esGmxBalanceUsd: BigNumber;
-  stakedGmxTrackerSupply: BigNumber;
-  stakedGmxTrackerSupplyUsd: BigNumber;
-  stakedEsGmxSupply: BigNumber;
-  stakedEsGmxSupplyUsd: BigNumber;
-  esGmxInStakedGmx: BigNumber;
-  esGmxInStakedGmxUsd: BigNumber;
-  bnGmxInFeeGmx: BigNumber;
-  bonusGmxInFeeGmx: BigNumber;
-  feeGmxSupply: BigNumber;
-  feeGmxSupplyUsd: BigNumber;
-  stakedGmxTrackerRewards: BigNumber;
-  stakedGmxTrackerRewardsUsd: BigNumber;
-  feeGmxTrackerRewards: BigNumber;
-  feeGmxTrackerRewardsUsd: BigNumber;
-  boostBasisPoints: BigNumber;
-  stakedGmxTrackerAnnualRewardsUsd: BigNumber;
-  feeGmxTrackerAnnualRewardsUsd: BigNumber;
-  gmxAprTotal: BigNumber;
-  gmxAprTotalWithBoost: BigNumber;
-  totalGmxRewardsUsd: BigNumber;
-  glpSupply: BigNumber;
-  glpPrice: BigNumber;
-  glpSupplyUsd: BigNumber;
-  glpBalance: BigNumber;
-  glpBalanceUsd: BigNumber;
-  stakedGlpTrackerRewards: BigNumber;
-  stakedGlpTrackerRewardsUsd: BigNumber;
-  feeGlpTrackerRewards: BigNumber;
-  feeGlpTrackerRewardsUsd: BigNumber;
-  stakedGlpTrackerAnnualRewardsUsd: BigNumber;
-  glpAprForEsGmx: BigNumber;
-  feeGlpTrackerAnnualRewardsUsd: BigNumber;
-  glpAprForNativeToken: BigNumber;
-  glpAprTotal: BigNumber;
-  totalGlpRewardsUsd: BigNumber;
-  totalEsGmxRewards: BigNumber;
-  totalEsGmxRewardsUsd: BigNumber;
-  gmxVesterRewards: BigNumber;
-  glpVesterRewards: BigNumber;
-  totalVesterRewards: BigNumber;
-  totalVesterRewardsUsd: BigNumber;
-  totalNativeTokenRewards: BigNumber;
-  totalNativeTokenRewardsUsd: BigNumber;
-  totalRewardsUsd: BigNumber;
-  avgBoostAprForNativeToken: BigNumber;
-  avgGMXAprForNativeToken: BigNumber;
+  gmxBalance: bigint;
+  gmxBalanceUsd: bigint;
+  gmxSupply: bigint;
+  gmxSupplyUsd: bigint;
+  stakedGmxSupply: bigint;
+  stakedGmxSupplyUsd: bigint;
+  gmxInStakedGmx: bigint;
+  gmxInStakedGmxUsd: bigint;
+  esGmxBalance: bigint;
+  esGmxBalanceUsd: bigint;
+  stakedGmxTrackerSupply: bigint;
+  stakedGmxTrackerSupplyUsd: bigint;
+  stakedEsGmxSupply: bigint;
+  stakedEsGmxSupplyUsd: bigint;
+  esGmxInStakedGmx: bigint;
+  esGmxInStakedGmxUsd: bigint;
+  bnGmxInFeeGmx: bigint;
+  bonusGmxInFeeGmx: bigint;
+  feeGmxSupply: bigint;
+  feeGmxSupplyUsd: bigint;
+  stakedGmxTrackerRewards: bigint;
+  stakedGmxTrackerRewardsUsd: bigint;
+  feeGmxTrackerRewards: bigint;
+  feeGmxTrackerRewardsUsd: bigint;
+  boostBasisPoints: bigint;
+  stakedGmxTrackerAnnualRewardsUsd: bigint;
+  feeGmxTrackerAnnualRewardsUsd: bigint;
+  gmxAprTotal: bigint;
+  gmxAprTotalWithBoost: bigint;
+  totalGmxRewardsUsd: bigint;
+  glpSupply: bigint;
+  glpPrice: bigint;
+  glpSupplyUsd: bigint;
+  glpBalance: bigint;
+  glpBalanceUsd: bigint;
+  stakedGlpTrackerRewards: bigint;
+  stakedGlpTrackerRewardsUsd: bigint;
+  feeGlpTrackerRewards: bigint;
+  feeGlpTrackerRewardsUsd: bigint;
+  stakedGlpTrackerAnnualRewardsUsd: bigint;
+  glpAprForEsGmx: bigint;
+  feeGlpTrackerAnnualRewardsUsd: bigint;
+  glpAprForNativeToken: bigint;
+  glpAprTotal: bigint;
+  totalGlpRewardsUsd: bigint;
+  totalEsGmxRewards: bigint;
+  totalEsGmxRewardsUsd: bigint;
+  gmxVesterRewards: bigint;
+  glpVesterRewards: bigint;
+  totalVesterRewards: bigint;
+  totalVesterRewardsUsd: bigint;
+  totalNativeTokenRewards: bigint;
+  totalNativeTokenRewardsUsd: bigint;
+  totalRewardsUsd: bigint;
+  avgBoostAprForNativeToken: bigint;
+  avgGMXAprForNativeToken: bigint;
 }> & {
-  gmxAprForEsGmx: BigNumber;
-  gmxAprForNativeToken: BigNumber;
-  maxGmxAprForNativeToken: BigNumber;
-  gmxAprForNativeTokenWithBoost: BigNumber;
-  gmxBoostAprForNativeToken?: BigNumber;
-  avgBoostMultiplier?: BigNumber;
+  gmxAprForEsGmx: bigint;
+  gmxAprForNativeToken: bigint;
+  maxGmxAprForNativeToken: bigint;
+  gmxAprForNativeTokenWithBoost: bigint;
+  gmxBoostAprForNativeToken?: bigint;
+  avgBoostMultiplier?: bigint;
 };
 
 export function getProcessedData(
@@ -1232,123 +1250,128 @@ export function getProcessedData(
   const data: any = {};
 
   data.gmxBalance = balanceData.gmx;
-  data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxBalanceUsd = mulDiv(balanceData.gmx, gmxPrice, expandDecimals(1, 18));
 
   data.gmxSupply = bigNumberify(gmxSupply);
 
-  data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxSupplyUsd = mulDiv(data.gmxSupply, gmxPrice, expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
-  data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.stakedGmxSupplyUsd = mulDiv(stakedGmxSupply, gmxPrice, expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;
-  data.gmxInStakedGmxUsd = depositBalanceData.gmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxInStakedGmxUsd = mulDiv(depositBalanceData.gmxInStakedGmx, gmxPrice, expandDecimals(1, 18));
 
   data.esGmxBalance = balanceData.esGmx;
-  data.esGmxBalanceUsd = balanceData.esGmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.esGmxBalanceUsd = mulDiv(balanceData.esGmx, gmxPrice, expandDecimals(1, 18));
 
   data.stakedGmxTrackerSupply = supplyData.stakedGmxTracker;
-  data.stakedGmxTrackerSupplyUsd = supplyData.stakedGmxTracker.mul(gmxPrice).div(expandDecimals(1, 18));
-  data.stakedEsGmxSupply = data.stakedGmxTrackerSupply.sub(data.stakedGmxSupply);
-  data.stakedEsGmxSupplyUsd = data.stakedEsGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.stakedGmxTrackerSupplyUsd = mulDiv(supplyData.stakedGmxTracker, gmxPrice, expandDecimals(1, 18));
+  data.stakedEsGmxSupply = data.stakedGmxTrackerSupply - data.stakedGmxSupply;
+  data.stakedEsGmxSupplyUsd = mulDiv(data.stakedEsGmxSupply, gmxPrice, expandDecimals(1, 18));
 
   data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx;
-  data.esGmxInStakedGmxUsd = depositBalanceData.esGmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.esGmxInStakedGmxUsd = mulDiv(depositBalanceData.esGmxInStakedGmx, gmxPrice, expandDecimals(1, 18));
 
   data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx;
   data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx;
   data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply;
-  data.feeGmxSupplyUsd = data.feeGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.feeGmxSupplyUsd = mulDiv(data.feeGmxSupply, gmxPrice, expandDecimals(1, 18));
 
   data.stakedGmxTrackerRewards = stakingData.stakedGmxTracker.claimable;
-  data.stakedGmxTrackerRewardsUsd = stakingData.stakedGmxTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.stakedGmxTrackerRewardsUsd = mulDiv(stakingData.stakedGmxTracker.claimable, gmxPrice, expandDecimals(1, 18));
 
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
-  data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
+  data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
-  data.boostBasisPoints = bigNumberify(0);
-  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx.gt(0)) {
-    data.boostBasisPoints = data.bnGmxInFeeGmx.mul(BASIS_POINTS_DIVISOR).div(data.bonusGmxInFeeGmx);
+  data.boostBasisPoints = 0n;
+  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx > 0) {
+    data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR_BIGINT, data.bonusGmxInFeeGmx);
   }
 
-  data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval
-    .mul(SECONDS_PER_YEAR)
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGmxTrackerAnnualRewardsUsd =
+    (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
   data.gmxAprForEsGmx =
-    data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd.gt(0)
-      ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxTrackerSupplyUsd)
-      : bigNumberify(0);
-  data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval
-    .mul(SECONDS_PER_YEAR)
-    .mul(nativeTokenPrice)
-    .div(expandDecimals(1, 18));
+    data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd > 0
+      ? mulDiv(data.stakedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.stakedGmxTrackerSupplyUsd)
+      : 0n;
+  data.feeGmxTrackerAnnualRewardsUsd =
+    (stakingData.feeGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * nativeTokenPrice) / expandDecimals(1, 18);
   data.gmxAprForNativeToken =
-    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
-      ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
-      : bigNumberify(0);
-  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken.mul(data.boostBasisPoints).div(BASIS_POINTS_DIVISOR);
-  data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
-  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
-  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken);
+    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
+      ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
+      : 0n;
+  data.gmxBoostAprForNativeToken = mulDiv(
+    data.gmxAprForNativeToken,
+    data.boostBasisPoints,
+    BASIS_POINTS_DIVISOR_BIGINT
+  );
+  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
+  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken + data.gmxAprForEsGmx;
+  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken;
 
-  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken.add(data.gmxAprForNativeToken.mul(maxBoostMultiplier));
+  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken + data.gmxAprForNativeToken * maxBoostMultiplier;
 
-  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
+  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
 
   data.glpSupply = supplyData.glp;
   data.glpPrice =
-    data.glpSupply && data.glpSupply.gt(0)
-      ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)
-      : bigNumberify(0);
+    data.glpSupply && data.glpSupply > 0 ? mulDiv(aum, expandDecimals(1, GLP_DECIMALS), data.glpSupply) : 0n;
 
-  data.glpSupplyUsd = supplyData.glp.mul(data.glpPrice).div(expandDecimals(1, 18));
+  data.glpSupplyUsd = mulDiv(supplyData.glp, data.glpPrice, expandDecimals(1, 18));
 
   data.glpBalance = depositBalanceData.glpInStakedGlp;
-  data.glpBalanceUsd = depositBalanceData.glpInStakedGlp.mul(data.glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  data.glpBalanceUsd = mulDiv(depositBalanceData.glpInStakedGlp, data.glpPrice, expandDecimals(1, GLP_DECIMALS));
 
   data.stakedGlpTrackerRewards = stakingData.stakedGlpTracker.claimable;
-  data.stakedGlpTrackerRewardsUsd = stakingData.stakedGlpTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.stakedGlpTrackerRewardsUsd = mulDiv(stakingData.stakedGlpTracker.claimable, gmxPrice, expandDecimals(1, 18));
 
   data.feeGlpTrackerRewards = stakingData.feeGlpTracker.claimable;
-  data.feeGlpTrackerRewardsUsd = stakingData.feeGlpTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
+  data.feeGlpTrackerRewardsUsd = mulDiv(stakingData.feeGlpTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
-  data.stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval
-    .mul(SECONDS_PER_YEAR)
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGlpTrackerAnnualRewardsUsd = mulDiv(
+    stakingData.stakedGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
+    gmxPrice,
+    expandDecimals(1, 18)
+  );
   data.glpAprForEsGmx =
-    data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-      ? data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
-      : bigNumberify(0);
-  data.feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval
-    .mul(SECONDS_PER_YEAR)
-    .mul(nativeTokenPrice)
-    .div(expandDecimals(1, 18));
+    data.glpSupplyUsd && data.glpSupplyUsd > 0
+      ? mulDiv(data.stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.glpSupplyUsd)
+      : 0n;
+  data.feeGlpTrackerAnnualRewardsUsd = mulDiv(
+    stakingData.feeGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
+    nativeTokenPrice,
+    expandDecimals(1, 18)
+  );
   data.glpAprForNativeToken =
-    data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-      ? data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
-      : bigNumberify(0);
-  data.glpAprTotal = data.glpAprForNativeToken.add(data.glpAprForEsGmx);
+    data.glpSupplyUsd && data.glpSupplyUsd > 0
+      ? mulDiv(data.feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.glpSupplyUsd)
+      : 0n;
+  data.glpAprTotal = data.glpAprForNativeToken + data.glpAprForEsGmx;
 
-  data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd);
+  data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
 
-  data.totalEsGmxRewards = data.stakedGmxTrackerRewards.add(data.stakedGlpTrackerRewards);
-  data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.stakedGlpTrackerRewardsUsd);
+  data.totalEsGmxRewards = data.stakedGmxTrackerRewards + data.stakedGlpTrackerRewards;
+  data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.stakedGlpTrackerRewardsUsd;
 
   data.gmxVesterRewards = vestingData.gmxVester.claimable;
   data.glpVesterRewards = vestingData.glpVester.claimable;
-  data.totalVesterRewards = data.gmxVesterRewards.add(data.glpVesterRewards);
-  data.totalVesterRewardsUsd = data.totalVesterRewards.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.totalVesterRewards = data.gmxVesterRewards + data.glpVesterRewards;
+  data.totalVesterRewardsUsd = mulDiv(data.totalVesterRewards, gmxPrice, expandDecimals(1, 18));
 
-  data.totalNativeTokenRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards);
-  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd);
+  data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
+  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd);
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
 
   data.avgBoostMultiplier = stakedBnGmxSupply
-    ?.mul(BASIS_POINTS_DIVISOR)
-    .div(stakedGmxSupply?.add(data?.stakedEsGmxSupply ?? 0));
-  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken?.mul(data.avgBoostMultiplier).div(BASIS_POINTS_DIVISOR);
-  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken?.add(data.avgBoostAprForNativeToken ?? 0);
+    ? mulDiv(stakedBnGmxSupply, BASIS_POINTS_DIVISOR_BIGINT, stakedGmxSupply + (data?.stakedEsGmxSupply ?? 0n))
+    : undefined;
+
+  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken
+    ? mulDiv(data.gmxAprForNativeToken, data.avgBoostMultiplier, BASIS_POINTS_DIVISOR_BIGINT)
+    : undefined;
+  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
+    ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)
+    : undefined;
 
   return data;
 }
@@ -1359,10 +1382,10 @@ export function getPageTitle(data) {
 }
 
 export function isHashZero(value) {
-  return value === ethers.constants.HashZero;
+  return value === ethers.ZeroHash;
 }
 export function isAddressZero(value) {
-  return value === ethers.constants.AddressZero;
+  return value === ethers.ZeroAddress;
 }
 
 export function getHomeUrl() {
@@ -1429,7 +1452,7 @@ export function getPositionForOrder(account, order, positionsMap) {
 
   const position = positionsMap[key];
 
-  return position && position.size && position.size.gt(0) ? position : null;
+  return position && position.size && position.size > 0 ? position : null;
 }
 
 export function getOrderError(account, order, positionsMap, position) {
@@ -1442,15 +1465,15 @@ export function getOrderError(account, order, positionsMap, position) {
   if (!positionForOrder) {
     return t`No open position, order cannot be executed unless a position is opened`;
   }
-  if (positionForOrder.size.lt(order.sizeDelta)) {
+  if (positionForOrder.size < order.sizeDelta) {
     return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
-  if (positionForOrder.size.gt(order.sizeDelta)) {
-    if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
+  if (positionForOrder.size > order.sizeDelta) {
+    if (positionForOrder.size - order.sizeDelta < positionForOrder.collateral - order.collateralDelta) {
       return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
-    if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
+    if (positionForOrder.size - order.sizeDelta < expandDecimals(5, USD_DECIMALS)) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
@@ -1464,4 +1487,12 @@ export function shouldShowRedirectModal(timestamp?: number): boolean {
   const thirtyDays = 1000 * 60 * 60 * 24 * 30;
   const expiryTime = timestamp + thirtyDays;
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
+}
+
+function mulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | number) {
+  if (a === undefined) return undefined;
+  a = BigInt(a);
+  b = BigInt(b);
+  c = BigInt(c);
+  return (a * b) / c;
 }

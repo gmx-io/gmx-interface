@@ -11,7 +11,7 @@ import {
   getExchangeRateDisplay,
   INCREASE,
 } from "lib/legacy";
-import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR } from "config/factors";
+import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
 
@@ -26,8 +26,9 @@ import { getPriceDecimals } from "config/tokens";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
+import { bigMath } from "lib/bigmath";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
   const symbol = indexToken ? (indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol) : "";
@@ -56,7 +57,7 @@ function getOrderActionTitle(action) {
 }
 
 function renderLiquidationTooltip(liquidationData, label) {
-  const minCollateral = liquidationData.size.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE);
+  const minCollateral = bigMath.mulDiv(liquidationData.size, BASIS_POINTS_DIVISOR_BIGINT, BigInt(MAX_LEVERAGE));
   const text =
     liquidationData.type === "full"
       ? t`This position was liquidated as the max leverage of 100x was exceeded.`
@@ -193,7 +194,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Request deposit into {indexToken.symbol} {longOrShortText}
@@ -221,7 +222,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Request withdrawal from {indexToken.symbol} {longOrShortText}
@@ -249,7 +250,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Could not execute deposit into {indexToken.symbol} {longOrShortText}
@@ -282,7 +283,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
 
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Could not execute withdrawal from {indexToken.symbol} {longOrShortText}
@@ -319,7 +320,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Deposit {formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into {indexToken.symbol}{" "}
@@ -350,7 +351,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        if (bigNumberify(params.sizeDelta).eq(0)) {
+        if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
               Withdraw {formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from {indexToken.symbol}
@@ -437,10 +438,10 @@ export default function TradeHistory(props) {
       ) {
         const order = deserialize(params.order);
         const indexToken = getTokenInfo(infoTokens, order.indexToken);
-        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         const increase = tradeData.action.includes("Increase");
         const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(
           order.triggerPrice,
@@ -459,8 +460,8 @@ export default function TradeHistory(props) {
       if (tradeData.action === "ExecuteSwapOrder") {
         const order = deserialize(params.order);
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
-        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? ZeroAddress : order.path[0]);
+        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? ZeroAddress : order.path[order.path.length - 1]);
         if (!fromToken || !toToken) {
           return defaultMsg;
         }
@@ -476,8 +477,8 @@ export default function TradeHistory(props) {
       if (["CreateSwapOrder", "UpdateSwapOrder", "CancelSwapOrder"].includes(tradeData.action)) {
         const order = deserialize(params.order);
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
-        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+        const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? ZeroAddress : order.path[0]);
+        const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? ZeroAddress : order.path[order.path.length - 1]);
         if (!fromToken || !toToken) {
           return defaultMsg;
         }

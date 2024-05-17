@@ -19,13 +19,12 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
-import { BigNumber } from "ethers";
 
 i18n.loadLocaleData({ en: { plurals } });
 i18n.load({ en: {} });
 i18n.activate("en");
 
-const minCollateralUsd = BigNumber.from(100);
+const minCollateralUsd = BigInt(100);
 
 describe("TradeHistoryRow helpers", () => {
   it("formatPositionMessage", () => {

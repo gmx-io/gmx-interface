@@ -1,12 +1,11 @@
-import { BigNumber } from "ethers";
 import { getApproxSubaccountActionsCountByBalance } from "./utils";
 
 describe("getApproxSubaccountActionsCountByBalance", () => {
   it("case 1", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(100);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(100);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 100n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 100n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -15,14 +14,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 100 / 10 + 100 / 10
-    expect(res).toEqual(BigNumber.from(20));
+    expect(res).toEqual(20n);
   });
 
   it("case 2", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(10);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(100);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 10n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 100n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -31,14 +30,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 10 / 10 + 100 / 10
-    expect(res).toEqual(BigNumber.from(11));
+    expect(res).toEqual(11n);
   });
 
   it("case 3", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(0);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(100);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 0n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 100n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -47,14 +46,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 0 / 10 + 100 / 10
-    expect(res).toEqual(BigNumber.from(10));
+    expect(res).toEqual(10n);
   });
 
   it("case 4", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(10);
-    const currentAutoTopUpAmount = BigNumber.from(0);
-    const subAccNativeTokenBalance = BigNumber.from(100);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 10n;
+    const subAccNativeTokenBalance = 100n;
+    const executionFee = 10n;
+    const currentAutoTopUpAmount = 0n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -63,14 +62,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 10 / 0 + 100 / 10
-    expect(res).toEqual(BigNumber.from(10));
+    expect(res).toEqual(10n);
   });
 
   it("case 5", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(1000);
-    const currentAutoTopUpAmount = BigNumber.from(1000);
-    const subAccNativeTokenBalance = BigNumber.from(1);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 1000n;
+    const currentAutoTopUpAmount = 1000n;
+    const subAccNativeTokenBalance = 1n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -80,14 +79,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
 
     // 1000 / 10 + 1 / 10
     // not enough balance to process an action
-    expect(res).toEqual(BigNumber.from(0));
+    expect(res).toEqual(0n);
   });
 
   it("case 6", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(10);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(10);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 10n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 10n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -96,14 +95,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 10 / 10 + 10 / 10
-    expect(res).toEqual(BigNumber.from(2));
+    expect(res).toEqual(2n);
   });
 
   it("case 7", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(0);
-    const currentAutoTopUpAmount = BigNumber.from(0);
-    const subAccNativeTokenBalance = BigNumber.from(10);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 0n;
+    const currentAutoTopUpAmount = 0n;
+    const subAccNativeTokenBalance = 10n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -112,14 +111,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     );
 
     // 0 / 0 + 10 / 10
-    expect(res).toEqual(BigNumber.from(1));
+    expect(res).toEqual(1n);
   });
 
   it("case 8", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(20);
-    const currentAutoTopUpAmount = BigNumber.from(5);
-    const subAccNativeTokenBalance = BigNumber.from(20);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 20n;
+    const currentAutoTopUpAmount = 5n;
+    const subAccNativeTokenBalance = 20n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -132,14 +131,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
     // 15 - 5
     // 10 - 5 <- stops here
     // 5 - 5
-    expect(res).toEqual(BigNumber.from(3));
+    expect(res).toEqual(3n);
   });
 
   it("case 9", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(6);
-    const currentAutoTopUpAmount = BigNumber.from(3);
-    const subAccNativeTokenBalance = BigNumber.from(20);
-    const executionFee = BigNumber.from(7);
+    const mainAccWrappedTokenBalance = 6n;
+    const currentAutoTopUpAmount = 3n;
+    const subAccNativeTokenBalance = 20n;
+    const executionFee = 7n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -147,14 +146,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigNumber.from(3));
+    expect(res).toEqual(3n);
   });
 
   it("case 10", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(100);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(20);
-    const executionFee = BigNumber.from(11);
+    const mainAccWrappedTokenBalance = 100n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 20n;
+    const executionFee = 11n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -162,14 +161,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigNumber.from(10));
+    expect(res).toEqual(10n);
   });
 
   it("case 11", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(100);
-    const currentAutoTopUpAmount = BigNumber.from(0);
-    const subAccNativeTokenBalance = BigNumber.from(20);
-    const executionFee = BigNumber.from(1);
+    const mainAccWrappedTokenBalance = 100n;
+    const currentAutoTopUpAmount = 0n;
+    const subAccNativeTokenBalance = 20n;
+    const executionFee = 1n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -177,14 +176,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigNumber.from(20));
+    expect(res).toEqual(20n);
   });
 
   it("case 12", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(100);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(10);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 100n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 10n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -192,14 +191,14 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigNumber.from(11));
+    expect(res).toEqual(11n);
   });
 
   it("case 13", () => {
-    const mainAccWrappedTokenBalance = BigNumber.from(100);
-    const currentAutoTopUpAmount = BigNumber.from(10);
-    const subAccNativeTokenBalance = BigNumber.from(9);
-    const executionFee = BigNumber.from(10);
+    const mainAccWrappedTokenBalance = 100n;
+    const currentAutoTopUpAmount = 10n;
+    const subAccNativeTokenBalance = 9n;
+    const executionFee = 10n;
     const res = getApproxSubaccountActionsCountByBalance(
       mainAccWrappedTokenBalance,
       subAccNativeTokenBalance,
@@ -207,6 +206,6 @@ describe("getApproxSubaccountActionsCountByBalance", () => {
       currentAutoTopUpAmount
     );
 
-    expect(res).toEqual(BigNumber.from(0));
+    expect(res).toEqual(0n);
   });
 });

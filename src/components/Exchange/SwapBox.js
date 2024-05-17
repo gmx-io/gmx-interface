@@ -37,7 +37,7 @@ import {
   getPositionKey,
   isTriggerRatioInverted,
 } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -88,6 +88,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
+import { bigMath } from "lib/bigmath";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -95,23 +96,23 @@ const SWAP_ICONS = {
   [SWAP]: swapImg,
 };
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
     return;
   }
-  const nextSize = size.add(sizeDelta);
+  const nextSize = size + sizeDelta;
   let divisor;
   if (isLong) {
-    divisor = hasProfit ? nextSize.add(delta) : nextSize.sub(delta);
+    divisor = hasProfit ? nextSize + delta : nextSize - delta;
   } else {
-    divisor = hasProfit ? nextSize.sub(delta) : nextSize.add(delta);
+    divisor = hasProfit ? nextSize - delta : nextSize + delta;
   }
-  if (!divisor || divisor.eq(0)) {
+  if (!divisor) {
     return;
   }
-  const nextAveragePrice = nextPrice.mul(nextSize).div(divisor);
+  const nextAveragePrice = bigMath.mulDiv(nextPrice, nextSize, divisor);
   return nextAveragePrice;
 }
 
@@ -247,7 +248,7 @@ export default function SwapBox(props) {
   }
 
   const existingPosition = positionKey ? positionsMap[positionKey] : undefined;
-  const hasExistingPosition = existingPosition && existingPosition.size && existingPosition.size.gt(0);
+  const hasExistingPosition = existingPosition && existingPosition.size && existingPosition.size > 0;
 
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokens = getV1Tokens(chainId);
@@ -297,7 +298,7 @@ export default function SwapBox(props) {
   }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval]);
 
   const routerAddress = getContract(chainId, "Router");
-  const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
+  const tokenAllowanceAddress = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
@@ -353,8 +354,8 @@ export default function SwapBox(props) {
     );
   };
 
-  const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
-  const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
+  const fromBalance = fromTokenInfo ? fromTokenInfo.balance : 0n;
+  const toBalance = toTokenInfo ? toTokenInfo.balance : 0n;
 
   const fromAmount = parseValue(fromValue, fromToken && fromToken.decimals);
   const toAmount = parseValue(toValue, toToken && toToken.decimals);
@@ -362,11 +363,7 @@ export default function SwapBox(props) {
   const isPotentialWrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative);
   const isWrapOrUnwrap = isSwap && isPotentialWrap;
   const needApproval =
-    fromTokenAddress !== AddressZero &&
-    tokenAllowance &&
-    fromAmount &&
-    fromAmount.gt(tokenAllowance) &&
-    !isWrapOrUnwrap;
+    fromTokenAddress !== ZeroAddress && tokenAllowance && fromAmount && fromAmount > tokenAllowance && !isWrapOrUnwrap;
   const prevFromTokenAddress = usePrevious(fromTokenAddress);
   const prevNeedApproval = usePrevious(needApproval);
   const prevToTokenAddress = usePrevious(toTokenAddress);
@@ -374,7 +371,7 @@ export default function SwapBox(props) {
   const fromUsdMin = getUsd(fromAmount, fromTokenAddress, false, infoTokens);
   const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderOption, triggerPriceUsd);
 
-  const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
+  const indexTokenAddress = toTokenAddress === ZeroAddress ? nativeTokenAddress : toTokenAddress;
   const collateralTokenAddress = isLong ? indexTokenAddress : shortCollateralAddress;
   const collateralToken = getToken(chainId, collateralTokenAddress);
 
@@ -385,15 +382,19 @@ export default function SwapBox(props) {
   }, [toTokenInfo, fromTokenInfo]);
 
   const maxToTokenOut = useMemo(() => {
-    const value = toTokenInfo?.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
-      ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
-      : toTokenInfo?.availableAmount;
+    const value =
+      toTokenInfo?.availableAmount === undefined
+        ? undefined
+        : toTokenInfo?.availableAmount >
+          (toTokenInfo.poolAmount === undefined ? undefined : toTokenInfo.poolAmount - toTokenInfo.bufferAmount)
+        ? toTokenInfo.poolAmount - toTokenInfo.bufferAmount
+        : toTokenInfo?.availableAmount;
 
     if (!value) {
-      return bigNumberify(0);
+      return 0n;
     }
 
-    return value.gt(0) ? value : bigNumberify(0);
+    return value > 0 ? value : 0n;
   }, [toTokenInfo]);
 
   const maxToTokenOutUSD = useMemo(() => {
@@ -401,41 +402,48 @@ export default function SwapBox(props) {
   }, [maxToTokenOut, toTokenAddress, infoTokens]);
 
   const maxFromTokenInUSD = useMemo(() => {
-    const value = fromTokenInfo.maxUsdgAmount
-      ?.sub(fromTokenInfo.usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+    if (!fromTokenInfo.maxUsdgAmount) return 0n;
+
+    const value = bigMath.mulDiv(
+      fromTokenInfo.maxUsdgAmount - fromTokenInfo.usdgAmount,
+      expandDecimals(1, USD_DECIMALS),
+      expandDecimals(1, USDG_DECIMALS)
+    );
 
     if (!value) {
-      return bigNumberify(0);
+      return 0n;
     }
 
-    return value.gt(0) ? value : bigNumberify(0);
+    return value > 0 ? value : 0n;
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
     if (!fromTokenInfo.maxPrice) {
-      return bigNumberify(0);
+      return 0n;
     }
-    return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
+    if (maxFromTokenInUSD === undefined) return undefined;
+
+    return bigMath
+      .mulDiv(maxFromTokenInUSD, expandDecimals(1, fromTokenInfo.decimals), fromTokenInfo.maxPrice)
+      .toString();
   }, [maxFromTokenInUSD, fromTokenInfo]);
 
-  let maxSwapAmountUsd = bigNumberify(0);
+  let maxSwapAmountUsd = 0n;
 
   if (maxToTokenOutUSD && maxFromTokenInUSD) {
-    maxSwapAmountUsd = maxToTokenOutUSD.lt(maxFromTokenInUSD) ? maxToTokenOutUSD : maxFromTokenInUSD;
+    maxSwapAmountUsd = maxToTokenOutUSD < maxFromTokenInUSD ? maxToTokenOutUSD : maxFromTokenInUSD;
   }
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
-      return bigNumberify(0);
+      return 0n;
     }
     let ratio = parseValue(triggerRatioValue, USD_DECIMALS);
-    if (ratio.eq(0)) {
-      return bigNumberify(0);
+    if (ratio == 0n) {
+      return 0n;
     }
     if (triggerRatioInverted) {
-      ratio = PRECISION.mul(PRECISION).div(ratio);
+      ratio = bigMath.mulDiv(PRECISION, PRECISION, ratio);
     }
     return ratio;
   }, [triggerRatioValue, triggerRatioInverted]);
@@ -479,7 +487,7 @@ export default function SwapBox(props) {
       const stableToken = stableTokens[i];
       const key = getPositionKey(account, stableToken.address, toTokenAddress, false, nativeTokenAddress);
       const position = positionsMap[key];
-      if (position && position.size && position.size.gt(0)) {
+      if (position && position.size && position.size > 0) {
         setShortCollateralAddress(position.collateralToken.address);
         return;
       }
@@ -556,10 +564,10 @@ export default function SwapBox(props) {
         }
 
         const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-        if (toTokenInfo && toTokenInfo.maxPrice && fromUsdMin && fromUsdMin.gt(0)) {
+        if (toTokenInfo && toTokenInfo.maxPrice && fromUsdMin && fromUsdMin > 0) {
           const leverageMultiplier = parseInt(leverageOption * BASIS_POINTS_DIVISOR);
           const toTokenPriceUsd =
-            !isMarketOrder && triggerPriceUsd && triggerPriceUsd.gt(0) ? triggerPriceUsd : toTokenInfo.maxPrice;
+            !isMarketOrder && triggerPriceUsd && triggerPriceUsd > 0 ? triggerPriceUsd : toTokenInfo.maxPrice;
 
           const { feeBasisPoints } = getNextToAmount(
             chainId,
@@ -575,18 +583,20 @@ export default function SwapBox(props) {
           );
           let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
-            fromUsdMinAfterFee = fromUsdMin.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+            fromUsdMinAfterFee = bigMath.mulDiv(
+              fromUsdMin,
+              BASIS_POINTS_DIVISOR_BIGINT - BigInt(feeBasisPoints),
+              BASIS_POINTS_DIVISOR_BIGINT
+            );
           }
 
-          const toNumerator = fromUsdMinAfterFee.mul(leverageMultiplier).mul(BASIS_POINTS_DIVISOR);
-          const toDenominator = bigNumberify(MARGIN_FEE_BASIS_POINTS)
-            .mul(leverageMultiplier)
-            .add(bigNumberify(BASIS_POINTS_DIVISOR).mul(BASIS_POINTS_DIVISOR));
+          const toNumerator = fromUsdMinAfterFee * BigInt(leverageMultiplier) * BASIS_POINTS_DIVISOR_BIGINT;
+          const toDenominator =
+            BigInt(MARGIN_FEE_BASIS_POINTS) * BigInt(leverageMultiplier) +
+            BASIS_POINTS_DIVISOR_BIGINT * BASIS_POINTS_DIVISOR_BIGINT;
 
-          const nextToUsd = toNumerator.div(toDenominator);
-
-          const nextToAmount = nextToUsd.mul(expandDecimals(1, toToken.decimals)).div(toTokenPriceUsd);
-
+          const nextToUsd = toNumerator / toDenominator;
+          const nextToAmount = bigMath.mulDiv(nextToUsd, expandDecimals(1, toToken.decimals), toTokenPriceUsd);
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
 
           setToValue(nextToValue);
@@ -600,12 +610,12 @@ export default function SwapBox(props) {
       }
 
       const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-      if (fromTokenInfo && fromTokenInfo.minPrice && toUsdMax && toUsdMax.gt(0)) {
-        const leverageMultiplier = parseInt(leverageOption * BASIS_POINTS_DIVISOR);
+      if (fromTokenInfo && fromTokenInfo.minPrice && toUsdMax && toUsdMax > 0) {
+        const leverageMultiplier = parseInt(BigInt(leverageOption) * BASIS_POINTS_DIVISOR_BIGINT);
 
-        const baseFromAmountUsd = toUsdMax.mul(BASIS_POINTS_DIVISOR).div(leverageMultiplier);
+        const baseFromAmountUsd = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, BigInt(leverageMultiplier));
 
-        let fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
+        let fees = bigMath.mulDiv(toUsdMax, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
 
         const { feeBasisPoints } = getNextToAmount(
           chainId,
@@ -621,13 +631,17 @@ export default function SwapBox(props) {
         );
 
         if (feeBasisPoints) {
-          const swapFees = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-          fees = fees.add(swapFees);
+          const swapFees = bigMath.mulDiv(baseFromAmountUsd, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
+          fees = fees + swapFees;
         }
 
-        const nextFromUsd = baseFromAmountUsd.add(fees);
+        const nextFromUsd = baseFromAmountUsd + fees;
 
-        const nextFromAmount = nextFromUsd.mul(expandDecimals(1, fromToken.decimals)).div(fromTokenInfo.minPrice);
+        const nextFromAmount = bigMath.mulDiv(
+          nextFromUsd,
+          expandDecimals(1, fromToken.decimals),
+          fromTokenInfo.minPrice
+        );
 
         const nextFromValue = formatAmountFree(nextFromAmount, fromToken.decimals, fromToken.decimals);
 
@@ -675,14 +689,14 @@ export default function SwapBox(props) {
     exitMarkPrice = swapOption === LONG ? toTokenInfo.minPrice : toTokenInfo.maxPrice;
   }
 
-  let leverage = bigNumberify(0);
-  let nextDelta = bigNumberify(0);
+  let leverage = 0n;
+  let nextDelta = 0n;
   let nextHasProfit = false;
 
-  if (fromUsdMin && toUsdMax && fromUsdMin.gt(0)) {
-    const fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-    if (fromUsdMin.sub(fees).gt(0)) {
-      leverage = toUsdMax.mul(BASIS_POINTS_DIVISOR).div(fromUsdMin.sub(fees));
+  if (fromUsdMin && toUsdMax && fromUsdMin > 0) {
+    const fees = bigMath.mulDiv(toUsdMax, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
+    if (fromUsdMin - fees > 0) {
+      leverage = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, fromUsdMin - fees);
     }
   }
 
@@ -692,7 +706,7 @@ export default function SwapBox(props) {
       nextDelta = existingPosition.delta;
       nextHasProfit = existingPosition.hasProfit;
     } else {
-      const data = calculatePositionDelta(triggerPriceUsd || bigNumberify(0), existingPosition);
+      const data = calculatePositionDelta(triggerPriceUsd || 0n, existingPosition);
       nextDelta = data.delta;
       nextHasProfit = data.hasProfit;
     }
@@ -730,10 +744,10 @@ export default function SwapBox(props) {
       }
     }
 
-    if (!fromAmount || fromAmount.eq(0)) {
+    if (!fromAmount) {
       return [t`Enter an amount`];
     }
-    if (!toAmount || toAmount.eq(0)) {
+    if (!toAmount) {
       return [t`Enter an amount`];
     }
 
@@ -746,7 +760,7 @@ export default function SwapBox(props) {
       fromTokenInfo &&
       fromTokenInfo.balance &&
       fromAmount &&
-      fromAmount.gt(fromTokenInfo.balance)
+      fromAmount > fromTokenInfo.balance
     ) {
       return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
@@ -754,12 +768,12 @@ export default function SwapBox(props) {
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
     if (!isMarketOrder) {
-      if (!triggerRatioValue || triggerRatio.eq(0)) {
+      if (!triggerRatioValue || triggerRatio == 0n) {
         return [t`Enter a price`];
       }
 
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate && currentRate.lt(triggerRatio)) {
+      if (currentRate && currentRate < triggerRatio) {
         return triggerRatioInverted ? [t`Price below Mark Price`] : [t`Price above Mark Price`];
       }
     }
@@ -770,7 +784,7 @@ export default function SwapBox(props) {
       toTokenAddress !== USDG_ADDRESS &&
       toTokenInfo &&
       toTokenInfo.availableAmount &&
-      toAmount.gt(toTokenInfo.availableAmount)
+      toAmount > toTokenInfo.availableAmount
     ) {
       return [t`Insufficient Liquidity`];
     }
@@ -779,7 +793,7 @@ export default function SwapBox(props) {
       toAmount &&
       toTokenInfo.bufferAmount &&
       toTokenInfo.poolAmount &&
-      toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))
+      toTokenInfo.bufferAmount > toTokenInfo.poolAmount - toAmount
     ) {
       return [t`Insufficient Liquidity`];
     }
@@ -787,14 +801,14 @@ export default function SwapBox(props) {
     if (
       fromUsdMin &&
       fromTokenInfo.maxUsdgAmount &&
-      fromTokenInfo.maxUsdgAmount.gt(0) &&
+      fromTokenInfo.maxUsdgAmount > 0 &&
       fromTokenInfo.usdgAmount &&
       fromTokenInfo.maxPrice
     ) {
       const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-      const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
+      const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
 
-      if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+      if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
         return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquiditySwap];
       }
     }
@@ -810,7 +824,7 @@ export default function SwapBox(props) {
       return [t`Page outdated, please refresh`];
     }
 
-    if (!toAmount || toAmount.eq(0)) {
+    if (!toAmount) {
       return [t`Enter an amount`];
     }
 
@@ -829,35 +843,35 @@ export default function SwapBox(props) {
       fromTokenInfo &&
       fromTokenInfo.balance &&
       fromAmount &&
-      fromAmount.gt(fromTokenInfo.balance)
+      fromAmount > fromTokenInfo.balance
     ) {
       return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
-    if (leverage && leverage.eq(0)) {
+    if (leverage !== undefined && leverage == 0) {
       return [t`Enter an amount`];
     }
-    if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd.eq(0))) {
+    if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd == 0n)) {
       return [t`Enter a price`];
     }
 
-    if (!hasExistingPosition && fromUsdMin && fromUsdMin.lt(expandDecimals(10, USD_DECIMALS))) {
+    if (!hasExistingPosition && fromUsdMin && fromUsdMin < expandDecimals(10, USD_DECIMALS)) {
       return [t`Min order: 10 USD`];
     }
 
-    if (leverage && leverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (leverage && leverage < 1.1 * BASIS_POINTS_DIVISOR) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (leverage && leverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (leverage && leverage > MAX_ALLOWED_LEVERAGE) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
-      if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
+      if (isLong && entryMarkPrice < triggerPriceUsd) {
         return [t`Price above Mark Price`];
       }
-      if (!isLong && entryMarkPrice.gt(triggerPriceUsd)) {
+      if (!isLong && entryMarkPrice > triggerPriceUsd) {
         return [t`Price below Mark Price`];
       }
     }
@@ -877,13 +891,13 @@ export default function SwapBox(props) {
           totalTokenWeights,
           isSwap
         );
-        requiredAmount = requiredAmount.add(swapAmount);
+        requiredAmount = requiredAmount + swapAmount;
 
         if (toToken && toTokenAddress !== USDG_ADDRESS) {
           if (!toTokenInfo.availableAmount) {
             return [t`Liquidity data not loaded`];
           }
-          if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
+          if (toTokenInfo.availableAmount && requiredAmount > toTokenInfo.availableAmount) {
             return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
           }
         }
@@ -891,7 +905,7 @@ export default function SwapBox(props) {
         if (
           toTokenInfo.poolAmount &&
           toTokenInfo.bufferAmount &&
-          toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
+          toTokenInfo.bufferAmount > toTokenInfo.poolAmount - swapAmount
         ) {
           return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
         }
@@ -899,25 +913,25 @@ export default function SwapBox(props) {
         if (
           fromUsdMin &&
           fromTokenInfo.maxUsdgAmount &&
-          fromTokenInfo.maxUsdgAmount.gt(0) &&
+          fromTokenInfo.maxUsdgAmount > 0 &&
           fromTokenInfo.minPrice &&
           fromTokenInfo.usdgAmount
         ) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-          const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
-          if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+          const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
+          if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
             return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceeded];
           }
         }
       }
 
       if (toTokenInfo && toTokenInfo.maxPrice) {
-        const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+        const sizeUsd = bigMath.mulDiv(toAmount, toTokenInfo.maxPrice, expandDecimals(1, toTokenInfo.decimals));
         if (
           toTokenInfo.maxGlobalLongSize &&
-          toTokenInfo.maxGlobalLongSize.gt(0) &&
+          toTokenInfo.maxGlobalLongSize > 0 &&
           toTokenInfo.maxAvailableLong &&
-          sizeUsd.gt(toTokenInfo.maxAvailableLong)
+          sizeUsd > toTokenInfo.maxAvailableLong
         ) {
           return [t`Max ${toTokenInfo.symbol} long exceeded`];
         }
@@ -925,8 +939,8 @@ export default function SwapBox(props) {
     }
 
     if (isShort) {
-      let stableTokenAmount = bigNumberify(0);
-      if (fromTokenAddress !== shortCollateralAddress && fromAmount && fromAmount.gt(0)) {
+      let stableTokenAmount = 0n;
+      if (fromTokenAddress !== shortCollateralAddress && fromAmount && fromAmount > 0) {
         const { amount: nextToAmount } = getNextToAmount(
           chainId,
           fromAmount,
@@ -940,14 +954,14 @@ export default function SwapBox(props) {
           isSwap
         );
         stableTokenAmount = nextToAmount;
-        if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
+        if (stableTokenAmount > shortCollateralToken.availableAmount) {
           return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateralIn];
         }
 
         if (
           shortCollateralToken.bufferAmount &&
           shortCollateralToken.poolAmount &&
-          shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
+          shortCollateralToken.bufferAmount > shortCollateralToken.poolAmount - stableTokenAmount
         ) {
           // suggest swapping to collateralToken
           return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateralIn];
@@ -955,13 +969,13 @@ export default function SwapBox(props) {
 
         if (
           fromTokenInfo.maxUsdgAmount &&
-          fromTokenInfo.maxUsdgAmount.gt(0) &&
+          fromTokenInfo.maxUsdgAmount > 0 &&
           fromTokenInfo.minPrice &&
           fromTokenInfo.usdgAmount
         ) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-          const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
-          if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+          const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
+          if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
             return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceededShorts];
           }
         }
@@ -976,10 +990,12 @@ export default function SwapBox(props) {
         return [t`Fetching token info...`];
       }
 
-      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
-      const sizeTokens = sizeUsd
-        .mul(expandDecimals(1, shortCollateralToken.decimals))
-        .div(shortCollateralToken.minPrice);
+      const sizeUsd = bigMath.mulDiv(toAmount, toTokenInfo.maxPrice, expandDecimals(1, toTokenInfo.decimals));
+      const sizeTokens = bigMath.mulDiv(
+        sizeUsd,
+        expandDecimals(1, shortCollateralToken.decimals),
+        shortCollateralToken.minPrice
+      );
 
       if (!toTokenInfo.maxAvailableShort) {
         return [t`Liquidity data not loaded`];
@@ -987,15 +1003,15 @@ export default function SwapBox(props) {
 
       if (
         toTokenInfo.maxGlobalShortSize &&
-        toTokenInfo.maxGlobalShortSize.gt(0) &&
+        toTokenInfo.maxGlobalShortSize > 0 &&
         toTokenInfo.maxAvailableShort &&
-        sizeUsd.gt(toTokenInfo.maxAvailableShort)
+        sizeUsd > toTokenInfo.maxAvailableShort
       ) {
         return [t`Max ${toTokenInfo.symbol} short exceeded`];
       }
 
-      stableTokenAmount = stableTokenAmount.add(sizeTokens);
-      if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
+      stableTokenAmount = stableTokenAmount + sizeTokens;
+      if (stableTokenAmount > shortCollateralToken.availableAmount) {
         return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientProfitLiquidity];
       }
     }
@@ -1118,7 +1134,7 @@ export default function SwapBox(props) {
     if (!isMarketOrder) return t`Create ${orderOption.charAt(0) + orderOption.substring(1).toLowerCase()} Order`;
 
     if (isSwap) {
-      if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
+      if (toUsdMax && toUsdMax < bigMath.mulDiv(fromUsdMin, 95n, 100n)) {
         return t`High Slippage, Swap Anyway`;
       }
       return t`Swap`;
@@ -1139,10 +1155,12 @@ export default function SwapBox(props) {
           totalTokenWeights,
           isSwap
         );
-        const nextToAmountUsd = nextToAmount
-          .mul(indexTokenInfo.minPrice)
-          .div(expandDecimals(1, indexTokenInfo.decimals));
-        if (fromTokenAddress === USDG_ADDRESS && nextToAmountUsd.lt(fromUsdMin.mul(98).div(100))) {
+        const nextToAmountUsd = bigMath.mulDiv(
+          nextToAmount,
+          indexTokenInfo.minPrice,
+          expandDecimals(1, indexTokenInfo.decimals)
+        );
+        if (fromTokenAddress === USDG_ADDRESS && nextToAmountUsd < bigMath.mulDiv(fromUsdMin, 98n, 100n)) {
           return t`High USDG Slippage, Long Anyway`;
         }
       }
@@ -1316,14 +1334,18 @@ export default function SwapBox(props) {
 
     path = replaceNativeTokenAddress(path, nativeTokenAddress);
     method = "swap";
-    value = bigNumberify(0);
-    if (toTokenAddress === AddressZero) {
+    value = 0n;
+    if (toTokenAddress === ZeroAddress) {
       method = "swapTokensToETH";
     }
 
-    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
+    minOut = bigMath.mulDiv(
+      toAmount,
+      BASIS_POINTS_DIVISOR_BIGINT - BigInt(allowedSlippage),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
     params = [path, fromAmount, minOut, account];
-    if (fromTokenAddress === AddressZero) {
+    if (fromTokenAddress === ZeroAddress) {
       method = "swapETHToTokens";
       value = fromAmount;
       params = [path, minOut, account];
@@ -1398,25 +1420,25 @@ export default function SwapBox(props) {
       });
   };
 
-  let referralCode = ethers.constants.HashZero;
+  let referralCode = ethers.ZeroHash;
   if (!attachedOnChain && userReferralCode) {
     referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {
     setIsSubmitting(true);
-    const tokenAddress0 = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
-    const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
+    const tokenAddress0 = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
+    const indexTokenAddress = toTokenAddress === ZeroAddress ? nativeTokenAddress : toTokenAddress;
     let path = [indexTokenAddress]; // assume long
     if (toTokenAddress !== fromTokenAddress) {
       path = [tokenAddress0, indexTokenAddress];
     }
 
-    if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
+    if (fromTokenAddress === ZeroAddress && toTokenAddress === nativeTokenAddress) {
       path = [nativeTokenAddress];
     }
 
-    if (fromTokenAddress === nativeTokenAddress && toTokenAddress === AddressZero) {
+    if (fromTokenAddress === nativeTokenAddress && toTokenAddress === ZeroAddress) {
       path = [nativeTokenAddress];
     }
 
@@ -1429,11 +1451,11 @@ export default function SwapBox(props) {
 
     const refPrice = isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice;
     const priceBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
-    const priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
+    const priceLimit = bigMath.mulDiv(refPrice, BigInt(priceBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
 
-    const boundedFromAmount = fromAmount ? fromAmount : bigNumberify(0);
+    const boundedFromAmount = fromAmount ? fromAmount : 0n;
 
-    if (fromAmount && fromAmount.gt(0) && fromTokenAddress === USDG_ADDRESS && isLong) {
+    if (fromAmount && fromAmount > 0 && fromTokenAddress === USDG_ADDRESS && isLong) {
       const { amount: nextToAmount, path: multiPath } = getNextToAmount(
         chainId,
         fromAmount,
@@ -1446,7 +1468,7 @@ export default function SwapBox(props) {
         totalTokenWeights,
         isSwap
       );
-      if (nextToAmount.eq(0)) {
+      if (nextToAmount == 0n) {
         helperToast.error(t`Insufficient Liquidity`);
         return;
       }
@@ -1465,14 +1487,14 @@ export default function SwapBox(props) {
       priceLimit, // _acceptablePrice
       minExecutionFee, // _executionFee
       referralCode, // _referralCode
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     let method = "createIncreasePosition";
     let value = minExecutionFee;
-    if (fromTokenAddress === AddressZero) {
+    if (fromTokenAddress === ZeroAddress) {
       method = "createIncreasePositionETH";
-      value = boundedFromAmount.add(minExecutionFee);
+      value = boundedFromAmount + minExecutionFee;
       params = [
         path, // _path
         indexTokenAddress, // _indexToken
@@ -1482,7 +1504,7 @@ export default function SwapBox(props) {
         priceLimit, // _acceptablePrice
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
-        AddressZero, // _callbackTarget
+        ZeroAddress, // _callbackTarget
       ];
     }
 
@@ -1522,7 +1544,7 @@ export default function SwapBox(props) {
         const key = getPositionKey(account, path[path.length - 1], indexTokenAddress, isLong);
         let nextSize = toUsdMax;
         if (hasExistingPosition) {
-          nextSize = existingPosition.size.add(toUsdMax);
+          nextSize = existingPosition.size + toUsdMax;
         }
 
         pendingPositions[key] = {
@@ -1646,12 +1668,12 @@ export default function SwapBox(props) {
     }
 
     if (isSwap) {
-      if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
+      if (fromTokenAddress === ZeroAddress && toTokenAddress === nativeTokenAddress) {
         wrap();
         return;
       }
 
-      if (fromTokenAddress === nativeTokenAddress && toTokenAddress === AddressZero) {
+      if (fromTokenAddress === nativeTokenAddress && toTokenAddress === ZeroAddress) {
         unwrap();
         return;
       }
@@ -1686,15 +1708,15 @@ export default function SwapBox(props) {
         isSwap
       );
       if (feeBasisPoints !== undefined) {
-        fees = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+        fees = bigMath.mulDiv(fromAmount, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
         const feeTokenPrice =
           fromTokenInfo.address === USDG_ADDRESS ? expandDecimals(1, USD_DECIMALS) : fromTokenInfo.maxPrice;
-        feesUsd = fees.mul(feeTokenPrice).div(expandDecimals(1, fromTokenInfo.decimals));
+        feesUsd = bigMath.mulDiv(fees, feeTokenPrice, expandDecimals(1, fromTokenInfo.decimals));
       }
       feeBps = feeBasisPoints;
     }
   } else if (toUsdMax) {
-    positionFee = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
+    positionFee = bigMath.mulDiv(toUsdMax, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
     feesUsd = positionFee;
 
     const { feeBasisPoints } = getNextToAmount(
@@ -1710,8 +1732,8 @@ export default function SwapBox(props) {
       isSwap
     );
     if (feeBasisPoints) {
-      swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-      feesUsd = feesUsd.add(swapFees);
+      swapFees = bigMath.mulDiv(fromUsdMin, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
+      feesUsd = feesUsd + swapFees;
     }
     feeBps = feeBasisPoints;
   }
@@ -1754,25 +1776,25 @@ export default function SwapBox(props) {
   let borrowFeeText;
   if (isLong && toTokenInfo && toTokenInfo.fundingRate) {
     borrowFeeText = formatAmount(toTokenInfo.fundingRate, 4, 4) + "% / 1h";
-    if (toTokenInfo.fundingRate.eq(0)) {
+    if (toTokenInfo.fundingRate == 0n) {
       // hasZeroBorrowFee = true
     }
   }
   if (isShort && shortCollateralToken && shortCollateralToken.fundingRate) {
     borrowFeeText = formatAmount(shortCollateralToken.fundingRate, 4, 4) + "% / 1h";
-    if (shortCollateralToken.fundingRate.eq(0)) {
+    if (shortCollateralToken.fundingRate == 0n) {
       // hasZeroBorrowFee = true
     }
   }
 
-  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0) || bigNumberify(0);
+  const fromUsdMinAfterFees = fromUsdMin === undefined ? 0n : fromUsdMin - (swapFees ?? 0n) - (positionFee ?? 0n);
   const liquidationPrice = getLiquidationPrice({
     isLong,
-    size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
+    size: hasExistingPosition ? existingPosition.size + (toUsdMax ?? 0n) : toUsdMax ?? 0n,
     collateral: hasExistingPosition
-      ? existingPosition.collateralAfterFee.add(fromUsdMinAfterFees)
-      : fromUsdMinAfterFees ?? bigNumberify(0),
-    averagePrice: nextAveragePrice ?? bigNumberify(0),
+      ? existingPosition.collateralAfterFee + fromUsdMinAfterFees
+      : fromUsdMinAfterFees ?? 0n,
+    averagePrice: nextAveragePrice ?? 0n,
   });
 
   const existingLiquidationPrice = existingPosition
@@ -1789,8 +1811,8 @@ export default function SwapBox(props) {
 
   if (hasExistingPosition) {
     leverage = getLeverage({
-      size: existingPosition.size.add(toUsdMax || 0),
-      collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
+      size: existingPosition.size + (toUsdMax || 0n),
+      collateral: existingPosition.collateralAfterFee + fromUsdMinAfterFees,
       delta: nextDelta,
       hasProfit: nextHasProfit,
       includeDelta: savedIsPnlInLeverage,
@@ -1820,12 +1842,10 @@ export default function SwapBox(props) {
       return;
     }
 
-    let maxAvailableAmount = fromToken?.isNative
-      ? minResidualAmount && fromBalance.sub(minResidualAmount)
-      : fromBalance;
+    let maxAvailableAmount = fromToken?.isNative ? minResidualAmount && fromBalance - minResidualAmount : fromBalance;
 
-    if (maxAvailableAmount.isNegative()) {
-      maxAvailableAmount = bigNumberify(0);
+    if (maxAvailableAmount < 0) {
+      maxAvailableAmount = 0n;
     }
 
     const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
@@ -1840,9 +1860,9 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken?.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
+    const maxAvailableAmount = fromToken?.isNative ? fromBalance - minResidualAmount : fromBalance;
     const shoudShowMaxButtonBasedOnGasAmount = fromToken?.isNative
-      ? minResidualAmount && fromBalance.gt(minResidualAmount)
+      ? minResidualAmount && fromBalance > minResidualAmount
       : true;
     return (
       shoudShowMaxButtonBasedOnGasAmount &&
@@ -2183,15 +2203,15 @@ export default function SwapBox(props) {
                   <Trans>Leverage</Trans>
                 </div>
                 <div className="align-right">
-                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                  {hasExistingPosition && toAmount && toAmount > 0 && (
                     <div className="inline-block muted">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
-                  {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
-                  {!toAmount && leverage && leverage.gt(0) && `-`}
-                  {leverage && leverage.eq(0) && `-`}
+                  {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
+                  {!toAmount && leverage && leverage > 0 && `-`}
+                  {leverage !== undefined && leverage == 0n && `-`}
                 </div>
               </div>
               <div className="Exchange-info-row">
@@ -2199,7 +2219,7 @@ export default function SwapBox(props) {
                   <Trans>Entry Price</Trans>
                 </div>
                 <div className="align-right">
-                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                  {hasExistingPosition && toAmount && toAmount > 0 && (
                     <div className="inline-block muted">
                       ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
@@ -2214,7 +2234,7 @@ export default function SwapBox(props) {
                   <Trans>Liq. Price</Trans>
                 </div>
                 <div className="align-right">
-                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                  {hasExistingPosition && toAmount && toAmount > 0 && (
                     <div className="inline-block muted">
                       ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />

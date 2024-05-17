@@ -12,7 +12,6 @@ import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
 import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -39,13 +38,13 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
     const tokenInfo = tokens.find((token) => token.address.toLowerCase() === tokenAddress);
     return {
       tokenInfo,
-      tokenAmount: BigNumber.from(incentive.amounts[index]),
-      tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
+      tokenAmount: BigInt(incentive.amounts[index]),
+      tokenUsd: BigInt(incentive.amountsInUsd[index]),
       id: `${incentive.id}-${tokenAddress}`,
     };
   });
 
-  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigNumber.from(0));
+  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total + tokenInfo.tokenUsd, 0n);
 
   return {
     ...incentive,

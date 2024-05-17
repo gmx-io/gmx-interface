@@ -14,13 +14,14 @@ import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
+import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
-import { BigNumber, ethers } from "ethers";
-import cx from "classnames";
+import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
@@ -31,40 +32,45 @@ import {
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { getIcons } from "config/icons";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
+import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
+import useVestingData from "domain/vesting/useVestingData";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { shortenAddressOrEns } from "lib/wallets";
 import { useENS } from "lib/legacy";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   BN_ZERO,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
@@ -72,20 +78,14 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import "./StakeV2.css";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import PageTitle from "components/PageTitle/PageTitle";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import useVestingData from "domain/vesting/useVestingData";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { shortenAddressOrEns } from "lib/wallets";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
+import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function StakeModal(props) {
   const {
@@ -110,7 +110,7 @@ function StakeModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -124,13 +124,13 @@ function StakeModal(props) {
   );
 
   let amount = parseValue(value, 18);
-  const needApproval = farmAddress !== AddressZero && tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -276,41 +276,44 @@ function UnstakeModal(props) {
 
   if (
     multiplierPointsAmount &&
-    multiplierPointsAmount.gt(0) &&
+    multiplierPointsAmount > 0 &&
     amount &&
-    amount.gt(0) &&
+    amount > 0 &&
     bonusGmxInFeeGmx &&
-    bonusGmxInFeeGmx.gt(0)
+    bonusGmxInFeeGmx > 0
   ) {
-    burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
+    burnAmount = bigMath.mulDiv(multiplierPointsAmount, amount, bonusGmxInFeeGmx);
   }
 
-  const unstakeGmxPercentage = maxAmount?.gt(0) ? amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount) : BigNumber.from(0);
+  const unstakeGmxPercentage =
+    maxAmount > 0 && amount ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount) : 0n;
 
   let unstakeBonusLostPercentage;
   if (
-    amount?.gt(0) &&
-    multiplierPointsAmount?.gt(0) &&
-    burnAmount?.gt(0) &&
-    processedData.esGmxInStakedGmx &&
-    processedData.gmxInStakedGmx
+    amount &&
+    amount > 0 &&
+    multiplierPointsAmount &&
+    multiplierPointsAmount > 0 &&
+    processedData.esGmxInStakedGmx !== undefined &&
+    processedData.gmxInStakedGmx !== undefined
   ) {
-    unstakeBonusLostPercentage = amount
-      ?.add(burnAmount)
-      .mul(BASIS_POINTS_DIVISOR)
-      ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
+    unstakeBonusLostPercentage = bigMath.mulDiv(
+      amount + burnAmount,
+      BASIS_POINTS_DIVISOR_BIGINT,
+      multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx
+    );
   }
 
   const votingPowerBurnAmount =
-    unstakeGmxPercentage && govTokenAmount
-      ? govTokenAmount?.mul(unstakeGmxPercentage)?.div(BASIS_POINTS_DIVISOR)
-      : BigNumber.from(0);
+    unstakeGmxPercentage && govTokenAmount && unstakeGmxPercentage > 0 && govTokenAmount > 0
+      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
 
   const getError = () => {
     if (!amount) {
       return t`Enter an amount`;
     }
-    if (amount.gt(maxAmount)) {
+    if (amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -376,12 +379,12 @@ function UnstakeModal(props) {
             {unstakingTokenSymbol}
           </div>
         </BuyInputSection>
-        {reservedAmount && reservedAmount.gt(0) && (
+        {reservedAmount && reservedAmount > 0 && (
           <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && amount && !amount.gt(maxAmount) && (
+        {burnAmount > 0 && unstakeBonusLostPercentage > 0 && amount !== undefined && amount < maxAmount && (
           <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
@@ -435,29 +438,29 @@ function VesterDepositModal(props) {
 
   let amount = parseValue(value, 18);
 
-  let nextReserveAmount = reserveAmount;
+  let nextReserveAmount: bigint = reserveAmount;
 
   let nextDepositAmount = vestedAmount;
   if (amount) {
-    nextDepositAmount = vestedAmount.add(amount);
+    nextDepositAmount = vestedAmount + amount;
   }
 
-  let additionalReserveAmount = bigNumberify(0);
-  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0) && nextReserveAmount) {
-    nextReserveAmount = nextDepositAmount.mul(averageStakedAmount).div(maxVestableAmount);
-    if (nextReserveAmount?.gt(reserveAmount)) {
-      additionalReserveAmount = nextReserveAmount.sub(reserveAmount);
+  let additionalReserveAmount = 0n;
+  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount > 0 && nextReserveAmount) {
+    nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
+    if (nextReserveAmount > reserveAmount) {
+      additionalReserveAmount = nextReserveAmount - reserveAmount;
     }
   }
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (!amount) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
-    if (nextReserveAmount && nextReserveAmount?.gt(maxReserveAmount)) {
+    if (nextReserveAmount && nextReserveAmount > maxReserveAmount) {
       return t`Insufficient staked tokens`;
     }
   };
@@ -571,7 +574,7 @@ function VesterDepositModal(props) {
                 <div className="align-right">
                   <TooltipWithPortal
                     handle={`${formatAmount(
-                      reserveAmount && reserveAmount.gte(additionalReserveAmount)
+                      reserveAmount && reserveAmount >= additionalReserveAmount
                         ? reserveAmount
                         : additionalReserveAmount,
                       18,
@@ -592,7 +595,7 @@ function VesterDepositModal(props) {
                             value={formatAmount(additionalReserveAmount, 18, 2, true)}
                             showDollar={false}
                           />
-                          {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                          {amount && nextReserveAmount > maxReserveAmount && (
                             <>
                               <br />
                               <Trans>
@@ -765,7 +768,7 @@ function CompoundModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -779,7 +782,7 @@ function CompoundModal(props) {
     }
   );
 
-  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
+  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards > tokenAllowance;
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !isCompounding && !isUndelegatedGovToken;
@@ -882,7 +885,7 @@ function CompoundModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
-        {recommendStakeGmx.gt(0) && (
+        {recommendStakeGmx > 0 && (
           <AlertInfo type="info">
             <Trans>
               You have reached the maximum Boost Percentage. Stake an additional{" "}
@@ -986,7 +989,7 @@ function ClaimModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const isPrimaryEnabled = () => {
     return !isClaiming && !isUndelegatedGovToken;
@@ -1091,7 +1094,7 @@ function AffiliateClaimModal(props) {
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const isPrimaryEnabled = () => {
-    if (totalVesterRewards.isZero()) {
+    if (totalVesterRewards == 0) {
       return false;
     }
 
@@ -1160,7 +1163,7 @@ export default function StakeV2() {
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
-  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
+  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<bigint | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
   const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
   const [stakingTokenAddress, setStakingTokenAddress] = useState("");
@@ -1169,8 +1172,8 @@ export default function StakeV2() {
 
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
-  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<BigNumber | undefined>(undefined);
+  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
+  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<bigint | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1178,17 +1181,17 @@ export default function StakeV2() {
   const [isVesterDepositModalVisible, setIsVesterDepositModalVisible] = useState(false);
   const [vesterDepositTitle, setVesterDepositTitle] = useState("");
   const [vesterDepositStakeTokenLabel, setVesterDepositStakeTokenLabel] = useState("");
-  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositBalance, setVesterDepositBalance] = useState<BigNumber | undefined>();
-  const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState<BigNumber | undefined>();
-  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<
-    BigNumber | undefined | string
-  >("");
-  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<BigNumber | undefined>();
+  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<bigint | undefined>();
+  const [vesterDepositBalance, setVesterDepositBalance] = useState<bigint | undefined>();
+  const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState<bigint | undefined>();
+  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<bigint | undefined>();
+  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<bigint | undefined | string>(
+    ""
+  );
+  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<bigint | undefined>();
   const [vesterDepositValue, setVesterDepositValue] = useState("");
-  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositMaxReserveAmount, setVesterDepositMaxReserveAmount] = useState<BigNumber | undefined>();
+  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<bigint | undefined>();
+  const [vesterDepositMaxReserveAmount, setVesterDepositMaxReserveAmount] = useState<bigint | undefined>();
   const [vesterDepositAddress, setVesterDepositAddress] = useState("");
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
@@ -1348,12 +1351,12 @@ export default function StakeV2() {
 
   let esGmxSupplyUsd;
   if (esGmxSupply && gmxPrice) {
-    esGmxSupplyUsd = esGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+    esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
@@ -1377,44 +1380,45 @@ export default function StakeV2() {
     stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
-    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
+    maxBoostBasicPoints === undefined ? undefined : maxBoostBasicPoints / BASIS_POINTS_DIVISOR_BIGINT
   );
 
   let hasMultiplierPoints = false;
   let multiplierPointsAmount;
   if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
-    multiplierPointsAmount = accumulatedBnGMXAmount.add(processedData.bnGmxInFeeGmx);
-    if (multiplierPointsAmount.gt(0)) {
+    multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
+    if (multiplierPointsAmount > 0) {
       hasMultiplierPoints = true;
     }
   }
+
   let totalRewardTokens;
 
-  if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {
-    totalRewardTokens = processedData.bnGmxInFeeGmx.add(processedData.bonusGmxInFeeGmx);
+  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
+    totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
   }
 
-  let totalRewardAndLpTokens = totalRewardTokens ?? bigNumberify(0);
-  if (processedData?.glpBalance) {
-    totalRewardAndLpTokens = totalRewardAndLpTokens.add(processedData.glpBalance);
+  let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
+  if (processedData?.glpBalance !== undefined) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens + processedData.glpBalance;
   }
-  if (userTotalGmInfo?.balance?.gt(0)) {
-    totalRewardAndLpTokens = totalRewardAndLpTokens.add(userTotalGmInfo.balance);
+  if ((userTotalGmInfo?.balance ?? 0n) > 0) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens + (userTotalGmInfo?.balance ?? 0n);
   }
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  if (!totalGmxStaked.isZero() && gmxPrice) {
-    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (totalGmxStaked && gmxPrice) {
+    stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
-    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (totalGmxSupply && gmxPrice) {
+    totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  let maxUnstakeableGmx = bigNumberify(0);
+  let maxUnstakeableGmx = 0n;
   if (
     totalRewardTokens &&
     vestingData &&
@@ -1422,11 +1426,11 @@ export default function StakeV2() {
     multiplierPointsAmount &&
     processedData?.bonusGmxInFeeGmx
   ) {
-    const availableTokens = totalRewardTokens.sub(vestingData.gmxVesterPairAmount);
+    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount.add(stakedTokens);
-    if (divisor.gt(0)) {
-      maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
+    const divisor = multiplierPointsAmount + stakedTokens;
+    if (divisor > 0) {
+      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
     }
   }
 
@@ -1453,15 +1457,15 @@ export default function StakeV2() {
     setStakeValue("");
     setStakingTokenSymbol("esGMX");
     setStakingTokenAddress(esGmxAddress);
-    setStakingFarmAddress(AddressZero);
+    setStakingFarmAddress(ZeroAddress);
     setStakeMethodName("stakeEsGmx");
   };
 
   const showGmxVesterDepositModal = () => {
     if (!vestingData) return;
 
-    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.vestedAmount);
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount - vestingData.gmxVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1483,8 +1487,8 @@ export default function StakeV2() {
   const showGlpVesterDepositModal = () => {
     if (!vestingData) return;
 
-    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.vestedAmount);
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount - vestingData.glpVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1504,7 +1508,7 @@ export default function StakeV2() {
   };
 
   const showGmxVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+    if (!vestingData || !vestingData.gmxVesterVestedAmount) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1515,7 +1519,7 @@ export default function StakeV2() {
   };
 
   const showGlpVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+    if (!vestingData || !vestingData.glpVesterVestedAmount) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1536,9 +1540,9 @@ export default function StakeV2() {
     if (
       processedData?.gmxInStakedGmx &&
       vestingData &&
-      vestingData.gmxVesterPairAmount.gt(0) &&
+      vestingData.gmxVesterPairAmount > 0 &&
       maxUnstakeableGmx &&
-      maxUnstakeableGmx.lt(processedData.gmxInStakedGmx)
+      maxUnstakeableGmx < processedData.gmxInStakedGmx
     ) {
       maxAmount = maxUnstakeableGmx;
     }
@@ -1558,9 +1562,9 @@ export default function StakeV2() {
     if (
       maxAmount &&
       vestingData &&
-      vestingData.gmxVesterPairAmount.gt(0) &&
+      vestingData.gmxVesterPairAmount > 0 &&
       maxUnstakeableGmx &&
-      maxUnstakeableGmx.lt(maxAmount)
+      maxUnstakeableGmx < maxAmount
     ) {
       maxAmount = maxUnstakeableGmx;
     }
@@ -1579,10 +1583,9 @@ export default function StakeV2() {
       return;
     }
 
-    let remainingVestableAmount = vestingData?.affiliateVester?.maxVestableAmount?.sub(
-      vestingData?.affiliateVester?.vestedAmount
-    );
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount =
+      vestingData.affiliateVester.maxVestableAmount - vestingData.affiliateVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1603,7 +1606,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterWithdrawModal() {
-    if (!vestingData?.affiliateVesterVestedAmount?.gt(0)) {
+    if (!vestingData?.affiliateVesterVestedAmount || vestingData.affiliateVesterVestedAmount <= 0) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1612,7 +1615,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterClaimModal() {
-    if (!vestingData?.affiliateVesterClaimable?.gt(0)) {
+    if (!vestingData?.affiliateVesterClaimable || vestingData?.affiliateVesterClaimable <= 0) {
       helperToast.error(t`You have no GMX tokens to claim.`);
       return;
     }
@@ -1643,7 +1646,7 @@ export default function StakeV2() {
         </Trans>
         <br />
         <br />
-        {recommendStakeGmx.gt(0) ? (
+        {recommendStakeGmx > 0 ? (
           <Trans>
             You have reached the maximum Boost Percentage. Stake an additional{" "}
             {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
@@ -1685,25 +1688,25 @@ export default function StakeV2() {
   }, []);
 
   let earnMsg;
-  if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
+  if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
     let gmxAmountStr;
-    if (processedData?.gmxInStakedGmx?.gt(0)) {
+    if (processedData?.gmxInStakedGmx && processedData.gmxInStakedGmx > 0) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
     }
     let esGmxAmountStr;
-    if (processedData?.esGmxInStakedGmx?.gt(0)) {
+    if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
     let mpAmountStr;
-    if (processedData?.bnGmxInFeeGmx?.gt(0)) {
+    if (processedData?.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx > 0) {
       mpAmountStr = formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true) + " MP";
     }
     let glpStr;
-    if (processedData?.glpBalance?.gt(0)) {
+    if (processedData?.glpBalance && processedData.glpBalance > 0) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
     }
     let gmStr;
-    if (userTotalGmInfo?.balance && userTotalGmInfo?.balance.gt(0)) {
+    if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
@@ -1938,7 +1941,9 @@ export default function StakeV2() {
                         handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
                         renderContent={() => (
                           <>
-                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
+                            govTokenAmount &&
+                            govTokenAmount > 0 ? (
                               <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
@@ -2078,7 +2083,7 @@ export default function StakeV2() {
                 </div>
                 <div>
                   {!totalGmxStaked && "..."}
-                  {totalGmxStaked && (
+                  {(totalGmxStaked && (
                     <Tooltip
                       position="bottom-end"
                       className="nowrap"
@@ -2096,7 +2101,8 @@ export default function StakeV2() {
                         />
                       )}
                     />
-                  )}
+                  )) ||
+                    null}
                 </div>
               </div>
               <div className="App-card-row">
@@ -2104,12 +2110,13 @@ export default function StakeV2() {
                   <Trans>Total Supply</Trans>
                 </div>
                 {!totalGmxSupply && "..."}
-                {totalGmxSupply && (
+                {(totalGmxSupply && (
                   <div>
                     {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
                   </div>
-                )}
+                )) ||
+                  null}
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
@@ -2262,7 +2269,7 @@ export default function StakeV2() {
                               showDollar={false}
                             />
 
-                            {processedData?.glpAprForEsGmx?.gt(0) && (
+                            {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0 && (
                               <StatsTooltipRow
                                 label="Escrowed GMX APR"
                                 value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
@@ -2734,7 +2741,7 @@ export default function StakeV2() {
                 </div>
               </div>
             </div>
-            {vestingData?.affiliateVesterMaxVestableAmount?.gt(0) && (
+            {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0 && (
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
                   <div className="inline-items-center">
@@ -2804,7 +2811,8 @@ export default function StakeV2() {
                   </div>
                 </div>
               </div>
-            )}
+            )) ||
+              null}
           </div>
         </div>
       </div>

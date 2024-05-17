@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
@@ -23,6 +22,7 @@ import {
 } from "../trade";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, OrderTxnType } from "./types";
+import { bigMath } from "lib/bigmath";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -97,8 +97,8 @@ export function isLimitIncreaseOrderType(orderType: OrderType) {
 export function getSwapOrderTitle(p: {
   initialCollateralToken: Token;
   targetCollateralToken: Token;
-  initialCollateralAmount: BigNumber;
-  minOutputAmount: BigNumber;
+  initialCollateralAmount: bigint;
+  minOutputAmount: bigint;
 }) {
   const { initialCollateralToken, initialCollateralAmount, targetCollateralToken, minOutputAmount } = p;
 
@@ -117,7 +117,7 @@ export function getPositionOrderTitle(p: {
   orderType: OrderType;
   isLong: boolean;
   indexToken: Token;
-  sizeDeltaUsd: BigNumber;
+  sizeDeltaUsd: bigint;
 }) {
   const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
 
@@ -194,7 +194,7 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    const toAmount = order.minOutputAmount.sub(priceImpactAmount || 0).add(swapFeeAmount || 0);
+    const toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
 
     const triggerRatio = getTokensRatioByAmounts({
       fromToken: initialCollateralToken,
@@ -288,7 +288,7 @@ export function getOrderErrors(p: {
   marketsInfoData: MarketsInfoData;
   positionsInfoData: PositionsInfoData | undefined;
   findSwapPath: FindSwapPath;
-  uiFeeFactor: BigNumber;
+  uiFeeFactor: bigint;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData } = p;
 
@@ -307,7 +307,7 @@ export function getOrderErrors(p: {
       order.targetCollateralToken.prices.maxPrice
     )!;
 
-    if (swapPathLiquidity.lt(minOutputUsd)) {
+    if (swapPathLiquidity < minOutputUsd) {
       errors.push({
         msg: t`There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met.`,
         level: "error",
@@ -354,7 +354,7 @@ export function getOrderErrors(p: {
       acceptablePrice: positionOrder.acceptablePrice,
     });
 
-    if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
+    if (currentAcceptablePriceDeltaBps < 0 && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
       const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
       const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
       const formattedOrderAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
@@ -372,7 +372,7 @@ export function getOrderErrors(p: {
   if (positionOrder.orderType === OrderType.LimitIncrease) {
     const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
 
-    if (currentLiquidity.lt(positionOrder.sizeDeltaUsd)) {
+    if (currentLiquidity < positionOrder.sizeDeltaUsd) {
       errors.push({
         msg: t`There may not be sufficient liquidity to execute your Order when the Price conditions are met.`,
         level: "error",
@@ -393,7 +393,7 @@ export function getOrderErrors(p: {
         order.initialCollateralToken.prices.maxPrice
       )!;
 
-      if (swapPathLiquidity.lt(collateralSwapUsd)) {
+      if (swapPathLiquidity < collateralSwapUsd) {
         errors.push({
           msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
           level: "error",
@@ -425,8 +425,12 @@ export function getOrderErrors(p: {
     const triggerPrice = (order as PositionOrderInfo).triggerPrice;
 
     const isInvalidTriggerPrice = position.isLong
-      ? position.liquidationPrice?.gt(triggerPrice)
-      : position.liquidationPrice?.lt(triggerPrice);
+      ? position.liquidationPrice === undefined
+        ? undefined
+        : position.liquidationPrice > triggerPrice
+      : position.liquidationPrice === undefined
+      ? undefined
+      : position.liquidationPrice < triggerPrice;
 
     if (isInvalidTriggerPrice) {
       errors.push({
@@ -449,7 +453,7 @@ export function getOrderErrors(p: {
         order.targetCollateralToken.prices.maxPrice
       )!;
 
-      if (swapPathLiquidity.lt(minOutputUsd)) {
+      if (swapPathLiquidity < minOutputUsd) {
         errors.push({
           msg: t`There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met.`,
           level: "error",
@@ -515,15 +519,15 @@ export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?:
     }
 
     // Compare by trigger price
-    const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
-    if (!triggerPriceComparison.isZero()) return triggerPriceComparison.isNegative() ? -1 : 1;
+    const triggerPriceComparison = a.triggerPrice - b.triggerPrice;
+    if (triggerPriceComparison !== 0n) return bigMath.sign(triggerPriceComparison);
 
     // Compare by order type
     const orderTypeComparison = a.orderType - b.orderType;
     if (orderTypeComparison) return orderTypeComparison;
 
     // Finally, sort by size delta USD
-    return b.sizeDeltaUsd.sub(a.sizeDeltaUsd).isNegative() ? -1 : 1;
+    return bigMath.sign(b.sizeDeltaUsd - a.sizeDeltaUsd);
   });
 }
 
@@ -538,7 +542,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
       if (collateralComparison) return collateralComparison;
     }
 
-    return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
+    return bigMath.sign(a.minOutputAmount - b.minOutputAmount);
   });
 }
 
@@ -546,7 +550,7 @@ function getIsMaxLeverageError(
   order: PositionOrderInfo,
   position: PositionInfo | undefined,
   findSwapPath: FindSwapPath,
-  uiFeeFactor: BigNumber
+  uiFeeFactor: bigint
 ) {
   const swapAmounts = getSwapAmountsByFromValue({
     tokenIn: order.initialCollateralToken,
@@ -575,11 +579,11 @@ function getIsMaxLeverageError(
   if (!collateralDeltaUsd) return false;
 
   const leverage = getLeverage({
-    sizeInUsd: order.sizeDeltaUsd.add(position?.sizeInUsd ?? BigNumber.from(0)),
-    collateralUsd: collateralDeltaUsd.add(position?.collateralUsd ?? BigNumber.from(0)),
+    sizeInUsd: order.sizeDeltaUsd + (position?.sizeInUsd ?? 0n),
+    collateralUsd: collateralDeltaUsd + (position?.collateralUsd ?? 0n),
     pnl: undefined,
-    pendingBorrowingFeesUsd: BigNumber.from(0),
-    pendingFundingFeesUsd: BigNumber.from(0),
+    pendingBorrowingFeesUsd: 0n,
+    pendingFundingFeesUsd: 0n,
   });
 
   if (!leverage) return false;
@@ -595,7 +599,7 @@ export function getPendingOrderFromParams(
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
-  let minOutputAmount = BigNumber.from(0);
+  let minOutputAmount = 0n;
   if ("minOutputUsd" in p) {
     shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd;
   }

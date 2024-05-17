@@ -7,14 +7,13 @@ import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
 import "./ApproveTokenButton.scss";
 import useWallet from "lib/wallets/useWallet";
-import { BigNumber } from "ethers";
 
 type Props = {
   spenderAddress: string;
   tokenAddress: string;
   tokenSymbol: string;
   isApproved?: boolean;
-  approveAmount?: BigNumber;
+  approveAmount?: bigint;
   customLabel?: string;
 };
 

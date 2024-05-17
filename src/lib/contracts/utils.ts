@@ -1,46 +1,43 @@
-import { Provider } from "@ethersproject/providers";
-import { BigNumber, Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
-import { bigNumberify } from "../numbers";
+import { Contract, Provider } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || 0n;
 
-  const gasPrice = await provider.getGasPrice();
+  const feeData = await provider.getFeeData();
+  const gasPrice = feeData.gasPrice;
 
   if (maxGasPrice) {
-    if (gasPrice.gt(maxGasPrice)) {
+    if (gasPrice && gasPrice > maxGasPrice) {
       maxGasPrice = gasPrice;
     }
-
-    const feeData = await provider.getFeeData();
 
     // the wallet provider might not return maxPriorityFeePerGas in feeData
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas) {
       txnOpts.maxFeePerGas = maxGasPrice;
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas + premium;
       return;
     }
   }
 
-  txnOpts.gasPrice = gasPrice.add(premium);
+  txnOpts.gasPrice = gasPrice + premium;
   return;
 }
 
-export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: BigNumber | number) {
-  const defaultValue = bigNumberify(0);
+export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: bigint | number) {
+  const defaultValue = 0n;
 
   if (!value) {
     value = defaultValue;
   }
 
-  let gasLimit = await contract.estimateGas[method](...params, { value });
+  let gasLimit = await contract[method].estimateGas(...params, { value });
 
-  if (gasLimit.lt(22000)) {
-    gasLimit = bigNumberify(22000)!;
+  if (gasLimit < 22000) {
+    gasLimit = 22000n;
   }
 
-  return gasLimit.mul(11000).div(10000); // add a 10% buffer
+  return (gasLimit * 11n) / 10n; // add a 10% buffer
 }

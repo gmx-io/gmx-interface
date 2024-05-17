@@ -106,7 +106,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                 showDollar={false}
                 value={
                   <>
-                    {longTokenAmount.gt(0) && (
+                    {longTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           longTokenAmount,
@@ -117,7 +117,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                       </div>
                     )}
 
-                    {shortTokenAmount.gt(0) && (
+                    {shortTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           shortTokenAmount,

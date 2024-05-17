@@ -35,7 +35,6 @@ import {
   useTokensDataRequest,
   getTokenData,
 } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 import { useChainId } from "lib/chains";
@@ -389,7 +388,7 @@ const MainView = memo(() => {
             chainId,
             signer,
             subaccountAddress: address,
-          })) ?? BigNumber.from(0);
+          })) ?? 0n;
       }
 
       if (!address) {
@@ -691,9 +690,11 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              topUp?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (topUp &&
+                topUp > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
@@ -705,9 +706,11 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              wntForAutoTopUps?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (wntForAutoTopUps &&
+                wntForAutoTopUps > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
@@ -718,9 +721,11 @@ const MainView = memo(() => {
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              maxAutoTopUpAmount?.gt(0) &&
-              wrappedTokenData &&
-              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))
+              (maxAutoTopUpAmount &&
+                maxAutoTopUpAmount > 0 &&
+                wrappedTokenData &&
+                formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />

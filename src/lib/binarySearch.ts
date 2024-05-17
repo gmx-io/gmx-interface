@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { bigMath } from "./bigmath";
 
 export function numericBinarySearch<T>(
   from: number,
@@ -29,26 +29,26 @@ export function numericBinarySearch<T>(
 }
 
 export function bigNumberBinarySearch<T>(
-  from: BigNumber,
-  to: BigNumber,
-  delta: BigNumber,
-  validator: (x: BigNumber) => { isValid: boolean; returnValue: T }
+  from: bigint,
+  to: bigint,
+  delta: bigint,
+  validator: (x: bigint) => { isValid: boolean; returnValue: T }
 ) {
-  if (delta.lte(0)) delta = BigNumber.from(1);
+  if (delta <= 0) delta = BigInt(1);
 
-  to = to.add(1);
+  to = to + 1n;
 
   let returnValue: T | undefined = undefined;
-  let prevMid: BigNumber | undefined = undefined;
+  let prevMid: bigint | undefined = undefined;
 
-  while (from.lt(to)) {
-    const mid = from.add(to).div(2);
+  while (from < to) {
+    const mid = (from + to) / 2n;
 
-    if (from.eq(mid)) {
+    if (from === mid) {
       break;
     }
 
-    if (prevMid && mid.sub(prevMid).abs().lt(delta)) {
+    if (prevMid !== undefined && bigMath.abs(mid - prevMid) < delta) {
       break;
     }
 

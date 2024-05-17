@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { memo, useCallback, useMemo } from "react";
 
 import { HIGH_POSITION_IMPACT_BPS } from "config/factors";
@@ -9,13 +8,14 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
 import "./AcceptablePriceImpactInputRow.scss";
+import { bigMath } from "lib/bigmath";
 
 type Props = {
-  acceptablePriceImpactBps?: BigNumber;
-  recommendedAcceptablePriceImpactBps?: BigNumber;
-  initialPriceImpactFeeBps?: BigNumber;
-  priceImpactFeeBps?: BigNumber;
-  setAcceptablePriceImpactBps: (value: BigNumber) => void;
+  acceptablePriceImpactBps?: bigint;
+  recommendedAcceptablePriceImpactBps?: bigint;
+  initialPriceImpactFeeBps?: bigint;
+  priceImpactFeeBps?: bigint;
+  setAcceptablePriceImpactBps: (value: bigint) => void;
   notAvailable?: boolean;
 };
 
@@ -31,14 +31,15 @@ function AcceptablePriceImpactInputRowImpl({
 }: Props) {
   const setValue = useCallback(
     (value: number | undefined) => {
-      setAcceptablePriceImpactBps(BigNumber.from(value));
+      setAcceptablePriceImpactBps(BigInt(value ?? 0));
     },
     [setAcceptablePriceImpactBps]
   );
 
-  const recommendedValue = recommendedAcceptablePriceImpactBps?.toNumber();
-  const initialValue = initialPriceImpactFeeBps?.toNumber();
-  const value = acceptablePriceImpactBps?.toNumber();
+  const recommendedValue =
+    recommendedAcceptablePriceImpactBps !== undefined ? Number(recommendedAcceptablePriceImpactBps) : undefined;
+  const initialValue = initialPriceImpactFeeBps !== undefined ? Number(initialPriceImpactFeeBps) : undefined;
+  const value = acceptablePriceImpactBps !== undefined ? Number(acceptablePriceImpactBps) : undefined;
 
   // if current price impact is 0.01%, the message will be shown
   // only if acceptable price impact is set to more than 0.51%
@@ -47,8 +48,8 @@ function AcceptablePriceImpactInputRowImpl({
       return undefined;
     }
 
-    if (priceImpactFeeBps.lte(0)) {
-      return HIGH_POSITION_IMPACT_BPS + priceImpactFeeBps.abs().toNumber();
+    if (priceImpactFeeBps <= 0) {
+      return HIGH_POSITION_IMPACT_BPS + Number(bigMath.abs(priceImpactFeeBps));
     } else {
       return HIGH_POSITION_IMPACT_BPS;
     }
@@ -65,33 +66,34 @@ function AcceptablePriceImpactInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigNumber.from(recommendedValue).mul(-1), { signed: true })}
+        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
       .
     </Trans>
   );
 
-  const lowValueWarningText = priceImpactFeeBps.gte(0) ? (
-    <p>
-      <Trans>
-        The current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
-        Acceptable Price Impact so the order is more likely to be processed.
-      </Trans>
-      <br />
-      <br />
-      {recommendedHandle}
-    </p>
-  ) : (
-    <p>
-      <Trans>
-        The Current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer of
-        0.30% to it so the order is more likely to be processed.
-      </Trans>
-      <br />
-      <br />
-      {recommendedHandle}
-    </p>
-  );
+  const lowValueWarningText =
+    priceImpactFeeBps >= 0 ? (
+      <p>
+        <Trans>
+          The current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
+          Acceptable Price Impact so the order is more likely to be processed.
+        </Trans>
+        <br />
+        <br />
+        {recommendedHandle}
+      </p>
+    ) : (
+      <p>
+        <Trans>
+          The Current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer
+          of 0.30% to it so the order is more likely to be processed.
+        </Trans>
+        <br />
+        <br />
+        {recommendedHandle}
+      </p>
+    );
 
   const highValueWarningText = (
     <p>

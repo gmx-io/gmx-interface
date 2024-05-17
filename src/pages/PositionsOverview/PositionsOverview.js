@@ -9,6 +9,7 @@ import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "lib/bigmath";
 
 export default function PositionsOverview() {
   const { chainId } = useChainId();
@@ -52,11 +53,11 @@ export default function PositionsOverview() {
               .map((position, i) => {
                 const { size, account, collateral, fee, danger } = position;
 
-                const diffToLiq = position.collateral.sub(position.fee);
-                const fundingFee = 80;
-                const feesPerHour = position.size.mul(fundingFee).div(1000000);
-                const hoursToLiq = diffToLiq.div(feesPerHour);
-                const liqTime = hoursToLiq.toNumber() * 60 * 60 + Date.now() / 1000;
+                const diffToLiq = position.collateral - position.fee;
+                const fundingFee = 80n;
+                const feesPerHour = bigMath.mulDiv(position.size, fundingFee, 1000000n);
+                const hoursToLiq = diffToLiq / feesPerHour;
+                const liqTime = Number(hoursToLiq) * 60 * 60 + Date.now() / 1000;
                 return (
                   <tr key={i}>
                     <td>{account}</td>

@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 
@@ -51,24 +51,23 @@ import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import {
   BN_ZERO,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatKeyAmount,
   formatTokenAmount,
   formatUsd,
   numberWithCommas,
-  sumBigNumbers,
 } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { groupBy } from "lodash";
 import AssetDropdown from "./AssetDropdown";
+import { bigMath } from "lib/bigmath";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -76,18 +75,18 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
-      cv.openInterest = BigNumber.from(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
-      acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
-      acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
-      acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
+      cv.openInterest = BigInt(cv.totalLongPositionSizes) + BigInt(cv.totalShortPositionSizes);
+      acc.totalLongPositionSizes += BigInt(cv.totalLongPositionSizes);
+      acc.totalShortPositionSizes += BigInt(cv.totalShortPositionSizes);
+      acc.totalOpenInterest += cv.openInterest;
 
       acc[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
     },
     {
-      totalLongPositionSizes: bigNumberify(0),
-      totalShortPositionSizes: bigNumberify(0),
-      totalOpenInterest: bigNumberify(0),
+      totalLongPositionSizes: 0n,
+      totalShortPositionSizes: 0n,
+      totalOpenInterest: 0n,
     }
   );
 }
@@ -105,8 +104,8 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
       continue;
     }
 
-    const feeUsd = fees[i].mul(tokenInfo.contractMinPrice).div(expandDecimals(1, tokenInfo.decimals));
-    currentFeesUsd = currentFeesUsd.add(feeUsd);
+    const feeUsd = bigMath.mulDiv(fees[i], tokenInfo.contractMinPrice, expandDecimals(1, tokenInfo.decimals));
+    currentFeesUsd = currentFeesUsd + feeUsd;
   }
 
   return currentFeesUsd;
@@ -116,6 +115,7 @@ export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
+
   const arbitrumOverview = useV2Stats(ARBITRUM);
   const avalancheOverview = useV2Stats(AVALANCHE);
   const v2MarketsOverview = useMemo(
@@ -170,7 +170,7 @@ export default function DashboardV2() {
   });
 
   const { data: totalSupplies } = useSWR(
-    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
+    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", ZeroAddress],
     {
       fetcher: contractFetcher(signer, ReaderV2, [tokensForSupplyQuery]),
     }
@@ -188,7 +188,7 @@ export default function DashboardV2() {
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
   const { data: currentFees } = useSWR(
-    infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
+    infoTokensArbitrum[ZeroAddress].contractMinPrice && infoTokensAvax[ZeroAddress].contractMinPrice
       ? "Dashboard:currentFees"
       : null,
     {
@@ -204,7 +204,7 @@ export default function DashboardV2() {
             ])
           )
         ).then((fees) => {
-          return fees.reduce<Record<string, BigNumber>>(
+          return fees.reduce<Record<string, bigint>>(
             (acc, cv, i) => {
               const feeUSD = getCurrentFeesUsd(
                 getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
@@ -212,7 +212,7 @@ export default function DashboardV2() {
                 ACTIVE_CHAIN_IDS[i] === ARBITRUM ? infoTokensArbitrum : infoTokensAvax
               );
               acc[ACTIVE_CHAIN_IDS[i]] = feeUSD;
-              acc.total = acc.total.add(feeUSD);
+              acc.total = acc.total + feeUSD;
               return acc;
             },
             { total: BN_ZERO }
@@ -232,10 +232,13 @@ export default function DashboardV2() {
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
-      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId]?.totalFees || 0);
+      return (
+        Number(currentFees[chainId]) / Number(expandDecimals(1, USD_DECIMALS)) +
+        Number(feesSummaryByChain[chainId]?.totalFees || 0)
+      );
     }
 
-    return feesSummaryByChain[chainId].totalFees || 0;
+    return Number(feesSummaryByChain[chainId].totalFees) || 0;
   })
     .map((v) => Math.round(v))
     .reduce(
@@ -259,17 +262,17 @@ export default function DashboardV2() {
 
   let gmxMarketCap;
   if (gmxPrice && totalGmxSupply) {
-    gmxMarketCap = gmxPrice.mul(totalGmxSupply).div(expandDecimals(1, GMX_DECIMALS));
+    gmxMarketCap = bigMath.mulDiv(gmxPrice, totalGmxSupply, expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
   if (gmxPrice && totalStakedGmx) {
-    stakedGmxSupplyUsd = totalStakedGmx.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
+    stakedGmxSupplyUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
   }
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   let glpPrice;
@@ -278,17 +281,18 @@ export default function DashboardV2() {
   if (aum && totalSupplies && totalSupplies[3]) {
     glpSupply = totalSupplies[3];
     glpPrice =
-      aum && aum.gt(0) && glpSupply.gt(0)
-        ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
+      aum && aum > 0 && glpSupply > 0
+        ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
         : expandDecimals(1, USD_DECIMALS);
-    glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
+    glpMarketCap = bigMath.mulDiv(glpPrice, glpSupply, expandDecimals(1, GLP_DECIMALS));
   }
 
-  let tvl: BigNumber | undefined = undefined;
+  let tvl: bigint | undefined = undefined;
   if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
-    tvl = glpMarketCap
-      .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
-      .add(currentV2MarketOverview.totalGMLiquidity);
+    tvl =
+      glpMarketCap +
+      bigMath.mulDiv(gmxPrice, totalStakedGmx, expandDecimals(1, GMX_DECIMALS)) +
+      currentV2MarketOverview.totalGMLiquidity;
   }
 
   const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
@@ -298,10 +302,10 @@ export default function DashboardV2() {
   let totalTreasuryFundUsd;
 
   if (eth && eth.contractMinPrice && glpPrice) {
-    const ethTreasuryFundUsd = ethTreasuryFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
-    const glpTreasuryFundUsd = glpTreasuryFund.mul(glpPrice).div(expandDecimals(1, 18));
+    const ethTreasuryFundUsd = bigMath.mulDiv(ethTreasuryFund, eth.contractMinPrice, expandDecimals(1, eth.decimals));
+    const glpTreasuryFundUsd = bigMath.mulDiv(glpTreasuryFund, glpPrice, expandDecimals(1, 18));
 
-    totalTreasuryFundUsd = ethTreasuryFundUsd.add(glpTreasuryFundUsd).add(usdcTreasuryFund);
+    totalTreasuryFundUsd = ethTreasuryFundUsd + glpTreasuryFundUsd + usdcTreasuryFund;
   }
 
   let adjustedUsdgSupply = BN_ZERO;
@@ -310,7 +314,7 @@ export default function DashboardV2() {
     const token = tokenList[i];
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo && tokenInfo.usdgAmount) {
-      adjustedUsdgSupply = adjustedUsdgSupply.add(tokenInfo.usdgAmount);
+      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
     }
   }
 
@@ -319,15 +323,15 @@ export default function DashboardV2() {
       !tokenInfo.weight ||
       !tokenInfo.usdgAmount ||
       !adjustedUsdgSupply ||
-      adjustedUsdgSupply.eq(0) ||
+      adjustedUsdgSupply == 0n ||
       !totalTokenWeights
     ) {
       return "...";
     }
 
-    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    // use add(1).div(10).mul(10) to round numbers up
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
+    const currentWeightBps = bigMath.mulDiv(tokenInfo.usdgAmount, BASIS_POINTS_DIVISOR_BIGINT, adjustedUsdgSupply);
+    const targetWeightBps =
+      ((bigMath.mulDiv(tokenInfo.weight, BASIS_POINTS_DIVISOR_BIGINT, totalTokenWeights) + 1n) / 10n) * 10n;
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
       targetWeightBps,
@@ -355,7 +359,7 @@ export default function DashboardV2() {
                 showDollar={false}
               />
               <br />
-              {currentWeightBps.lt(targetWeightBps) && (
+              {currentWeightBps < targetWeightBps && (
                 <div className="text-white">
                   <Trans>
                     {tokenInfo.symbol} is below its target weight.
@@ -373,7 +377,7 @@ export default function DashboardV2() {
                   </Trans>
                 </div>
               )}
-              {currentWeightBps.gt(targetWeightBps) && (
+              {currentWeightBps > targetWeightBps && (
                 <div className="text-white">
                   <Trans>
                     {tokenInfo.symbol} is above its target weight.
@@ -403,14 +407,14 @@ export default function DashboardV2() {
 
   let stakedPercent = 0;
 
-  if (totalGmxSupply && !totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
-    stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
+  if (totalGmxSupply && totalStakedGmx) {
+    stakedPercent = Number(bigMath.mulDiv(totalStakedGmx, 100n, totalGmxSupply));
   }
 
   let liquidityPercent = 0;
 
-  if (totalGmxSupply && !totalGmxSupply.isZero() && totalGmxInLiquidity) {
-    liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
+  if (totalGmxSupply && totalGmxInLiquidity) {
+    liquidityPercent = Number(bigMath.mulDiv(totalGmxInLiquidity, 100n, totalGmxSupply));
   }
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
@@ -445,8 +449,12 @@ export default function DashboardV2() {
     const glpPool = tokenList
       .map((token) => {
         const tokenInfo = infoTokens[token.address];
-        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-          const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply > 0) {
+          const currentWeightBps = bigMath.mulDiv(
+            tokenInfo.usdgAmount,
+            BASIS_POINTS_DIVISOR_BIGINT,
+            adjustedUsdgSupply
+          );
           if (tokenInfo.isStable) {
             stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
           }
@@ -640,7 +648,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        sumBigInts(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -658,7 +666,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.openInterest,
                           v2MarketsOverview?.[chainId]?.openInterest
                         ),
@@ -679,7 +687,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
@@ -700,7 +708,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(
+                        sumBigInts(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
@@ -722,7 +730,7 @@ export default function DashboardV2() {
                         position="bottom-end"
                         className="nowrap"
                         handle={`$${formatAmount(
-                          sumBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          sumBigInts(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
                           2,
                           true
@@ -749,9 +757,9 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${numberWithCommas(
-                        sumBigNumbers(
+                        sumBigInts(
                           totalFees?.[chainId],
-                          formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
+                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
                         )
                       )}`}
                       renderContent={() => (
@@ -769,7 +777,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        sumBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        sumBigInts(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -787,7 +795,7 @@ export default function DashboardV2() {
                       position="bottom-end"
                       className="nowrap"
                       handle={formatAmount(
-                        sumBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
+                        sumBigInts(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
                         0,
                         0,
                         true
@@ -1008,17 +1016,16 @@ export default function DashboardV2() {
                     <tbody>
                       {visibleTokens.map((token) => {
                         const tokenInfo = infoTokens[token.address];
-                        let utilization = bigNumberify(0);
-                        if (
-                          tokenInfo &&
-                          tokenInfo.reservedAmount &&
-                          tokenInfo.poolAmount &&
-                          tokenInfo.poolAmount.gt(0)
-                        ) {
-                          utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                        let utilization = 0n;
+                        if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                          utilization = bigMath.mulDiv(
+                            tokenInfo.reservedAmount,
+                            BASIS_POINTS_DIVISOR_BIGINT,
+                            tokenInfo.poolAmount
+                          );
                         }
                         let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
                           maxUsdgAmount = tokenInfo.maxUsdgAmount;
                         }
 
@@ -1097,12 +1104,16 @@ export default function DashboardV2() {
                 <div className="token-grid">
                   {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
-                    let utilization = bigNumberify(0);
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                    let utilization = 0n;
+                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                      utilization = bigMath.mulDiv(
+                        tokenInfo.reservedAmount,
+                        BASIS_POINTS_DIVISOR_BIGINT,
+                        tokenInfo.poolAmount
+                      );
                     }
                     let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
 
@@ -1210,8 +1221,8 @@ function GMCard() {
     () =>
       Object.values(marketTokensData || {}).reduce(
         (acc, { totalSupply, decimals, prices }) => ({
-          amount: acc.amount.add(totalSupply ?? 0),
-          usd: acc.usd.add(convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0),
+          amount: acc.amount + (totalSupply ?? 0n),
+          usd: acc.usd + (convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0n),
         }),
         { amount: BN_ZERO, usd: BN_ZERO }
       ),
@@ -1219,7 +1230,7 @@ function GMCard() {
   );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply?.amount?.gt(0) || !marketsInfoData) return [];
+    if (!totalGMSupply?.amount || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),
@@ -1227,11 +1238,12 @@ function GMCard() {
     );
 
     return Object.values(poolsByIndexToken || EMPTY_OBJECT).map((pools) => {
-      const totalMarketUSD = pools.reduce((acc, pool) => acc.add(pool.poolValueMax), BN_ZERO);
+      const totalMarketUSD = pools.reduce((acc, pool) => acc + pool.poolValueMax, BN_ZERO);
 
       const marketInfo = pools[0];
       const indexToken = marketInfo.isSpotOnly ? marketInfo.shortToken : marketInfo.indexToken;
-      const marketSupplyPercentage = totalMarketUSD.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.usd).toNumber() / 100;
+      const marketSupplyPercentage =
+        Number(bigMath.mulDiv(totalMarketUSD, BASIS_POINTS_DIVISOR_BIGINT, totalGMSupply.usd)) / 100;
 
       return {
         fullName: marketInfo.name,
@@ -1289,4 +1301,8 @@ function GMCard() {
       <InteractivePieChart data={chartData} label={t`GM Markets`} />
     </div>
   );
+}
+
+function sumBigInts(...args: (bigint | number | undefined)[]) {
+  return args.reduce<bigint>((acc, value) => acc + BigInt(value ?? 0n), 0n);
 }

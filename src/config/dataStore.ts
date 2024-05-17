@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { hashString, hashData } from "lib/hash";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
@@ -209,7 +208,7 @@ export function swapImpactPoolAmountKey(market: string, token: string) {
   return hashData(["bytes32", "address", "address"], [SWAP_IMPACT_POOL_AMOUNT_KEY, market, token]);
 }
 
-export function orderKey(dataStoreAddress: string, nonce: BigNumber) {
+export function orderKey(dataStoreAddress: string, nonce: bigint) {
   return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
 }
 

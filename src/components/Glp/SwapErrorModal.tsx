@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BigNumber } from "ethers";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "config/links";
@@ -8,18 +7,18 @@ import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type Props = {
   swapToken: Token;
   isVisible: boolean;
   setIsVisible: () => void;
   chainId: number;
-  glpAmount: BigNumber;
-  usdgSupply: BigNumber;
-  totalTokenWeights: BigNumber;
-  glpPrice: BigNumber;
-  swapUsdMin: BigNumber;
+  glpAmount: bigint;
+  usdgSupply: bigint;
+  totalTokenWeights: bigint;
+  glpPrice: bigint;
+  swapUsdMin: bigint;
   infoTokens: InfoTokens;
 };
 
@@ -36,7 +35,7 @@ export default function SwapErrorModal({
   swapUsdMin,
 }: Props) {
   const [lowestFeeToken, setLowestFeeToken] = useState<
-    { token: Token; fees: number; amountLeftToDeposit: BigNumber } | undefined
+    { token: Token; fees: number; amountLeftToDeposit: bigint } | undefined
   >();
   useEffect(() => {
     const lowestFeeTokenInfo = getLowestFeeTokenForBuyGlp(
@@ -54,7 +53,7 @@ export default function SwapErrorModal({
 
   const label = t`${swapToken?.symbol} Capacity Reached`;
 
-  if (lowestFeeToken && swapUsdMin && swapUsdMin.gt(lowestFeeToken.amountLeftToDeposit)) {
+  if (lowestFeeToken && swapUsdMin && swapUsdMin > lowestFeeToken.amountLeftToDeposit) {
     return (
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
         <p>
@@ -73,9 +72,9 @@ export default function SwapErrorModal({
   }
 
   const nativeToken = getNativeToken(chainId);
-  const inputCurrency = swapToken.address === AddressZero ? nativeToken.symbol : swapToken.address;
+  const inputCurrency = swapToken.address === ZeroAddress ? nativeToken.symbol : swapToken.address;
   const outputCurrency =
-    lowestFeeToken?.token.address === AddressZero ? nativeToken.symbol : lowestFeeToken?.token.address;
+    lowestFeeToken?.token.address === ZeroAddress ? nativeToken.symbol : lowestFeeToken?.token.address;
   const oneInchUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
 
   return (

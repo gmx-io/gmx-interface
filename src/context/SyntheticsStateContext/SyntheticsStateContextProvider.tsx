@@ -17,7 +17,7 @@ import { PositionEditorState, usePositionEditorState } from "domain/synthetics/t
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
@@ -38,7 +38,7 @@ export type SyntheticsState = {
     account: string | undefined;
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult;
-    uiFeeFactor: BigNumber;
+    uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
 
     closingPositionKey: string | undefined;
@@ -83,8 +83,8 @@ export function SyntheticsStateContextProvider({
 
   let checkSummedAccount: string | undefined;
 
-  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
-    checkSummedAccount = ethers.utils.getAddress(paramsAccount);
+  if (paramsAccount && ethers.isAddress(paramsAccount)) {
+    checkSummedAccount = ethers.getAddress(paramsAccount);
   }
 
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;

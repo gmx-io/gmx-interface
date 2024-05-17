@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { BigNumber } from "ethers";
+
 import { formatAmount } from "lib/numbers";
 import { useCallback } from "react";
 
@@ -12,13 +12,14 @@ export function AprInfo({
   isIncentiveActive,
   showTooltip = true,
 }: {
-  apr: BigNumber | undefined;
-  incentiveApr: BigNumber | undefined;
+  apr: bigint | undefined;
+  incentiveApr: bigint | undefined;
   isIncentiveActive?: boolean;
   showTooltip?: boolean;
 }) {
-  const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
-  const aprNode = <>{apr ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+  const totalApr = (apr ?? 0n) + (incentiveApr ?? 0n);
+  const aprNode = <>{apr !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
       return <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 28, 2)}%`} />;
@@ -40,7 +41,7 @@ export function AprInfo({
     );
   }, [apr, incentiveApr, isIncentiveActive]);
 
-  return showTooltip && incentiveApr && incentiveApr.gt(0) ? (
+  return showTooltip && incentiveApr ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode

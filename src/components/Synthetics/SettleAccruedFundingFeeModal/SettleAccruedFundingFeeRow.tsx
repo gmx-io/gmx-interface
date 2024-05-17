@@ -4,7 +4,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 
@@ -41,9 +40,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         [
           [position.claimableLongTokenAmount, longToken],
           [position.claimableShortTokenAmount, shortToken],
-        ] as [BigNumber, TokenData][]
+        ] as [bigint, TokenData][]
       )
-        .filter(([amount, token]) => amount.gt(0) && token)
+        .filter(([amount, token]) => amount > 0 && token)
         .map(([amount, token]) => (
           <div key={token.address}>{formatTokenAmount(amount, token.decimals, token.symbol)}</div>
         )),

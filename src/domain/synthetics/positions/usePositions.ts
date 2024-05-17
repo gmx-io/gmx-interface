@@ -8,7 +8,7 @@ import {
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
@@ -90,7 +90,7 @@ export function usePositions(
               keysAndPrices!.contractPositionsKeys,
               keysAndPrices!.marketsPrices,
               // uiFeeReceiver
-              ethers.constants.AddressZero,
+              ethers.ZeroAddress,
             ],
           },
         },
@@ -105,7 +105,7 @@ export function usePositions(
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigNumber.from(numbers.increasedAtBlock).eq(0)) {
+        if (BigInt(numbers.increasedAtBlock) == 0n) {
           return positionsMap;
         }
 
@@ -118,16 +118,16 @@ export function usePositions(
           account,
           marketAddress,
           collateralTokenAddress,
-          sizeInUsd: BigNumber.from(numbers.sizeInUsd),
-          sizeInTokens: BigNumber.from(numbers.sizeInTokens),
-          collateralAmount: BigNumber.from(numbers.collateralAmount),
-          increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
-          decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
+          sizeInUsd: numbers.sizeInUsd,
+          sizeInTokens: numbers.sizeInTokens,
+          collateralAmount: numbers.collateralAmount,
+          increasedAtBlock: numbers.increasedAtBlock,
+          decreasedAtBlock: numbers.decreasedAtBlock,
           isLong: flags.isLong,
-          pendingBorrowingFeesUsd: BigNumber.from(fees.borrowing.borrowingFeeUsd),
-          fundingFeeAmount: BigNumber.from(fees.funding.fundingFeeAmount),
-          claimableLongTokenAmount: BigNumber.from(fees.funding.claimableLongTokenAmount),
-          claimableShortTokenAmount: BigNumber.from(fees.funding.claimableShortTokenAmount),
+          pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
+          fundingFeeAmount: fees.funding.fundingFeeAmount,
+          claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
+          claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
           data,
         };
 
@@ -212,8 +212,12 @@ export function useOptimisticPositions(p: {
     return allPositionsKeys.reduce((acc, key) => {
       const now = Date.now();
 
-      const lastIncreaseEvent = positionIncreaseEvents.filter((e) => e.positionKey === key).pop();
-      const lastDecreaseEvent = positionDecreaseEvents.filter((e) => e.positionKey === key).pop();
+      const lastIncreaseEvent = positionIncreaseEvents
+        ? positionIncreaseEvents.filter((e) => e.positionKey === key).pop()
+        : undefined;
+      const lastDecreaseEvent = positionDecreaseEvents
+        ? positionDecreaseEvents.filter((e) => e.positionKey === key).pop()
+        : undefined;
 
       const pendingUpdate =
         pendingPositionsUpdates[key] && pendingPositionsUpdates[key]!.updatedAt + MAX_PENDING_UPDATE_AGE > now
@@ -232,27 +236,27 @@ export function useOptimisticPositions(p: {
 
       if (
         lastIncreaseEvent &&
-        lastIncreaseEvent.increasedAtBlock.gt(position.increasedAtBlock) &&
-        lastIncreaseEvent.increasedAtBlock.gt(lastDecreaseEvent?.decreasedAtBlock || 0)
+        lastIncreaseEvent.increasedAtBlock > position.increasedAtBlock &&
+        lastIncreaseEvent.increasedAtBlock > (lastDecreaseEvent?.decreasedAtBlock || 0)
       ) {
         position = applyEventChanges(position, lastIncreaseEvent);
       } else if (
         lastDecreaseEvent &&
-        lastDecreaseEvent.decreasedAtBlock.gt(position.decreasedAtBlock) &&
-        lastDecreaseEvent.decreasedAtBlock.gt(lastIncreaseEvent?.increasedAtBlock || 0)
+        lastDecreaseEvent.decreasedAtBlock > position.decreasedAtBlock &&
+        lastDecreaseEvent.decreasedAtBlock > (lastIncreaseEvent?.increasedAtBlock || 0)
       ) {
         position = applyEventChanges(position, lastDecreaseEvent);
       }
 
       if (
         pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.increasedAtBlock)) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.decreasedAtBlock)))
+        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtBlock) ||
+          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtBlock))
       ) {
         position.pendingUpdate = pendingUpdate;
       }
 
-      if (position.sizeInUsd.gt(0)) {
+      if (position.sizeInUsd > 0) {
         acc[key] = position;
       }
 
@@ -267,10 +271,10 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.sizeInUsd = event.sizeInUsd;
   nextPosition.sizeInTokens = event.sizeInTokens;
   nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.pendingBorrowingFeesUsd = BigNumber.from(0);
-  nextPosition.fundingFeeAmount = BigNumber.from(0);
-  nextPosition.claimableLongTokenAmount = BigNumber.from(0);
-  nextPosition.claimableShortTokenAmount = BigNumber.from(0);
+  nextPosition.pendingBorrowingFeesUsd = 0n;
+  nextPosition.fundingFeeAmount = 0n;
+  nextPosition.claimableLongTokenAmount = 0n;
+  nextPosition.claimableShortTokenAmount = 0n;
   nextPosition.pendingUpdate = undefined;
   nextPosition.isOpening = false;
 
@@ -295,15 +299,15 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     marketAddress,
     collateralTokenAddress: collateralAddress,
     isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
-    collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
+    sizeInUsd: pendingUpdate.sizeDeltaUsd || 0n,
+    collateralAmount: pendingUpdate.collateralDeltaAmount || 0n,
+    sizeInTokens: pendingUpdate.sizeDeltaInTokens || 0n,
     increasedAtBlock: pendingUpdate.updatedAtBlock,
-    decreasedAtBlock: BigNumber.from(0),
-    pendingBorrowingFeesUsd: BigNumber.from(0),
-    fundingFeeAmount: BigNumber.from(0),
-    claimableLongTokenAmount: BigNumber.from(0),
-    claimableShortTokenAmount: BigNumber.from(0),
+    decreasedAtBlock: 0n,
+    pendingBorrowingFeesUsd: 0n,
+    fundingFeeAmount: 0n,
+    claimableLongTokenAmount: 0n,
+    claimableShortTokenAmount: 0n,
     data: "0x",
 
     isOpening: true,

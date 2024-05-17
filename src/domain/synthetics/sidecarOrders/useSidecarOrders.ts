@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
 import { convertToTokenAmount } from "../tokens";
-import { BigNumber } from "ethers";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   usePositionsConstants,
@@ -76,10 +75,7 @@ export function useSidecarOrders() {
   }, [limitEntriesInfo.entries]);
 
   const [minLimitTrigerPrice, maxLimitTrigerPrice] = useMemo(() => {
-    const prices = existingLimits.reduce<BigNumber[]>(
-      (acc, { price }) => (price.value ? [...acc, price.value] : acc),
-      []
-    );
+    const prices = existingLimits.reduce<bigint[]>((acc, { price }) => (price.value ? [...acc, price.value] : acc), []);
 
     if (isLimit && triggerPrice) {
       prices.push(triggerPrice);
@@ -87,10 +83,7 @@ export function useSidecarOrders() {
 
     if (!prices.length) return [undefined, undefined];
 
-    return prices.reduce(
-      ([min, max], num) => [num.lt(min) ? num : min, num.gt(max) ? num : max],
-      [prices[0], prices[0]]
-    );
+    return prices.reduce(([min, max], num) => [num < min ? num : min, num > max ? num : max], [prices[0], prices[0]]);
   }, [existingLimits, isLimit, triggerPrice]);
 
   const handleSLErrors = useCallback(
@@ -201,8 +194,8 @@ export function useSidecarOrders() {
     return {
       ...limitEntriesInfo,
       entries,
-      totalPnL: BigNumber.from(0),
-      totalPnLPercentage: BigNumber.from(0),
+      totalPnL: 0n,
+      totalPnLPercentage: 0n,
     };
   }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
 
@@ -214,22 +207,18 @@ export function useSidecarOrders() {
     const [limitSummaryCollateralDeltaAmount, limitSummarySizeDeltaInTokens, limitSummarySizeDeltaUsd] =
       limit.entries.reduce(
         ([collateral, tokens, usd], entry) => [
-          collateral.add(entry.increaseAmounts?.collateralDeltaAmount || 0),
-          tokens.add(entry.increaseAmounts?.sizeDeltaInTokens || 0),
-          usd.add(entry.increaseAmounts?.sizeDeltaUsd || 0),
+          collateral + (entry.increaseAmounts?.collateralDeltaAmount || 0n),
+          tokens + (entry.increaseAmounts?.sizeDeltaInTokens || 0n),
+          usd + (entry.increaseAmounts?.sizeDeltaUsd || 0n),
         ],
-        [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)]
+        [0n, 0n, 0n]
       );
 
     return {
       ...mockPositionInfo,
-      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? BigNumber.from(0)).add(limitSummarySizeDeltaUsd ?? BigNumber.from(0)),
-      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? BigNumber.from(0)).add(
-        limitSummarySizeDeltaInTokens ?? BigNumber.from(0)
-      ),
-      collateralAmount: (mockPositionInfo?.collateralAmount ?? BigNumber.from(0)).add(
-        limitSummaryCollateralDeltaAmount ?? BigNumber.from(0)
-      ),
+      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? 0n) + (limitSummarySizeDeltaUsd ?? 0n),
+      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? 0n) + (limitSummarySizeDeltaInTokens ?? 0n),
+      collateralAmount: (mockPositionInfo?.collateralAmount ?? 0n) + (limitSummaryCollateralDeltaAmount ?? 0n),
     };
   }, [mockPositionInfo, limit.entries]);
 
@@ -294,13 +283,10 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnl || 0),
-        BigNumber.from(0)
-      );
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnlPercentage || 0),
-        BigNumber.from(0)
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        0n
       );
     }
 
@@ -328,13 +314,10 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnl || 0),
-        BigNumber.from(0)
-      );
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnlPercentage || 0),
-        BigNumber.from(0)
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        0n
       );
     }
 

@@ -1,13 +1,13 @@
-import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { bigMath } from "lib/bigmath";
 import { formatAmount } from "lib/numbers";
 
 type GetLeverageParams = {
-  size: BigNumber;
-  collateral: BigNumber;
-  fundingFee?: BigNumber;
+  size: bigint;
+  collateral: bigint;
+  fundingFee?: bigint;
   hasProfit?: boolean;
-  delta?: BigNumber;
+  delta?: bigint;
   includeDelta?: boolean;
 };
 
@@ -18,33 +18,35 @@ export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, in
 
   let remainingCollateral = collateral;
 
-  if (fundingFee && fundingFee.gt(0)) {
-    remainingCollateral = remainingCollateral.sub(fundingFee);
+  if (fundingFee && fundingFee > 0) {
+    remainingCollateral = remainingCollateral - fundingFee;
   }
 
   if (delta && includeDelta) {
     if (hasProfit) {
-      remainingCollateral = remainingCollateral.add(delta);
+      remainingCollateral = remainingCollateral + delta;
     } else {
-      if (delta.gt(remainingCollateral)) {
+      if (delta > remainingCollateral) {
         return;
       }
 
-      remainingCollateral = remainingCollateral.sub(delta);
+      remainingCollateral = remainingCollateral - delta;
     }
   }
 
-  if (remainingCollateral.eq(0)) {
+  if (remainingCollateral == 0n) {
     return;
   }
-  return size.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
+  return bigMath.mulDiv(size, BASIS_POINTS_DIVISOR_BIGINT, remainingCollateral);
 }
 
-export function getLeverageStr(leverage: BigNumber) {
-  if (leverage && BigNumber.isBigNumber(leverage)) {
-    if (leverage.lt(0)) {
+export function getLeverageStr(leverage: bigint | undefined) {
+  if (leverage !== undefined) {
+    if (leverage < 0) {
       return "> 100x";
     }
     return `${formatAmount(leverage, 4, 2, true)}x`;
   }
+
+  return "";
 }

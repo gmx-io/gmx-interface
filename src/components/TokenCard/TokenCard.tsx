@@ -24,10 +24,15 @@ const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
-  const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
+  const totalApr = mergeWith(
+    {},
+    apr,
+    incentiveApr,
+    (aprValue, incentiveAprValue) => (aprValue ?? 0n) + (incentiveAprValue ?? 0n)
+  );
   const aprValues = Object.values(totalApr || {});
 
-  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
+  const maxApr = aprValues.reduce((max, value) => (value > max ? value : max), aprValues[0]);
 
   return maxApr;
 }

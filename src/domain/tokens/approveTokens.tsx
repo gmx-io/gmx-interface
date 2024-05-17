@@ -1,4 +1,4 @@
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import Token from "abis/Token.json";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
@@ -20,7 +20,7 @@ type Params = {
   pendingTxns?: any[];
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
-  approveAmount?: BigNumber;
+  approveAmount?: bigint;
 };
 
 export function approveTokens({
@@ -42,7 +42,7 @@ export function approveTokens({
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract
-    .approve(spender, approveAmount ?? ethers.constants.MaxUint256)
+    .approve(spender, approveAmount ?? ethers.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(

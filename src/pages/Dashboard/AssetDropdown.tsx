@@ -14,8 +14,7 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { Link } from "react-router-dom";
-import { ethers } from "ethers";
-import { isAddress } from "ethers/lib/utils.js";
+import { ethers, isAddress } from "ethers";
 import { getTokenExplorerUrl } from "config/chains";
 
 const PLATFORM_TOKEN_ROUTES = {
@@ -89,7 +88,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && !token.isNative && !token.isSynthetic && ethers.utils.isAddress(token.address) && (
+            {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
               <div
                 onClick={() => {
                   if (walletClient?.watchAsset && token) {

@@ -58,19 +58,19 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRateLong: getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1),
-      borrowingRateShort: getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1),
+      borrowingRateLong: -getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
+      borrowingRateShort: -getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
-      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+      totalInterestUsd: marketInfo.longInterestUsd + marketInfo.shortInterestUsd,
       priceDecimals: marketInfo.indexToken.priceDecimals,
       maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
-  const netRateHourly = fundingRate?.add(borrowingRate ?? 0);
+  const netRateHourly = (fundingRate ?? 0n) + (borrowingRate ?? 0n);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -225,7 +225,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               <Tooltip
                 position="bottom-end"
                 handle={
-                  totalInterestUsd?.gt(0) ? (
+                  totalInterestUsd && totalInterestUsd > 0 ? (
                     <ShareBar
                       showPercentage
                       className="MarketCard-pool-balance-bar"
@@ -238,14 +238,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 }
                 renderContent={() => (
                   <div>
-                    {marketInfo && totalInterestUsd && (
+                    {(marketInfo && totalInterestUsd !== undefined && (
                       <>
                         <StatsTooltipRow
                           label={t`Long Open Interest`}
                           value={
                             <span>
                               {formatUsd(marketInfo.longInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.longInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
@@ -257,14 +257,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                           value={
                             <span>
                               {formatUsd(marketInfo.shortInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.shortInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
                           showDollar={false}
                         />
                       </>
-                    )}
+                    )) ||
+                      null}
                   </div>
                 )}
               />

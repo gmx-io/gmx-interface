@@ -37,16 +37,16 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
               </td>
               <td
                 className={cx("NetFeeTooltip-cell-center", {
-                  "text-green": netFeeLong.gt(0),
-                  "text-red": netFeeLong.lt(0),
+                  "text-green": netFeeLong > 0,
+                  "text-red": netFeeLong < 0,
                 })}
               >
                 {formatRatePercentage(netFeeLong)}
               </td>
               <td
                 className={cx("NetFeeTooltip-cell-right", {
-                  "text-green": netFeeShort.gt(0),
-                  "text-red": netFeeShort.lt(0),
+                  "text-green": netFeeShort > 0,
+                  "text-red": netFeeShort < 0,
                 })}
               >
                 {formatRatePercentage(netFeeShort)}

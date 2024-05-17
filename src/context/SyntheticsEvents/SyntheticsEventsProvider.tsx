@@ -17,7 +17,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { BigNumber, ethers } from "ethers";
+import { AbiCoder, ProviderEvent, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -49,21 +49,21 @@ import useWallet from "lib/wallets/useWallet";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { usePendingTxns } from "lib/usePendingTxns";
 
-export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
-export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
-export const DEPOSIT_CANCELLED_HASH = ethers.utils.id("DepositCancelled");
+export const DEPOSIT_CREATED_HASH = ethers.id("DepositCreated");
+export const DEPOSIT_EXECUTED_HASH = ethers.id("DepositExecuted");
+export const DEPOSIT_CANCELLED_HASH = ethers.id("DepositCancelled");
 
-export const WITHDRAWAL_CREATED_HASH = ethers.utils.id("WithdrawalCreated");
-export const WITHDRAWAL_EXECUTED_HASH = ethers.utils.id("WithdrawalExecuted");
-export const WITHDRAWAL_CANCELLED_HASH = ethers.utils.id("WithdrawalCancelled");
+export const WITHDRAWAL_CREATED_HASH = ethers.id("WithdrawalCreated");
+export const WITHDRAWAL_EXECUTED_HASH = ethers.id("WithdrawalExecuted");
+export const WITHDRAWAL_CANCELLED_HASH = ethers.id("WithdrawalCancelled");
 
-export const ORDER_CREATED_HASH = ethers.utils.id("OrderCreated");
-export const ORDER_EXECUTED_HASH = ethers.utils.id("OrderExecuted");
-export const ORDER_UPDATED_HASH = ethers.utils.id("OrderUpdated");
-export const ORDER_CANCELLED_HASH = ethers.utils.id("OrderCancelled");
+export const ORDER_CREATED_HASH = ethers.id("OrderCreated");
+export const ORDER_EXECUTED_HASH = ethers.id("OrderExecuted");
+export const ORDER_CANCELLED_HASH = ethers.id("OrderCancelled");
+export const ORDER_UPDATED_HASH = ethers.id("OrderUpdated");
 
-export const POSITION_INCREASE_HASH = ethers.utils.id("PositionIncrease");
-export const POSITION_DECREASE_HASH = ethers.utils.id("PositionDecrease");
+export const POSITION_INCREASE_HASH = ethers.id("PositionIncrease");
+export const POSITION_DECREASE_HASH = ethers.id("PositionDecrease");
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -350,7 +350,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
-        increasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        increasedAtBlock: BigInt(txnParams.blockNumber),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -376,7 +376,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Deposited ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
@@ -413,7 +413,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
-        decreasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        decreasedAtBlock: BigInt(txnParams.blockNumber),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -439,7 +439,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Withdrew ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
@@ -465,12 +465,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
+      const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [currentAccount]);
 
       const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
-      const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");
-      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEventTopic("EventLog1");
-      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEventTopic("EventLog2");
+      const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
+      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
+      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
 
       function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
         // console.log("handleEventLog", eventName);
@@ -496,6 +496,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         try {
           const parsed = eventEmitter.interface.parseLog(e);
 
+          if (!parsed) throw new Error("Could not parse event");
           if (parsed.name === "EventLog") {
             handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
           } else if (parsed.name === "EventLog1") {
@@ -517,7 +518,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       }
 
-      const filters = [
+      const filters: ProviderEvent[] = [
         // DEPOSITS AND WITHDRAWALS
         {
           address: getContract(chainId, "EventEmitter"),

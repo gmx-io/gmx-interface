@@ -50,8 +50,8 @@ export default function Actions() {
   const shouldShowPnl = false;
 
   let checkSummedAccount = "";
-  if (ethers.utils.isAddress(account)) {
-    checkSummedAccount = ethers.utils.getAddress(account);
+  if (ethers.isAddress(account)) {
+    checkSummedAccount = ethers.getAddress(account);
   }
   const pnlUrl = `${getServerBaseUrl(chainId)}/pnl?account=${checkSummedAccount}`;
   const { data: pnlData } = useSWR(pnlUrl, {

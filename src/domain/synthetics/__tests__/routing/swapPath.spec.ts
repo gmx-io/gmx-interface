@@ -1,7 +1,6 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
 import { MarketEdge, SwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 
 const marketsKeys = [
   "AVAX-AVAX-USDC",
@@ -20,7 +19,7 @@ const marketsInfoData = mockMarketsInfoData(tokensData, marketsKeys);
 
 const graph = getMarketsGraph(Object.values(marketsInfoData) as MarketInfo[]);
 
-const BASE_FEE = BigNumber.from(-1);
+const BASE_FEE = BigInt(-1);
 
 describe("swapPath", () => {
   describe("basic graph traversal", () => {
@@ -93,7 +92,7 @@ describe("swapPath", () => {
         to: "BTC",
         feeOverrides: {
           "SPOT-USDC-DAI": {
-            "USDC-DAI": BASE_FEE.sub(10),
+            "USDC-DAI": BASE_FEE - 10n,
           },
         },
         expected: ["AVAX-AVAX-USDC", "SPOT-DAI-USDC", "BTC-BTC-DAI"],
@@ -108,13 +107,13 @@ describe("swapPath", () => {
         to: "DAI",
         feeOverrides: {
           "SPOT-USDC-DAI": {
-            "USDC-DAI": BASE_FEE.sub(10),
+            "USDC-DAI": BASE_FEE - 10n,
           },
           "SPOT-DAI-USDC": {
-            "USDC-DAI": BASE_FEE.sub(2),
+            "USDC-DAI": BASE_FEE - 2n,
           },
           "SOL-ETH-USDC": {
-            "ETH-USDC": BASE_FEE.sub(2),
+            "ETH-USDC": BASE_FEE - 2n,
           },
         },
         expected: ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
@@ -131,7 +130,7 @@ describe("swapPath", () => {
         to: "AVAX",
         feeOverrides: {
           "SOL-ETH-USDC": {
-            "ETH-USDC": BASE_FEE.mul(-1),
+            "ETH-USDC": BASE_FEE * -1n,
           },
         },
         expected: ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
@@ -147,7 +146,7 @@ describe("swapPath", () => {
         from: "AVAX",
         to: "DAI",
         expected: ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
-        expectedFee: BigNumber.from(-2),
+        expectedFee: BigInt(-2),
         expectedPaths: [
           ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
           ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
@@ -166,10 +165,10 @@ describe("swapPath", () => {
     ];
     for (const { name, from, to, expected, feeOverrides, expectedPaths } of tests) {
       it(`${name}: ${from} -> ${to}`, () => {
-        const mockEstimator: SwapEstimator = (e: MarketEdge, usdIn: BigNumber) => {
-          const fees = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] || BASE_FEE;
+        const mockEstimator: SwapEstimator = (e: MarketEdge, usdIn: bigint) => {
+          const fees: bigint = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] || BASE_FEE;
           return {
-            usdOut: usdIn.add(fees),
+            usdOut: usdIn + fees,
           };
         };
         const allRoutes = findAllPaths(marketsInfoData, graph, from, to);
@@ -179,7 +178,7 @@ describe("swapPath", () => {
         let pathResult: string[] | undefined = undefined;
 
         if (allRoutes) {
-          const result = getBestSwapPath(allRoutes, BigNumber.from(5), mockEstimator);
+          const result = getBestSwapPath(allRoutes, BigInt(5), mockEstimator);
           pathResult = result;
         }
 

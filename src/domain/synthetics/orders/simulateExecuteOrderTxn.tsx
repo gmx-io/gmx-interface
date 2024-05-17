@@ -7,7 +7,7 @@ import { getContract } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
@@ -24,7 +24,7 @@ type SimulateExecuteOrderParams = {
   secondaryPriceOverrides: PriceOverrides;
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
-  value: BigNumber;
+  value: bigint;
   method?: string;
   errorTitle?: string;
 };
@@ -37,7 +37,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
 
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
-  const nextNonce = nonce.add(1);
+  const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
@@ -63,30 +63,30 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   try {
-    await exchangeRouter.callStatic.multicall(simulationPayload, {
+    await exchangeRouter.multicall.staticCall(simulationPayload, {
       value: p.value,
       blockTag: blockNumber,
       from: p.account,
     });
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
     let msg: any = undefined;
 
     try {
       const errorData = extractDataFromError(txnError.message);
       const parsedError = customErrors.interface.parseError(errorData);
-      const isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
+      const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
 
       if (isSimulationPassed) {
         return;
       }
 
-      const parsedArgs = Object.keys(parsedError.args).reduce((acc, k) => {
+      const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
         if (!Number.isNaN(Number(k))) {
           return acc;
         }
-        acc[k] = parsedError.args[k].toString();
+        acc[k] = parsedError?.args[k].toString();
         return acc;
       }, {});
 
@@ -95,7 +95,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
           {errorTitle}
           <br />
           <ToastifyDebug>
-            {parsedError.name} {JSON.stringify(parsedArgs, null, 2)}
+            {parsedError?.name} {JSON.stringify(parsedArgs, null, 2)}
           </ToastifyDebug>
         </div>
       );
@@ -142,8 +142,8 @@ function getSimulationPrices(
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];
-  const primaryPrices: { min: BigNumber; max: BigNumber }[] = [];
-  const secondaryPrices: { min: BigNumber; max: BigNumber }[] = [];
+  const primaryPrices: { min: bigint; max: bigint }[] = [];
+  const secondaryPrices: { min: bigint; max: bigint }[] = [];
 
   for (const address of tokenAddresses) {
     const token = getTokenData(tokensData, address);

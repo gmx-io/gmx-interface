@@ -163,7 +163,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
         return claimAction.claimItems.flatMap((claimItem) => {
           return [
-            claimItem.longTokenAmount.gt(0) && {
+            claimItem.longTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
@@ -174,7 +174,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
                 claimItem.marketInfo.longToken.symbol
               ),
             },
-            claimItem.shortTokenAmount.gt(0) && {
+            claimItem.shortTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,

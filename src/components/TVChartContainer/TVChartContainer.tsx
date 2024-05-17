@@ -6,7 +6,6 @@ import { Token, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -32,8 +31,8 @@ type Props = {
   dataProvider?: TVDataProvider;
   chartToken: {
     symbol: string;
-    minPrice: BigNumber;
-    maxPrice: BigNumber;
+    minPrice: bigint;
+    maxPrice: bigint;
   };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
 };

@@ -1,12 +1,11 @@
 import "./MarketNetFee.scss";
 import { Trans, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { formatRatePercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
-  fundingRateHourly: BigNumber;
-  borrowRateHourly: BigNumber;
+  fundingRateHourly: bigint;
+  borrowRateHourly: bigint;
   isLong: boolean;
 };
 
@@ -30,7 +29,7 @@ const RATE_PERIODS = [
 
 export default function MarketNetFee(props: Props) {
   const { borrowRateHourly, fundingRateHourly, isLong } = props;
-  const netFeeHourly = borrowRateHourly.add(fundingRateHourly);
+  const netFeeHourly = borrowRateHourly + fundingRateHourly;
   const positionType = isLong ? t`Long Positions` : t`Short Positions`;
   const netRate = t`Net Rate`;
 
@@ -41,7 +40,7 @@ export default function MarketNetFee(props: Props) {
       </div>
       <ul className="net-fees-over-time">
         {RATE_PERIODS.map((period) => {
-          const netFee = netFeeHourly.mul(period.hours);
+          const netFee = netFeeHourly * BigInt(period.hours);
           return (
             <li key={period.label}>
               <span className="net-fee__period">{period.label}:</span>
@@ -61,17 +60,17 @@ export default function MarketNetFee(props: Props) {
   );
 }
 
-function renderRate(rate: BigNumber) {
+function renderRate(rate: bigint) {
   return <span className={getPositiveOrNegativeClass(rate)}>{formatRatePercentage(rate)}</span>;
 }
 
 function NetFeeMessage(props: Props) {
   const { fundingRateHourly, borrowRateHourly, isLong } = props;
-  const fundingAction = fundingRateHourly.gte(0) ? t`receive` : t`pay`;
+  const fundingAction = fundingRateHourly >= 0 ? t`receive` : t`pay`;
   const borrowAction = fundingAction === t`receive` ? t`pay` : "";
   const longOrShort = isLong ? t`Long` : t`Short`;
-  const isFundingRateZero = fundingRateHourly.isZero();
-  const isBorrowRateZero = borrowRateHourly.isZero();
+  const isFundingRateZero = fundingRateHourly === 0n;
+  const isBorrowRateZero = borrowRateHourly === 0n;
   const fundingRate = renderRate(fundingRateHourly);
   const borrowRate = renderRate(borrowRateHourly);
 

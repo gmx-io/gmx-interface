@@ -5,7 +5,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo, useState } from "react";
@@ -39,8 +38,8 @@ type MarketOption = {
   poolName: string;
   name: string;
   marketInfo: MarketInfo;
-  balance: BigNumber;
-  balanceUsd: BigNumber;
+  balance: bigint;
+  balanceUsd: bigint;
   state?: MarketState;
 };
 
@@ -77,8 +76,8 @@ export function PoolSelector({
           poolName,
           name: marketInfo.name,
           marketInfo,
-          balance: gmBalance || BigNumber.from(0),
-          balanceUsd: gmBalanceUsd || BigNumber.from(0),
+          balance: gmBalance || 0n,
+          balanceUsd: gmBalanceUsd || 0n,
           state,
         };
       });
@@ -86,7 +85,7 @@ export function PoolSelector({
     const marketsWithoutBalance: MarketOption[] = [];
 
     for (const market of allMarkets) {
-      if (market.balance.gt(0)) {
+      if (market.balance > 0) {
         marketsWithBalance.push(market);
       } else {
         marketsWithoutBalance.push(market);
@@ -94,7 +93,7 @@ export function PoolSelector({
     }
 
     const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
-      return b.balanceUsd?.gt(a.balanceUsd || 0) ? 1 : -1;
+      return (b.balanceUsd ?? 0n) > (a.balanceUsd ?? 0n) ? 1 : -1;
     });
 
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
@@ -225,17 +224,18 @@ export function PoolSelector({
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {showBalances && balance && (
+                  {(showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance.gt(0) &&
+                      {balance > 0 &&
                         formatTokenAmount(balance, marketToken?.decimals, "GM", {
                           useCommas: true,
                         })}
-                      {balance.eq(0) && "-"}
+                      {balance == 0n && "-"}
                     </div>
-                  )}
+                  )) ||
+                    null}
                   <span className="text-accent">
-                    {showBalances && balanceUsd && balanceUsd.gt(0) && <div>{formatUsd(balanceUsd)}</div>}
+                    {(showBalances && balanceUsd && <div>{formatUsd(balanceUsd)}</div>) || null}
                   </span>
                 </div>
               </div>

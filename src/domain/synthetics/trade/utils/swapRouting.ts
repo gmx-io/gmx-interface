@@ -1,5 +1,4 @@
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
 
@@ -42,7 +41,7 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
 }
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
-  return (e: MarketEdge, usdIn: BigNumber) => {
+  return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
     const swapStats = getSwapStats({
@@ -58,7 +57,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
 
     if (!usdOut || isOutLiquidity) {
       return {
-        usdOut: BigNumber.from(0),
+        usdOut: 0n,
       };
     }
 
@@ -68,13 +67,13 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
-export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator: SwapEstimator) {
+export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: SwapEstimator) {
   if (routes.length === 0) {
     return undefined;
   }
 
   let bestPath = routes[0].path;
-  let bestUsdOut = BigNumber.from(0);
+  let bestUsdOut = 0n;
 
   for (const route of routes) {
     try {
@@ -83,7 +82,7 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator
         return usdOut;
       }, usdIn);
 
-      if (pathUsdOut.gt(bestUsdOut)) {
+      if (pathUsdOut > bestUsdOut) {
         bestPath = route.path;
         bestUsdOut = pathUsdOut;
       }

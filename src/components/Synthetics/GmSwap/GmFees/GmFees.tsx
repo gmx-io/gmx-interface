@@ -11,6 +11,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./GmFees.scss";
+import { bigMath } from "lib/bigmath";
 
 type Props = {
   totalFees?: FeeItem;
@@ -26,20 +27,28 @@ export function GmFees(p: Props) {
   let value: ReactNode = useMemo(() => {
     if (!p.totalFees?.deltaUsd) {
       return "-";
-    } else if (p.swapPriceImpact?.deltaUsd.abs().gt(0) || p.swapFee || p.uiFee?.deltaUsd.abs()?.gt(0)) {
+    } else if (
+      bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
+      p.swapFee ||
+      bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0
+    ) {
       return (
         <Tooltip
           className="GmFees-tooltip"
-          handle={<span className={cx({ positive: totalFeesUsd?.gt(0) })}>{formatDeltaUsd(totalFeesUsd)}</span>}
+          handle={
+            <span className={cx({ positive: totalFeesUsd && totalFeesUsd > 0 })}>{formatDeltaUsd(totalFeesUsd)}</span>
+          }
           position="top-end"
           renderContent={() => (
             <div>
-              {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
+              {bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
                   label={t`Price Impact`}
-                  value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
+                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd, p.swapPriceImpact?.bps)!}
                   showDollar={false}
-                  className={getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd)}
+                  className={getPositiveOrNegativeClass(
+                    p.swapPriceImpact === undefined ? undefined : p.swapPriceImpact.deltaUsd
+                  )}
                 />
               )}
 
@@ -54,14 +63,14 @@ export function GmFees(p: Props) {
                 </>
               )}
 
-              {p.uiFee?.deltaUsd.abs()?.gt(0) && (
+              {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
                   label={
                     <>
                       <Trans>UI Fee</Trans>:
                     </>
                   }
-                  value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
+                  value={formatDeltaUsd(p.uiFee?.deltaUsd, p.uiFee?.bps)!}
                   showDollar={false}
                   className="text-red"
                 />
@@ -71,17 +80,8 @@ export function GmFees(p: Props) {
         />
       );
     }
-    return <span className={cx({ positive: totalFeesUsd?.gt(0) })}>{formatDeltaUsd(totalFeesUsd)}</span>;
-  }, [
-    p.isDeposit,
-    p.swapFee,
-    p.swapPriceImpact?.bps,
-    p.swapPriceImpact?.deltaUsd,
-    p.totalFees?.deltaUsd,
-    p.uiFee?.bps,
-    p.uiFee?.deltaUsd,
-    totalFeesUsd,
-  ]);
+    return <span className={cx({ positive: totalFeesUsd && totalFeesUsd > 0 })}>{formatDeltaUsd(totalFeesUsd)}</span>;
+  }, [p.isDeposit, p.swapFee, p.swapPriceImpact, p.totalFees?.deltaUsd, p.uiFee?.bps, p.uiFee?.deltaUsd, totalFeesUsd]);
 
   return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;
 }
