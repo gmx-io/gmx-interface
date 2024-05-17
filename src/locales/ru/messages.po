@@ -5610,7 +5610,11 @@ msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
+#~ msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
