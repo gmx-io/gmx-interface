@@ -239,63 +239,6 @@ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "<0>GM Pools total value ({chainName}).</0>"
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-msgstr ""
-
-#: src/components/Exchange/OrdersToa.js
-msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
-msgstr ""
-
-#: src/components/Exchange/FeesTooltip.tsx
-msgid "<0>Read more</0> about fees."
-msgstr ""
-
-#: src/pages/PageNotFound/PageNotFound.js
-msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
-msgstr ""
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "<0>Set Recommended Impact: {0}</0>."
-msgstr ""
-
-#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
-msgid "<0>Switch to:</0>"
-msgstr ""
-
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
-msgstr ""
-
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
-msgstr ""
-
-#: src/components/Exchange/OrdersList.js
-msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
@@ -4036,9 +3979,8 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
-#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-msgid "Decreased"
+#: src/components/Exchange/SwapBox.js
+msgid "Max {0} short capacity"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -4120,6 +4062,35 @@ msgstr ""
 msgid "Leverage Trading Terminal"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Swap submitted!"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling Buy request"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GBC NFTs APR tracker and rewards"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Pending Wallet transaction sign"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V1 Avalanche"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4227,6 +4198,7 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr ""
 
+#: src/App/App.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5392,285 +5364,8 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
-msgid "Invalid Transfer Addresses: Please check the url."
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Invalid execution fee buffer value"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Invalid liq. price"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Invalid price, see warning"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Invalid slippage value"
-msgstr ""
-
-#: src/pages/OrdersOverview/OrdersOverview.js
-msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
-msgstr ""
-
-#: src/pages/OrdersOverview/OrdersOverview.js
-msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
-msgstr ""
-
-#: src/pages/Jobs/Jobs.js
-msgid "Job Openings"
-msgstr ""
-
-#: src/pages/Jobs/Jobs.js
-msgid "Job openings at GMX."
-msgstr ""
-
-#: src/pages/Jobs/Jobs.js
-msgid "Jobs"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Keep Leverage is not possible"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Keep leverage at {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Keep leverage at {0}x"
-msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Keep leverage at {keepLeverageAtValue}"
-msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "LIQUIDITY"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "LIVE"
-msgstr ""
-
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LONG LIQ."
-msgstr ""
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Language"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 30 days"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 7 days"
-msgstr ""
-
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last month"
-msgstr ""
-
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/ModalViews/RedirectModal.js
-#: src/pages/Home/Home.js
-msgid "Launch App"
-msgstr ""
-
-#: src/components/Exchange/UsefulLinks.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Leaderboard"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Leaderboard for GMX traders"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Leaderboard for traders on GMX V2."
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Leave at least {0} ETH for gas"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Leave at least {0} {1} for gas"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Leftover Collateral Excluding Impact"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Leftover Collateral not enough to cover fees"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Leftover collateral below 5 USD"
-msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Leftover collateral below {0} USD"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Leftover position below 10 USD"
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Lev."
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Leverage"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Leverage Trading Terminal"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Leverage disabled, pending {0} upgrade"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Leverage slider"
-msgstr ""
-
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Limit"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Limit Decrease"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Limit Increase"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created."
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount."
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Limit Price"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Limit Swap"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Limit order creation failed."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Limit order submitted!"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Limit price above Mark Price"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Limit price below Mark Price"
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Limit size is required."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-#: src/pages/Ecosystem/Ecosystem.js
-#: src/pages/Ecosystem/Ecosystem.js
-#: src/pages/Ecosystem/Ecosystem.js
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Link"
-msgstr ""
-
-#: src/components/Exchange/PositionShare.tsx
-msgid "Link copied to clipboard."
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Liq. Price"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Liq. {0} {longOrShortText}"
-msgstr ""
-
-#: src/components/Synthetics/TVChart/TVChart.tsx
-msgid "Liq. {longOrShortText} {tokenSymbol}"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistory/keys.ts
-#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-msgid "Liquidated"
+#: src/pages/NftWallet/NftWallet.js
+msgid "Transfer submitted!"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5680,56 +5375,6 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Liquidation"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Liquidation Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Liquidation price would cross mark price."
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Liquidity"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Liquidity data not loaded"
-msgstr ""
-
-#: src/App/App.tsx
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Loading..."
-msgstr ""
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
@@ -5896,26 +5541,6 @@ msgstr ""
 msgid "Deposit"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.js
-msgid "Please input a referral code to benefit from fee discounts."
-msgstr ""
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Please switch your network to Arbitrum."
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
-msgstr ""
-
-#: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5929,72 +5554,8 @@ msgstr ""
 msgid "Sell request sent"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price Impact Rebates"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Price Impact not yet acknowledged"
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above Limit Price."
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Price above Liq. Price"
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above Liq. Price."
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Price above Mark Price"
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above Mark Price."
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above highest Limit Price."
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price above lowest Limit Price."
-msgstr ""
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price below Limit Price."
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -6009,8 +5570,8 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Price below lowest Limit Price."
+#: src/components/Glp/GlpSwap.js
+msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -6916,181 +6477,8 @@ msgstr ""
 msgid "Fees exceed Pay amount"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram Group"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram Group (Chinese)"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram Group (Portuguese)"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram Groups"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX Swaps monitoring"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX position updates"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for Open Interest on GMX"
-msgstr ""
-
-#: src/components/Footer/constants.ts
-#: src/pages/TermsAndConditions/TermsAndConditions.js
-msgid "Terms and Conditions"
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The Execution Price didn't meet the Acceptable Price condition."
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
-msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr ""
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
-msgstr ""
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
-msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
-msgstr ""
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
-msgstr ""
-
-#: src/lib/contracts/transactionErrors.tsx
-msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
-msgstr ""
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
-msgstr ""
-
-#: src/domain/legacy.ts
-msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-msgstr ""
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
-msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "The pending borrow fee will be charged on this transaction."
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
-msgstr ""
-
-#: src/components/Exchange/OrdersList.js
-msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Market Swap"
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -7206,41 +6594,9 @@ msgstr ""
 msgid "Compound completed!"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstake completed!"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstake esGMX"
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-msgid "Unstake failed"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstake failed."
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstake submitted!"
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-msgid "Unstake submitted! <0>View status.</0>"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking..."
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Unsupported network"
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Confirm {operationText}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -7909,159 +7265,11 @@ msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "staked"
+msgid "Long Positions"
 msgstr ""
 
-#: src/pages/PositionsOverview/PositionsOverview.js
-msgid "time to liq"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "trigger price"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-msgid "view"
-msgstr ""
-
-#: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
-msgstr ""
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "{0} Approved!"
-msgstr ""
-
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "{0} Capacity Reached"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP (${1})"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP bought with {1} {2}!"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP have been reserved for vesting."
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP sold for {1} {2}!"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr ""
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Pool Capacity Reached"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/SwapCard/SwapCard.tsx
-msgid "{0} Price"
-msgstr ""
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Required"
-msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
-msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} can be used to buy GM for this market up to the specified buying caps."
-msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "{0} can not be sent to smart contract addresses. Select another token."
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} is required for collateral."
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} pool exceeded, try different token"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/OrderEditor.js
-msgid "{0} price"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} selected in order form"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "{0} will be swapped to {1} on order execution."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} {1} not supported"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{0}: {1}, Price: {priceDisplay}"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{actionDisplay} Order"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Price: {3} USD"
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Depositing {0} to {positionText}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
