@@ -295,14 +295,12 @@ function UnstakeModal(props) {
       ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
   }
 
-  /*
   const govTokenAmount = useGovTokenAmount(chainId);
   const unstakeGmxPercentage = maxAmount?.gt(0) ? amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount) : BigNumber.from(0);
   const votingPowerBurnAmount =
     unstakeGmxPercentage && govTokenAmount
       ? govTokenAmount?.mul(unstakeGmxPercentage)?.div(BASIS_POINTS_DIVISOR)
       : BigNumber.from(0);
-  */
 
   const getError = () => {
     if (!amount) {
@@ -382,6 +380,11 @@ function UnstakeModal(props) {
         {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && amount && !amount.gt(maxAmount) && (
           <AlertInfo type="warning">
             <Trans>
+              {chainId === ARBITRUM ? (
+                <span>
+                  Unstaking will burn&nbsp;{formatAmount(votingPowerBurnAmount, 18, 2, true)}&nbsp;voting power.&nbsp;
+                </span>
+              ) : null}
               <span>
                 You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                 this action.

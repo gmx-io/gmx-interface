@@ -1158,7 +1158,6 @@ export type ProcessedData = Partial<{
   stakedGmxTrackerRewardsUsd: BigNumber;
   feeGmxTrackerRewards: BigNumber;
   feeGmxTrackerRewardsUsd: BigNumber;
-  boostBasisPoints: BigNumber;
   stakedGmxTrackerAnnualRewardsUsd: BigNumber;
   feeGmxTrackerAnnualRewardsUsd: BigNumber;
   gmxAprTotal: BigNumber;
@@ -1255,11 +1254,6 @@ export function getProcessedData(
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
 
-  data.boostBasisPoints = bigNumberify(0);
-  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx.gt(0)) {
-    data.boostBasisPoints = data.bnGmxInFeeGmx.mul(BASIS_POINTS_DIVISOR).div(data.bonusGmxInFeeGmx);
-  }
-
   data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
     .mul(gmxPrice)
@@ -1330,11 +1324,7 @@ export function getProcessedData(
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd);
 
-  data.avgBoostMultiplier = stakedBnGmxSupply
-    ?.mul(BASIS_POINTS_DIVISOR)
-    .div(stakedGmxSupply?.add(data?.stakedEsGmxSupply ?? 0));
-  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken?.mul(data.avgBoostMultiplier).div(BASIS_POINTS_DIVISOR);
-  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken?.add(data.avgBoostAprForNativeToken ?? 0);
+  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken;
 
   return data;
 }
