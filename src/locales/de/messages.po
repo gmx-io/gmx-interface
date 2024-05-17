@@ -174,7 +174,7 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>Markt ausgewählt</4>"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A Size percentage is required."
 msgstr ""
 
@@ -343,6 +343,10 @@ msgstr "Aktive Orders"
 msgid "Active Referral Code"
 msgstr "Aktive Referral Codes"
 
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Add Row"
+msgstr ""
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Zu Metamask hinzufügen"
@@ -420,6 +424,10 @@ msgstr "Alle"
 msgid "All time"
 msgstr "Gesamtzeit"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Allow all my tokens to be transferred to a new account"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -491,7 +499,7 @@ msgstr "Genehmigung erteilt! <0>Status anzeigen.</0>"
 msgid "Approval was cancelled"
 msgstr "Genehmigung wurde aufgehoben"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Approve GMX"
 msgstr "GMX genehmigen"
@@ -524,7 +532,7 @@ msgid "Approving {stakingTokenSymbol}..."
 msgstr "Genehmigung von {stakingTokenSymbol}..."
 
 #: src/components/Migration/Migration.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr " Genehmigung..."
 
@@ -646,7 +654,7 @@ msgstr ""
 msgid "Base {nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin Transfer"
 msgstr "Übertragung beginnen"
 
@@ -854,6 +862,7 @@ msgstr "Kann wegen eines Fehlers nicht ausgeführt werden"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Abbruch"
@@ -882,6 +891,10 @@ msgstr "Abbruch fehlgeschlagen"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "Abbruch fehlgeschlagen."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Cancel newly created orders"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel submitted"
@@ -1299,7 +1312,7 @@ msgstr ""
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "Weiter"
@@ -1360,6 +1373,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1581,10 +1595,6 @@ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1883,7 +1893,7 @@ msgstr "NFT ID eingeben"
 msgid "Enter Price"
 msgstr "Preis eingeben"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter Receiver Address"
 msgstr "Empfängeradresse eingeben"
@@ -2568,7 +2578,7 @@ msgstr "Hohe USDG-Abweichung, trotzdem Long"
 msgid "I am aware of the trigger orders"
 msgstr "Ich bin mir der Trigger-Orders bewusst"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
@@ -2772,7 +2782,7 @@ msgstr ""
 msgid "Invalid NFT Address"
 msgstr "Ungültige NFT-Adresse"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "Ungültige Empfängeradresse"
@@ -2955,6 +2965,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -2996,13 +3007,21 @@ msgstr ""
 msgid "Limit order creation failed."
 msgstr "Die Erstellung einer Limit-Order ist fehlgeschlagen."
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Limit order for"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order submitted!"
 msgstr "Limit-Order übermittelt!"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price above Mark Price"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Limit price below Mark Price"
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Limit size is required."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3364,6 +3383,10 @@ msgstr ""
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max In"
 msgstr ""
@@ -3418,6 +3441,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4117,6 +4141,10 @@ msgstr "Bezahlen"
 msgid "Pay Amount"
 msgstr "Betrag bezahlen"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Pending Transfer Approval"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
 msgstr ""
@@ -4135,7 +4163,7 @@ msgstr ""
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Bitte gebe einen Empfehlungscode ein, um von Gebührenermäßigungen zu profitieren."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
@@ -4304,7 +4332,8 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
 msgstr ""
 
@@ -4315,7 +4344,7 @@ msgstr ""
 msgid "Price above Liq. Price"
 msgstr "Preis über Liq. Preis"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."
 msgstr ""
 
@@ -4332,11 +4361,22 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Mark Price."
 msgstr ""
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above highest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price above lowest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
 msgstr ""
 
@@ -4347,7 +4387,7 @@ msgstr ""
 msgid "Price below Liq. Price"
 msgstr "Preis unter Liq. Preis"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Liq. Price."
 msgstr ""
 
@@ -4364,8 +4404,18 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "Preis unter Mark Preis"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below highest Limit Price."
+msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Price below lowest Limit Price."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4542,20 +4592,20 @@ msgstr ""
 msgid "Receive"
 msgstr "Empfangen"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "Empfängeradresse"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "Der Empfänger hat noch keine GLP-Token gestaket"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Der Empfänger hat noch keine GMX-Token gestaket"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
 
@@ -4621,6 +4671,10 @@ msgstr "Referral Code aktualisiert!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+msgid "Remove Row"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
@@ -4828,7 +4882,7 @@ msgstr "Pool wählen"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Wähle unten deine Vestingoption aus und klicke dann auf \"Beanspruchen\"."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "Selbstübertragungen werden nicht unterstützt"
 
@@ -4892,15 +4946,15 @@ msgstr ""
 msgid "Selling..."
 msgstr "Verkaufe..."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "Sender hat alle Token aus dem GLP Vesting Vault abgehoben"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender hat alle Token aus dem GMX Vesting Vault zurückgezogen"
 
@@ -5466,6 +5520,10 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "TP/SL"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "TP/SL orders exceed the position"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -6057,7 +6115,7 @@ msgstr "Transaktion gesendet."
 msgid "Transaction was cancelled."
 msgstr "Transaktion wurde abgebrochen."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Transfer Account"
 msgstr "Transferiere Konto"
@@ -6066,21 +6124,21 @@ msgstr "Transferiere Konto"
 msgid "Transfer NFT"
 msgstr "Transferiere NFT"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Submitted"
 msgstr "Transfer übermittelt"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Transfer bereits begonnen"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer failed."
 msgstr "Transfer fehlgeschlagen"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
@@ -6090,7 +6148,7 @@ msgstr "Transfer übermittelt!"
 msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
 msgstr "Übermitteln"
 
@@ -6253,6 +6311,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -6423,12 +6482,12 @@ msgstr "Vesting mit GMX auf Arbitrum"
 msgid "Vest with GMX on Avalanche"
 msgstr "Vesting mit GMX auf Avalanche"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "Gevestete GLP nicht abgehoben"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "Gevestete GMX nicht abgehoben"
 
@@ -6439,6 +6498,7 @@ msgid "Vesting Status"
 msgstr ""
 
 #: src/App/App.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6543,7 +6603,7 @@ msgstr "Wallet"
 msgid "Wallet 365d expected Fees"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "Wallet ist nicht verbunden"
@@ -6776,7 +6836,7 @@ msgstr "Du kannst ETH von anderen Netzwerken zu Arbitrum transferieren, indem du
 msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "Du hast eine <0>ausstehende Übertragung</0> an {pendingReceiver}."
 
@@ -6828,7 +6888,7 @@ msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Diese Aktion gi
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
@@ -6931,7 +6991,7 @@ msgstr "Das Kollateral deiner Position nach Abzug der Gebühren:"
 msgid "Your transfer has been completed."
 msgstr "Dein Transfer wurde abgeschlossen."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "Dein Transfer wurde eingeleitet."
 
@@ -7018,10 +7078,6 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
-msgstr ""
-
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 msgstr ""
@@ -7102,10 +7158,6 @@ msgstr ""
 msgid "{0} is required for collateral."
 msgstr "{0} ist für das Kollateral erforderlich."
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{0} order for"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} Pool überschritten, anderen Token versuchen"
@@ -7170,7 +7222,6 @@ msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Du hast einen aktiven Triggerauftrag, der sich auf diese Position auswirken könnte.} other {Du hast # aktive Triggeraufträge, die sich auf diese Position auswirken könnten.}}"
 
@@ -7289,6 +7340,14 @@ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} limit order for"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} {0} order for"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx

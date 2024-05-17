@@ -38,7 +38,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
   })
 );
 
-export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
+export const makeSelectOrdersByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
   createSelector(function selectOrdersByPositionKey(q) {
     if (!positionKey) {
       q(() => null);
@@ -47,7 +47,13 @@ export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((po
 
     const ordersInfoData = q(selectOrdersInfoData);
     const orders = Object.values(ordersInfoData || {});
-    const positionOrders = orders.filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
+    return orders.filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
+  })
+);
+
+export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
+  createSelector(function selectOrdersByPositionKey(q) {
+    const positionOrders = q(makeSelectOrdersByPositionKey(positionKey));
 
     sortPositionOrders(positionOrders);
 

@@ -15,6 +15,7 @@ import {
 } from "domain/synthetics/positions";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
+import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -59,6 +60,7 @@ export type SyntheticsState = {
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
+  confirmationBox: ConfirmationBoxState;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -128,6 +130,7 @@ export function SyntheticsStateContextProvider({
 
   const positionSellerState = usePositionSellerState(chainId);
   const positionEditorState = usePositionEditorState(chainId);
+  const confirmationBoxState = useConfirmationBoxState();
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
@@ -167,6 +170,7 @@ export function SyntheticsStateContextProvider({
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
+      confirmationBox: confirmationBoxState,
     };
 
     return s;
@@ -195,6 +199,7 @@ export function SyntheticsStateContextProvider({
     orderEditor,
     positionSellerState,
     positionEditorState,
+    confirmationBoxState,
   ]);
 
   latestState = state;

@@ -41,11 +41,11 @@ export default function useV2Stats(chainId: number): DashboardOverview {
       totalLongPositionSizes: totalLongInterestUsd || 0n,
       totalShortPositionSizes: totalShortInterestUsd || 0n,
       openInterest: totalLongInterestUsd && totalShortInterestUsd ? totalLongInterestUsd + totalShortInterestUsd : 0n,
-      dailyVolume: volumeInfo?.dailyVolume || 0n,
-      totalVolume: volumeInfo?.totalVolume || 0n,
-      weeklyFees: feesInfo?.weeklyFees || 0n,
-      totalFees: feesInfo?.totalFees || 0n,
-      totalUsers: usersInfo?.totalUsers || 0n,
+      dailyVolume: BigInt(volumeInfo?.dailyVolume) || 0n,
+      totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
+      weeklyFees: BigInt(feesInfo?.weeklyFees) || 0n,
+      totalFees: BigInt(feesInfo?.totalFees ?? 0) || 0n,
+      totalUsers: BigInt(usersInfo?.totalUsers ?? 0) || 0n,
     };
   }, [marketsInfoData, volumeInfo, feesInfo, usersInfo]);
 

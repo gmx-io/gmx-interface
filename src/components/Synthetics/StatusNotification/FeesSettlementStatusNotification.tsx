@@ -43,8 +43,8 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
   useEffect(() => {
     Object.values(allOrderStatuses).forEach((orderStatus) => {
+      if (orderStatus.isViewed || !orderStatus.data) return;
       const key = getPendingOrderKey(orderStatus.data);
-      if (orderStatus.isViewed) return;
       const order = orderByKey.get(key);
       if (order) {
         if (getPendingOrderKey(order) === getPendingOrderKey(orderStatus.data)) {
@@ -58,6 +58,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   const orderStatusByOrder = useMemo(() => {
     const res = new Map<PendingOrderData, OrderStatus>();
     matchedOrderStatuses.forEach((orderStatus) => {
+      if (!orderStatus.data) return;
       const key = getPendingOrderKey(orderStatus.data);
       const order = orderByKey.get(key);
       if (order) {

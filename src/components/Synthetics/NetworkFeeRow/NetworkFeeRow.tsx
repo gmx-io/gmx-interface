@@ -18,6 +18,7 @@ import { bigMath } from "lib/bigmath";
 
 type Props = {
   executionFee?: ExecutionFee;
+  isAdditionOrdersMsg?: boolean;
 };
 
 /**
@@ -26,18 +27,30 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee }: Props) {
+export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
 
-  const { executionFeeText, estimatedRefundText } = useMemo(() => {
-    const executionFeeText = formatTokenAmountWithUsd(
-      executionFee?.feeTokenAmount ? executionFee.feeTokenAmount * -1n : undefined,
-      executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined,
-      executionFee?.feeToken.symbol,
-      executionFee?.feeToken.decimals
-    );
+  const executionFeeText = formatTokenAmountWithUsd(
+    executionFee?.feeTokenAmount === undefined ? undefined : -executionFee.feeTokenAmount,
+    executionFee?.feeUsd === undefined ? undefined : -executionFee.feeUsd,
+    executionFee?.feeToken.symbol,
+    executionFee?.feeToken.decimals
+  );
 
+  const additionalOrdersMsg = useMemo(
+    () =>
+      isAdditionOrdersMsg && (
+        <Trans>
+          Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they
+          don't trigger and are cancelled.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
+        </Trans>
+      ),
+    [isAdditionOrdersMsg]
+  );
+
+  const estimatedRefundText = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
@@ -74,7 +87,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
       }
     );
 
-    return { executionFeeText, estimatedRefundText };
+    return estimatedRefundText;
   }, [executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
@@ -107,13 +120,14 @@ export function NetworkFeeRow({ executionFee }: Props) {
               textClassName="text-green-500"
             />
             {executionFee?.warning && <p className="text-yellow-500">{executionFee?.warning}</p>}
+            {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         )}
       >
         {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
-  }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText]);
+  }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText, additionalOrdersMsg]);
 
   return (
     <ExchangeInfoRow

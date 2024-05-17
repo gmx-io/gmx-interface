@@ -556,7 +556,7 @@ export default function GlpSwap(props) {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
       let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance - (minResidualAmount || 0n) : swapTokenBalance;
-      if (maxAvailableAmount?.isNegative()) {
+      if (maxAvailableAmount < 0) {
         maxAvailableAmount = 0n;
       }
 

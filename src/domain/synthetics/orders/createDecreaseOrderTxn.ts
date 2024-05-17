@@ -10,7 +10,7 @@ import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "./utils";
+import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
 import { t } from "@lingui/macro";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
@@ -82,7 +82,7 @@ export async function createDecreaseOrderTxn(
   await Promise.all(
     ps.map(async (p) => {
       if (subaccount && callbacks.setPendingOrder) {
-        callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
+        callbacks.setPendingOrder(getPendingOrderFromParams(chainId, "create", p));
       }
 
       if (!p.skipSimulation) {
@@ -127,39 +127,16 @@ export async function createDecreaseOrderTxn(
     }
 
     if (!subaccount && callbacks.setPendingOrder) {
-      callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
+      callbacks.setPendingOrder(getPendingOrderFromParams(chainId, "create", p));
     }
   });
 
   if (callbacks.setPendingFundingFeeSettlement) {
     callbacks.setPendingFundingFeeSettlement({
-      orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
+      orders: ps.map((p) => getPendingOrderFromParams(chainId, "create", p)),
       positions: ps.map((p) => getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)),
     });
   }
-}
-
-export function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
-  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
-
-  const shouldApplySlippage = isMarketOrderType(p.orderType);
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-    : p.minOutputUsd;
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-
-  return {
-    account: p.account,
-    marketAddress: p.marketAddress,
-    initialCollateralTokenAddress,
-    initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-    swapPath: p.swapPath,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: minOutputAmount,
-    isLong: p.isLong,
-    orderType: p.orderType,
-    shouldUnwrapNativeToken: isNativeReceive,
-  };
 }
 
 function getPendingPositionFromParams(txnCreatedAt: number, txnCreatedAtBlock: number, p: DecreaseOrderParams) {

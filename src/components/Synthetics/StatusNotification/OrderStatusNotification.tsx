@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { getWrappedToken } from "config/tokens";
-import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -25,13 +25,10 @@ import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import useWallet from "lib/wallets/useWallet";
-import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "domain/legacy";
+import { mustNeverExist } from "lib/types";
 
 type Props = {
   toastTimestamp: number;
@@ -54,10 +51,11 @@ export function OrderStatusNotification({
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
+  const contractOrderKey = pendingOrderData.orderKey;
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const hasError = Boolean(orderStatus?.cancelledTxnHash);
+  const hasError = Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel";
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -101,8 +99,15 @@ export function OrderStatusNotification({
         initialCollateralToken?.symbol
       )} for ${formatTokenAmount(minOutputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol)}`;
     } else {
-      const { marketInfo, sizeDeltaUsd, orderType, isLong, initialCollateralDeltaAmount, initialCollateralToken } =
-        orderData;
+      const {
+        txnType,
+        marketInfo,
+        sizeDeltaUsd,
+        orderType,
+        isLong,
+        initialCollateralDeltaAmount,
+        initialCollateralToken,
+      } = orderData;
 
       const longShortText = isLong ? t`Long` : t`Short`;
       const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
@@ -131,10 +136,16 @@ export function OrderStatusNotification({
         if (isMarketOrderType(orderType)) {
           orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
         } else {
+          const txnTypeText = {
+            create: t`Create`,
+            cancel: t`Cancel`,
+            update: t`Update`,
+          }[txnType];
+
           if (isLimitOrderType(orderType)) {
-            orderTypeText = t`Limit order for`;
+            orderTypeText = t`${txnTypeText} limit order for`;
           } else if (isDecreaseOrderType(orderType)) {
-            orderTypeText = t`${getTriggerNameByOrderType(orderType, true)} order for`;
+            orderTypeText = t`${txnTypeText} ${getTriggerNameByOrderType(orderType, true)} order for`;
           }
         }
 
@@ -147,11 +158,21 @@ export function OrderStatusNotification({
     }
   }, [orderData]);
 
-  const creationStatus = useMemo(() => {
+  const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
     let status: TransactionStatusType = "loading";
 
-    if (orderStatus?.createdTxnHash) {
+    let isCompleted = false;
+
+    if (orderData?.txnType === "create") {
+      isCompleted = Boolean(orderStatus?.createdTxnHash);
+    } else if (orderData?.txnType === "update") {
+      isCompleted = Boolean(orderStatus?.updatedTxnHash);
+    } else if (orderData?.txnType === "cancel") {
+      isCompleted = Boolean(orderStatus?.cancelledTxnHash);
+    }
+
+    if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
     }
@@ -159,11 +180,11 @@ export function OrderStatusNotification({
     return (
       <TransactionStatus
         status={status}
-        txnHash={hideTxLink !== "creation" ? orderStatus?.createdTxnHash : undefined}
+        txnHash={hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined}
         text={text}
       />
     );
-  }, [orderStatus?.createdTxnHash, hideTxLink]);
+  }, [orderData, orderStatus, hideTxLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -186,8 +207,11 @@ export function OrderStatusNotification({
 
     if (orderStatus?.cancelledTxnHash) {
       text = t`Order cancelled`;
-      status = "error";
       txnHash = orderStatus?.cancelledTxnHash;
+
+      if (orderData?.txnType !== "cancel") {
+        status = "error";
+      }
     }
 
     return <TransactionStatus status={status} txnHash={hideTxLink !== "execution" ? txnHash : undefined} text={text} />;
@@ -200,7 +224,9 @@ export function OrderStatusNotification({
       }
 
       const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
-        return !orderStatus.isViewed && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+        if (orderStatus.isViewed) return false;
+        if (contractOrderKey && orderStatus.key === contractOrderKey) return true;
+        return orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
       })?.key;
 
       if (matchedStatusKey) {
@@ -208,7 +234,15 @@ export function OrderStatusNotification({
         setOrderStatusViewed(matchedStatusKey);
       }
     },
-    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
+    [
+      orderStatus,
+      contractOrderKey,
+      orderStatusKey,
+      orderStatuses,
+      pendingOrderKey,
+      setOrderStatusViewed,
+      toastTimestamp,
+    ]
   );
 
   return (
@@ -217,7 +251,7 @@ export function OrderStatusNotification({
         <div className="StatusNotification-title">{title}</div>
 
         <div className="StatusNotification-items">
-          {creationStatus}
+          {sendingStatus}
           {executionStatus}
         </div>
       </div>
@@ -254,53 +288,73 @@ export function OrdersStatusNotificiation({
     [allOrderStatuses, matchedOrderStatusKeys]
   );
 
-  const orderByKey = useMemo(() => {
-    const map = new Map<string, PendingOrderData>();
+  const [ordersByPendingKey, ordersByContractKey] = useMemo(() => {
+    const pendingKeyMap = new Map<string, PendingOrderData>();
+    const contractKeyMap = new Map<string, PendingOrderData>();
     pendingOrders.forEach((order) => {
+      if (order.orderKey) {
+        contractKeyMap.set(order.orderKey, order);
+      }
+
       const key = getPendingOrderKey(order);
-      map.set(key, order);
+      pendingKeyMap.set(key, order);
     });
-    return map;
+    return [pendingKeyMap, contractKeyMap];
   }, [pendingOrders]);
 
   useEffect(() => {
     Object.values(allOrderStatuses).forEach((orderStatus) => {
-      const key = getPendingOrderKey(orderStatus.data);
+      const isPendingOrderMatch = orderStatus.data && ordersByPendingKey.has(getPendingOrderKey(orderStatus.data));
+      const isContractOrderMatch = ordersByContractKey.has(orderStatus.key);
 
-      if (orderStatus.isViewed || !orderByKey.has(key)) return;
+      if (orderStatus.isViewed || (!isPendingOrderMatch && !isContractOrderMatch)) return;
 
       setMatchedOrderStatusKeys((prev) => [...prev, orderStatus.key]);
       setOrderStatusViewed(orderStatus.key);
     });
-  }, [allOrderStatuses, orderByKey, setOrderStatusViewed]);
+  }, [allOrderStatuses, ordersByPendingKey, ordersByContractKey, setOrderStatusViewed]);
 
   const isCompleted = useMemo(() => {
     return pendingOrders.every((pendingOrder) => {
-      const orderStatus = matchedOrderStatuses.find(
-        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(pendingOrder)
-      );
-      return isMarketOrderType(pendingOrder.orderType)
-        ? Boolean(orderStatus?.executedTxnHash)
-        : Boolean(orderStatus?.createdTxnHash);
+      const orderStatus = matchedOrderStatuses.find((status) => {
+        const isPendingOrderMatch = status.data && getPendingOrderKey(pendingOrder) === getPendingOrderKey(status.data);
+        const isContractOrderMatch = pendingOrder.orderKey && pendingOrder.orderKey === status.key;
+
+        return isPendingOrderMatch || isContractOrderMatch;
+      });
+
+      if (pendingOrder.txnType === "create") {
+        return isMarketOrderType(pendingOrder.orderType)
+          ? Boolean(orderStatus?.executedTxnHash)
+          : Boolean(orderStatus?.createdTxnHash);
+      }
+      if (pendingOrder.txnType === "update") {
+        return Boolean(orderStatus?.updatedTxnHash);
+      }
+      if (pendingOrder.txnType === "cancel") {
+        return Boolean(orderStatus?.cancelledTxnHash);
+      }
+
+      mustNeverExist(pendingOrder.txnType);
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const isMarketOrLimitOrderFailed = useMemo(() => {
+  const isMainOrderFailed = useMemo(() => {
     return pendingOrders.some((pendingOrder) => {
       if (isMarketOrderType(pendingOrder.orderType) || isLimitOrderType(pendingOrder.orderType)) {
-        const orderStatusKey = getPendingOrderKey(pendingOrder);
-        const orderStatus = matchedOrderStatuses.find((status) => getPendingOrderKey(status.data) === orderStatusKey);
-        return orderStatus?.cancelledTxnHash !== undefined;
+        const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, pendingOrder);
+
+        return pendingOrder.txnType === "create" && orderStatus?.cancelledTxnHash !== undefined;
       }
       return false;
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const triggerOrderKeys = useMemo(() => {
+  const newlyCreatedTriggerOrderKeys = useMemo(() => {
     return pendingOrders.reduce((result, order) => {
-      if (isTriggerDecreaseOrderType(order.orderType)) {
-        const key = getPendingOrderKey(order);
-        const orderStatus = matchedOrderStatuses.find((status) => getPendingOrderKey(status.data) === key);
+      if (isTriggerDecreaseOrderType(order.orderType) && order.txnType === "create") {
+        const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, order);
+
         if (orderStatus?.createdTxnHash && orderStatus?.key) {
           result.push(orderStatus.key);
         }
@@ -309,28 +363,28 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSubaccount(null, triggerOrderKeys.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, triggerOrderKeys.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
+  const subaccount = useSubaccount(null, newlyCreatedTriggerOrderKeys.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(
+    undefined,
+    newlyCreatedTriggerOrderKeys.length
+  );
 
   function onCancelOrdersClick() {
-    if (!signer || !triggerOrderKeys.length || !setPendingTxns) return;
+    if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: triggerOrderKeys,
+      orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
-      isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 
   const createdTxnHashList = useMemo(() => {
     const uniqueHashSet = pendingOrders.reduce((acc, order) => {
-      const orderStatus = matchedOrderStatuses.find(
-        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
-      );
-      if (orderStatus?.createdTxnHash) {
+      const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, order);
+
+      if (orderStatus?.createdTxnHash && order.txnType === "create") {
         acc.add(orderStatus.createdTxnHash);
       }
       return acc;
@@ -364,20 +418,20 @@ export function OrdersStatusNotificiation({
       {pendingOrders.length > 1 && (
         <div className="StatusNotification-actions">
           <div>
-            {isMarketOrLimitOrderFailed && triggerOrderKeys.length > 0 && (
+            {isMainOrderFailed && newlyCreatedTriggerOrderKeys.length > 0 && (
               <button
                 disabled={isCancelOrderProcessing}
                 onClick={onCancelOrdersClick}
                 className="StatusNotification-cancel-all"
               >
-                Cancel all orders
+                {t`Cancel newly created orders`}
               </button>
             )}
           </div>
           <div className="inline-flex items-center">
             {createdTxnHashList?.map((txnHash) => (
               <ExternalLink key={txnHash} className="ml-10" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
-                View
+                {t`View`}
               </ExternalLink>
             ))}
           </div>
@@ -385,4 +439,15 @@ export function OrdersStatusNotificiation({
       )}
     </div>
   );
+}
+
+function findMatchedOrderStatus(orderList: OrderStatus[], orderData: PendingOrderData) {
+  const matchingOrderKey = getPendingOrderKey(orderData);
+
+  return orderList.find((status) => {
+    const isPendingOrderMatch = status.data && matchingOrderKey === getPendingOrderKey(status.data);
+    const isContractOrderMatch = orderData.orderKey && orderData.orderKey === status.key;
+
+    return isPendingOrderMatch || isContractOrderMatch;
+  });
 }

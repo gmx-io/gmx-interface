@@ -20,6 +20,7 @@ type Params = {
   pendingTxns?: any[];
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
+  approveAmount?: bigint;
 };
 
 export function approveTokens({
@@ -34,13 +35,14 @@ export function approveTokens({
   pendingTxns,
   setPendingTxns,
   includeMessage,
+  approveAmount,
 }: Params) {
   setIsApproving(true);
   const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract
-    .approve(spender, ethers.MaxUint256)
+    .approve(spender, approveAmount ?? ethers.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(

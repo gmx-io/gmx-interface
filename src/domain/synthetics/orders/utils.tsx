@@ -6,6 +6,9 @@ import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage, parsePositionKey } from "../positions";
+import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
+import { SecondaryUpdateOrderParams, SecondaryCancelOrderParams } from "./createIncreaseOrderTxn";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   FindSwapPath,
@@ -15,9 +18,10 @@ import {
   getSwapPathOutputAddresses,
   getSwapPathStats,
   getTriggerThresholdType,
+  applySlippageToMinOut,
 } from "../trade";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, OrderTxnType } from "./types";
 import { bigMath } from "lib/bigmath";
 
 export function isVisibleOrder(orderType: OrderType) {
@@ -76,6 +80,18 @@ export function isLimitSwapOrderType(orderType: OrderType) {
 
 export function isLiquidationOrderType(orderType: OrderType) {
   return orderType === OrderType.Liquidation;
+}
+
+export function isStopLossOrderType(orderType: OrderType) {
+  return orderType === OrderType.StopLossDecrease;
+}
+
+export function isLimitDecreaseOrderType(orderType: OrderType) {
+  return orderType === OrderType.LimitDecrease;
+}
+
+export function isLimitIncreaseOrderType(orderType: OrderType) {
+  return orderType === OrderType.LimitIncrease;
 }
 
 export function getSwapOrderTitle(p: {
@@ -573,4 +589,39 @@ function getIsMaxLeverageError(
   if (!leverage) return false;
 
   return getIsMaxLeverageExceeded(leverage, marketInfo, isLong, sizeDeltaUsd);
+}
+
+export function getPendingOrderFromParams(
+  chainId: number,
+  txnType: OrderTxnType,
+  p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams
+) {
+  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+  let minOutputAmount = 0n;
+  if ("minOutputUsd" in p) {
+    shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd;
+  }
+  if ("minOutputAmount" in p) {
+    minOutputAmount = p.minOutputAmount;
+  }
+  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+  const orderKey = "orderKey" in p && p.orderKey ? p.orderKey : undefined;
+
+  return {
+    txnType,
+    account: p.account,
+    marketAddress: p.marketAddress,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
+    swapPath: p.swapPath,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    minOutputAmount: minOutputAmount,
+    isLong: p.isLong,
+    orderType: p.orderType,
+    shouldUnwrapNativeToken: isNativeReceive,
+    orderKey,
+  };
 }

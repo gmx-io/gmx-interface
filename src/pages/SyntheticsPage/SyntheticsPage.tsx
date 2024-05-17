@@ -25,11 +25,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -95,7 +91,6 @@ export function SyntheticsPage(p: Props) {
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
 
   const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
@@ -110,8 +105,7 @@ export function SyntheticsPage(p: Props) {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
-      setPendingTxns,
-      isLastSubaccountAction,
+      setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
@@ -123,15 +117,7 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
-  }, [
-    cancelOrdersDetailsMessage,
-    chainId,
-    isLastSubaccountAction,
-    selectedOrdersKeysArr,
-    setPendingTxns,
-    signer,
-    subaccount,
-  ]);
+  }, [cancelOrdersDetailsMessage, chainId, selectedOrdersKeysArr, setPendingTxns, signer, subaccount]);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
