@@ -10,6 +10,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
+import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
 import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -20,17 +21,6 @@ import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-
-const INCENTIVE_TYPE_MAP = {
-  1001: t`GM Airdrop`,
-  1002: t`GLP to GM Airdrop`,
-  1003: t`TRADING Airdrop`,
-};
-
-const INCENTIVE_TOOLTIP_MAP = {
-  2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
-  2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
-};
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
