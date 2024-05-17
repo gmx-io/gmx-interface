@@ -25,15 +25,15 @@ export default function useV2Stats(chainId: number): DashboardOverview {
   const stats = useMemo(() => {
     const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isDisabled);
     const totalLiquidity = allMarkets.reduce((acc, market) => {
-      return acc + BigInt(market.poolValueMax);
+      return acc + BigInt(market.poolValueMax ?? 0);
     }, 0n);
 
     const totalLongInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + BigInt(market.longInterestUsd);
+      return acc + BigInt(market.longInterestUsd ?? 0);
     }, 0n);
 
     const totalShortInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + BigInt(market.shortInterestUsd);
+      return acc + BigInt(market.shortInterestUsd ?? 0);
     }, 0n);
 
     return {
@@ -41,9 +41,9 @@ export default function useV2Stats(chainId: number): DashboardOverview {
       totalLongPositionSizes: totalLongInterestUsd || 0n,
       totalShortPositionSizes: totalShortInterestUsd || 0n,
       openInterest: totalLongInterestUsd && totalShortInterestUsd ? totalLongInterestUsd + totalShortInterestUsd : 0n,
-      dailyVolume: BigInt(volumeInfo?.dailyVolume) || 0n,
+      dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) || 0n,
       totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
-      weeklyFees: BigInt(feesInfo?.weeklyFees) || 0n,
+      weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) || 0n,
       totalFees: BigInt(feesInfo?.totalFees ?? 0) || 0n,
       totalUsers: BigInt(usersInfo?.totalUsers ?? 0) || 0n,
     };
