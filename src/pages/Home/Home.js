@@ -62,10 +62,10 @@ export default function Home({ showRedirectModal }) {
 
   let totalVolumeSum = 0n;
   if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
-    totalVolumeSum = totalVolumeSum + arbitrumTotalVolumeSum;
-    totalVolumeSum = totalVolumeSum + avalancheTotalVolumeSum;
-    totalVolumeSum = totalVolumeSum + arbV2Stats.totalVolume;
-    totalVolumeSum = totalVolumeSum + avaxV2Stats.totalVolume;
+    totalVolumeSum = totalVolumeSum + BigInt(arbitrumTotalVolumeSum);
+    totalVolumeSum = totalVolumeSum + BigInt(avalancheTotalVolumeSum);
+    totalVolumeSum = totalVolumeSum + BigInt(arbV2Stats.totalVolume);
+    totalVolumeSum = totalVolumeSum + BigInt(avaxV2Stats.totalVolume);
   }
 
   // Open Interest
@@ -76,8 +76,8 @@ export default function Home({ showRedirectModal }) {
     arbitrumPositionStats.totalLongPositionSizes &&
     arbitrumPositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest + arbitrumPositionStats.totalLongPositionSizes;
-    openInterest = openInterest + arbitrumPositionStats.totalShortPositionSizes;
+    openInterest = openInterest + BigInt(arbitrumPositionStats.totalLongPositionSizes);
+    openInterest = openInterest + BigInt(arbitrumPositionStats.totalShortPositionSizes);
   }
 
   if (
@@ -85,8 +85,8 @@ export default function Home({ showRedirectModal }) {
     avalanchePositionStats.totalLongPositionSizes &&
     avalanchePositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest + avalanchePositionStats.totalLongPositionSizes;
-    openInterest = openInterest + avalanchePositionStats.totalShortPositionSizes;
+    openInterest = openInterest + BigInt(avalanchePositionStats.totalLongPositionSizes);
+    openInterest = openInterest + BigInt(avalanchePositionStats.totalShortPositionSizes);
   }
 
   if (arbV2Stats && avaxV2Stats) {
