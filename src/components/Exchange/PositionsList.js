@@ -338,13 +338,13 @@ export default function PositionsList(props) {
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
                                     value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                    className="text-red"
+                                    textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
                                     value={`-$${borrowFeeUSD}`}
-                                    className="text-red"
+                                    textClassName="text-red-500"
                                   />
 
                                   {!hideActions && (
@@ -428,7 +428,7 @@ export default function PositionsList(props) {
                       <div className="remove-top-margin">
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
+                          className="mr-15 mt-15"
                           disabled={position.size == 0n}
                           onClick={() => sellPosition(position)}
                         >
@@ -436,7 +436,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
+                          className="mr-15 mt-15"
                           disabled={position.size == 0n}
                           onClick={() => editPosition(position)}
                         >
@@ -444,7 +444,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mt-md"
+                          className="mt-15"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);
@@ -586,7 +586,7 @@ export default function PositionsList(props) {
 
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
+                      className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
                         positive: hasPositionProfit && positionDelta > 0,
                         negative: !hasPositionProfit && positionDelta > 0,
                         muted: positionDelta == 0n,
@@ -674,13 +674,13 @@ export default function PositionsList(props) {
                               label={t`Borrow Fee`}
                               showDollar={false}
                               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                              className="text-red"
+                              textClassName="text-red-500"
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label={t`Borrow Fee / Day`}
                               value={`-$${borrowFeeUSD}`}
-                              className="text-red"
+                              textClassName="text-red-500"
                             />
                             {!hideActions && (
                               <>

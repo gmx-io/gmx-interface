@@ -9,7 +9,7 @@
     padding: 0;
     top: 1.25rem;
     z-index: 2;
-    background: #212540;
+    background: var(--color-slate-700);
 
     li {
       padding: 0.5rem 0.75rem;
@@ -25,11 +25,11 @@
   .Percentage-input {
     display: flex;
     align-items: center;
-    border: 1px solid #212540;
+    border: 1px solid var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    background: #212540;
+    background: var(--color-slate-700);
 
     label {
       cursor: pointer;
@@ -37,14 +37,14 @@
 
     &:hover,
     &:focus {
-      border-color: #3a3f798f;
+      border-color: var(--color-cold-blue-700);
     }
     &:focus-within {
-      border-color: #3a3f79;
+      border-color: var(--color-cold-blue-500);
     }
 
     &.input-error {
-      border-color: #f3b50e;
+      border-color: var(--color-yellow-500);
     }
 
     input {

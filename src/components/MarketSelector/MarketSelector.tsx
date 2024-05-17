@@ -118,7 +118,7 @@ export function MarketSelector({
         label={label}
         headerContent={() => (
           <SearchInput
-            className="mt-md"
+            className="mt-15"
             value={searchKeyword}
             setValue={(e) => setSearchKeyword(e.target.value)}
             placeholder={t`Search Market`}

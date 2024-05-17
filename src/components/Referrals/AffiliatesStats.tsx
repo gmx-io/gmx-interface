@@ -328,7 +328,7 @@ function AffiliatesStats({
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
@@ -342,7 +342,7 @@ function AffiliatesStats({
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
@@ -408,17 +408,20 @@ function AffiliatesStats({
                       rebateType = t`V2 Claim`;
                     }
 
-                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] ?? 0n;
-                      acc[token.address] = acc[token.address] + rebate.amounts[i];
-                      return acc;
-                    }, {} as { [address: string]: bigint });
+                    const amountsByTokens = rebate.tokens.reduce(
+                      (acc, tokenAddress, i) => {
+                        let token;
+                        try {
+                          token = getToken(chainId, tokenAddress);
+                        } catch {
+                          token = getNativeToken(chainId);
+                        }
+                        acc[token.address] = acc[token.address] ?? 0n;
+                        acc[token.address] = acc[token.address] + rebate.amounts[i];
+                        return acc;
+                      },
+                      {} as { [address: string]: bigint }
+                    );
 
                     const tokensWithoutPrices: string[] = [];
 
@@ -437,7 +440,7 @@ function AffiliatesStats({
                         <td data-label="Type">{rebateType}</td>
                         <td data-label="Amount">
                           <Tooltip
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

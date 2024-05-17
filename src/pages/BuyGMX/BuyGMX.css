@@ -1,5 +1,5 @@
 .BuyGMXGLP {
-  background: #101124;
+  background: var(--color-slate-900);
   justify-content: space-between;
 }
 
@@ -10,7 +10,7 @@
 
 .BuyGMXGLP-description {
   letter-spacing: 0px;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
 }
 
 .bridge-options {
@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   background: #ffffff0a;
-  border: 1px solid #ffffff14;
+  border: 1px solid var(--color-gray-900);
   border-radius: 0.4rem;
   text-decoration: none;
   height: 4.65rem;
@@ -54,7 +54,7 @@
 }
 
 .GMX-btn:hover {
-  background: #ffffff14;
+  background: var(--color-gray-900);
 }
 
 .GMX-btn:focus,
@@ -85,7 +85,7 @@
 
 .GMX-btn-label {
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--color-white);
   font-size: 1.85rem;
   line-height: 2.325rem;
 }

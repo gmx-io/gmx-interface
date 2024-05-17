@@ -28,7 +28,7 @@ const SPACE = " ";
 
 export const useTradeboxPoolWarnings = (
   withActions = true,
-  textColor: "text-warning" | "text-gray" = "text-warning"
+  textColor: "text-yellow-500" | "text-gray-300" = "text-yellow-500"
 ) => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
@@ -174,7 +174,7 @@ export const useTradeboxPoolWarnings = (
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithPosition.marketTokenAddress);
                 setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -197,7 +197,7 @@ export const useTradeboxPoolWarnings = (
           liquidity for this order.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithPosition.marketTokenAddress);
                 setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -228,7 +228,7 @@ export const useTradeboxPoolWarnings = (
           different pool for this market.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -249,7 +249,7 @@ export const useTradeboxPoolWarnings = (
           existing one.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(marketsOptions.minOpenFeesAvailableMarketAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -270,7 +270,7 @@ export const useTradeboxPoolWarnings = (
           You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => {
                 setMarketAddress(marketWithOrder.marketTokenAddress);
                 setCollateralAddress(address);
@@ -293,7 +293,7 @@ export const useTradeboxPoolWarnings = (
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
@@ -313,7 +313,7 @@ export const useTradeboxPoolWarnings = (
           {getMarketPoolName(bestNetFeeMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(bestNetFeeMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(bestNetFeeMarket)} market pool
@@ -334,7 +334,7 @@ export const useTradeboxPoolWarnings = (
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
-              className="clickable underline muted"
+              className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool

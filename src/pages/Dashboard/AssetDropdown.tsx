@@ -50,7 +50,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <Menu.Item as="div">
             {token.isPlatformToken && (
               <Link to={PLATFORM_TOKEN_ROUTES[token.symbol]} className="asset-item">
-                <img className="asset-item-icon" src={token.imageUrl} alt={token.symbol} />
+                <img className="asset-item-icon" width={16} height={16} src={token.imageUrl} alt={token.symbol} />
                 <p>
                   <Trans>Buy {token.symbol}</Trans>
                 </p>
@@ -60,7 +60,13 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <Menu.Item as="div">
             {token.reservesUrl && (
               <ExternalLink href={token.reservesUrl} className="asset-item">
-                <img className="asset-item-icon" src={nansenPortfolioIcon} alt="Proof of Reserves" />
+                <img
+                  className="asset-item-icon"
+                  width={16}
+                  height={16}
+                  src={nansenPortfolioIcon}
+                  alt="Proof of Reserves"
+                />
                 <p>
                   <Trans>Proof of Reserves</Trans>
                 </p>
@@ -70,7 +76,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <Menu.Item as="div">
             {token.coingeckoUrl && (
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
-                <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
+                <img className="asset-item-icon" width={16} height={16} src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
                   <Trans>Open {token.coingeckoSymbol ?? token.assetSymbol ?? token.symbol} in Coingecko</Trans>
                 </p>
@@ -80,7 +86,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <Menu.Item as="div">
             {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
               <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
-                <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
+                <img className="asset-item-icon" width={16} height={16} src={chainIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
                 </p>
@@ -106,7 +112,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
                 }}
                 className="asset-item"
               >
-                <img className="asset-item-icon" src={metamaskIcon} alt={t`Add to Metamask`} />
+                <img className="asset-item-icon" width={16} height={16} src={metamaskIcon} alt={t`Add to Metamask`} />
                 <p>
                   <Trans>Add {token.assetSymbol ?? token.symbol} to Metamask</Trans>
                 </p>

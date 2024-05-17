@@ -20,14 +20,14 @@
   padding: 2.4rem;
   border-radius: 1.3rem;
   max-width: 59.2rem;
-  background: #16182e;
+  background: var(--color-slate-800);
   border-radius: 0.4rem;
 }
 .referral-card .title {
   font-weight: 500;
   font-size: var(--font-lg);
   line-height: 3.1rem;
-  color: #ffffff;
+  color: var(--color-white);
   padding: 0.775rem 0;
   margin: 0;
 }
@@ -35,7 +35,7 @@
   font-size: 1.8rem;
   line-height: 2.5rem;
   letter-spacing: 0px;
-  color: #fff;
+  color: var(--color-white);
   margin-top: 1.1625rem;
 }
 .referral-card .card-action {
@@ -43,7 +43,7 @@
 }
 
 .referral-card .card-action input {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-gray-800);
   font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;
@@ -77,7 +77,7 @@
 }
 .active-referral-code .tier span {
   font-size: var(--font-sm);
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   margin-right: 0.775rem;
 }
 
@@ -115,7 +115,7 @@
   align-items: center;
   background: transparent;
   padding: 0.75rem 1.25rem;
-  color: white;
+  color: var(--color-white);
   font-size: var(--font-sm);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -140,7 +140,7 @@
   margin: 0;
 }
 .referral-table-header .sub-title {
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   font-size: var(--font-sm);
   margin-left: 0.775rem;
 }
@@ -155,7 +155,7 @@
   margin: 3.1rem 0;
 }
 .create-referrar-code form input {
-  border: 1px solid #1e2136;
+  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
   padding: 1.1625rem;
   font-size: var(--font-base);
@@ -172,10 +172,6 @@
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
 }
 
-.text-center {
-  text-align: center;
-}
-
 .info-card {
   min-height: 13rem;
   background: var(--dark-blue-bg);
@@ -190,7 +186,8 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--color-white);
+  margin-top: 16px;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -244,7 +241,7 @@
 .referral-table th {
   font-weight: normal;
   letter-spacing: 0.25px;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   text-transform: uppercase;
 }
 .referral-table th,
@@ -279,9 +276,9 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 1.5rem;
-  border: 1px solid #1e2136;
+  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
-  background: #16182e;
+  background: var(--color-slate-800);
   font-size: var(--font-base);
   flex-direction: column;
 }

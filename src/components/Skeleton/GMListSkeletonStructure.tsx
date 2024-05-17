@@ -4,8 +4,8 @@ export default function GMListSkeletonStructure() {
   return (
     <tr>
       <td>
-        <div className="items-center">
-          <Skeleton className="mr-sm" height={40} width={40} circle />
+        <div className="flex items-center">
+          <Skeleton className="mr-10" height={40} width={40} circle />
           <div>
             <Skeleton width={60} height={12} />
             <Skeleton width={40} height={12} />
@@ -32,7 +32,7 @@ export default function GMListSkeletonStructure() {
           <Skeleton width={60} count={1} />
         </td>
         <td>
-          <Skeleton width={150} inline count={2} className="mr-xs" />
+          <Skeleton width={150} inline count={2} className="mr-5" />
         </td>
       </>
     </tr>

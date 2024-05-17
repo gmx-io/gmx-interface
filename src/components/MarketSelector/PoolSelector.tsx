@@ -151,7 +151,7 @@ export function PoolSelector({
         label={label}
         headerContent={() => (
           <SearchInput
-            className="mt-md"
+            className="mt-15"
             value={searchKeyword}
             setValue={(e) => setSearchKeyword(e.target.value)}
             placeholder={t`Search Pool`}
@@ -213,7 +213,7 @@ export function PoolSelector({
                   <div className="Token-symbol">
                     <div className="Token-text">
                       {showAllPools ? (
-                        <div className="lh-1 items-center">
+                        <div className="flex items-center leading-1">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
@@ -245,10 +245,10 @@ export function PoolSelector({
       </Modal>
 
       {marketInfo && (
-        <div className="inline-items-center">
+        <div className="inline-flex items-center">
           {showIndexIcon && (
             <TokenIcon
-              className="mr-xs"
+              className="mr-5"
               symbol={
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

@@ -4076,7 +4076,7 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
-msgstr "GBC NFTs APR-Tracker und Belohnungen"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4198,6 +4198,7 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr "Swap Order übermittelt!"
 
+#: src/App/App.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5571,7 +5572,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
-msgstr "Die Gebühren können variieren, je nachdem, welche Anlage du für den Kauf von GLP verwendest. <0/>Gebe die Menge an GLP, die du kaufen möchtest, in das Order-Formular ein und vergleiche dann hier die Gebühren."
+msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"

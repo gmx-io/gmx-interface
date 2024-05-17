@@ -813,7 +813,7 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                className={getPositiveOrNegativeClass(market.pnlLongMax)}
+                                textClassName={getPositiveOrNegativeClass(market.pnlLongMax)}
                                 value={`${getPlusOrMinusSymbol(market.pnlLongMax)}${formatAmountHuman(
                                   bigMath.abs(market.pnlLongMax),
                                   30,
@@ -823,7 +823,7 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Short"
-                                className={getPositiveOrNegativeClass(market.pnlShortMax)}
+                                textClassName={getPositiveOrNegativeClass(market.pnlShortMax)}
                                 value={`${getPlusOrMinusSymbol(market.pnlShortMax)}${formatAmountHuman(
                                   bigMath.abs(market.pnlShortMax),
                                   30,
@@ -1100,7 +1100,7 @@ export function SyntheticsStats() {
         excludedFields={CSV_EXCLUDED_FIELDS}
         data={markets}
         fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
-        className="mt-md download-csv"
+        className="download-csv mt-15"
       />
     </div>
   );

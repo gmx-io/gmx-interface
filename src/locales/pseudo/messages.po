@@ -4198,6 +4198,7 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr ""
 
+#: src/App/App.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx

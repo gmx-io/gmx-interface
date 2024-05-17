@@ -1136,13 +1136,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-gray">Forfeit profit</span>
+                  <span className="text-gray-300">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="text-gray font-sm">
+                <span className="text-sm text-gray-300">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1222,9 +1222,9 @@ export default function PositionSeller(props) {
                     )}
                     {nextLiquidationPrice && nextLiquidationPrice != liquidationPrice && (
                       <div>
-                        <div className="inline-block muted">
+                        <div className="muted inline-block">
                           ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                          <BsArrowRight className="transition-arrow" />
+                          <BsArrowRight className="transition-arrow inline-block" />
                         </div>
                         ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
@@ -1240,9 +1240,9 @@ export default function PositionSeller(props) {
               <div className="align-right">
                 {position && position.size && fromAmount && (
                   <div>
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                     ${formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
                   </div>
@@ -1270,9 +1270,9 @@ export default function PositionSeller(props) {
               <div className="align-right">
                 {nextCollateral && nextCollateral != position.collateral ? (
                   <div>
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                     ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
@@ -1293,9 +1293,9 @@ export default function PositionSeller(props) {
                       {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2)}x</div>}
                       {nextLeverage && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2)}x
                         </div>

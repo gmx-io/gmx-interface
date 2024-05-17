@@ -44,7 +44,7 @@ export default function SyntheticsActions() {
                         Check on GMX V1 {networkName}
                       </ExternalLink>{" "}
                       or{" "}
-                      <span className="underline cursor-pointer" onClick={toggleNetwork}>
+                      <span className="cursor-pointer underline" onClick={toggleNetwork}>
                         switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                       </span>
                       .
@@ -99,7 +99,7 @@ export default function SyntheticsActions() {
                           Check on GMX V1 {networkName}
                         </ExternalLink>{" "}
                         or{" "}
-                        <span className="underline cursor-pointer" onClick={toggleNetwork}>
+                        <span className="cursor-pointer underline" onClick={toggleNetwork}>
                           switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
                         </span>
                         .

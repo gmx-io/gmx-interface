@@ -67,7 +67,7 @@ export function ClaimModal(p: Props) {
       <div key={market.marketTokenAddress} className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="items-top ClaimSettleModal-row-text">
+            <div className="ClaimSettleModal-row-text flex items-start">
               <span>{indexName}</span>
               {poolName ? <span className="subtext">[{poolName}]</span> : null}
             </div>
@@ -141,14 +141,14 @@ export function ClaimModal(p: Props) {
       <div className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="items-top">
+            <div className="flex items-start">
               <Trans>MARKET</Trans>
             </div>
           </div>
         </div>
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
-            className="ClaimSettleModal-tooltip-text-grey"
+            className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
             handle={t`FUNDING FEE`}
             renderContent={() => (

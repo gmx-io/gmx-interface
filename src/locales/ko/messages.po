@@ -4076,7 +4076,7 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
-msgstr "GBC NFT의 APR 트래커 및 보상"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4198,6 +4198,7 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr "스왑 주문 제출 완료!"
 
+#: src/App/App.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5571,7 +5572,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
-msgstr "GLP를 구매하는 양에 따라서 수수료가 상이합니다. <0/>구매하려는 GLP의 양을 주문 양식에 입력하고, 여기에서 수수료를 비교하세요."
+msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"

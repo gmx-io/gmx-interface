@@ -271,7 +271,7 @@ export default function OrderEditor(props) {
                 {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
               </span>
               &nbsp;
-              <BsArrowRight />
+              <BsArrowRight className="inline-block" />
               &nbsp;
               {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
             </>
@@ -335,7 +335,7 @@ export default function OrderEditor(props) {
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
-            <BsArrowRight />
+            <BsArrowRight className="inline-block" />
             &nbsp;
             {formatAmount(toAmount, toTokenInfo.decimals, 4, true)}
           </>
@@ -353,7 +353,7 @@ export default function OrderEditor(props) {
               })}
             </span>
             &nbsp;
-            <BsArrowRight />
+            <BsArrowRight className="inline-block" />
             &nbsp;
             {getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}
           </>
