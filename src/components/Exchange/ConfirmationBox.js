@@ -330,7 +330,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spreadInfo]);
 
   const collateralSpreadInfo = useMemo(() => {
-    if (!toTokenInfo?.spread || !collateralTokenAddress) {
+    if (toTokenInfo?.spread === undefined || !collateralTokenAddress) {
       return null;
     }
 
@@ -343,7 +343,7 @@ export default function ConfirmationBox(props) {
     }
 
     const collateralTokenInfo = getTokenInfo(infoTokens, collateralTokenAddress);
-    if (collateralTokenInfo?.spread) {
+    if (collateralTokenInfo?.spread !== undefined) {
       totalSpread = totalSpread + collateralTokenInfo.spread;
     }
 
