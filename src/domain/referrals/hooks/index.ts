@@ -83,7 +83,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
   const { data: [totalRebate, discountShare] = [] } = useSWR<bigint[]>(
-    tierLevel
+    tierLevel !== undefined
       ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
       : null,
     {
