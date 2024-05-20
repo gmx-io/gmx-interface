@@ -249,7 +249,7 @@ export function ConfirmationBox(p: Props) {
       [[], [], []] as [
         (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
         SidecarSlTpOrderEntryValid[],
-        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[]
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
       ]
     );
 
@@ -1131,13 +1131,13 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        {(!isLimitGroup && entriesInfo?.totalPnL !== undefined && entriesInfo?.totalPnLPercentage !== undefined && (
+        {(!isLimitGroup && entriesInfo.totalPnL !== undefined && entriesInfo.totalPnLPercentage !== undefined && (
           <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
-            {entriesInfo?.totalPnL && entriesInfo?.totalPnL > 0n ? (
+            {entriesInfo.totalPnL === 0n ? (
               "-"
             ) : (
               <Tooltip
-                handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
+                handle={`${formatUsd(entriesInfo.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                   signed: true,
                 })})`}
                 position="bottom-end"
@@ -1163,7 +1163,8 @@ export function ConfirmationBox(p: Props) {
                         <span
                           className={
                             entry.decreaseAmounts?.realizedPnl && entry.decreaseAmounts?.realizedPnl < 0
-                              ? "text-red-500" : "text-green-500"
+                              ? "text-red-500"
+                              : "text-green-500"
                           }
                         >
                           {formatUsd(entry.decreaseAmounts?.realizedPnl)} (
