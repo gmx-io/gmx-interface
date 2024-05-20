@@ -42,7 +42,7 @@ export const GmTokensBalanceInfo = ({
     if (!earnedTotal && !earnedRecently) return null;
     return (
       <>
-        {earnedTotal && (
+        {earnedTotal !== undefined && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
@@ -50,7 +50,7 @@ export const GmTokensBalanceInfo = ({
             value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
-        {earnedRecently && (
+        {earnedRecently !== undefined && (
           <StatsTooltipRow
             showDollar={false}
             textClassName={getPositiveOrNegativeClass(earnedRecently)}
