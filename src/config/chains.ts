@@ -25,7 +25,7 @@ export const SEPOLIA_TESTNET = 11155111;
 export const OPTIMISM_GOERLI_TESTNET = 420;
 export const OPTIMISM_MAINNET = 10;
 export const BLAST_SEPOLIA_TESTNET = 168587773;
-export const MORPH_L2 = 2710;
+export const MORPH_L2 = 17000;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
