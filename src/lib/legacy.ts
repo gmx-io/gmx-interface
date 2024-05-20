@@ -11,7 +11,7 @@ import { getServerBaseUrl } from "config/backend";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { getProvider } from "./rpc";
-import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
+import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
@@ -73,16 +73,8 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;
 
-// FIXME check me
 export function deserialize(data) {
-  for (const [key, value] of Object.entries(data) as any) {
-    try {
-      data[key] = BigInt(value);
-    } catch (err) {
-      // not a bigint
-    }
-  }
-  return data;
+  return deserializeBigIntsInObject(data);
 }
 
 export function isHomeSite() {
