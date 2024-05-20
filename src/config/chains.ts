@@ -25,7 +25,7 @@ export const SEPOLIA_TESTNET = 11155111;
 export const OPTIMISM_GOERLI_TESTNET = 420;
 export const OPTIMISM_MAINNET = 10;
 export const BLAST_SEPOLIA_TESTNET = 168587773;
-export const MORPH_L2 = 17000;
+export const MORPH_L2 = 2810;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
@@ -252,7 +252,7 @@ export const RPC_PROVIDERS = {
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
   [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"],
   [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"],
-  [MORPH_L2]: ["https://ethereum-holesky-rpc.publicnode.com/"],
+  [MORPH_L2]: ["https://rpc-quicknode-holesky.morphl2.io"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -631,7 +631,7 @@ export function getExplorerUrl(chainId) {
     case BLAST_SEPOLIA_TESTNET:
       return "https://testnet.blastscan.io/";
     case MORPH_L2:
-      return "https://holesky.etherscan.io";
+      return "https://explorer-holesky.morphl2.io/";
     default:
       return "https://etherscan.io/";
   }
