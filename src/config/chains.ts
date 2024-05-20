@@ -252,7 +252,7 @@ export const RPC_PROVIDERS = {
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
   [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"],
   [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"],
-  [MORPH_L2]: ["https://rpc-testnet.morphl2.io"],
+  [MORPH_L2]: ["https://ethereum-holesky-rpc.publicnode.com/"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -269,7 +269,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
-      decimals: 18,
+    decimals: 18,
     },
     networkId: MAINNET,
     rpcUrls: RPC_PROVIDERS[MAINNET],
@@ -631,7 +631,7 @@ export function getExplorerUrl(chainId) {
     case BLAST_SEPOLIA_TESTNET:
       return "https://testnet.blastscan.io/";
     case MORPH_L2:
-      return "https://explorer-testnet.morphl2.io";
+      return "https://holesky.etherscan.io";
     default:
       return "https://etherscan.io/";
   }
