@@ -5271,8 +5271,8 @@ msgid "Stake GMX Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake Multiplier Points"
-msgstr ""
+#~ msgid "Stake Multiplier Points"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
