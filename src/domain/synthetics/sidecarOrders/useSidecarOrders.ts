@@ -27,6 +27,7 @@ import {
 import { selectConfirmationBoxMockPosition } from "context/SyntheticsStateContext/selectors/confirmationBoxSelectors";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { handleEntryError, getCommonError } from "./utils";
+import { OrderType } from "domain/synthetics/orders/types";
 import { SidecarOrderEntry, SidecarSlTpOrderEntryValid, SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "./types";
 
 export * from "./types";
@@ -234,7 +235,7 @@ export function useSidecarOrders() {
   }, [mockPositionInfo, limit.entries]);
 
   const getDecreaseAmountsFromEntry = useCallback(
-    ({ sizeUsd, price }: SidecarOrderEntry) => {
+    ({ sizeUsd, price }: SidecarOrderEntry, triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease) => {
       if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
 
       if (
@@ -262,6 +263,7 @@ export function useSidecarOrders() {
         uiFeeFactor,
         isLimit,
         limitPrice: triggerPrice,
+        triggerOrderType,
       });
     },
     [
@@ -283,7 +285,7 @@ export function useSidecarOrders() {
     const entries = stopLossEntriesInfo.entries.map((entry) => {
       return {
         ...entry,
-        decreaseAmounts: getDecreaseAmountsFromEntry(entry),
+        decreaseAmounts: getDecreaseAmountsFromEntry(entry, OrderType.StopLossDecrease),
         increaseAmounts: undefined,
       };
     });
@@ -317,7 +319,7 @@ export function useSidecarOrders() {
     const entries = takeProfitEntriesInfo.entries.map((entry) => {
       return {
         ...entry,
-        decreaseAmounts: getDecreaseAmountsFromEntry(entry),
+        decreaseAmounts: getDecreaseAmountsFromEntry(entry, OrderType.LimitDecrease),
         increaseAmounts: undefined,
       };
     });
