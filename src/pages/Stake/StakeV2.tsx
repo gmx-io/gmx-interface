@@ -967,7 +967,7 @@ function ClaimModal(props) {
         false, // shouldStakeGmx
         shouldClaimEsGmx,
         false, // shouldStakeEsGmx
-        false, // shouldStakeMultiplierPoints
+        true, // shouldStakeMultiplierPoints
         shouldClaimWeth,
         shouldConvertWeth,
       ],
