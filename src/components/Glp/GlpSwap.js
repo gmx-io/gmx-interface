@@ -335,7 +335,11 @@ export default function GlpSwap(props) {
   const glpAmount = parseValue(glpValue, GLP_DECIMALS);
 
   const needApproval =
-    isBuying && swapTokenAddress !== ZeroAddress && tokenAllowance && swapAmount && swapAmount > tokenAllowance;
+    isBuying &&
+    swapTokenAddress !== ZeroAddress &&
+    tokenAllowance !== undefined &&
+    swapAmount !== undefined &&
+    swapAmount > tokenAllowance;
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax =
