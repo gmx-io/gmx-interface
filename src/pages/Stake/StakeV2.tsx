@@ -743,7 +743,6 @@ function CompoundModal(props) {
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
     true
   );
-  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
     true
@@ -813,7 +812,7 @@ function CompoundModal(props) {
         shouldStakeGmx,
         shouldClaimEsGmx || shouldStakeEsGmx,
         shouldStakeEsGmx,
-        shouldStakeMultiplierPoints,
+        true,
         shouldClaimWeth || shouldConvertWeth,
         shouldConvertWeth,
       ],
@@ -867,15 +866,6 @@ function CompoundModal(props) {
           </AlertInfo>
         ) : null}
         <div className="CompoundModal-menu">
-          <div>
-            <Checkbox
-              isChecked={shouldStakeMultiplierPoints}
-              setIsChecked={setShouldStakeMultiplierPoints}
-              disabled={true}
-            >
-              <Trans>Stake Multiplier Points</Trans>
-            </Checkbox>
-          </div>
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
               <Trans>Claim GMX Rewards</Trans>
