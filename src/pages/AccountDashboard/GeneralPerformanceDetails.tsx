@@ -101,10 +101,10 @@ export function GeneralPerformanceDetails() {
                 <Trans>Volume</Trans>
               </th>
               <th className="px-5 py-13 opacity-70">
-                <Trans>PnL ($) / Rank</Trans>
+                <Trans>PnL ($)</Trans>
               </th>
               <th className="px-5 py-13 opacity-70">
-                <Trans>PnL (%) / Rank</Trans>
+                <Trans>PnL (%)</Trans>
               </th>
               <th className="py-13 pl-5 pr-16 opacity-70">
                 <Trans>Win / Loss</Trans>
@@ -141,21 +141,18 @@ export function GeneralPerformanceDetails() {
                     }
                   >
                     {formatUsd(row.pnl)}
-                  </Tooltip>{" "}
-                  / {row.pnlRank}
+                  </Tooltip>
                 </td>
                 <td className="px-5 py-13">
                   <Tooltip
                     as={"span"}
-                    closeDelay={10000000}
                     className={cx(
                       "underline decoration-dashed decoration-1 underline-offset-2",
                       row.pnlPercent > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
                     )}
                   >
                     {formatPercentage(row.pnlPercent, { signed: true })}
-                  </Tooltip>{" "}
-                  / {row.pnlPercentRank}
+                  </Tooltip>
                 </td>
                 <td className="py-13 pl-5 pr-16">
                   <Tooltip
