@@ -2377,11 +2377,6 @@ export default function StakeV2() {
                               label="esGMX"
                               value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
                             />
-                            <StatsTooltipRow
-                              showDollar={false}
-                              label="Multiplier Points"
-                              value={formatAmount(processedData?.bnGmxInFeeGmx, 18, 2, true)}
-                            />
                           </>
                         );
                       }}
