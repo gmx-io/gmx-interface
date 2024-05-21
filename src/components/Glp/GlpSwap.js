@@ -309,18 +309,18 @@ export default function GlpSwap(props) {
       ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
       : expandDecimals(1, USD_DECIMALS);
   let glpBalanceUsd;
-  if (glpBalance) {
+  if (glpBalance !== undefined) {
     glpBalanceUsd = bigMath.mulDiv(glpBalance, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
   const glpSupplyUsd = bigMath.mulDiv(glpSupply, glpPrice, expandDecimals(1, GLP_DECIMALS));
 
   let reserveAmountUsd;
-  if (reservedAmount) {
+  if (reservedAmount !== undefined) {
     reserveAmountUsd = bigMath.mulDiv(reservedAmount, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
 
   let maxSellAmount = glpBalance;
-  if (glpBalance && reservedAmount) {
+  if (glpBalance !== undefined && reservedAmount !== undefined) {
     maxSellAmount = glpBalance - reservedAmount;
   }
 
@@ -348,7 +348,7 @@ export default function GlpSwap(props) {
     : true;
 
   let isSwapTokenCapReached;
-  if (swapTokenInfo && swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
+  if (swapTokenInfo && swapTokenInfo.managedUsd !== undefined && swapTokenInfo.maxUsdgAmount !== undefined) {
     isSwapTokenCapReached =
       swapTokenInfo.managedUsd > adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS);
   }
@@ -398,8 +398,8 @@ export default function GlpSwap(props) {
   if (
     gmxPrice &&
     stakingData &&
-    stakingData.stakedGlpTracker &&
-    stakingData.stakedGlpTracker.tokensPerInterval &&
+    stakingData.stakedGlpTracker !== undefined &&
+    stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&
     glpSupplyUsd &&
     glpSupplyUsd > 0
   ) {
