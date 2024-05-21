@@ -175,6 +175,9 @@ export function GmConfirmationBox({
         .then(() => {
           onSubmitted();
         })
+        .catch((error) => {
+          throw error;
+        })
         .finally(() => {
           setIsSubmitting(false);
         });
@@ -240,7 +243,15 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData || !signer) {
+    if (
+      !account ||
+      !executionFee ||
+      !marketToken ||
+      !market ||
+      marketTokenAmount === undefined ||
+      !tokensData ||
+      !signer
+    ) {
       return Promise.resolve();
     }
 
@@ -274,8 +285,8 @@ export function GmConfirmationBox({
       !market ||
       !marketToken ||
       !executionFee ||
-      !longTokenAmount ||
-      !shortTokenAmount ||
+      longTokenAmount === undefined ||
+      shortTokenAmount === undefined ||
       !tokensData ||
       !signer
     ) {

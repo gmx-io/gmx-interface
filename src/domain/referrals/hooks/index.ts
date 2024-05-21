@@ -74,7 +74,7 @@ export function useAffiliateTier(signer, chainId, account) {
     }
   );
   return {
-    affiliateTier: Number(affiliateTier),
+    affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
     mutateReferrerTier,
   };
 }
