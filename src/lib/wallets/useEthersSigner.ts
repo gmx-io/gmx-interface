@@ -1,9 +1,9 @@
 import { JsonRpcSigner, ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
 import { Config, useConnectorClient } from "wagmi";
 
-async function clientToSigner(client: Client<Transport, Chain, Account>): Promise<JsonRpcSigner> {
+function clientToSigner(client: Client<Transport, Chain, Account>) {
   const { account, chain, transport } = client;
   const network = {
     chainId: chain.id,
@@ -11,24 +11,12 @@ async function clientToSigner(client: Client<Transport, Chain, Account>): Promis
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
   const provider = new ethers.BrowserProvider(transport, network);
-  const signer = await provider.getSigner(account.address);
+  const signer = new JsonRpcSigner(provider, account.address);
   return signer;
 }
 
-/** Action to convert a Viem Client to an ethers.js Signer. */
-export function useEthersSigner({ chainId }: { chainId?: number } = {}): JsonRpcSigner | undefined {
+/** Hook to convert a Viem Client to an ethers.js Signer. */
+export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { data: client } = useConnectorClient<Config>({ chainId });
-  const [signer, setSigner] = useState<JsonRpcSigner | undefined>();
-
-  useEffect(() => {
-    async function updateSigner() {
-      if (client) {
-        setSigner(await clientToSigner(client));
-      }
-    }
-
-    updateSigner();
-  }, [client]);
-
-  return signer;
+  return useMemo(() => (client ? clientToSigner(client) : undefined), [client]);
 }
