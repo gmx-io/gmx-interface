@@ -220,7 +220,7 @@ export function useOptimisticPositions(p: {
         : undefined;
 
       const pendingUpdate =
-        pendingPositionsUpdates[key] && pendingPositionsUpdates[key]!.updatedAt + MAX_PENDING_UPDATE_AGE > now
+        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
           ? pendingPositionsUpdates[key]
           : undefined;
 

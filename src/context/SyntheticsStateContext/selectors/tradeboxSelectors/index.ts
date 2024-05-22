@@ -341,10 +341,10 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   if (!tokensData) return undefined;
 
   const gasPrice = q(selectGasPrice);
-  if (!gasPrice) return undefined;
+  if (gasPrice === undefined) return undefined;
 
   const estimatedGas = q(selectTradeboxEstimatedGas);
-  if (!estimatedGas) return undefined;
+  if (estimatedGas === null || estimatedGas === undefined) return undefined;
 
   const chainId = q(selectChainId);
 

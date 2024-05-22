@@ -759,7 +759,7 @@ export default function DashboardV2() {
                       handle={`$${numberWithCommas(
                         sumBigInts(
                           totalFees?.[chainId],
-                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
+                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees ?? 0n, USD_DECIMALS, 0))
                         )
                       )}`}
                       renderContent={() => (
