@@ -204,7 +204,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
 
   const fromTokenPrice = fromToken?.prices.minPrice;
 
-  if (!fromToken || !toToken || !fromTokenPrice) {
+  if (!fromToken || !toToken || fromTokenPrice === undefined) {
     return undefined;
   }
 

@@ -15,7 +15,7 @@ import {
   getSwapPathStats,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
-import { createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -33,7 +33,9 @@ export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 // dont swap addresses here
 export const makeSelectSwapRoutes = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) =>
-    createSelectorDeprecated([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
+    createSelector((q) => {
+      const chainId = q(selectChainId);
+      const marketsInfoData = q(selectMarketsInfoData);
       const wrappedToken = getWrappedToken(chainId);
 
       const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
