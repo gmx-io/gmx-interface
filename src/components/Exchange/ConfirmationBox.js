@@ -584,12 +584,12 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
-    const riskLiquidity = bigMath.mulDiv(availableLiquidity, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT);
+    const getRiskLiquidity = () => bigMath.mulDiv(availableLiquidity, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT);
 
     if (isSwap) {
       const poolWithoutBuffer = token.poolAmount - token.bufferAmount;
       availableLiquidity = token.availableAmount > poolWithoutBuffer ? poolWithoutBuffer : token.availableAmount;
-      isLiquidityRisk = riskLiquidity < toAmount;
+      isLiquidityRisk = getRiskLiquidity() < toAmount;
     } else {
       if (isShort) {
         availableLiquidity = token.availableAmount;
@@ -609,10 +609,10 @@ export default function ConfirmationBox(props) {
         }
 
         const sizeTokens = bigMath.mulDiv(toUsdMax, expandDecimals(1, token.decimals), token.minPrice);
-        isLiquidityRisk = riskLiquidity < sizeTokens;
+        isLiquidityRisk = getRiskLiquidity() < sizeTokens;
       } else {
         availableLiquidity = token.availableAmount;
-        isLiquidityRisk = riskLiquidity < toAmount;
+        isLiquidityRisk = getRiskLiquidity() < toAmount;
       }
     }
 
