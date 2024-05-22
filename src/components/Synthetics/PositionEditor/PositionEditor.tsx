@@ -214,7 +214,7 @@ export function PositionEditor(p: Props) {
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
@@ -361,10 +361,10 @@ export function PositionEditor(p: Props) {
   ]);
 
   const detectAndSetMaxSize = useCallback(() => {
-    if (!maxWithdrawAmount) return;
+    if (maxWithdrawAmount === undefined) return;
     if (!collateralToken) return;
     if (!position) return;
-    if (!minCollateralFactor) return;
+    if (minCollateralFactor === undefined) return;
 
     const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
       BigInt(1),
@@ -405,11 +405,11 @@ export function PositionEditor(p: Props) {
     }
 
     if (
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
       !markPrice ||
       !position?.indexToken ||
-      !collateralDeltaAmount ||
+      collateralDeltaAmount === undefined ||
       !selectedCollateralAddress ||
       !signer
     ) {
