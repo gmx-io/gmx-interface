@@ -175,8 +175,8 @@ export function OrderEditor(p: Props) {
     isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
       ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
-      ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
-      : undefined;
+        ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
+        : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
@@ -315,7 +315,7 @@ export function OrderEditor(p: Props) {
     const marketInfo = positionOrder.marketInfo;
     const collateralToken = positionOrder.targetCollateralToken;
 
-    if (!positionIndexToken || !fromToken || !minCollateralUsd) return;
+    if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
 
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,

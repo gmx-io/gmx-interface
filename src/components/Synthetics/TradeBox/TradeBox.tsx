@@ -118,7 +118,6 @@ import { useLocalizedMap } from "lib/i18n";
 import "./TradeBox.scss";
 import { bigMath } from "lib/bigmath";
 
-
 export type Props = {
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
@@ -298,7 +297,7 @@ export function TradeBox(p: Props) {
   const userReferralInfo = useUserReferralInfo();
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
-    if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
+    if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
       1,

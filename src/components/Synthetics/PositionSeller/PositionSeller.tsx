@@ -339,10 +339,10 @@ export function PositionSeller(p: Props) {
     if (
       !tokensData ||
       !position ||
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount == undefined ||
       !receiveToken?.address ||
-      !receiveUsd ||
-      !decreaseAmounts?.acceptablePrice ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
       !signer ||
       !orderType
     ) {

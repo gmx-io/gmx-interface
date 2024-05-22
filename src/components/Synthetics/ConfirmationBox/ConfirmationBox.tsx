@@ -260,7 +260,7 @@ export function ConfirmationBox(p: Props) {
 
   const getOrderExecutionFee = useCallback(
     (swapsCount?: number) => {
-      if (!gasLimits || !tokensData || !gasPrice) return;
+      if (!gasLimits || !tokensData || gasPrice === undefined) return;
 
       const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, { swapsCount });
 
