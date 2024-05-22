@@ -26,7 +26,6 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { bigMath } from "lib/bigmath";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -75,7 +74,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         }
 
         const paths = findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)
-          ?.sort((a, b) => bigMath.sign(b.liquidity - a.liquidity))
+          ?.sort((a, b) => (b.liquidity - a.liquidity > 0 ? 1 : -1))
           .slice(0, 5);
 
         return paths;
