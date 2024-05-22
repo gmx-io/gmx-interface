@@ -1,4 +1,5 @@
-import { JsonRpcSigner, ethers } from "ethers";
+import { ethers } from "ethers";
+import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
 import { Config, useConnectorClient } from "wagmi";
@@ -11,7 +12,7 @@ function clientToSigner(client: Client<Transport, Chain, Account>) {
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
   const provider = new ethers.BrowserProvider(transport, network);
-  const signer = new JsonRpcSigner(provider, account.address);
+  const signer = new UncheckedJsonRpcSigner(provider, account.address);
   return signer;
 }
 
