@@ -16,7 +16,7 @@ import {
 import { expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+
 const { ZeroAddress } = ethers;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -197,7 +197,7 @@ export function getLowestFeeTokenForBuyGlp(
 
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
-    : tokensData.sort((a, b) => bigMath.sign(b.amountLeftToDeposit - a.amountLeftToDeposit))[0];
+    : tokensData.sort((a, b) => Number(b.amountLeftToDeposit - a.amountLeftToDeposit))[0];
 }
 
 export function getMostAbundantStableToken(chainId: number, infoTokens: InfoTokens) {

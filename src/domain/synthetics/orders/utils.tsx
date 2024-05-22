@@ -22,7 +22,6 @@ import {
 } from "../trade";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, OrderTxnType } from "./types";
-import { bigMath } from "lib/bigmath";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -429,8 +428,8 @@ export function getOrderErrors(p: {
         ? undefined
         : position.liquidationPrice > triggerPrice
       : position.liquidationPrice === undefined
-      ? undefined
-      : position.liquidationPrice < triggerPrice;
+        ? undefined
+        : position.liquidationPrice < triggerPrice;
 
     if (isInvalidTriggerPrice) {
       errors.push({
@@ -520,14 +519,14 @@ export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?:
 
     // Compare by trigger price
     const triggerPriceComparison = a.triggerPrice - b.triggerPrice;
-    if (triggerPriceComparison !== 0n) return bigMath.sign(triggerPriceComparison);
+    if (triggerPriceComparison !== 0n) return triggerPriceComparison < 0 ? -1 : 1;
 
     // Compare by order type
     const orderTypeComparison = a.orderType - b.orderType;
     if (orderTypeComparison) return orderTypeComparison;
 
     // Finally, sort by size delta USD
-    return bigMath.sign(b.sizeDeltaUsd - a.sizeDeltaUsd);
+    return b.sizeDeltaUsd - a.sizeDeltaUsd < 0 ? -1 : 1;
   });
 }
 
@@ -542,7 +541,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
       if (collateralComparison) return collateralComparison;
     }
 
-    return bigMath.sign(a.minOutputAmount - b.minOutputAmount);
+    return a.minOutputAmount - b.minOutputAmount < 0 ? -1 : 1;
   });
 }
 
