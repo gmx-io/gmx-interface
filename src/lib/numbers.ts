@@ -106,7 +106,7 @@ export const formatAmount = (
   useCommas?: boolean,
   defaultValue?: string
 ) => {
-  if (!defaultValue) {
+  if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
   }
   if (amount === undefined || amount === null || amount === "") {
@@ -134,7 +134,7 @@ export const formatKeyAmount = <T extends {}>(
   useCommas?: boolean
 ) => {
   const value = map ? map[key] ?? undefined : undefined;
-  if (value === undefined) {
+  if (value === undefined || value === null) {
     return "...";
   }
 
@@ -148,7 +148,7 @@ export const formatArrayAmount = (
   displayDecimals?: number,
   useCommas?: boolean
 ) => {
-  if (!arr || !arr[index]) {
+  if (!arr || arr[index] === undefined || arr[index] === null) {
     return "...";
   }
 
@@ -156,7 +156,7 @@ export const formatArrayAmount = (
 };
 
 export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
-  if (!amount) {
+  if (amount === undefined || amount === null) {
     return "...";
   }
   let amountStr = ethers.formatUnits(amount, tokenDecimals);
