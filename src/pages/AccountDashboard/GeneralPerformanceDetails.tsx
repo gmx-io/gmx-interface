@@ -1,89 +1,31 @@
+import { ApolloClient, InMemoryCache, gql, useQuery as useGqlQuery } from "@apollo/client";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { Trans, t } from "@lingui/macro";
+import { useMemo } from "react";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { formatPercentage, formatUsd } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-const DATA = [
-  {
-    date: "Today",
-    volume: 8384123421343222434322342343323421n,
-    pnl: 8384123421343222434322342343323421n,
-    realizedPnl: 8384123421343222434322342343323421n,
-    unrealizedPnl: 8384123421343222434322342343323421n,
-    pnlRank: "#3129",
-    pnlPercent: 421n,
-    pnlPercentRank: "#1392",
-    win: 2,
-    loss: 5,
-  },
-  {
-    date: "Yesterday",
-    volume: 8384123421343222434322342343323421n,
-    pnl: 8384123421343222434322342343323421n,
-    realizedPnl: 8384123421343222434322342343323421n,
-    unrealizedPnl: 8384123421343222434322342343323421n,
-    pnlRank: "#1298",
-    pnlPercent: 421n,
-    pnlPercentRank: "#1892",
-    win: 2,
-    loss: 5,
-  },
-  {
-    date: "Last 7d",
-    volume: 8384123421343222434322342343323421n,
-    pnl: 8384123421343222434322342343323421n,
-    realizedPnl: 8384123421343222434322342343323421n,
-    unrealizedPnl: 8384123421343222434322342343323421n,
-    pnlRank: "#2387",
-    pnlPercent: 421n,
-    pnlPercentRank: "#9473",
-    win: 2,
-    loss: 5,
-  },
-  {
-    date: "Last 30d",
-    volume: 8384123421343222434322342343323421n,
-    pnl: 8384123421343222434322342343323421n,
-    realizedPnl: 8384123421343222434322342343323421n,
-    unrealizedPnl: 8384123421343222434322342343323421n,
-    pnlRank: "#22357",
-    pnlPercent: 421n,
-    pnlPercentRank: "#32562",
-    win: 2,
-    loss: 5,
-  },
-  {
-    date: "This Year",
-    volume: 8384123421343222434322342343323421n,
-    pnl: -8384123421343222434322342343323421n,
-    realizedPnl: -8384123421343222434322342343323421n,
-    unrealizedPnl: -8384123421343222434322342343323421n,
-    pnlRank: "#34267",
-    pnlPercent: -421n,
-    pnlPercentRank: "#92133",
-    win: 14,
-    loss: 17,
-  },
-  {
-    date: "Lifetime",
-    volume: 8384123421343222434322342343323421n,
-    pnl: -8384123421343222434322342343323421n,
-    realizedPnl: -8384123421343222434322342343323421n,
-    unrealizedPnl: -8384123421343222434322342343323421n,
-    pnlRank: "#85472",
-    pnlPercent: -421n,
-    pnlPercentRank: "#324382",
-    win: 32,
-    loss: 39,
-  },
-];
+const bucketLabelMap = {
+  today: msg`Today`,
+  yesterday: msg`Yesterday`,
+  week: msg`Week`,
+  month: msg`Month`,
+  year: msg`This Year`,
+  all: msg`All Time`,
+};
 
 export function GeneralPerformanceDetails() {
+  const account = useAccount()!;
+  const data = usePnlSummaryData(account);
+  const { _ } = useLingui();
+
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
       <div className="border-b border-b-gray-950 p-16">
@@ -112,65 +54,64 @@ export function GeneralPerformanceDetails() {
             </tr>
           </thead>
           <tbody>
-            {DATA.map((row) => (
-              <tr key={row.date}>
-                <td className="py-13 pl-16 pr-5">{row.date}</td>
+            {data.map((row) => (
+              <tr key={row.bucketLabel}>
+                <td className="py-13 pl-16 pr-5">
+                  {_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}
+                </td>
                 <td className="px-5 py-13">{formatUsd(row.volume)}</td>
                 <td className="px-5 py-13">
-                  <Tooltip
-                    as={"span"}
+                  <TooltipWithPortal
+                    disableHandleStyle
                     className={cx(
                       "underline decoration-dashed decoration-1 underline-offset-2",
-                      row.pnl > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
+                      row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
                     )}
                     content={
                       <>
                         <StatsTooltipRow
                           label={t`Realized PnL`}
                           showDollar={false}
-                          textClassName={getPositiveOrNegativeClass(row.realizedPnl)}
-                          value={formatUsd(row.realizedPnl)}
+                          textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
+                          value={formatUsd(row.realizedPnlUsd)}
                         />
                         <StatsTooltipRow
                           label={t`Unrealized PnL`}
                           showDollar={false}
-                          textClassName={getPositiveOrNegativeClass(row.unrealizedPnl)}
-                          value={formatUsd(row.unrealizedPnl)}
+                          textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
+                          value={formatUsd(row.unrealizedPnlUsd)}
                         />
                       </>
                     }
                   >
-                    {formatUsd(row.pnl)}
-                  </Tooltip>
+                    {formatUsd(row.pnlUsd)}
+                  </TooltipWithPortal>
                 </td>
                 <td className="px-5 py-13">
-                  <Tooltip
-                    as={"span"}
+                  <TooltipWithPortal
+                    disableHandleStyle
                     className={cx(
                       "underline decoration-dashed decoration-1 underline-offset-2",
-                      row.pnlPercent > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
+                      row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
                     )}
                   >
-                    {formatPercentage(row.pnlPercent, { signed: true })}
-                  </Tooltip>
+                    {formatPercentage(row.pnlBps, { signed: true })}
+                  </TooltipWithPortal>
                 </td>
                 <td className="py-13 pl-5 pr-16">
-                  <Tooltip
-                    handleClassName=""
-                    handle={`${row.win} / ${row.loss}`}
+                  <TooltipWithPortal
+                    handle={`${row.wins} / ${row.losses}`}
                     content={
                       <>
                         <StatsTooltipRow
                           label={t`Total Trades`}
                           showDollar={false}
-                          value={String(row.win + row.loss)}
+                          value={String(row.wins + row.losses)}
                         />
                         <StatsTooltipRow
                           label={t`Win Rate`}
                           showDollar={false}
-                          value={formatPercentage(
-                            BigInt(Math.round((row.win / (row.win + row.loss)) * BASIS_POINTS_DIVISOR))
-                          )}
+                          value={formatPercentage(row.winsLossesRatioBps)}
                         />
                       </>
                     }
@@ -184,3 +125,66 @@ export function GeneralPerformanceDetails() {
     </div>
   );
 }
+
+type PnlSummaryPoint = {
+  bucketLabel: string;
+  losses: number;
+  pnlBps: bigint;
+  pnlUsd: bigint;
+  realizedPnlUsd: bigint;
+  unrealizedPnlUsd: bigint;
+  volume: bigint;
+  wins: number;
+  winsLossesRatioBps: bigint | undefined;
+};
+
+type PnlSummaryData = PnlSummaryPoint[];
+
+function usePnlSummaryData(account: string): PnlSummaryData {
+  const res = useGqlQuery(
+    gql`
+      query AccountHistoricalPnlResolver($account: String!) {
+        accountPnlSummaryStats(account: $account) {
+          bucketLabel
+          losses
+          pnlBps
+          pnlUsd
+          realizedPnlUsd
+          unrealizedPnlUsd
+          volume
+          wins
+          winsLossesRatioBps
+        }
+      }
+    `,
+    {
+      client: client,
+      variables: { account: account },
+    }
+  );
+
+  const transformedData = useMemo(() => {
+    return (
+      res.data?.accountPnlSummaryStats?.map((row: any) => {
+        return {
+          bucketLabel: row.bucketLabel,
+          losses: row.losses,
+          pnlBps: BigInt(row.pnlBps),
+          pnlUsd: BigInt(row.pnlUsd),
+          realizedPnlUsd: BigInt(row.realizedPnlUsd),
+          unrealizedPnlUsd: BigInt(row.unrealizedPnlUsd),
+          volume: BigInt(row.volume),
+          wins: row.wins,
+          winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
+        };
+      }) || EMPTY_ARRAY
+    );
+  }, [res.data?.accountPnlSummaryStats]);
+
+  return transformedData;
+}
+
+const client = new ApolloClient({
+  uri: "http://37.27.100.223:4000/graphql",
+  cache: new InMemoryCache(),
+});

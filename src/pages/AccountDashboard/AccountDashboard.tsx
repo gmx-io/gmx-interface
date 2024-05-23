@@ -45,7 +45,7 @@ export function AccountDashboard() {
 
       <div className="flex flex-col gap-20">
         <div className="flex flex-row flex-wrap gap-20">
-          <div className="max-w-full grow-[2]">
+          <div className="max-w-full grow-[2] *:size-full">
             <GeneralPerformanceDetails />
           </div>
           <div className="grow *:size-full">
