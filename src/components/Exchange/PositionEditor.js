@@ -168,7 +168,7 @@ export default function PositionEditor(props) {
         convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
       }
     }
-    needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount > tokenAllowance;
+    needApproval = isDeposit && tokenAllowance !== undefined && fromAmount !== undefined && fromAmount > tokenAllowance;
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;

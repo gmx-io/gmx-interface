@@ -185,8 +185,8 @@ export function PositionEditor(p: Props) {
 
   const needCollateralApproval =
     isDeposit &&
-    tokenAllowance &&
-    collateralDeltaAmount &&
+    tokenAllowance !== undefined &&
+    collateralDeltaAmount !== undefined &&
     selectedCollateralAddress !== ethers.ZeroAddress &&
     collateralDeltaAmount > tokenAllowance;
 

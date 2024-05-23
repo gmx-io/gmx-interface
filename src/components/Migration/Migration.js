@@ -120,7 +120,7 @@ function MigrationModal(props) {
   }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
-  const needApproval = tokenAllowance && amount && amount > tokenAllowance;
+  const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   let baseAmount;
   let bonusAmount;

@@ -124,7 +124,7 @@ function StakeModal(props) {
   );
 
   let amount = parseValue(value, 18);
-  const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount && amount > tokenAllowance;
+  const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
     if (!amount) {
@@ -783,7 +783,11 @@ function CompoundModal(props) {
     }
   );
 
-  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards > tokenAllowance;
+  const needApproval =
+    shouldStakeGmx &&
+    tokenAllowance !== undefined &&
+    totalVesterRewards !== undefined &&
+    totalVesterRewards > tokenAllowance;
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !isCompounding && !isUndelegatedGovToken;
