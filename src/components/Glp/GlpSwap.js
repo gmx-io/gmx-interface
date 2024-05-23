@@ -1330,11 +1330,11 @@ export default function GlpSwap(props) {
               }
               const tokenInfo = getTokenInfo(infoTokens, token.address);
               let managedUsd;
-              if (tokenInfo && tokenInfo.managedUsd) {
+              if (tokenInfo && tokenInfo.managedUsd !== undefined) {
                 managedUsd = tokenInfo.managedUsd;
               }
               let availableAmountUsd;
-              if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
+              if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.availableAmount !== undefined) {
                 availableAmountUsd = bigMath.mulDiv(
                   tokenInfo.availableAmount,
                   tokenInfo.minPrice,
@@ -1342,7 +1342,7 @@ export default function GlpSwap(props) {
                 );
               }
               let balanceUsd;
-              if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
+              if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.balance !== undefined) {
                 balanceUsd = bigMath.mulDiv(tokenInfo.balance, tokenInfo.minPrice, expandDecimals(1, token.decimals));
               }
               let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
