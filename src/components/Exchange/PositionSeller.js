@@ -524,7 +524,7 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = bigMath.mulDiv(receiveUsd, feeBasisPoints, BASIS_POINTS_DIVISOR_BIGINT);
+        swapFee = bigMath.mulDiv(receiveUsd, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
         totalFees = totalFees + (swapFee || 0n);
         receiveUsd = receiveUsd - swapFee;
       }
