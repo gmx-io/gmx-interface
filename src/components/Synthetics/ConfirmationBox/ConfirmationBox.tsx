@@ -467,7 +467,7 @@ export function ConfirmationBox(p: Props) {
       text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
-    if (sidecarEntries.length > 0) {
+    if (isIncrease && sidecarEntries.length > 0) {
       const isError = sidecarEntries.some((e) => {
         if (e.txnType === "cancel") return false;
 
