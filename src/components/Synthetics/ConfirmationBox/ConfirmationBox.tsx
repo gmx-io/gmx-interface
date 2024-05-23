@@ -806,7 +806,7 @@ export function ConfirmationBox(p: Props) {
       <SubaccountNavigationButton
         executionFee={executionFee?.feeTokenAmount}
         closeConfirmationBox={onClose}
-        isNativeToken={fromToken?.isNative || toToken?.isNative}
+        isNativeToken={fromToken?.isNative}
         isWrapOrUnwrap={isWrapOrUnwrap}
         tradeFlags={tradeFlags}
         requiredActions={subaccountRequiredActions}
