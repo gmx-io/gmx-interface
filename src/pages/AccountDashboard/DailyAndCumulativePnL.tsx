@@ -1,7 +1,7 @@
-import { gql, useQuery as useGqlQuery } from "@apollo/client";
+import { ApolloClient, InMemoryCache, gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { toPng } from "html-to-image";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Bar,
   Cell,
@@ -13,21 +13,28 @@ import {
 } from "recharts";
 
 import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { TIMEZONE_OFFSET_SEC } from "domain/prices";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
-import { useChainId } from "lib/chains";
-import { formatDate, useDateRange, useNormalizeDateRange } from "lib/dates";
+import { formatDate, formatDateTime, toUtcDayStartRounded } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
-import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
+import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
+
+import {
+  DEBUG_FIELDS,
+  DEV_QUERY,
+  DebugLegend,
+  DebugLines,
+  DebugTooltip,
+  type AccountPnlHistoryPointDebugFields,
+} from "./chartDebug";
 
 import downloadIcon from "img/ic_download_simple.svg";
 
@@ -35,13 +42,14 @@ const CSV_ICON_INFO = {
   src: downloadIcon,
 };
 
+const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
+
 export function DailyAndCumulativePnL() {
   const account = useAccount()!;
-  const { chainId } = useChainId();
-  const [startDate, endDate, setDateRange] = useDateRange();
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
+  const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
+  const fromTimestamp = useMemo(() => fromDate && toUtcDayStartRounded(fromDate), [fromDate]);
 
-  const clusteredPnlData = usePnlHistoricalData(chainId, account, fromTxTimestamp, toTxTimestamp);
+  const clusteredPnlData = usePnlHistoricalData(account, fromTimestamp);
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
@@ -61,23 +69,23 @@ export function DailyAndCumulativePnL() {
           >
             PNG
           </Button>
-          <DateRangeSelect
-            startDate={startDate}
-            endDate={endDate}
-            onChange={setDateRange}
+          <DateSelect
+            date={fromDate}
+            onChange={setFromDate}
             handleClassName="!px-10 !py-6"
+            buttonTextPrefix={t`From`}
           />
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-24 px-16 pt-16">
-        <div className="text-gray-300">
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-gray-300">
+        <div>
           <div className="inline-block size-10 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>
-        <div className="text-gray-300">
+        <div>
           <div className="inline-block size-10 rounded-full bg-red-500" /> <Trans>Daily Loss</Trans>
         </div>
-        <div className="text-gray-300">
+        <div>
           <div className="inline-block size-10 rounded-full bg-[#468AE3]" />{" "}
           <Trans>
             Cumulative PnL:{" "}
@@ -86,13 +94,14 @@ export function DailyAndCumulativePnL() {
             </span>
           </Trans>
         </div>
+        <DebugLegend lastPoint={clusteredPnlData.at(-1)} />
       </div>
 
       <div className="relative min-h-[150px] grow">
         <div className="absolute size-full">
           <ResponsiveContainer debounce={500}>
-            <ComposedChart width={500} height={300} data={clusteredPnlData}>
-              <RechartsTooltip content={ChartTooltip} />
+            <ComposedChart width={500} height={300} data={clusteredPnlData} barGap={0}>
+              <RechartsTooltip content={ChartTooltip} wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE} />
               <Bar dataKey="pnlFloat" minPointSize={1}>
                 {clusteredPnlData.map((entry) => {
                   let fill;
@@ -106,7 +115,8 @@ export function DailyAndCumulativePnL() {
                   return <Cell key={entry.date} fill={fill} />;
                 })}
               </Bar>
-              <Line type="monotone" dataKey="cumulativePnlFloat" stroke="#468AE3" dot={false} />
+              <Line type="monotone" dataKey="cumulativePnlFloat" stroke="#468AE3" strokeWidth={2} dot={false} />
+              {DebugLines()}
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -123,7 +133,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   const stats = payload[0].payload as PnlHistoricalData[number];
 
   return (
-    <div className="rounded-4 border border-gray-950 bg-slate-800 p-8">
+    <div className="z-50 rounded-4 border border-gray-950 bg-slate-800 p-8">
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow
         label={t`PnL`}
@@ -137,143 +147,83 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(stats.cumulativePnl)}
       />
+      <DebugTooltip stats={stats} />
     </div>
   );
 }
 
-type PnlHistoricalData = FromOldToNewArray<{
+export type AccountPnlHistoryPoint = {
   date: string;
   pnlFloat: number;
   pnl: bigint;
   cumulativePnlFloat: number;
   cumulativePnl: bigint;
-}>;
+} & AccountPnlHistoryPointDebugFields;
 
-function usePnlHistoricalData(
-  chainId: number,
-  account: string,
-  fromTxTimestamp: number | undefined,
-  toTxTimestamp: number | undefined
-): PnlHistoricalData {
-  const query = useMemo(
-    () => gql`
-      {
-        history: tradeActions(
-          orderBy: transaction__timestamp
-          orderDirection: asc
-          limit: 1000
-          where: ${buildFiltersBody({
-            account: account.toLowerCase(),
-            transaction: { timestamp_gte: fromTxTimestamp, timestamp_lte: toTxTimestamp },
-            pnlUsd_not: null,
-          })}
-        ) {
-          pnlUsd,
-          transaction {
-            timestamp
-          }
-        }
+type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
 
-      }
-    `,
-    [account, fromTxTimestamp, toTxTimestamp]
-  );
+const PROD_QUERY = gql`
+  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
+    accountPnlHistoryStats(account: $account, from: $from) {
+      cumulativePnl
+      pnl
+      timestamp
+    }
+  }
+`;
 
-  const { data: rawPnlData } = useGqlQuery(query, {
-    client: getSyntheticsGraphClient(chainId)!,
-    pollInterval: 10000,
+function usePnlHistoricalData(account: string, fromTimestamp: number | undefined): PnlHistoricalData {
+  const showDebugValues = useShowDebugValues();
+  const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
+    client: client,
+
+    variables: { account: account, from: fromTimestamp },
   });
 
-  const pnlData = useMemo(
-    () =>
-      rawPnlData?.history.map((action) => ({
-        timestampSec: action.transaction.timestamp,
-        pnlUsd: BigInt(action.pnlUsd),
-      })) || EMPTY_ARRAY,
-    [rawPnlData]
-  );
+  const transformedData = useMemo(() => {
+    return (
+      res.data?.accountPnlHistoryStats?.map((row: any) => {
+        const parsedDebugFields = showDebugValues
+          ? DEBUG_FIELDS.reduce(
+              (acc, key) => {
+                const raw = row[key];
 
-  const clusteredPnlData = useMemo(() => {
-    const clustered: {
-      date: string;
-      daysSinceLocalEpoch: number;
-      pnl: bigint;
-      cumulativePnl: bigint;
-    }[] = [];
+                const bn = raw ? BigInt(raw) : 0n;
+                acc[key] = bn;
+                acc[`${key}Float`] = usdBigIntToFloat(bn);
+                return acc;
+              },
+              {} as Record<string, bigint | number>
+            )
+          : EMPTY_OBJECT;
 
-    for (const { timestampSec, pnlUsd } of pnlData) {
-      const daysSinceLocalEpoch = Math.floor((timestampSec + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
-      const prev = clustered.at(-1);
+        return {
+          date: showDebugValues
+            ? formatDateTime(row.timestamp - 86400) + " - " + formatDateTime(row.timestamp) + " local"
+            : formatDate(row.timestamp),
+          pnl: BigInt(row.pnl),
+          pnlFloat: usdBigIntToFloat(BigInt(row.pnl)),
+          cumulativePnl: BigInt(row.cumulativePnl),
+          cumulativePnlFloat: usdBigIntToFloat(BigInt(row.cumulativePnl)),
+          ...parsedDebugFields,
+        };
+      }) || EMPTY_ARRAY
+    );
+  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
-      if (!prev) {
-        const utcDate = formatDate(timestampSec);
-        clustered.push({ date: utcDate, daysSinceLocalEpoch, pnl: pnlUsd, cumulativePnl: pnlUsd });
-        continue;
-      }
+  return transformedData;
+}
 
-      if (prev.daysSinceLocalEpoch !== daysSinceLocalEpoch) {
-        const utcDate = formatDate(timestampSec);
-        for (let pointer = prev.daysSinceLocalEpoch + 1; pointer < daysSinceLocalEpoch; pointer++) {
-          clustered.push({
-            date: formatDate(pointer * 24 * 60 * 60),
-            daysSinceLocalEpoch: pointer,
-            pnl: 0n,
-            cumulativePnl: prev.cumulativePnl,
-          });
-        }
+const client = new ApolloClient({
+  uri: "http://37.27.100.223:4000/graphql",
+  cache: new InMemoryCache(),
+});
 
-        clustered.push({ date: utcDate, daysSinceLocalEpoch, pnl: pnlUsd, cumulativePnl: prev.cumulativePnl + pnlUsd });
-        continue;
-      }
-
-      prev.pnl += pnlUsd;
-      prev.cumulativePnl += pnlUsd;
-    }
-
-    // Pad start
-    if (fromTxTimestamp && clustered.length) {
-      const startDaysSinceLocalEpoch = Math.floor((fromTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
-      const firstDaysSinceLocalEpoch = clustered[0].daysSinceLocalEpoch;
-      const startGapLength = firstDaysSinceLocalEpoch - startDaysSinceLocalEpoch;
-
-      for (let count = 1; count <= startGapLength; count++) {
-        clustered.unshift({
-          date: formatDate((firstDaysSinceLocalEpoch - count) * 24 * 60 * 60),
-          daysSinceLocalEpoch: firstDaysSinceLocalEpoch - count,
-          pnl: 0n,
-          cumulativePnl: 0n,
-        });
-      }
-    }
-
-    // Pad end
-    if (toTxTimestamp && clustered.length) {
-      const endDaysSinceLocalEpoch = Math.floor((toTxTimestamp + TIMEZONE_OFFSET_SEC) / (24 * 60 * 60));
-      const lastDaysSinceLocalEpoch = clustered.at(-1)!.daysSinceLocalEpoch;
-      const endGapLength = endDaysSinceLocalEpoch - clustered.at(-1)!.daysSinceLocalEpoch;
-      const lastCumulativePnl = clustered.at(-1)!.cumulativePnl;
-
-      for (let count = 1; count <= endGapLength; count++) {
-        clustered.push({
-          date: formatDate((lastDaysSinceLocalEpoch + count) * 24 * 60 * 60),
-          daysSinceLocalEpoch: lastDaysSinceLocalEpoch + count,
-          pnl: 0n,
-          cumulativePnl: lastCumulativePnl,
-        });
-      }
-    }
-
-    const compressed: PnlHistoricalData = clustered.map(({ date, pnl, cumulativePnl }) => ({
-      date,
-      pnlFloat: Number((pnl * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000,
-      pnl: pnl,
-      cumulativePnlFloat: Number((cumulativePnl * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000,
-      cumulativePnl: cumulativePnl,
-    }));
-
-    return compressed;
-  }, [fromTxTimestamp, pnlData, toTxTimestamp]);
-  return clusteredPnlData;
+function usdBigIntToFloat(usd: bigint) {
+  if (typeof usd !== "bigint") {
+    throw new Error(`usdBigIntToFloat: expected bigint, got ${typeof usd}, ${usd}`);
+  }
+  return Number((usd * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000;
 }
 
 function useImageDownload() {

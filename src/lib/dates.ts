@@ -41,6 +41,12 @@ function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }
 
+export function toUtcDayStartRounded(date: Date) {
+  const dateUtcSeconds = Math.trunc(date.getTime() / 1000);
+
+  return Math.round(dateUtcSeconds / 86400) * 86400;
+}
+
 const START_OF_DAY_DURATION = {
   hours: 0,
   minutes: 0,

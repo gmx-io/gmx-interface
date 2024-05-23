@@ -63,7 +63,8 @@
   }
 
   &-startEdge,
-  &-endEdge {
+  &-endEdge,
+  &-selected {
     &::before {
       content: "";
       position: absolute;
@@ -80,7 +81,8 @@
 
   &-dayInPreview,
   &-dayStartPreview,
-  &-dayEndPreview {
+  &-dayEndPreview,
+  &-dayHovered {
     color: var(--color-blue-600) !important;
   }
 
@@ -109,6 +111,12 @@
   &-dayStartOfMonth &-dayEndPreview,
   &-dayEndOfMonth &-dayStartPreview {
     border-radius: 4px;
+  }
+
+  &-dayHovered {
+    ::after {
+      border-radius: 4px !important;
+    }
   }
 
   @media (max-width: 600px) {

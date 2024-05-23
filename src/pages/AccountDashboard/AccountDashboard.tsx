@@ -34,40 +34,9 @@ export function AccountDashboard() {
                 <Trans>GMX V2 {networkName} information for account:</Trans>
                 <AddressView address={account} size={20} breakpoint="XL" />
               </div>
-              <div className="flex cursor-pointer flex-wrap items-center gap-12">
+              <div className="flex flex-wrap items-center gap-12">
                 <Trans>Switch to:</Trans>
-                {SUPPORTED_CHAIN_IDS.map((supportedChainId) => (
-                  <div
-                    key={supportedChainId}
-                    className={cx("flex items-center gap-4", {
-                      "text-white": supportedChainId === chainId,
-                    })}
-                    onClick={() => switchNetwork(supportedChainId, active)}
-                  >
-                    V2
-                    <img
-                      className="inline-block h-16"
-                      src={getIcon(supportedChainId, "network")}
-                      alt={CHAIN_NAMES_MAP[supportedChainId]}
-                    />
-                  </div>
-                ))}
-                {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
-                  <div
-                    key={supportedChainId}
-                    className={cx("flex items-center gap-4", {
-                      "text-white": supportedChainId === chainId,
-                    })}
-                    onClick={() => switchNetwork(supportedChainId, active)}
-                  >
-                    V1
-                    <img
-                      className="inline-block h-16"
-                      src={getIcon(supportedChainId, "network")}
-                      alt={CHAIN_NAMES_MAP[supportedChainId]}
-                    />
-                  </div>
-                ))}
+                <VersionNetworkSwitcher chainId={chainId} active={active} />
               </div>
             </>
           }
@@ -87,6 +56,45 @@ export function AccountDashboard() {
       </div>
 
       <Footer />
+    </div>
+  );
+}
+
+function VersionNetworkSwitcher({ chainId, active }: { chainId: number; active: boolean }) {
+  return (
+    <div className="flex flex-wrap items-center gap-12 *:cursor-pointer">
+      {SUPPORTED_CHAIN_IDS.map((supportedChainId) => (
+        <div
+          key={supportedChainId}
+          className={cx("flex items-center gap-4", {
+            "text-white": supportedChainId === chainId,
+          })}
+          onClick={() => switchNetwork(supportedChainId, active)}
+        >
+          V2
+          <img
+            className="inline-block h-16"
+            src={getIcon(supportedChainId, "network")}
+            alt={CHAIN_NAMES_MAP[supportedChainId]}
+          />
+        </div>
+      ))}
+      {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
+        <div
+          key={supportedChainId}
+          className={cx("flex items-center gap-4", {
+            "text-white": supportedChainId === chainId,
+          })}
+          onClick={() => switchNetwork(supportedChainId, active)}
+        >
+          V1
+          <img
+            className="inline-block h-16"
+            src={getIcon(supportedChainId, "network")}
+            alt={CHAIN_NAMES_MAP[supportedChainId]}
+          />
+        </div>
+      ))}
     </div>
   );
 }
