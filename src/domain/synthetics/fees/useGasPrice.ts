@@ -27,11 +27,13 @@ export function useGasPrice(chainId: number) {
             let gasPrice = feeData.gasPrice ?? 0n;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-              // the wallet provider might not return maxPriorityFeePerGas in feeData
-              // in which case we should fallback to the usual getGasPrice flow handled below
-              if (feeData && feeData.maxPriorityFeePerGas) {
-                gasPrice = gasPrice + feeData.maxPriorityFeePerGas;
-              }
+              // fallback to v5 default value from prev ethers.js version:
+              // https://github.com/ethers-io/ethers.js/blob/v5/packages/abstract-provider/lib.esm/index.js#L93
+              // even if maxPriorityFeePerGas == 0n we fallback, because it is most likely
+              // means eth_maxPriorityFeePerGas method is not working properly
+              const maxPriorityFeePerGas = feeData?.maxPriorityFeePerGas || 1500000000n;
+
+              gasPrice = gasPrice + maxPriorityFeePerGas;
             }
 
             if (settings.executionFeeBufferBps) {
