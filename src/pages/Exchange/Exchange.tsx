@@ -129,7 +129,7 @@ function applyPendingChanges(position, pendingPositions) {
       return;
     }
 
-    if (pendingChanges.expectingCollateralChange && !position.collateral == pendingChanges.collateralSnapshot) {
+    if (pendingChanges.expectingCollateralChange && position.collateral != pendingChanges.collateralSnapshot) {
       return;
     }
 
