@@ -125,7 +125,7 @@ function applyPendingChanges(position, pendingPositions) {
     pendingPositions[key].updatedAt + PENDING_POSITION_VALID_DURATION > Date.now()
   ) {
     const { pendingChanges } = pendingPositions[key];
-    if (pendingChanges.size && position.size == pendingChanges.size) {
+    if (pendingChanges.size !== undefined && position.size == pendingChanges.size) {
       return;
     }
 
@@ -643,16 +643,30 @@ export const Exchange = forwardRef(
       document.title = title;
     }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
-    const { positions, positionsMap } = getPositions(
-      chainId,
-      positionQuery,
-      positionData,
-      infoTokens,
-      isPnlInLeverage,
-      showPnlAfterFees,
-      account,
-      pendingPositions,
-      updatedPositions
+    const { positions, positionsMap } = useMemo(
+      () =>
+        getPositions(
+          chainId,
+          positionQuery,
+          positionData,
+          infoTokens,
+          isPnlInLeverage,
+          showPnlAfterFees,
+          account,
+          pendingPositions,
+          updatedPositions
+        ),
+      [
+        account,
+        chainId,
+        infoTokens,
+        isPnlInLeverage,
+        pendingPositions,
+        positionData,
+        positionQuery,
+        showPnlAfterFees,
+        updatedPositions,
+      ]
     );
 
     useImperativeHandle(ref, () => ({
