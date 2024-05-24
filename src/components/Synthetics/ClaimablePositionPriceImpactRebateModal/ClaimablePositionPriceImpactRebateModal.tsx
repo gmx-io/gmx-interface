@@ -150,7 +150,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       const decimals = tokenData?.decimals;
       const usd =
         price && decimals ? bigMath.mulDiv(rebateItem.valueByFactor, price, expandDecimals(1, decimals)) : null;
-      if (!usd) return;
+      if (usd === null) return;
       total = total + usd;
     });
 

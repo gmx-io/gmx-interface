@@ -139,7 +139,7 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
     -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 
-  if (!minCollateralFactor) return false;
+  if (minCollateralFactor === undefined) return false;
 
   return !willPositionCollateralBeSufficientForPosition(
     position,

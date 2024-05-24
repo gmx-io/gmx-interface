@@ -396,7 +396,7 @@ const MainView = memo(() => {
         throw new Error("address is not defined");
       }
 
-      if (!count) {
+      if (count === undefined || count === null) {
         setNotificationState("activationFailed");
         throw new Error("Action counts are not defined");
       }

@@ -417,7 +417,7 @@ export default function SwapBox(props) {
       expandDecimals(1, USDG_DECIMALS)
     );
 
-    if (!value) {
+    if (value === 0n) {
       return 0n;
     }
 

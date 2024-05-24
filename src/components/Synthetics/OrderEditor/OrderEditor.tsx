@@ -186,7 +186,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isSwapOrderType(p.order.orderType)) {
-      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || !minOutputAmount || minOutputAmount < 0) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
         return t`Enter a ratio`;
       }
 
@@ -240,7 +240,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isTriggerDecreaseOrderType(p.order.orderType)) {
-      if (!markPrice) {
+      if (markPrice === undefined) {
         return t`Loading...`;
       }
 

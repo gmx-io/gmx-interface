@@ -187,7 +187,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   }
 
   if (type === "limit") {
-    if (!entry.sizeUsd?.value) {
+    if (entry.sizeUsd?.value === undefined || entry.sizeUsd.value === 0n) {
       sizeError = t`Limit size is required.`;
     }
 
@@ -195,7 +195,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
   } else {
-    if (!entry.percentage?.value) {
+    if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
       percentageError = t`A Size percentage is required.`;
     }
   }

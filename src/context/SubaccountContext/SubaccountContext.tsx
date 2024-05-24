@@ -304,7 +304,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       !active ||
       !privateKey ||
       insufficientFunds ||
-      !remaining ||
+      remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;

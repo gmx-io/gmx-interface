@@ -82,7 +82,7 @@ export function isHomeSite() {
 }
 
 export function getMarginFee(sizeDelta: bigint) {
-  if (!sizeDelta) {
+  if (sizeDelta === undefined) {
     return 0n;
   }
   const afterFeeUsd =
@@ -141,7 +141,7 @@ export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecima
 }
 
 export function getTargetUsdgAmount(token, usdgSupply: bigint, totalTokenWeights): bigint | undefined {
-  if (!token || !token.weight || !usdgSupply) {
+  if (!token || token.weight === undefined || usdgSupply === undefined) {
     return;
   }
 
@@ -162,7 +162,7 @@ export function getFeeBasisPoints(
   usdgSupply: bigint,
   totalTokenWeights
 ): number {
-  if (!token || tokenUsdgAmount === undefined || !usdgSupply || !totalTokenWeights) {
+  if (!token || tokenUsdgAmount === undefined || usdgSupply === undefined || !totalTokenWeights) {
     return 0;
   }
 
@@ -276,7 +276,7 @@ export function getBuyGlpFromAmount(
   totalTokenWeights
 ) {
   const defaultValue = { amount: 0n };
-  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || glpPrice === undefined || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -314,7 +314,7 @@ export function getSellGlpToAmount(
   totalTokenWeights
 ) {
   const defaultValue = { amount: 0n };
-  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || glpPrice === undefined || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -458,7 +458,7 @@ export function getNextToAmount(
   forSwap
 ) {
   const defaultValue = { amount: 0n };
-  if (!fromAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
+  if (fromAmount === undefined || !fromTokenAddress || !toTokenAddress || !infoTokens) {
     return defaultValue;
   }
 

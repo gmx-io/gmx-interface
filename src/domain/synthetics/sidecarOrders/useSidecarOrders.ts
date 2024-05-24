@@ -155,7 +155,15 @@ export function useSidecarOrders() {
 
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
-      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error) return;
+      if (
+        sizeUsd?.value === undefined ||
+        sizeUsd?.value === null ||
+        sizeUsd.error ||
+        price?.value === undefined ||
+        price?.value === null ||
+        price.error
+      )
+        return;
 
       if (!marketInfo || !mockPositionInfo || !swapRoute || !order) {
         return;
@@ -224,15 +232,23 @@ export function useSidecarOrders() {
 
   const getDecreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price }: SidecarOrderEntry) => {
-      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
+      if (
+        sizeUsd?.value === undefined ||
+        sizeUsd?.value === null ||
+        sizeUsd.error ||
+        price?.value === undefined ||
+        price?.value === null ||
+        price.error ||
+        !marketInfo
+      )
+        return;
 
       if (
         !increaseAmounts ||
         !collateralToken ||
         !mockPositionInfoWithLimits ||
         minPositionSizeUsd === undefined ||
-        minCollateralUsd === undefined ||
-        !sizeUsd?.value
+        minCollateralUsd === undefined
       ) {
         return;
       }

@@ -153,7 +153,15 @@ export function getLowestFeeTokenForBuyGlp(
   fromTokenAddress: string,
   swapUsdMin: bigint
 ): { token: Token; fees: number; amountLeftToDeposit: bigint } | undefined {
-  if (!chainId || !toAmount || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights || !swapUsdMin) {
+  if (
+    !chainId ||
+    toAmount === undefined ||
+    !infoTokens ||
+    glpPrice === undefined ||
+    usdgSupply === undefined ||
+    totalTokenWeights === undefined ||
+    swapUsdMin === undefined
+  ) {
     return;
   }
 

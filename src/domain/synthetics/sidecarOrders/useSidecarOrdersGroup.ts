@@ -29,7 +29,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: bigint | null) => {
-      if (!sizeUsd || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
+      if (sizeUsd === undefined || sizeUsd === null || totalPositionSizeUsd === undefined || totalPositionSizeUsd < 0) {
         return null;
       }
 
@@ -40,7 +40,13 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const getSizeUsdByPercentage = useCallback(
     (percentage: bigint | null) => {
-      if (!percentage || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
+      if (
+        percentage === undefined ||
+        percentage === null ||
+        percentage === 0n ||
+        totalPositionSizeUsd === undefined ||
+        totalPositionSizeUsd <= 0
+      ) {
         return null;
       }
 

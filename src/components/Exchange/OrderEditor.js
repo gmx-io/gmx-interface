@@ -210,7 +210,7 @@ export default function OrderEditor(props) {
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate && !currentRate >= triggerRatio) {
+      if (currentRate !== undefined && currentRate < triggerRatio) {
         return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
       }
     }
@@ -345,11 +345,11 @@ export default function OrderEditor(props) {
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label={t`Price`}>
-        {triggerRatio && !triggerRatio == 0n && triggerRatio != order.triggerRatio ? (
+        {triggerRatio !== undefined && triggerRatio !== 0n && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">
               {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-                omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
+                omitSymbols: triggerRatio != order.triggerRatio,
               })}
             </span>
             &nbsp;
