@@ -3,6 +3,7 @@ import { FiX } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { HeaderLink } from "./HeaderLink";
 import "./Header.scss";
 import { isHomeSite } from "lib/legacy";
@@ -17,6 +18,8 @@ type Props = {
 };
 
 export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedirectModal }: Props) {
+  const { openNotifyModal } = useNotifyModalState();
+
   const isLeaderboardActive = useCallback(
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []
@@ -71,6 +74,13 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
+      {small && (
+        <div className="App-header-link-container">
+          <a href="#" onClick={openNotifyModal}>
+            <Trans>Alerts</Trans>
+          </a>
+        </div>
+      )}
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}

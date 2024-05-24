@@ -11,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
+import NotifyButton from "../NotifyButton/NotifyButton";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
@@ -79,6 +80,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
             <ConnectWalletButton onClick={openConnectModal} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
+            {!small && <NotifyButton />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -112,6 +114,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
+          {!small && <NotifyButton />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

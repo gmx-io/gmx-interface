@@ -1,6 +1,5 @@
 .App-header-network {
   position: relative;
-  margin-left: 2.4rem;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
@@ -195,17 +194,11 @@
 }
 
 @media (max-width: 1033px) {
-  .App-header-network {
-    margin-left: 1.6rem;
-  }
   .App-header-language {
     margin-left: 0;
   }
 }
 @media (max-width: 450px) {
-  .App-header-network {
-    margin-left: 0.6rem;
-  }
   .App-header-language {
     margin-left: 0;
   }

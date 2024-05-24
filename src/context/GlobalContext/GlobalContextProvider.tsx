@@ -8,6 +8,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { getIsSyntheticsSupported } from "config/features";
 import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
@@ -26,6 +27,9 @@ type GlobalContextType = null | {
 
   redirectPopupTimestamp: number | undefined;
   setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
+
+  notifyModalOpen: boolean;
+  setNotifyModalOpen: (nextState: boolean) => void;
 };
 
 const context = createContext<GlobalContextType>(null);
@@ -42,6 +46,8 @@ export const GlobalStateProvider = memo(
     setPendingTxns: SetPendingTransactions;
   }>) => {
     const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
+
+    const [notifyModalOpen, setNotifyModalOpen] = useState(false);
 
     const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
       REDIRECT_POPUP_TIMESTAMP_KEY,
@@ -72,6 +78,8 @@ export const GlobalStateProvider = memo(
         setPendingTxns,
         redirectPopupTimestamp,
         setRedirectPopupTimestamp,
+        notifyModalOpen,
+        setNotifyModalOpen,
       }),
       [
         tradePageVersion,
@@ -80,6 +88,8 @@ export const GlobalStateProvider = memo(
         setPendingTxns,
         redirectPopupTimestamp,
         setRedirectPopupTimestamp,
+        notifyModalOpen,
+        setNotifyModalOpen,
       ]
     );
 

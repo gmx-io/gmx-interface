@@ -1155,6 +1155,10 @@ msgstr "Swapped {0} for {1}"
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr "Tier {0} ({currentRebatePercentage}% rebate)"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Discover GMX Alerts"
+msgstr "Discover GMX Alerts"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Price on Avalanche"
@@ -1508,6 +1512,10 @@ msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Alerts"
+msgstr "GMX Alerts"
 
 #: src/pages/Home/Home.js
 #~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
@@ -1951,6 +1959,10 @@ msgstr "Update"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "Your transfer has been initiated."
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Risk Alerts"
+msgstr "Liquidation Risk Alerts"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
@@ -3457,6 +3469,10 @@ msgstr "EIP-4844 Competition"
 msgid "Liq. Price"
 msgstr "Liq. Price"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trading Pair Price Alerts"
+msgstr "Trading Pair Price Alerts"
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
@@ -3545,6 +3561,10 @@ msgstr "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
+msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below lowest Limit Price."
@@ -4132,6 +4152,10 @@ msgstr "Neither Collateral nor realized PnL is enough to cover pending Fees. Ple
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Announcements"
+msgstr "GMX Announcements"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid execution fee buffer value"
 msgstr "Invalid execution fee buffer value"
@@ -4559,6 +4583,10 @@ msgstr "Search Pool"
 msgid "Useful Links"
 msgstr "Useful Links"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Confirmations"
+msgstr "Trade Confirmations"
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -4589,6 +4617,10 @@ msgstr "Market Decrease"
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet 365d expected Fees"
 msgstr "Wallet 365d expected Fees"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Governance Alerts"
+msgstr "Governance Alerts"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for{2} USDG"
@@ -4850,6 +4882,10 @@ msgstr "Order request sent"
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "Alternatively, you can select a different \"Collateral In\" token."
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
+msgstr "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
@@ -4968,6 +5004,10 @@ msgstr "Buy GMX from decentralized exchanges"
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Powered by"
+msgstr "Powered by"
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed"
 msgstr "Buy order executed"
@@ -5017,6 +5057,10 @@ msgstr "Compound failed."
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Confirmations"
+msgstr "Liquidation Confirmations"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above highest Limit Price."
@@ -5571,6 +5615,10 @@ msgstr "Enabling Leverage..."
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
 msgstr "Enable One-Click Trading"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Errors"
+msgstr "Trade Errors"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
@@ -6566,6 +6614,10 @@ msgstr "Rebates on V1"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "Alerts"
+msgstr "Alerts"
 
 #: src/components/Exchange/OrdersList.js
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
