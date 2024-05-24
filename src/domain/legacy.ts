@@ -33,7 +33,7 @@ import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
-import { getProvider } from "lib/rpc";
+import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
@@ -388,24 +388,23 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades, size, setSize };
 }
 
-export function useExecutionFee(signer, active, chainId, infoTokens) {
+export function useExecutionFee(active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  let { provider } = useJsonRpcProvider(chainId);
 
   const { data: minExecutionFee } = useSWR<bigint>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(signer, PositionRouter) as any,
+    fetcher: contractFetcher(provider, PositionRouter) as any,
   });
 
   const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise<bigint | undefined>(async (resolve) => {
-        let provider = signer?.provider;
-
         if (!provider) {
           // eslint-disable-next-line no-console
-          console.warn("signer.provider is undefined, falling back to getProvider(signer, chainId)");
+          console.warn("provider is undefined, falling back to getProvider(undefined, chainId)");
 
-          provider = getProvider(signer, chainId);
+          provider = getProvider(undefined, chainId);
         }
 
         try {

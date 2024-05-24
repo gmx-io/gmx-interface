@@ -1,12 +1,12 @@
-import { Signer, ethers } from "ethers";
+import { Provider, Signer, ethers } from "ethers";
 import { getFallbackProvider, getProvider } from "../rpc";
 
 export const contractFetcher =
-  <T>(signer: Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
+  <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(signer, chainId);
+    const provider = isProvider(signer) ? signer : getProvider(signer, chainId);
 
     const method = ethers.isAddress(arg0) ? arg1 : arg0;
 
@@ -90,4 +90,8 @@ function getContractCall({ provider, contractInfo, arg0, arg1, method, params, a
   }
 
   return provider[method](arg1, ...params);
+}
+
+function isProvider(signerOrProvider: Provider | Signer | undefined): signerOrProvider is Provider {
+  return !!(signerOrProvider as Signer).populateCall;
 }

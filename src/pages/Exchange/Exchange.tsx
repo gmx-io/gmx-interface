@@ -5,6 +5,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useSt
 import useSWR from "swr";
 
 import { getConstant, getExplorerUrl } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
   LONG,
@@ -20,7 +21,6 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -42,22 +42,22 @@ import Tab from "components/Tab/Tab";
 
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIsV1Supported } from "config/features";
 import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import "./Exchange.css";
-import { getIsV1Supported } from "config/features";
-import useWallet from "lib/wallets/useWallet";
-import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
-import { bigMath } from "lib/bigmath";
+import useWallet from "lib/wallets/useWallet";
+import "./Exchange.css";
 const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -620,7 +620,6 @@ export const Exchange = forwardRef(
 
     const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
     const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
-      signer,
       active,
       chainId,
       infoTokens
