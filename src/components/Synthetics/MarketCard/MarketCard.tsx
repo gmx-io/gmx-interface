@@ -75,7 +75,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   const renderFundingFeeTooltipContent = useCallback(() => {
-    if (!fundingRateLong || !fundingRateShort) return [];
+    if (fundingRateLong === undefined || fundingRateShort === undefined) return [];
 
     const long = (
       <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
@@ -171,7 +171,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           value={
             <TooltipWithPortal
               portalClassName="MarketCard-net-fee"
-              handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
+              handle={netRateHourly !== undefined ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
               position="top-end"
               renderContent={renderFundingFeeTooltipContent}
             />
