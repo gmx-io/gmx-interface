@@ -1,5 +1,6 @@
 {
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended",  "plugin:react-hooks/recommended", "plugin:react/recommended", "plugin:react-perf/recommended"],
+    "plugins": ["eslint-plugin-local-rules"],
     "rules": {
       "no-undef": "error",
       "no-console": "warn",
@@ -41,7 +42,8 @@
       "react/jsx-no-useless-fragment": "off",
       "react/require-default-props": "off",
       "react/jsx-handler-names": "off",
-      "react/display-name": "off"
+      "react/display-name": "off",
+      "local-rules/no-bigint-negation": "off"
     },
     "env": {
       "browser": true,
@@ -63,6 +65,15 @@
         "files": ["*.ts", "*.tsx"],
         "rules": {
           "no-undef": "off"
+        }
+      },
+      {
+        "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+        "rules": {
+          "local-rules/no-bigint-negation": "error"
+        },
+        "parserOptions": {
+          "project": ["./tsconfig.json"]
         }
       }
     ]
