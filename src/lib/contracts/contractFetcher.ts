@@ -48,7 +48,7 @@ export const contractFetcher =
       });
 
       fallbackContractCall
-        .then((result) => resolve(result))
+        ?.then((result) => resolve(result))
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
@@ -58,7 +58,7 @@ export const contractFetcher =
 
     return new Promise(async (resolve, reject) => {
       contractCall
-        .then((result) => {
+        ?.then((result) => {
           shouldCallFallback = false;
           resolve(result);
         })
@@ -74,7 +74,15 @@ export const contractFetcher =
     });
   };
 
-function getContractCall({ provider, contractInfo, arg0, arg1, method, params, additionalArgs }) {
+function getContractCall({
+  provider,
+  contractInfo,
+  arg0,
+  arg1,
+  method,
+  params,
+  additionalArgs,
+}): Promise<any> | undefined {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
