@@ -381,7 +381,7 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees]);
 
   let value: ReactNode = useMemo(() => {
-    if (!totalFeeUsd || totalFeeUsd == 0n) {
+    if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
     } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
       return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;

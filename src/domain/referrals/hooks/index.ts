@@ -45,7 +45,7 @@ export function useUserReferralInfoRequest(
     !codeOwner ||
     !tierId ||
     !totalRebate ||
-    !finalDiscountShare ||
+    finalDiscountShare === undefined ||
     !referralCodeForTxn
   ) {
     return undefined;

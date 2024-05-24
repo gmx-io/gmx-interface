@@ -246,7 +246,13 @@ export function PositionEditor(p: Props) {
   );
 
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
-    if (!position || !collateralDeltaUsd || collateralDeltaUsd < 0 || !minCollateralUsd || !fees?.totalFees) {
+    if (
+      !position ||
+      collateralDeltaUsd === undefined ||
+      collateralDeltaUsd < 0 ||
+      minCollateralUsd === undefined ||
+      !fees?.totalFees
+    ) {
       return {};
     }
 
@@ -407,7 +413,7 @@ export function PositionEditor(p: Props) {
     if (
       executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
-      !markPrice ||
+      markPrice === undefined ||
       !position?.indexToken ||
       collateralDeltaAmount === undefined ||
       !selectedCollateralAddress ||
@@ -451,7 +457,7 @@ export function PositionEditor(p: Props) {
         },
       });
     } else {
-      if (!receiveUsd) {
+      if (receiveUsd === undefined) {
         return;
       }
 

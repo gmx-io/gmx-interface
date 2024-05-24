@@ -45,7 +45,7 @@ export function usePositionsInfoRequest(
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
-    if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {
+    if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
       };

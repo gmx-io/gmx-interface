@@ -325,7 +325,7 @@ export function GmConfirmationBox({
     className?: string;
     overrideSymbol?: string;
   }) => {
-    if (!amount || !usd || !token) return;
+    if (amount === undefined || usd === undefined || !token) return;
     return (
       <div className={className ?? ""}>
         <div className="trade-token-amount">

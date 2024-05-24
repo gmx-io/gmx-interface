@@ -623,7 +623,7 @@ export default function PositionEditor(props) {
                       <Trans>Leverage</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
+                      {nextLeverage === undefined && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
                       {nextLeverage && (
                         <div>
                           <div className="muted inline-block">
@@ -656,9 +656,9 @@ export default function PositionEditor(props) {
                       <Trans>Liq. Price</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextLiquidationPrice && (
+                      {nextLiquidationPrice === undefined && (
                         <div>
-                          {!fromAmount &&
+                          {fromAmount === undefined &&
                             `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount && "-"}
                         </div>

@@ -329,7 +329,7 @@ function StakeModal(props) {
   const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount) {
+    if (amount == undefined) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {
@@ -450,7 +450,7 @@ function UnstakeModal(props) {
   let amount = parseValue(value, 18);
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (amount > maxAmount) {

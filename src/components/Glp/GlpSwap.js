@@ -419,7 +419,7 @@ export default function GlpSwap(props) {
   useEffect(() => {
     const updateSwapAmounts = () => {
       if (anchorOnSwapAmount) {
-        if (!swapAmount) {
+        if (swapAmount === undefined) {
           setGlpValue("");
           setFeeBasisPoints("");
           return;
@@ -454,7 +454,7 @@ export default function GlpSwap(props) {
         return;
       }
 
-      if (!glpAmount) {
+      if (glpAmount === undefined) {
         setSwapValue("");
         setFeeBasisPoints("");
         return;
@@ -597,10 +597,10 @@ export default function GlpSwap(props) {
       return [t`Redemption time not yet reached`];
     }
 
-    if (!swapAmount) {
+    if (swapAmount === undefined) {
       return [t`Enter an amount`];
     }
-    if (!glpAmount) {
+    if (glpAmount === undefined) {
       return [t`Enter an amount`];
     }
 

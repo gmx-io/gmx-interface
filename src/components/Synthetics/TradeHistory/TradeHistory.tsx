@@ -73,7 +73,7 @@ export function TradeHistory(p: Props) {
   });
 
   const isConnected = Boolean(account);
-  const isLoading = (forAllAccounts || isConnected) && (!minCollateralUsd || isHistoryLoading);
+  const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(

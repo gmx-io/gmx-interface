@@ -195,7 +195,7 @@ function setTokenUsingIndexPrices(
 
   const indexPrice = indexPrices[tokenAddress];
 
-  if (!indexPrice) {
+  if (indexPrice === undefined) {
     return;
   }
 

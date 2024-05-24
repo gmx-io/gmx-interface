@@ -91,7 +91,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
   }, [executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
-    if (!executionFee?.feeUsd) {
+    if (executionFee?.feeUsd === undefined) {
       return "-";
     }
 

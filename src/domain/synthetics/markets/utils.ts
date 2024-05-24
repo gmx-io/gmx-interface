@@ -473,7 +473,7 @@ export function getTotalGmInfo(tokensData?: TokensData) {
 }
 
 export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
-  if (!minCollateralFactor) return 100 * BASIS_POINTS_DIVISOR;
+  if (minCollateralFactor === undefined) return 100 * BASIS_POINTS_DIVISOR;
   if (minCollateralFactor >= PRECISION / 100n) return 100 * BASIS_POINTS_DIVISOR;
   else if (minCollateralFactor >= PRECISION / 150n) return 150 * BASIS_POINTS_DIVISOR;
   else if (minCollateralFactor >= PRECISION / 200n) return 200 * BASIS_POINTS_DIVISOR;

@@ -158,7 +158,7 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   let maxOut;
   let maxOutUsd;
 
-  if (!fromInfo?.maxUsdgAmount) {
+  if (fromInfo?.maxUsdgAmount === undefined) {
     maxInUsd = 0n;
     maxIn = 0n;
   } else {
@@ -171,7 +171,7 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
     maxIn = bigMath.mulDiv(maxInUsd, expandDecimals(1, fromInfo.decimals), fromInfo.maxPrice).toString();
   }
 
-  if (!toInfo?.poolAmount || !toInfo?.bufferAmount) {
+  if (toInfo?.poolAmount === undefined || toInfo?.bufferAmount === undefined) {
     maxOut = 0n;
     maxOutUsd = 0n;
   } else {
@@ -1217,7 +1217,7 @@ export default function PositionSeller(props) {
                 {isClosing && orderOption !== STOP && "-"}
                 {(!isClosing || orderOption === STOP) && (
                   <div>
-                    {(!nextLiquidationPrice || nextLiquidationPrice == liquidationPrice) && (
+                    {(nextLiquidationPrice === undefined || nextLiquidationPrice == liquidationPrice) && (
                       <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
                     {nextLiquidationPrice && nextLiquidationPrice != liquidationPrice && (
@@ -1247,7 +1247,7 @@ export default function PositionSeller(props) {
                     ${formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
                   </div>
                 )}
-                {position && position.size && !fromAmount && (
+                {position && position.size && fromAmount === undefined && (
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                 )}
               </div>

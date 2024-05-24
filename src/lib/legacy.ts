@@ -162,7 +162,7 @@ export function getFeeBasisPoints(
   usdgSupply: bigint,
   totalTokenWeights
 ): number {
-  if (!token || !tokenUsdgAmount || !usdgSupply || !totalTokenWeights) {
+  if (!token || tokenUsdgAmount === undefined || !usdgSupply || !totalTokenWeights) {
     return 0;
   }
 
@@ -176,7 +176,7 @@ export function getFeeBasisPoints(
   }
 
   const targetAmount = getTargetUsdgAmount(token, usdgSupply, totalTokenWeights);
-  if (!targetAmount) {
+  if (targetAmount === undefined) {
     return Number(feeBasisPoints);
   }
 
@@ -203,7 +203,7 @@ export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpP
   }
 
   const swapToken = getTokenInfo(infoTokens, swapTokenAddress);
-  if (!swapToken || !swapToken.minPrice) {
+  if (!swapToken || swapToken.minPrice === undefined) {
     return defaultValue;
   }
 
@@ -235,7 +235,7 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
   }
 
   const swapToken = getTokenInfo(infoTokens, swapTokenAddress);
-  if (!swapToken || !swapToken.maxPrice) {
+  if (!swapToken || swapToken.maxPrice === undefined) {
     return defaultValue;
   }
 
@@ -281,7 +281,7 @@ export function getBuyGlpFromAmount(
   }
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
-  if (!fromToken || !fromToken.minPrice) {
+  if (!fromToken || fromToken.minPrice === undefined) {
     return defaultValue;
   }
 
@@ -319,7 +319,7 @@ export function getSellGlpToAmount(
   }
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
-  if (!fromToken || !fromToken.maxPrice) {
+  if (!fromToken || fromToken.maxPrice === undefined) {
     return defaultValue;
   }
 
@@ -491,7 +491,7 @@ export function getNextToAmount(
     toTokenMaxPrice = forSwap ? toToken.contractMaxPrice : toToken.maxPrice;
   }
 
-  if (!fromTokenMinPrice || !toTokenMaxPrice) {
+  if (fromTokenMinPrice === undefined || toTokenMaxPrice === undefined) {
     return defaultValue;
   }
 
@@ -546,7 +546,7 @@ export function getNextToAmount(
     const expectedAmount = fromAmount;
 
     const stableToken = getMostAbundantStableToken(chainId, infoTokens);
-    if (!stableToken?.availableAmount || stableToken.availableAmount < expectedAmount) {
+    if (stableToken?.availableAmount === undefined || stableToken.availableAmount < expectedAmount) {
       const toAmount = ratio
         ? toAmountBasedOnRatio
         : (fromAmount * (toToken.redemptionAmount ?? 0n)) / expandDecimals(1, toToken.decimals);
@@ -655,7 +655,7 @@ export function calculatePositionDelta(
   },
   sizeDelta?: bigint
 ) {
-  if (!sizeDelta) {
+  if (sizeDelta === undefined) {
     sizeDelta = size;
   }
   const priceDelta = averagePrice > price ? averagePrice - price : price - averagePrice;

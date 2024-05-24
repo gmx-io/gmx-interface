@@ -44,7 +44,7 @@ function AcceptablePriceImpactInputRowImpl({
   // if current price impact is 0.01%, the message will be shown
   // only if acceptable price impact is set to more than 0.51%
   const highValue = useMemo(() => {
-    if (!priceImpactFeeBps) {
+    if (priceImpactFeeBps === undefined) {
       return undefined;
     }
 
@@ -59,7 +59,7 @@ function AcceptablePriceImpactInputRowImpl({
     setValue(recommendedValue);
   }, [recommendedValue, setValue]);
 
-  if (recommendedValue === undefined || initialValue === undefined || !priceImpactFeeBps) {
+  if (recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return null;
   }
 

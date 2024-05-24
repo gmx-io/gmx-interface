@@ -141,7 +141,7 @@ function MigrationModal(props) {
   }
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {
@@ -262,7 +262,7 @@ function MigrationModal(props) {
                   2,
                   true
                 )})`}
-              {!baseAmount && "-"}
+              {baseAmount === undefined && "-"}
             </div>
           </div>
           {token.bonus > 0 && (
@@ -278,7 +278,7 @@ function MigrationModal(props) {
                     2,
                     true
                   )})`}
-                {!bonusAmount && "-"}
+                {bonusAmount === undefined && "-"}
               </div>
             </div>
           )}
@@ -295,7 +295,7 @@ function MigrationModal(props) {
                     2,
                     true
                   )})`}
-                {!totalAmount && "-"}
+                {totalAmount === undefined && "-"}
               </div>
             </div>
           )}

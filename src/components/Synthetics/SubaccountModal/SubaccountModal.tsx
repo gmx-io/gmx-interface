@@ -516,8 +516,8 @@ const MainView = memo(() => {
     if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
-    if (!subAccNativeTokenBalance) throw new Error("subEthBalance is not defined");
-    if (!gasPrice) throw new Error("gasPrice is not defined");
+    if (subAccNativeTokenBalance === undefined) throw new Error("subEthBalance is not defined");
+    if (gasPrice === undefined) throw new Error("gasPrice is not defined");
 
     setWithdrawalLoading(true);
 

@@ -322,7 +322,7 @@ export default function DashboardV2() {
     if (
       !tokenInfo.weight ||
       !tokenInfo.usdgAmount ||
-      !adjustedUsdgSupply ||
+      adjustedUsdgSupply === undefined ||
       adjustedUsdgSupply == 0n ||
       !totalTokenWeights
     ) {
@@ -1230,7 +1230,7 @@ function GMCard() {
   );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply?.amount || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
+    if (totalGMSupply?.amount === undefined || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),

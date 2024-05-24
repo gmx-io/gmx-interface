@@ -525,7 +525,7 @@ function applyAcceptablePrice(p: {
         acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
       });
 
-      if (!maxNegativePriceImpactBps) {
+      if (maxNegativePriceImpactBps === undefined) {
         maxNegativePriceImpactBps = values.recommendedAcceptablePriceDeltaBps;
       }
 

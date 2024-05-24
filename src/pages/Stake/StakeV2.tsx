@@ -127,7 +127,7 @@ function StakeModal(props) {
   const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {
@@ -310,7 +310,7 @@ function UnstakeModal(props) {
       : 0n;
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (amount > maxAmount) {
@@ -454,7 +454,7 @@ function VesterDepositModal(props) {
   }
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {
@@ -1513,7 +1513,7 @@ export default function StakeV2() {
   };
 
   const showGmxVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.gmxVesterVestedAmount) {
+    if (!vestingData || vestingData.gmxVesterVestedAmount === undefined || vestingData.gmxVesterVestedAmount === 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1524,7 +1524,7 @@ export default function StakeV2() {
   };
 
   const showGlpVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.glpVesterVestedAmount) {
+    if (!vestingData || vestingData.glpVesterVestedAmount === undefined || vestingData.glpVesterVestedAmount === 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1611,7 +1611,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterWithdrawModal() {
-    if (!vestingData?.affiliateVesterVestedAmount || vestingData.affiliateVesterVestedAmount <= 0) {
+    if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1620,7 +1620,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterClaimModal() {
-    if (!vestingData?.affiliateVesterClaimable || vestingData?.affiliateVesterClaimable <= 0) {
+    if (vestingData?.affiliateVesterClaimable === undefined || vestingData?.affiliateVesterClaimable <= 0) {
       helperToast.error(t`You have no GMX tokens to claim.`);
       return;
     }
@@ -2091,8 +2091,8 @@ export default function StakeV2() {
                   <Trans>Total Staked</Trans>
                 </div>
                 <div>
-                  {!totalGmxStaked && "..."}
-                  {(totalGmxStaked && (
+                  {totalGmxStaked === undefined && "..."}
+                  {(totalGmxStaked !== undefined && (
                     <Tooltip
                       position="bottom-end"
                       className="whitespace-nowrap"
@@ -2118,8 +2118,8 @@ export default function StakeV2() {
                 <div className="label">
                   <Trans>Total Supply</Trans>
                 </div>
-                {!totalGmxSupply && "..."}
-                {(totalGmxSupply && (
+                {totalGmxSupply === undefined && "..."}
+                {(totalGmxSupply !== undefined && (
                   <div>
                     {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})

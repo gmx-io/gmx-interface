@@ -25,7 +25,7 @@ export function GmFees(p: Props) {
   const totalFeesUsd = p.totalFees?.deltaUsd;
 
   let value: ReactNode = useMemo(() => {
-    if (!p.totalFees?.deltaUsd) {
+    if (p.totalFees?.deltaUsd === undefined) {
       return "-";
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||

@@ -298,7 +298,7 @@ export function ConfirmationBox(p: Props) {
   );
 
   const decreaseOrdersThatWillBeExecuted = useMemo(() => {
-    if (!existingPosition || !markPrice) {
+    if (!existingPosition || markPrice === undefined) {
       return [];
     }
 
@@ -610,7 +610,7 @@ export function ConfirmationBox(p: Props) {
       !account ||
       !fromToken ||
       !collateralToken ||
-      !increaseAmounts?.acceptablePrice ||
+      increaseAmounts?.acceptablePrice === undefined ||
       !executionFee ||
       !marketInfo ||
       !signer ||
@@ -708,8 +708,8 @@ export function ConfirmationBox(p: Props) {
       !collateralToken ||
       fixedTriggerOrderType === undefined ||
       fixedTriggerThresholdType === undefined ||
-      !decreaseAmounts?.acceptablePrice ||
-      !decreaseAmounts?.triggerPrice ||
+      decreaseAmounts?.acceptablePrice === undefined ||
+      decreaseAmounts?.triggerPrice === undefined ||
       !executionFee ||
       !tokensData ||
       !signer ||
@@ -956,9 +956,9 @@ export function ConfirmationBox(p: Props) {
 
   const executionPriceUsd = useMemo(() => {
     if (!marketInfo) return null;
-    if (!fees?.positionPriceImpact?.deltaUsd) return null;
+    if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
     if (!decreaseAmounts) return null;
-    if (!triggerPrice) return null;
+    if (triggerPrice === undefined) return null;
 
     return getExecutionPriceForDecrease(
       triggerPrice,
@@ -1210,7 +1210,7 @@ export function ConfirmationBox(p: Props) {
       : undefined;
 
   useEffect(() => {
-    if (collateralSpreadPercent && !initialCollateralSpread) {
+    if (collateralSpreadPercent && initialCollateralSpread === undefined) {
       setInitialCollateralSpread(collateralSpreadPercent);
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);

@@ -12,7 +12,7 @@ type GetLeverageParams = {
 };
 
 export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, includeDelta }: GetLeverageParams) {
-  if (!size || !collateral) {
+  if (size == undefined || collateral === undefined) {
     return;
   }
 

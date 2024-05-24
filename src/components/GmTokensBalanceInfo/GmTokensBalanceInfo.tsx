@@ -39,7 +39,7 @@ export const GmTokensBalanceInfo = ({
   );
 
   const renderTooltipContent = useCallback(() => {
-    if (!earnedTotal && !earnedRecently) return null;
+    if (earnedTotal === undefined && earnedRecently === undefined) return null;
     return (
       <>
         {earnedTotal !== undefined && (
@@ -65,7 +65,7 @@ export const GmTokensBalanceInfo = ({
       </>
     );
   }, [daysConsidered, earnedRecently, earnedTotal]);
-  if (!earnedTotal && !earnedRecently) {
+  if (earnedTotal === undefined && earnedRecently === undefined) {
     return content;
   }
 

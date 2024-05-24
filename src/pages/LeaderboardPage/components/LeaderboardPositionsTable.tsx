@@ -250,7 +250,7 @@ const TableRow = memo(
     const indexToken = marketInfo?.indexToken;
 
     const liquidationPrice = useMemo(() => {
-      if (!collateralToken || !marketInfo || !minCollateralUsd) return undefined;
+      if (!collateralToken || !marketInfo || minCollateralUsd === undefined) return undefined;
 
       return getLiquidationPrice({
         marketInfo,

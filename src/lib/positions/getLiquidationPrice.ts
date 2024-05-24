@@ -23,7 +23,7 @@ export function getLiquidationPriceFromDelta({
   averagePrice: bigint;
   isLong: boolean;
 }) {
-  if (!size || size == 0n) {
+  if (size == undefined || size == 0n) {
     return;
   }
 
@@ -47,7 +47,7 @@ function calculateTotalFees(size: bigint, fundingFees: bigint): bigint {
 }
 
 export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
-  if (!size || !collateral || !averagePrice) {
+  if (size === undefined || collateral === undefined || averagePrice === undefined) {
     return;
   }
 
@@ -68,11 +68,11 @@ export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fu
     isLong,
   });
 
-  if (!liquidationPriceForFees) {
+  if (liquidationPriceForFees === undefined) {
     return liquidationPriceForMaxLeverage;
   }
 
-  if (!liquidationPriceForMaxLeverage) {
+  if (liquidationPriceForMaxLeverage === undefined) {
     return liquidationPriceForFees;
   }
 

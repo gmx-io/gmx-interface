@@ -78,7 +78,7 @@ export const useTradingIncentives = () => {
 
   return useMemo(() => {
     const raw = incentiveStats?.trading;
-    if (!raw || !raw.isActive || !burnedTokens) {
+    if (!raw || !raw.isActive || burnedTokens === undefined) {
       return null;
     }
 

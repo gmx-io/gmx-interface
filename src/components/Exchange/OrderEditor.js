@@ -174,7 +174,7 @@ export default function OrderEditor(props) {
   };
 
   const getError = () => {
-    if (!triggerRatio && !triggerPrice) {
+    if (triggerRatio === undefined && !triggerPrice) {
       return t`Enter Price`;
     }
     if (order.type === SWAP && triggerRatio == order.triggerRatio) {
@@ -359,7 +359,7 @@ export default function OrderEditor(props) {
           </>
         ) : (
           getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-            omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
+            omitSymbols: triggerRatio === undefined || triggerRatio != order.triggerRatio,
           })
         )}
       </ExchangeInfoRow>

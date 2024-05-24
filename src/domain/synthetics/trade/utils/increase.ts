@@ -324,7 +324,7 @@ export function getIncreasePositionAmounts(p: {
 
   if (isLimit) {
     let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
-    if (!maxNegativePriceImpactBps) {
+    if (maxNegativePriceImpactBps === undefined) {
       maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
         isIncrease: true,
         isLong,

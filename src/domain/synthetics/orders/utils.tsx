@@ -563,7 +563,7 @@ function getIsMaxLeverageError(
   const sizeDeltaUsd = order.sizeDeltaUsd;
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, order.marketInfo.indexToken.decimals, markPrice);
 
-  if (!sizeDeltaInTokens) return false;
+  if (sizeDeltaInTokens === undefined) return false;
 
   const isLong = order.isLong;
   const marketInfo = order.marketInfo;
@@ -575,7 +575,7 @@ function getIsMaxLeverageError(
     order.targetCollateralToken.prices.minPrice
   );
 
-  if (!collateralDeltaUsd) return false;
+  if (collateralDeltaUsd === undefined) return false;
 
   const leverage = getLeverage({
     sizeInUsd: order.sizeDeltaUsd + (position?.sizeInUsd ?? 0n),
@@ -585,7 +585,7 @@ function getIsMaxLeverageError(
     pendingFundingFeesUsd: 0n,
   });
 
-  if (!leverage) return false;
+  if (leverage === undefined) return false;
 
   return getIsMaxLeverageExceeded(leverage, marketInfo, isLong, sizeDeltaUsd);
 }

@@ -202,7 +202,7 @@ export function PositionSeller(p: Props) {
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
@@ -426,7 +426,7 @@ export function PositionSeller(p: Props) {
   useEffect(() => {
     if (isTrigger && decreaseAmounts) {
       if (
-        !defaultTriggerAcceptablePriceImpactBps ||
+        defaultTriggerAcceptablePriceImpactBps === undefined ||
         defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));

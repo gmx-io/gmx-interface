@@ -81,11 +81,11 @@ export function getSwapError(p: {
     return [t`Select different tokens`];
   }
 
-  if (!fromTokenAmount || !fromUsd || fromTokenAmount < 0 || fromUsd < 0) {
+  if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount < 0 || fromUsd < 0) {
     return [t`Enter an amount`];
   }
 
-  if (isLimit && (!triggerRatio?.ratio || triggerRatio.ratio < 0)) {
+  if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0)) {
     return [t`Enter a  price`];
   }
 
@@ -97,7 +97,7 @@ export function getSwapError(p: {
     return [undefined];
   }
 
-  if (!isLimit && (!toUsd || !swapLiquidity || swapLiquidity < toUsd)) {
+  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
     return [t`Insufficient liquidity`];
   }
 
@@ -200,11 +200,11 @@ export function getIncreaseError(p: {
   }
 
   if (
-    !initialCollateralAmount ||
-    !initialCollateralUsd ||
+    initialCollateralAmount === undefined ||
+    initialCollateralUsd === undefined ||
     initialCollateralAmount < 0 ||
     initialCollateralUsd < 0 ||
-    !sizeDeltaUsd ||
+    sizeDeltaUsd === undefined ||
     !fees?.payTotalFees
   ) {
     return [t`Enter an amount`];
@@ -222,7 +222,7 @@ export function getIncreaseError(p: {
     }
 
     if (!isLimit) {
-      if (!collateralLiquidity || collateralLiquidity < (initialCollateralUsd || 0n)) {
+      if (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd || 0n)) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }
@@ -257,21 +257,21 @@ export function getIncreaseError(p: {
   }
 
   if (!isLimit) {
-    if (isLong && (!longLiquidity || longLiquidity < sizeDeltaUsd)) {
+    if (isLong && (longLiquidity === undefined || longLiquidity < sizeDeltaUsd)) {
       return [t`Max ${indexToken.symbol} long exceeded`];
     }
 
-    if (!isLong && (!shortLiquidity || shortLiquidity < sizeDeltaUsd)) {
+    if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
       return [t`Max ${indexToken.symbol} short exceeded`];
     }
   }
 
   if (isLimit) {
-    if (!markPrice) {
+    if (markPrice === undefined) {
       return [t`Loading...`];
     }
 
-    if (!triggerPrice || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0) {
       return [t`Enter a price`];
     }
 
@@ -374,12 +374,12 @@ export function getDecreaseError(p: {
     return [t`Select a market`];
   }
 
-  if (!sizeDeltaUsd || sizeDeltaUsd < 0) {
+  if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
     return [t`Enter an amount`];
   }
 
   if (isTrigger) {
-    if (!triggerPrice || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0) {
       return [t`Enter a trigger price`];
     }
 
@@ -457,7 +457,12 @@ export function getEditCollateralError(p: {
     minCollateralFactor,
   } = p;
 
-  if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount == 0n || collateralDeltaUsd == 0n) {
+  if (
+    collateralDeltaAmount === undefined ||
+    collateralDeltaUsd === undefined ||
+    collateralDeltaAmount == 0n ||
+    collateralDeltaUsd == 0n
+  ) {
     return [t`Enter an amount`];
   }
 
@@ -586,7 +591,7 @@ export function getGmSwapError(p: {
     return [t`Amount should be greater than zero`];
   }
 
-  if (!marketTokenAmount || marketTokenAmount < 0) {
+  if (marketTokenAmount === undefined || marketTokenAmount < 0) {
     return [t`Enter an amount`];
   }
 

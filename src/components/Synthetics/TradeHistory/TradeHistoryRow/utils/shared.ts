@@ -51,7 +51,7 @@ export type TooltipString =
     };
 
 export function numberToState(value: bigint | undefined): TooltipState {
-  if (!value) {
+  if (value === undefined) {
     return undefined;
   }
 

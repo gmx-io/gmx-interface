@@ -230,8 +230,8 @@ export function useSidecarOrders() {
         !increaseAmounts ||
         !collateralToken ||
         !mockPositionInfoWithLimits ||
-        !minPositionSizeUsd ||
-        !minCollateralUsd ||
+        minPositionSizeUsd === undefined ||
+        minCollateralUsd === undefined ||
         !sizeUsd?.value
       ) {
         return;

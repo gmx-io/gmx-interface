@@ -49,7 +49,7 @@ export function getButtonState({
 }): { text: string; disabled?: true } {
   const ethSpendAmount = (topUp ?? BN_ZERO) + (wntForAutoTopUps ?? BN_ZERO);
 
-  if (!mainAccEthBalance) {
+  if (mainAccEthBalance === undefined) {
     return { disabled: true, text: t`${nativeTokenSymbol} is not available` };
   }
 

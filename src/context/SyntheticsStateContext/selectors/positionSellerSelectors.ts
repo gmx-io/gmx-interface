@@ -154,7 +154,7 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
-  if (!position || !decreaseAmounts?.acceptablePrice) {
+  if (!position || decreaseAmounts?.acceptablePrice === undefined) {
     return undefined;
   }
 
@@ -201,7 +201,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const uiFeeFactor = q(selectUiFeeFactor);
 
-  if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
+  if (!shouldSwap || !receiveToken || decreaseAmounts?.receiveTokenAmount === undefined || !position) {
     return undefined;
   }
 

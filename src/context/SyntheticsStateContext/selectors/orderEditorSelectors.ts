@@ -204,7 +204,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
 
-  if (!market || !sizeDeltaUsd || !minCollateralUsd || !minPositionSizeUsd) {
+  if (!market || sizeDeltaUsd === undefined || minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
     return undefined;
   }
 
@@ -389,7 +389,7 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
   if (!tokensData) return undefined;
 
   const gasPrice = q(selectGasPrice);
-  if (!gasPrice) return undefined;
+  if (gasPrice === undefined) return undefined;
 
   const chainId = q(selectChainId);
 
@@ -413,7 +413,7 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
     });
   }
 
-  if (!estimatedGas) return undefined;
+  if (estimatedGas === undefined) return undefined;
 
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
 });

@@ -186,7 +186,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isSwapOrderType(p.order.orderType)) {
-      if (!triggerRatio?.ratio || triggerRatio?.ratio < 0 || !minOutputAmount || minOutputAmount < 0) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || !minOutputAmount || minOutputAmount < 0) {
         return t`Enter a ratio`;
       }
 
@@ -207,15 +207,15 @@ export function OrderEditor(p: Props) {
 
     const positionOrder = p.order as PositionOrderInfo;
 
-    if (!markPrice) {
+    if (markPrice === undefined) {
       return t`Loading...`;
     }
 
-    if (!sizeDeltaUsd || sizeDeltaUsd < 0) {
+    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
       return t`Enter an amount`;
     }
 
-    if (!triggerPrice || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0) {
       return t`Enter a price`;
     }
 
@@ -293,7 +293,7 @@ export function OrderEditor(p: Props) {
 
   function getIsMaxLeverageError() {
     if (isLimitIncreaseOrder && sizeDeltaUsd) {
-      if (!nextPositionValuesWithoutPnlForIncrease?.nextLeverage) {
+      if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
       }
 

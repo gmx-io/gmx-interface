@@ -66,7 +66,7 @@ export function getUsd(
   }
   const info = getTokenInfo(infoTokens, tokenAddress);
   const price = getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd);
-  if (!price) {
+  if (price === undefined) {
     return;
   }
 
@@ -121,10 +121,10 @@ export function getTriggerPrice(
   if (!info) {
     return;
   }
-  if (max && !info.maxPrice) {
+  if (max && info.maxPrice === undefined) {
     return;
   }
-  if (!max && !info.minPrice) {
+  if (!max && info.minPrice === undefined) {
     return;
   }
   return max ? info.maxPrice : info.minPrice;
@@ -207,7 +207,7 @@ export function getMostAbundantStableToken(chainId: number, infoTokens: InfoToke
 
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const info = getTokenInfo(infoTokens, whitelistedTokens[i].address);
-    if (!info.isStable || !info.availableAmount) {
+    if (!info.isStable || info.availableAmount === undefined) {
       continue;
     }
 
@@ -222,13 +222,13 @@ export function getMostAbundantStableToken(chainId: number, infoTokens: InfoToke
 }
 
 export function shouldRaiseGasError(token: TokenInfo, amount?: bigint) {
-  if (!amount) {
+  if (amount === undefined) {
     return false;
   }
   if (token.address !== ZeroAddress) {
     return false;
   }
-  if (!token.balance) {
+  if (token.balance === undefined) {
     return false;
   }
   if (amount >= token.balance) {
@@ -269,7 +269,7 @@ export function getMidPrice(prices: TokenPrices) {
 
 // calculates the minimum amount of native currency that should be left to be used as gas fees
 export function getMinResidualAmount(decimals?: number, price?: bigint) {
-  if (!decimals || !price) {
+  if (!decimals || price === undefined) {
     return 0n;
   }
 
