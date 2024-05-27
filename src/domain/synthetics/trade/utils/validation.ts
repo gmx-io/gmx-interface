@@ -81,7 +81,7 @@ export function getSwapError(p: {
     return [t`Select different tokens`];
   }
 
-  if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount < 0 || fromUsd < 0) {
+  if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {
     return [t`Enter an amount`];
   }
 
@@ -374,12 +374,12 @@ export function getDecreaseError(p: {
     return [t`Select a market`];
   }
 
-  if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
+  if (sizeDeltaUsd === undefined || sizeDeltaUsd <= 0) {
     return [t`Enter an amount`];
   }
 
   if (isTrigger) {
-    if (triggerPrice === undefined || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice <= 0) {
       return [t`Enter a trigger price`];
     }
 
