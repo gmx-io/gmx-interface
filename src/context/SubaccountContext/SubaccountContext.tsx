@@ -28,10 +28,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
+import { clientToSigner } from "lib/wallets/useEthersSigner";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -292,34 +292,33 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
-  const { chainId } = useChainId();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
   const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultExecutionFee);
 
   const { remaining } = useSubaccountActionCounts();
+  const { walletClient } = useWallet();
 
   return useMemo(() => {
     if (
       !address ||
       !active ||
       !privateKey ||
+      !walletClient ||
       insufficientFunds ||
       remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;
 
-    const provider = getProvider(undefined, chainId);
-    const wallet = new ethers.Wallet(privateKey, provider);
-    const signer = wallet.connect(provider);
+    const signer = clientToSigner(walletClient);
 
+    const wallet = new ethers.Wallet(privateKey, signer.provider);
     return {
       address,
       active,
-      signer,
-      wallet,
+      signer: wallet,
     };
-  }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
+  }, [address, active, privateKey, insufficientFunds, walletClient, remaining, requiredActions]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefined | null) {
