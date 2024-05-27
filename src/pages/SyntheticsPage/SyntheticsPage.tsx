@@ -21,6 +21,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Address } from "viem";
 
 import Helmet from "react-helmet";
 
@@ -363,6 +364,7 @@ export function SyntheticsPage(p: Props) {
 
 function SyntheticsPageEmbeddedAccountDashboard() {
   const account = useAccount();
+  const { chainId } = useChainId();
 
   if (!account) {
     return (
@@ -374,8 +376,8 @@ function SyntheticsPageEmbeddedAccountDashboard() {
 
   return (
     <div className="flex flex-col gap-12">
-      <GeneralPerformanceDetails />
-      <DailyAndCumulativePnL />
+      <GeneralPerformanceDetails chainId={chainId} account={account as Address} />
+      <DailyAndCumulativePnL chainId={chainId} account={account as Address} />
     </div>
   );
 }

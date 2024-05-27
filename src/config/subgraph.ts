@@ -30,7 +30,8 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats:
       "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/debug-240418111033-19cbf3f/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji/graphql",
+    // subsquid: "https://gmx.squids.live/gmx-synthetics-fuji/graphql",
+    subsquid: "http://37.27.100.223:4000/graphql",
   },
 
   common: {

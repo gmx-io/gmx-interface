@@ -71,10 +71,12 @@ export function SyntheticsStateContextProvider({
   children,
   skipLocalReferralCode,
   pageType,
+  overrideChainId,
 }: {
   children: ReactNode;
   skipLocalReferralCode: boolean;
   pageType: SyntheticsState["pageType"];
+  overrideChainId?: number;
 }) {
   const { chainId: selectedChainId } = useChainId();
 
@@ -90,7 +92,7 @@ export function SyntheticsStateContextProvider({
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
-  const chainId = isLeaderboardPage ? leaderboard.chainId : selectedChainId;
+  const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);

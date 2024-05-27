@@ -861,12 +861,21 @@ export function getOrderKey(order) {
   return `${order.type}-${order.account}-${order.index}`;
 }
 
-export function useAccountOrders(flagOrdersEnabled, overrideAccount?: string) {
-  const { signer, account: connectedAccount } = useWallet();
-  const active = true; // this is used in Actions.js so set active to always be true
+export function useAccountOrders(
+  flagOrdersEnabled: boolean,
+  overrideAccount?: string,
+  overrideChainId?: number,
+  overrideSigner?: ethers.JsonRpcSigner,
+  overrideActive?: boolean
+) {
+  const { signer: fallbackSigner, account: connectedAccount } = useWallet();
+  const signer = overrideSigner || fallbackSigner;
+
+  const active = overrideActive ?? true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
 
-  const { chainId } = useChainId();
+  const { chainId: fallbackChainId } = useChainId();
+  const chainId = overrideChainId || fallbackChainId;
   const shouldRequest = active && account && flagOrdersEnabled;
 
   const orderBookAddress = getContract(chainId, "OrderBook");

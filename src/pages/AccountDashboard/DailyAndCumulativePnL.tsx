@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, gql, useQuery as useGqlQuery } from "@apollo/client";
+import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -11,8 +11,8 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
+import type { Address } from "viem";
 
-import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
 import { formatDate, formatDateTime, toUtcDayStartRounded } from "lib/dates";
@@ -34,9 +34,10 @@ import {
   DebugLines,
   DebugTooltip,
   type AccountPnlHistoryPointDebugFields,
-} from "./chartDebug";
+} from "./dailyAndCumulativePnLDebug";
 
 import downloadIcon from "img/ic_download_simple.svg";
+import { getSubsquidGraphClient } from "lib/subgraph";
 
 const CSV_ICON_INFO = {
   src: downloadIcon,
@@ -44,12 +45,11 @@ const CSV_ICON_INFO = {
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
-export function DailyAndCumulativePnL() {
-  const account = useAccount()!;
+export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
   const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStartRounded(fromDate), [fromDate]);
 
-  const clusteredPnlData = usePnlHistoricalData(account, fromTimestamp);
+  const clusteredPnlData = usePnlHistoricalData(chainId, account, fromTimestamp);
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
@@ -172,11 +172,10 @@ const PROD_QUERY = gql`
   }
 `;
 
-function usePnlHistoricalData(account: string, fromTimestamp: number | undefined): PnlHistoricalData {
+function usePnlHistoricalData(chainId: number, account: string, fromTimestamp: number | undefined): PnlHistoricalData {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
-    client: client,
-
+    client: getSubsquidGraphClient(chainId)!,
     variables: { account: account, from: fromTimestamp },
   });
 
@@ -213,11 +212,6 @@ function usePnlHistoricalData(account: string, fromTimestamp: number | undefined
 
   return transformedData;
 }
-
-const client = new ApolloClient({
-  uri: "http://37.27.100.223:4000/graphql",
-  cache: new InMemoryCache(),
-});
 
 function usdBigIntToFloat(usd: bigint) {
   if (typeof usd !== "bigint") {

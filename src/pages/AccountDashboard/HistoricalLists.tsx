@@ -1,21 +1,26 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { ethers } from "ethers";
 import { noop } from "lodash";
 import { useMemo } from "react";
+import type { Address } from "viem";
 
 import { getAccountDashboardTabKey } from "config/localStorage";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useChainId } from "lib/chains";
+import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import useWallet from "lib/wallets/useWallet";
 
 import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
+import { AccountActionsV1, AccountOrdersV1, AccountPositionsV1, usePositionsV1 } from "pages/Actions/Actions";
 
 enum TabKey {
   Positions = "Positions",
@@ -24,8 +29,15 @@ enum TabKey {
   Claims = "Claims",
 }
 
+enum TabKeyV1 {
+  Positions = "Positions",
+  Orders = "Orders",
+  Trades = "Trades",
+}
+
 type Props = {
-  account: string;
+  chainId: number;
+  account: Address;
 };
 
 function OrdersTabTitle({
@@ -84,8 +96,32 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
   return tabLabels;
 }
 
-export function HistoricalLists({ account }: Props) {
-  const { chainId } = useChainId();
+function useTabLabelsV1(
+  chainId: number,
+  account: Address,
+  signer: ethers.JsonRpcSigner | undefined,
+  active: boolean
+): Record<TabKeyV1, React.ReactNode> {
+  const [orders] = useAccountOrders(true, account, chainId, signer, active);
+  const ordersCount = orders.length;
+
+  const { positions } = usePositionsV1(chainId, account, signer, active);
+  const positionsCount = positions.length;
+
+  const tabLabels = useMemo(
+    () => ({
+      [TabKeyV1.Positions]: positionsCount === 0 ? t`Positions` : t`Positions (${positionsCount})`,
+
+      [TabKeyV1.Orders]: ordersCount === 0 ? t`Orders` : t`Orders (${ordersCount})`,
+      [TabKeyV1.Trades]: t`Trades`,
+    }),
+    [ordersCount, positionsCount]
+  );
+
+  return tabLabels;
+}
+
+export function HistoricalLists({ chainId, account }: Props) {
   const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKey.Positions);
 
   const tabLabels = useTabLabels();
@@ -97,6 +133,7 @@ export function HistoricalLists({ account }: Props) {
       <div className="py-10">
         <Tab options={tabOptions} optionLabels={tabLabels} option={tabKey} onChange={setTabKey} type="inline" />
       </div>
+
       {tabKey === TabKey.Positions && (
         <PositionList
           onOrdersClick={noop}
@@ -120,5 +157,35 @@ export function HistoricalLists({ account }: Props) {
       {tabKey === TabKey.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
       {tabKey === TabKey.Claims && <ClaimsHistory shouldShowPaginationButtons />}
     </div>
+  );
+}
+
+export function HistoricalListsV1({ account, chainId }: Props) {
+  const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKeyV1.Positions);
+  const { active } = useWallet();
+  const signer = useEthersSigner({ chainId });
+
+  const tabLabels = useTabLabelsV1(chainId, account, signer, active);
+
+  const tabOptions = useMemo(() => Object.keys(TabKeyV1), []);
+
+  return (
+    <>
+      <div>
+        <div className="py-10">
+          <Tab options={tabOptions} optionLabels={tabLabels} option={tabKey} onChange={setTabKey} type="inline" />
+        </div>
+
+        {tabKey === TabKeyV1.Positions && (
+          <AccountPositionsV1 account={account} active={true} chainId={chainId} signer={signer} />
+        )}
+        {tabKey === TabKeyV1.Orders && (
+          <AccountOrdersV1 account={account} active={true} chainId={chainId} signer={signer} />
+        )}
+        {tabKey === TabKeyV1.Trades && (
+          <AccountActionsV1 account={account} active={true} chainId={chainId} signer={signer} />
+        )}
+      </div>
+    </>
   );
 }

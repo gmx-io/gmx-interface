@@ -165,6 +165,7 @@ export type AccountPnlHistoryPointDebugFields = {
   cumulativeRealizedPnlFloat: number;
   cumulativeRealizedPriceImpact: bigint;
   cumulativeRealizedPriceImpactFloat: number;
+  // #endregion
 };
 
 export function DebugLines() {
@@ -176,13 +177,26 @@ export function DebugLines() {
 
   return (
     <>
-      <Bar dataKey="realizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ff00" />
-      <Bar dataKey={(entry) => -entry.realizedFeesFloat} stackId="dev" minPointSize={1} fill="#ff0000" />
-      <Bar dataKey="realizedPriceImpactFloat" stackId="dev" minPointSize={1} fill="#ff00ff" />
-      <Bar dataKey="unrealizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ffff" />
-      <Bar dataKey={(entry) => -entry.unrealizedFeesFloat} stackId="dev" minPointSize={1} fill="#ff00ff" />
+      <Bar isAnimationActive={false} dataKey="realizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ff00" />
+      <Bar
+        isAnimationActive={false}
+        dataKey={(entry) => -entry.realizedFeesFloat}
+        stackId="dev"
+        minPointSize={1}
+        fill="#ff0000"
+      />
+      <Bar isAnimationActive={false} dataKey="realizedPriceImpactFloat" stackId="dev" minPointSize={1} fill="#ff00ff" />
+      <Bar isAnimationActive={false} dataKey="unrealizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ffff" />
+      <Bar
+        isAnimationActive={false}
+        dataKey={(entry) => -entry.unrealizedFeesFloat}
+        stackId="dev"
+        minPointSize={1}
+        fill="#ff00ff"
+      />
 
       <Area
+        isAnimationActive={false}
         type="monotone"
         dataKey="cumulativeUnrealizedPnlFloat"
         stackId="dev_cumulative"
@@ -191,6 +205,7 @@ export function DebugLines() {
         strokeDasharray={"5 5"}
       />
       <Area
+        isAnimationActive={false}
         type="monotone"
         dataKey={(entry) => -entry.cumulativeUnrealizedFeesFloat}
         stackId="dev_cumulative"
@@ -199,6 +214,7 @@ export function DebugLines() {
         strokeDasharray={"5 5"}
       />
       <Area
+        isAnimationActive={false}
         type="monotone"
         dataKey="cumulativeRealizedPnlFloat"
         stackId="dev_cumulative"
@@ -207,6 +223,7 @@ export function DebugLines() {
         strokeDasharray={"5 5"}
       />
       <Area
+        isAnimationActive={false}
         type="monotone"
         dataKey={(entry) => -entry.cumulativeRealizedFeesFloat}
         stackId="dev_cumulative"
@@ -215,6 +232,7 @@ export function DebugLines() {
         strokeDasharray={"5 5"}
       />
       <Area
+        isAnimationActive={false}
         type="monotone"
         dataKey="cumulativeRealizedPriceImpactFloat"
         stackId="dev_cumulative"

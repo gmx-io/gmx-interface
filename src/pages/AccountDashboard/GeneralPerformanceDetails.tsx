@@ -1,16 +1,23 @@
-import { ApolloClient, InMemoryCache, gql, useQuery as useGqlQuery } from "@apollo/client";
+import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useMemo } from "react";
+import type { Address } from "viem";
 
-import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { formatPercentage, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import {
+  DEBUG_QUERY,
+  GeneralPerformanceDetailsDebugTooltip,
+  PnlSummaryPointDebugFields,
+} from "./generalPerformanceDetailsDebug";
 
 const bucketLabelMap = {
   today: msg`Today`,
@@ -21,10 +28,10 @@ const bucketLabelMap = {
   all: msg`All Time`,
 };
 
-export function GeneralPerformanceDetails() {
-  const account = useAccount()!;
-  const data = usePnlSummaryData(account);
+export function GeneralPerformanceDetails({ chainId, account }: { chainId: number; account: Address }) {
+  const data = usePnlSummaryData(chainId, account);
   const { _ } = useLingui();
+  const showDebugValues = useShowDebugValues();
 
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
@@ -43,10 +50,26 @@ export function GeneralPerformanceDetails() {
                 <Trans>Volume</Trans>
               </th>
               <th className="px-5 py-13 opacity-70">
-                <Trans>PnL ($)</Trans>
+                <TooltipWithPortal
+                  content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                >
+                  <Trans>PnL ($)</Trans>
+                </TooltipWithPortal>
               </th>
               <th className="px-5 py-13 opacity-70">
-                <Trans>PnL (%)</Trans>
+                <TooltipWithPortal
+                  content={
+                    <Trans>
+                      The PnL ($) compared to the capital used.
+                      <br />
+                      <br />
+                      The capital used is calculated as the highest value of [
+                      <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                    </Trans>
+                  }
+                >
+                  <Trans>PnL (%)</Trans>
+                </TooltipWithPortal>
               </th>
               <th className="py-13 pl-5 pr-16 opacity-70">
                 <Trans>Win / Loss</Trans>
@@ -68,20 +91,30 @@ export function GeneralPerformanceDetails() {
                       row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
                     )}
                     content={
-                      <>
-                        <StatsTooltipRow
-                          label={t`Realized PnL`}
-                          showDollar={false}
-                          textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
-                          value={formatUsd(row.realizedPnlUsd)}
-                        />
-                        <StatsTooltipRow
-                          label={t`Unrealized PnL`}
-                          showDollar={false}
-                          textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
-                          value={formatUsd(row.unrealizedPnlUsd)}
-                        />
-                      </>
+                      showDebugValues ? (
+                        <GeneralPerformanceDetailsDebugTooltip row={row} />
+                      ) : (
+                        <>
+                          <StatsTooltipRow
+                            label={t`Realized PnL`}
+                            showDollar={false}
+                            textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
+                            value={formatUsd(row.realizedPnlUsd)}
+                          />
+                          <StatsTooltipRow
+                            label={t`Unrealized PnL`}
+                            showDollar={false}
+                            textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
+                            value={formatUsd(row.unrealizedPnlUsd)}
+                          />
+                          <StatsTooltipRow
+                            label={t`Start Unrealized PnL`}
+                            showDollar={false}
+                            textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
+                            value={formatUsd(row.startUnrealizedPnlUsd)}
+                          />
+                        </>
+                      )
                     }
                   >
                     {formatUsd(row.pnlUsd)}
@@ -94,6 +127,13 @@ export function GeneralPerformanceDetails() {
                       "underline decoration-dashed decoration-1 underline-offset-2",
                       row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
                     )}
+                    content={
+                      <StatsTooltipRow
+                        label={t`Capital Used`}
+                        showDollar={false}
+                        value={formatUsd(row.usedCapitalUsd)}
+                      />
+                    }
                   >
                     {formatPercentage(row.pnlBps, { signed: true })}
                   </TooltipWithPortal>
@@ -126,46 +166,55 @@ export function GeneralPerformanceDetails() {
   );
 }
 
-type PnlSummaryPoint = {
+export type PnlSummaryPoint = {
   bucketLabel: string;
   losses: number;
   pnlBps: bigint;
   pnlUsd: bigint;
   realizedPnlUsd: bigint;
   unrealizedPnlUsd: bigint;
+  startUnrealizedPnlUsd: bigint;
   volume: bigint;
   wins: number;
   winsLossesRatioBps: bigint | undefined;
-};
+  usedCapitalUsd: bigint;
+} & PnlSummaryPointDebugFields;
 
 type PnlSummaryData = PnlSummaryPoint[];
 
-function usePnlSummaryData(account: string): PnlSummaryData {
-  const res = useGqlQuery(
-    gql`
-      query AccountHistoricalPnlResolver($account: String!) {
-        accountPnlSummaryStats(account: $account) {
-          bucketLabel
-          losses
-          pnlBps
-          pnlUsd
-          realizedPnlUsd
-          unrealizedPnlUsd
-          volume
-          wins
-          winsLossesRatioBps
-        }
-      }
-    `,
-    {
-      client: client,
-      variables: { account: account },
+const PROD_QUERY = gql`
+  query AccountHistoricalPnlResolver($account: String!) {
+    accountPnlSummaryStats(account: $account) {
+      bucketLabel
+      losses
+      pnlBps
+      pnlUsd
+      realizedPnlUsd
+      unrealizedPnlUsd
+      startUnrealizedPnlUsd
+      volume
+      wins
+      winsLossesRatioBps
+      usedCapitalUsd
     }
-  );
+  }
+`;
+
+function usePnlSummaryData(chainId: number, account: Address): PnlSummaryData {
+  const showDebugValues = useShowDebugValues();
+
+  const res = useGqlQuery(showDebugValues ? DEBUG_QUERY : PROD_QUERY, {
+    client: getSubsquidGraphClient(chainId)!,
+    variables: { account: account },
+  });
 
   const transformedData = useMemo(() => {
-    return (
-      res.data?.accountPnlSummaryStats?.map((row: any) => {
+    if (!res.data?.accountPnlSummaryStats) {
+      return EMPTY_ARRAY;
+    }
+
+    return res.data.accountPnlSummaryStats.map((row: any) => {
+      if (showDebugValues) {
         return {
           bucketLabel: row.bucketLabel,
           losses: row.losses,
@@ -173,18 +222,37 @@ function usePnlSummaryData(account: string): PnlSummaryData {
           pnlUsd: BigInt(row.pnlUsd),
           realizedPnlUsd: BigInt(row.realizedPnlUsd),
           unrealizedPnlUsd: BigInt(row.unrealizedPnlUsd),
+          startUnrealizedPnlUsd: BigInt(row.startUnrealizedPnlUsd),
           volume: BigInt(row.volume),
           wins: row.wins,
           winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
+          usedCapitalUsd: BigInt(row.usedCapitalUsd),
+
+          realizedBasePnlUsd: row.realizedBasePnlUsd !== undefined ? BigInt(row.realizedBasePnlUsd) : 0n,
+          realizedFeesUsd: row.realizedFeesUsd !== undefined ? BigInt(row.realizedFeesUsd) : 0n,
+          realizedPriceImpactUsd: row.realizedPriceImpactUsd !== undefined ? BigInt(row.realizedPriceImpactUsd) : 0n,
+          unrealizedBasePnlUsd: row.unrealizedBasePnlUsd !== undefined ? BigInt(row.unrealizedBasePnlUsd) : 0n,
+          unrealizedFeesUsd: row.unrealizedFeesUsd !== undefined ? BigInt(row.unrealizedFeesUsd) : 0n,
+          startUnrealizedBasePnlUsd:
+            row.startUnrealizedBasePnlUsd !== undefined ? BigInt(row.startUnrealizedBasePnlUsd) : 0n,
+          startUnrealizedFeesUsd: row.startUnrealizedFeesUsd !== undefined ? BigInt(row.startUnrealizedFeesUsd) : 0n,
         };
-      }) || EMPTY_ARRAY
-    );
-  }, [res.data?.accountPnlSummaryStats]);
+      }
+      return {
+        bucketLabel: row.bucketLabel,
+        losses: row.losses,
+        pnlBps: BigInt(row.pnlBps),
+        pnlUsd: BigInt(row.pnlUsd),
+        realizedPnlUsd: BigInt(row.realizedPnlUsd),
+        unrealizedPnlUsd: BigInt(row.unrealizedPnlUsd),
+        startUnrealizedPnlUsd: BigInt(row.startUnrealizedPnlUsd),
+        volume: BigInt(row.volume),
+        wins: row.wins,
+        winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
+        usedCapitalUsd: BigInt(row.usedCapitalUsd),
+      };
+    });
+  }, [res.data?.accountPnlSummaryStats, showDebugValues]);
 
   return transformedData;
 }
-
-const client = new ApolloClient({
-  uri: "http://37.27.100.223:4000/graphql",
-  cache: new InMemoryCache(),
-});

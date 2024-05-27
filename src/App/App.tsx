@@ -368,14 +368,13 @@ function FullApp() {
                 </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
-              <Route exact path="/actions/:account">
-                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode={false}>
-                  <AccountDashboard />
-                </SyntheticsStateContextProvider>
-              </Route>
               <Route path="/actions/v2/:account">
                 {({ match }) => <Redirect to={`/actions/${match?.params.account}`} />}
               </Route>
+              <Route exact path="/actions/:account">
+                <AccountDashboard />
+              </Route>
+
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
               </Route>
