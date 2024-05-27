@@ -185,14 +185,14 @@ export default function TokenSelector(props: Props) {
 
             let mintAmount;
             let balance = info.balance;
-            if (showMintingCap && mintingCap && info.usdgAmount) {
+            if (showMintingCap && mintingCap !== undefined && info.usdgAmount !== undefined) {
               mintAmount = mintingCap - info.usdgAmount;
             }
             if (mintAmount && mintAmount < 0) {
               mintAmount = 0n;
             }
             let balanceUsd: bigint | undefined = undefined;
-            if (balance && info.maxPrice) {
+            if (balance !== undefined && info.maxPrice !== undefined) {
               balanceUsd = bigMath.mulDiv(balance, info.maxPrice, expandDecimals(1, token.decimals));
             }
 
@@ -235,7 +235,7 @@ export default function TokenSelector(props: Props) {
                   <span className="text-accent">
                     {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
                     {showMintingCap && !mintAmount && <div>-</div>}
-                    {!showMintingCap && showBalances && balanceUsd && balanceUsd > 0 && (
+                    {!showMintingCap && showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
                   </span>

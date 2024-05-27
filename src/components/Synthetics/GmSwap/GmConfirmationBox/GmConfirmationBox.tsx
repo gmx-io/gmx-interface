@@ -90,10 +90,10 @@ export function GmConfirmationBox({
     const addresses: string[] = [];
 
     if (isDeposit) {
-      if (longTokenAmount && longToken) {
+      if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
         addresses.push(longToken.address);
       }
-      if (shortTokenAmount && shortToken) {
+      if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
         addresses.push(shortToken.address);
       }
     } else {
@@ -118,7 +118,8 @@ export function GmConfirmationBox({
 
     if (isDeposit) {
       if (
-        longTokenAmount &&
+        longTokenAmount !== undefined &&
+        longTokenAmount > 0 &&
         longToken &&
         getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
       ) {
@@ -126,7 +127,8 @@ export function GmConfirmationBox({
       }
 
       if (
-        shortTokenAmount &&
+        shortTokenAmount !== undefined &&
+        shortTokenAmount > 0 &&
         shortToken &&
         getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
       ) {
@@ -266,8 +268,8 @@ export function GmConfirmationBox({
       initialShortTokenAddress,
       longTokenSwapPath: [],
       shortTokenSwapPath: [],
-      longTokenAmount: longTokenAmount || 0n,
-      shortTokenAmount: shortTokenAmount || 0n,
+      longTokenAmount: longTokenAmount ?? 0n,
+      shortTokenAmount: shortTokenAmount ?? 0n,
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,

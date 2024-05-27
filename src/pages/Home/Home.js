@@ -61,9 +61,9 @@ export default function Home({ showRedirectModal }) {
   const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume);
 
   let totalVolumeSum = 0n;
-  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
-    totalVolumeSum = totalVolumeSum + BigInt(arbitrumTotalVolumeSum);
-    totalVolumeSum = totalVolumeSum + BigInt(avalancheTotalVolumeSum);
+  if (arbitrumTotalVolumeSum !== undefined && avalancheTotalVolumeSum !== undefined && arbV2Stats && avaxV2Stats) {
+    totalVolumeSum = totalVolumeSum + arbitrumTotalVolumeSum;
+    totalVolumeSum = totalVolumeSum + avalancheTotalVolumeSum;
     totalVolumeSum = totalVolumeSum + BigInt(arbV2Stats.totalVolume);
     totalVolumeSum = totalVolumeSum + BigInt(avaxV2Stats.totalVolume);
   }

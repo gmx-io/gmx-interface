@@ -55,11 +55,11 @@ export function ClaimModal(p: Props) {
 
     const claimableAmountsItems: string[] = [];
 
-    if (fundingLongAmount) {
+    if (fundingLongAmount !== undefined) {
       claimableAmountsItems.push(formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (fundingShortAmount) {
+    if (fundingShortAmount !== undefined) {
       claimableAmountsItems.push(formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol)!);
     }
 
@@ -98,12 +98,12 @@ export function ClaimModal(p: Props) {
     const fundingTokenAddresses: string[] = [];
 
     for (const market of markets) {
-      if (market.claimableFundingAmountLong) {
+      if (market.claimableFundingAmountLong !== undefined) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.longTokenAddress);
       }
 
-      if (market.claimableFundingAmountShort) {
+      if (market.claimableFundingAmountShort !== undefined) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.shortTokenAddress);
       }

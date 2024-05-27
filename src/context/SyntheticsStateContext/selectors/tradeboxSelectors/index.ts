@@ -672,7 +672,7 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
   }
 
   const triggerRatio: TokensRatio = {
-    ratio: triggerRatioValue && triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
+    ratio: triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };

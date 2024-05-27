@@ -96,7 +96,7 @@ export function getTokenAmountFromUsd(
     return;
   }
 
-  const price = opts.overridePrice || (opts.max ? info.maxPrice : info.minPrice);
+  const price = opts.overridePrice ?? (opts.max ? info.maxPrice : info.minPrice);
 
   if (price === undefined || price <= 0) {
     return;
@@ -113,7 +113,7 @@ export function getTriggerPrice(
   triggerPriceUsd?: bigint
 ) {
   // Limit/stop orders are executed with price specified by user
-  if (orderOption && orderOption !== MARKET && triggerPriceUsd) {
+  if (orderOption && orderOption !== MARKET && triggerPriceUsd !== undefined) {
     return triggerPriceUsd;
   }
 
@@ -185,7 +185,12 @@ export function getLowestFeeTokenForBuyGlp(
 
     let amountLeftToDeposit = 0n;
 
-    if (fromToken.maxUsdgAmount && fromToken.maxUsdgAmount > 0 && fromToken.usdgAmount && fromToken.usdgAmount > 0) {
+    if (
+      fromToken.maxUsdgAmount !== undefined &&
+      fromToken.maxUsdgAmount > 0 &&
+      fromToken.usdgAmount !== undefined &&
+      fromToken.usdgAmount > 0
+    ) {
       amountLeftToDeposit =
         ((fromToken.maxUsdgAmount - fromToken.usdgAmount) * expandDecimals(1, USD_DECIMALS)) /
         expandDecimals(1, USDG_DECIMALS);

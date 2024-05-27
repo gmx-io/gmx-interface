@@ -29,7 +29,7 @@ export function getPositionFee(
     : marketInfo.positionFeeFactorForNegativeImpact;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
-  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || 0n);
+  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
   if (!referralInfo) {
     return { positionFeeUsd, discountUsd: 0n, totalRebateUsd: 0n };
@@ -114,7 +114,7 @@ export function getFeeItem(
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis && basis > 0 ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
+    bps: basis !== undefined && basis > 0 ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
   };
 }
 

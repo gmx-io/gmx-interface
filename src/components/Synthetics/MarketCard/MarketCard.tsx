@@ -225,7 +225,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               <Tooltip
                 position="bottom-end"
                 handle={
-                  totalInterestUsd && totalInterestUsd > 0 ? (
+                  totalInterestUsd !== undefined && totalInterestUsd > 0 ? (
                     <ShareBar
                       showPercentage
                       className="MarketCard-pool-balance-bar"

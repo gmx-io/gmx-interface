@@ -56,7 +56,11 @@ export function estimateExecuteDepositGasLimit(
   const swapsCount = (deposit.longTokenSwapsCount || 0) + (deposit.shortTokenSwapsCount || 0);
 
   const gasForSwaps = gasPerSwap * BigInt(swapsCount);
-  const isMultiTokenDeposit = deposit.initialLongTokenAmount && deposit.initialShortTokenAmount;
+  const isMultiTokenDeposit =
+    deposit.initialLongTokenAmount !== undefined &&
+    deposit.initialShortTokenAmount !== undefined &&
+    deposit.initialLongTokenAmount > 0 &&
+    deposit.initialShortTokenAmount > 0;
 
   const depositGasLimit = isMultiTokenDeposit ? gasLimits.depositMultiToken : gasLimits.depositSingleToken;
 

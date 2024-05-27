@@ -41,7 +41,7 @@ export function AprInfo({
     );
   }, [apr, incentiveApr, isIncentiveActive]);
 
-  return showTooltip && incentiveApr ? (
+  return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode

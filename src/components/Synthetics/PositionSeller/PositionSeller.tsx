@@ -256,7 +256,7 @@ export function PositionSeller(p: Props) {
     tradeFlags,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd || 0) : false;
+  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
   const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
@@ -365,7 +365,7 @@ export function PositionSeller(p: Props) {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || 0n,
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
         receiveTokenAddress: receiveToken.address,
         swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,

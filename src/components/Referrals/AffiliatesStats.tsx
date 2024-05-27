@@ -109,7 +109,7 @@ function AffiliatesStats({
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(signer, chainId, tierId);
-  const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare || 0), totalRebate, true);
+  const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {

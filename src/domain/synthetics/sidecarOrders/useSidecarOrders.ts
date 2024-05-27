@@ -77,7 +77,7 @@ export function useSidecarOrders() {
   const [minLimitTrigerPrice, maxLimitTrigerPrice] = useMemo(() => {
     const prices = existingLimits.reduce<bigint[]>((acc, { price }) => (price.value ? [...acc, price.value] : acc), []);
 
-    if (isLimit && triggerPrice) {
+    if (isLimit && triggerPrice !== undefined && triggerPrice !== null) {
       prices.push(triggerPrice);
     }
 

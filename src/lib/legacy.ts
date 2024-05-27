@@ -404,7 +404,7 @@ export function getNextFromAmount(
   const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals);
 
   let fromAmountBasedOnRatio = 0n;
-  if (ratio) {
+  if (ratio !== undefined && ratio !== 0n) {
     fromAmountBasedOnRatio = (toAmount * ratio) / PRECISION;
   }
 
@@ -498,14 +498,14 @@ export function getNextToAmount(
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
   let toAmountBasedOnRatio = 0n;
-  if (ratio) {
+  if (ratio !== undefined && ratio !== 0n) {
     toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
 
   if (toTokenAddress === USDG_ADDRESS) {
     const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable);
 
-    if (ratio) {
+    if (ratio !== undefined && ratio !== 0n) {
       const toAmount = toAmountBasedOnRatio;
       return {
         amount: adjustDecimals(
@@ -528,7 +528,7 @@ export function getNextToAmount(
       ? (toToken.redemptionAmount * (toTokenPriceUsd ?? toTokenMaxPrice)) / expandDecimals(1, toToken.decimals)
       : undefined;
 
-    if (redemptionValue && redemptionValue > THRESHOLD_REDEMPTION_VALUE) {
+    if (redemptionValue !== undefined && redemptionValue > THRESHOLD_REDEMPTION_VALUE) {
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
 
       const toAmount = ratio
@@ -562,7 +562,7 @@ export function getNextToAmount(
     const feeBasisPoints0 = getSwapFeeBasisPoints(true);
     const feeBasisPoints1 = getSwapFeeBasisPoints(false);
 
-    if (ratio) {
+    if (ratio !== undefined && ratio !== 0n) {
       const toAmount =
         (toAmountBasedOnRatio * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0 - feeBasisPoints1)) /
         BASIS_POINTS_DIVISOR_BIGINT;
@@ -580,7 +580,7 @@ export function getNextToAmount(
     toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0)) / BASIS_POINTS_DIVISOR_BIGINT;
 
     // get toAmount for stableToken => toToken
-    toAmount = (toAmount * (stableToken.minPrice ?? 0n)) / (toTokenPriceUsd || toTokenMaxPrice);
+    toAmount = (toAmount * (stableToken.minPrice ?? 0n)) / (toTokenPriceUsd ?? toTokenMaxPrice);
     // apply stableToken => toToken fees
     toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints1)) / BASIS_POINTS_DIVISOR_BIGINT;
 
@@ -593,7 +593,7 @@ export function getNextToAmount(
 
   const toAmount = ratio
     ? toAmountBasedOnRatio
-    : (fromAmount * fromTokenMinPrice) / (toTokenPriceUsd || toTokenMaxPrice);
+    : (fromAmount * fromTokenMinPrice) / (toTokenPriceUsd ?? toTokenMaxPrice);
 
   let usdgAmount = (fromAmount * fromTokenMinPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS);

@@ -130,7 +130,7 @@ function MigrationModal(props) {
   let bonusAmountUsd;
   let totalAmountUsd;
 
-  if (amount) {
+  if (amount !== undefined) {
     baseAmount = bigMath.mulDiv(amount, token.price, gmxPrice);
     bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100n);
     totalAmount = baseAmount + bonusAmount;
@@ -255,7 +255,7 @@ function MigrationModal(props) {
           <div className="App-info-row">
             <div className="App-info-label">{token.bonus > 0 ? "Base Tokens" : "To Receive"}</div>
             <div className="align-right">
-              {baseAmount &&
+              {baseAmount !== undefined &&
                 `${formatAmount(baseAmount, 18, 4, true)} GMX ($${formatAmount(
                   baseAmountUsd,
                   18 + decimals,
@@ -271,7 +271,7 @@ function MigrationModal(props) {
                 <Trans>Bonus Tokens</Trans>
               </div>
               <div className="align-right">
-                {bonusAmount &&
+                {bonusAmount !== undefined &&
                   `${formatAmount(bonusAmount, 18, 4, true)} GMX ($${formatAmount(
                     bonusAmountUsd,
                     18 + decimals,
@@ -288,7 +288,7 @@ function MigrationModal(props) {
                 <Trans>To Receive</Trans>
               </div>
               <div className="align-right">
-                {totalAmount &&
+                {totalAmount !== undefined &&
                   `${formatAmount(totalAmount, 18, 4, true)} GMX ($${formatAmount(
                     totalAmountUsd,
                     18 + decimals,

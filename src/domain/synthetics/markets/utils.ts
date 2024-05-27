@@ -297,7 +297,7 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
 
 export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
   return positions.reduce((acc, position) => {
-    if (position.pendingClaimableFundingFeesUsd) return acc + position.pendingClaimableFundingFeesUsd;
+    if (position.pendingClaimableFundingFeesUsd != undefined) return acc + position.pendingClaimableFundingFeesUsd;
 
     return acc;
   }, 0n);

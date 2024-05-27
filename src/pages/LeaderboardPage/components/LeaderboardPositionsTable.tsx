@@ -319,10 +319,11 @@ const TableRow = memo(
 
     const renderLiquidationTooltip = useCallback(() => {
       const markPrice = marketInfo?.indexToken.prices.maxPrice;
+      const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
       return (
         <>
           <StatsTooltipRow label={t`Mark Price`} value={formatUsd(markPrice)} showDollar={false} />
-          {markPrice && liquidationPrice && (
+          {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
               value={formatUsd(liquidationPrice - markPrice, { maxThreshold: "1000000" })}

@@ -121,7 +121,9 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
     return rebateGroup.userRebates.reduce((sum, rebateItem) => {
       const price = rebateItem.tokenData?.prices.maxPrice;
       const decimals = rebateItem.tokenData?.decimals;
-      return price && decimals ? sum + bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals)) : sum;
+      return price !== undefined && decimals
+        ? sum + bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals))
+        : sum;
     }, 0n);
   }, [rebateGroup.userRebates]);
 
@@ -171,7 +173,9 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
         const price = rebateItem.tokenData?.prices.maxPrice;
         const decimals = rebateItem.tokenData?.decimals;
         const usd =
-          price && decimals ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals)) : undefined;
+          price !== undefined && decimals
+            ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals))
+            : undefined;
         return (
           <div key={rebateItem.id} className="PriceImpactRebatesStatsPage-row">
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>

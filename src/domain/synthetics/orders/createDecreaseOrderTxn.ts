@@ -88,7 +88,7 @@ export async function createDecreaseOrderTxn(
       if (!p.skipSimulation) {
         const primaryPriceOverrides: PriceOverrides = {};
         const secondaryPriceOverrides: PriceOverrides = {};
-        if (p.triggerPrice) {
+        if (p.triggerPrice != undefined) {
           primaryPriceOverrides[p.indexToken.address] = {
             minPrice: p.triggerPrice,
             maxPrice: p.triggerPrice,
@@ -194,7 +194,7 @@ export function createDecreaseEncodedPayload({
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,
           initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-          triggerPrice: convertToContractPrice(p.triggerPrice || 0n, p.indexToken.decimals),
+          triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, p.indexToken.decimals),
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
           callbackGasLimit: 0n,

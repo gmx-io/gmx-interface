@@ -138,7 +138,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       if (availablePosition) {
         result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
         result.collateralWithPosition = availablePosition.collateralToken;
-        if (increaseSizeUsd) {
+        if (increaseSizeUsd != undefined) {
           result.isNoSufficientLiquidityInMarketWithPosition =
             getAvailableUsdLiquidityForPosition(result.marketWithPosition!, isLong) <= increaseSizeUsd;
         }
@@ -162,7 +162,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  if (increaseSizeUsd) {
+  if (increaseSizeUsd != undefined) {
     const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
       liquidMarkets,
       indexToken.address,
@@ -171,7 +171,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       increaseSizeUsd > 0 ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
     );
 
-    if (bestMarket && bestImpactDeltaUsd) {
+    if (bestMarket && bestImpactDeltaUsd != undefined) {
       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
         isIncrease: true,
         isLong,

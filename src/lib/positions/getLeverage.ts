@@ -18,11 +18,11 @@ export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, in
 
   let remainingCollateral = collateral;
 
-  if (fundingFee && fundingFee > 0) {
+  if (fundingFee !== undefined && fundingFee > 0) {
     remainingCollateral = remainingCollateral - fundingFee;
   }
 
-  if (delta && includeDelta) {
+  if (delta !== undefined && includeDelta) {
     if (hasProfit) {
       remainingCollateral = remainingCollateral + delta;
     } else {

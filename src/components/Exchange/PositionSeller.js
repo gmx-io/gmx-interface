@@ -423,14 +423,14 @@ export default function PositionSeller(props) {
     nextLeverage = position.leverage;
     nextLeverageWithoutDelta = leverageWithoutDelta;
 
-    if (fromAmount) {
+    if (fromAmount !== undefined) {
       isClosing = position.size - fromAmount < DUST_USD;
       positionFee = getMarginFee(fromAmount);
     }
 
     if (isClosing) {
       sizeDelta = position.size;
-    } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
+    } else if (orderOption === STOP && sizeDelta !== undefined && existingOrders.length > 0) {
       let residualSize = position.size;
       for (const order of existingOrders) {
         residualSize = residualSize - order.sizeDelta;
@@ -440,7 +440,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    totalFees = totalFees + (positionFee || 0n) + (fundingFee || 0n);
+    totalFees = totalFees + (positionFee ?? 0n) + (fundingFee ?? 0n);
 
     if (sizeDelta && position.size > 0) {
       adjustedDelta = bigMath.mulDiv(nextDelta, sizeDelta, position.size);
@@ -492,7 +492,7 @@ export default function PositionSeller(props) {
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
 
-    if (fromAmount && collateralToken.maxPrice) {
+    if (fromAmount !== undefined && collateralToken.maxPrice !== undefined) {
       convertedAmount = bigMath.mulDiv(
         fromAmount,
         expandDecimals(1, collateralToken.decimals),
@@ -525,7 +525,7 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = bigMath.mulDiv(receiveUsd, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
-        totalFees = totalFees + (swapFee || 0n);
+        totalFees = totalFees + (swapFee ?? 0n);
         receiveUsd = receiveUsd - swapFee;
       }
       const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
@@ -551,10 +551,10 @@ export default function PositionSeller(props) {
         receiveTokenInfo.bufferAmount > receiveTokenInfo.poolAmount - receiveAmount;
 
       if (
-        collateralInfo.maxUsdgAmount &&
+        collateralInfo.maxUsdgAmount !== undefined &&
         collateralInfo.maxUsdgAmount > 0 &&
-        collateralInfo.usdgAmount &&
-        collateralInfo.maxPrice
+        collateralInfo.usdgAmount !== undefined &&
+        collateralInfo.maxPrice !== undefined
       ) {
         const usdgFromAmount = adjustForDecimals(receiveUsd, USD_DECIMALS, USDG_DECIMALS);
         const nextUsdgAmount = collateralInfo.usdgAmount + usdgFromAmount;
@@ -565,7 +565,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (fromAmount) {
+    if (fromAmount !== undefined) {
       if (!isClosing) {
         nextLiquidationPrice = getLiquidationPrice({
           size: position.size - sizeDelta,
@@ -1220,7 +1220,7 @@ export default function PositionSeller(props) {
                     {(nextLiquidationPrice === undefined || nextLiquidationPrice == liquidationPrice) && (
                       <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
-                    {nextLiquidationPrice && nextLiquidationPrice != liquidationPrice && (
+                    {nextLiquidationPrice !== undefined && nextLiquidationPrice != liquidationPrice && (
                       <div>
                         <div className="muted inline-block">
                           ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
@@ -1238,7 +1238,7 @@ export default function PositionSeller(props) {
                 <Trans>Size</Trans>
               </div>
               <div className="align-right">
-                {position && position.size && fromAmount && (
+                {position && position.size !== undefined && fromAmount !== undefined && (
                   <div>
                     <div className="muted inline-block">
                       ${formatAmount(position.size, USD_DECIMALS, 2, true)}

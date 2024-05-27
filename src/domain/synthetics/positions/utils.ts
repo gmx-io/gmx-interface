@@ -234,7 +234,7 @@ export function getLeverage(p: {
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
-  const remainingCollateralUsd = collateralUsd + (pnl || 0n) - totalPendingFeesUsd;
+  const remainingCollateralUsd = collateralUsd + (pnl ?? 0n) - totalPendingFeesUsd;
 
   if (remainingCollateralUsd <= 0) {
     return undefined;

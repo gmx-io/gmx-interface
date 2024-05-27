@@ -69,7 +69,7 @@ export function TVChart() {
 
         return (
           positionOrder.marketInfo &&
-          positionOrder.triggerPrice &&
+          positionOrder.triggerPrice !== undefined &&
           convertTokenAddress(chainId, positionOrder.marketInfo.indexTokenAddress, "wrapped") ===
             convertTokenAddress(chainId, chartTokenAddress, "wrapped")
         );

@@ -148,7 +148,7 @@ export default function PositionEditor(props) {
       maxAmount = collateralToken ? collateralToken.balance : 0n;
       maxAmountFormatted = formatAmount(maxAmount, collateralToken.decimals, 4, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, collateralToken.decimals, 8);
-      if (fromAmount) {
+      if (fromAmount !== undefined) {
         convertedAmount = getUsd(fromAmount, position.collateralToken.address, false, infoTokens);
         convertedAmountFormatted = formatAmount(convertedAmount, USD_DECIMALS, 2);
       }
@@ -159,7 +159,7 @@ export default function PositionEditor(props) {
 
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
-      if (fromAmount) {
+      if (fromAmount !== undefined) {
         convertedAmount = bigMath.mulDiv(
           fromAmount,
           expandDecimals(1, collateralToken.decimals),
@@ -170,7 +170,7 @@ export default function PositionEditor(props) {
     }
     needApproval = isDeposit && tokenAllowance !== undefined && fromAmount !== undefined && fromAmount > tokenAllowance;
 
-    if (fromAmount) {
+    if (fromAmount !== undefined) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
 
       if (position.isLong && isDeposit) {
@@ -624,7 +624,7 @@ export default function PositionEditor(props) {
                     </div>
                     <div className="align-right">
                       {nextLeverage === undefined && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
-                      {nextLeverage && (
+                      {nextLeverage !== undefined && (
                         <div>
                           <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2, true)}x
@@ -660,10 +660,10 @@ export default function PositionEditor(props) {
                         <div>
                           {fromAmount === undefined &&
                             `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
-                          {fromAmount && "-"}
+                          {fromAmount !== undefined && "-"}
                         </div>
                       )}
-                      {nextLiquidationPrice && (
+                      {nextLiquidationPrice !== undefined && (
                         <div>
                           <div className="muted inline-block">
                             ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}

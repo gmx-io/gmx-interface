@@ -486,7 +486,8 @@ export function SyntheticsStats() {
                           </>
                         }
                         renderContent={() =>
-                          market.fundingIncreaseFactorPerSecond && market.fundingIncreaseFactorPerSecond > 0 ? (
+                          market.fundingIncreaseFactorPerSecond !== undefined &&
+                          market.fundingIncreaseFactorPerSecond > 0 ? (
                             <>
                               <StatsTooltipRow
                                 label="Funding increase factor"
@@ -567,7 +568,7 @@ export function SyntheticsStats() {
                                 const totalInterestUsd = market.shortInterestUsd + market.longInterestUsd;
                                 let longInterestPercent = "0";
                                 let shortInterestPercent = "0";
-                                if (totalInterestUsd) {
+                                if (totalInterestUsd !== 0n) {
                                   longInterestPercent = formatAmount(
                                     bigMath.mulDiv(market.longInterestUsd, 10000n, totalInterestUsd),
                                     2,

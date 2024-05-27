@@ -275,9 +275,9 @@ function UnstakeModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
 
   if (
-    multiplierPointsAmount &&
+    multiplierPointsAmount !== undefined &&
     multiplierPointsAmount > 0 &&
-    amount &&
+    amount !== undefined &&
     amount > 0 &&
     bonusGmxInFeeGmx &&
     bonusGmxInFeeGmx > 0
@@ -286,11 +286,11 @@ function UnstakeModal(props) {
   }
 
   const unstakeGmxPercentage =
-    maxAmount > 0 && amount ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount) : 0n;
+    maxAmount > 0 && amount !== undefined ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount) : 0n;
 
   let unstakeBonusLostPercentage;
   if (
-    amount &&
+    amount !== undefined &&
     amount > 0 &&
     multiplierPointsAmount &&
     multiplierPointsAmount > 0 &&
@@ -305,7 +305,7 @@ function UnstakeModal(props) {
   }
 
   const votingPowerBurnAmount =
-    unstakeGmxPercentage && govTokenAmount && unstakeGmxPercentage > 0 && govTokenAmount > 0
+    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
       ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
       : 0n;
 
@@ -441,12 +441,18 @@ function VesterDepositModal(props) {
   let nextReserveAmount: bigint = reserveAmount;
 
   let nextDepositAmount = vestedAmount;
-  if (amount) {
+  if (amount !== undefined) {
     nextDepositAmount = vestedAmount + amount;
   }
 
   let additionalReserveAmount = 0n;
-  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount > 0 && nextReserveAmount) {
+  if (
+    amount !== undefined &&
+    averageStakedAmount !== undefined &&
+    maxVestableAmount !== undefined &&
+    maxVestableAmount > 0 &&
+    nextReserveAmount !== undefined
+  ) {
     nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
     if (nextReserveAmount > reserveAmount) {
       additionalReserveAmount = nextReserveAmount - reserveAmount;
@@ -460,7 +466,7 @@ function VesterDepositModal(props) {
     if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
-    if (nextReserveAmount && nextReserveAmount > maxReserveAmount) {
+    if (nextReserveAmount !== undefined && nextReserveAmount > maxReserveAmount) {
       return t`Insufficient staked tokens`;
     }
   };
@@ -596,7 +602,7 @@ function VesterDepositModal(props) {
                             value={formatAmount(additionalReserveAmount, 18, 2, true)}
                             showDollar={false}
                           />
-                          {amount && nextReserveAmount > maxReserveAmount && (
+                          {amount !== undefined && nextReserveAmount > maxReserveAmount && (
                             <>
                               <br />
                               <Trans>
@@ -1414,22 +1420,22 @@ export default function StakeV2() {
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  if (totalGmxStaked && gmxPrice) {
+  if (totalGmxStaked !== 0n && gmxPrice) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply && gmxPrice) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
   let maxUnstakeableGmx = 0n;
   if (
-    totalRewardTokens &&
+    totalRewardTokens !== undefined &&
     vestingData &&
-    vestingData.gmxVesterPairAmount &&
-    multiplierPointsAmount &&
-    processedData?.bonusGmxInFeeGmx
+    vestingData.gmxVesterPairAmount !== undefined &&
+    multiplierPointsAmount !== undefined &&
+    processedData?.bonusGmxInFeeGmx !== undefined
   ) {
     const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
@@ -1543,10 +1549,10 @@ export default function StakeV2() {
     setUnstakeModalTitle(t`Unstake GMX`);
     let maxAmount = processedData?.gmxInStakedGmx;
     if (
-      processedData?.gmxInStakedGmx &&
+      processedData?.gmxInStakedGmx !== undefined &&
       vestingData &&
       vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx &&
+      maxUnstakeableGmx !== undefined &&
       maxUnstakeableGmx < processedData.gmxInStakedGmx
     ) {
       maxAmount = maxUnstakeableGmx;
@@ -1565,10 +1571,10 @@ export default function StakeV2() {
     setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData?.esGmxInStakedGmx;
     if (
-      maxAmount &&
+      maxAmount !== undefined &&
       vestingData &&
       vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx &&
+      maxUnstakeableGmx !== undefined &&
       maxUnstakeableGmx < maxAmount
     ) {
       maxAmount = maxUnstakeableGmx;

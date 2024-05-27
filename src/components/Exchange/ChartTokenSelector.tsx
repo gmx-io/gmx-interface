@@ -66,8 +66,8 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 
     return {
       ...token,
-      maxOutUsd: maxOutUsd && maxOutUsd > 0 ? maxOutUsd : 0n,
-      maxInUsd: maxInUsd && maxInUsd > 0 ? maxInUsd : 0n,
+      maxOutUsd: maxOutUsd !== undefined && maxOutUsd > 0 ? maxOutUsd : 0n,
+      maxInUsd: maxInUsd !== undefined && maxInUsd > 0 ? maxInUsd : 0n,
     };
   });
 }

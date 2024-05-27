@@ -76,8 +76,8 @@ export function PoolSelector({
           poolName,
           name: marketInfo.name,
           marketInfo,
-          balance: gmBalance || 0n,
-          balanceUsd: gmBalanceUsd || 0n,
+          balance: gmBalance ?? 0n,
+          balanceUsd: gmBalanceUsd ?? 0n,
           state,
         };
       });
@@ -235,7 +235,10 @@ export function PoolSelector({
                   )) ||
                     null}
                   <span className="text-accent">
-                    {(showBalances && balanceUsd && <div>{formatUsd(balanceUsd)}</div>) || null}
+                    {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                      <div>{formatUsd(balanceUsd)}</div>
+                    )) ||
+                      null}
                   </span>
                 </div>
               </div>

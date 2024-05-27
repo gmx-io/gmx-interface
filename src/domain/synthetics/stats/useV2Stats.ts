@@ -37,10 +37,13 @@ export default function useV2Stats(chainId: number): DashboardOverview {
     }, 0n);
 
     return {
-      totalGMLiquidity: totalLiquidity || 0n,
-      totalLongPositionSizes: totalLongInterestUsd || 0n,
-      totalShortPositionSizes: totalShortInterestUsd || 0n,
-      openInterest: totalLongInterestUsd && totalShortInterestUsd ? totalLongInterestUsd + totalShortInterestUsd : 0n,
+      totalGMLiquidity: totalLiquidity ?? 0n,
+      totalLongPositionSizes: totalLongInterestUsd ?? 0n,
+      totalShortPositionSizes: totalShortInterestUsd ?? 0n,
+      openInterest:
+        totalLongInterestUsd !== undefined && totalShortInterestUsd !== undefined
+          ? totalLongInterestUsd + totalShortInterestUsd
+          : 0n,
       dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) || 0n,
       totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
       weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) || 0n,

@@ -290,7 +290,7 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
   const tokensRatio: TokensRatio = {
-    ratio: ratio && ratio > 0 ? ratio : markRatio.ratio,
+    ratio: ratio != undefined && ratio > 0 ? ratio : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -340,7 +340,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       order.targetCollateralToken.prices.minPrice
     );
 
-    minOutputAmount = minOutputAmount + (priceImpactAmount || 0n) - (swapFeeAmount || 0n);
+    minOutputAmount = minOutputAmount + (priceImpactAmount ?? 0n) - (swapFeeAmount ?? 0n);
   }
 
   return minOutputAmount;

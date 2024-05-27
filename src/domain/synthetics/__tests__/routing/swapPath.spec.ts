@@ -166,7 +166,7 @@ describe("swapPath", () => {
     for (const { name, from, to, expected, feeOverrides, expectedPaths } of tests) {
       it(`${name}: ${from} -> ${to}`, () => {
         const mockEstimator: SwapEstimator = (e: MarketEdge, usdIn: bigint) => {
-          const fees: bigint = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] || BASE_FEE;
+          const fees: bigint = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] ?? BASE_FEE;
           return {
             usdOut: usdIn + fees,
           };

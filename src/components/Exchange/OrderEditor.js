@@ -199,7 +199,7 @@ export default function OrderEditor(props) {
       }
     }
 
-    if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableValidationForTesting) {
+    if (order.type !== SWAP && indexTokenMarkPrice !== undefined && !savedShouldDisableValidationForTesting) {
       if (order.triggerAboveThreshold && indexTokenMarkPrice > triggerPrice) {
         return t`Price below Mark Price`;
       }
@@ -256,7 +256,9 @@ export default function OrderEditor(props) {
           onInputValueChange={onTriggerPriceChange}
           topLeftLabel={t`Price`}
           topRightLabel={t`Mark`}
-          topRightValue={indexTokenMarkPrice && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}
+          topRightValue={
+            indexTokenMarkPrice !== undefined && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)
+          }
           onClickTopRightLabel={() =>
             setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal))
           }
@@ -331,7 +333,7 @@ export default function OrderEditor(props) {
         })()}
       </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
-        {triggerRatio && triggerRatio != order.triggerRatio ? (
+        {triggerRatio !== undefined && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;

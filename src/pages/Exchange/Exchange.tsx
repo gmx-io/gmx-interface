@@ -237,7 +237,7 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee < 0 || position.size / bigMath.abs(position.collateralAfterFee) > 50;
 
-      if (position.averagePrice && position.markPrice) {
+      if (position.averagePrice !== undefined && position.markPrice !== undefined) {
         const priceDelta =
           position.averagePrice > position.markPrice
             ? position.averagePrice - position.markPrice

@@ -431,7 +431,7 @@ export function useExecutionFee(active, chainId, infoTokens) {
 
   let finalExecutionFee = minExecutionFee;
 
-  if (gasPrice && minExecutionFee) {
+  if (gasPrice !== undefined && minExecutionFee !== undefined) {
     const estimatedExecutionFee = gasPrice * multiplier;
     if (estimatedExecutionFee > minExecutionFee) {
       finalExecutionFee = estimatedExecutionFee;
@@ -580,7 +580,7 @@ export function useTotalGmxStaked() {
     updateStakedGmxSupplyAvax();
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
-  if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
+  if (stakedGmxSupplyArbitrum != undefined && stakedGmxSupplyAvax != undefined) {
     let total = BigInt(stakedGmxSupplyArbitrum) + BigInt(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
@@ -677,7 +677,7 @@ function useGmxPriceFromArbitrum(signer, active) {
   );
 
   const gmxPrice = useMemo(() => {
-    if (uniPoolSlot0 && ethPrice) {
+    if (uniPoolSlot0 != undefined && ethPrice != undefined) {
       const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
 
       const gmxAddress = getContract(ARBITRUM, "GMX");

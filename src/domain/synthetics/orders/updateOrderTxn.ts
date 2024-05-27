@@ -55,7 +55,7 @@ export function updateOrderTxn(
   });
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee && executionFee > 0 ? executionFee : undefined,
+    value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
@@ -88,7 +88,7 @@ export function createUpdateEncodedPayload({
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
-  if (executionFee && executionFee > 0) {
+  if (executionFee != undefined && executionFee > 0) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
 

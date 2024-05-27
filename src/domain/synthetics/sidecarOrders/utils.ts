@@ -106,8 +106,8 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
   const inputPrice = entry.price.value;
 
-  if (inputPrice && inputPrice > 0) {
-    if (markPrice) {
+  if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
+    if (markPrice !== undefined) {
       if (type === "limit") {
         const nextError = isLong
           ? inputPrice > markPrice && t`Price above Mark Price.`
@@ -117,7 +117,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       }
     }
 
-    if (!isExistingLimits && liqPrice) {
+    if (!isExistingLimits && liqPrice !== undefined && liqPrice !== null) {
       if (type === "sl") {
         const nextError = isLong
           ? inputPrice < liqPrice && t`Price below Liq. Price.`
@@ -128,7 +128,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     }
 
     if (isExistingPosition || !isLimit) {
-      if (markPrice) {
+      if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
             ? inputPrice < markPrice && t`Price below Mark Price.`
@@ -147,7 +147,12 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       }
     } else {
       if (isExistingLimits) {
-        if (maxLimitTrigerPrice && minLimitTrigerPrice) {
+        if (
+          maxLimitTrigerPrice !== undefined &&
+          maxLimitTrigerPrice !== null &&
+          minLimitTrigerPrice !== undefined &&
+          minLimitTrigerPrice !== null
+        ) {
           if (type === "tp") {
             const nextError = isLong
               ? inputPrice < maxLimitTrigerPrice && t`Price below highest Limit Price.`
@@ -165,7 +170,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
           }
         }
       } else {
-        if (triggerPrice) {
+        if (triggerPrice !== undefined && triggerPrice !== null) {
           if (type === "tp") {
             const nextError = isLong
               ? inputPrice < triggerPrice && t`Price below Limit Price.`

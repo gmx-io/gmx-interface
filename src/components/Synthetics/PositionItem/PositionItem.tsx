@@ -529,7 +529,7 @@ export function PositionItem(p: Props) {
           ) : (
             <>
               {renderNetValue()}
-              {displayedPnl && (
+              {displayedPnl !== undefined && (
                 <div
                   onClick={p.openSettings}
                   className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {

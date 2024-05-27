@@ -604,7 +604,7 @@ export default function ConfirmationBox(props) {
           );
         }
 
-        if (adjustedMaxGlobalShortSize && adjustedMaxGlobalShortSize < token.availableAmount) {
+        if (adjustedMaxGlobalShortSize !== undefined && adjustedMaxGlobalShortSize < token.availableAmount) {
           availableLiquidity = adjustedMaxGlobalShortSize;
         }
 

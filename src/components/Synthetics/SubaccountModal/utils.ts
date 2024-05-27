@@ -96,10 +96,10 @@ export function getButtonState({
     return { disabled: true, text: "Updating..." };
   } else if (isSubaccountActive) {
     let count = 0;
-    if (topUp) count += 1;
-    if (maxAutoTopUpAmount) count += 1;
-    if (wntForAutoTopUps) count += 1;
-    if (maxAllowedActions) count += 1;
+    if (topUp !== null) count += 1;
+    if (maxAutoTopUpAmount !== null) count += 1;
+    if (wntForAutoTopUps !== null) count += 1;
+    if (maxAllowedActions !== null) count += 1;
 
     if (count === 0) {
       return { text: t`Update`, disabled: true };

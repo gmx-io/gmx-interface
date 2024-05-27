@@ -224,7 +224,7 @@ export function ConfirmationBox(p: Props) {
   const needPayTokenApproval =
     tokensAllowanceData &&
     fromToken &&
-    payAmount &&
+    payAmount !== undefined &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
   const positionKey = useSelector(selectTradeboxSelectedPositionKey);
@@ -412,14 +412,14 @@ export function ConfirmationBox(p: Props) {
 
     if (isLimit) {
       if (isLong) {
-        if (markPrice && triggerPrice && triggerPrice > markPrice) {
+        if (markPrice !== undefined && triggerPrice !== undefined && triggerPrice > markPrice) {
           return {
             text: t`Limit price above Mark Price`,
             disabled: true,
           };
         }
       } else {
-        if (markPrice && triggerPrice && triggerPrice < markPrice) {
+        if (markPrice !== undefined && triggerPrice !== undefined && triggerPrice < markPrice) {
           return {
             text: t`Limit price below Mark Price`,
             disabled: true,
@@ -1072,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
       return null;
     }
 
-    if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
+    if (swapSpreadInfo.spread !== undefined && swapSpreadInfo.isHigh) {
       return (
         <div className="mb-10">
           <AlertInfo compact type="warning">
@@ -1141,7 +1141,9 @@ export function ConfirmationBox(p: Props) {
                   signed: true,
                 })})`}
                 position="bottom-end"
-                handleClassName={entriesInfo.totalPnL && entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"}
+                handleClassName={
+                  entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"
+                }
                 className="SLTP-pnl-tooltip"
                 renderContent={() =>
                   entriesInfo?.entries?.map((entry, index) => {
@@ -1205,12 +1207,12 @@ export function ConfirmationBox(p: Props) {
   const [initialCollateralSpread, setInitialCollateralSpread] = useState<bigint | undefined>();
 
   const collateralSpreadPercent =
-    collateralSpreadInfo && collateralSpreadInfo.spread
+    collateralSpreadInfo && collateralSpreadInfo.spread !== undefined
       ? bigMath.mulDiv(collateralSpreadInfo.spread, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals(1, USD_DECIMALS))
       : undefined;
 
   useEffect(() => {
-    if (collateralSpreadPercent && initialCollateralSpread === undefined) {
+    if (collateralSpreadPercent !== undefined && initialCollateralSpread === undefined) {
       setInitialCollateralSpread(collateralSpreadPercent);
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
@@ -1443,11 +1445,13 @@ export function ConfirmationBox(p: Props) {
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
-              (fundigRate &&
+              (fundigRate !== undefined &&
                 `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(bigMath.abs(fundigRate), 30, 4)}% / 1h`) ||
               undefined
             }
-            borrowFeeRateStr={(borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`) || undefined}
+            borrowFeeRateStr={
+              (borrowingRate !== undefined && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`) || undefined
+            }
             feesType="increase"
           />
           <NetworkFeeRow executionFee={summaryExecutionFee} isAdditionOrdersMsg={isAdditionOrdersMsg} />
@@ -1480,7 +1484,7 @@ export function ConfirmationBox(p: Props) {
 
         <ExchangeInfo.Group>
           {isLimit && renderAvailableLiquidity()}
-          {(swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
+          {(swapSpreadInfo.showSpread && swapSpreadInfo.spread !== undefined && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
               {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>

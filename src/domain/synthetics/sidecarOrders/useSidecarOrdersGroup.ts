@@ -211,7 +211,11 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
   useEffect(() => {
-    if (enablePercentage && totalPositionSizeUsd && totalPositionSizeUsd != (prevTotalPositionSizeUsd ?? 0n)) {
+    if (
+      enablePercentage &&
+      totalPositionSizeUsd !== undefined &&
+      totalPositionSizeUsd != (prevTotalPositionSizeUsd ?? 0n)
+    ) {
       setEntries((prevEntries) => {
         const recalculatedEntries = prevEntries.map((entry) => {
           if (entry.txnType === "cancel") return entry;

@@ -104,11 +104,10 @@ const MainView = memo(() => {
 
   const approxNumberOfOperationsByBalance = useMemo(() => {
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
-    return subAccNativeTokenBalance &&
-      baseFeePerAction &&
-      currentAutoTopUpAmount &&
-      mainAccWrappedTokenBalance &&
-      mainAccNativeTokenBalance
+    return subAccNativeTokenBalance !== undefined &&
+      currentAutoTopUpAmount !== undefined &&
+      mainAccWrappedTokenBalance !== undefined &&
+      mainAccNativeTokenBalance !== undefined
       ? getApproxSubaccountActionsCountByBalance(
           mainAccWrappedTokenBalance,
           subAccNativeTokenBalance,
@@ -262,7 +261,7 @@ const MainView = memo(() => {
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount !== null);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -461,7 +460,7 @@ const MainView = memo(() => {
 
   const needPayTokenApproval = useMemo(
     () =>
-      tokensAllowanceData && baseFeePerAction
+      tokensAllowanceData && baseFeePerAction !== undefined
         ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
         : false,
     [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
@@ -690,7 +689,7 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (topUp &&
+              (topUp !== null &&
                 topUp > 0 &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
@@ -706,7 +705,7 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (wntForAutoTopUps &&
+              (wntForAutoTopUps !== null &&
                 wntForAutoTopUps > 0 &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
@@ -721,7 +720,7 @@ const MainView = memo(() => {
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (maxAutoTopUpAmount &&
+              (maxAutoTopUpAmount !== null &&
                 maxAutoTopUpAmount > 0 &&
                 wrappedTokenData &&
                 formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||

@@ -107,7 +107,7 @@ export function getSwapError(p: {
 
   if (
     !fees?.payTotalFees ||
-    (fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd || 0))
+    (fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
     return [t`Fees exceed Pay amount`];
   }
@@ -222,7 +222,7 @@ export function getIncreaseError(p: {
     }
 
     if (!isLimit) {
-      if (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd || 0n)) {
+      if (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n)) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }
@@ -294,7 +294,7 @@ export function getIncreaseError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
-  if (nextLeverageWithoutPnl) {
+  if (nextLeverageWithoutPnl !== undefined) {
     const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
     if (maxLeverageError) {
@@ -466,11 +466,11 @@ export function getEditCollateralError(p: {
     return [t`Enter an amount`];
   }
 
-  if (isDeposit && depositToken && depositAmount && depositAmount > (depositToken.balance || 0)) {
+  if (isDeposit && depositToken && depositAmount !== undefined && depositAmount > (depositToken.balance ?? 0)) {
     return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
-  if (nextLiqPrice && position?.markPrice) {
+  if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < ethers.MaxUint256 && position?.markPrice < nextLiqPrice) {
       return [t`Invalid liq. price`];
     }
@@ -486,7 +486,7 @@ export function getEditCollateralError(p: {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (position && minCollateralFactor && !isDeposit) {
+  if (position && minCollateralFactor !== undefined && !isDeposit) {
     const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,
@@ -573,11 +573,11 @@ export function getGmSwapError(p: {
       return [t`Fees exceed Pay amount`];
     }
 
-    if (longTokenAmount && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
+    if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
       return [t`Max ${longToken?.symbol} amount exceeded`];
     }
 
-    if (shortTokenAmount && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
+    if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
       return [t`Max ${shortToken?.symbol} amount exceeded`];
     }
   } else if (
@@ -618,7 +618,7 @@ export function getGmSwapError(p: {
       return [t`Insufficient ${longToken?.symbol} liquidity`];
     }
 
-    if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd || 0n)) {
+    if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
       return [t`Insufficient ${shortToken?.symbol} liquidity`];
     }
   }

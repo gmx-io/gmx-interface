@@ -186,8 +186,8 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Wallet`}
           value={formatTokenAmountWithUsd(
-            marketBalance || 0n,
-            marketBalanceUsd || 0n,
+            marketBalance ?? 0n,
+            marketBalanceUsd ?? 0n,
             "GM",
             marketToken?.decimals ?? 18
           )}
@@ -201,7 +201,7 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Total Supply`}
           value={
-            marketTotalSupply && marketTotalSupplyUsd
+            marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
               ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken?.decimals, {
                   displayDecimals: 0,
                 })
@@ -212,7 +212,7 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Buyable`}
           value={
-            mintableInfo && marketTotalSupplyUsd && marketToken ? (
+            mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
               <Tooltip
                 maxAllowedWidth={350}
                 handle={formatTokenAmountWithUsd(

@@ -144,7 +144,7 @@ export const GmTokensTotalBalanceInfo = ({
     );
   }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
 
-  return balance && balanceUsd ? (
+  return balance !== undefined && balanceUsd !== undefined ? (
     <Tooltip
       handle={label}
       className="normal-case"

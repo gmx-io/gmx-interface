@@ -107,7 +107,8 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
       const price = tokenData?.prices.minPrice;
       const decimals = tokenData?.decimals;
-      const usd = price && decimals ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals)) : null;
+      const usd =
+        price !== undefined && decimals ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals)) : null;
       if (usd === null) return;
       total = total + usd;
     });

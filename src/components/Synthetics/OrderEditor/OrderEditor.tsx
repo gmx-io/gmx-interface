@@ -292,7 +292,7 @@ export function OrderEditor(p: Props) {
   }
 
   function getIsMaxLeverageError() {
-    if (isLimitIncreaseOrder && sizeDeltaUsd) {
+    if (isLimitIncreaseOrder && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
       }
@@ -357,7 +357,7 @@ export function OrderEditor(p: Props) {
           userReferralInfo,
         });
 
-        if (nextPositionValues.nextLeverage) {
+        if (nextPositionValues.nextLeverage !== undefined) {
           const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
@@ -378,7 +378,7 @@ export function OrderEditor(p: Props) {
       }
     );
 
-    if (newSizeDeltaUsd) {
+    if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
       helperToast.error(t`No available leverage found`);
@@ -432,10 +432,10 @@ export function OrderEditor(p: Props) {
 
     const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount || p.order.minOutputAmount,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
@@ -480,8 +480,10 @@ export function OrderEditor(p: Props) {
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
-        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, indexPriceDecimals || 2));
+        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        setTriggerPriceInputValue(
+          formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
+        );
       }
 
       setIsInited(true);
