@@ -39,30 +39,42 @@ export function useUserReferralInfoRequest(
   const { totalRebate, discountShare } = useTiers(signer, chainId, tierId);
   const { discountShare: customDiscountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
   const finalDiscountShare = (customDiscountShare ?? 0n) > 0 ? customDiscountShare : discountShare;
-  if (
-    !userReferralCode ||
-    !userReferralCodeString ||
-    !codeOwner ||
-    !tierId ||
-    totalRebate === undefined ||
-    finalDiscountShare === undefined ||
-    !referralCodeForTxn
-  ) {
-    return undefined;
-  }
 
-  return {
+  return useMemo(() => {
+    if (
+      !userReferralCode ||
+      !userReferralCodeString ||
+      !codeOwner ||
+      !tierId ||
+      totalRebate === undefined ||
+      finalDiscountShare === undefined ||
+      !referralCodeForTxn
+    ) {
+      return undefined;
+    }
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+      referralCodeForTxn,
+      attachedOnChain,
+      affiliate: codeOwner,
+      tierId,
+      totalRebate,
+      totalRebateFactor: basisPointsToFloat(totalRebate),
+      discountShare: finalDiscountShare,
+      discountFactor: basisPointsToFloat(finalDiscountShare),
+    };
+  }, [
     userReferralCode,
     userReferralCodeString,
-    referralCodeForTxn,
-    attachedOnChain,
-    affiliate: codeOwner,
+    codeOwner,
     tierId,
     totalRebate,
-    totalRebateFactor: basisPointsToFloat(totalRebate),
-    discountShare: finalDiscountShare,
-    discountFactor: basisPointsToFloat(finalDiscountShare),
-  };
+    finalDiscountShare,
+    referralCodeForTxn,
+    attachedOnChain,
+  ]);
 }
 
 export function useAffiliateTier(signer, chainId, account) {
