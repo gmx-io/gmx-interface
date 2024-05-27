@@ -193,7 +193,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       }
 
       const positionFeeBeforeDiscount = getFeeItem(
-        marketIncreasePositionAmounts.positionFeeUsd - marketIncreasePositionAmounts.feeDiscountUsd,
+        -(marketIncreasePositionAmounts.positionFeeUsd + marketIncreasePositionAmounts.feeDiscountUsd),
         marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
