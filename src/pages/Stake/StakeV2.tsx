@@ -307,7 +307,7 @@ function UnstakeModal(props: {
   const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
-  let burnAmount;
+  let burnAmount = 0n;
 
   const govTokenAmount = useGovTokenAmount(chainId);
 
@@ -335,11 +335,10 @@ function UnstakeModal(props: {
     processedData.esGmxInStakedGmx !== undefined &&
     processedData.gmxInStakedGmx !== undefined
   ) {
-    unstakeBonusLostPercentage = bigMath.mulDiv(
-      amount + burnAmount,
-      BASIS_POINTS_DIVISOR_BIGINT,
-      multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx
-    );
+    const divisor = multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+    if (divisor !== 0n) {
+      unstakeBonusLostPercentage = bigMath.mulDiv(amount + burnAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+    }
   }
 
   const votingPowerBurnAmount =
