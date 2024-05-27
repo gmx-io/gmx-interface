@@ -74,12 +74,12 @@ export const selectConfirmationBoxSidecarOrdersTotalSizeUsd = createSelector((q)
 
   let result = 0n;
 
-  if (existingPosition?.sizeInUsd) {
-    result = result + (existingPosition?.sizeInUsd ?? 0n);
+  if (existingPosition?.sizeInUsd !== undefined) {
+    result = result + existingPosition?.sizeInUsd;
   }
 
-  if (increaseAmounts?.sizeDeltaUsd) {
-    result = result + (increaseAmounts?.sizeDeltaUsd ?? 0n);
+  if (increaseAmounts?.sizeDeltaUsd !== undefined) {
+    result = result + increaseAmounts?.sizeDeltaUsd;
   }
 
   limitEntries?.forEach((e) => {
