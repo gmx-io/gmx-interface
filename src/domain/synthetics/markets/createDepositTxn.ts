@@ -32,8 +32,12 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
-  const isNativeLongDeposit = Boolean(p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount);
-  const isNativeShortDeposit = Boolean(p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount);
+  const isNativeLongDeposit = Boolean(
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+  );
+  const isNativeShortDeposit = Boolean(
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+  );
 
   let wntDeposit = 0n;
 

@@ -268,7 +268,7 @@ export default function ClaimEsGmx() {
       return t`No esGMX to claim`;
     }
 
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
 

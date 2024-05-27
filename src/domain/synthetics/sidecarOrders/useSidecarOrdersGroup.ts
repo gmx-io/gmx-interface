@@ -29,7 +29,12 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: bigint | null) => {
-      if (!sizeUsd || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
+      if (
+        sizeUsd === undefined ||
+        sizeUsd === null ||
+        totalPositionSizeUsd === undefined ||
+        totalPositionSizeUsd <= 0
+      ) {
         return null;
       }
 
@@ -40,7 +45,13 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const getSizeUsdByPercentage = useCallback(
     (percentage: bigint | null) => {
-      if (!percentage || !totalPositionSizeUsd || totalPositionSizeUsd < 0) {
+      if (
+        percentage === undefined ||
+        percentage === null ||
+        percentage === 0n ||
+        totalPositionSizeUsd === undefined ||
+        totalPositionSizeUsd <= 0
+      ) {
         return null;
       }
 
@@ -205,7 +216,11 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);
   useEffect(() => {
-    if (enablePercentage && totalPositionSizeUsd && totalPositionSizeUsd != (prevTotalPositionSizeUsd ?? 0n)) {
+    if (
+      enablePercentage &&
+      totalPositionSizeUsd !== undefined &&
+      totalPositionSizeUsd != (prevTotalPositionSizeUsd ?? 0n)
+    ) {
       setEntries((prevEntries) => {
         const recalculatedEntries = prevEntries.map((entry) => {
           if (entry.txnType === "cancel") return entry;

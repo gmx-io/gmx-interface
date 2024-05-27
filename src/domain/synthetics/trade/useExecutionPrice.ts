@@ -20,7 +20,12 @@ export function useDebugExecutionPrice(
   const { marketInfo, sizeInUsd, sizeInTokens, sizeDeltaUsd, skip, isLong, overrideIndexTokenPrice } = p;
 
   const key =
-    !skip && marketInfo && sizeInUsd && sizeInTokens && sizeDeltaUsd && isLong !== undefined
+    !skip &&
+    marketInfo &&
+    sizeInUsd !== undefined &&
+    sizeInTokens !== undefined &&
+    sizeDeltaUsd !== undefined &&
+    isLong !== undefined
       ? [marketInfo.marketTokenAddress, sizeInUsd.toString(), sizeInTokens.toString(), sizeDeltaUsd.toString(), isLong]
       : null;
 

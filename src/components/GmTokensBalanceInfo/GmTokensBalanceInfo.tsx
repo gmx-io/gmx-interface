@@ -39,10 +39,10 @@ export const GmTokensBalanceInfo = ({
   );
 
   const renderTooltipContent = useCallback(() => {
-    if (!earnedTotal && !earnedRecently) return null;
+    if (earnedTotal === undefined && earnedRecently === undefined) return null;
     return (
       <>
-        {earnedTotal && (
+        {earnedTotal !== undefined && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
@@ -50,7 +50,7 @@ export const GmTokensBalanceInfo = ({
             value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
-        {earnedRecently && (
+        {earnedRecently !== undefined && (
           <StatsTooltipRow
             showDollar={false}
             textClassName={getPositiveOrNegativeClass(earnedRecently)}
@@ -65,7 +65,7 @@ export const GmTokensBalanceInfo = ({
       </>
     );
   }, [daysConsidered, earnedRecently, earnedTotal]);
-  if (!earnedTotal && !earnedRecently) {
+  if (earnedTotal === undefined && earnedRecently === undefined) {
     return content;
   }
 
@@ -144,7 +144,7 @@ export const GmTokensTotalBalanceInfo = ({
     );
   }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
 
-  return balance && balanceUsd ? (
+  return balance !== undefined && balanceUsd !== undefined ? (
     <Tooltip
       handle={label}
       className="normal-case"

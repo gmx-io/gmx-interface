@@ -16,7 +16,7 @@ import {
 import { expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+
 const { ZeroAddress } = ethers;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -66,7 +66,7 @@ export function getUsd(
   }
   const info = getTokenInfo(infoTokens, tokenAddress);
   const price = getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd);
-  if (!price) {
+  if (price === undefined) {
     return;
   }
 
@@ -96,7 +96,7 @@ export function getTokenAmountFromUsd(
     return;
   }
 
-  const price = opts.overridePrice || (opts.max ? info.maxPrice : info.minPrice);
+  const price = opts.overridePrice ?? (opts.max ? info.maxPrice : info.minPrice);
 
   if (price === undefined || price <= 0) {
     return;
@@ -113,7 +113,7 @@ export function getTriggerPrice(
   triggerPriceUsd?: bigint
 ) {
   // Limit/stop orders are executed with price specified by user
-  if (orderOption && orderOption !== MARKET && triggerPriceUsd) {
+  if (orderOption && orderOption !== MARKET && triggerPriceUsd !== undefined) {
     return triggerPriceUsd;
   }
 
@@ -121,10 +121,10 @@ export function getTriggerPrice(
   if (!info) {
     return;
   }
-  if (max && !info.maxPrice) {
+  if (max && info.maxPrice === undefined) {
     return;
   }
-  if (!max && !info.minPrice) {
+  if (!max && info.minPrice === undefined) {
     return;
   }
   return max ? info.maxPrice : info.minPrice;
@@ -153,7 +153,15 @@ export function getLowestFeeTokenForBuyGlp(
   fromTokenAddress: string,
   swapUsdMin: bigint
 ): { token: Token; fees: number; amountLeftToDeposit: bigint } | undefined {
-  if (!chainId || !toAmount || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights || !swapUsdMin) {
+  if (
+    !chainId ||
+    toAmount === undefined ||
+    !infoTokens ||
+    glpPrice === undefined ||
+    usdgSupply === undefined ||
+    totalTokenWeights === undefined ||
+    swapUsdMin === undefined
+  ) {
     return;
   }
 
@@ -177,7 +185,12 @@ export function getLowestFeeTokenForBuyGlp(
 
     let amountLeftToDeposit = 0n;
 
-    if (fromToken.maxUsdgAmount && fromToken.maxUsdgAmount > 0 && fromToken.usdgAmount && fromToken.usdgAmount > 0) {
+    if (
+      fromToken.maxUsdgAmount !== undefined &&
+      fromToken.maxUsdgAmount > 0 &&
+      fromToken.usdgAmount !== undefined &&
+      fromToken.usdgAmount > 0
+    ) {
       amountLeftToDeposit =
         ((fromToken.maxUsdgAmount - fromToken.usdgAmount) * expandDecimals(1, USD_DECIMALS)) /
         expandDecimals(1, USDG_DECIMALS);
@@ -197,7 +210,7 @@ export function getLowestFeeTokenForBuyGlp(
 
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
-    : tokensData.sort((a, b) => bigMath.sign(b.amountLeftToDeposit - a.amountLeftToDeposit))[0];
+    : tokensData.sort((a, b) => Number(b.amountLeftToDeposit - a.amountLeftToDeposit))[0];
 }
 
 export function getMostAbundantStableToken(chainId: number, infoTokens: InfoTokens) {
@@ -207,7 +220,7 @@ export function getMostAbundantStableToken(chainId: number, infoTokens: InfoToke
 
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const info = getTokenInfo(infoTokens, whitelistedTokens[i].address);
-    if (!info.isStable || !info.availableAmount) {
+    if (!info.isStable || info.availableAmount === undefined) {
       continue;
     }
 
@@ -222,13 +235,13 @@ export function getMostAbundantStableToken(chainId: number, infoTokens: InfoToke
 }
 
 export function shouldRaiseGasError(token: TokenInfo, amount?: bigint) {
-  if (!amount) {
+  if (amount === undefined) {
     return false;
   }
   if (token.address !== ZeroAddress) {
     return false;
   }
-  if (!token.balance) {
+  if (token.balance === undefined) {
     return false;
   }
   if (amount >= token.balance) {
@@ -269,7 +282,7 @@ export function getMidPrice(prices: TokenPrices) {
 
 // calculates the minimum amount of native currency that should be left to be used as gas fees
 export function getMinResidualAmount(decimals?: number, price?: bigint) {
-  if (!decimals || !price) {
+  if (!decimals || price === undefined) {
     return 0n;
   }
 

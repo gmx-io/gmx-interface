@@ -175,8 +175,8 @@ export function OrderEditor(p: Props) {
     isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
       ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
-      ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
-      : undefined;
+        ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
+        : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
@@ -186,7 +186,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isSwapOrderType(p.order.orderType)) {
-      if (!triggerRatio?.ratio || triggerRatio?.ratio < 0 || !minOutputAmount || minOutputAmount < 0) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
         return t`Enter a ratio`;
       }
 
@@ -207,15 +207,15 @@ export function OrderEditor(p: Props) {
 
     const positionOrder = p.order as PositionOrderInfo;
 
-    if (!markPrice) {
+    if (markPrice === undefined) {
       return t`Loading...`;
     }
 
-    if (!sizeDeltaUsd || sizeDeltaUsd < 0) {
+    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
       return t`Enter an amount`;
     }
 
-    if (!triggerPrice || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0) {
       return t`Enter a price`;
     }
 
@@ -240,7 +240,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isTriggerDecreaseOrderType(p.order.orderType)) {
-      if (!markPrice) {
+      if (markPrice === undefined) {
         return t`Loading...`;
       }
 
@@ -292,8 +292,8 @@ export function OrderEditor(p: Props) {
   }
 
   function getIsMaxLeverageError() {
-    if (isLimitIncreaseOrder && sizeDeltaUsd) {
-      if (!nextPositionValuesWithoutPnlForIncrease?.nextLeverage) {
+    if (isLimitIncreaseOrder && sizeDeltaUsd !== undefined) {
+      if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
       }
 
@@ -315,7 +315,7 @@ export function OrderEditor(p: Props) {
     const marketInfo = positionOrder.marketInfo;
     const collateralToken = positionOrder.targetCollateralToken;
 
-    if (!positionIndexToken || !fromToken || !minCollateralUsd) return;
+    if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
 
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,
@@ -357,7 +357,7 @@ export function OrderEditor(p: Props) {
           userReferralInfo,
         });
 
-        if (nextPositionValues.nextLeverage) {
+        if (nextPositionValues.nextLeverage !== undefined) {
           const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
@@ -378,7 +378,7 @@ export function OrderEditor(p: Props) {
       }
     );
 
-    if (newSizeDeltaUsd) {
+    if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
       helperToast.error(t`No available leverage found`);
@@ -432,10 +432,10 @@ export function OrderEditor(p: Props) {
 
     const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount || p.order.minOutputAmount,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
@@ -480,8 +480,10 @@ export function OrderEditor(p: Props) {
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
-        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, indexPriceDecimals || 2));
+        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        setTriggerPriceInputValue(
+          formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
+        );
       }
 
       setIsInited(true);

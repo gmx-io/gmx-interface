@@ -27,11 +27,9 @@ export function useGasPrice(chainId: number) {
             let gasPrice = feeData.gasPrice ?? 0n;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-              // the wallet provider might not return maxPriorityFeePerGas in feeData
-              // in which case we should fallback to the usual getGasPrice flow handled below
-              if (feeData && feeData.maxPriorityFeePerGas) {
-                gasPrice = gasPrice + feeData.maxPriorityFeePerGas;
-              }
+              const maxPriorityFeePerGas = feeData?.maxPriorityFeePerGas || 1500000000n;
+
+              gasPrice = gasPrice + maxPriorityFeePerGas;
             }
 
             if (settings.executionFeeBufferBps) {

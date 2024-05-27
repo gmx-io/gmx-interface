@@ -234,7 +234,7 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
       const collateralTokenPrice = q((s) => selectTokensData(s)?.[position.collateralToken]?.prices.minPrice);
       const collateralTokenDecimals = q((s) => selectTokensData(s)?.[position.collateralToken]?.decimals);
 
-      if (!collateralTokenPrice || !collateralTokenDecimals) return undefined;
+      if (collateralTokenPrice === undefined || !collateralTokenDecimals) return undefined;
 
       const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
 

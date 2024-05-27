@@ -287,7 +287,7 @@ export default function BeginAccountTransfer() {
     () =>
       Boolean(
         parsedReceiver &&
-          feeGmxTrackerBalance &&
+          feeGmxTrackerBalance !== undefined &&
           parsedReceiver !== zeroAddress &&
           tokensAllowanceData &&
           getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)

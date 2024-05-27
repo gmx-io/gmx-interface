@@ -90,10 +90,10 @@ export function GmConfirmationBox({
     const addresses: string[] = [];
 
     if (isDeposit) {
-      if (longTokenAmount && longToken) {
+      if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
         addresses.push(longToken.address);
       }
-      if (shortTokenAmount && shortToken) {
+      if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
         addresses.push(shortToken.address);
       }
     } else {
@@ -118,7 +118,8 @@ export function GmConfirmationBox({
 
     if (isDeposit) {
       if (
-        longTokenAmount &&
+        longTokenAmount !== undefined &&
+        longTokenAmount > 0 &&
         longToken &&
         getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
       ) {
@@ -126,7 +127,8 @@ export function GmConfirmationBox({
       }
 
       if (
-        shortTokenAmount &&
+        shortTokenAmount !== undefined &&
+        shortTokenAmount > 0 &&
         shortToken &&
         getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
       ) {
@@ -174,6 +176,9 @@ export function GmConfirmationBox({
       txnPromise
         .then(() => {
           onSubmitted();
+        })
+        .catch((error) => {
+          throw error;
         })
         .finally(() => {
           setIsSubmitting(false);
@@ -240,7 +245,15 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData || !signer) {
+    if (
+      !account ||
+      !executionFee ||
+      !marketToken ||
+      !market ||
+      marketTokenAmount === undefined ||
+      !tokensData ||
+      !signer
+    ) {
       return Promise.resolve();
     }
 
@@ -255,8 +268,8 @@ export function GmConfirmationBox({
       initialShortTokenAddress,
       longTokenSwapPath: [],
       shortTokenSwapPath: [],
-      longTokenAmount: longTokenAmount || 0n,
-      shortTokenAmount: shortTokenAmount || 0n,
+      longTokenAmount: longTokenAmount ?? 0n,
+      shortTokenAmount: shortTokenAmount ?? 0n,
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
@@ -274,8 +287,8 @@ export function GmConfirmationBox({
       !market ||
       !marketToken ||
       !executionFee ||
-      !longTokenAmount ||
-      !shortTokenAmount ||
+      longTokenAmount === undefined ||
+      shortTokenAmount === undefined ||
       !tokensData ||
       !signer
     ) {
@@ -314,7 +327,7 @@ export function GmConfirmationBox({
     className?: string;
     overrideSymbol?: string;
   }) => {
-    if (!amount || !usd || !token) return;
+    if (amount === undefined || usd === undefined || !token) return;
     return (
       <div className={className ?? ""}>
         <div className="trade-token-amount">

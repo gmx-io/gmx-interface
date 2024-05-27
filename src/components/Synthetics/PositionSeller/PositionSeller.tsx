@@ -202,7 +202,7 @@ export function PositionSeller(p: Props) {
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
@@ -256,7 +256,7 @@ export function PositionSeller(p: Props) {
     tradeFlags,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd || 0) : false;
+  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
   const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
@@ -339,10 +339,10 @@ export function PositionSeller(p: Props) {
     if (
       !tokensData ||
       !position ||
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount == undefined ||
       !receiveToken?.address ||
-      !receiveUsd ||
-      !decreaseAmounts?.acceptablePrice ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
       !signer ||
       !orderType
     ) {
@@ -365,7 +365,7 @@ export function PositionSeller(p: Props) {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || 0n,
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
         receiveTokenAddress: receiveToken.address,
         swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -426,7 +426,7 @@ export function PositionSeller(p: Props) {
   useEffect(() => {
     if (isTrigger && decreaseAmounts) {
       if (
-        !defaultTriggerAcceptablePriceImpactBps ||
+        defaultTriggerAcceptablePriceImpactBps === undefined ||
         defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));

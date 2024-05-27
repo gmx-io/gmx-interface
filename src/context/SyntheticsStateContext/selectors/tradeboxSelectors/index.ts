@@ -204,7 +204,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
 
   const fromTokenPrice = fromToken?.prices.minPrice;
 
-  if (!fromToken || !toToken || !fromTokenPrice) {
+  if (!fromToken || !toToken || fromTokenPrice === undefined) {
     return undefined;
   }
 
@@ -341,10 +341,10 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   if (!tokensData) return undefined;
 
   const gasPrice = q(selectGasPrice);
-  if (!gasPrice) return undefined;
+  if (gasPrice === undefined) return undefined;
 
   const estimatedGas = q(selectTradeboxEstimatedGas);
-  if (!estimatedGas) return undefined;
+  if (estimatedGas === null || estimatedGas === undefined) return undefined;
 
   const chainId = q(selectChainId);
 
@@ -656,7 +656,7 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
   const fromTokenPrice = fromToken?.prices.minPrice;
   const markPrice = q(selectTradeboxMarkPrice);
 
-  if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
+  if (!isSwap || !fromToken || !toToken || fromTokenPrice === undefined || markPrice === undefined) {
     return {};
   }
 
@@ -667,12 +667,12 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
     toPrice: markPrice,
   });
 
-  if (!triggerRatioValue) {
+  if (triggerRatioValue === undefined) {
     return { markRatio };
   }
 
   const triggerRatio: TokensRatio = {
-    ratio: triggerRatioValue && triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
+    ratio: triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -730,9 +730,9 @@ export const selectTradeboxExecutionPrice = createSelector(function selectTradeb
   const { isLong } = q(selectTradeboxTradeFlags);
 
   if (!marketInfo) return null;
-  if (!fees?.positionPriceImpact?.deltaUsd) return null;
+  if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
   if (!decreaseAmounts) return null;
-  if (!triggerPrice) return null;
+  if (triggerPrice === undefined) return null;
 
   return getExecutionPriceForDecrease(
     triggerPrice,

@@ -76,7 +76,7 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
       let incentivesApr = 0n;
 
-      if (poolValue && poolValue > 0) {
+      if (poolValue !== undefined && poolValue > 0) {
         incentivesApr = bigMath.mulDiv(
           bigMath.mulDiv(arbTokensAmount, arbTokenPrice, poolValue),
           yearMultiplier,

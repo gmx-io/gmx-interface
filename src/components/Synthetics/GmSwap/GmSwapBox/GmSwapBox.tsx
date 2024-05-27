@@ -67,7 +67,6 @@ import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 import "./GmSwapBox.scss";
 import { bigMath } from "lib/bigmath";
 
-
 type SearchParams = {
   market?: string;
   operation?: string;
@@ -350,13 +349,13 @@ export function GmSwapBox(p: Props) {
     }
 
     const longTokenAmount = marketInfo.isSameCollaterals
-      ? halfOfLong || BN_ZERO
-      : longTokenInputState?.amount || BN_ZERO;
+      ? halfOfLong ?? BN_ZERO
+      : longTokenInputState?.amount ?? BN_ZERO;
     const shortTokenAmount = marketInfo.isSameCollaterals
       ? longTokenInputState?.amount !== undefined
         ? longTokenInputState?.amount - longTokenAmount
-        : undefined || BN_ZERO
-      : shortTokenInputState?.amount || BN_ZERO;
+        : undefined ?? BN_ZERO
+      : shortTokenInputState?.amount ?? BN_ZERO;
 
     return getWithdrawalAmounts({
       marketInfo,
@@ -382,7 +381,7 @@ export function GmSwapBox(p: Props) {
   const amounts = isDeposit ? depositAmounts : withdrawalAmounts;
 
   const { fees, executionFee } = useMemo(() => {
-    if (!gasLimits || !gasPrice || !tokensData || !amounts) {
+    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts) {
       return {};
     }
 
@@ -776,7 +775,7 @@ export function GmSwapBox(p: Props) {
         setFirstTokenAddress(tokenOptions[0].address);
       }
 
-      if (isSingle && secondTokenAddress && marketInfo && secondTokenAmount) {
+      if (isSingle && secondTokenAddress && marketInfo && secondTokenAmount !== undefined && secondTokenAmount > 0) {
         const secondTokenPoolType = getTokenPoolType(marketInfo, secondTokenAddress);
         setFocusedInput(secondTokenPoolType === "long" ? "longCollateral" : "shortCollateral");
         setSecondTokenAddress(undefined);
@@ -827,7 +826,7 @@ export function GmSwapBox(p: Props) {
   function onMaxClickFirstToken() {
     if (firstToken?.balance) {
       let maxAvailableAmount = firstToken.isNative
-        ? firstToken.balance - (minResidualAmount || 0n)
+        ? firstToken.balance - (minResidualAmount ?? 0n)
         : firstToken.balance;
 
       if (maxAvailableAmount < 0) {
@@ -863,9 +862,8 @@ export function GmSwapBox(p: Props) {
     }
   }
 
-  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS)
-  const localizedModeLabels = useLocalizedMap(MODE_LABELS)
-
+  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
   return (
     <div className={`App-box GmSwapBox`}>
@@ -909,7 +907,9 @@ export function GmSwapBox(p: Props) {
                 firstToken?.balance &&
                 (firstTokenAmount === undefined || firstTokenAmount !== firstToken.balance) &&
                 (firstToken?.isNative
-                  ? minResidualAmount && firstToken?.balance && firstToken.balance > minResidualAmount
+                  ? minResidualAmount !== undefined &&
+                    firstToken?.balance !== undefined &&
+                    firstToken.balance > minResidualAmount
                   : true)) ||
               false
             }
@@ -1098,7 +1098,7 @@ export function GmSwapBox(p: Props) {
                     )}
                   />
                 ) : (
-                  <span className="muted text-yellow-500 text-14">
+                  <span className="muted text-14 text-yellow-500">
                     <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 )}

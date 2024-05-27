@@ -120,7 +120,7 @@ function MigrationModal(props) {
   }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
-  const needApproval = tokenAllowance && amount && amount > tokenAllowance;
+  const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   let baseAmount;
   let bonusAmount;
@@ -130,7 +130,7 @@ function MigrationModal(props) {
   let bonusAmountUsd;
   let totalAmountUsd;
 
-  if (amount) {
+  if (amount !== undefined) {
     baseAmount = bigMath.mulDiv(amount, token.price, gmxPrice);
     bonusAmount = bigMath.mulDiv(baseAmount, token.bonus, 100n);
     totalAmount = baseAmount + bonusAmount;
@@ -141,7 +141,7 @@ function MigrationModal(props) {
   }
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
     if (maxAmount && amount > maxAmount) {
@@ -255,14 +255,14 @@ function MigrationModal(props) {
           <div className="App-info-row">
             <div className="App-info-label">{token.bonus > 0 ? "Base Tokens" : "To Receive"}</div>
             <div className="align-right">
-              {baseAmount &&
+              {baseAmount !== undefined &&
                 `${formatAmount(baseAmount, 18, 4, true)} GMX ($${formatAmount(
                   baseAmountUsd,
                   18 + decimals,
                   2,
                   true
                 )})`}
-              {!baseAmount && "-"}
+              {baseAmount === undefined && "-"}
             </div>
           </div>
           {token.bonus > 0 && (
@@ -271,14 +271,14 @@ function MigrationModal(props) {
                 <Trans>Bonus Tokens</Trans>
               </div>
               <div className="align-right">
-                {bonusAmount &&
+                {bonusAmount !== undefined &&
                   `${formatAmount(bonusAmount, 18, 4, true)} GMX ($${formatAmount(
                     bonusAmountUsd,
                     18 + decimals,
                     2,
                     true
                   )})`}
-                {!bonusAmount && "-"}
+                {bonusAmount === undefined && "-"}
               </div>
             </div>
           )}
@@ -288,14 +288,14 @@ function MigrationModal(props) {
                 <Trans>To Receive</Trans>
               </div>
               <div className="align-right">
-                {totalAmount &&
+                {totalAmount !== undefined &&
                   `${formatAmount(totalAmount, 18, 4, true)} GMX ($${formatAmount(
                     totalAmountUsd,
                     18 + decimals,
                     2,
                     true
                   )})`}
-                {!totalAmount && "-"}
+                {totalAmount === undefined && "-"}
               </div>
             </div>
           )}

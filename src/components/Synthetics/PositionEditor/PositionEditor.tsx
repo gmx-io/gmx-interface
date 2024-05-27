@@ -185,8 +185,8 @@ export function PositionEditor(p: Props) {
 
   const needCollateralApproval =
     isDeposit &&
-    tokenAllowance &&
-    collateralDeltaAmount &&
+    tokenAllowance !== undefined &&
+    collateralDeltaAmount !== undefined &&
     selectedCollateralAddress !== ethers.ZeroAddress &&
     collateralDeltaAmount > tokenAllowance;
 
@@ -196,7 +196,7 @@ export function PositionEditor(p: Props) {
     const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
     let _minCollateralUsd = minCollateralUsdForLeverage;
 
-    if (minCollateralUsd && minCollateralUsd > _minCollateralUsd) {
+    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
       _minCollateralUsd = minCollateralUsd;
     }
 
@@ -214,11 +214,11 @@ export function PositionEditor(p: Props) {
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
-    const collateralBasisUsd = isDeposit ? position.collateralUsd + (collateralDeltaUsd || 0n) : position.collateralUsd;
+    const collateralBasisUsd = isDeposit ? position.collateralUsd + (collateralDeltaUsd ?? 0n) : position.collateralUsd;
 
     const fundingFee = getFeeItem(-position.pendingFundingFeesUsd, collateralBasisUsd);
     const borrowFee = getFeeItem(-position.pendingBorrowingFeesUsd, collateralBasisUsd);
@@ -246,7 +246,13 @@ export function PositionEditor(p: Props) {
   );
 
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
-    if (!position || !collateralDeltaUsd || collateralDeltaUsd < 0 || !minCollateralUsd || !fees?.totalFees) {
+    if (
+      !position ||
+      collateralDeltaUsd === undefined ||
+      collateralDeltaUsd < 0 ||
+      minCollateralUsd === undefined ||
+      !fees?.totalFees
+    ) {
       return {};
     }
 
@@ -361,10 +367,10 @@ export function PositionEditor(p: Props) {
   ]);
 
   const detectAndSetMaxSize = useCallback(() => {
-    if (!maxWithdrawAmount) return;
+    if (maxWithdrawAmount === undefined) return;
     if (!collateralToken) return;
     if (!position) return;
-    if (!minCollateralFactor) return;
+    if (minCollateralFactor === undefined) return;
 
     const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
       BigInt(1),
@@ -405,11 +411,11 @@ export function PositionEditor(p: Props) {
     }
 
     if (
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
-      !markPrice ||
+      markPrice === undefined ||
       !position?.indexToken ||
-      !collateralDeltaAmount ||
+      collateralDeltaAmount === undefined ||
       !selectedCollateralAddress ||
       !signer
     ) {
@@ -451,7 +457,7 @@ export function PositionEditor(p: Props) {
         },
       });
     } else {
-      if (!receiveUsd) {
+      if (receiveUsd === undefined) {
         return;
       }
 
@@ -540,7 +546,9 @@ export function PositionEditor(p: Props) {
   );
 
   const showMaxOnDeposit = collateralToken?.isNative
-    ? minResidualAmount && collateralToken?.balance !== undefined && collateralToken.balance > minResidualAmount
+    ? minResidualAmount !== undefined &&
+      collateralToken?.balance !== undefined &&
+      collateralToken.balance > minResidualAmount
     : true;
 
   const renderErrorTooltipContent = useCallback(() => errorTooltipContent, [errorTooltipContent]);
@@ -619,7 +627,7 @@ export function PositionEditor(p: Props) {
                     (collateralDeltaAmount === undefined ||
                       collateralDeltaAmount != collateralToken?.balance ||
                       collateralDeltaAmount === undefined)
-                  : maxWithdrawAmount &&
+                  : maxWithdrawAmount !== undefined &&
                     (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false
               }
               showPercentSelector={!isDeposit}
@@ -635,7 +643,7 @@ export function PositionEditor(p: Props) {
               }}
               onClickMax={() => {
                 let maxDepositAmount = collateralToken?.isNative
-                  ? collateralToken!.balance! - BigInt(minResidualAmount || 0)
+                  ? collateralToken!.balance! - BigInt(minResidualAmount ?? 0)
                   : collateralToken!.balance!;
 
                 if (maxDepositAmount < 0) {
@@ -727,7 +735,11 @@ export function PositionEditor(p: Props) {
                   <div className="align-right">
                     <ValueTransition
                       from={formatUsd(position?.collateralUsd)!}
-                      to={collateralDeltaUsd && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
+                      to={
+                        collateralDeltaUsd !== undefined && collateralDeltaUsd > 0
+                          ? formatUsd(nextCollateralUsd)
+                          : undefined
+                      }
                     />
                   </div>
                 </div>

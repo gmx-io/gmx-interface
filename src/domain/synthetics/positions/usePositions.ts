@@ -220,7 +220,7 @@ export function useOptimisticPositions(p: {
         : undefined;
 
       const pendingUpdate =
-        pendingPositionsUpdates[key] && pendingPositionsUpdates[key]!.updatedAt + MAX_PENDING_UPDATE_AGE > now
+        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
           ? pendingPositionsUpdates[key]
           : undefined;
 
@@ -278,10 +278,12 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.pendingUpdate = undefined;
   nextPosition.isOpening = false;
 
+  // eslint-disable-next-line local-rules/no-logical-bigint
   if ((event as PositionIncreaseEvent).increasedAtBlock) {
     nextPosition.increasedAtBlock = (event as PositionIncreaseEvent).increasedAtBlock;
   }
 
+  // eslint-disable-next-line local-rules/no-logical-bigint
   if ((event as PositionDecreaseEvent).decreasedAtBlock) {
     nextPosition.decreasedAtBlock = (event as PositionDecreaseEvent).decreasedAtBlock;
   }
@@ -299,9 +301,9 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     marketAddress,
     collateralTokenAddress: collateralAddress,
     isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd || 0n,
-    collateralAmount: pendingUpdate.collateralDeltaAmount || 0n,
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens || 0n,
+    sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
+    collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
+    sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
     increasedAtBlock: pendingUpdate.updatedAtBlock,
     decreasedAtBlock: 0n,
     pendingBorrowingFeesUsd: 0n,

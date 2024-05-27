@@ -9,13 +9,13 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   const gasPrice = feeData.gasPrice;
 
   if (maxGasPrice) {
-    if (gasPrice && gasPrice > maxGasPrice) {
+    if (gasPrice !== undefined && gasPrice !== null && gasPrice > maxGasPrice) {
       maxGasPrice = gasPrice;
     }
 
     // the wallet provider might not return maxPriorityFeePerGas in feeData
     // in which case we should fallback to the usual getGasPrice flow handled below
-    if (feeData && feeData.maxPriorityFeePerGas) {
+    if (feeData && feeData.maxPriorityFeePerGas !== undefined && feeData.maxPriorityFeePerGas !== null) {
       txnOpts.maxFeePerGas = maxGasPrice;
       txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas + premium;
       return;

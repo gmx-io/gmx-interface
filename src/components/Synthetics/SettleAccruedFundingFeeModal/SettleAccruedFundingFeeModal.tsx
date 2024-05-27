@@ -69,7 +69,7 @@ export function SettleAccruedFundingFeeModal({
   }, [isVisible]);
 
   const { executionFee, feeUsd } = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) return {};
+    if (!gasLimits || !tokensData || gasPrice === undefined) return {};
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
     const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
     return {
@@ -98,7 +98,7 @@ export function SettleAccruedFundingFeeModal({
   const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer || !chainId || !executionFee || !tokensData) return;
+    if (!account || !signer || !chainId || executionFee === undefined || !tokensData) return;
 
     setIsSubmitting(true);
 

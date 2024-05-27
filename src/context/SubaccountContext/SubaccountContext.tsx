@@ -104,7 +104,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   // fee that is used as a approx basis to calculate
   // costs of subaccount actions
   const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) return [null, null];
+    if (!gasLimits || !tokensData || gasPrice === undefined) return [null, null];
 
     const approxNetworkGasLimit =
       applyFactor(
@@ -304,7 +304,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       !active ||
       !privateKey ||
       insufficientFunds ||
-      !remaining ||
+      remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;
@@ -334,7 +334,7 @@ export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefin
   const required = (requiredBalance ?? defaultExecutionFee ?? 0n) + networkFee;
 
   if (!isSubaccountActive) return false;
-  if (!nativeTokenBalance) return false;
+  if (nativeTokenBalance === undefined) return false;
 
   return required > nativeTokenBalance;
 }
@@ -351,7 +351,7 @@ export function useMainAccountInsufficientFunds(requiredBalance: bigint | undefi
   const required = (requiredBalance ?? defaultExecutionFee) + networkFee;
 
   if (!isSubaccountActive) return false;
-  if (!wntBalance) return false;
+  if (wntBalance === undefined) return false;
 
   return required > wntBalance;
 }

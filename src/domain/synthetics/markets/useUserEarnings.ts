@@ -190,7 +190,7 @@ export const useUserEarnings = (chainId: number) => {
           const token = marketTokensData[marketAddress];
           const balance = token.balance;
 
-          if (!balance || balance == 0n) return;
+          if (balance === undefined || balance == 0n) return;
 
           const price = token.prices.maxPrice;
 

@@ -88,17 +88,22 @@ export const useTradeboxPoolWarnings = (
       ?.bps;
 
   const improvedOpenFeesDeltaBps =
-    increaseAmounts?.acceptablePriceDeltaBps &&
-    (marketsOptions.minOpenFeesBps || BN_ZERO) -
-      (positionFeeBeforeDiscountBps || BN_ZERO) -
-      increaseAmounts.acceptablePriceDeltaBps;
+    increaseAmounts?.acceptablePriceDeltaBps !== undefined
+      ? (marketsOptions.minOpenFeesBps ?? BN_ZERO) -
+        (positionFeeBeforeDiscountBps ?? BN_ZERO) -
+        increaseAmounts.acceptablePriceDeltaBps
+      : undefined;
 
   const availableIndexTokenStat = marketsOptions.availableIndexTokenStat;
 
   const bestNetFee = isLong ? availableIndexTokenStat?.bestNetFeeLong : availableIndexTokenStat?.bestNetFeeShort;
   const currentNetFee = isLong ? currentMarketStat?.netFeeLong : currentMarketStat?.netFeeShort;
   const improvedNetRateAbsDelta =
-    currentMarketStat && bestNetFee && currentNetFee && bigMath.abs(bestNetFee - currentNetFee);
+    (currentMarketStat &&
+      bestNetFee !== undefined &&
+      currentNetFee !== undefined &&
+      bigMath.abs(bestNetFee - currentNetFee)) ||
+    undefined;
   const bestNetFeeMarket = getByKey(
     marketsInfoData,
     isLong

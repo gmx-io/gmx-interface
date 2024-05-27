@@ -11,7 +11,7 @@ import { getServerBaseUrl } from "config/backend";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { getProvider } from "./rpc";
-import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
+import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
@@ -73,16 +73,8 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;
 
-// FIXME check me
 export function deserialize(data) {
-  for (const [key, value] of Object.entries(data) as any) {
-    try {
-      data[key] = BigInt(value);
-    } catch (err) {
-      // not a bigint
-    }
-  }
-  return data;
+  return deserializeBigIntsInObject(data);
 }
 
 export function isHomeSite() {
@@ -90,7 +82,7 @@ export function isHomeSite() {
 }
 
 export function getMarginFee(sizeDelta: bigint) {
-  if (!sizeDelta) {
+  if (sizeDelta === undefined) {
     return 0n;
   }
   const afterFeeUsd =
@@ -149,7 +141,7 @@ export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecima
 }
 
 export function getTargetUsdgAmount(token, usdgSupply: bigint, totalTokenWeights): bigint | undefined {
-  if (!token || !token.weight || !usdgSupply) {
+  if (!token || token.weight === undefined || usdgSupply === undefined) {
     return;
   }
 
@@ -170,7 +162,7 @@ export function getFeeBasisPoints(
   usdgSupply: bigint,
   totalTokenWeights
 ): number {
-  if (!token || !tokenUsdgAmount || !usdgSupply || !totalTokenWeights) {
+  if (!token || tokenUsdgAmount === undefined || usdgSupply === undefined || !totalTokenWeights) {
     return 0;
   }
 
@@ -184,7 +176,7 @@ export function getFeeBasisPoints(
   }
 
   const targetAmount = getTargetUsdgAmount(token, usdgSupply, totalTokenWeights);
-  if (!targetAmount) {
+  if (targetAmount === undefined) {
     return Number(feeBasisPoints);
   }
 
@@ -211,7 +203,7 @@ export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpP
   }
 
   const swapToken = getTokenInfo(infoTokens, swapTokenAddress);
-  if (!swapToken || !swapToken.minPrice) {
+  if (!swapToken || swapToken.minPrice === undefined) {
     return defaultValue;
   }
 
@@ -243,7 +235,7 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
   }
 
   const swapToken = getTokenInfo(infoTokens, swapTokenAddress);
-  if (!swapToken || !swapToken.maxPrice) {
+  if (!swapToken || swapToken.maxPrice === undefined) {
     return defaultValue;
   }
 
@@ -284,12 +276,12 @@ export function getBuyGlpFromAmount(
   totalTokenWeights
 ) {
   const defaultValue = { amount: 0n };
-  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || glpPrice === undefined || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
-  if (!fromToken || !fromToken.minPrice) {
+  if (!fromToken || fromToken.minPrice === undefined) {
     return defaultValue;
   }
 
@@ -322,12 +314,12 @@ export function getSellGlpToAmount(
   totalTokenWeights
 ) {
   const defaultValue = { amount: 0n };
-  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || glpPrice === undefined || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
-  if (!fromToken || !fromToken.maxPrice) {
+  if (!fromToken || fromToken.maxPrice === undefined) {
     return defaultValue;
   }
 
@@ -412,7 +404,7 @@ export function getNextFromAmount(
   const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals);
 
   let fromAmountBasedOnRatio = 0n;
-  if (ratio) {
+  if (ratio !== undefined && ratio !== 0n) {
     fromAmountBasedOnRatio = (toAmount * ratio) / PRECISION;
   }
 
@@ -466,7 +458,7 @@ export function getNextToAmount(
   forSwap
 ) {
   const defaultValue = { amount: 0n };
-  if (!fromAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
+  if (fromAmount === undefined || !fromTokenAddress || !toTokenAddress || !infoTokens) {
     return defaultValue;
   }
 
@@ -499,21 +491,21 @@ export function getNextToAmount(
     toTokenMaxPrice = forSwap ? toToken.contractMaxPrice : toToken.maxPrice;
   }
 
-  if (!fromTokenMinPrice || !toTokenMaxPrice) {
+  if (fromTokenMinPrice === undefined || toTokenMaxPrice === undefined) {
     return defaultValue;
   }
 
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
   let toAmountBasedOnRatio = 0n;
-  if (ratio) {
+  if (ratio !== undefined && ratio !== 0n) {
     toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
 
   if (toTokenAddress === USDG_ADDRESS) {
     const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable);
 
-    if (ratio) {
+    if (ratio !== undefined && ratio !== 0n) {
       const toAmount = toAmountBasedOnRatio;
       return {
         amount: adjustDecimals(
@@ -536,7 +528,7 @@ export function getNextToAmount(
       ? (toToken.redemptionAmount * (toTokenPriceUsd ?? toTokenMaxPrice)) / expandDecimals(1, toToken.decimals)
       : undefined;
 
-    if (redemptionValue && redemptionValue > THRESHOLD_REDEMPTION_VALUE) {
+    if (redemptionValue !== undefined && redemptionValue > THRESHOLD_REDEMPTION_VALUE) {
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
 
       const toAmount = ratio
@@ -554,7 +546,7 @@ export function getNextToAmount(
     const expectedAmount = fromAmount;
 
     const stableToken = getMostAbundantStableToken(chainId, infoTokens);
-    if (!stableToken?.availableAmount || stableToken.availableAmount < expectedAmount) {
+    if (stableToken?.availableAmount === undefined || stableToken.availableAmount < expectedAmount) {
       const toAmount = ratio
         ? toAmountBasedOnRatio
         : (fromAmount * (toToken.redemptionAmount ?? 0n)) / expandDecimals(1, toToken.decimals);
@@ -570,7 +562,7 @@ export function getNextToAmount(
     const feeBasisPoints0 = getSwapFeeBasisPoints(true);
     const feeBasisPoints1 = getSwapFeeBasisPoints(false);
 
-    if (ratio) {
+    if (ratio !== undefined && ratio !== 0n) {
       const toAmount =
         (toAmountBasedOnRatio * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0 - feeBasisPoints1)) /
         BASIS_POINTS_DIVISOR_BIGINT;
@@ -588,7 +580,7 @@ export function getNextToAmount(
     toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints0)) / BASIS_POINTS_DIVISOR_BIGINT;
 
     // get toAmount for stableToken => toToken
-    toAmount = (toAmount * (stableToken.minPrice ?? 0n)) / (toTokenPriceUsd || toTokenMaxPrice);
+    toAmount = (toAmount * (stableToken.minPrice ?? 0n)) / (toTokenPriceUsd ?? toTokenMaxPrice);
     // apply stableToken => toToken fees
     toAmount = (toAmount * BigInt(BASIS_POINTS_DIVISOR - feeBasisPoints1)) / BASIS_POINTS_DIVISOR_BIGINT;
 
@@ -601,7 +593,7 @@ export function getNextToAmount(
 
   const toAmount = ratio
     ? toAmountBasedOnRatio
-    : (fromAmount * fromTokenMinPrice) / (toTokenPriceUsd || toTokenMaxPrice);
+    : (fromAmount * fromTokenMinPrice) / (toTokenPriceUsd ?? toTokenMaxPrice);
 
   let usdgAmount = (fromAmount * fromTokenMinPrice) / PRECISION;
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS);
@@ -663,7 +655,7 @@ export function calculatePositionDelta(
   },
   sizeDelta?: bigint
 ) {
-  if (!sizeDelta) {
+  if (sizeDelta === undefined) {
     sizeDelta = size;
   }
   const priceDelta = averagePrice > price ? averagePrice - price : price - averagePrice;

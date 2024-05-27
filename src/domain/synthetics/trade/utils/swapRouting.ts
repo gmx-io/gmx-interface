@@ -55,7 +55,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
     const isOutLiquidity = swapStats?.isOutLiquidity;
     const usdOut = swapStats?.usdOut;
 
-    if (!usdOut || isOutLiquidity) {
+    if (usdOut === undefined || isOutLiquidity) {
       return {
         usdOut: 0n,
       };

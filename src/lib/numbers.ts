@@ -106,7 +106,7 @@ export const formatAmount = (
   useCommas?: boolean,
   defaultValue?: string
 ) => {
-  if (!defaultValue) {
+  if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
   }
   if (amount === undefined || amount === null || amount === "") {
@@ -134,7 +134,7 @@ export const formatKeyAmount = <T extends {}>(
   useCommas?: boolean
 ) => {
   const value = map ? map[key] ?? undefined : undefined;
-  if (value === undefined) {
+  if (value === undefined || value === null) {
     return "...";
   }
 
@@ -148,7 +148,7 @@ export const formatArrayAmount = (
   displayDecimals?: number,
   useCommas?: boolean
 ) => {
-  if (!arr || !arr[index]) {
+  if (!arr || arr[index] === undefined || arr[index] === null) {
     return "...";
   }
 
@@ -156,7 +156,7 @@ export const formatArrayAmount = (
 };
 
 export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
-  if (!amount) {
+  if (amount === undefined || amount === null) {
     return "...";
   }
   let amountStr = ethers.formatUnits(amount, tokenDecimals);
@@ -409,16 +409,16 @@ type SerializedBigIntsInObject<T> = {
   [P in keyof T]: T[P] extends bigint
     ? { type: "bigint"; value: bigint }
     : T[P] extends object
-    ? SerializedBigIntsInObject<T[P]>
-    : T[P];
+      ? SerializedBigIntsInObject<T[P]>
+      : T[P];
 };
 
 type DeserializeBigIntInObject<T> = {
   [P in keyof T]: T[P] extends { type: "bigint"; value: bigint }
     ? bigint
     : T[P] extends object
-    ? DeserializeBigIntInObject<T[P]>
-    : T[P];
+      ? DeserializeBigIntInObject<T[P]>
+      : T[P];
 };
 
 export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBigIntsInObject<T> {
@@ -440,7 +440,11 @@ export function deserializeBigIntsInObject<T extends object>(obj: T): Deserializ
   const result: any = Array.isArray(obj) ? [] : {};
   for (const key in obj) {
     const value = obj[key];
-    if (typeof value === "object" && value !== null && "type" in value && value.type === "bigint") {
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      (("type" in value && value.type === "bigint") || ("_type" in value && value._type === "BigNumber"))
+    ) {
       if ("value" in value && typeof value.value === "string") {
         result[key] = BigInt(value.value);
       } else if ("hex" in value && typeof value.hex === "string") {

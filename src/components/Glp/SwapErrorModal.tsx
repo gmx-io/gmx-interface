@@ -53,7 +53,7 @@ export default function SwapErrorModal({
 
   const label = t`${swapToken?.symbol} Capacity Reached`;
 
-  if (lowestFeeToken && swapUsdMin && swapUsdMin > lowestFeeToken.amountLeftToDeposit) {
+  if (lowestFeeToken && swapUsdMin !== undefined && swapUsdMin > lowestFeeToken.amountLeftToDeposit) {
     return (
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
         <p>

@@ -36,7 +36,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
 }
 
 function getFeesStr(fees: bigint | undefined): string {
-  if (!fees || (fees ?? 0n) <= 0) {
+  if (fees === undefined || (fees ?? 0n) <= 0) {
     return "";
   }
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
@@ -67,7 +67,7 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | 
 
 function getTotalFees(fees: (bigint | undefined)[]) {
   return fees.reduce((acc: bigint, fee) => {
-    if (!fee) {
+    if (fee === undefined) {
       return acc;
     }
     return acc + fee;

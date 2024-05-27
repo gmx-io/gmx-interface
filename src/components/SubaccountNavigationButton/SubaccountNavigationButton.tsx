@@ -81,7 +81,7 @@ export const SubaccountNavigationButton = memo(
     const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
     const shouldShowAllowedActionsWarning =
-      isSubaccountActive && (remaining == 0n || (remaining && remaining < requiredActions)) && !isNativeToken;
+      isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken;
     const shouldShowWrapOrUnwrapWarning =
       !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
     const shouldShowNativeTokenWarning =

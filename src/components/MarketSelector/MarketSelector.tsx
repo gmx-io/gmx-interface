@@ -169,7 +169,10 @@ export function MarketSelector({
                     </div>
                   )}
                   <span className="text-accent">
-                    {(showBalances && balanceUsd && <div>{formatUsd(balanceUsd)}</div>) || null}
+                    {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                      <div>{formatUsd(balanceUsd)}</div>
+                    )) ||
+                      null}
                   </span>
                 </div>
               </div>

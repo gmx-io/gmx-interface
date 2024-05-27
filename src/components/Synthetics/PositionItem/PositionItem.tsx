@@ -269,7 +269,7 @@ export function PositionItem(p: Props) {
     let liqPriceWarning: string | undefined;
     const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
-    if (!p.position.liquidationPrice) {
+    if (p.position.liquidationPrice === undefined) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
       } else if (
@@ -529,7 +529,7 @@ export function PositionItem(p: Props) {
           ) : (
             <>
               {renderNetValue()}
-              {displayedPnl && (
+              {displayedPnl !== undefined && (
                 <div
                   onClick={p.openSettings}
                   className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {

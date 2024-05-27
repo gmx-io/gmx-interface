@@ -208,7 +208,7 @@ export function getLiquidationPrice(p: {
 }
 
 export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (!liquidationPrice || liquidationPrice < 0) {
+  if (liquidationPrice === undefined || liquidationPrice < 0) {
     return "NA";
   }
 
@@ -234,7 +234,7 @@ export function getLeverage(p: {
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
-  const remainingCollateralUsd = collateralUsd + (pnl || 0n) - totalPendingFeesUsd;
+  const remainingCollateralUsd = collateralUsd + (pnl ?? 0n) - totalPendingFeesUsd;
 
   if (remainingCollateralUsd <= 0) {
     return undefined;
@@ -244,7 +244,7 @@ export function getLeverage(p: {
 }
 
 export function formatLeverage(leverage?: bigint) {
-  if (!leverage) return undefined;
+  if (leverage === undefined) return undefined;
 
   return `${formatAmount(leverage, 4, 2)}x`;
 }
@@ -255,7 +255,7 @@ export function getEstimatedLiquidationTimeInHours(
 ): number | undefined {
   const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
 
-  if (isOpening || !minCollateralUsd) return;
+  if (isOpening || minCollateralUsd === undefined) return;
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd < minCollateralUsd) {

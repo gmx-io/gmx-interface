@@ -45,7 +45,7 @@ export function usePositionsInfoRequest(
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
-    if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {
+    if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
       };
@@ -112,7 +112,7 @@ export function usePositionsInfoRequest(
       );
 
       const closingFeeUsd = positionFeeInfo.positionFeeUsd;
-      const uiFeeUsd = positionFeeInfo.uiFeeUsd || 0n;
+      const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
 
       const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
@@ -132,7 +132,8 @@ export function usePositionsInfoRequest(
         isLong: position.isLong,
       });
 
-      const pnlPercentage = collateralUsd && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
+      const pnlPercentage =
+        collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
 
       const netValue = getPositionNetValue({
         collateralUsd: collateralUsd,
@@ -165,7 +166,7 @@ export function usePositionsInfoRequest(
 
       const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
 
-      const hasLowCollateral = (leverage && leverage > maxAllowedLeverage) || false;
+      const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
       const liquidationPrice = getLiquidationPrice({
         marketInfo,

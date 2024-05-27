@@ -78,7 +78,7 @@ export default function Stats() {
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];
     const tokenInfo = infoTokens[token.address];
-    if (tokenInfo && tokenInfo.usdgAmount) {
+    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
       adjustedUsdgSupply = adjustedUsdgSupply! + tokenInfo.usdgAmount;
     }
   }
@@ -103,16 +103,16 @@ export default function Stats() {
     let className = "";
     if (
       isLong &&
-      tokenInfo.maxGlobalLongSize &&
-      tokenInfo.guaranteedUsd &&
+      tokenInfo.maxGlobalLongSize !== undefined &&
+      tokenInfo.guaranteedUsd !== undefined &&
       bigMath.mulDiv(tokenInfo.guaranteedUsd, 11n, 10n) > tokenInfo.maxGlobalLongSize
     ) {
       className = "warn";
     }
     if (
       !isLong &&
-      tokenInfo.maxGlobalShortSize &&
-      tokenInfo.globalShortSize &&
+      tokenInfo.maxGlobalShortSize !== undefined &&
+      tokenInfo.globalShortSize !== undefined &&
       bigMath.mulDiv(tokenInfo.globalShortSize, 11n, 10n) > tokenInfo.maxGlobalShortSize
     ) {
       className = "warn";
@@ -200,12 +200,12 @@ export default function Stats() {
           .filter((t: TokenInfo) => !t.isNative)
           .map((tokenInfo: TokenInfo) => {
             let maxPoolUsd;
-            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
+            if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
               maxPoolUsd = expandDecimals(tokenInfo.maxUsdgAmount, 12);
             }
 
             let maxPoolClassName = "";
-            if (tokenInfo.managedUsd && bigMath.mulDiv(tokenInfo.managedUsd, 11n, 10n) > maxPoolUsd) {
+            if (tokenInfo.managedUsd !== undefined && bigMath.mulDiv(tokenInfo.managedUsd, 11n, 10n) > maxPoolUsd) {
               maxPoolClassName = "warn";
             }
 
@@ -215,11 +215,11 @@ export default function Stats() {
             let weightClassName = "";
             let weightDiffBps: bigint | undefined = undefined;
             if (
-              tokenInfo.usdgAmount &&
+              tokenInfo.usdgAmount !== undefined &&
               tokenInfo.usdgAmount > 0 &&
-              adjustedUsdgSupply &&
+              adjustedUsdgSupply !== undefined &&
               adjustedUsdgSupply > 0 &&
-              tokenInfo.weight &&
+              tokenInfo.weight !== undefined &&
               tokenInfo.weight > 0
             ) {
               currentWeightBps = bigMath.mulDiv(tokenInfo.usdgAmount, BASIS_POINTS_DIVISOR_BIGINT, adjustedUsdgSupply);

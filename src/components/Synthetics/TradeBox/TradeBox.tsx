@@ -118,7 +118,6 @@ import { useLocalizedMap } from "lib/i18n";
 import "./TradeBox.scss";
 import { bigMath } from "lib/bigmath";
 
-
 export type Props = {
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
@@ -232,7 +231,9 @@ export function TradeBox(p: Props) {
     () =>
       ((fromToken?.balance ?? 0n) > 0n &&
         fromToken?.balance !== fromTokenAmount &&
-        (fromToken?.isNative ? minResidualAmount && (fromToken?.balance ?? 0n) > minResidualAmount : true)) ||
+        (fromToken?.isNative
+          ? minResidualAmount !== undefined && (fromToken?.balance ?? 0n) > minResidualAmount
+          : true)) ||
       false,
     [fromToken?.balance, fromToken?.isNative, fromTokenAmount, minResidualAmount]
   );
@@ -298,7 +299,7 @@ export function TradeBox(p: Props) {
   const userReferralInfo = useUserReferralInfo();
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
-    if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
+    if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
       1,
@@ -340,7 +341,7 @@ export function TradeBox(p: Props) {
           userReferralInfo,
         });
 
-        if (nextPositionValues.nextLeverage) {
+        if (nextPositionValues.nextLeverage !== undefined) {
           const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
@@ -361,7 +362,7 @@ export function TradeBox(p: Props) {
       }
     );
 
-    if (sizeDeltaInTokens) {
+    if (sizeDeltaInTokens !== undefined) {
       if (isLeverageEnabled) {
         // round to int if it's > 1x
         const resultLeverage = maxLeverage > 10 ? Math.floor(maxLeverage / 10) : Math.floor(maxLeverage) / 10;
@@ -585,7 +586,7 @@ export function TradeBox(p: Props) {
       isTrigger &&
       decreaseAmounts?.triggerThresholdType &&
       decreaseAmounts?.triggerOrderType &&
-      decreaseAmounts.acceptablePrice
+      decreaseAmounts.acceptablePrice !== undefined
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
@@ -756,7 +757,7 @@ export function TradeBox(p: Props) {
   const onMaxClick = useCallback(() => {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken?.isNative
-        ? fromToken.balance - BigInt(minResidualAmount || 0)
+        ? fromToken.balance - BigInt(minResidualAmount ?? 0n)
         : fromToken.balance;
 
       if (maxAvailableAmount < 0) {
@@ -856,7 +857,9 @@ export function TradeBox(p: Props) {
         <BuyInputSection
           topLeftLabel={t`Pay`}
           topLeftValue={
-            fromUsd && fromUsd > 0 ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""
+            fromUsd !== undefined && fromUsd > 0
+              ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)
+              : ""
           }
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals, "", {

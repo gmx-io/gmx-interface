@@ -15,7 +15,7 @@ import {
   getSwapPathStats,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
-import { createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -26,14 +26,15 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { bigMath } from "lib/bigmath";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
 // dont swap addresses here
 export const makeSelectSwapRoutes = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) =>
-    createSelectorDeprecated([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
+    createSelector((q) => {
+      const chainId = q(selectChainId);
+      const marketsInfoData = q(selectMarketsInfoData);
       const wrappedToken = getWrappedToken(chainId);
 
       const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
@@ -73,7 +74,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         }
 
         const paths = findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)
-          ?.sort((a, b) => bigMath.sign(b.liquidity - a.liquidity))
+          ?.sort((a, b) => (b.liquidity - a.liquidity > 0 ? 1 : -1))
           .slice(0, 5);
 
         return paths;

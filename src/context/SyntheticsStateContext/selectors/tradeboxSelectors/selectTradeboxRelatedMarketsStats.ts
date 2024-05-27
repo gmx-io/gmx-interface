@@ -67,7 +67,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
     relatedMarketStats: relatedMarketStats,
   };
 
-  if (increaseSizeUsd && increaseSizeUsd > 0) {
+  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0) {
     for (const relatedMarket of availableMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, relatedMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {

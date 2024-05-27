@@ -18,15 +18,21 @@ export async function initSubaccount(
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);
 
   const multicall = [
-    wntForAutoTopUps && wntForAutoTopUps > 0 && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
-    topUp && topUp > 0 && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
+    wntForAutoTopUps !== undefined &&
+      wntForAutoTopUps !== null &&
+      wntForAutoTopUps > 0 && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
+    topUp !== null &&
+      topUp !== undefined &&
+      topUp > 0 && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
     !isAccountActive && { method: "addSubaccount", params: [subaccountAddress] },
-    maxAllowedActions &&
+    maxAllowedActions !== undefined &&
+      maxAllowedActions !== null &&
       maxAllowedActions >= 0 && {
         method: "setMaxAllowedSubaccountActionCount",
         params: [subaccountAddress, SUBACCOUNT_ORDER_ACTION, maxAllowedActions + (currentActionsCount ?? 0n)],
       },
-    maxAutoTopUpAmount &&
+    maxAutoTopUpAmount !== undefined &&
+      maxAutoTopUpAmount !== null &&
       maxAutoTopUpAmount >= 0 && {
         method: "setSubaccountAutoTopUpAmount",
         params: [subaccountAddress, maxAutoTopUpAmount],

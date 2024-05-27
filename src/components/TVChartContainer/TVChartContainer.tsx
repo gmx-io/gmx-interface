@@ -59,7 +59,7 @@ export default function TVChartContainer({
   const symbolRef = useRef(symbol);
 
   useEffect(() => {
-    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
+    if (chartToken) {
       let priceDecimals: number;
 
       try {

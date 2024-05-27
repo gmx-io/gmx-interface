@@ -39,30 +39,42 @@ export function useUserReferralInfoRequest(
   const { totalRebate, discountShare } = useTiers(signer, chainId, tierId);
   const { discountShare: customDiscountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
   const finalDiscountShare = (customDiscountShare ?? 0n) > 0 ? customDiscountShare : discountShare;
-  if (
-    !userReferralCode ||
-    !userReferralCodeString ||
-    !codeOwner ||
-    !tierId ||
-    !totalRebate ||
-    !finalDiscountShare ||
-    !referralCodeForTxn
-  ) {
-    return undefined;
-  }
 
-  return {
+  return useMemo(() => {
+    if (
+      !userReferralCode ||
+      !userReferralCodeString ||
+      !codeOwner ||
+      tierId === undefined ||
+      totalRebate === undefined ||
+      finalDiscountShare === undefined ||
+      !referralCodeForTxn
+    ) {
+      return undefined;
+    }
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+      referralCodeForTxn,
+      attachedOnChain,
+      affiliate: codeOwner,
+      tierId,
+      totalRebate,
+      totalRebateFactor: basisPointsToFloat(totalRebate),
+      discountShare: finalDiscountShare,
+      discountFactor: basisPointsToFloat(finalDiscountShare),
+    };
+  }, [
     userReferralCode,
     userReferralCodeString,
-    referralCodeForTxn,
-    attachedOnChain,
-    affiliate: codeOwner,
+    codeOwner,
     tierId,
     totalRebate,
-    totalRebateFactor: basisPointsToFloat(totalRebate),
-    discountShare: finalDiscountShare,
-    discountFactor: basisPointsToFloat(finalDiscountShare),
-  };
+    finalDiscountShare,
+    referralCodeForTxn,
+    attachedOnChain,
+  ]);
 }
 
 export function useAffiliateTier(signer, chainId, account) {
@@ -74,7 +86,7 @@ export function useAffiliateTier(signer, chainId, account) {
     }
   );
   return {
-    affiliateTier: Number(affiliateTier),
+    affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
     mutateReferrerTier,
   };
 }
@@ -83,7 +95,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
   const { data: [totalRebate, discountShare] = [] } = useSWR<bigint[]>(
-    tierLevel
+    tierLevel !== undefined
       ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
       : null,
     {

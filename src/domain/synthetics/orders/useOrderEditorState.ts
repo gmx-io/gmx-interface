@@ -117,7 +117,7 @@ function useAcceptablePrice(
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;
       acceptablePrice = applySlippageToPrice(
         Number(acceptablePriceImpactBps),
-        triggerPrice || initialTriggerPrice,
+        triggerPrice ?? initialTriggerPrice,
         order.isLong,
         isIncreaseOrderType(order.orderType)
       );

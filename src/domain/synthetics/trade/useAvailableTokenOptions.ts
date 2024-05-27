@@ -71,16 +71,16 @@ export function useAvailableTokenOptions(
       )!;
 
       longTokensWithPoolValue[longToken.address] =
-        (longTokensWithPoolValue[longToken.address] || 0n) + longPoolAmountUsd;
+        (longTokensWithPoolValue[longToken.address] ?? 0n) + longPoolAmountUsd;
 
       shortTokensWithPoolValue[shortToken.address] =
-        (shortTokensWithPoolValue[shortToken.address] || 0n) + shortPoolAmountUsd;
+        (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
 
       if (!marketInfo.isSpotOnly) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] =
-          (indexTokensWithPoolValue[indexToken.address] || 0n) + marketInfo.poolValueMax;
+          (indexTokensWithPoolValue[indexToken.address] ?? 0n) + marketInfo.poolValueMax;
       }
     }
 

@@ -25,7 +25,7 @@ export function GmFees(p: Props) {
   const totalFeesUsd = p.totalFees?.deltaUsd;
 
   let value: ReactNode = useMemo(() => {
-    if (!p.totalFees?.deltaUsd) {
+    if (p.totalFees?.deltaUsd === undefined) {
       return "-";
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
@@ -36,7 +36,9 @@ export function GmFees(p: Props) {
         <Tooltip
           className="GmFees-tooltip"
           handle={
-            <span className={cx({ positive: totalFeesUsd && totalFeesUsd > 0 })}>{formatDeltaUsd(totalFeesUsd)}</span>
+            <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
+              {formatDeltaUsd(totalFeesUsd)}
+            </span>
           }
           position="top-end"
           renderContent={() => (
@@ -80,7 +82,11 @@ export function GmFees(p: Props) {
         />
       );
     }
-    return <span className={cx({ positive: totalFeesUsd && totalFeesUsd > 0 })}>{formatDeltaUsd(totalFeesUsd)}</span>;
+    return (
+      <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
+        {formatDeltaUsd(totalFeesUsd)}
+      </span>
+    );
   }, [p.isDeposit, p.swapFee, p.swapPriceImpact, p.totalFees?.deltaUsd, p.uiFee?.bps, p.uiFee?.deltaUsd, totalFeesUsd]);
 
   return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;

@@ -104,11 +104,10 @@ const MainView = memo(() => {
 
   const approxNumberOfOperationsByBalance = useMemo(() => {
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
-    return subAccNativeTokenBalance &&
-      baseFeePerAction &&
-      currentAutoTopUpAmount &&
-      mainAccWrappedTokenBalance &&
-      mainAccNativeTokenBalance
+    return subAccNativeTokenBalance !== undefined &&
+      currentAutoTopUpAmount !== undefined &&
+      mainAccWrappedTokenBalance !== undefined &&
+      mainAccNativeTokenBalance !== undefined
       ? getApproxSubaccountActionsCountByBalance(
           mainAccWrappedTokenBalance,
           subAccNativeTokenBalance,
@@ -262,7 +261,7 @@ const MainView = memo(() => {
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount !== null);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -396,7 +395,7 @@ const MainView = memo(() => {
         throw new Error("address is not defined");
       }
 
-      if (!count) {
+      if (count === undefined || count === null) {
         setNotificationState("activationFailed");
         throw new Error("Action counts are not defined");
       }
@@ -461,7 +460,7 @@ const MainView = memo(() => {
 
   const needPayTokenApproval = useMemo(
     () =>
-      tokensAllowanceData && baseFeePerAction
+      tokensAllowanceData && baseFeePerAction !== undefined
         ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
         : false,
     [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
@@ -516,8 +515,8 @@ const MainView = memo(() => {
     if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
-    if (!subAccNativeTokenBalance) throw new Error("subEthBalance is not defined");
-    if (!gasPrice) throw new Error("gasPrice is not defined");
+    if (subAccNativeTokenBalance === undefined) throw new Error("subEthBalance is not defined");
+    if (gasPrice === undefined) throw new Error("gasPrice is not defined");
 
     setWithdrawalLoading(true);
 
@@ -690,7 +689,7 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (topUp &&
+              (topUp !== null &&
                 topUp > 0 &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
@@ -706,7 +705,7 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (wntForAutoTopUps &&
+              (wntForAutoTopUps !== null &&
                 wntForAutoTopUps > 0 &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
@@ -721,7 +720,7 @@ const MainView = memo(() => {
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              (maxAutoTopUpAmount &&
+              (maxAutoTopUpAmount !== null &&
                 maxAutoTopUpAmount > 0 &&
                 wrappedTokenData &&
                 formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||

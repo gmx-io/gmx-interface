@@ -224,7 +224,7 @@ export function ConfirmationBox(p: Props) {
   const needPayTokenApproval =
     tokensAllowanceData &&
     fromToken &&
-    payAmount &&
+    payAmount !== undefined &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
   const positionKey = useSelector(selectTradeboxSelectedPositionKey);
@@ -249,7 +249,7 @@ export function ConfirmationBox(p: Props) {
       [[], [], []] as [
         (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
         SidecarSlTpOrderEntryValid[],
-        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[]
+        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
       ]
     );
 
@@ -260,7 +260,7 @@ export function ConfirmationBox(p: Props) {
 
   const getOrderExecutionFee = useCallback(
     (swapsCount?: number) => {
-      if (!gasLimits || !tokensData || !gasPrice) return;
+      if (!gasLimits || !tokensData || gasPrice === undefined) return;
 
       const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, { swapsCount });
 
@@ -298,7 +298,7 @@ export function ConfirmationBox(p: Props) {
   );
 
   const decreaseOrdersThatWillBeExecuted = useMemo(() => {
-    if (!existingPosition || !markPrice) {
+    if (!existingPosition || markPrice === undefined) {
       return [];
     }
 
@@ -412,14 +412,14 @@ export function ConfirmationBox(p: Props) {
 
     if (isLimit) {
       if (isLong) {
-        if (markPrice && triggerPrice && triggerPrice > markPrice) {
+        if (markPrice !== undefined && triggerPrice !== undefined && triggerPrice > markPrice) {
           return {
             text: t`Limit price above Mark Price`,
             disabled: true,
           };
         }
       } else {
-        if (markPrice && triggerPrice && triggerPrice < markPrice) {
+        if (markPrice !== undefined && triggerPrice !== undefined && triggerPrice < markPrice) {
           return {
             text: t`Limit price below Mark Price`,
             disabled: true,
@@ -467,7 +467,7 @@ export function ConfirmationBox(p: Props) {
       text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
-    if (sidecarEntries.length > 0) {
+    if (isIncrease && sidecarEntries.length > 0) {
       const isError = sidecarEntries.some((e) => {
         if (e.txnType === "cancel") return false;
 
@@ -610,7 +610,7 @@ export function ConfirmationBox(p: Props) {
       !account ||
       !fromToken ||
       !collateralToken ||
-      !increaseAmounts?.acceptablePrice ||
+      increaseAmounts?.acceptablePrice === undefined ||
       !executionFee ||
       !marketInfo ||
       !signer ||
@@ -708,8 +708,8 @@ export function ConfirmationBox(p: Props) {
       !collateralToken ||
       fixedTriggerOrderType === undefined ||
       fixedTriggerThresholdType === undefined ||
-      !decreaseAmounts?.acceptablePrice ||
-      !decreaseAmounts?.triggerPrice ||
+      decreaseAmounts?.acceptablePrice === undefined ||
+      decreaseAmounts?.triggerPrice === undefined ||
       !executionFee ||
       !tokensData ||
       !signer ||
@@ -956,9 +956,9 @@ export function ConfirmationBox(p: Props) {
 
   const executionPriceUsd = useMemo(() => {
     if (!marketInfo) return null;
-    if (!fees?.positionPriceImpact?.deltaUsd) return null;
+    if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
     if (!decreaseAmounts) return null;
-    if (!triggerPrice) return null;
+    if (triggerPrice === undefined) return null;
 
     return getExecutionPriceForDecrease(
       triggerPrice,
@@ -1072,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
       return null;
     }
 
-    if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
+    if (swapSpreadInfo.spread !== undefined && swapSpreadInfo.isHigh) {
       return (
         <div className="mb-10">
           <AlertInfo compact type="warning">
@@ -1131,17 +1131,19 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        {(!isLimitGroup && entriesInfo?.totalPnL !== undefined && entriesInfo?.totalPnLPercentage !== undefined && (
+        {(!isLimitGroup && entriesInfo.totalPnL !== undefined && entriesInfo.totalPnLPercentage !== undefined && (
           <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
-            {entriesInfo?.totalPnL && entriesInfo?.totalPnL > 0n ? (
+            {entriesInfo.totalPnL === 0n ? (
               "-"
             ) : (
               <Tooltip
-                handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
+                handle={`${formatUsd(entriesInfo.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                   signed: true,
                 })})`}
                 position="bottom-end"
-                handleClassName={entriesInfo.totalPnL && entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"}
+                handleClassName={
+                  entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"
+                }
                 className="SLTP-pnl-tooltip"
                 renderContent={() =>
                   entriesInfo?.entries?.map((entry, index) => {
@@ -1163,7 +1165,8 @@ export function ConfirmationBox(p: Props) {
                         <span
                           className={
                             entry.decreaseAmounts?.realizedPnl && entry.decreaseAmounts?.realizedPnl < 0
-                              ? "text-red-500" : "text-green-500"
+                              ? "text-red-500"
+                              : "text-green-500"
                           }
                         >
                           {formatUsd(entry.decreaseAmounts?.realizedPnl)} (
@@ -1204,12 +1207,12 @@ export function ConfirmationBox(p: Props) {
   const [initialCollateralSpread, setInitialCollateralSpread] = useState<bigint | undefined>();
 
   const collateralSpreadPercent =
-    collateralSpreadInfo && collateralSpreadInfo.spread
+    collateralSpreadInfo && collateralSpreadInfo.spread !== undefined
       ? bigMath.mulDiv(collateralSpreadInfo.spread, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals(1, USD_DECIMALS))
       : undefined;
 
   useEffect(() => {
-    if (collateralSpreadPercent && !initialCollateralSpread) {
+    if (collateralSpreadPercent !== undefined && initialCollateralSpread === undefined) {
       setInitialCollateralSpread(collateralSpreadPercent);
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
@@ -1442,11 +1445,13 @@ export function ConfirmationBox(p: Props) {
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
-              (fundigRate &&
+              (fundigRate !== undefined &&
                 `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(bigMath.abs(fundigRate), 30, 4)}% / 1h`) ||
               undefined
             }
-            borrowFeeRateStr={(borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`) || undefined}
+            borrowFeeRateStr={
+              (borrowingRate !== undefined && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`) || undefined
+            }
             feesType="increase"
           />
           <NetworkFeeRow executionFee={summaryExecutionFee} isAdditionOrdersMsg={isAdditionOrdersMsg} />
@@ -1479,7 +1484,7 @@ export function ConfirmationBox(p: Props) {
 
         <ExchangeInfo.Group>
           {isLimit && renderAvailableLiquidity()}
-          {(swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
+          {(swapSpreadInfo.showSpread && swapSpreadInfo.spread !== undefined && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
               {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>

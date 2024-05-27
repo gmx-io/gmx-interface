@@ -188,7 +188,8 @@ export default function DashboardV2() {
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
   const { data: currentFees } = useSWR(
-    infoTokensArbitrum[ZeroAddress].contractMinPrice && infoTokensAvax[ZeroAddress].contractMinPrice
+    infoTokensArbitrum[ZeroAddress].contractMinPrice !== undefined &&
+      infoTokensAvax[ZeroAddress].contractMinPrice !== undefined
       ? "Dashboard:currentFees"
       : null,
     {
@@ -261,12 +262,12 @@ export default function DashboardV2() {
   let { [AVALANCHE]: avaxStakedGmx, [ARBITRUM]: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
 
   let gmxMarketCap;
-  if (gmxPrice && totalGmxSupply) {
+  if (gmxPrice !== undefined && totalGmxSupply !== undefined) {
     gmxMarketCap = bigMath.mulDiv(gmxPrice, totalGmxSupply, expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
-  if (gmxPrice && totalStakedGmx) {
+  if (gmxPrice !== undefined && totalStakedGmx !== undefined) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
   }
 
@@ -288,7 +289,12 @@ export default function DashboardV2() {
   }
 
   let tvl: bigint | undefined = undefined;
-  if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
+  if (
+    glpMarketCap !== undefined &&
+    gmxPrice !== undefined &&
+    totalStakedGmx !== undefined &&
+    currentV2MarketOverview?.totalGMLiquidity !== undefined
+  ) {
     tvl =
       glpMarketCap +
       bigMath.mulDiv(gmxPrice, totalStakedGmx, expandDecimals(1, GMX_DECIMALS)) +
@@ -301,7 +307,7 @@ export default function DashboardV2() {
 
   let totalTreasuryFundUsd;
 
-  if (eth && eth.contractMinPrice && glpPrice) {
+  if (eth && eth.contractMinPrice !== undefined && glpPrice !== undefined) {
     const ethTreasuryFundUsd = bigMath.mulDiv(ethTreasuryFund, eth.contractMinPrice, expandDecimals(1, eth.decimals));
     const glpTreasuryFundUsd = bigMath.mulDiv(glpTreasuryFund, glpPrice, expandDecimals(1, 18));
 
@@ -313,7 +319,7 @@ export default function DashboardV2() {
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];
     const tokenInfo = infoTokens[token.address];
-    if (tokenInfo && tokenInfo.usdgAmount) {
+    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
       adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
     }
   }
@@ -322,7 +328,7 @@ export default function DashboardV2() {
     if (
       !tokenInfo.weight ||
       !tokenInfo.usdgAmount ||
-      !adjustedUsdgSupply ||
+      adjustedUsdgSupply === undefined ||
       adjustedUsdgSupply == 0n ||
       !totalTokenWeights
     ) {
@@ -407,13 +413,13 @@ export default function DashboardV2() {
 
   let stakedPercent = 0;
 
-  if (totalGmxSupply && totalStakedGmx) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && totalStakedGmx !== 0n) {
     stakedPercent = Number(bigMath.mulDiv(totalStakedGmx, 100n, totalGmxSupply));
   }
 
   let liquidityPercent = 0;
 
-  if (totalGmxSupply && totalGmxInLiquidity) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && totalGmxInLiquidity !== undefined) {
     liquidityPercent = Number(bigMath.mulDiv(totalGmxInLiquidity, 100n, totalGmxSupply));
   }
 
@@ -449,7 +455,7 @@ export default function DashboardV2() {
     const glpPool = tokenList
       .map((token) => {
         const tokenInfo = infoTokens[token.address];
-        if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply > 0) {
+        if (tokenInfo.usdgAmount !== undefined && adjustedUsdgSupply !== undefined && adjustedUsdgSupply > 0) {
           const currentWeightBps = bigMath.mulDiv(
             tokenInfo.usdgAmount,
             BASIS_POINTS_DIVISOR_BIGINT,
@@ -759,7 +765,7 @@ export default function DashboardV2() {
                       handle={`$${numberWithCommas(
                         sumBigInts(
                           totalFees?.[chainId],
-                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0))
+                          BigInt(formatAmount(v2MarketsOverview?.[chainId]?.totalFees ?? 0n, USD_DECIMALS, 0))
                         )
                       )}`}
                       renderContent={() => (
@@ -1017,7 +1023,12 @@ export default function DashboardV2() {
                       {visibleTokens.map((token) => {
                         const tokenInfo = infoTokens[token.address];
                         let utilization = 0n;
-                        if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                        if (
+                          tokenInfo &&
+                          tokenInfo.reservedAmount !== undefined &&
+                          tokenInfo.poolAmount !== undefined &&
+                          tokenInfo.poolAmount > 0
+                        ) {
                           utilization = bigMath.mulDiv(
                             tokenInfo.reservedAmount,
                             BASIS_POINTS_DIVISOR_BIGINT,
@@ -1025,7 +1036,7 @@ export default function DashboardV2() {
                           );
                         }
                         let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
+                        if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
                           maxUsdgAmount = tokenInfo.maxUsdgAmount;
                         }
 
@@ -1105,7 +1116,12 @@ export default function DashboardV2() {
                   {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
                     let utilization = 0n;
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount > 0) {
+                    if (
+                      tokenInfo &&
+                      tokenInfo.reservedAmount !== undefined &&
+                      tokenInfo.poolAmount !== undefined &&
+                      tokenInfo.poolAmount > 0
+                    ) {
                       utilization = bigMath.mulDiv(
                         tokenInfo.reservedAmount,
                         BASIS_POINTS_DIVISOR_BIGINT,
@@ -1113,7 +1129,7 @@ export default function DashboardV2() {
                       );
                     }
                     let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount > 0) {
+                    if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
 
@@ -1230,7 +1246,7 @@ function GMCard() {
   );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply?.amount || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
+    if (totalGMSupply?.amount === undefined || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),

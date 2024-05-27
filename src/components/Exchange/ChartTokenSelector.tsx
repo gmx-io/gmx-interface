@@ -44,7 +44,13 @@ function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartTok
 function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
   return tokens.map((token) => {
     const { availableAmount, poolAmount, bufferAmount, maxUsdgAmount, usdgAmount } = infoTokens[token.address] || {};
-    if (!availableAmount || !poolAmount || !bufferAmount || !maxUsdgAmount || !usdgAmount)
+    if (
+      availableAmount === undefined ||
+      poolAmount === undefined ||
+      bufferAmount === undefined ||
+      maxUsdgAmount === undefined ||
+      usdgAmount === undefined
+    )
       return {
         ...token,
         maxInUsd: 0n,
@@ -60,8 +66,8 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 
     return {
       ...token,
-      maxOutUsd: maxOutUsd && maxOutUsd > 0 ? maxOutUsd : 0n,
-      maxInUsd: maxInUsd && maxInUsd > 0 ? maxInUsd : 0n,
+      maxOutUsd: maxOutUsd !== undefined && maxOutUsd > 0 ? maxOutUsd : 0n,
+      maxInUsd: maxInUsd !== undefined && maxInUsd > 0 ? maxInUsd : 0n,
     };
   });
 }

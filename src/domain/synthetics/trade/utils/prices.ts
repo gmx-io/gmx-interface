@@ -111,7 +111,7 @@ export function getAcceptablePriceInfo(p: {
   const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
 
   // For Limit / Trigger orders
-  if (maxNegativePriceImpactBps && maxNegativePriceImpactBps > 0) {
+  if (maxNegativePriceImpactBps !== undefined && maxNegativePriceImpactBps > 0) {
     let priceDelta = bigMath.mulDiv(indexPrice, maxNegativePriceImpactBps, BASIS_POINTS_DIVISOR_BIGINT);
     priceDelta = shouldFlipPriceImpact ? priceDelta * -1n : priceDelta;
 

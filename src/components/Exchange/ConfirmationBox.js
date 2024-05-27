@@ -330,7 +330,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spreadInfo]);
 
   const collateralSpreadInfo = useMemo(() => {
-    if (!toTokenInfo?.spread || !collateralTokenAddress) {
+    if (toTokenInfo?.spread === undefined || !collateralTokenAddress) {
       return null;
     }
 
@@ -343,7 +343,7 @@ export default function ConfirmationBox(props) {
     }
 
     const collateralTokenInfo = getTokenInfo(infoTokens, collateralTokenAddress);
-    if (collateralTokenInfo?.spread) {
+    if (collateralTokenInfo?.spread !== undefined) {
       totalSpread = totalSpread + collateralTokenInfo.spread;
     }
 
@@ -584,12 +584,12 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
-    const riskLiquidity = bigMath.mulDiv(availableLiquidity, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT);
+    const getRiskLiquidity = () => bigMath.mulDiv(availableLiquidity, riskThresholdBps, BASIS_POINTS_DIVISOR_BIGINT);
 
     if (isSwap) {
       const poolWithoutBuffer = token.poolAmount - token.bufferAmount;
       availableLiquidity = token.availableAmount > poolWithoutBuffer ? poolWithoutBuffer : token.availableAmount;
-      isLiquidityRisk = riskLiquidity < toAmount;
+      isLiquidityRisk = getRiskLiquidity() < toAmount;
     } else {
       if (isShort) {
         availableLiquidity = token.availableAmount;
@@ -604,15 +604,15 @@ export default function ConfirmationBox(props) {
           );
         }
 
-        if (adjustedMaxGlobalShortSize && adjustedMaxGlobalShortSize < token.availableAmount) {
+        if (adjustedMaxGlobalShortSize !== undefined && adjustedMaxGlobalShortSize < token.availableAmount) {
           availableLiquidity = adjustedMaxGlobalShortSize;
         }
 
         const sizeTokens = bigMath.mulDiv(toUsdMax, expandDecimals(1, token.decimals), token.minPrice);
-        isLiquidityRisk = riskLiquidity < sizeTokens;
+        isLiquidityRisk = getRiskLiquidity() < sizeTokens;
       } else {
         availableLiquidity = token.availableAmount;
-        isLiquidityRisk = riskLiquidity < toAmount;
+        isLiquidityRisk = getRiskLiquidity() < toAmount;
       }
     }
 

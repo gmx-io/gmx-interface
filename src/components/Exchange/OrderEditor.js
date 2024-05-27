@@ -174,7 +174,7 @@ export default function OrderEditor(props) {
   };
 
   const getError = () => {
-    if (!triggerRatio && !triggerPrice) {
+    if (triggerRatio === undefined && !triggerPrice) {
       return t`Enter Price`;
     }
     if (order.type === SWAP && triggerRatio == order.triggerRatio) {
@@ -199,7 +199,7 @@ export default function OrderEditor(props) {
       }
     }
 
-    if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableValidationForTesting) {
+    if (order.type !== SWAP && indexTokenMarkPrice !== undefined && !savedShouldDisableValidationForTesting) {
       if (order.triggerAboveThreshold && indexTokenMarkPrice > triggerPrice) {
         return t`Price below Mark Price`;
       }
@@ -210,7 +210,7 @@ export default function OrderEditor(props) {
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate && !currentRate >= triggerRatio) {
+      if (currentRate !== undefined && currentRate < triggerRatio) {
         return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
       }
     }
@@ -256,7 +256,9 @@ export default function OrderEditor(props) {
           onInputValueChange={onTriggerPriceChange}
           topLeftLabel={t`Price`}
           topRightLabel={t`Mark`}
-          topRightValue={indexTokenMarkPrice && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}
+          topRightValue={
+            indexTokenMarkPrice !== undefined && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)
+          }
           onClickTopRightLabel={() =>
             setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal))
           }
@@ -331,7 +333,7 @@ export default function OrderEditor(props) {
         })()}
       </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
-        {triggerRatio && triggerRatio != order.triggerRatio ? (
+        {triggerRatio !== undefined && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
@@ -345,11 +347,11 @@ export default function OrderEditor(props) {
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label={t`Price`}>
-        {triggerRatio && !triggerRatio == 0n && triggerRatio != order.triggerRatio ? (
+        {triggerRatio !== undefined && triggerRatio !== 0n && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">
               {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-                omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
+                omitSymbols: triggerRatio != order.triggerRatio,
               })}
             </span>
             &nbsp;
@@ -359,7 +361,7 @@ export default function OrderEditor(props) {
           </>
         ) : (
           getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-            omitSymbols: !triggerRatio || triggerRatio != order.triggerRatio,
+            omitSymbols: triggerRatio === undefined || triggerRatio != order.triggerRatio,
           })
         )}
       </ExchangeInfoRow>
