@@ -1945,16 +1945,14 @@ export default function StakeV2() {
                     <Trans>Voting Power</Trans>
                   </div>
                   <div>
-                    {govTokenAmount ? (
+                    {govTokenAmount !== undefined ? (
                       <Tooltip
                         position="bottom-end"
                         className="nowrap"
                         handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
                         renderContent={() => (
                           <>
-                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
-                            govTokenAmount &&
-                            govTokenAmount > 0 ? (
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (
                               <AlertInfo
                                 type="warning"
                                 className={cx("DelegateGMXAlertInfo")}

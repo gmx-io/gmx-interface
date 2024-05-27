@@ -30,6 +30,7 @@ export const contractFetcher =
       shouldCallFallback = false;
 
       const fallbackProvider = getFallbackProvider(chainId);
+
       if (!fallbackProvider) {
         reject(error);
         return;
@@ -101,5 +102,6 @@ function getContractCall({
 }
 
 function isProvider(signerOrProvider: Provider | Signer | undefined): signerOrProvider is Provider {
+  if (!signerOrProvider) return false;
   return !!(signerOrProvider as Signer).populateCall;
 }
