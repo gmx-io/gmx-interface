@@ -327,12 +327,11 @@ function UnstakeModal(props: {
       ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
       : 0n;
 
-  let unstakeBonusLostPercentage;
+  let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
     amount !== undefined &&
     amount > 0 &&
     multiplierPointsAmount !== undefined &&
-    multiplierPointsAmount > 0 &&
     processedData.esGmxInStakedGmx !== undefined &&
     processedData.gmxInStakedGmx !== undefined
   ) {
@@ -424,10 +423,11 @@ function UnstakeModal(props: {
           </AlertInfo>
         )}
         {burnAmount > 0 &&
+          unstakeBonusLostPercentage !== undefined &&
           unstakeBonusLostPercentage > 0 &&
           amount !== undefined &&
           maxAmount !== undefined &&
-          amount < maxAmount && (
+          amount <= maxAmount && (
             <AlertInfo type="warning">
               <Trans>
                 Unstaking will burn&nbsp;
@@ -1496,7 +1496,7 @@ export default function StakeV2() {
   );
 
   let multiplierPointsAmount: bigint | undefined;
-  if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
+  if (accumulatedBnGMXAmount !== undefined && processedData?.bnGmxInFeeGmx !== undefined) {
     multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
   }
 
