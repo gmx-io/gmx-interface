@@ -3,7 +3,7 @@ import { JsonRpcSigner, TransactionRequest, TransactionResponse } from "ethers";
 export class UncheckedJsonRpcSigner extends JsonRpcSigner {
   async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
     return this.sendUncheckedTransaction(transaction).then((hash) => {
-      return <TransactionResponse>(<unknown>{
+      return {
         hash,
         nonce: null,
         gasLimit: null,
@@ -16,7 +16,7 @@ export class UncheckedJsonRpcSigner extends JsonRpcSigner {
         wait: (confirmations?: number) => {
           return this.provider.waitForTransaction(hash, confirmations);
         },
-      });
+      } as unknown as TransactionResponse;
     });
   }
 }

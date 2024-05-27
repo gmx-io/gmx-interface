@@ -85,6 +85,7 @@ import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { Address } from "viem";
 
 const { ZeroAddress } = ethers;
 
@@ -97,7 +98,7 @@ function StakeModal(props: {
   value: string;
   setValue: (value: string) => void;
   active: boolean;
-  account: `0x${string}` | undefined;
+  account: Address | undefined;
   signer: UncheckedJsonRpcSigner | undefined;
   stakingTokenSymbol: string;
   stakingTokenAddress: string;
@@ -808,7 +809,7 @@ function CompoundModal(props: {
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
   active: boolean;
-  account: `0x${string}` | undefined;
+  account: Address | undefined;
   signer: UncheckedJsonRpcSigner | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
