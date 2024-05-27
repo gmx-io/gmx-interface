@@ -11,6 +11,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
@@ -29,9 +30,7 @@ const bucketLabelMap = {
 };
 
 export function GeneralPerformanceDetails({ chainId, account }: { chainId: number; account: Address }) {
-  const data = usePnlSummaryData(chainId, account);
-  const { _ } = useLingui();
-  const showDebugValues = useShowDebugValues();
+  const { data, error, loading } = usePnlSummaryData(chainId, account);
 
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
@@ -77,92 +76,93 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
             </tr>
           </thead>
           <tbody>
-            {data.map((row) => (
-              <tr key={row.bucketLabel}>
-                <td className="py-13 pl-16 pr-5">
-                  {_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}
-                </td>
-                <td className="px-5 py-13">{formatUsd(row.volume)}</td>
-                <td className="px-5 py-13">
-                  <TooltipWithPortal
-                    disableHandleStyle
-                    className={cx(
-                      "underline decoration-dashed decoration-1 underline-offset-2",
-                      row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
-                    )}
-                    content={
-                      showDebugValues ? (
-                        <GeneralPerformanceDetailsDebugTooltip row={row} />
-                      ) : (
-                        <>
-                          <StatsTooltipRow
-                            label={t`Realized PnL`}
-                            showDollar={false}
-                            textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
-                            value={formatUsd(row.realizedPnlUsd)}
-                          />
-                          <StatsTooltipRow
-                            label={t`Unrealized PnL`}
-                            showDollar={false}
-                            textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
-                            value={formatUsd(row.unrealizedPnlUsd)}
-                          />
-                          <StatsTooltipRow
-                            label={t`Start Unrealized PnL`}
-                            showDollar={false}
-                            textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
-                            value={formatUsd(row.startUnrealizedPnlUsd)}
-                          />
-                        </>
-                      )
-                    }
-                  >
-                    {formatUsd(row.pnlUsd)}
-                  </TooltipWithPortal>
-                </td>
-                <td className="px-5 py-13">
-                  <TooltipWithPortal
-                    disableHandleStyle
-                    className={cx(
-                      "underline decoration-dashed decoration-1 underline-offset-2",
-                      row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
-                    )}
-                    content={
-                      <StatsTooltipRow
-                        label={t`Capital Used`}
-                        showDollar={false}
-                        value={formatUsd(row.usedCapitalUsd)}
-                      />
-                    }
-                  >
-                    {formatPercentage(row.pnlBps, { signed: true })}
-                  </TooltipWithPortal>
-                </td>
-                <td className="py-13 pl-5 pr-16">
-                  <TooltipWithPortal
-                    handle={`${row.wins} / ${row.losses}`}
-                    content={
-                      <>
-                        <StatsTooltipRow
-                          label={t`Total Trades`}
-                          showDollar={false}
-                          value={String(row.wins + row.losses)}
-                        />
-                        <StatsTooltipRow
-                          label={t`Win Rate`}
-                          showDollar={false}
-                          value={formatPercentage(row.winsLossesRatioBps)}
-                        />
-                      </>
-                    }
-                  />
-                </td>
-              </tr>
-            ))}
+            {loading && <AccountPnlSummarySkeleton count={6} />}
+            {!loading && data.map((row) => <GeneralPerformanceDetailsRow key={row.bucketLabel} row={row} />)}
           </tbody>
         </table>
+        {error && (
+          <div className="max-h-[200px] overflow-auto p-16">
+            <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
+  const { _ } = useLingui();
+  const showDebugValues = useShowDebugValues();
+
+  return (
+    <tr key={row.bucketLabel}>
+      <td className="py-13 pl-16 pr-5">{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</td>
+      <td className="px-5 py-13">{formatUsd(row.volume)}</td>
+      <td className="px-5 py-13">
+        <TooltipWithPortal
+          disableHandleStyle
+          className={cx(
+            "underline decoration-dashed decoration-1 underline-offset-2",
+            row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
+          )}
+          content={
+            showDebugValues ? (
+              <GeneralPerformanceDetailsDebugTooltip row={row} />
+            ) : (
+              <>
+                <StatsTooltipRow
+                  label={t`Realized PnL`}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
+                  value={formatUsd(row.realizedPnlUsd)}
+                />
+                <StatsTooltipRow
+                  label={t`Unrealized PnL`}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
+                  value={formatUsd(row.unrealizedPnlUsd)}
+                />
+                <StatsTooltipRow
+                  label={t`Start Unrealized PnL`}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
+                  value={formatUsd(row.startUnrealizedPnlUsd)}
+                />
+              </>
+            )
+          }
+        >
+          {formatUsd(row.pnlUsd)}
+        </TooltipWithPortal>
+      </td>
+      <td className="px-5 py-13">
+        <TooltipWithPortal
+          disableHandleStyle
+          className={cx(
+            "underline decoration-dashed decoration-1 underline-offset-2",
+            row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
+          )}
+          content={<StatsTooltipRow label={t`Capital Used`} showDollar={false} value={formatUsd(row.usedCapitalUsd)} />}
+        >
+          {formatPercentage(row.pnlBps, { signed: true })}
+        </TooltipWithPortal>
+      </td>
+      <td className="py-13 pl-5 pr-16">
+        <TooltipWithPortal
+          handle={`${row.wins} / ${row.losses}`}
+          content={
+            <>
+              <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={String(row.wins + row.losses)} />
+              <StatsTooltipRow
+                label={t`Win Rate`}
+                showDollar={false}
+                value={formatPercentage(row.winsLossesRatioBps)}
+              />
+            </>
+          }
+        />
+      </td>
+    </tr>
   );
 }
 
@@ -200,7 +200,7 @@ const PROD_QUERY = gql`
   }
 `;
 
-function usePnlSummaryData(chainId: number, account: Address): PnlSummaryData {
+function usePnlSummaryData(chainId: number, account: Address) {
   const showDebugValues = useShowDebugValues();
 
   const res = useGqlQuery(showDebugValues ? DEBUG_QUERY : PROD_QUERY, {
@@ -208,7 +208,7 @@ function usePnlSummaryData(chainId: number, account: Address): PnlSummaryData {
     variables: { account: account },
   });
 
-  const transformedData = useMemo(() => {
+  const transformedData: PnlSummaryData = useMemo(() => {
     if (!res.data?.accountPnlSummaryStats) {
       return EMPTY_ARRAY;
     }
@@ -254,5 +254,5 @@ function usePnlSummaryData(chainId: number, account: Address): PnlSummaryData {
     });
   }, [res.data?.accountPnlSummaryStats, showDebugValues]);
 
-  return transformedData;
+  return { data: transformedData, error: res.error, loading: res.loading };
 }

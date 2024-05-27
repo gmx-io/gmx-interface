@@ -21,9 +21,11 @@ import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
+import Loader from "components/Common/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
@@ -37,7 +39,6 @@ import {
 } from "./dailyAndCumulativePnLDebug";
 
 import downloadIcon from "img/ic_download_simple.svg";
-import { getSubsquidGraphClient } from "lib/subgraph";
 
 const CSV_ICON_INFO = {
   src: downloadIcon,
@@ -49,7 +50,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
   const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStartRounded(fromDate), [fromDate]);
 
-  const clusteredPnlData = usePnlHistoricalData(chainId, account, fromTimestamp);
+  const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp);
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
@@ -120,6 +121,16 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
             </ComposedChart>
           </ResponsiveContainer>
         </div>
+        {error && (
+          <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
+            <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
+          </div>
+        )}
+        {loading && (
+          <div className="absolute grid size-full place-items-center">
+            <Loader />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -172,14 +183,14 @@ const PROD_QUERY = gql`
   }
 `;
 
-function usePnlHistoricalData(chainId: number, account: string, fromTimestamp: number | undefined): PnlHistoricalData {
+function usePnlHistoricalData(chainId: number, account: string, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
     client: getSubsquidGraphClient(chainId)!,
     variables: { account: account, from: fromTimestamp },
   });
 
-  const transformedData = useMemo(() => {
+  const transformedData: PnlHistoricalData = useMemo(() => {
     return (
       res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
@@ -210,7 +221,7 @@ function usePnlHistoricalData(chainId: number, account: string, fromTimestamp: n
     );
   }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
-  return transformedData;
+  return { data: transformedData, error: res.error, loading: res.loading };
 }
 
 function usdBigIntToFloat(usd: bigint) {
