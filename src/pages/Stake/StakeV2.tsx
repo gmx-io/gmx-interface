@@ -142,7 +142,8 @@ function StakeModal(props: {
   );
 
   let amount = parseValue(value, 18);
-  const needApproval = farmAddress !== ZeroAddress && tokenAllowance && amount !== undefined && amount > tokenAllowance;
+  const needApproval =
+    farmAddress !== ZeroAddress && tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
