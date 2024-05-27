@@ -202,8 +202,8 @@ export function getIncreaseError(p: {
   if (
     initialCollateralAmount === undefined ||
     initialCollateralUsd === undefined ||
-    initialCollateralAmount < 0 ||
-    initialCollateralUsd < 0 ||
+    initialCollateralAmount <= 0 ||
+    initialCollateralUsd <= 0 ||
     sizeDeltaUsd === undefined ||
     !fees?.payTotalFees
   ) {
