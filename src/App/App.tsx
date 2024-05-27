@@ -359,8 +359,10 @@ function FullApp() {
               <Route exact path="/actions/v1">
                 <Actions />
               </Route>
-              <Route exact path="/actions/v1/:account">
-                <Actions />
+              <Route exact path="/actions/:v/:account">
+                {({ match }) => (
+                  <Redirect to={`/actions/${match?.params.account}?v=${match?.params.v === "v1" ? 1 : 2}`} />
+                )}
               </Route>
               <Route exact path="/actions">
                 <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode>
@@ -368,9 +370,6 @@ function FullApp() {
                 </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
-              <Route path="/actions/v2/:account">
-                {({ match }) => <Redirect to={`/actions/${match?.params.account}`} />}
-              </Route>
               <Route exact path="/actions/:account">
                 <AccountDashboard />
               </Route>
