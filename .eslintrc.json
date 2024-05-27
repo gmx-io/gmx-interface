@@ -43,7 +43,8 @@
       "react/require-default-props": "off",
       "react/jsx-handler-names": "off",
       "react/display-name": "off",
-      "local-rules/no-bigint-negation": "off"
+      "local-rules/no-bigint-negation": "off",
+      "local-rules/no-logical-bigint": "off"
     },
     "env": {
       "browser": true,
@@ -70,7 +71,8 @@
       {
         "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
         "rules": {
-          "local-rules/no-bigint-negation": "error"
+          "local-rules/no-bigint-negation": "error",
+          "local-rules/no-logical-bigint": "error"
         },
         "parserOptions": {
           "project": ["./tsconfig.json"]
