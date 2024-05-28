@@ -45,6 +45,9 @@ import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { DailyAndCumulativePnL } from "pages/AccountDashboard/DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "pages/AccountDashboard/GeneralPerformanceDetails";
+import ButtonLink from "components/Button/ButtonLink";
+import { useTradePageVersion } from "lib/useTradePageVersion";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
 export type Props = {
   openSettings: () => void;
@@ -365,6 +368,7 @@ export function SyntheticsPage(p: Props) {
 function SyntheticsPageEmbeddedAccountDashboard() {
   const account = useAccount();
   const { chainId } = useChainId();
+  const [tradePageVersion] = useTradePageVersion();
 
   if (!account) {
     return (
@@ -378,6 +382,18 @@ function SyntheticsPageEmbeddedAccountDashboard() {
     <div className="flex flex-col gap-12">
       <GeneralPerformanceDetails chainId={chainId} account={account as Address} />
       <DailyAndCumulativePnL chainId={chainId} account={account as Address} />
+      <div>
+        <ButtonLink
+          className={"text-gray-300 hover:text-white"}
+          to={buildAccountDashboardUrl(account as Address, chainId, tradePageVersion)}
+          showExternalLinkArrow={false}
+        >
+          <span className="underline decoration-1 underline-offset-2">
+            <Trans>Open dashboard page</Trans>
+          </span>
+          .
+        </ButtonLink>
+      </div>
     </div>
   );
 }

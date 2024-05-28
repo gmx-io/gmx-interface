@@ -1,12 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { invert } from "lodash";
 import { useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import type { Address } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
+import { CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { getIcon } from "config/icons";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -19,6 +18,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
 import { HistoricalLists, HistoricalListsV1 } from "./HistoricalLists";
+import { NETWORK_ID_SLUGS_MAP, NETWORK_QUERY_PARAM, NETWORK_SLUGS_ID_MAP, VERSION_QUERY_PARAM } from "./constants";
 
 export function AccountDashboard() {
   const { chainId: initialChainId } = useChainId();
@@ -83,20 +83,9 @@ export function AccountDashboard() {
   );
 }
 
-const NETWORK_QUERY_PARAM = "network";
-const VERSION_QUERY_PARAM = "v";
-
-function buildUrl(account: Address, chainId: number, version: number) {
+export function buildAccountDashboardUrl(account: Address, chainId: number, version: number) {
   return `/actions/${account}?${VERSION_QUERY_PARAM}=${version}&${NETWORK_QUERY_PARAM}=${NETWORK_ID_SLUGS_MAP[chainId]}`;
 }
-
-const NETWORK_SLUGS_ID_MAP = {
-  arbitrum: ARBITRUM,
-  avalanche: AVALANCHE,
-  avalanche_fuji: AVALANCHE_FUJI,
-};
-
-const NETWORK_ID_SLUGS_MAP = invert(NETWORK_SLUGS_ID_MAP);
 
 function usePageParams(initialChainId: number) {
   const history = useHistory();
@@ -119,7 +108,7 @@ function usePageParams(initialChainId: number) {
     }
 
     if (patch) {
-      history.replace(buildUrl(account, patch.chainId ?? chainId, patch.version ?? version));
+      history.replace(buildAccountDashboardUrl(account, patch.chainId ?? chainId, patch.version ?? version));
     }
   }, [account, chainId, chainIdFromParams, history, initialChainId, version]);
 
@@ -131,7 +120,7 @@ function VersionNetworkSwitcher({ account, chainId, version }: { account: Addres
     <div className="flex flex-wrap items-center gap-12 *:cursor-pointer">
       {SUPPORTED_CHAIN_IDS.map((supportedChainId) => (
         <Link
-          to={buildUrl(account, supportedChainId, 2)}
+          to={buildAccountDashboardUrl(account, supportedChainId, 2)}
           key={supportedChainId}
           className={cx("flex items-center gap-4", {
             "text-white": supportedChainId === chainId && version === 2,
@@ -148,7 +137,7 @@ function VersionNetworkSwitcher({ account, chainId, version }: { account: Addres
       ))}
       {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
         <Link
-          to={buildUrl(account, supportedChainId, 1)}
+          to={buildAccountDashboardUrl(account, supportedChainId, 1)}
           key={supportedChainId}
           className={cx("flex items-center gap-4", {
             "text-white": supportedChainId === chainId && version === 1,
