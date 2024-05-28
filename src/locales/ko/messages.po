@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Unrealized Base PnL"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Wallet not connected"
@@ -309,7 +313,7 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 msgid "Cancel Stop-Loss Order"
 msgstr "손절 주문 취소"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
@@ -331,8 +335,7 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
 
@@ -356,7 +359,7 @@ msgstr "{0}에서 {1}로 1inch에서 스왑"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/Actions/Actions.js
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -396,6 +399,7 @@ msgstr ""
 msgid "Open Fees"
 msgstr "오픈 수수료"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -646,10 +650,6 @@ msgstr ""
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
 
-#: src/pages/Actions/Actions.js
-msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
-msgstr ""
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
@@ -675,6 +675,7 @@ msgstr "이미 사용된 코드입니다"
 msgid "Slippage should be less than -5%"
 msgstr ""
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -735,6 +736,10 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
+msgstr ""
+
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+msgid "Positions ({positionsCount})"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -819,6 +824,10 @@ msgstr ""
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "이외의 링크는 <0>docs</0>에서 확인할 수 있습니다.<1/><2/>동의 버튼을 클릭하여 <3>T&Cs</3> 그리고 <4>Referral T&Cs</4>에 동의합니다.<5/><6/>"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "All Time"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
@@ -1017,6 +1026,8 @@ msgstr "총계"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
@@ -1035,7 +1046,6 @@ msgstr "지정가 스왑 실패"
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
 msgstr ""
@@ -1084,6 +1094,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -1091,7 +1102,7 @@ msgstr "대시보드"
 msgid "Swap Price Impact"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "No PnLs found"
 msgstr "손익을 찾지 못했습니다."
 
@@ -1732,6 +1743,7 @@ msgstr "사이즈"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -2144,7 +2156,7 @@ msgstr ""
 msgid "Transfer Account"
 msgstr "계정 이전"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "GMX V1 Actions"
 msgstr ""
 
@@ -2189,6 +2201,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}에서 {toMinText}로"
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Open dashboard page"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2280,6 +2296,10 @@ msgstr "최소량 수치 완료"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용되고 있지 않은 유휴 수량"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Month"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2290,7 +2310,7 @@ msgstr "유효하지 않은 가격, 경고문을 보세요"
 msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
 msgstr "보너스 포인트로 보상을 높이세요. <0>더 읽기</0>."
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
@@ -2552,7 +2572,7 @@ msgstr ""
 msgid "Forfeit profit and Short"
 msgstr "이익 상실 및 숏"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "Profit"
 msgstr "수익"
 
@@ -2572,6 +2592,7 @@ msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스�
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "{swapTokenSymbol}을 1inch에서 구매하기"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
 msgstr ""
@@ -2706,6 +2727,10 @@ msgstr ""
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "{0}을 {1}로 스왑하는 수수료가 높습니다."
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Debug values are not available"
+msgstr ""
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
@@ -2828,6 +2853,8 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
 msgstr ""
@@ -2991,7 +3018,7 @@ msgstr "입금 실패"
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "Loss"
 msgstr "손실"
 
@@ -3065,13 +3092,9 @@ msgstr "스왑 제출 완료."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "PnL"
 msgstr "PnL"
-
-#: src/pages/Actions/Actions.js
-msgid "GMX V1 Account"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3312,6 +3335,10 @@ msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 msgid "Read more"
 msgstr "더 알아보기"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "This Year"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{actionDisplay} {0} {longOrShortText},\n"
@@ -3438,8 +3465,8 @@ msgstr "주문의 트리거 가격입니다."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/Actions.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -3450,6 +3477,7 @@ msgstr "주문의 트리거 가격입니다."
 msgid "Short"
 msgstr "숏"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
@@ -3610,6 +3638,7 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr ""
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital Used"
 msgstr ""
@@ -4083,6 +4112,8 @@ msgstr "{0}담보의 USD가치 스냅샷은 해당 포지션이 열려있을 때
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "모든 시간"
 
@@ -4296,6 +4327,7 @@ msgid "Execute"
 msgstr "실행"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
@@ -4304,10 +4336,6 @@ msgstr "트레이드"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "PnL (%) / Rank"
-msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
@@ -4736,6 +4764,7 @@ msgstr "최저 수수료로 이용하려면 \"수수료 절약\" 섹션 아래�
 msgid "Display PnL after fees"
 msgstr "수수료포함 손익 표시"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
 msgstr ""
@@ -4854,10 +4883,22 @@ msgstr ""
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "수령 후 {1} {stake} 대 1 esGMX 비율로 최대 {0}개의 esGMX를 베스팅 할 수 있습니다."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Today"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "수령할 주소"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX {versionName} {networkName} information for account:"
+msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "From"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4947,6 +4988,8 @@ msgstr "<1>홈페이지</1> <2>혹은</2> <3>트레이드 페이지</3><0>로 �
 msgid "Swapped {0} {1} for {2} {3}!"
 msgstr "{0} {1}에서 {2} {3}으로 스왑됨"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized Fees"
@@ -5235,6 +5278,10 @@ msgstr "생성"
 msgid "Limit order submitted!"
 msgstr "지정가 주문 제출 완료!"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last 7d"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "복사"
@@ -5274,6 +5321,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim"
 msgstr "수령하기"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX {versionName} Account"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5442,6 +5493,7 @@ msgstr "부분 청산됨"
 msgid "Insufficient GLP balance"
 msgstr "GLP 잔고 부족"
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
 msgstr ""
@@ -5567,10 +5619,6 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "베스트팅된 GMX에서 인출되지 않은 양"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 {networkName} information for account:"
-msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
@@ -5722,6 +5770,8 @@ msgstr ""
 msgid "time to liq"
 msgstr "청산까지의 시간"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Fees"
@@ -6038,6 +6088,10 @@ msgstr ""
 msgid "Swapping..."
 msgstr "스왑중..."
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Base PnL"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -6045,10 +6099,6 @@ msgstr "스왑중..."
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "스왑 실패."
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "PnL ($) / Rank"
-msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -6284,8 +6334,8 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/Actions.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6384,6 +6434,10 @@ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+msgstr ""
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6604,6 +6658,7 @@ msgid "Referral code submitted!"
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "지난 달"
 
@@ -6820,12 +6875,17 @@ msgstr ""
 msgid "Leaderboard"
 msgstr "리더보드"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
+msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "No data available"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -6919,6 +6979,10 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
+msgstr ""
+
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+msgid "Orders ({ordersCount})"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -7077,6 +7141,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
+msgstr ""
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last 30d"
 msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
@@ -7310,6 +7378,10 @@ msgstr "순 수수료율은 자금 조달 및 대출 수수료를 결합하지�
 msgid "Accrued Price Impact Rebates"
 msgstr ""
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Yesterday"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "보증금 요청"
@@ -7490,4 +7562,8 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"
+msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Week"
 msgstr ""

@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Unrealized Base PnL"
+msgstr "Unrealized Base PnL"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Wallet not connected"
@@ -309,7 +313,7 @@ msgstr "Max {0} short exceeded"
 msgid "Cancel Stop-Loss Order"
 msgstr "Cancel Stop-Loss Order"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
@@ -331,8 +335,7 @@ msgstr "Subaccount Balance"
 msgid "Main Account Balance"
 msgstr "Main Account Balance"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 
@@ -356,7 +359,7 @@ msgstr "Swap {0} to {1} on 1inch"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/Actions/Actions.js
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -396,6 +399,7 @@ msgstr "Confirm Limit Order"
 msgid "Open Fees"
 msgstr "Open Fees"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -646,10 +650,6 @@ msgstr "Activating Subaccount"
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
 
-#: src/pages/Actions/Actions.js
-msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
-msgstr "GMX V1 Arbitrum information for account: {checkSummedAccount}"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
@@ -675,6 +675,7 @@ msgstr "Code already taken"
 msgid "Slippage should be less than -5%"
 msgstr "Slippage should be less than -5%"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -736,6 +737,10 @@ msgstr "Decentralized Money Market"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr "Stop-Loss"
+
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+msgid "Positions ({positionsCount})"
+msgstr "Positions ({positionsCount})"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposited"
@@ -819,6 +824,10 @@ msgstr "Insufficient Liquidity"
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "All Time"
+msgstr "All Time"
 
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
@@ -1017,6 +1026,8 @@ msgstr "Total"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Price Impact"
@@ -1035,7 +1046,6 @@ msgstr "Failed Limit Swap"
 msgid "Overall protocol analytics"
 msgstr "Overall protocol analytics"
 
-#: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
 msgstr "Actions"
@@ -1084,6 +1094,7 @@ msgstr "Leftover position below 10 USD"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -1091,7 +1102,7 @@ msgstr "Dashboard"
 msgid "Swap Price Impact"
 msgstr "Swap Price Impact"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "No PnLs found"
 msgstr "No PnLs found"
 
@@ -1732,6 +1743,7 @@ msgstr "Size"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -2144,7 +2156,7 @@ msgstr "You have an existing position with {0} as collateral."
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "GMX V1 Actions"
 msgstr "GMX V1 Actions"
 
@@ -2189,6 +2201,10 @@ msgstr "Generate & Activate Subaccount"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} to {toMinText}"
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Open dashboard page"
+msgstr "Open dashboard page"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2280,6 +2296,10 @@ msgstr "Minimum received"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Month"
+msgstr "Month"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2290,7 +2310,7 @@ msgstr "Invalid price, see warning"
 msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>Read more</0>."
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr "GMX V1 {networkName} actions for all accounts."
 
@@ -2552,7 +2572,7 @@ msgstr "Subaccount created"
 msgid "Forfeit profit and Short"
 msgstr "Forfeit profit and Short"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "Profit"
 msgstr "Profit"
 
@@ -2572,6 +2592,7 @@ msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Buy {swapTokenSymbol} on 1inch"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
 msgstr "PnL (%)"
@@ -2706,6 +2727,10 @@ msgstr "Swap {0} to {1}"
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "Fees are high to swap from {0} to {1}."
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Debug values are not available"
+msgstr "Debug values are not available"
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
@@ -2828,6 +2853,8 @@ msgstr "Enable withdraw sent."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
 msgstr "Start Unrealized PnL"
@@ -2991,7 +3018,7 @@ msgstr "Failed Deposit"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "Loss"
 msgstr "Loss"
 
@@ -3065,13 +3092,9 @@ msgstr "Swap submitted."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
 msgid "PnL"
 msgstr "PnL"
-
-#: src/pages/Actions/Actions.js
-msgid "GMX V1 Account"
-msgstr "GMX V1 Account"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3312,6 +3335,10 @@ msgstr "Rebates earned by this account as a trader."
 msgid "Read more"
 msgstr "Read more"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "This Year"
+msgstr "This Year"
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{actionDisplay} {0} {longOrShortText},\n"
@@ -3441,8 +3468,8 @@ msgstr "Trigger price for the order."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/Actions.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -3453,6 +3480,7 @@ msgstr "Trigger price for the order."
 msgid "Short"
 msgstr "Short"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
@@ -3613,6 +3641,7 @@ msgstr "Price below lowest Limit Price."
 msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 msgstr "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital Used"
 msgstr "Capital Used"
@@ -4086,6 +4115,8 @@ msgstr "A snapshot of the USD value of your {0} collateral is taken when the pos
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "All time"
 
@@ -4299,6 +4330,7 @@ msgid "Execute"
 msgstr "Execute"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
@@ -4307,10 +4339,6 @@ msgstr "Trades"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "PnL (%) / Rank"
-msgstr "PnL (%) / Rank"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
@@ -4739,6 +4767,7 @@ msgstr "Check the \"Save on Fees\" section below to get the lowest fee percentag
 msgid "Display PnL after fees"
 msgstr "Display PnL after fees"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
 msgstr "The total realized and unrealized profit and loss for the period, including fees and price impact."
@@ -4857,10 +4886,22 @@ msgstr "Position Price Impact"
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Today"
+msgstr "Today"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "Receiver Address"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX {versionName} {networkName} information for account:"
+msgstr "GMX {versionName} {networkName} information for account:"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "From"
+msgstr "From"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4950,6 +4991,8 @@ msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgid "Swapped {0} {1} for {2} {3}!"
 msgstr "Swapped {0} {1} for {2} {3}!"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized Fees"
@@ -5238,6 +5281,10 @@ msgstr "Create"
 msgid "Limit order submitted!"
 msgstr "Limit order submitted!"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last 7d"
+msgstr "Last 7d"
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "Copy"
@@ -5277,6 +5324,10 @@ msgstr "trigger price"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim"
 msgstr "Claim"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX {versionName} Account"
+msgstr "GMX {versionName} Account"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5445,6 +5496,7 @@ msgstr "Partially Liquidated"
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
 msgstr "Start Unrealized Fees"
@@ -5573,10 +5625,6 @@ msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>.
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "Vested GMX not withdrawn"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 {networkName} information for account:"
-msgstr "GMX V2 {networkName} information for account:"
 
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
@@ -5728,6 +5776,8 @@ msgstr "Execution Fee"
 msgid "time to liq"
 msgstr "time to liq"
 
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Fees"
@@ -6044,6 +6094,10 @@ msgstr "Position close disabled, pending {0} upgrade"
 msgid "Swapping..."
 msgstr "Swapping..."
 
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Base PnL"
+msgstr "Realized Base PnL"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -6051,10 +6105,6 @@ msgstr "Swapping..."
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "Swap failed."
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "PnL ($) / Rank"
-msgstr "PnL ($) / Rank"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -6290,8 +6340,8 @@ msgstr "Fulfilling Sell request"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/Actions.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6391,6 +6441,10 @@ msgstr "Top PnL ($)"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
+msgstr "Invalid address. Please make sure you have entered a valid Ethereum address"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
@@ -6610,6 +6664,7 @@ msgid "Referral code submitted!"
 msgstr "Referral code submitted!"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Last month"
 
@@ -6826,6 +6881,7 @@ msgstr "Settling..."
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
@@ -6833,6 +6889,10 @@ msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is cal
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
 msgstr "Accrued"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "No data available"
+msgstr "No data available"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "{nativeTokenSymbol} is not available"
@@ -6926,6 +6986,10 @@ msgstr "2nd Place"
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
+
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+msgid "Orders ({ordersCount})"
+msgstr "Orders ({ordersCount})"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
@@ -7084,6 +7148,10 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
 msgstr "You do not have any eligible trade during the competition window."
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last 30d"
+msgstr "Last 30d"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
@@ -7316,6 +7384,10 @@ msgstr "Net rate combines funding and borrowing fees but excludes open, swap or 
 msgid "Accrued Price Impact Rebates"
 msgstr "Accrued Price Impact Rebates"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Yesterday"
+msgstr "Yesterday"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Request Deposit"
@@ -7497,3 +7569,7 @@ msgstr "Unstake GMX"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"
 msgstr "Deposit failed!"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Week"
+msgstr "Week"
