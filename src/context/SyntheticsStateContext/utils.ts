@@ -1,7 +1,6 @@
 import { createSelector as createSelectorCommon } from "reselect";
 import { EnhancedSelector, createSelectionContext } from "@taskworld.com/rereselect";
 import { Selector } from "reselect";
-import { BigNumber } from "@ethersproject/bignumber";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { LRUCache } from "./LruCache";
@@ -16,7 +15,7 @@ const context = createSelectionContext<SyntheticsState>();
 
 export const createSelector = context.makeSelector;
 
-type Arg = boolean | string | BigNumber | undefined | null | number | TradeMode | TradeType | OrderOption;
+type Arg = boolean | string | undefined | null | number | TradeMode | TradeType | OrderOption | bigint;
 type SupportedArg = Arg | Record<string, Arg>;
 
 type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;

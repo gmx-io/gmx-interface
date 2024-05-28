@@ -1,0 +1,14 @@
+diff --git a/node_modules/jest-runner/build/index.js b/node_modules/jest-runner/build/index.js
+index c4d926b..58002df 100644
+--- a/node_modules/jest-runner/build/index.js
++++ b/node_modules/jest-runner/build/index.js
+@@ -188,7 +188,8 @@ class TestRunner {
+     const worker = new (_jestWorker().Worker)(TEST_WORKER_PATH, {
+       exposedMethods: ['worker'],
+       forkOptions: {
+-        stdio: 'pipe'
++        stdio: 'pipe',
++        serialization: 'advanced'
+       },
+       maxRetries: 3,
+       numWorkers: this._globalConfig.maxWorkers,

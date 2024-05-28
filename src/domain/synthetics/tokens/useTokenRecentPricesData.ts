@@ -1,5 +1,4 @@
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { BigNumber } from "ethers";
 import useSWR from "swr";
 import { TokenPricesData } from "./types";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
@@ -39,8 +38,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           }
 
           result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigNumber.from(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigNumber.from(priceItem.maxPrice), tokenConfig.decimals),
+            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
           };
         });
 

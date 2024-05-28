@@ -39,7 +39,6 @@ import { PositionOrderInfo } from "domain/synthetics/orders/types";
 import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
 import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -55,7 +54,7 @@ export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   availableIndexTokenStat?: IndexTokenStat;
-  availableMarketsOpenFees?: { [marketTokenAddress: string]: BigNumber };
+  availableMarketsOpenFees?: { [marketTokenAddress: string]: bigint };
   marketWithPosition?: MarketInfo;
   /**
    * Collateral token of the position in `marketWithPosition`
@@ -69,10 +68,10 @@ export type AvailableMarketsOptions = {
   collateralWithOrderShouldUnwrapNativeToken?: boolean;
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
-  minPriceImpactBps?: BigNumber;
-  minPriceImpactPositionFeeBps?: BigNumber;
+  minPriceImpactBps?: bigint;
+  minPriceImpactPositionFeeBps?: bigint;
   minOpenFeesAvailableMarketAddress?: string;
-  minOpenFeesBps?: BigNumber;
+  minOpenFeesBps?: bigint;
   isNoSufficientLiquidityInAnyMarket?: boolean;
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
@@ -105,7 +104,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     ? availableMarkets.filter((marketInfo) => {
         const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
 
-        return liquidity.gt(increaseSizeUsd);
+        return liquidity > increaseSizeUsd;
       })
     : availableMarkets;
 
@@ -139,11 +138,9 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       if (availablePosition) {
         result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
         result.collateralWithPosition = availablePosition.collateralToken;
-        if (increaseSizeUsd) {
-          result.isNoSufficientLiquidityInMarketWithPosition = !getAvailableUsdLiquidityForPosition(
-            result.marketWithPosition!,
-            isLong
-          ).gt(increaseSizeUsd);
+        if (increaseSizeUsd != undefined) {
+          result.isNoSufficientLiquidityInMarketWithPosition =
+            getAvailableUsdLiquidityForPosition(result.marketWithPosition!, isLong) <= increaseSizeUsd;
         }
       }
     }
@@ -165,16 +162,16 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  if (increaseSizeUsd) {
+  if (increaseSizeUsd != undefined) {
     const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
       liquidMarkets,
       indexToken.address,
       isLong,
       isIncrease,
-      increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
+      increaseSizeUsd > 0 ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
     );
 
-    if (bestMarket && bestImpactDeltaUsd) {
+    if (bestMarket && bestImpactDeltaUsd != undefined) {
       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
         isIncrease: true,
         isLong,
@@ -188,7 +185,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  if (increaseSizeUsd?.gt(0)) {
+  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0) {
     for (const liquidMarket of liquidMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {
@@ -196,7 +193,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       }
 
       const positionFeeBeforeDiscount = getFeeItem(
-        marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+        -(marketIncreasePositionAmounts.positionFeeUsd + marketIncreasePositionAmounts.feeDiscountUsd),
         marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
@@ -214,11 +211,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
         sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
       });
 
-      const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+      const openFees = positionFeeBeforeDiscount!.bps + acceptablePriceDeltaBps;
 
       result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
 
-      if (!result.minOpenFeesBps || openFees.gt(result.minOpenFeesBps)) {
+      if (result.minOpenFeesBps === undefined || openFees > result.minOpenFeesBps) {
         result.minOpenFeesBps = openFees;
         result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
       }
@@ -245,10 +242,10 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
+  const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const positionKey = q(selectTradeboxSelectedPositionKey);
 

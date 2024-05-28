@@ -3,13 +3,12 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getConstant } from "config/chains";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree } from "lib/numbers";
 
 type Fee = { label: string; value: string };
-type ExecutionFees = { fee?: BigNumber; feeUsd?: BigNumber };
+type ExecutionFees = { fee?: bigint; feeUsd?: bigint };
 type FeeType = "open" | "close" | "swap" | "borrow" | "deposit" | "execution";
 
 function getFeeLabel(type: FeeType) {
@@ -36,8 +35,8 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
 }
 
-function getFeesStr(fees: BigNumber | undefined): string {
-  if (!fees || !BigNumber.from(fees).gt(0)) {
+function getFeesStr(fees: bigint | undefined): string {
+  if (fees === undefined || (fees ?? 0n) <= 0) {
     return "";
   }
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
@@ -66,21 +65,21 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | 
   return rows.filter((row) => row.value);
 }
 
-function getTotalFees(fees: (BigNumber | undefined)[]) {
-  return fees.reduce((acc: BigNumber, fee) => {
-    if (!fee) {
+function getTotalFees(fees: (bigint | undefined)[]) {
+  return fees.reduce((acc: bigint, fee) => {
+    if (fee === undefined) {
       return acc;
     }
-    return acc.add(fee);
-  }, BigNumber.from(0));
+    return acc + fee;
+  }, 0n);
 }
 
 type Props = {
   executionFees: ExecutionFees;
-  positionFee?: BigNumber;
-  depositFee?: BigNumber;
-  swapFee?: BigNumber;
-  fundingFee?: BigNumber;
+  positionFee?: bigint;
+  depositFee?: bigint;
+  swapFee?: bigint;
+  fundingFee?: bigint;
   fundingRate?: string;
   isOpening?: boolean;
   titleText?: string;
@@ -115,7 +114,7 @@ function FeesTooltip({
     <Tooltip
       position="top-end"
       className="PositionSeller-fees-tooltip"
-      handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
+      handle={<div>{totalFees > 0 ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
           {titleText && <p>{titleText}</p>}

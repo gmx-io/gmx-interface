@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import formatDate from "date-fns/format";
+import { useLingui } from "@lingui/react";
 import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -151,6 +152,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 
 function useDownloadAsCsv(claimActions?: ClaimAction[]) {
   const { chainId } = useChainId();
+  const { _ } = useLingui();
 
   const handleCsvDownload = useCallback(() => {
     if (!claimActions) {
@@ -159,11 +161,11 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
     const fullFormattedData = claimActions.flatMap((claimAction) => {
       if (claimAction.type === "collateral") {
-        let action: string = claimCollateralEventTitles[claimAction.eventName];
+        let action: string = _(claimCollateralEventTitles[claimAction.eventName]);
 
         return claimAction.claimItems.flatMap((claimItem) => {
           return [
-            claimItem.longTokenAmount.gt(0) && {
+            claimItem.longTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
@@ -174,7 +176,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
                 claimItem.marketInfo.longToken.symbol
               ),
             },
-            claimItem.shortTokenAmount.gt(0) && {
+            claimItem.shortTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
@@ -189,7 +191,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
         });
       }
 
-      let action: string = claimFundingFeeEventTitles[claimAction.eventName];
+      let action: string = _(claimFundingFeeEventTitles[claimAction.eventName]);
       return claimAction.markets.map((market, index) => ({
         explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
         timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
@@ -215,7 +217,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
       size: t`Size`,
       explorerUrl: t`Transaction ID`,
     });
-  }, [chainId, claimActions]);
+  }, [chainId, claimActions, _]);
 
   return handleCsvDownload;
 }

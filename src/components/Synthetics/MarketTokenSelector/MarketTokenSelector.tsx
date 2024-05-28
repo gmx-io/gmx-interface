@@ -98,7 +98,7 @@ export default function MarketTokenSelector(props: Props) {
           <div>
             <Popover.Button as="div">
               <button className={cx("chart-token-selector")}>
-                <span className="chart-token-selector--current inline-items-center">
+                <span className="chart-token-selector--current inline-flex items-center">
                   {currentMarketInfo && (
                     <>
                       <TokenIcon
@@ -108,7 +108,7 @@ export default function MarketTokenSelector(props: Props) {
                         importSize={40}
                       />
                       <div className="Market-index-name">
-                        <div className="items-center">
+                        <div className="flex items-center">
                           <span>GM{indexName && `: ${indexName}`}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
@@ -123,7 +123,7 @@ export default function MarketTokenSelector(props: Props) {
             <div className="chart-token-menu">
               <Popover.Panel as="div" className="menu-items chart-token-menu-items">
                 <SearchInput
-                  className="m-md"
+                  className="m-15"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {
@@ -170,7 +170,7 @@ export default function MarketTokenSelector(props: Props) {
                               onClick={() => handleSelectToken(market.address)}
                             >
                               <td className="token-item">
-                                <span className="inline-items-center">
+                                <span className="inline-flex items-center">
                                   {marketInfo && (
                                     <>
                                       <TokenIcon
@@ -179,9 +179,9 @@ export default function MarketTokenSelector(props: Props) {
                                         displaySize={16}
                                         importSize={40}
                                       />
-                                      <div className="items-center">
+                                      <div className="inline-flex items-center">
                                         <span>{indexName && indexName}</span>
-                                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                                        <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                                       </div>
                                     </>
                                   )}

@@ -1,17 +1,18 @@
-import { BigNumber } from "ethers";
-
-export function getPositiveOrNegativeClass(value?: BigNumber, zeroValue: "" | "text-red" | "text-green" = ""): string {
-  if (!value) {
+export function getPositiveOrNegativeClass(
+  value?: bigint,
+  zeroValue: "" | "text-red-500" | "text-green-500" = ""
+): string {
+  if (value === undefined) {
     return "";
   }
-  return value.isZero() ? zeroValue : value.isNegative() ? "text-red" : "text-green";
+  return value === 0n ? zeroValue : value < 0n ? "text-red-500" : "text-green-500";
 }
 
-export function getPlusOrMinusSymbol(value?: BigNumber, opts: { showPlusForZero?: boolean } = {}): string {
-  if (!value) {
+export function getPlusOrMinusSymbol(value?: bigint, opts: { showPlusForZero?: boolean } = {}): string {
+  if (value === undefined) {
     return "";
   }
 
   const { showPlusForZero = false } = opts;
-  return value.isZero() ? (showPlusForZero ? "+" : "") : value.isNegative() ? "-" : "+";
+  return value === 0n ? (showPlusForZero ? "+" : "") : value < 0n ? "-" : "+";
 }

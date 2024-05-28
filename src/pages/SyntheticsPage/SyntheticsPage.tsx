@@ -25,10 +25,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -120,14 +117,7 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
-  }, [
-    cancelOrdersDetailsMessage,
-    chainId,
-    selectedOrdersKeysArr,
-    setPendingTxns,
-    signer,
-    subaccount,
-  ]);
+  }, [cancelOrdersDetailsMessage, chainId, selectedOrdersKeysArr, setPendingTxns, signer, subaccount]);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
@@ -264,7 +254,7 @@ export function SyntheticsPage(p: Props) {
               <div className="align-right Exchange-should-show-position-lines">
                 {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
-                    className="muted font-base cancel-order-btn"
+                    className="muted cancel-order-btn text-15"
                     disabled={isCancelOrdersProcessig}
                     type="button"
                     onClick={onCancelOrdersClick}

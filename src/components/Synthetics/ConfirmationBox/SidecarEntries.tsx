@@ -153,7 +153,7 @@ function SidecarEntry({
               </button>
             }
             portalClassName="Sidecar-helper-text"
-            handleClassName="mr-xs"
+            handleClassName="mr-5"
             position="right"
             content={addRowTooltip}
             openDelay={1500}

@@ -1,13 +1,13 @@
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS } from "../legacy";
-import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, MAX_LEVERAGE } from "config/factors";
 
 type GetLiquidationParams = {
-  size: BigNumber;
-  collateral: BigNumber;
-  averagePrice: BigNumber;
+  size: bigint;
+  collateral: bigint;
+  averagePrice: bigint;
   isLong: boolean;
-  fundingFee?: BigNumber;
+  fundingFee?: bigint;
 };
 
 export function getLiquidationPriceFromDelta({
@@ -17,39 +17,41 @@ export function getLiquidationPriceFromDelta({
   averagePrice,
   isLong,
 }: {
-  liquidationAmount: BigNumber;
-  size: BigNumber;
-  collateral: BigNumber;
-  averagePrice: BigNumber;
+  liquidationAmount: bigint;
+  size: bigint;
+  collateral: bigint;
+  averagePrice: bigint;
   isLong: boolean;
 }) {
-  if (!size || size.eq(0)) {
+  if (size == undefined || size == 0n) {
     return;
   }
 
-  if (liquidationAmount.gt(collateral)) {
-    const liquidationDelta = liquidationAmount.sub(collateral);
-    const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+  if (liquidationAmount > collateral) {
+    const liquidationDelta = liquidationAmount - collateral;
+    const priceDelta = bigMath.mulDiv(liquidationDelta, averagePrice, size);
 
-    return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
+    return isLong ? averagePrice + priceDelta : averagePrice - priceDelta;
   }
 
-  const liquidationDelta = collateral.sub(liquidationAmount);
-  const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+  const liquidationDelta = collateral - liquidationAmount;
+  const priceDelta = bigMath.mulDiv(liquidationDelta, averagePrice, size);
 
-  return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
+  return isLong ? averagePrice - priceDelta : averagePrice + priceDelta;
 }
 
-function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
-  return size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(fundingFees).add(LIQUIDATION_FEE);
+function calculateTotalFees(size: bigint, fundingFees: bigint): bigint {
+  return (
+    bigMath.mulDiv(size, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT) + fundingFees + LIQUIDATION_FEE
+  );
 }
 
 export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
-  if (!size || !collateral || !averagePrice) {
+  if (size === undefined || collateral === undefined || averagePrice === undefined) {
     return;
   }
 
-  const totalFees = calculateTotalFees(size, fundingFee || BigNumber.from("0"));
+  const totalFees = calculateTotalFees(size, fundingFee ?? 0n);
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmount: totalFees,
     size,
@@ -59,30 +61,30 @@ export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fu
   });
 
   const liquidationPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmount: size.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
+    liquidationAmount: bigMath.mulDiv(size, BASIS_POINTS_DIVISOR_BIGINT, BigInt(MAX_LEVERAGE)),
     size: size,
     collateral,
     averagePrice,
     isLong,
   });
 
-  if (!liquidationPriceForFees) {
+  if (liquidationPriceForFees === undefined) {
     return liquidationPriceForMaxLeverage;
   }
 
-  if (!liquidationPriceForMaxLeverage) {
+  if (liquidationPriceForMaxLeverage === undefined) {
     return liquidationPriceForFees;
   }
 
   if (isLong) {
     // return the higher price
-    return liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
+    return liquidationPriceForFees > liquidationPriceForMaxLeverage
       ? liquidationPriceForFees
       : liquidationPriceForMaxLeverage;
   }
 
   // return the lower price
-  return liquidationPriceForFees.lt(liquidationPriceForMaxLeverage)
+  return liquidationPriceForFees < liquidationPriceForMaxLeverage
     ? liquidationPriceForFees
     : liquidationPriceForMaxLeverage;
 }

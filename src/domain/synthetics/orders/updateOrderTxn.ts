@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
@@ -12,12 +12,12 @@ import { callContract } from "lib/contracts";
 export type UpdateOrderParams = {
   orderKey: string;
   indexToken?: Token;
-  sizeDeltaUsd: BigNumber;
-  triggerPrice: BigNumber;
-  acceptablePrice: BigNumber;
-  minOutputAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  minOutputAmount: bigint;
   // used to top-up execution fee for frozen orders
-  executionFee?: BigNumber;
+  executionFee?: bigint;
   setPendingTxns: (txns: any) => void;
 };
 
@@ -55,7 +55,7 @@ export function updateOrderTxn(
   });
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee?.gt(0) ? executionFee : undefined,
+    value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
@@ -78,17 +78,17 @@ export function createUpdateEncodedPayload({
   chainId: number;
   router: ethers.Contract;
   orderKey: string;
-  sizeDeltaUsd: BigNumber;
-  executionFee?: BigNumber;
+  sizeDeltaUsd: bigint;
+  executionFee?: bigint;
   indexToken?: Token;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber;
-  minOutputAmount: BigNumber;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
 }) {
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
-  if (executionFee?.gt(0)) {
+  if (executionFee != undefined && executionFee > 0) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
 

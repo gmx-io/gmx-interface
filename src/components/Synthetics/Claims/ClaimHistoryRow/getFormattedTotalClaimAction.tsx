@@ -8,8 +8,8 @@ export function getFormattedTotalClaimAction(claimAction: ClaimAction) {
     const amount = claimAction.amounts[i];
     const price = claimAction.tokenPrices[i];
 
-    const priceUsd = amount.mul(price);
-    totalUsd = totalUsd.add(priceUsd);
+    const priceUsd = amount * price;
+    totalUsd = totalUsd + priceUsd;
   }
 
   const formattedTotalUsd = formatUsd(totalUsd);

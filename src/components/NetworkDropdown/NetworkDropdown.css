@@ -6,7 +6,7 @@
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: white;
+  color: var(--color-white);
 }
 
 .App-header-language {
@@ -26,7 +26,7 @@
 
 .network-dropdown-divider {
   margin-bottom: 0.8rem;
-  border-bottom: 1px solid #ffffff29;
+  border-bottom: 1px solid var(--color-gray-800);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
@@ -111,18 +111,18 @@
 .network-option span {
   font-size: var(--font-base);
   letter-spacing: 0.29px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .network-option-img-label {
   font-size: var(--font-md);
   line-height: 2rem;
   letter-spacing: 0.29px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .dropdown-label {
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   padding: 0.8rem;
   font-size: 1.25rem;
 }
@@ -165,7 +165,7 @@
 }
 
 .menu-item:hover .menu-item-label {
-  color: #eee;
+  color: var(--color-gray-50);
 }
 
 .language-item {

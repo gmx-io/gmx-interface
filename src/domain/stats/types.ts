@@ -1,10 +1,9 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { BigNumber } from "ethers";
 
 export type VolumeInfo = {
-  totalVolume: BigNumber;
-  [AVALANCHE]: { totalVolume: BigNumber };
-  [ARBITRUM]: { totalVolume: BigNumber };
+  totalVolume: bigint;
+  [AVALANCHE]: { totalVolume: bigint };
+  [ARBITRUM]: { totalVolume: bigint };
 };
 
 export type VolumeStat = {

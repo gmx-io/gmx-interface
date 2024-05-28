@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
@@ -10,6 +9,7 @@ import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { bigMath } from "lib/bigmath";
 import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
 
 type RawBalanceChange = {
@@ -19,9 +19,9 @@ type RawBalanceChange = {
 };
 
 type BalanceChange = {
-  tokensBalance: BigNumber;
-  cumulativeIncome: BigNumber;
-  cumulativeFeeUsdPerGmToken: BigNumber;
+  tokensBalance: bigint;
+  cumulativeIncome: bigint;
+  cumulativeFeeUsdPerGmToken: bigint;
 };
 
 type RawCollectedMarketFeesInfo = {
@@ -135,9 +135,9 @@ export const useUserEarnings = (chainId: number) => {
       const result: UserEarningsData = {
         byMarketAddress: {},
         allMarkets: {
-          total: BigNumber.from(0),
-          recent: BigNumber.from(0),
-          expected365d: BigNumber.from(0),
+          total: 0n,
+          recent: 0n,
+          expected365d: 0n,
         },
       };
 
@@ -170,34 +170,32 @@ export const useUserEarnings = (chainId: number) => {
         if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
         if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
 
-        const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
+        const latestFeeUsdPerGmToken = BigInt(feesRecent.cumulativeFeeUsdPerGmToken);
 
         const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
         const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
-        const recentIncome = calcRecentIncome(balanceChangesRecent).add(endOfPeriodIncomeRecent);
-        const totalIncome = lastChangeTotal.cumulativeIncome.add(endOfPeriodIncomeTotal);
+        const recentIncome = calcRecentIncome(balanceChangesRecent) + endOfPeriodIncomeRecent;
+        const totalIncome = lastChangeTotal.cumulativeIncome + endOfPeriodIncomeTotal;
 
         result.byMarketAddress[marketAddress] = {
           total: totalIncome,
           recent: recentIncome,
         };
 
-        result.allMarkets.total = result.allMarkets.total.add(totalIncome);
-        result.allMarkets.recent = result.allMarkets.recent.add(recentIncome);
+        result.allMarkets.total = result.allMarkets.total + totalIncome;
+        result.allMarkets.recent = result.allMarkets.recent + recentIncome;
 
         if (marketsTokensAPRData && marketTokensData) {
           const apr = marketsTokensAPRData[marketAddress];
           const token = marketTokensData[marketAddress];
           const balance = token.balance;
 
-          if (!balance || balance.eq(0)) return;
+          if (balance === undefined || balance == 0n) return;
 
           const price = token.prices.maxPrice;
-          const expected365d = apr
-            .mul(balance)
-            .mul(price)
-            .div(expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
-          result.allMarkets.expected365d = result.allMarkets.expected365d.add(expected365d);
+
+          const expected365d = bigMath.mulDiv(apr * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
+          result.allMarkets.expected365d = result.allMarkets.expected365d + expected365d;
         }
       });
 
@@ -207,30 +205,27 @@ export const useUserEarnings = (chainId: number) => {
   return data ?? null;
 };
 
-function calcEndOfPeriodIncome(
-  latestBalanceChange: BalanceChange,
-  latestCumulativeFeeUsdPerGmToken: BigNumber
-): BigNumber {
-  if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
+function calcEndOfPeriodIncome(latestBalanceChange: BalanceChange, latestCumulativeFeeUsdPerGmToken: bigint): bigint {
+  if (latestBalanceChange.tokensBalance == 0n) return 0n;
 
-  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
+  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken - latestBalanceChange.cumulativeFeeUsdPerGmToken;
 
-  return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
+  return bigMath.mulDiv(feeUsdPerGmTokenDelta, latestBalanceChange.tokensBalance, expandDecimals(1, 18));
 }
 
-function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
-  let cumulativeIncome = BigNumber.from(0);
+function calcRecentIncome(balanceChanges: BalanceChange[]): bigint {
+  let cumulativeIncome = 0n;
 
   for (let i = 1; i < balanceChanges.length; i++) {
     const prevChange = balanceChanges[i - 1];
     const change = balanceChanges[i];
+    const income = bigMath.mulDiv(
+      change.cumulativeFeeUsdPerGmToken - prevChange.cumulativeFeeUsdPerGmToken,
+      prevChange.tokensBalance,
+      expandDecimals(1, 18)
+    );
 
-    const income = change.cumulativeFeeUsdPerGmToken
-      .sub(prevChange.cumulativeFeeUsdPerGmToken)
-      .mul(prevChange.tokensBalance)
-      .div(expandDecimals(1, 18));
-
-    cumulativeIncome = cumulativeIncome.add(income);
+    cumulativeIncome = cumulativeIncome + income;
   }
 
   return cumulativeIncome;
@@ -238,8 +233,8 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
 
 function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
   return {
-    cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
-    cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
-    tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
+    cumulativeFeeUsdPerGmToken: BigInt(rawBalanceChange.cumulativeFeeUsdPerGmToken),
+    cumulativeIncome: BigInt(rawBalanceChange.cumulativeIncome),
+    tokensBalance: BigInt(rawBalanceChange.tokensBalance),
   };
 }

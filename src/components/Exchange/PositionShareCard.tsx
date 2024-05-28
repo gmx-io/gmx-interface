@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import SpinningLoader from "components/Common/SpinningLoader";
 import { getPriceDecimals } from "config/tokens";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import gmxLogo from "img/gmx-logo-with-name.svg";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS, getHomeUrl } from "lib/legacy";
@@ -12,13 +11,13 @@ import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
 
 type Props = {
-  entryPrice: BigNumber | undefined;
+  entryPrice: bigint | undefined;
   indexToken: Token;
   isLong: boolean;
-  leverage: BigNumber | undefined;
+  leverage: bigint | undefined;
   loading: boolean;
-  markPrice: BigNumber;
-  pnlAfterFeesPercentage: BigNumber;
+  markPrice: bigint;
+  pnlAfterFeesPercentage: bigint;
   sharePositionBgImg: string | null;
   userAffiliateCode: any;
 };

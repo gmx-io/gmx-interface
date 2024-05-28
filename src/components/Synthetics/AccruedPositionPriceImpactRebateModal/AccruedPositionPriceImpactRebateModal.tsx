@@ -10,7 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
@@ -59,7 +59,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const indexName = getMarketIndexName(market);
     const poolName = getMarketPoolName(market);
     return (
-      <div className="items-center">
+      <div className="flex items-center">
         <span className="text-white">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
@@ -73,7 +73,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       const key = rebateItem.marketAddress + rebateItem.tokenAddress;
       if (typeof groupedMarkets[key] === "number") {
         const index = groupedMarkets[key];
-        acc[index].value = acc[index].value.add(rebateItem.value);
+        acc[index].value = acc[index].value + rebateItem.value;
       } else {
         groupedMarkets[key] = acc.length;
         acc.push({ ...rebateItem });
@@ -101,15 +101,16 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
   }, [market?.longTokenAddress, market?.shortTokenAddress, rebateItems]);
 
   const usd = useMemo(() => {
-    let total = BigNumber.from(0);
+    let total = 0n;
 
     rebateItems.forEach((rebateItem) => {
       const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
       const price = tokenData?.prices.minPrice;
       const decimals = tokenData?.decimals;
-      const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : null;
-      if (!usd) return;
-      total = total.add(usd);
+      const usd =
+        price !== undefined && decimals ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals)) : null;
+      if (usd === null) return;
+      total = total + usd;
     });
 
     return formatDeltaUsd(total);

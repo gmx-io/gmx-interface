@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -56,25 +55,27 @@ export const formatSwapMessage = (
   });
 
   const tokensExecutionRatio =
-    tradeAction.executionAmountOut &&
-    getTokensRatioByAmounts({
-      fromToken: tokenIn,
-      toToken: tokenOut,
-      fromTokenAmount: amountIn,
-      toTokenAmount: tradeAction.executionAmountOut,
-    });
+    tradeAction.executionAmountOut !== undefined
+      ? getTokensRatioByAmounts({
+          fromToken: tokenIn,
+          toToken: tokenOut,
+          fromTokenAmount: amountIn,
+          toTokenAmount: tradeAction.executionAmountOut,
+        })
+      : undefined;
 
   const tokensMinRatio =
-    tradeAction.minOutputAmount &&
-    getTokensRatioByAmounts({
-      fromToken: tokenIn,
-      toToken: tokenOut,
-      fromTokenAmount: amountIn,
-      toTokenAmount: tradeAction.minOutputAmount,
-    });
+    tradeAction.minOutputAmount !== undefined
+      ? getTokensRatioByAmounts({
+          fromToken: tokenIn,
+          toToken: tokenOut,
+          fromTokenAmount: amountIn,
+          toTokenAmount: tradeAction.minOutputAmount,
+        })
+      : undefined;
 
   const acceptablePriceInequality =
-    tokensMinRatio.largestToken?.address === tokenOut?.address ? INEQUALITY_LT : INEQUALITY_GT;
+    tokensMinRatio?.largestToken?.address === tokenOut?.address ? INEQUALITY_LT : INEQUALITY_GT;
 
   const executionRate = getExchangeRateDisplay(
     tokensExecutionRatio?.ratio,
@@ -83,9 +84,9 @@ export const formatSwapMessage = (
   );
 
   const acceptableRate = getExchangeRateDisplay(
-    tokensMinRatio.ratio,
-    adapt(tokensMinRatio.smallestToken),
-    adapt(tokensMinRatio.largestToken)
+    tokensMinRatio?.ratio,
+    adapt(tokensMinRatio?.smallestToken),
+    adapt(tokensMinRatio?.largestToken)
   );
 
   const market = !marketsInfoData
@@ -111,7 +112,10 @@ export const formatSwapMessage = (
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
-    : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(ARROW_SEPARATOR);
+    : tradeAction.swapPath
+        ?.filter((marketAddress) => marketsInfoData?.[marketAddress])
+        .map((marketAddress) => marketsInfoData?.[marketAddress].name)
+        .join(ARROW_SEPARATOR);
 
   const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
     ? undefined
@@ -168,16 +172,17 @@ export const formatSwapMessage = (
       size: t`${fromText} to ${toExecutionText}`,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
-    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
-    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
-      outputAmount &&
-      getTokensRatioByAmounts({
-        fromToken: tokenIn,
-        toToken: tokenOut,
-        fromTokenAmount: amountIn,
-        toTokenAmount: outputAmount,
-      });
+      outputAmount !== undefined
+        ? getTokensRatioByAmounts({
+            fromToken: tokenIn,
+            toToken: tokenOut,
+            fromTokenAmount: amountIn,
+            toTokenAmount: outputAmount,
+          })
+        : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.largestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
@@ -219,16 +224,17 @@ export const formatSwapMessage = (
       size: t`${fromText} to ${toExecutionText}`,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
-    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
-    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
-      outputAmount &&
-      getTokensRatioByAmounts({
-        fromToken: tokenIn,
-        toToken: tokenOut,
-        fromTokenAmount: amountIn,
-        toTokenAmount: outputAmount,
-      });
+      outputAmount !== undefined
+        ? getTokensRatioByAmounts({
+            fromToken: tokenIn,
+            toToken: tokenOut,
+            fromTokenAmount: amountIn,
+            toTokenAmount: outputAmount,
+          })
+        : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.smallestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,

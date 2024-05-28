@@ -1,21 +1,21 @@
 import { gql } from "@apollo/client";
+import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
+import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfoRequest } from ".";
+import useIncentiveStats from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
+import { useTokensDataRequest } from "../tokens";
 import { MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import useIncentiveStats from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
-import { getTokenBySymbol } from "config/tokens";
-import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
-import { expandDecimals } from "lib/numbers";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -29,12 +29,12 @@ type RawPoolValue = {
 type MarketTokensAPRResult = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensAPRData?: MarketTokensAPRData;
-  avgMarketsAPR?: BigNumber;
+  avgMarketsAPR?: bigint;
 };
 
 type SwrResult = {
   marketsTokensAPRData: MarketTokensAPRData;
-  avgMarketsAPR: BigNumber;
+  avgMarketsAPR: bigint;
 };
 
 function useMarketAddresses(chainId: number) {
@@ -58,30 +58,30 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
     } catch (err) {
       // ignore
     }
-    let arbTokenPrice = BigNumber.from(0);
+    let arbTokenPrice = 0n;
 
     if (arbTokenAddress && tokensData) {
-      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
+      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? 0n;
     }
 
     const shouldCalcBonusApr =
-      arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) && rawIncentivesStats?.lp.isActive;
+      arbTokenPrice > 0 && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) && rawIncentivesStats?.lp.isActive;
 
     return marketAddresses.reduce((acc, marketAddress) => {
       if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)
-        return { ...acc, [marketAddress]: BigNumber.from(0) };
+        return { ...acc, [marketAddress]: 0n };
 
-      const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
-      const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
+      const arbTokensAmount = BigInt(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
+      const yearMultiplier = BigInt(Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period));
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
-      let incentivesApr = BigNumber.from(0);
+      let incentivesApr = 0n;
 
-      if (poolValue?.gt(0)) {
-        incentivesApr = arbTokensAmount
-          .mul(arbTokenPrice)
-          .div(poolValue)
-          .mul(yearMultiplier)
-          .div(expandDecimals(1, 14));
+      if (poolValue !== undefined && poolValue > 0) {
+        incentivesApr = bigMath.mulDiv(
+          bigMath.mulDiv(arbTokensAmount, arbTokenPrice, poolValue),
+          yearMultiplier,
+          expandDecimals(1, 14)
+        );
       }
 
       return {
@@ -151,7 +151,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       if (!responseOrNull) {
         return {
           marketsTokensAPRData: {},
-          avgMarketsAPR: BigNumber.from(0),
+          avgMarketsAPR: 0n,
         };
       }
 
@@ -160,40 +160,39 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFee[];
         const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFee[];
-        const poolValue = BigNumber.from(
+        const poolValue = BigInt(
           (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
         );
 
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         if (!marketInfo) return acc;
 
-        const x1total = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x1borrowing = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
-        const x2total = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2borrowing = BigNumber.from(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
-        const x1 = x1total.sub(x1borrowing);
-        const x2 = x2total.sub(x2borrowing);
+        const x1total = BigInt(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x1borrowing = BigInt(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x2total = BigInt(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2borrowing = BigInt(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
+        const x1 = x1total - x1borrowing;
+        const x2 = x2total - x2borrowing;
 
-        if (x2.eq(0)) {
-          acc[marketAddress] = BigNumber.from(0);
+        if (x2 == 0n) {
+          acc[marketAddress] = 0n;
           return acc;
         }
 
-        const incomePercentageForPeriod = x2.sub(x1);
-        const yearMultiplier = Math.floor(365 / daysConsidered);
-        const aprByFees = incomePercentageForPeriod.mul(yearMultiplier);
+        const incomePercentageForPeriod = x2 - x1;
+        const yearMultiplier = BigInt(Math.floor(365 / daysConsidered));
+        const aprByFees = incomePercentageForPeriod * yearMultiplier;
         const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
 
-        acc[marketAddress] = aprByFees.add(aprByBorrowingFee);
+        acc[marketAddress] = aprByFees + aprByBorrowingFee;
 
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const avgMarketsAPR = Object.values(marketsTokensAPRData)
-        .reduce((acc, apr) => {
-          return acc.add(apr);
-        }, BigNumber.from(0))
-        .div(marketAddresses.length);
+      const avgMarketsAPR =
+        Object.values(marketsTokensAPRData).reduce((acc, apr) => {
+          return acc + apr;
+        }, 0n) / BigInt(marketAddresses.length);
 
       return {
         marketsTokensAPRData,
@@ -211,19 +210,16 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   };
 }
 
-function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: BigNumber) {
+function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
   const longOi = marketInfo.longInterestUsd;
   const shortOi = marketInfo.shortInterestUsd;
-  const isLongPayingBorrowingFee = longOi.gt(shortOi);
+  const isLongPayingBorrowingFee = longOi > shortOi;
   const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
 
-  const borrowingFeeUsdForPoolPerYear = borrowingFactorPerYear
-    .mul(isLongPayingBorrowingFee ? longOi : shortOi)
-    .mul(63)
-    .div(PRECISION)
-    .div(100);
+  const borrowingFeeUsdForPoolPerYear =
+    (borrowingFactorPerYear * (isLongPayingBorrowingFee ? longOi : shortOi) * 63n) / PRECISION / 100n;
 
-  const borrowingFeeUsdPerPoolValuePerYear = borrowingFeeUsdForPoolPerYear.mul(PRECISION).div(poolValue);
+  const borrowingFeeUsdPerPoolValuePerYear = bigMath.mulDiv(borrowingFeeUsdForPoolPerYear, PRECISION, poolValue);
 
   return borrowingFeeUsdPerPoolValuePerYear;
 }

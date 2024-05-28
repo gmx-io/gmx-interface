@@ -132,21 +132,21 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
 
   if (!decreaseAmountsWithKeepLeverage) return false;
 
-  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd >= position.sizeInUsd) return false;
 
   const minCollateralFactor = getMinCollateralFactorForPosition(
     position,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 
-  if (!minCollateralFactor) return false;
+  if (minCollateralFactor === undefined) return false;
 
   return !willPositionCollateralBeSufficientForPosition(
     position,
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,
     minCollateralFactor,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 });
 
@@ -154,7 +154,7 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
-  if (!position || !decreaseAmounts?.acceptablePrice) {
+  if (!position || decreaseAmounts?.acceptablePrice === undefined) {
     return undefined;
   }
 
@@ -201,7 +201,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const uiFeeFactor = q(selectUiFeeFactor);
 
-  if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
+  if (!shouldSwap || !receiveToken || decreaseAmounts?.receiveTokenAmount === undefined || !position) {
     return undefined;
   }
 

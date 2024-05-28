@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 
@@ -129,8 +129,8 @@ function createRawTradeActionTransformer(
     const orderType = Number(rawAction.orderType);
 
     if (isSwapOrderType(orderType)) {
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
 
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
@@ -169,11 +169,11 @@ function createRawTradeActionTransformer(
 
       return tradeAction;
     } else {
-      const marketAddress = ethers.utils.getAddress(rawAction.marketAddress!);
+      const marketAddress = ethers.getAddress(rawAction.marketAddress!);
       const marketInfo = getByKey(marketsInfoData, marketAddress);
       const indexToken = marketInfo?.indexToken;
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
         swapPath,
@@ -220,23 +220,23 @@ function createRawTradeActionTransformer(
           : undefined,
 
         indexTokenPriceMin: rawAction.indexTokenPriceMin
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMin), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMin), indexToken.decimals)
           : undefined,
         indexTokenPriceMax: rawAction.indexTokenPriceMax
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMax), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMax), indexToken.decimals)
           : undefined,
 
         orderType,
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
-        pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
-        basePnlUsd: rawAction.basePnlUsd ? BigNumber.from(rawAction.basePnlUsd) : undefined,
+        pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
+        basePnlUsd: rawAction.basePnlUsd ? BigInt(rawAction.basePnlUsd) : undefined,
 
-        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
-        priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
-        positionFeeAmount: rawAction.positionFeeAmount ? BigNumber.from(rawAction.positionFeeAmount) : undefined,
-        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigNumber.from(rawAction.borrowingFeeAmount) : undefined,
-        fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
+        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
+        priceImpactUsd: rawAction.priceImpactUsd ? BigInt(rawAction.priceImpactUsd) : undefined,
+        positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
+        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
+        fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
 
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,

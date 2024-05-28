@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, msg } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -15,6 +15,7 @@ import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config
 import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DEFAULT_SLIPPAGE_AMOUNT,
   EXCESSIVE_SLIPPAGE_AMOUNT,
@@ -67,22 +68,24 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
-const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
+const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 const ORDER_OPTION_LABELS = {
-  [MARKET]: t`Market`,
-  [STOP]: t`Trigger`,
+  [MARKET]: msg`Market`,
+  [STOP]: msg`Trigger`,
 };
 
 function applySpread(amount, spread) {
   if (!amount || !spread) {
     return amount;
   }
-  return amount.sub(amount.mul(spread).div(PRECISION));
+  return amount - bigMath.mulDiv(amount, spread, PRECISION);
 }
 
 /*
@@ -102,29 +105,29 @@ function calculateNextCollateralAndReceiveUsd(
   totalFees
 ) {
   let nextCollateral;
-  let receiveUsd = bigNumberify(0);
+  let receiveUsd = 0n;
 
   if (collateral) {
     nextCollateral = collateral;
 
     if (hasProfit) {
-      receiveUsd = receiveUsd.add(adjustedDelta);
+      receiveUsd = receiveUsd + adjustedDelta;
     } else {
-      nextCollateral = nextCollateral.sub(adjustedDelta);
+      nextCollateral = nextCollateral - adjustedDelta;
     }
 
-    if (collateralDelta && collateralDelta.gt(0)) {
-      receiveUsd = receiveUsd.add(collateralDelta);
-      nextCollateral = nextCollateral.sub(collateralDelta);
+    if (collateralDelta && collateralDelta > 0) {
+      receiveUsd = receiveUsd + collateralDelta;
+      nextCollateral = nextCollateral - collateralDelta;
     }
     if (isClosing) {
-      receiveUsd = receiveUsd.add(nextCollateral);
-      nextCollateral = bigNumberify(0);
+      receiveUsd = receiveUsd + nextCollateral;
+      nextCollateral = 0n;
     }
-    if (receiveUsd.gt(totalFees)) {
-      receiveUsd = receiveUsd.sub(totalFees);
+    if (receiveUsd > totalFees) {
+      receiveUsd = receiveUsd - totalFees;
     } else {
-      nextCollateral = nextCollateral.sub(totalFees);
+      nextCollateral = nextCollateral - totalFees;
     }
   }
 
@@ -155,25 +158,27 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   let maxOut;
   let maxOutUsd;
 
-  if (!fromInfo?.maxUsdgAmount) {
-    maxInUsd = bigNumberify(0);
-    maxIn = bigNumberify(0);
+  if (fromInfo?.maxUsdgAmount === undefined) {
+    maxInUsd = 0n;
+    maxIn = 0n;
   } else {
-    maxInUsd = fromInfo.maxUsdgAmount
-      .sub(fromInfo.usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+    maxInUsd = bigMath.mulDiv(
+      fromInfo.maxUsdgAmount - fromInfo.usdgAmount,
+      expandDecimals(1, USD_DECIMALS),
+      expandDecimals(1, USDG_DECIMALS)
+    );
 
-    maxIn = maxInUsd.mul(expandDecimals(1, fromInfo.decimals)).div(fromInfo.maxPrice).toString();
+    maxIn = bigMath.mulDiv(maxInUsd, expandDecimals(1, fromInfo.decimals), fromInfo.maxPrice).toString();
   }
 
-  if (!toInfo?.poolAmount || !toInfo?.bufferAmount) {
-    maxOut = bigNumberify(0);
-    maxOutUsd = bigNumberify(0);
+  if (toInfo?.poolAmount === undefined || toInfo?.bufferAmount === undefined) {
+    maxOut = 0n;
+    maxOutUsd = 0n;
   } else {
-    maxOut = toInfo.availableAmount.gt(toInfo.poolAmount.sub(toInfo.bufferAmount))
-      ? toInfo.poolAmount.sub(toInfo.bufferAmount)
-      : toInfo.availableAmount;
+    maxOut =
+      toInfo.availableAmount > toInfo.poolAmount - toInfo.bufferAmount
+        ? toInfo.poolAmount - toInfo.bufferAmount
+        : toInfo.availableAmount;
 
     maxOutUsd = getUsd(maxOut, toInfo.address, false, infoTokens);
   }
@@ -228,6 +233,7 @@ export default function PositionSeller(props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
   const submitButtonRef = useRef(null);
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -273,9 +279,9 @@ export default function PositionSeller(props) {
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = orderOption === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
-  const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
+  const [nextDelta, nextHasProfit = 0n] = useMemo(() => {
     if (!position) {
-      return [bigNumberify(0), false];
+      return [0n, false];
     }
 
     if (orderOption !== STOP) {
@@ -283,7 +289,7 @@ export default function PositionSeller(props) {
     }
 
     if (!triggerPriceUsd) {
-      return [bigNumberify(0), false];
+      return [0n, false];
     }
 
     const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position);
@@ -291,7 +297,7 @@ export default function PositionSeller(props) {
   }, [position, orderOption, triggerPriceUsd]);
 
   const existingOrders = useMemo(() => {
-    if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
+    if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd == 0n)) {
       return [];
     }
     if (!orders || !position) {
@@ -305,7 +311,7 @@ export default function PositionSeller(props) {
 
       // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
       if (orderOption === STOP) {
-        const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
+        const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue;
       }
 
@@ -346,10 +352,10 @@ export default function PositionSeller(props) {
   let leverageWithoutDelta;
 
   let nextCollateral;
-  let collateralDelta = bigNumberify(0);
-  let receiveUsd = bigNumberify(0);
-  let receiveAmount = bigNumberify(0);
-  let adjustedDelta = bigNumberify(0);
+  let collateralDelta = 0n;
+  let receiveUsd = 0n;
+  let receiveAmount = 0n;
+  let adjustedDelta = 0n;
 
   let isNotEnoughReceiveTokenLiquidity;
   let isCollateralPoolCapacityExceeded;
@@ -359,7 +365,7 @@ export default function PositionSeller(props) {
   let fundingFee;
   let positionFee;
   let swapFee;
-  let totalFees = bigNumberify(0);
+  let totalFees = 0n;
 
   useEffect(() => {
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
@@ -378,7 +384,7 @@ export default function PositionSeller(props) {
   const executionFee =
     orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
   const executionFeeUsd = useMemo(
-    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0),
+    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || 0n,
     [executionFee, infoTokens, nativeTokenAddress]
   );
 
@@ -417,34 +423,34 @@ export default function PositionSeller(props) {
     nextLeverage = position.leverage;
     nextLeverageWithoutDelta = leverageWithoutDelta;
 
-    if (fromAmount) {
-      isClosing = position.size.sub(fromAmount).lt(DUST_USD);
+    if (fromAmount !== undefined) {
+      isClosing = position.size - fromAmount < DUST_USD;
       positionFee = getMarginFee(fromAmount);
     }
 
     if (isClosing) {
       sizeDelta = position.size;
-    } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
+    } else if (orderOption === STOP && sizeDelta !== undefined && existingOrders.length > 0) {
       let residualSize = position.size;
       for (const order of existingOrders) {
-        residualSize = residualSize.sub(order.sizeDelta);
+        residualSize = residualSize - order.sizeDelta;
       }
-      if (residualSize.sub(sizeDelta).abs().lt(ORDER_SIZE_DUST_USD)) {
+      if (bigMath.abs(residualSize - sizeDelta) < ORDER_SIZE_DUST_USD) {
         sizeDelta = residualSize;
       }
     }
 
-    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
+    totalFees = totalFees + (positionFee ?? 0n) + (fundingFee ?? 0n);
 
-    if (sizeDelta && position.size.gt(0)) {
-      adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
+    if (sizeDelta && position.size > 0) {
+      adjustedDelta = bigMath.mulDiv(nextDelta, sizeDelta, position.size);
     }
 
     if (keepLeverage && sizeDelta && !isClosing) {
       // Calculating the collateralDelta needed to keep the next leverage same as current leverage
-      collateralDelta = position.collateral.sub(
-        position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
-      );
+      collateralDelta =
+        position.collateral -
+        bigMath.mulDiv(position.size - sizeDelta, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutDelta);
 
       /*
        In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether
@@ -457,16 +463,16 @@ export default function PositionSeller(props) {
       */
 
       if (nextHasProfit) {
-        if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
-          collateralDelta = bigNumberify(0);
+        if (collateralDelta + adjustedDelta <= totalFees) {
+          collateralDelta = 0n;
           // Keep Leverage is not possible
           isKeepLeverageNotPossible = true;
         }
       } else {
-        if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
-          collateralDelta = collateralDelta.sub(adjustedDelta);
+        if (collateralDelta - adjustedDelta > totalFees) {
+          collateralDelta = collateralDelta - adjustedDelta;
         } else {
-          collateralDelta = bigNumberify(0);
+          collateralDelta = 0n;
           // Keep leverage the same is not possible
           isKeepLeverageNotPossible = true;
         }
@@ -486,8 +492,12 @@ export default function PositionSeller(props) {
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
 
-    if (fromAmount && collateralToken.maxPrice) {
-      convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+    if (fromAmount !== undefined && collateralToken.maxPrice !== undefined) {
+      convertedAmount = bigMath.mulDiv(
+        fromAmount,
+        expandDecimals(1, collateralToken.decimals),
+        collateralToken.maxPrice
+      );
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
@@ -514,9 +524,9 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        totalFees = totalFees.add(swapFee || bigNumberify(0));
-        receiveUsd = receiveUsd.sub(swapFee);
+        swapFee = bigMath.mulDiv(receiveUsd, BigInt(feeBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
+        totalFees = totalFees + (swapFee ?? 0n);
+        receiveUsd = receiveUsd - swapFee;
       }
       const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
       receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
@@ -537,28 +547,28 @@ export default function PositionSeller(props) {
       const receiveTokenInfo = getTokenInfo(infoTokens, receiveToken.address);
 
       isNotEnoughReceiveTokenLiquidity =
-        receiveTokenInfo.availableAmount.lt(receiveAmount) ||
-        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(receiveAmount));
+        receiveTokenInfo.availableAmount < receiveAmount ||
+        receiveTokenInfo.bufferAmount > receiveTokenInfo.poolAmount - receiveAmount;
 
       if (
-        collateralInfo.maxUsdgAmount &&
-        collateralInfo.maxUsdgAmount.gt(0) &&
-        collateralInfo.usdgAmount &&
-        collateralInfo.maxPrice
+        collateralInfo.maxUsdgAmount !== undefined &&
+        collateralInfo.maxUsdgAmount > 0 &&
+        collateralInfo.usdgAmount !== undefined &&
+        collateralInfo.maxPrice !== undefined
       ) {
         const usdgFromAmount = adjustForDecimals(receiveUsd, USD_DECIMALS, USDG_DECIMALS);
-        const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
+        const nextUsdgAmount = collateralInfo.usdgAmount + usdgFromAmount;
 
-        if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
+        if (nextUsdgAmount > collateralInfo.maxUsdgAmount) {
           isCollateralPoolCapacityExceeded = true;
         }
       }
     }
 
-    if (fromAmount) {
+    if (fromAmount !== undefined) {
       if (!isClosing) {
         nextLiquidationPrice = getLiquidationPrice({
-          size: position.size.sub(sizeDelta),
+          size: position.size - sizeDelta,
           collateral: nextCollateral,
           averagePrice: position.averagePrice,
           isLong: position.isLong,
@@ -566,9 +576,9 @@ export default function PositionSeller(props) {
 
         if (!keepLeverage) {
           // We need to send the remaining delta
-          const remainingDelta = nextDelta?.sub(adjustedDelta);
+          const remainingDelta = nextDelta === undefined ? undefined : nextDelta - adjustedDelta;
           nextLeverage = getLeverage({
-            size: position.size.sub(sizeDelta),
+            size: position.size - sizeDelta,
             collateral: nextCollateral,
             hasProfit: nextHasProfit,
             delta: remainingDelta,
@@ -576,7 +586,7 @@ export default function PositionSeller(props) {
           });
 
           nextLeverageWithoutDelta = getLeverage({
-            size: position.size.sub(sizeDelta),
+            size: position.size - sizeDelta,
             collateral: nextCollateral,
             hasProfit: nextHasProfit,
             delta: remainingDelta,
@@ -588,7 +598,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position || !position.markPrice || position.collateral.eq(0)) {
+    if (!position || !position.markPrice || position.collateral == 0n) {
       return ["-", "-"];
     }
     if (orderOption !== STOP) {
@@ -604,7 +614,7 @@ export default function PositionSeller(props) {
       });
       return [deltaStr, deltaPercentageStr];
     }
-    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+    if (!triggerPriceUsd || triggerPriceUsd == 0n) {
       return ["-", "-"];
     }
 
@@ -636,21 +646,21 @@ export default function PositionSeller(props) {
     if (!fromAmount) {
       return [t`Enter an amount`];
     }
-    if (nextLeverage && nextLeverage.eq(0)) {
+    if (nextLeverage && nextLeverage == 0n) {
       return [t`Enter an amount`];
     }
     if (orderOption === STOP) {
-      if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+      if (!triggerPriceUsd || triggerPriceUsd == 0n) {
         return [t`Enter Price`];
       }
-      if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) {
+      if (position.isLong && triggerPriceUsd <= liquidationPrice) {
         return [t`Price below Liq. Price`];
       }
-      if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) {
+      if (!position.isLong && triggerPriceUsd >= liquidationPrice) {
         return [t`Price above Liq. Price`];
       }
 
-      if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
+      if (profitPrice && nextDelta == 0n && nextHasProfit) {
         return [t`Invalid price, see warning`];
       }
     }
@@ -659,11 +669,7 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
-    if (
-      !isClosing &&
-      keepLeverage &&
-      (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))
-    ) {
+    if (!isClosing && keepLeverage && (leverageWithoutDelta < 0 || leverageWithoutDelta > 100 * BASIS_POINTS_DIVISOR)) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
@@ -671,7 +677,7 @@ export default function PositionSeller(props) {
       return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
-    if (!isClosing && nextCollateral?.lt(0)) {
+    if (!isClosing && nextCollateral < 0) {
       return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
@@ -680,36 +686,36 @@ export default function PositionSeller(props) {
     }
 
     if (!isClosing && position && position.size && fromAmount) {
-      if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
+      if (position.size - fromAmount < expandDecimals(10, USD_DECIMALS)) {
         return [t`Leftover position below 10 USD`];
       }
-      if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
+      if (nextCollateral && nextCollateral < expandDecimals(5, USD_DECIMALS)) {
         return [t`Leftover collateral below 5 USD`];
       }
     }
 
-    if (position && position.size && position.size.lt(fromAmount)) {
+    if (position && position.size && position.size < fromAmount) {
       return [t`Max close amount exceeded`];
     }
 
-    if (!isClosing && nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && nextLeverage && nextLeverage < 1.1 * BASIS_POINTS_DIVISOR) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (!isClosing && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!isClosing && nextLeverage && nextLeverage > MAX_ALLOWED_LEVERAGE) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta > MAX_LEVERAGE) {
       return [t`Max Leverage without PnL: 100x`];
     }
 
     if (position.isLong) {
-      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice > position.markPrice) {
         return [t`Invalid Liquidation Price`];
       }
     } else {
-      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice < position.markPrice) {
         return [t`Invalid Liquidation Price`];
       }
     }
@@ -741,7 +747,7 @@ export default function PositionSeller(props) {
     return true;
   };
 
-  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta.eq(0) && position.pendingDelta.gt(0);
+  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta > 0;
 
   const getPrimaryText = () => {
     const [error] = getError();
@@ -802,18 +808,18 @@ export default function PositionSeller(props) {
     if (!swapToToken || swapToToken.address === collateralTokenInfo.address) {
       return {
         value: collateralTokenInfo.spread,
-        isHigh: collateralTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
+        isHigh: collateralTokenInfo.spread > HIGH_SPREAD_THRESHOLD,
       };
     }
 
     const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
-    const spread = collateralTokenInfo.spread.add(swapToTokenInfo.spread);
+    const spread = collateralTokenInfo.spread + swapToTokenInfo.spread;
     return {
       value: spread,
-      isHigh: spread.gt(HIGH_SPREAD_THRESHOLD),
+      isHigh: spread > HIGH_SPREAD_THRESHOLD,
     };
   }, [swapToToken, infoTokens, collateralTokenInfo]);
-  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value.gt(0);
+  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value > 0;
 
   const renderReceiveSpreadWarning = useCallback(() => {
     if (receiveSpreadInfo && receiveSpreadInfo.isHigh) {
@@ -850,7 +856,7 @@ export default function PositionSeller(props) {
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
 
     if (orderOption === STOP) {
-      const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
+      const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
 
       createDecreaseOrder(
         chainId,
@@ -883,21 +889,21 @@ export default function PositionSeller(props) {
       ? BASIS_POINTS_DIVISOR - allowedSlippage
       : BASIS_POINTS_DIVISOR + allowedSlippage;
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
-    let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
+    let priceLimit = bigMath.mulDiv(refPrice, BigInt(priceBasisPoints), BASIS_POINTS_DIVISOR_BIGINT);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
 
     if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
-      if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
+      if ((position.isLong && priceLimit < profitPrice) || (!position.isLong && priceLimit > profitPrice)) {
         priceLimit = profitPrice;
       }
     }
 
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
 
     const path = [tokenAddress0];
 
-    const isUnwrap = receiveToken.address === AddressZero;
+    const isUnwrap = receiveToken.address === ZeroAddress;
     const isSwap = receiveToken.address !== tokenAddress0;
 
     if (isSwap) {
@@ -921,7 +927,7 @@ export default function PositionSeller(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
@@ -942,7 +948,7 @@ export default function PositionSeller(props) {
         setFromValue("");
         setIsVisible(false);
 
-        let nextSize = position.size.sub(sizeDelta);
+        let nextSize = position.size - sizeDelta;
 
         pendingPositions[position.key] = {
           updatedAt: Date.now(),
@@ -976,7 +982,7 @@ export default function PositionSeller(props) {
     }
     const indexToken = getTokenInfo(infoTokens, existingOrder.indexToken);
     const sizeInToken = formatAmount(
-      existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice),
+      bigMath.mulDiv(existingOrder.sizeDelta, PRECISION, existingOrder.triggerPrice),
       USD_DECIMALS,
       4,
       true
@@ -997,14 +1003,14 @@ export default function PositionSeller(props) {
 
   let triggerPricePrefix;
   if (triggerPriceUsd) {
-    triggerPricePrefix = triggerPriceUsd.gt(position.markPrice) ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+    triggerPricePrefix = triggerPriceUsd > position.markPrice ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
   }
 
   const shouldShowExistingOrderWarning = false;
 
   if (orderOption === STOP && !triggerPriceUsd) {
-    receiveUsd = bigNumberify(0);
-    receiveAmount = bigNumberify(0);
+    receiveUsd = 0n;
+    receiveAmount = 0n;
   }
 
   const ERROR_TOOLTIP_MSG = {
@@ -1080,7 +1086,7 @@ export default function PositionSeller(props) {
             <Tab
               options={ORDER_OPTIONS}
               option={orderOption}
-              optionLabels={ORDER_OPTION_LABELS}
+              optionLabels={localizedOrderOptionLabels}
               onChange={onOrderOptionChange}
             />
           )}
@@ -1099,7 +1105,7 @@ export default function PositionSeller(props) {
               showMaxButton={fromValue !== maxAmountFormattedFree}
               showPercentSelector={true}
               onPercentChange={(percentage) => {
-                setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2));
               }}
             >
               USD
@@ -1130,13 +1136,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-gray">Forfeit profit</span>
+                  <span className="text-gray-300">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="text-gray font-sm">
+                <span className="text-sm text-gray-300">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1211,14 +1217,14 @@ export default function PositionSeller(props) {
                 {isClosing && orderOption !== STOP && "-"}
                 {(!isClosing || orderOption === STOP) && (
                   <div>
-                    {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
+                    {(nextLiquidationPrice === undefined || nextLiquidationPrice == liquidationPrice) && (
                       <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
-                    {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
+                    {nextLiquidationPrice !== undefined && nextLiquidationPrice != liquidationPrice && (
                       <div>
-                        <div className="inline-block muted">
+                        <div className="muted inline-block">
                           ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                          <BsArrowRight className="transition-arrow" />
+                          <BsArrowRight className="transition-arrow inline-block" />
                         </div>
                         ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
@@ -1232,16 +1238,16 @@ export default function PositionSeller(props) {
                 <Trans>Size</Trans>
               </div>
               <div className="align-right">
-                {position && position.size && fromAmount && (
+                {position && position.size !== undefined && fromAmount !== undefined && (
                   <div>
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
-                    ${formatAmount(position.size.sub(fromAmount), USD_DECIMALS, 2, true)}
+                    ${formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
                   </div>
                 )}
-                {position && position.size && !fromAmount && (
+                {position && position.size && fromAmount === undefined && (
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                 )}
               </div>
@@ -1262,11 +1268,11 @@ export default function PositionSeller(props) {
               </div>
 
               <div className="align-right">
-                {nextCollateral && !nextCollateral.eq(position.collateral) ? (
+                {nextCollateral && nextCollateral != position.collateral ? (
                   <div>
-                    <div className="inline-block muted">
+                    <div className="muted inline-block">
                       ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                     ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
@@ -1287,9 +1293,9 @@ export default function PositionSeller(props) {
                       {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2)}x</div>}
                       {nextLeverage && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2)}x
                         </div>
@@ -1324,7 +1330,7 @@ export default function PositionSeller(props) {
             </div>
             {showReceiveSpread && (
               <ExchangeInfoRow label={t`Spread`} isWarning={receiveSpreadInfo.isHigh} isTop>
-                {formatAmount(receiveSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+                {formatAmount(receiveSpreadInfo.value * 100n, USD_DECIMALS, 2, true)}%
               </ExchangeInfoRow>
             )}
             <div className={cx("Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : "")}>
@@ -1367,8 +1373,8 @@ export default function PositionSeller(props) {
                       );
 
                       const isNotEnoughLiquidity =
-                        tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
-                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+                        tokenOptionInfo.availableAmount < convertedTokenAmount ||
+                        tokenOptionInfo.bufferAmount > tokenOptionInfo.poolAmount - convertedTokenAmount;
 
                       if (isNotEnoughLiquidity) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(

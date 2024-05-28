@@ -1,4 +1,5 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import {
   selectClaimsFundingFeesAccruedTotal,
@@ -14,22 +15,23 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = t`Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the "Settle" button, or after the Position is increased, decreased or closed.`;
-const buttonText = t`Settle`;
-const button2Text = t`Show details`;
-const title = t`Accrued`;
+const tooltipText = msg`Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the "Settle" button, or after the Position is increased, decreased or closed.`;
+const buttonText = msg`Settle`;
+const button2Text = msg`Show details`;
+const title = msg`Accrued`;
 
 export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onSettleClick, style }: Props) {
   const fundingFees = useSelector(selectClaimsFundingFeesAccruedTotal);
   const priceImpactDifference = useSelector(selectClaimsPriceImpactAccruedTotal);
+  const { _ } = useLingui();
 
   const sections = useMemo(
     () =>
       [
-        { usd: fundingFees, buttonText, tooltipText, onButtonClick: onSettleClick },
+        { usd: fundingFees, buttonText: _(buttonText), tooltipText: _(tooltipText), onButtonClick: onSettleClick },
         {
           usd: priceImpactDifference,
-          buttonText: button2Text,
+          buttonText: _(button2Text),
           tooltipText: (
             <Trans>
               Accrued Price Impact Rebates. They will become Claimable after some time.
@@ -45,8 +47,8 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           buttonStyle: "secondary",
         },
       ] as const,
-    [fundingFees, onAccruedPositionPriceImpactRebateClick, onSettleClick, priceImpactDifference]
+    [_, fundingFees, onAccruedPositionPriceImpactRebateClick, onSettleClick, priceImpactDifference]
   );
 
-  return <ClaimableCardUI title={title} style={style} sections={sections} />;
+  return <ClaimableCardUI title={_(title)} style={style} sections={sections} />;
 }

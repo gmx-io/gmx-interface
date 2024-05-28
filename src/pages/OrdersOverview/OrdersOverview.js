@@ -18,24 +18,27 @@ import {
 } from "lib/legacy";
 
 import "./OrdersOverview.css";
-import { t, Trans } from "@lingui/macro";
+import { t, Trans, msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "lib/bigmath";
 
 const ORDER_TYPE_LABELS = {
-  Increase: t`Increase`,
-  Decrease: t`Decrease`,
-  Swap: t`Swap`,
+  Increase: msg`Increase`,
+  Decrease: msg`Decrease`,
+  Swap: msg`Swap`,
 };
 const closeToExecutionPriceStyle = { color: "orange" };
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
+  const { _ } = useLingui();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -165,14 +168,17 @@ export default function OrdersOverview() {
                 markExchangeRate = getExchangeRate(fromToken, toToken);
                 prefix =
                   (order.triggerAboveThreshold && !invert) || (!order.triggerAboveThreshold && invert) ? "> " : "< ";
-                shouldExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio);
-                nearExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio.mul(100).div(NEAR_TRESHOLD));
+                shouldExecute = markExchangeRate !== undefined && markExchangeRate < order.triggerRatio;
+                nearExecute =
+                  markExchangeRate !== undefined &&
+                  markExchangeRate < bigMath.mulDiv(order.triggerRatio, 100n, BigInt(NEAR_TRESHOLD));
 
-                if (markExchangeRate) {
-                  const diff = order.triggerRatio.gt(markExchangeRate)
-                    ? order.triggerRatio.sub(markExchangeRate)
-                    : markExchangeRate.sub(order.triggerRatio);
-                  diffPercent = diff.mul(10000).div(markExchangeRate);
+                if (markExchangeRate !== undefined) {
+                  const diff =
+                    order.triggerRatio > markExchangeRate
+                      ? order.triggerRatio - markExchangeRate
+                      : markExchangeRate - order.triggerRatio;
+                  diffPercent = bigMath.mulDiv(diff, 10000n, markExchangeRate);
                 }
               } else {
                 invalidToken = true;
@@ -181,7 +187,7 @@ export default function OrdersOverview() {
 
               return (
                 <tr key={key}>
-                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -233,19 +239,18 @@ export default function OrdersOverview() {
               let shouldExecute;
               let nearExecute;
               let diffPercent;
-              if (markPrice) {
+              if (markPrice !== undefined) {
                 shouldExecute = order.triggerAboveThreshold
-                  ? markPrice.gt(order.triggerPrice)
-                  : markPrice.lt(order.triggerPrice);
+                  ? markPrice > order.triggerPrice
+                  : markPrice < order.triggerPrice;
 
                 nearExecute = order.triggerAboveThreshold
-                  ? markPrice.gt(order.triggerPrice.mul(NEAR_TRESHOLD).div(100))
-                  : markPrice.lt(order.triggerPrice.mul(100).div(NEAR_TRESHOLD));
+                  ? markPrice > bigMath.mulDiv(order.triggerPrice, BigInt(NEAR_TRESHOLD), 100n)
+                  : markPrice < bigMath.mulDiv(order.triggerPrice, 100n, BigInt(NEAR_TRESHOLD));
 
-                const diff = markPrice.gt(order.triggerPrice)
-                  ? markPrice.sub(order.triggerPrice)
-                  : order.triggerPrice.sub(markPrice);
-                diffPercent = diff.mul(10000).div(markPrice);
+                const diff =
+                  markPrice > order.triggerPrice ? markPrice - order.triggerPrice : order.triggerPrice - markPrice;
+                diffPercent = bigMath.mulDiv(diff, 10000n, markPrice);
               }
 
               if (!error && type === DECREASE) {
@@ -253,16 +258,16 @@ export default function OrdersOverview() {
                   const position = positionsForOrders[key];
                   if (!position) {
                     error = t`No position`;
-                  } else if (order.sizeDelta.gt(position[0])) {
+                  } else if (order.sizeDelta > position[0]) {
                     error = t`Order size exceeds position`;
-                  } else if (order.sizeDelta.eq(0)) {
+                  } else if (order.sizeDelta == 0n) {
                     error = t`Order size is 0`;
                   }
                 }
               }
               return (
                 <tr key={key}>
-                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
+                  <td>{_(ORDER_TYPE_LABELS[order.type])}</td>
                   <td>
                     {order.isLong ? t`Long` : t`Short`} {indexToken && indexToken.symbol}
                   </td>

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { BigNumber, Contract } from "ethers";
+import { Contract } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
@@ -14,8 +14,8 @@ export async function callContract(
   method: string,
   params: any,
   opts: {
-    value?: BigNumber | number;
-    gasLimit?: BigNumber | number;
+    value?: bigint | number;
+    gasLimit?: bigint | number;
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
@@ -52,7 +52,11 @@ export async function callContract(
 
     txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    await setGasPrice(txnOpts, contract.provider, chainId);
+    if (!contract.runner?.provider) {
+      throw new Error("No provider found on contract.");
+    }
+
+    await setGasPrice(txnOpts, contract.runner.provider, chainId);
 
     const res = await contract[method](...params, txnOpts);
 

@@ -85,17 +85,20 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
       return {};
     }
 
-    return orders.reduce((acc, order) => {
-      const marketInfo = getByKey(marketsInfoData, order.marketAddress);
-      const key = keyByOrder.get(order);
+    return orders.reduce(
+      (acc, order) => {
+        const marketInfo = getByKey(marketsInfoData, order.marketAddress);
+        const key = keyByOrder.get(order);
 
-      if (!key) throw new Error("key not found");
+        if (!key) throw new Error("key not found");
 
-      return {
-        ...acc,
-        [key]: marketInfo,
-      };
-    }, {} as Record<string, MarketInfo | undefined>);
+        return {
+          ...acc,
+          [key]: marketInfo,
+        };
+      },
+      {} as Record<string, MarketInfo | undefined>
+    );
   }, [keyByOrder, marketsInfoData, orders]);
 
   const creationStatus = useMemo(() => {

@@ -2,11 +2,10 @@ import Loader from "components/Common/Loader";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
-import { Token, getMidPrice } from "domain/tokens";
+import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -30,11 +29,11 @@ type Props = {
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
-  chartToken: {
-    symbol: string;
-    minPrice: BigNumber;
-    maxPrice: BigNumber;
-  };
+  chartToken:
+    | ({
+        symbol: string;
+      } & TokenPrices)
+    | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
 };
 
@@ -60,7 +59,7 @@ export default function TVChartContainer({
   const symbolRef = useRef(symbol);
 
   useEffect(() => {
-    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
+    if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
       let priceDecimals: number;
 
       try {

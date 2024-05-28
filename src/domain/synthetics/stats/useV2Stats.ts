@@ -1,20 +1,19 @@
 import { useMemo } from "react";
-import { BigNumber } from "ethers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 import useFeesInfo from "../stats/useFeesInfo";
 import useUsers from "../stats/useUsers";
 import { useMarketsInfoRequest } from "../markets";
 
 type DashboardOverview = {
-  totalGMLiquidity: BigNumber;
-  totalLongPositionSizes: BigNumber;
-  totalShortPositionSizes: BigNumber;
-  openInterest: BigNumber;
-  dailyVolume: BigNumber;
-  totalVolume: BigNumber;
-  weeklyFees: BigNumber;
-  totalFees: BigNumber;
-  totalUsers: BigNumber;
+  totalGMLiquidity: bigint;
+  totalLongPositionSizes: bigint;
+  totalShortPositionSizes: bigint;
+  openInterest: bigint;
+  dailyVolume: bigint;
+  totalVolume: bigint;
+  weeklyFees: bigint;
+  totalFees: bigint;
+  totalUsers: bigint;
 };
 
 export default function useV2Stats(chainId: number): DashboardOverview {
@@ -26,30 +25,30 @@ export default function useV2Stats(chainId: number): DashboardOverview {
   const stats = useMemo(() => {
     const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isDisabled);
     const totalLiquidity = allMarkets.reduce((acc, market) => {
-      return acc.add(market.poolValueMax);
-    }, BigNumber.from(0));
+      return acc + BigInt(market.poolValueMax ?? 0);
+    }, 0n);
 
     const totalLongInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc.add(market.longInterestUsd);
-    }, BigNumber.from(0));
+      return acc + BigInt(market.longInterestUsd ?? 0);
+    }, 0n);
 
     const totalShortInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc.add(market.shortInterestUsd);
-    }, BigNumber.from(0));
+      return acc + BigInt(market.shortInterestUsd ?? 0);
+    }, 0n);
 
     return {
-      totalGMLiquidity: totalLiquidity || BigNumber.from(0),
-      totalLongPositionSizes: totalLongInterestUsd || BigNumber.from(0),
-      totalShortPositionSizes: totalShortInterestUsd || BigNumber.from(0),
+      totalGMLiquidity: totalLiquidity ?? 0n,
+      totalLongPositionSizes: totalLongInterestUsd ?? 0n,
+      totalShortPositionSizes: totalShortInterestUsd ?? 0n,
       openInterest:
-        totalLongInterestUsd && totalShortInterestUsd
-          ? totalLongInterestUsd.add(totalShortInterestUsd)
-          : BigNumber.from(0),
-      dailyVolume: volumeInfo?.dailyVolume || BigNumber.from(0),
-      totalVolume: volumeInfo?.totalVolume || BigNumber.from(0),
-      weeklyFees: feesInfo?.weeklyFees || BigNumber.from(0),
-      totalFees: feesInfo?.totalFees || BigNumber.from(0),
-      totalUsers: usersInfo?.totalUsers || BigNumber.from(0),
+        totalLongInterestUsd !== undefined && totalShortInterestUsd !== undefined
+          ? totalLongInterestUsd + totalShortInterestUsd
+          : 0n,
+      dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) || 0n,
+      totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
+      weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) || 0n,
+      totalFees: BigInt(feesInfo?.totalFees ?? 0) || 0n,
+      totalUsers: BigInt(usersInfo?.totalUsers ?? 0) || 0n,
     };
   }, [marketsInfoData, volumeInfo, feesInfo, usersInfo]);
 

@@ -1,4 +1,6 @@
-import { t } from "@lingui/macro";
+import type { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -23,16 +25,17 @@ export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;
 };
 
-export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], string> = {
-  [ClaimType.ClaimFunding]: t`Claim Funding Fees`,
-  [ClaimType.ClaimPriceImpact]: t`Claim Price Impact Rebates`,
+export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], MessageDescriptor> = {
+  [ClaimType.ClaimFunding]: msg`Claim Funding Fees`,
+  [ClaimType.ClaimPriceImpact]: msg`Claim Price Impact Rebates`,
 };
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
+  const { _ } = useLingui();
   const { chainId } = useChainId();
   const { claimAction } = p;
 
-  const eventTitle = claimCollateralEventTitles[claimAction.eventName];
+  const eventTitle = useMemo(() => _(claimCollateralEventTitles[claimAction.eventName]), [_, claimAction.eventName]);
 
   const marketNamesJoined = useMemo(() => {
     return claimAction.claimItems
@@ -66,7 +69,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-xs"
+            className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
@@ -95,18 +98,18 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
           return (
             <Fragment key={market.indexTokenAddress}>
               <StatsTooltipRow
-                className="ClaimHistoryRow-tooltip-row"
+                textClassName="whitespace-nowrap mb-5"
                 key={market.marketTokenAddress}
                 label={
-                  <div className="items-top text-white">
+                  <div className="flex items-start text-white">
                     <span>{indexName}</span>
-                    <span className="subtext lh-1">[{poolName}]</span>
+                    <span className="subtext leading-1">[{poolName}]</span>
                   </div>
                 }
                 showDollar={false}
                 value={
                   <>
-                    {longTokenAmount.gt(0) && (
+                    {longTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           longTokenAmount,
@@ -117,7 +120,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                       </div>
                     )}
 
-                    {shortTokenAmount.gt(0) && (
+                    {shortTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           shortTokenAmount,

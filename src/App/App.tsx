@@ -1,10 +1,10 @@
 import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
@@ -29,8 +29,8 @@ import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 
 import { cssTransition, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+import "react-toastify/dist/ReactToastify.css";
 import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
@@ -60,6 +60,7 @@ import { Header } from "components/Header/Header";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
+import { isDevelopment } from "config/env";
 import { getIsSyntheticsSupported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
@@ -75,6 +76,7 @@ import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
+import { Provider } from "ethers";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
@@ -83,6 +85,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
@@ -90,14 +93,15 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import DashboardV2 from "pages/Dashboard/DashboardV2";
-import { Provider } from "@ethersproject/providers";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   // @ts-ignore
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
+
+const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
+const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -133,7 +137,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodedReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.ZeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
@@ -166,7 +170,7 @@ function FullApp() {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl + selectedToPage;
-  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.constants.HashZero) {
+  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.ZeroHash) {
     const decodedRefCode = decodeReferralCode(localStorageCode);
     if (decodedRefCode) {
       appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
@@ -388,6 +392,11 @@ function FullApp() {
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer />
               </Route>
+              {isDevelopment() && (
+                <Route exact path="/ui">
+                  <UiPage />
+                </Route>
+              )}
 
               <Route path="*">
                 <PageNotFound />
@@ -406,6 +415,7 @@ function FullApp() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
+        theme="dark"
         icon={false}
       />
       <EventToastContainer />

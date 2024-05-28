@@ -33,7 +33,7 @@ function renderMarketName(market?: MarketInfo) {
   return (
     <>
       GM: {marketName}
-      <span className="items-top">
+      <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>
       </span>
     </>

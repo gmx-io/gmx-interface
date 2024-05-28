@@ -1,5 +1,4 @@
 import { i18n } from "@lingui/core";
-import { en as plurals } from "make-plural/plurals";
 import { formatPositionMessage } from "./utils/position";
 import { formatSwapMessage } from "./utils/swap";
 import {
@@ -19,13 +18,11 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
-import { BigNumber } from "ethers";
 
-i18n.loadLocaleData({ en: { plurals } });
 i18n.load({ en: {} });
 i18n.activate("en");
 
-const minCollateralUsd = BigNumber.from(100);
+const minCollateralUsd = BigInt(100);
 
 describe("TradeHistoryRow helpers", () => {
   it("formatPositionMessage", () => {

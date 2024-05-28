@@ -1,6 +1,5 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useState } from "react";
 
@@ -16,8 +15,8 @@ export function usePositionSellerState(chainId: number) {
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);

@@ -1,5 +1,4 @@
 import { createSelector } from "../utils";
-import { BigNumber } from "ethers";
 import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxMarketInfo,
@@ -51,17 +50,11 @@ export const selectConfirmationBoxMockPosition = createSelector((q) => {
   const mockPosition = getPendingMockPosition({
     isIncrease: tradeFlags.isIncrease,
     positionKey,
-    sizeDeltaUsd: (existingPosition?.sizeInUsd ?? BigNumber.from(0)).add(
-      increaseAmounts?.sizeDeltaUsd ?? BigNumber.from(0)
-    ),
-    sizeDeltaInTokens: (existingPosition?.sizeInTokens ?? BigNumber.from(0)).add(
-      increaseAmounts?.sizeDeltaInTokens ?? BigNumber.from(0)
-    ),
-    collateralDeltaAmount: (existingPosition?.collateralAmount ?? BigNumber.from(0)).add(
-      increaseAmounts?.collateralDeltaAmount ?? BigNumber.from(0)
-    ),
+    sizeDeltaUsd: (existingPosition?.sizeInUsd ?? 0n) + (increaseAmounts?.sizeDeltaUsd ?? 0n),
+    sizeDeltaInTokens: (existingPosition?.sizeInTokens ?? 0n) + (increaseAmounts?.sizeDeltaInTokens ?? 0n),
+    collateralDeltaAmount: (existingPosition?.collateralAmount ?? 0n) + (increaseAmounts?.collateralDeltaAmount ?? 0n),
     updatedAt: Date.now(),
-    updatedAtBlock: BigNumber.from(0),
+    updatedAtBlock: 0n,
   });
 
   if (!mockPosition) return;
@@ -83,13 +76,13 @@ export const selectConfirmationBoxMockPosition = createSelector((q) => {
     hasLowCollateral: false,
     leverage: nextPositionValues.nextLeverage,
     leverageWithPnl: nextPositionValues.nextLeverage,
-    pnl: BigNumber.from(0),
-    pnlPercentage: BigNumber.from(0),
-    pnlAfterFees: BigNumber.from(0),
-    pnlAfterFeesPercentage: BigNumber.from(0),
-    closingFeeUsd: BigNumber.from(0),
-    uiFeeUsd: BigNumber.from(0),
-    pendingFundingFeesUsd: BigNumber.from(0),
-    pendingClaimableFundingFeesUsd: BigNumber.from(0),
+    pnl: 0n,
+    pnlPercentage: 0n,
+    pnlAfterFees: 0n,
+    pnlAfterFeesPercentage: 0n,
+    closingFeeUsd: 0n,
+    uiFeeUsd: 0n,
+    pendingFundingFeesUsd: 0n,
+    pendingClaimableFundingFeesUsd: 0n,
   };
 });

@@ -24,10 +24,15 @@ const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
-  const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
+  const totalApr = mergeWith(
+    {},
+    apr,
+    incentiveApr,
+    (aprValue, incentiveAprValue) => (aprValue ?? 0n) + (incentiveAprValue ?? 0n)
+  );
   const aprValues = Object.values(totalApr || {});
 
-  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
+  const maxApr = aprValues.reduce((max, value) => (value > max ? value : max), aprValues[0]);
 
   return maxApr;
 }
@@ -141,7 +146,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
           </div>
           {arbitrumIncentiveState?.lp?.isActive && (
             <BannerButton
-              className="mt-md"
+              className="mt-15"
               label="Arbitrum GM Pools are incentivized."
               link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
             />
@@ -184,7 +189,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
               {arbitrumIncentiveState?.migration?.isActive && (
                 <BannerButton
-                  className="mt-md"
+                  className="mt-15"
                   label="Migrating from GLP to GM is incentivized in Arbitrum."
                   link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
                 />

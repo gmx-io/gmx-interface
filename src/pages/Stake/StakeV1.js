@@ -15,23 +15,25 @@ import YieldFarm from "abis/YieldFarm.json";
 import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
 
-import "./Stake.css";
+import "./Stake.scss";
 import { t, Trans } from "@lingui/macro";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { bigMath } from "lib/bigmath";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
-const BASIS_POINTS_DIVISOR = 10000;
-const HOURS_PER_YEAR = 8760;
+const BASIS_POINTS_DIVISOR = 10000n;
+const HOURS_PER_YEAR = 8760n;
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getBalanceAndSupplyData(balances) {
   if (!balances || balances.length === 0) {
@@ -136,143 +138,152 @@ function getProcessedData(balanceData, supplyData, stakingData, totalStakedData,
     return {};
   }
 
-  // const gmtPrice = pairData.gmtUsdg.balance1.mul(PRECISION).div(pairData.gmtUsdg.balance0)
-  const xgmtPrice = pairData.xgmtUsdg.balance0.eq(0)
-    ? bigNumberify(0)
-    : pairData.xgmtUsdg.balance1.mul(PRECISION).div(pairData.xgmtUsdg.balance0);
-  const gmtUsdgPrice = supplyData.gmtUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.gmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.gmtUsdg);
-  const xgmtUsdgPrice = supplyData.xgmtUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.xgmtUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.xgmtUsdg);
-  const bnbPrice = pairData.bnbBusd.balance1.mul(PRECISION).div(pairData.bnbBusd.balance0);
-  const autoUsdgPrice = supplyData.autoUsdg.eq(0)
-    ? bigNumberify(0)
-    : pairData.autoUsdg.balance1.mul(PRECISION).mul(2).div(supplyData.autoUsdg);
+  const xgmtPrice =
+    pairData.xgmtUsdg.balance0 == 0n
+      ? 0n
+      : bigMath.mulDiv(pairData.xgmtUsdg.balance1, PRECISION, pairData.xgmtUsdg.balance0);
+  const gmtUsdgPrice =
+    supplyData.gmtUsdg == 0n ? 0n : bigMath.mulDiv(pairData.gmtUsdg.balance1 * PRECISION, 2n, supplyData.gmtUsdg);
+  const xgmtUsdgPrice =
+    supplyData.xgmtUsdg == 0n ? 0n : bigMath.mulDiv(pairData.xgmtUsdg.balance1 * PRECISION, 2n, supplyData.xgmtUsdg);
+  const bnbPrice = bigMath.mulDiv(pairData.bnbBusd.balance1, PRECISION, pairData.bnbBusd.balance0);
+  const autoUsdgPrice =
+    supplyData.autoUsdg == 0n ? 0n : bigMath.mulDiv(pairData.autoUsdg.balance1 * PRECISION, 2n, supplyData.autoUsdg);
 
-  const usdgAnnualRewardsUsd = stakingData.usdg.tokensPerInterval
-    .mul(bnbPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const xgmtAnnualRewardsUsd = stakingData.xgmt.tokensPerInterval
-    .mul(bnbPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
+  const usdgAnnualRewardsUsd = bigMath.mulDiv(
+    stakingData.usdg.tokensPerInterval * bnbPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const xgmtAnnualRewardsUsd = bigMath.mulDiv(
+    stakingData.xgmt.tokensPerInterval * bnbPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
 
-  const gmtUsdgAnnualRewardsXmgtUsd = stakingData.gmtUsdgFarmXgmt.tokensPerInterval
-    .mul(xgmtPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const gmtUsdgAnnualRewardsNativeUsd = stakingData.gmtUsdgFarmNative.tokensPerInterval
-    .mul(bnbPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const gmtUsdgTotalAnnualRewardsUsd = gmtUsdgAnnualRewardsXmgtUsd.add(gmtUsdgAnnualRewardsNativeUsd);
+  const gmtUsdgAnnualRewardsXmgtUsd = bigMath.mulDiv(
+    stakingData.gmtUsdgFarmXgmt.tokensPerInterval * xgmtPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const gmtUsdgAnnualRewardsNativeUsd = bigMath.mulDiv(
+    stakingData.gmtUsdgFarmNative.tokensPerInterval * bnbPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const gmtUsdgTotalAnnualRewardsUsd = gmtUsdgAnnualRewardsXmgtUsd + gmtUsdgAnnualRewardsNativeUsd;
 
-  const xgmtUsdgAnnualRewardsXmgtUsd = stakingData.xgmtUsdgFarmXgmt.tokensPerInterval
-    .mul(xgmtPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const xgmtUsdgAnnualRewardsNativeUsd = stakingData.xgmtUsdgFarmNative.tokensPerInterval
-    .mul(bnbPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const xgmtUsdgTotalAnnualRewardsUsd = xgmtUsdgAnnualRewardsXmgtUsd.add(xgmtUsdgAnnualRewardsNativeUsd);
+  const xgmtUsdgAnnualRewardsXmgtUsd = bigMath.mulDiv(
+    stakingData.xgmtUsdgFarmXgmt.tokensPerInterval * xgmtPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const xgmtUsdgAnnualRewardsNativeUsd = bigMath.mulDiv(
+    stakingData.xgmtUsdgFarmNative.tokensPerInterval * bnbPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const xgmtUsdgTotalAnnualRewardsUsd = xgmtUsdgAnnualRewardsXmgtUsd + xgmtUsdgAnnualRewardsNativeUsd;
 
-  const autoUsdgAnnualRewardsXgmtUsd = stakingData.autoUsdgFarmXgmt.tokensPerInterval
-    .mul(xgmtPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const autoUsdgAnnualRewardsNativeUsd = stakingData.autoUsdgFarmNative.tokensPerInterval
-    .mul(bnbPrice)
-    .mul(HOURS_PER_YEAR)
-    .div(expandDecimals(1, 18));
-  const autoUsdgTotalAnnualRewardsUsd = autoUsdgAnnualRewardsXgmtUsd.add(autoUsdgAnnualRewardsNativeUsd);
+  const autoUsdgAnnualRewardsXgmtUsd = bigMath.mulDiv(
+    stakingData.autoUsdgFarmXgmt.tokensPerInterval * xgmtPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const autoUsdgAnnualRewardsNativeUsd = bigMath.mulDiv(
+    stakingData.autoUsdgFarmNative.tokensPerInterval * bnbPrice,
+    HOURS_PER_YEAR,
+    expandDecimals(1, 18)
+  );
+  const autoUsdgTotalAnnualRewardsUsd = autoUsdgAnnualRewardsXgmtUsd + autoUsdgAnnualRewardsNativeUsd;
 
   const data = {};
   data.usdgBalance = balanceData.usdg;
   data.usdgSupply = supplyData.usdg;
   data.usdgTotalStaked = totalStakedData.usdg;
-  data.usdgTotalStakedUsd = totalStakedData.usdg.mul(PRECISION).div(expandDecimals(1, 18));
-  data.usdgSupplyUsd = supplyData.usdg.mul(PRECISION).div(expandDecimals(1, 18));
-  data.usdgApr = data.usdgTotalStaked.eq(0)
-    ? undefined
-    : usdgAnnualRewardsUsd
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(totalStakedData.usdg)
-        .mul(expandDecimals(1, 18))
-        .div(PRECISION);
+  data.usdgTotalStakedUsd = bigMath.mulDiv(totalStakedData.usdg, PRECISION, expandDecimals(1, 18));
+  data.usdgSupplyUsd = bigMath.mulDiv(supplyData.usdg, PRECISION, expandDecimals(1, 18));
+  data.usdgApr =
+    data.usdgTotalStaked == 0n
+      ? undefined
+      : bigMath.mulDiv(
+          bigMath.mulDiv(usdgAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, totalStakedData.usdg),
+          expandDecimals(1, 18),
+          PRECISION
+        );
   data.usdgRewards = stakingData.usdg.claimable;
 
   data.xgmtBalance = balanceData.xgmt;
-  data.xgmtBalanceUsd = balanceData.xgmt.mul(xgmtPrice).div(expandDecimals(1, 18));
+  data.xgmtBalanceUsd = bigMath.mulDiv(balanceData.xgmt, xgmtPrice, expandDecimals(1, 18));
   data.xgmtSupply = xgmtSupply;
   data.xgmtTotalStaked = totalStakedData.xgmt;
-  data.xgmtTotalStakedUsd = totalStakedData.xgmt.mul(xgmtPrice).div(expandDecimals(1, 18));
-  data.xgmtSupplyUsd = xgmtSupply.mul(xgmtPrice).div(expandDecimals(1, 18));
-  data.xgmtApr = data.xgmtSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : xgmtAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtTotalStakedUsd);
+  data.xgmtTotalStakedUsd = bigMath.mulDiv(totalStakedData.xgmt, xgmtPrice, expandDecimals(1, 18));
+  data.xgmtSupplyUsd = bigMath.mulDiv(xgmtSupply, xgmtPrice, expandDecimals(1, 18));
+  data.xgmtApr =
+    data.xgmtSupplyUsd == 0n ? 0n : bigMath.mulDiv(xgmtAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.xgmtTotalStakedUsd);
   data.xgmtRewards = stakingData.xgmt.claimable;
 
   data.gmtUsdgFarmBalance = balanceData.gmtUsdgFarm;
 
   data.gmtUsdgBalance = balanceData.gmtUsdg;
-  data.gmtUsdgBalanceUsd = balanceData.gmtUsdg.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
+  data.gmtUsdgBalanceUsd = bigMath.mulDiv(balanceData.gmtUsdg, gmtUsdgPrice, expandDecimals(1, 18));
   data.gmtUsdgSupply = supplyData.gmtUsdg;
-  data.gmtUsdgSupplyUsd = supplyData.gmtUsdg.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
+  data.gmtUsdgSupplyUsd = bigMath.mulDiv(supplyData.gmtUsdg, gmtUsdgPrice, expandDecimals(1, 18));
   data.gmtUsdgStaked = balanceData.gmtUsdgFarm;
-  data.gmtUsdgStakedUsd = balanceData.gmtUsdgFarm.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
-  data.gmtUsdgFarmSupplyUsd = supplyData.gmtUsdgFarm.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
-  data.gmtUsdgApr = data.gmtUsdgSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : data.gmtUsdgFarmSupplyUsd.eq(0)
-    ? undefined
-    : gmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.gmtUsdgSupplyUsd);
+  data.gmtUsdgStakedUsd = bigMath.mulDiv(balanceData.gmtUsdgFarm, gmtUsdgPrice, expandDecimals(1, 18));
+  data.gmtUsdgFarmSupplyUsd = bigMath.mulDiv(supplyData.gmtUsdgFarm, gmtUsdgPrice, expandDecimals(1, 18));
+  data.gmtUsdgApr =
+    data.gmtUsdgSupplyUsd == 0n
+      ? 0n
+      : data.gmtUsdgFarmSupplyUsd == 0n
+        ? undefined
+        : bigMath.mulDiv(gmtUsdgTotalAnnualRewardsUsd, BASIS_POINTS_DIVISOR, data.gmtUsdgSupplyUsd);
   data.gmtUsdgXgmtRewards = stakingData.gmtUsdgFarmXgmt.claimable;
   data.gmtUsdgNativeRewards = stakingData.gmtUsdgFarmNative.claimable;
-  data.gmtUsdgTotalRewards = data.gmtUsdgXgmtRewards.add(data.gmtUsdgNativeRewards);
+  data.gmtUsdgTotalRewards = data.gmtUsdgXgmtRewards + data.gmtUsdgNativeRewards;
   data.gmtUsdgTotalStaked = supplyData.gmtUsdgFarm;
-  data.gmtUsdgTotalStakedUsd = supplyData.gmtUsdgFarm.mul(gmtUsdgPrice).div(expandDecimals(1, 18));
+  data.gmtUsdgTotalStakedUsd = bigMath.mulDiv(supplyData.gmtUsdgFarm, gmtUsdgPrice, expandDecimals(1, 18));
 
   data.xgmtUsdgBalance = balanceData.xgmtUsdg;
   data.xgmtUsdgFarmBalance = balanceData.xgmtUsdgFarm;
-  data.xgmtUsdgBalanceUsd = balanceData.xgmtUsdg.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
+  data.xgmtUsdgBalanceUsd = bigMath.mulDiv(balanceData.xgmtUsdg, xgmtUsdgPrice, expandDecimals(1, 18));
   data.xgmtUsdgSupply = supplyData.xgmtUsdg;
-  data.xgmtUsdgSupplyUsd = supplyData.xgmtUsdg.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
+  data.xgmtUsdgSupplyUsd = bigMath.mulDiv(supplyData.xgmtUsdg, xgmtUsdgPrice, expandDecimals(1, 18));
   data.xgmtUsdgStaked = balanceData.xgmtUsdgFarm;
-  data.xgmtUsdgStakedUsd = balanceData.xgmtUsdgFarm.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
-  data.xgmtUsdgFarmSupplyUsd = supplyData.xgmtUsdgFarm.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
-  data.xgmtUsdgApr = data.xgmtUsdgFarmSupplyUsd.eq(0)
-    ? undefined
-    : xgmtUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.xgmtUsdgFarmSupplyUsd);
+  data.xgmtUsdgStakedUsd = bigMath.mulDiv(balanceData.xgmtUsdgFarm, xgmtUsdgPrice, expandDecimals(1, 18));
+  data.xgmtUsdgFarmSupplyUsd = bigMath.mulDiv(supplyData.xgmtUsdgFarm, xgmtUsdgPrice, expandDecimals(1, 18));
+  data.xgmtUsdgApr =
+    data.xgmtUsdgFarmSupplyUsd == 0n
+      ? undefined
+      : bigMath.mulDiv(xgmtUsdgTotalAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.xgmtUsdgFarmSupplyUsd);
   data.xgmtUsdgXgmtRewards = stakingData.xgmtUsdgFarmXgmt.claimable;
   data.xgmtUsdgNativeRewards = stakingData.xgmtUsdgFarmNative.claimable;
-  data.xgmtUsdgTotalRewards = data.xgmtUsdgXgmtRewards.add(data.xgmtUsdgNativeRewards);
+  data.xgmtUsdgTotalRewards = data.xgmtUsdgXgmtRewards + data.xgmtUsdgNativeRewards;
   data.xgmtUsdgTotalStaked = supplyData.xgmtUsdgFarm;
-  data.xgmtUsdgTotalStakedUsd = supplyData.xgmtUsdgFarm.mul(xgmtUsdgPrice).div(expandDecimals(1, 18));
+  data.xgmtUsdgTotalStakedUsd = bigMath.mulDiv(supplyData.xgmtUsdgFarm, xgmtUsdgPrice, expandDecimals(1, 18));
 
   data.autoUsdgBalance = balanceData.autoUsdg;
   data.autoUsdgFarmBalance = balanceData.autoUsdgFarm;
-  data.autoUsdgBalanceUsd = balanceData.autoUsdg.mul(autoUsdgPrice).div(expandDecimals(1, 18));
+  data.autoUsdgBalanceUsd = bigMath.mulDiv(balanceData.autoUsdg, autoUsdgPrice, expandDecimals(1, 18));
   data.autoUsdgStaked = balanceData.autoUsdgFarm;
-  data.autoUsdgStakedUsd = balanceData.autoUsdgFarm.mul(autoUsdgPrice).div(expandDecimals(1, 18));
-  data.autoUsdgFarmSupplyUsd = supplyData.autoUsdgFarm.mul(autoUsdgPrice).div(expandDecimals(1, 18));
-  data.autoUsdgApr = data.autoUsdgFarmSupplyUsd.eq(0)
-    ? bigNumberify(0)
-    : autoUsdgTotalAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.autoUsdgFarmSupplyUsd);
+  data.autoUsdgStakedUsd = bigMath.mulDiv(balanceData.autoUsdgFarm, autoUsdgPrice, expandDecimals(1, 18));
+  data.autoUsdgFarmSupplyUsd = bigMath.mulDiv(supplyData.autoUsdgFarm, autoUsdgPrice, expandDecimals(1, 18));
+  data.autoUsdgApr =
+    data.autoUsdgFarmSupplyUsd == 0n
+      ? 0n
+      : bigMath.mulDiv(autoUsdgTotalAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.autoUsdgFarmSupplyUsd);
   data.autoUsdgXgmtRewards = stakingData.autoUsdgFarmXgmt.claimable;
   data.autoUsdgNativeRewards = stakingData.autoUsdgFarmNative.claimable;
-  data.autoUsdgTotalRewards = data.autoUsdgXgmtRewards.add(data.autoUsdgNativeRewards);
+  data.autoUsdgTotalRewards = data.autoUsdgXgmtRewards + data.autoUsdgNativeRewards;
   data.autoUsdgTotalStaked = supplyData.autoUsdgFarm;
-  data.autoUsdgTotalStakedUsd = supplyData.autoUsdgFarm.mul(autoUsdgPrice).div(expandDecimals(1, 18));
+  data.autoUsdgTotalStakedUsd = bigMath.mulDiv(supplyData.autoUsdgFarm, autoUsdgPrice, expandDecimals(1, 18));
 
-  data.totalStakedUsd = data.usdgTotalStakedUsd
-    .add(data.xgmtTotalStakedUsd)
-    .add(data.gmtUsdgTotalStakedUsd)
-    .add(data.xgmtUsdgTotalStakedUsd)
-    .add(data.autoUsdgTotalStakedUsd);
+  data.totalStakedUsd =
+    data.usdgTotalStakedUsd +
+    data.xgmtTotalStakedUsd +
+    data.gmtUsdgTotalStakedUsd +
+    data.xgmtUsdgTotalStakedUsd +
+    data.autoUsdgTotalStakedUsd;
 
   return data;
 }
@@ -315,13 +326,13 @@ function StakeModal(props) {
   }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
-  const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (amount == undefined) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -439,10 +450,10 @@ function UnstakeModal(props) {
   let amount = parseValue(value, 18);
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
-    if (amount.gt(maxAmount)) {
+    if (amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -620,14 +631,14 @@ export default function StakeV1() {
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
-    ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
+    ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [tokens]),
     }
   );
 
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
-    [active, chainId, readerAddress, "getStakingInfo", account || AddressZero],
+    [active, chainId, readerAddress, "getStakingInfo", account || ZeroAddress],
     {
       fetcher: contractFetcher(signer, Reader, [yieldTrackers]),
     }
@@ -687,7 +698,7 @@ export default function StakeV1() {
       helperToast.error(t`Incorrect Network`);
       return;
     }
-    if (!rewards || rewards.eq(0)) {
+    if (!rewards || rewards == 0n) {
       helperToast.error(t`No rewards to claim yet`);
       return;
     }
@@ -994,7 +1005,7 @@ export default function StakeV1() {
               <div>
                 {hasFeeDistribution &&
                   processedData.gmtUsdgNativeRewards &&
-                  processedData.gmtUsdgNativeRewards.gt(0) &&
+                  processedData.gmtUsdgNativeRewards > 0 &&
                   `${formatKeyAmount(processedData, "gmtUsdgNativeRewards", 18, 8, true)} WBNB, `}
                 {formatKeyAmount(processedData, "gmtUsdgXgmtRewards", 18, 4, true)} xGMT
               </div>
@@ -1076,7 +1087,7 @@ export default function StakeV1() {
               <div>
                 {hasFeeDistribution &&
                   processedData.xgmtUsdgNativeRewards &&
-                  processedData.xgmtUsdgNativeRewards.gt(0) &&
+                  processedData.xgmtUsdgNativeRewards > 0 &&
                   `${formatKeyAmount(processedData, "xgmtUsdgNativeRewards", 18, 8, true)} WBNB, `}
                 {formatKeyAmount(processedData, "xgmtUsdgXgmtRewards", 18, 4, true)} xGMT
               </div>

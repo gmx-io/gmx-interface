@@ -19,7 +19,6 @@ import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
-import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 import { useMemo } from "react";
@@ -154,7 +153,7 @@ export function MarketStats(p: Props) {
           label={t`Market`}
           value={
             indexName && poolName ? (
-              <div className="items-top">
+              <div className="flex items-start">
                 <span>{indexName}</span>
                 <span className="subtext gm-market-name">[{poolName}]</span>
               </div>
@@ -187,8 +186,8 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Wallet`}
           value={formatTokenAmountWithUsd(
-            marketBalance || BigNumber.from(0),
-            marketBalanceUsd || BigNumber.from(0),
+            marketBalance ?? 0n,
+            marketBalanceUsd ?? 0n,
             "GM",
             marketToken?.decimals ?? 18
           )}
@@ -202,7 +201,7 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Total Supply`}
           value={
-            marketTotalSupply && marketTotalSupplyUsd
+            marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
               ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken?.decimals, {
                   displayDecimals: 0,
                 })
@@ -213,7 +212,7 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Buyable`}
           value={
-            mintableInfo && marketTotalSupplyUsd && marketToken ? (
+            mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
               <Tooltip
                 maxAllowedWidth={350}
                 handle={formatTokenAmountWithUsd(
@@ -334,8 +333,8 @@ export function MarketStats(p: Props) {
             <CardRow
               label={t`Pool Amount`}
               value={formatTokenAmountWithUsd(
-                longPoolAmount?.add(shortPoolAmount ?? BN_ZERO),
-                longPoolAmountUsd?.add(shortPoolAmountUsd ?? BN_ZERO),
+                (longPoolAmount ?? BN_ZERO) + (shortPoolAmount ?? BN_ZERO),
+                (longPoolAmountUsd ?? BN_ZERO) + (shortPoolAmountUsd ?? BN_ZERO),
                 longToken?.symbol,
                 longToken?.decimals
               )}

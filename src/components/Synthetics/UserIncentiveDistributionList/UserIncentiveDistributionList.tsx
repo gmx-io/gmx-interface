@@ -1,4 +1,6 @@
-import { t, Trans } from "@lingui/macro";
+import { MessageDescriptor } from "@lingui/core";
+import { msg, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
@@ -12,7 +14,6 @@ import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
 import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
 import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -22,14 +23,16 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 const INCENTIVE_TYPE_MAP = {
-  1001: t`GM Airdrop`,
-  1002: t`GLP to GM Airdrop`,
-  1003: t`TRADING Airdrop`,
+  1001: msg`GM Airdrop`,
+  1002: msg`GLP to GM Airdrop`,
+  1003: msg`TRADING Airdrop`,
 };
 
-const INCENTIVE_TOOLTIP_MAP = {
-  2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
-  2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
+const INCENTIVE_TOOLTIP_MAP: {
+  [typeId: number]: { link: string; text: MessageDescriptor };
+} = {
+  2001: { link: "/competitions/march_13-20_2024", text: msg`EIP-4844, 13-20 Mar` },
+  2002: { link: "/competitions/march_20-27_2024", text: msg`EIP-4844, 20-27 Mar` },
 };
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
@@ -39,13 +42,13 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
     const tokenInfo = tokens.find((token) => token.address.toLowerCase() === tokenAddress);
     return {
       tokenInfo,
-      tokenAmount: BigNumber.from(incentive.amounts[index]),
-      tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
+      tokenAmount: BigInt(incentive.amounts[index]),
+      tokenUsd: BigInt(incentive.amountsInUsd[index]),
       id: `${incentive.id}-${tokenAddress}`,
     };
   });
 
-  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigNumber.from(0));
+  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total + tokenInfo.tokenUsd, 0n);
 
   return {
     ...incentive,
@@ -78,10 +81,10 @@ export default function UserIncentiveDistributionList() {
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
-        className="mt-sm"
+        className="!mt-10"
       >
         {!active && (
-          <div className="mt-md">
+          <div className="mt-15">
             <Button variant="secondary" onClick={openConnectModal}>
               <Trans>Connect Wallet</Trans>
             </Button>
@@ -113,9 +116,7 @@ export default function UserIncentiveDistributionList() {
               </tr>
             </thead>
             <tbody>
-              {currentIncentiveData?.map((incentive) => (
-                <IncentiveItem incentive={incentive} key={incentive.id} />
-              ))}
+              {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
             </tbody>
           </table>
         </div>
@@ -129,9 +130,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
+  const { _ } = useLingui();
 
   const isCompetition = typeId >= 2000 && typeId < 3000;
-  const typeStr = isCompetition ? t`COMPETITION Airdrop` : INCENTIVE_TYPE_MAP[typeId];
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId]);
   const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
 
   const renderTotalTooltipContent = useCallback(() => {
@@ -150,10 +152,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     () =>
       tooltipData ? (
         <Link className="link-underline" to={tooltipData.link}>
-          {tooltipData.text}
+          {_(tooltipData.text.id)}
         </Link>
       ) : null,
-    [tooltipData]
+    [_, tooltipData]
   );
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
@@ -162,7 +164,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       <td data-label="Date">{formatDate(timestamp)}</td>
       <td data-label="Type">{type}</td>
       <td data-label="Amount">
-        <Tooltip handle={formatUsd(totalUsd)} className="nowrap" renderContent={renderTotalTooltipContent} />
+        <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
       </td>
       <td data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>

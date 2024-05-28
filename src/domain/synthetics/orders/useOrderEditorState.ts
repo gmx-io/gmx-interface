@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
-import { BigNumber } from "ethers";
 import { isIncreaseOrderType, isSwapOrderType } from "./utils";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
 import { USD_DECIMALS } from "lib/legacy";
 import { getByKey } from "lib/objects";
+import { bigMath } from "lib/bigmath";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 
@@ -70,12 +70,12 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
 
 function useAcceptablePrice(
   order: OrderInfo | undefined,
-  triggerPrice: BigNumber | undefined
+  triggerPrice: bigint | undefined
 ): {
-  acceptablePrice: BigNumber;
-  initialAcceptablePriceImpactBps: BigNumber;
-  acceptablePriceImpactBps: BigNumber;
-  setAcceptablePriceImpactBps: (bps: BigNumber) => void;
+  acceptablePrice: bigint;
+  initialAcceptablePriceImpactBps: bigint;
+  acceptablePriceImpactBps: bigint;
+  setAcceptablePriceImpactBps: (bps: bigint) => void;
 } {
   const isSwapOrder = order ? isSwapOrderType(order.orderType) : false;
 
@@ -84,7 +84,8 @@ function useAcceptablePrice(
     const positionOrder = order as PositionOrderInfo;
     const initialAcceptablePrice = positionOrder.acceptablePrice;
     const initialTriggerPrice = positionOrder.triggerPrice;
-    const initialPriceDelta = initialAcceptablePrice?.sub(initialTriggerPrice || 0).abs() || 0;
+    const initialPriceDelta =
+      initialAcceptablePrice === undefined ? 0n : bigMath.abs(initialAcceptablePrice - (initialTriggerPrice ?? 0n));
     initialAcceptablePriceImpactBps = getBasisPoints(initialPriceDelta, initialTriggerPrice);
   }
 
@@ -95,7 +96,7 @@ function useAcceptablePrice(
       setAcceptablePriceImpactBps(initialAcceptablePriceImpactBps);
     }
 
-    if (initialAcceptablePriceImpactBps.eq(acceptablePriceImpactBps)) {
+    if (initialAcceptablePriceImpactBps === acceptablePriceImpactBps) {
       return;
     }
 
@@ -115,8 +116,8 @@ function useAcceptablePrice(
     } else {
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;
       acceptablePrice = applySlippageToPrice(
-        acceptablePriceImpactBps.toNumber(),
-        triggerPrice || initialTriggerPrice,
+        Number(acceptablePriceImpactBps),
+        triggerPrice ?? initialTriggerPrice,
         order.isLong,
         isIncreaseOrderType(order.orderType)
       );

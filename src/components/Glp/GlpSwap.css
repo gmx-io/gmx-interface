@@ -7,14 +7,14 @@
 
 .Tab-title {
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--color-white);
   font-size: 3.41rem;
   font-weight: 500;
 }
 
 .Tab-description {
   letter-spacing: 0px;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   margin-top: 0.8rem;
 }
 
@@ -38,7 +38,7 @@
 }
 
 .GlpSwap-stats-card .App-card-row .label {
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
@@ -75,19 +75,19 @@
   font-size: var(--font-md);
   line-height: 2.1rem;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
   font-size: 1.2rem;
   line-height: 1.5rem;
   letter-spacing: 0px;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
 }
 
 .GlpSwap-token-list {
   border-radius: 4px;
-  background: #16182e;
+  background: var(--color-slate-800);
   padding: 1.5rem;
   padding-top: 0;
   text-align: left;
@@ -114,7 +114,7 @@
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {
   margin-right: 0.8rem;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
@@ -171,7 +171,6 @@
 
 .token-table td {
   letter-spacing: 0.25px;
-  color: #ffffffde;
 }
 
 .token-table th:first-child,
@@ -190,7 +189,7 @@
 .token-table th {
   font-weight: normal;
   letter-spacing: 0.25px;
-  color: #a9a9b0;
+  color: var(--color-gray-400);
   text-transform: uppercase;
 }
 
@@ -236,7 +235,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  color: white;
+  color: var(--color-white);
 }
 
 .AppOrder-ball:hover {

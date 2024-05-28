@@ -1,13 +1,12 @@
 import { t } from "@lingui/macro";
 import { uniqueId } from "lodash";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
-export const MAX_PERCENTAGE = BigNumber.from(100);
+export const MAX_PERCENTAGE = 100n;
 export const PERCENTAGE_DECEMALS = 0;
 
 export function getDefaultEntryField(
@@ -15,7 +14,7 @@ export function getDefaultEntryField(
   { input, value, error }: Partial<EntryField> = {}
 ): EntryField {
   let nextInput = "";
-  let nextValue: BigNumber | null = null;
+  let nextValue: bigint | null = null;
   let nextError = error ?? null;
 
   const displayPercentage = Math.min(2, decimals ?? 0);
@@ -60,9 +59,9 @@ export function prepareInitialEntries({
   return positionOrders
     .sort((a, b) => {
       const [first, second] = sort === "desc" ? [a, b] : [b, a];
-      const diff = first.triggerPrice.sub(second.triggerPrice);
-      if (diff.gt(0)) return -1;
-      if (diff.lt(0)) return 1;
+      const diff = first.triggerPrice - second.triggerPrice;
+      if (diff > 0) return -1;
+      if (diff < 0) return 1;
       return 0;
     })
     .map((order) => {
@@ -90,15 +89,15 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     maxLimitTrigerPrice,
     minLimitTrigerPrice,
   }: {
-    liqPrice?: BigNumber;
-    triggerPrice?: BigNumber;
-    markPrice?: BigNumber;
+    liqPrice?: bigint;
+    triggerPrice?: bigint;
+    markPrice?: bigint;
     isLong?: boolean;
     isLimit?: boolean;
     isExistingLimits?: boolean;
     isExistingPosition?: boolean;
-    maxLimitTrigerPrice?: BigNumber;
-    minLimitTrigerPrice?: BigNumber;
+    maxLimitTrigerPrice?: bigint;
+    minLimitTrigerPrice?: bigint;
   }
 ): T {
   let sizeError: string | null = null;
@@ -107,78 +106,83 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
   const inputPrice = entry.price.value;
 
-  if (inputPrice?.gt(0)) {
-    if (markPrice) {
+  if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
+    if (markPrice !== undefined) {
       if (type === "limit") {
         const nextError = isLong
-          ? inputPrice.gt(markPrice) && t`Price above Mark Price.`
-          : inputPrice.lt(markPrice) && t`Price below Mark Price.`;
+          ? inputPrice > markPrice && t`Price above Mark Price.`
+          : inputPrice < markPrice && t`Price below Mark Price.`;
 
         priceError = nextError || priceError;
       }
     }
 
-    if (!isExistingLimits && liqPrice) {
+    if (!isExistingLimits && liqPrice !== undefined && liqPrice !== null) {
       if (type === "sl") {
         const nextError = isLong
-          ? inputPrice.lt(liqPrice) && t`Price below Liq. Price.`
-          : inputPrice.gt(liqPrice) && t`Price above Liq. Price.`;
+          ? inputPrice < liqPrice && t`Price below Liq. Price.`
+          : inputPrice > liqPrice && t`Price above Liq. Price.`;
 
         priceError = nextError || priceError;
       }
     }
 
     if (isExistingPosition || !isLimit) {
-      if (markPrice) {
+      if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice.lt(markPrice) && t`Price below Mark Price.`
-            : inputPrice.gt(markPrice) && t`Price above Mark Price.`;
+            ? inputPrice < markPrice && t`Price below Mark Price.`
+            : inputPrice > markPrice && t`Price above Mark Price.`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice.gt(markPrice) && t`Price above Mark Price.`
-            : inputPrice.lt(markPrice) && t`Price below Mark Price.`;
+            ? inputPrice > markPrice && t`Price above Mark Price.`
+            : inputPrice < markPrice && t`Price below Mark Price.`;
 
           priceError = nextError || priceError;
         }
       }
     } else {
       if (isExistingLimits) {
-        if (maxLimitTrigerPrice && minLimitTrigerPrice) {
+        if (
+          maxLimitTrigerPrice !== undefined &&
+          maxLimitTrigerPrice !== null &&
+          minLimitTrigerPrice !== undefined &&
+          minLimitTrigerPrice !== null
+        ) {
           if (type === "tp") {
             const nextError = isLong
-              ? inputPrice.lt(maxLimitTrigerPrice) && t`Price below highest Limit Price.`
-              : inputPrice.gt(minLimitTrigerPrice) && t`Price above lowest Limit Price.`;
+              ? inputPrice < maxLimitTrigerPrice && t`Price below highest Limit Price.`
+              : inputPrice > minLimitTrigerPrice && t`Price above lowest Limit Price.`;
 
             priceError = nextError || priceError;
           }
 
           if (type === "sl") {
             const nextError = isLong
-              ? inputPrice.gt(maxLimitTrigerPrice) && t`Price above highest Limit Price.`
-              : inputPrice.lt(minLimitTrigerPrice) && t`Price below lowest Limit Price.`;
+              ? inputPrice > maxLimitTrigerPrice && t`Price above highest Limit Price.`
+              : inputPrice < minLimitTrigerPrice && t`Price below lowest Limit Price.`;
 
             priceError = nextError || priceError;
           }
         }
       } else {
-        if (triggerPrice) {
+        if (triggerPrice !== undefined && triggerPrice !== null) {
           if (type === "tp") {
             const nextError = isLong
-              ? inputPrice.lt(triggerPrice) && t`Price below Limit Price.`
-              : inputPrice.gt(triggerPrice) && t`Price above Limit Price.`;
+              ? inputPrice < triggerPrice && t`Price below Limit Price.`
+              : inputPrice > triggerPrice && t`Price above Limit Price.`;
 
             priceError = nextError || priceError;
           }
 
           if (type === "sl") {
             const nextError = isLong
-              ? inputPrice.gt(triggerPrice) && t`Price above Limit Price.`
-              : inputPrice.lt(triggerPrice) && t`Price below Limit Price.`;
+              ? inputPrice > triggerPrice && t`Price above Limit Price.`
+              : inputPrice < triggerPrice && t`Price below Limit Price.`;
 
             priceError = nextError || priceError;
           }
@@ -188,15 +192,15 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   }
 
   if (type === "limit") {
-    if (!entry.sizeUsd?.value || entry.sizeUsd.value?.eq(0)) {
+    if (entry.sizeUsd?.value === undefined || entry.sizeUsd.value === 0n) {
       sizeError = t`Limit size is required.`;
     }
 
-    if (entry?.increaseAmounts?.estimatedLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (entry?.increaseAmounts?.estimatedLeverage && entry?.increaseAmounts?.estimatedLeverage > MAX_ALLOWED_LEVERAGE) {
       sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
   } else {
-    if (!entry.percentage?.value || entry.percentage.value?.eq(0)) {
+    if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
       percentageError = t`A Size percentage is required.`;
     }
   }
@@ -211,11 +215,11 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
 export function getCommonError(displayableEntries: SidecarOrderEntry[] = []) {
   const totalPercentage = displayableEntries.reduce(
-    (total, entry) => (entry.percentage?.value ? total.add(entry.percentage.value) : total),
-    BigNumber.from(0)
+    (total, entry) => (entry.percentage?.value ? total + entry.percentage.value : total),
+    0n
   );
 
-  return totalPercentage.gt(MAX_PERCENTAGE)
+  return totalPercentage > MAX_PERCENTAGE
     ? {
         percentage: "Max percentage exceeded",
       }

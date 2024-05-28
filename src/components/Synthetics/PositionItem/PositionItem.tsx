@@ -78,7 +78,7 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {p.position.uiFeeUsd.gt(0)
+            {p.position.uiFeeUsd > 0
               ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
               : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
@@ -92,36 +92,36 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnl)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
-              value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
+              value={formatUsd(p.position.pendingBorrowingFeesUsd) || "..."}
               showDollar={false}
-              className={cx({
-                "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+              textClassName={cx({
+                "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
               })}
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
-              value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
+              value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
               showDollar={false}
-              className={cx({
-                "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+              textClassName={cx({
+                "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
               })}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
-              value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
-              className="text-red"
+              value={formatUsd(-p.position.closingFeeUsd) || "..."}
+              textClassName="text-red-500"
             />
-            {p.position.uiFeeUsd.gt(0) && (
+            {p.position.uiFeeUsd > 0 && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
-                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
-                className="text-red"
+                value={formatUsd(-p.position.uiFeeUsd)}
+                textClassName="text-red-500"
               />
             )}
             <br />
@@ -129,7 +129,7 @@ export function PositionItem(p: Props) {
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
+              textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}
@@ -194,41 +194,41 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
-                    value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
-                    className={cx({
-                      "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+                    value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                    textClassName={cx({
+                      "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
                     })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
-                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
-                    className={cx({
-                      "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+                    value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                    textClassName={cx({
+                      "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                     })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    className={cx({
-                      "text-green": p.position.pendingClaimableFundingFeesUsd.gt(0),
+                    textClassName={cx({
+                      "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                     })}
                   />
                   <br />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
-                    value={formatUsd(borrowingFeeRateUsd.mul(-1))}
-                    className={cx({
-                      "text-red": borrowingFeeRateUsd.gt(0),
+                    value={formatUsd(-borrowingFeeRateUsd)}
+                    textClassName={cx({
+                      "text-red-500": borrowingFeeRateUsd > 0,
                     })}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                    textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
@@ -269,13 +269,13 @@ export function PositionItem(p: Props) {
     let liqPriceWarning: string | undefined;
     const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
-    if (!p.position.liquidationPrice) {
-      if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
+    if (p.position.liquidationPrice === undefined) {
+      if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
       } else if (
         p.position.isLong &&
         p.position.collateralToken.isStable &&
-        p.position.collateralUsd.gte(p.position.sizeInUsd)
+        p.position.collateralUsd >= p.position.sizeInUsd
       ) {
         liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will cover any negative PnL.`;
       }
@@ -363,7 +363,7 @@ export function PositionItem(p: Props) {
                   errors.map((error) => (
                     <span
                       key={error.key}
-                      className={cx("mb-xs", "position-order-error", {
+                      className={cx("mb-5", "position-order-error", {
                         "level-warning": level === "warning",
                         "level-error": level === "error",
                       })}
@@ -412,7 +412,7 @@ export function PositionItem(p: Props) {
             "Exchange-position-list-orders",
             "plain",
             "clickable",
-            "text-gray",
+            "text-gray-300",
           ])}
           renderContent={() => (
             <div className="order__list">
@@ -480,9 +480,9 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Market`}
                     value={
-                      <div className="items-center">
+                      <div className="flex items-center">
                         <span>{indexName && indexName}</span>
-                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                        <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                       </div>
                     }
                     showDollar={false}
@@ -529,13 +529,13 @@ export function PositionItem(p: Props) {
           ) : (
             <>
               {renderNetValue()}
-              {displayedPnl && (
+              {displayedPnl !== undefined && (
                 <div
                   onClick={p.openSettings}
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
-                    positive: displayedPnl.gt(0),
-                    negative: displayedPnl.lt(0),
-                    muted: displayedPnl.eq(0),
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                    positive: displayedPnl > 0,
+                    negative: displayedPnl < 0,
+                    muted: displayedPnl == 0n,
                   })}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
@@ -576,7 +576,7 @@ export function PositionItem(p: Props) {
             <button
               className="Exchange-list-action"
               onClick={p.onClosePositionClick}
-              disabled={p.position.sizeInUsd.eq(0)}
+              disabled={p.position.sizeInUsd == 0n}
             >
               <Trans>Close</Trans>
             </button>
@@ -644,7 +644,7 @@ export function PositionItem(p: Props) {
                 <Trans>Market</Trans>
               </div>
               <div onClick={() => p.onSelectPositionClick?.()}>
-                <div className="items-top">
+                <div className="flex items-start">
                   <span>{indexName && indexName}</span>
                   <span className="subtext">{poolName && `[${poolName}]`}</span>
                 </div>
@@ -662,10 +662,10 @@ export function PositionItem(p: Props) {
               </div>
               <div>
                 <span
-                  className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
-                    positive: displayedPnl?.gt(0),
-                    negative: displayedPnl?.lt(0),
-                    muted: displayedPnl?.eq(0),
+                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                    positive: displayedPnl > 0,
+                    negative: displayedPnl < 0,
+                    muted: displayedPnl == 0n,
                   })}
                   onClick={p.openSettings}
                 >
@@ -730,15 +730,15 @@ export function PositionItem(p: Props) {
               <div className="App-card-divider" />
               <div className="Position-item-action">
                 <div className="Position-item-buttons">
-                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
                     <Trans>Close</Trans>
                   </Button>
-                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
                     <Trans>Edit Collateral</Trans>
                   </Button>
                   <Button
                     variant="secondary"
-                    disabled={p.position.sizeInUsd.eq(0)}
+                    disabled={p.position.sizeInUsd == 0n}
                     onClick={() => {
                       // TODO: remove after adding trigger functionality to Modal
                       window.scrollTo({ top: isMobile ? 500 : 0 });

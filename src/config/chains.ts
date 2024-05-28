@@ -1,9 +1,9 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
-const { parseEther } = ethers.utils;
+const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
@@ -25,7 +25,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI, ARBITRUM_GOERLI);
+  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -44,12 +44,12 @@ export const CHAIN_NAMES_MAP = {
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
-  [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000", // 3 gwei
+  [ARBITRUM]: 0n,
+  [AVALANCHE]: 3000000000n, // 3 gwei
 };
 
 export const MAX_GAS_PRICE_MAP = {
-  [AVALANCHE]: "200000000000", // 200 gwei
+  [AVALANCHE]: 200000000000n, // 200 gwei
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -64,21 +64,10 @@ export const EXCESSIVE_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 10, // 10 USD
 };
 
-export const EXECUTION_FEE_MULTIPLIER_MAP = {
-  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
-  // for executing positions this is around 65,000 gas
-  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
-  // case yet
-  [ARBITRUM]: 65000,
-  // multiplier for Avalanche is just the average gas usage
-  [AVALANCHE]: 700000,
-  [AVALANCHE_FUJI]: 700000,
-};
-
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
-  [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
-  [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
-  [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
+  [ARBITRUM]: 10n ** 29n * 5n,
+  [AVALANCHE]: 10n ** 29n * 35n,
+  [AVALANCHE_FUJI]: 10n ** 29n * 2n,
 } as const;
 
 export const EXECUTION_FEE_CONFIG_V2: {
@@ -365,10 +354,6 @@ export function getHighExecutionFee(chainId) {
 
 export function getExcessiveExecutionFee(chainId) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
-}
-
-export function getExecutionFeeMultiplier(chainId) {
-  return EXECUTION_FEE_MULTIPLIER_MAP[chainId] || 1;
 }
 
 export function isSupportedChain(chainId) {

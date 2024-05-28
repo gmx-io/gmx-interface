@@ -112,7 +112,7 @@ export function OrderStatusNotification({
       const longShortText = isLong ? t`Long` : t`Short`;
       const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
 
-      if (sizeDeltaUsd.eq(0)) {
+      if (sizeDeltaUsd == 0n) {
         const symbol = orderData.shouldUnwrapNativeToken
           ? initialCollateralToken?.baseSymbol
           : initialCollateralToken?.symbol;
@@ -428,9 +428,9 @@ export function OrdersStatusNotificiation({
               </button>
             )}
           </div>
-          <div className="inline-items-center">
+          <div className="inline-flex items-center">
             {createdTxnHashList?.map((txnHash) => (
-              <ExternalLink key={txnHash} className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+              <ExternalLink key={txnHash} className="ml-10" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
                 {t`View`}
               </ExternalLink>
             ))}

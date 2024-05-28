@@ -29,7 +29,7 @@ function SubaccountStatusImpl({
   const isSubaccountActive = useIsSubaccountActive();
   const { remaining: remainingActionsCount } = useSubaccountActionCounts();
 
-  const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
+  const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount == 0n;
   const baseFeePerAction = useSubaccountDefaultExecutionFee();
   const subAccountInsufficientFunds = useSubaccountInsufficientFunds(baseFeePerAction);
   const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(baseFeePerAction);

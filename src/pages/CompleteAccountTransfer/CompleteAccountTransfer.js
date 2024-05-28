@@ -23,7 +23,7 @@ import { usePendingTxns } from "lib/usePendingTxns";
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
-  const isSenderAndReceiverValid = ethers.utils.isAddress(sender) && ethers.utils.isAddress(receiver);
+  const isSenderAndReceiverValid = ethers.isAddress(sender) && ethers.isAddress(receiver);
   const [, setPendingTxns] = usePendingTxns();
   const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);

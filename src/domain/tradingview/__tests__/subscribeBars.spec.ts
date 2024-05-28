@@ -26,7 +26,7 @@ class MockOracleKeeperFetcher implements OracleFetcher {
         maxPrice: "1",
         oracleDecimals: 30,
         tokenSymbol: "ETH",
-        tokenAddress: ethers.constants.AddressZero,
+        tokenAddress: ethers.ZeroAddress,
         updatedAt: 1700000000,
       },
     ]);

@@ -147,7 +147,7 @@ $tabs-threshold: 990px;
   position: absolute;
   left: 0;
   top: 0;
-  background-color: #3a3f79;
+  background-color: var(--color-cold-blue-500);
 }
 
 .LeaderboardRank-1::after,
@@ -203,7 +203,7 @@ $tabs-threshold: 990px;
       flex: 1 1;
       margin-right: 1.8rem;
       margin-bottom: 1rem;
-      background-color: #16182e;
+      background-color: var(--color-slate-800);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -242,7 +242,7 @@ $tabs-threshold: 990px;
     }
 
     &-title {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--color-gray-300);
       margin-bottom: 0.5rem;
       font-size: 1.5rem;
 
@@ -252,7 +252,7 @@ $tabs-threshold: 990px;
     }
 
     &-description {
-      color: white;
+      color: var(--color-white);
       margin-bottom: 1rem;
       white-space: nowrap;
       font-size: 2rem;
@@ -345,7 +345,7 @@ $tabs-threshold: 990px;
 
 .CompetitionCountdown {
   &__time {
-    color: white;
+    color: var(--color-white);
   }
   &_desktop &__time {
     white-space: nowrap;
@@ -373,7 +373,7 @@ $tabs-threshold: 990px;
     right: 0;
     top: 0;
 
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-gray-300);
     white-space: nowrap;
 
     @media screen and (max-width: $tabs-threshold) {
@@ -417,7 +417,7 @@ $tabs-threshold: 990px;
   white-space: nowrap;
 
   &_selected {
-    background: rgba(80, 87, 126, 0.7) !important;
+    background: var(--color-slate-500) !important;
   }
 }
 
@@ -436,7 +436,7 @@ $tabs-threshold: 990px;
   height: 2.2rem;
 
   &_soon {
-    background-color: #2d42fc;
+    background-color: var(--color-blue-600);
   }
 
   &_over {
@@ -445,11 +445,11 @@ $tabs-threshold: 990px;
 
   &_live {
     background-color: #b42941;
-    color: white;
+    color: var(--color-white);
   }
 
   &-circle {
-    background-color: white;
+    background-color: var(--color-white);
     border-radius: 9999rem;
     width: 1.1rem;
     height: 1.1rem;
@@ -461,7 +461,7 @@ $tabs-threshold: 990px;
 .TableBox {
   width: 100%;
   overflow: visible;
-  background-color: #16182e;
+  background-color: var(--color-slate-800);
   padding-bottom: 10px;
 
   .text-right {
@@ -479,17 +479,17 @@ $tabs-threshold: 990px;
 }
 
 .TableBox__head {
-  background-color: #16182e;
+  background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0.4rem 0.4rem 0 0;
-  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  border-bottom: 1px solid var(--color-gray-900);
 }
 
 .TableBox__footer {
-  background-color: #16182e;
+  background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
   border-radius: 0 0 0.4rem 0.4rem;
-  border-top: 1px solid rgb(255 255 255 / 8%);
+  border-top: 1px solid var(--color-gray-900);
   height: 5.8rem;
 
   & .pagination {

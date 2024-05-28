@@ -50,8 +50,8 @@ export default function Actions() {
   const shouldShowPnl = false;
 
   let checkSummedAccount = "";
-  if (ethers.utils.isAddress(account)) {
-    checkSummedAccount = ethers.utils.getAddress(account);
+  if (ethers.isAddress(account)) {
+    checkSummedAccount = ethers.getAddress(account);
   }
   const pnlUrl = `${getServerBaseUrl(chainId)}/pnl?account=${checkSummedAccount}`;
   const { data: pnlData } = useSWR(pnlUrl, {
@@ -113,7 +113,7 @@ export default function Actions() {
                       </ExternalLink>{" "}
                       or{" "}
                       <span
-                        className="underline cursor-pointer"
+                        className="cursor-pointer underline"
                         onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
                       >
                         switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
@@ -213,7 +213,7 @@ export default function Actions() {
                         </ExternalLink>{" "}
                         or{" "}
                         <span
-                          className="underline cursor-pointer"
+                          className="cursor-pointer underline"
                           onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
                         >
                           switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}

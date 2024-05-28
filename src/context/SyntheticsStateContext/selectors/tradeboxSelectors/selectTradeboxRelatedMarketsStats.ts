@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { fromPairs, keyBy, values } from "lodash";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -21,8 +20,8 @@ import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets
 
 export type MarketLiquidityAndFeeStat = {
   isEnoughLiquidity: boolean;
-  liquidity: BigNumber;
-  openFees: BigNumber | undefined;
+  liquidity: bigint;
+  openFees: bigint | undefined;
 };
 
 export type RelatedMarketsStats = {
@@ -59,7 +58,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const defaultMarketsEnoughLiquidity = fromPairs(
     availableMarkets.map((market) => {
       const liquidity = getAvailableUsdLiquidityForPosition(market, isLong);
-      return [market.marketTokenAddress, { isEnoughLiquidity: liquidity.gt(0), liquidity, openFees: undefined }];
+      return [market.marketTokenAddress, { isEnoughLiquidity: liquidity > 0, liquidity, openFees: undefined }];
     })
   );
 
@@ -68,7 +67,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
     relatedMarketStats: relatedMarketStats,
   };
 
-  if (increaseSizeUsd?.gt(0)) {
+  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0) {
     for (const relatedMarket of availableMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, relatedMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {
@@ -76,7 +75,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
       }
 
       const positionFeeBeforeDiscount = getFeeItem(
-        marketIncreasePositionAmounts.positionFeeUsd.add(marketIncreasePositionAmounts.feeDiscountUsd).mul(-1),
+        (marketIncreasePositionAmounts.positionFeeUsd + marketIncreasePositionAmounts.feeDiscountUsd) * -1n,
         marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
@@ -94,14 +93,14 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
         sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
       });
 
-      const openFees = positionFeeBeforeDiscount!.bps.add(acceptablePriceDeltaBps);
+      const openFees = positionFeeBeforeDiscount!.bps + acceptablePriceDeltaBps;
 
       const availableUsdLiquidityForPosition =
         defaultMarketsEnoughLiquidity[relatedMarket.marketTokenAddress].liquidity;
       result.relatedMarketsPositionStats[relatedMarket.marketTokenAddress] = {
         openFees,
         liquidity: availableUsdLiquidityForPosition,
-        isEnoughLiquidity: availableUsdLiquidityForPosition.gt(increaseSizeUsd),
+        isEnoughLiquidity: availableUsdLiquidityForPosition > increaseSizeUsd,
       };
     }
   }
