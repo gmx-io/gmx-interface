@@ -16,6 +16,7 @@ import { useTokensDataRequest } from "../tokens";
 import { MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
+import mapValues from "lodash/mapValues";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -30,11 +31,16 @@ type MarketTokensAPRResult = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensAPRData?: MarketTokensAPRData;
   avgMarketsAPR?: bigint;
+
+  marketsTokensAPYData?: MarketTokensAPRData;
+  avgMarketsAPY?: bigint;
 };
 
 type SwrResult = {
   marketsTokensAPRData: MarketTokensAPRData;
+  marketsTokensAPYData: MarketTokensAPRData;
   avgMarketsAPR: bigint;
+  avgMarketsAPY: bigint;
 };
 
 function useMarketAddresses(chainId: number) {
@@ -151,7 +157,9 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       if (!responseOrNull) {
         return {
           marketsTokensAPRData: {},
+          marketsTokensAPYData: {},
           avgMarketsAPR: 0n,
+          avgMarketsAPY: 0n,
         };
       }
 
@@ -194,9 +202,24 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
           return acc + apr;
         }, 0n) / BigInt(marketAddresses.length);
 
+      const marketsTokensAPYData = mapValues(marketsTokensAPRData, (apr) => {
+        const feesUpdatesPerDay = 24n;
+        const dailyRate = apr / 365n;
+        const effectiveDailyRate = (1n + dailyRate / feesUpdatesPerDay) ** feesUpdatesPerDay - 1n;
+        const apy = (1n + effectiveDailyRate) ** 365n - 1n;
+        return apy;
+      });
+
+      const avgMarketsAPY =
+        Object.values(marketsTokensAPYData).reduce((acc, apr) => {
+          return acc + apr;
+        }, 0n) / BigInt(marketAddresses.length);
+
       return {
         marketsTokensAPRData,
         avgMarketsAPR,
+        avgMarketsAPY,
+        marketsTokensAPYData,
       };
     },
   });
@@ -207,6 +230,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     marketsTokensIncentiveAprData,
     marketsTokensAPRData: data?.marketsTokensAPRData,
     avgMarketsAPR: data?.avgMarketsAPR,
+    avgMarketsAPY: data?.avgMarketsAPY,
+    marketsTokensAPYData: data?.marketsTokensAPYData,
   };
 }
 
