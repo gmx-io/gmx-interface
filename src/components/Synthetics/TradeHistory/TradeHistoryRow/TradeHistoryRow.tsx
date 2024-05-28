@@ -209,6 +209,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <TooltipWithPortal
             portalClassName="TradeHistoryRow-price-tooltip-portal"
             handle={msg.price}
+            position="bottom-end"
             renderContent={renderPriceContent}
             maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
           />
