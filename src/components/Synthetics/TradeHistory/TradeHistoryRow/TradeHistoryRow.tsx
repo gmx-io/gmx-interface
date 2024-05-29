@@ -11,8 +11,8 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import { useChainId } from "lib/chains";
 
 import { formatPositionMessage } from "./utils/position";
-import { formatSwapMessage } from "./utils/swap";
 import { TooltipContent, TooltipString } from "./utils/shared";
+import { formatSwapMessage } from "./utils/swap";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -205,7 +205,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <TooltipWithPortal handle={msg.market} renderContent={renderMarketContent} />
         </td>
         <td>{msg.size}</td>
-        <td className="TradeHistoryRow-price">
+        <td>
           <TooltipWithPortal
             portalClassName="TradeHistoryRow-price-tooltip-portal"
             handle={msg.price}
@@ -213,6 +213,24 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderPriceContent}
             maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
           />
+        </td>
+        <td className="TradeHistoryRow-pnl-fees">
+          {!msg.pnl ? (
+            <span className="text-gray-300">-</span>
+          ) : (
+            <>
+              <TooltipWithPortal
+                position="bottom-end"
+                content={
+                  <>
+                    <StatsTooltipRow label={t`PnL (%)`} value={msg.pnlBps} showDollar={false} />
+                  </>
+                }
+              >
+                {msg.pnl}
+              </TooltipWithPortal>
+            </>
+          )}
         </td>
       </tr>
       {showDebugValues && (

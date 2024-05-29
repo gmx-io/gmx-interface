@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import { ethers } from "ethers";
+import { merge } from "lodash";
 import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
@@ -367,11 +368,28 @@ export async function fetchTradeActions({
         ],
       },
       {
-        or: orderEventCombinations?.map((combination) => ({
-          eventName: combination.eventName,
-          orderType: combination.orderType,
-          sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
-        })),
+        or: orderEventCombinations?.map((combination) => {
+          let sizeDeltaUsdCondition = {};
+
+          if (
+            combination.orderType !== undefined &&
+            [OrderType.MarketDecrease, OrderType.MarketIncrease].includes(combination.orderType)
+          ) {
+            if (combination.isDepositOrWithdraw) {
+              sizeDeltaUsdCondition = { sizeDeltaUsd: 0 };
+            } else {
+              sizeDeltaUsdCondition = { sizeDeltaUsd_not: 0 };
+            }
+          }
+
+          return merge(
+            {
+              eventName: combination.eventName,
+              orderType: combination.orderType,
+            },
+            sizeDeltaUsdCondition
+          );
+        }),
       },
       {
         // We do not show create liquidation orders in the trade history, thus we filter it out

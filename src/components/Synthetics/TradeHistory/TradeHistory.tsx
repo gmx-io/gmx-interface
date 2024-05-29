@@ -126,6 +126,7 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-market-column" />
               <col className="TradeHistorySynthetics-size-column" />
               <col className="TradeHistorySynthetics-price-column" />
+              <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
             <thead className="TradeHistorySynthetics-header">
               <tr>
@@ -138,8 +139,11 @@ export function TradeHistory(p: Props) {
                 <th>
                   <Trans>Size</Trans>
                 </th>
-                <th className="TradeHistorySynthetics-price-header">
+                <th>
                   <Trans>Price</Trans>
+                </th>
+                <th className="TradeHistorySynthetics-pnl-fees-header">
+                  <Trans>PnL ($)</Trans>
                 </th>
               </tr>
             </thead>

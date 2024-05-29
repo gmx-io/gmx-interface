@@ -1,6 +1,8 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
+import { MaxInt256 } from "ethers";
 
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
@@ -12,6 +14,7 @@ import {
   BN_ONE,
   applyFactor,
   formatDeltaUsd,
+  formatPercentage,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
@@ -31,7 +34,6 @@ import {
   numberToState,
   tryGetError,
 } from "./shared";
-import { MaxInt256 } from "ethers";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
@@ -325,6 +327,10 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
+    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+    const pnlBps = getPnlBps(tradeAction);
+    const formattedPnlBps = formatPercentage(pnlBps);
+
     result = {
       action: customAction,
       size: customSize,
@@ -341,6 +347,8 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      pnl: formattedPnl,
+      pnlBps: formattedPnlBps,
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -366,6 +374,10 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
+    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+    const pnlBps = getPnlBps(tradeAction);
+    const formattedPnlBps = formatPercentage(pnlBps);
+
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -381,6 +393,8 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      pnl: formattedPnl,
+      pnlBps: formattedPnlBps,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -436,6 +450,10 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
     const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
 
+    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+    const pnlBps = getPnlBps(tradeAction);
+    const formattedPnlBps = formatPercentage(pnlBps);
+
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -452,6 +470,8 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
+      pnl: formattedPnl,
+      pnlBps: formattedPnlBps,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -541,6 +561,9 @@ export const formatPositionMessage = (
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
+    const pnlBps = getPnlBps(tradeAction);
+    const formattedPnlBps = formatPercentage(pnlBps);
+
     result = {
       priceComment: lines(
         t`Mark price for the liquidation.`,
@@ -582,6 +605,8 @@ export const formatPositionMessage = (
         infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
       isActionError: true,
+      pnl: formattedPnl,
+      pnlBps: formattedPnlBps,
     };
     //#endregion Liquidation
   }
@@ -607,4 +632,24 @@ function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
   return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)
     ? tradeAction.indexTokenPriceMax
     : tradeAction.indexTokenPriceMin;
+}
+
+function getPnlBps(tradeAction: PositionTradeAction): bigint | undefined {
+  let pnlBps: bigint | undefined = undefined;
+
+  if (
+    tradeAction.collateralTokenPriceMin !== undefined &&
+    tradeAction.initialCollateralToken !== undefined &&
+    tradeAction.pnlUsd !== undefined
+  ) {
+    let capital = convertToUsd(
+      tradeAction.initialCollateralDeltaAmount,
+      tradeAction.initialCollateralToken.decimals,
+      tradeAction.collateralTokenPriceMin
+    )!;
+    capital = capital + tradeAction.pnlUsd;
+    pnlBps = (tradeAction.pnlUsd * BASIS_POINTS_DIVISOR_BIGINT) / capital;
+  }
+
+  return pnlBps;
 }
