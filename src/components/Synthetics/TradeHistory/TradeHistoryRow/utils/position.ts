@@ -2,7 +2,6 @@ import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import { MaxInt256 } from "ethers";
 
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
@@ -14,7 +13,6 @@ import {
   BN_ONE,
   applyFactor,
   formatDeltaUsd,
-  formatPercentage,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
@@ -327,7 +325,7 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
-    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+    const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
 
     result = {
       action: customAction,
