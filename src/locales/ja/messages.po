@@ -1510,8 +1510,8 @@ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr ""
+#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -5668,6 +5668,10 @@ msgstr ""
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max In"
 msgstr ""
@@ -6309,10 +6313,6 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "増加"
-
-#: src/components/Common/SEO.js
-msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APR: {0}"
@@ -6971,6 +6971,10 @@ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
+msgstr ""
+
+#: src/pages/Home/Home.js
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

@@ -1510,8 +1510,8 @@ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+#~ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -5674,6 +5674,10 @@ msgstr "Error submitting order"
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max In"
 msgstr "Max In"
@@ -6315,10 +6319,6 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Increase"
-
-#: src/components/Common/SEO.js
-msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APR: {0}"
@@ -6978,6 +6978,10 @@ msgstr "Close {0} {1}"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
+
+#: src/pages/Home/Home.js
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
+msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
