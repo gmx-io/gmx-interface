@@ -38,8 +38,8 @@ export function getFooterLinks(isHome) {
 
 // TODO socials
 export const SOCIAL_LINKS: SocialLink[] = [
-  { link: "https://twitter.com/t3_money", name: "Twitter", icon: twitterIcon },
+  { link: "https://x.com/t3__money", name: "Twitter", icon: twitterIcon },
   { link: "https://github.com/t3-money", name: "Github", icon: githubIcon },
   { link: "https://t.me/t3_money", name: "Telegram", icon: telegramIcon },
-  { link: "https://discord.com/invite/ymN38YefH9", name: "Discord", icon: discordIcon },
+  { link: "https://discord.gg/8ZUHf9sZ6f", name: "Discord", icon: discordIcon },
 ];
