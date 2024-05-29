@@ -1,7 +1,7 @@
 import { BigNumber, Contract } from "ethers";
 import { helperToast } from "../helperToast";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { extractError, NETWORK_CHANGED, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
+import { ACCESS_DENIED, extractError, NETWORK_CHANGED, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { switchNetwork } from "lib/wallets";
@@ -73,6 +73,7 @@ export async function callContract(
     let autoCloseToast: number | boolean = 5000;
 
     const [message, type, errorData] = extractError(e);
+    console.log("error type:", type);
     switch (type) {
       case NOT_ENOUGH_FUNDS:
         failMsg = (
@@ -98,6 +99,9 @@ export async function callContract(
       case USER_DENIED:
         failMsg = t`Transaction was cancelled.`;
         break;
+      case ACCESS_DENIED:
+        failMsg = t`Access denied.`;
+        break;  
       case SLIPPAGE:
         failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
         break;
