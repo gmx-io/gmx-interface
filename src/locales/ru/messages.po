@@ -2592,6 +2592,7 @@ msgstr "Выполнить Ордер: Поменять {fromAmountDisplay} {0} 
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Купить {swapTokenSymbol} на 1 дюйм"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
@@ -3477,6 +3478,7 @@ msgstr "Цена триггера для ордера."
 msgid "Short"
 msgstr "Шорт"
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx

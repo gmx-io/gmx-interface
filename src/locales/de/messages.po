@@ -2592,6 +2592,7 @@ msgstr "Order ausführen: Tausche {fromAmountDisplay} {0} gegen {toAmountDisplay
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Kaufe {swapTokenSymbol} auf 1inch"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
@@ -3477,6 +3478,7 @@ msgstr "Trigger-Preis für den Auftrag."
 msgid "Short"
 msgstr "Short"
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
