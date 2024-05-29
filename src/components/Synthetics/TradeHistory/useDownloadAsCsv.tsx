@@ -109,6 +109,8 @@ export function useDownloadAsCsv({
         triggerPrice: t`Trigger Price`,
         priceImpact: t`Price Impact`,
         explorerUrl: t`Transaction ID`,
+        pnl: t`PnL ($)`,
+        pnlBps: t`PnL (%)`,
       });
     } catch (error) {
       helperToast.error(
