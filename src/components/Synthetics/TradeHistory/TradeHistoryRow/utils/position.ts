@@ -328,8 +328,6 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
     const formattedPnl = formatUsd(tradeAction.pnlUsd);
-    const pnlBps = getPnlBps(tradeAction);
-    const formattedPnlBps = formatPercentage(pnlBps);
 
     result = {
       action: customAction,
@@ -348,7 +346,6 @@ export const formatPositionMessage = (
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
-      pnlBps: formattedPnlBps,
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -375,8 +372,6 @@ export const formatPositionMessage = (
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
     const formattedPnl = formatUsd(tradeAction.pnlUsd);
-    const pnlBps = getPnlBps(tradeAction);
-    const formattedPnlBps = formatPercentage(pnlBps);
 
     result = {
       priceComment: lines(
@@ -394,7 +389,6 @@ export const formatPositionMessage = (
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
-      pnlBps: formattedPnlBps,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -451,8 +445,6 @@ export const formatPositionMessage = (
     const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
 
     const formattedPnl = formatUsd(tradeAction.pnlUsd);
-    const pnlBps = getPnlBps(tradeAction);
-    const formattedPnlBps = formatPercentage(pnlBps);
 
     result = {
       priceComment: lines(
@@ -471,7 +463,6 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       pnl: formattedPnl,
-      pnlBps: formattedPnlBps,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -561,9 +552,6 @@ export const formatPositionMessage = (
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
-    const pnlBps = getPnlBps(tradeAction);
-    const formattedPnlBps = formatPercentage(pnlBps);
-
     result = {
       priceComment: lines(
         t`Mark price for the liquidation.`,
@@ -606,7 +594,6 @@ export const formatPositionMessage = (
       ),
       isActionError: true,
       pnl: formattedPnl,
-      pnlBps: formattedPnlBps,
     };
     //#endregion Liquidation
   }
@@ -632,24 +619,4 @@ function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
   return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)
     ? tradeAction.indexTokenPriceMax
     : tradeAction.indexTokenPriceMin;
-}
-
-function getPnlBps(tradeAction: PositionTradeAction): bigint | undefined {
-  let pnlBps: bigint | undefined = undefined;
-
-  if (
-    tradeAction.collateralTokenPriceMin !== undefined &&
-    tradeAction.initialCollateralToken !== undefined &&
-    tradeAction.pnlUsd !== undefined
-  ) {
-    let capital = convertToUsd(
-      tradeAction.initialCollateralDeltaAmount,
-      tradeAction.initialCollateralToken.decimals,
-      tradeAction.collateralTokenPriceMin
-    )!;
-    capital = capital + tradeAction.pnlUsd;
-    pnlBps = (tradeAction.pnlUsd * BASIS_POINTS_DIVISOR_BIGINT) / capital;
-  }
-
-  return pnlBps;
 }

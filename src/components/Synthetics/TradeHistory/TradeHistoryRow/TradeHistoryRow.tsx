@@ -215,22 +215,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </td>
         <td className="TradeHistoryRow-pnl-fees">
-          {!msg.pnl ? (
-            <span className="text-gray-300">-</span>
-          ) : (
-            <>
-              <TooltipWithPortal
-                position="bottom-end"
-                content={
-                  <>
-                    <StatsTooltipRow label={t`PnL (%)`} value={msg.pnlBps} showDollar={false} />
-                  </>
-                }
-              >
-                {msg.pnl}
-              </TooltipWithPortal>
-            </>
-          )}
+          {!msg.pnl ? <span className="text-gray-300">-</span> : <>{msg.pnl}</>}
         </td>
       </tr>
       {showDebugValues && (
