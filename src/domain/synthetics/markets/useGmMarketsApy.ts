@@ -4,7 +4,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
@@ -27,20 +27,16 @@ type RawPoolValue = {
   poolValue: string;
 };
 
-type MarketTokensAPRResult = {
+type GmTokensAPRResult = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
-  marketsTokensAPRData?: MarketTokensAPRData;
-  avgMarketsAPR?: bigint;
 
-  marketsTokensAPYData?: MarketTokensAPRData;
-  avgMarketsAPY?: bigint;
+  marketsTokensApyData?: MarketTokensAPRData;
+  avgMarketsApy?: bigint;
 };
 
 type SwrResult = {
-  marketsTokensAPRData: MarketTokensAPRData;
-  marketsTokensAPYData: MarketTokensAPRData;
-  avgMarketsAPR: bigint;
-  avgMarketsAPY: bigint;
+  marketsTokensApyData: MarketTokensAPRData;
+  avgMarketsApy: bigint;
 };
 
 function useMarketAddresses(chainId: number) {
@@ -98,8 +94,10 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
   }, [chainId, marketAddresses, marketsInfoData, rawIncentivesStats, tokensData]);
 }
 
-export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
+export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const x = 1n + 1n;
+  const z = !x;
   const marketAddresses = useMarketAddresses(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
@@ -156,10 +154,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       if (!responseOrNull) {
         return {
-          marketsTokensAPRData: {},
-          marketsTokensAPYData: {},
-          avgMarketsAPR: 0n,
-          avgMarketsAPY: 0n,
+          marketsTokensApyData: {},
+          avgMarketsApy: 0n,
         };
       }
 
@@ -197,29 +193,16 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const avgMarketsAPR =
-        Object.values(marketsTokensAPRData).reduce((acc, apr) => {
-          return acc + apr;
-        }, 0n) / BigInt(marketAddresses.length);
+      const marketsTokensApyData = mapValues(marketsTokensAPRData, calculateAPY);
 
-      const marketsTokensAPYData = mapValues(marketsTokensAPRData, (apr) => {
-        const feesUpdatesPerDay = 24n;
-        const dailyRate = apr / 365n;
-        const effectiveDailyRate = (1n + dailyRate / feesUpdatesPerDay) ** feesUpdatesPerDay - 1n;
-        const apy = (1n + effectiveDailyRate) ** 365n - 1n;
-        return apy;
-      });
-
-      const avgMarketsAPY =
-        Object.values(marketsTokensAPYData).reduce((acc, apr) => {
+      const avgMarketsApy =
+        Object.values(marketsTokensApyData).reduce((acc, apr) => {
           return acc + apr;
         }, 0n) / BigInt(marketAddresses.length);
 
       return {
-        marketsTokensAPRData,
-        avgMarketsAPR,
-        avgMarketsAPY,
-        marketsTokensAPYData,
+        avgMarketsApy,
+        marketsTokensApyData,
       };
     },
   });
@@ -228,10 +211,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
   return {
     marketsTokensIncentiveAprData,
-    marketsTokensAPRData: data?.marketsTokensAPRData,
-    avgMarketsAPR: data?.avgMarketsAPR,
-    avgMarketsAPY: data?.avgMarketsAPY,
-    marketsTokensAPYData: data?.marketsTokensAPYData,
+    avgMarketsApy: data?.avgMarketsApy,
+    marketsTokensApyData: data?.marketsTokensApyData,
   };
 }
 
@@ -247,4 +228,10 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
   const borrowingFeeUsdPerPoolValuePerYear = bigMath.mulDiv(borrowingFeeUsdForPoolPerYear, PRECISION, poolValue);
 
   return borrowingFeeUsdPerPoolValuePerYear;
+}
+
+function calculateAPY(apr: bigint) {
+  const aprNumber = bigintToNumber(apr, 30);
+  const apyNumber = Math.exp(aprNumber) - 1;
+  return numberToBigint(apyNumber, 30);
 }

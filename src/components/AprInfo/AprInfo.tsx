@@ -7,27 +7,27 @@ import { formatAmount } from "lib/numbers";
 import { useCallback } from "react";
 
 export function AprInfo({
-  apr,
+  apy,
   incentiveApr,
   isIncentiveActive,
   showTooltip = true,
 }: {
-  apr: bigint | undefined;
+  apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   isIncentiveActive?: boolean;
   showTooltip?: boolean;
 }) {
-  const totalApr = (apr ?? 0n) + (incentiveApr ?? 0n);
-  const aprNode = <>{apr !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+  const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
+  const aprNode = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
 
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
-      return <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 28, 2)}%`} />;
+      return <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />;
     }
 
     return (
       <>
-        <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 28, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
         <Trans>
@@ -39,7 +39,7 @@ export function AprInfo({
         </Trans>
       </>
     );
-  }, [apr, incentiveApr, isIncentiveActive]);
+  }, [apy, incentiveApr, isIncentiveActive]);
 
   return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />

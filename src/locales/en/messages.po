@@ -173,8 +173,8 @@ msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
-msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
+#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
+#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -863,6 +863,10 @@ msgstr "Overview"
 msgid "Allow all my tokens to be transferred to a new account"
 msgstr "Allow all my tokens to be transferred to a new account"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Max. APY: {0}"
+msgstr "Avalanche Max. APY: {0}"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -883,6 +887,11 @@ msgstr "Collateral"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+
+#: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Base APY"
+msgstr "Base APY"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1551,6 +1560,10 @@ msgstr "Total Fees"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Bonus Rebate"
 msgstr "Max Bonus Rebate"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Max. APY:"
+msgstr "Arbitrum Max. APY:"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vault Capacity for your Account:"
@@ -3149,8 +3162,8 @@ msgid "BUYABLE"
 msgstr "BUYABLE"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum Max. APR:"
-msgstr "Arbitrum Max. APR:"
+#~ msgid "Arbitrum Max. APR:"
+#~ msgstr "Arbitrum Max. APR:"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Order"
@@ -3818,6 +3831,10 @@ msgstr "Shorts Net Rate / 1h"
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
+msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
@@ -5698,8 +5715,8 @@ msgstr "Max {0} Capacity"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
-msgid "Base APR"
-msgstr "Base APR"
+#~ msgid "Base APR"
+#~ msgstr "Base APR"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -6321,8 +6338,8 @@ msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wit
 msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche Max. APR: {0}"
-msgstr "Avalanche Max. APR: {0}"
+#~ msgid "Avalanche Max. APR: {0}"
+#~ msgstr "Avalanche Max. APR: {0}"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx

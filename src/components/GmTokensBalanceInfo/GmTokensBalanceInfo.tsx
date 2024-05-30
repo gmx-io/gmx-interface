@@ -126,7 +126,7 @@ export const GmTokensTotalBalanceInfo = ({
                 />
                 <br />
                 <div className="text-white">
-                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR.</Trans>
+                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APY.</Trans>
                 </div>
                 {shouldShowIncentivesNote && (
                   <>

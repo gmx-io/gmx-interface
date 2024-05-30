@@ -39,7 +39,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   marketTokensData?: TokensData;
-  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
@@ -52,7 +52,7 @@ export function GmList({
   marketTokensData,
   marketsInfoData,
   tokensData,
-  marketsTokensAPRData,
+  marketsTokensApyData,
   marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
@@ -120,14 +120,14 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={t`APR`}
+                    handle={t`APY`}
                     className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>
                           <p>
-                            APR is based on the fees collected for the past {daysConsidered} days while extrapolating
+                            APY is based on the fees collected for the past {daysConsidered} days while extrapolating
                             the current borrowing fee.{" "}
                             <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
                               Read more about GM token pricing
@@ -159,7 +159,7 @@ export function GmList({
                   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
                   const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                  const apr = getByKey(marketsTokensAPRData, token?.address);
+                  const apy = getByKey(marketsTokensApyData, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
                   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -239,7 +239,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={false} />
+                        <AprInfo apy={apy} incentiveApr={incentiveApr} isIncentiveActive={false} />
                       </td>
 
                       <td className="GmList-actions">
@@ -279,7 +279,7 @@ export function GmList({
 
           <div className="token-grid">
             {sortedMarketsByIndexToken.map((token, index) => {
-              const apr = marketsTokensAPRData?.[token.address];
+              const apr = marketsTokensApyData?.[token.address];
               const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -394,7 +394,7 @@ export function GmList({
                         <Trans>APR</Trans>
                       </div>
                       <div>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        <AprInfo apy={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </div>
                     </div>
 

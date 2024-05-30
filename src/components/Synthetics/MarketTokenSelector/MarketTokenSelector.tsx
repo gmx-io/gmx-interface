@@ -200,7 +200,7 @@ export default function MarketTokenSelector(props: Props) {
                                 })}
                               </td>
                               <td>
-                                <AprInfo apr={apr} incentiveApr={incentiveApr} showTooltip={false} />
+                                <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
                               </td>
                             </Popover.Button>
                           );

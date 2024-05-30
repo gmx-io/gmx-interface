@@ -60,7 +60,6 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { bigMath } from "lib/bigmath";
@@ -86,6 +85,7 @@ import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { Address } from "viem";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
 const { ZeroAddress } = ethers;
 
@@ -1376,7 +1376,7 @@ export default function StakeV2() {
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -2613,7 +2613,7 @@ export default function StakeV2() {
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
           <GmList
-            marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketTokensData={marketTokensData}
             marketsInfoData={marketsInfoData}
