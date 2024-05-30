@@ -308,7 +308,7 @@ function useSubaccountCustomSigners() {
     if (publicRpc) rpcUrls.push(publicRpc);
     if (fallbackRpc) rpcUrls.push(fallbackRpc);
 
-    if (!rpcUrls.length) return undefined;
+    if (!rpcUrls.length || !privateKey) return undefined;
 
     return rpcUrls.map((rpcUrl) => {
       const provider = new ethers.JsonRpcProvider(rpcUrl, chainId, {
