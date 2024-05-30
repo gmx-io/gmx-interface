@@ -106,5 +106,10 @@ export const appEventsData: EventData[] = [
     isActive: true,
     endDate: "14 Jun 2024, 0:00",
     bodyText: "Trade GMX/USD, or provide liquidity using GMX or USDC.",
+    link: {
+      text: "Read more",
+      href: "https://snapshot.org/#/gmx.eth/proposal/0x5fc32bea68c7e2ee237c86bae73859f742304c130df9a44495b816cc62b4f30f",
+      newTab: true,
+    },
   },
 ];
