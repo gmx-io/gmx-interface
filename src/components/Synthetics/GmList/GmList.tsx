@@ -123,26 +123,7 @@ export function GmList({
                     handle={t`APY`}
                     className="normal-case"
                     position="bottom-end"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>
-                          <p>
-                            APY is based on the fees collected for the past {daysConsidered} days while extrapolating
-                            the current borrowing fee.{" "}
-                            <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
-                              Read more about GM token pricing
-                            </ExternalLink>
-                            .
-                          </p>
-                          <p>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</p>
-                          <p>
-                            Check GM pools' performance against other LP Positions in the{" "}
-                            <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>
-                            .
-                          </p>
-                        </Trans>
-                      </p>
-                    )}
+                    renderContent={ApyTooltipContent}
                   />
                 </th>
 
@@ -391,7 +372,12 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>APY</Trans>
+                        <Tooltip
+                          handle={t`APY`}
+                          className="normal-case"
+                          position="bottom-start"
+                          renderContent={ApyTooltipContent}
+                        />
                       </div>
                       <div>
                         <AprInfo apy={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
@@ -487,5 +473,30 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
         </>
       )}
     />
+  );
+}
+
+function ApyTooltipContent() {
+  const daysConsidered = useDaysConsideredInMarketsApr();
+  return (
+    <p className="text-white">
+      <Trans>
+        <p>
+          APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current
+          borrowing fee.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+            Read more about GM token pricing
+          </ExternalLink>
+          .
+        </p>
+        <br />
+        <p>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</p>
+        <br />
+        <p>
+          Check GM pools' performance against other LP Positions in the{" "}
+          <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>.
+        </p>
+      </Trans>
+    </p>
   );
 }
