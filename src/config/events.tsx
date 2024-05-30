@@ -78,7 +78,7 @@ export const appEventsData: EventData[] = [
   {
     id: "delegate-voting-power",
     title: "Delegate your GMX Voting Power",
-    isActive: true,
+    isActive: false,
     endDate: "6 Jun 2024, 23:59",
     bodyText: (
       <>
