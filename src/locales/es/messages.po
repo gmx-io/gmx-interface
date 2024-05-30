@@ -1155,6 +1155,10 @@ msgstr ""
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Discover GMX Alerts"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Price on Avalanche"
@@ -1512,6 +1516,10 @@ msgstr "Incrementar {0} {longOrShortText}, +{1} USD, {2} Precio: {3} USD"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "La dirección del token esGMX (IOU) es {esGmxIouAddress}."
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Alerts"
+msgstr ""
 
 #: src/pages/Home/Home.js
 #~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
@@ -1955,6 +1963,10 @@ msgstr "Actualizar"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "Su transferencia ha sido iniciada."
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Risk Alerts"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
@@ -3458,6 +3470,10 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "Precio de Liq."
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trading Pair Price Alerts"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>mercado seleccionado</4>"
@@ -3545,6 +3561,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -4133,6 +4153,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Announcements"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid execution fee buffer value"
 msgstr ""
@@ -4560,6 +4584,10 @@ msgstr ""
 msgid "Useful Links"
 msgstr "Enlaces Útiles"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Confirmations"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -4589,6 +4617,10 @@ msgstr "Disminución del mercado"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet 365d expected Fees"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Governance Alerts"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4851,6 +4883,10 @@ msgstr ""
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "Alternativamente, puedes seleccionar \"Garantía En\" un token distinto."
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
@@ -4969,6 +5005,10 @@ msgstr ""
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr ""
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Powered by"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed"
 msgstr ""
@@ -5018,6 +5058,10 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Monedero no conectado todavía"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Confirmations"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above highest Limit Price."
@@ -5568,6 +5612,10 @@ msgstr "Activando Apalancamiento..."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Errors"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -6564,6 +6612,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Token inválido índice del token: \"{0}\" Garantía del token: \"{1}\""
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "Alerts"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"

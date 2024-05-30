@@ -93,6 +93,7 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
+import { NotifyModal } from "components/NotifyModal/NotifyModal";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -428,6 +429,7 @@ function FullApp() {
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <SubaccountModal />
+      <NotifyModal />
     </>
   );
 }
