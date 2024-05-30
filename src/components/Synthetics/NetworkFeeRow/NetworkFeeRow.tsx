@@ -102,6 +102,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
         renderContent={() => (
           <>
             <StatsTooltipRow label={t`Max Execution Fee`} showDollar={false} value={executionFeeText} />
+            <div className="h-8" />
             <p>
               <Trans>
                 The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any
