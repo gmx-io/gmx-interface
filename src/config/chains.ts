@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { sample, sampleSize } from "lodash";
+import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
@@ -307,12 +307,6 @@ export function getRpcUrl(chainId: number): string | undefined {
 
 export function getFallbackRpcUrl(chainId: number): string | undefined {
   return sample(FALLBACK_PROVIDERS[chainId]);
-}
-
-export function getFallbackRpcUrlSet(chainId: number, maxNumer = 2): string[] | undefined {
-  const rpcUrls = FALLBACK_PROVIDERS[chainId];
-
-  return rpcUrls.length ? sampleSize(rpcUrls, maxNumer) : undefined;
 }
 
 export function getAlchemyHttpUrl() {

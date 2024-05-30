@@ -5,7 +5,8 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
-  getFallbackRpcUrlSet,
+  getRpcUrl,
+  getFallbackRpcUrl,
 } from "config/chains";
 import { getContract } from "config/contracts";
 import {
@@ -299,9 +300,17 @@ function useSubaccountCustomSigners() {
   const privateKey = useSubaccountPrivateKey();
 
   return useMemo(() => {
-    const fallbackRpc = getFallbackRpcUrlSet(chainId, 2);
+    const publicRpc = getRpcUrl(chainId);
+    const fallbackRpc = getFallbackRpcUrl(chainId);
 
-    return fallbackRpc?.map((rpcUrl) => {
+    const rpcUrls: string[] = [];
+
+    if (publicRpc) rpcUrls.push(publicRpc);
+    if (fallbackRpc) rpcUrls.push(fallbackRpc);
+
+    if (!rpcUrls.length) return undefined;
+
+    return rpcUrls.map((rpcUrl) => {
       const provider = new ethers.JsonRpcProvider(rpcUrl, chainId, {
         staticNetwork: ethers.Network.from(chainId),
       });

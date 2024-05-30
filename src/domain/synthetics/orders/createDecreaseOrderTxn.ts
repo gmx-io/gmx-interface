@@ -116,6 +116,7 @@ export async function createDecreaseOrderTxn(
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    customSigners: subaccount?.customSigners,
     setPendingTxns: callbacks.setPendingTxns,
   });
 
