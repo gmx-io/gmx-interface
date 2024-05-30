@@ -977,7 +977,6 @@ msgid "WEIGHT"
 msgstr "ВЕС"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6512,6 +6511,7 @@ msgstr "Допускаются только буквы, цифры и знаки
 msgid "Referral code submitted!"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "APY"

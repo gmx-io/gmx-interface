@@ -977,7 +977,6 @@ msgid "WEIGHT"
 msgstr "비중"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6512,6 +6511,7 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Referral code submitted!"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "APY"

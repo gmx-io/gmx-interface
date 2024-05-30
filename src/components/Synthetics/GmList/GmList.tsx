@@ -391,7 +391,7 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>APR</Trans>
+                        <Trans>APY</Trans>
                       </div>
                       <div>
                         <AprInfo apy={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
