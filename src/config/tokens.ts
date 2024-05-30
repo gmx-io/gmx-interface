@@ -198,7 +198,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: getContract(ARBITRUM, "GMX"),
       decimals: 18,
       isPlatformToken: true,
-      isPlatformGmToken: true,
+      isPlatformTradingToken: true,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
       explorerUrl: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
@@ -967,7 +967,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
       V1_TOKENS[chainId].push(token);
     }
 
-    if ((!token.isPlatformToken || (token.isPlatformToken && token.isPlatformGmToken)) && !token.isTempHidden) {
+    if ((!token.isPlatformToken || (token.isPlatformToken && token.isPlatformTradingToken)) && !token.isTempHidden) {
       V2_TOKENS[chainId].push(token);
     }
 
@@ -1096,7 +1096,7 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
     return false;
   }
 
-  if (token.isChartDisabled || token.isPlatformToken) return false;
+  if (token.isChartDisabled || (token.isPlatformToken && !token.isPlatformTradingToken)) return false;
 
   return true;
 }
