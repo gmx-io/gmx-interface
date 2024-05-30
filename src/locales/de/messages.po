@@ -1038,7 +1038,6 @@ msgid "Realized Price Impact"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.tsx
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Genehmige {stakingTokenSymbol}"
 
@@ -3925,6 +3924,10 @@ msgstr ""
 msgid "Withdraw failed."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Pending GMX approval"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "Referral Code bearbeiten"
@@ -5205,7 +5208,6 @@ msgid "Pool Amount"
 msgstr "Pool Betrag"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Approve GMX"
 msgstr "GMX genehmigen"
 
@@ -6207,7 +6209,6 @@ msgid "{0} GLP (${1})"
 msgstr "{0} GLP (${1})"
 
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.tsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Genehmigung von {stakingTokenSymbol}..."
 

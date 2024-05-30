@@ -84,8 +84,9 @@ import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { Address } from "viem";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 
 const { ZeroAddress } = ethers;
 
@@ -97,8 +98,6 @@ function StakeModal(props: {
   maxAmount: bigint | undefined;
   value: string;
   setValue: (value: string) => void;
-  active: boolean;
-  account: Address | undefined;
   signer: UncheckedJsonRpcSigner | undefined;
   stakingTokenSymbol: string;
   stakingTokenAddress: string;
@@ -115,8 +114,6 @@ function StakeModal(props: {
     maxAmount,
     value,
     setValue,
-    active,
-    account,
     signer,
     stakingTokenSymbol,
     stakingTokenAddress,
@@ -135,12 +132,11 @@ function StakeModal(props: {
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
   const icons = getIcons(chainId);
-  const { data: tokenAllowance } = useSWR(
-    active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: farmAddress,
+    tokenAddresses: [stakingTokenAddress],
+  });
+  const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 
   let amount = parseValue(value, 18);
   const needApproval =
@@ -188,7 +184,7 @@ function StakeModal(props: {
     if (error) {
       return false;
     }
-    if (isApproving) {
+    if (isApproving || needApproval) {
       return false;
     }
     if (isStaking) {
@@ -205,11 +201,8 @@ function StakeModal(props: {
     if (error) {
       return error;
     }
-    if (isApproving) {
-      return t`Approving ${stakingTokenSymbol}...`;
-    }
-    if (needApproval) {
-      return t`Approve ${stakingTokenSymbol}`;
+    if (isApproving || needApproval) {
+      return t`Pending ${stakingTokenSymbol} approval`;
     }
     if (isStaking) {
       return t`Staking...`;
@@ -257,6 +250,14 @@ function StakeModal(props: {
           </div>
         </BuyInputSection>
 
+        {(needApproval || isApproving) && (
+          <ApproveTokenButton
+            tokenAddress={stakingTokenAddress}
+            spenderAddress={farmAddress}
+            tokenSymbol={stakingTokenSymbol}
+            isApproved={!needApproval}
+          />
+        )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -806,8 +807,6 @@ function CompoundModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
-  active: boolean;
-  account: Address | undefined;
   signer: UncheckedJsonRpcSigner | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
@@ -820,8 +819,6 @@ function CompoundModal(props: {
     isVisible,
     setIsVisible,
     rewardRouterAddress,
-    active,
-    account,
     signer,
     chainId,
     setPendingTxns,
@@ -867,30 +864,28 @@ function CompoundModal(props: {
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance } = useSWR(
-    active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: stakedGmxTrackerAddress,
+    tokenAddresses: [gmxAddress],
+  });
+
+  const tokenAllowance = tokensAllowanceData?.[gmxAddress];
 
   const needApproval =
     shouldStakeGmx &&
-    tokenAllowance !== undefined &&
     totalVesterRewards !== undefined &&
-    totalVesterRewards > tokenAllowance;
+    ((tokenAllowance !== undefined && totalVesterRewards > tokenAllowance) ||
+      (totalVesterRewards > 0n && tokenAllowance === undefined));
 
   const isPrimaryEnabled = () => {
-    return !isCompounding && !isApproving && !isCompounding && !isUndelegatedGovToken;
+    return !isCompounding && !isApproving && !needApproval && !isCompounding && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
-    if (isApproving) {
-      return t`Approving GMX...`;
+    if (needApproval || isApproving) {
+      return t`Pending GMX approval`;
     }
-    if (needApproval) {
-      return t`Approve GMX`;
-    }
+
     if (isCompounding) {
       return t`Compounding...`;
     }
@@ -1043,6 +1038,14 @@ function CompoundModal(props: {
             </Checkbox>
           </div>
         </div>
+        {(needApproval || isApproving) && (
+          <ApproveTokenButton
+            tokenAddress={gmxAddress}
+            spenderAddress={stakedGmxTrackerAddress}
+            tokenSymbol={"GMX"}
+            isApproved={!needApproval}
+          />
+        )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -1843,8 +1846,6 @@ export default function StakeV2() {
         maxAmount={stakeModalMaxAmount}
         value={stakeValue}
         setValue={setStakeValue}
-        active={active}
-        account={account}
         signer={signer}
         stakingTokenSymbol={stakingTokenSymbol}
         stakingTokenAddress={stakingTokenAddress}
@@ -1914,8 +1915,6 @@ export default function StakeV2() {
         setPendingTxns={setPendingTxns}
       />
       <CompoundModal
-        active={active}
-        account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
         processedData={processedData}
