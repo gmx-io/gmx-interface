@@ -100,4 +100,11 @@ export const appEventsData: EventData[] = [
       newTab: true,
     },
   },
+  {
+    id: "gmxusdc-market",
+    title: "GMX/USD market added on Arbitrum",
+    isActive: true,
+    endDate: "14 Jun 2024, 0:00",
+    bodyText: "Trade GMX/USD, or provide liquidity using GMX or USDC.",
+  },
 ];
