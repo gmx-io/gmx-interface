@@ -197,7 +197,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <div className="BuyGMXGLP-description">
               <Trans>Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):</Trans>
             </div>
-            <div className="buttons-group col-1">
+            <div className="buttons-group">
               <Button
                 variant="secondary"
                 textAlign="left"
