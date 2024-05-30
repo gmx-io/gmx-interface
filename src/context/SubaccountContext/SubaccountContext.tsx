@@ -1,6 +1,12 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
+  getFallbackRpcUrlSet,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -288,12 +294,30 @@ function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? 0n;
 }
 
+function useSubaccountCustomSigners() {
+  const { chainId } = useChainId();
+  const privateKey = useSubaccountPrivateKey();
+
+  return useMemo(() => {
+    const fallbackRpc = getFallbackRpcUrlSet(chainId, 2);
+
+    return fallbackRpc?.map((rpcUrl) => {
+      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId, {
+        staticNetwork: ethers.Network.from(chainId),
+      });
+
+      return new ethers.Wallet(privateKey, provider);
+    });
+  }, [chainId, privateKey]);
+}
+
 export function useSubaccount(requiredBalance: bigint | null, requiredActions = 1) {
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
   const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultExecutionFee);
+  const subaccountCustomSigners = useSubaccountCustomSigners();
 
   const { remaining } = useSubaccountActionCounts();
   const { walletClient } = useWallet();
@@ -317,8 +341,18 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       address,
       active,
       signer: wallet,
+      customSigners: subaccountCustomSigners,
     };
-  }, [address, active, privateKey, insufficientFunds, walletClient, remaining, requiredActions]);
+  }, [
+    address,
+    active,
+    privateKey,
+    insufficientFunds,
+    walletClient,
+    remaining,
+    requiredActions,
+    subaccountCustomSigners,
+  ]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefined | null) {

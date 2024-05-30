@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { Contract } from "ethers";
+import { Contract, Wallet } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
@@ -23,6 +23,7 @@ export async function callContract(
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
+    customSigners?: Wallet[];
     setPendingTxns?: (txns: any) => void;
   }
 ) {
@@ -58,7 +59,11 @@ export async function callContract(
 
     await setGasPrice(txnOpts, contract.runner.provider, chainId);
 
-    const res = await contract[method](...params, txnOpts);
+    const signerRaceContracts = opts.customSigners?.map((signer) => contract.connect(signer));
+
+    const res = signerRaceContracts
+      ? await Promise.any([contract, ...signerRaceContracts].map((cnt) => cnt[method](...params, txnOpts)))
+      : await contract[method](...params, txnOpts);
 
     if (!opts.hideSentMsg) {
       showCallContractToast({
