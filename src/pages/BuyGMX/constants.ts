@@ -15,6 +15,7 @@ export const EXTERNAL_LINKS = {
     networkWebsite: "https://arbitrum.io/",
     buyGmx: {
       uniswap: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${ARBITRUM_GMX}`,
+      gmx: `/#/trade/swap/?mode=market&from=usdc&market=gmx`,
     },
   },
   [ARBITRUM_GOERLI]: {
