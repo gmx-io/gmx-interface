@@ -96,8 +96,6 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
 
 export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const x = 1n + 1n;
-  const z = !x;
   const marketAddresses = useMarketAddresses(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 

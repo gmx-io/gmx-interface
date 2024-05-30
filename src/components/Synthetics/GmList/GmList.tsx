@@ -134,7 +134,7 @@ export function GmList({
                             </ExternalLink>
                             .
                           </p>
-                          <p>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</p>
+                          <p>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</p>
                           <p>
                             Check GM pools' performance against other LP Positions in the{" "}
                             <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>
