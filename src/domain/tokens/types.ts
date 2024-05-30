@@ -25,6 +25,7 @@ export type Token = {
   isChartDisabled?: boolean;
   isV1Available?: boolean;
   isPlatformToken?: boolean;
+  isPlatformTradingToken?: boolean;
 };
 
 export type TokenInfo = Token & {
