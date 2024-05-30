@@ -19,10 +19,11 @@ function FaucetDropdown() {
   const active = dynamicContext.active;
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
- // const { active, account, library } = useWeb3React();
+  // const { active, account, library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
   const [amount] = useState(1000);
+  const [wethAmount] = useState("0.01");
   const [wbtcamount] = useState("0.01");
   const [tokens, setTokens] = useState();
 
@@ -50,11 +51,11 @@ function FaucetDropdown() {
         });
       }
 
-      if (tokenSymbol === "ETH") {
+      if (tokenSymbol === "ETH" || tokenSymbol === "WETH") {
         const contract = new ethers.Contract(token.address, WETH.abi, signer);
         contract
           .deposit({
-            value: ethers.utils.parseEther(wbtcamount),
+            value: ethers.utils.parseEther(tokenSymbol === "ETH" ? wbtcamount : wethAmount),
           })
           .then(async (res) => {
             const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
@@ -149,8 +150,8 @@ function FaucetDropdown() {
       <div>
         <>
           <Menu.Items as="div" className="menu">
-            {tokens?.map((token,index) => (
-              <div key={index}> 
+            {tokens?.map((token, index) => (
+              <div key={index}>
                 {!token.isNative && (
                   <Menu.Item key={index}>
                     <div
