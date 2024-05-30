@@ -11,7 +11,7 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import NotifyButton from "../NotifyButton/NotifyButton";
+import { NotifyButton } from "../NotifyButton/NotifyButton";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";

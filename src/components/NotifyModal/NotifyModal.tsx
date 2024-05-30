@@ -12,7 +12,7 @@ import { ReactComponent as NotifiLogoIcon } from "img/notifi-logo.svg";
 import { ReactComponent as ArrowBulletIcon } from "img/arrow-bullet.svg";
 import { ReactComponent as ExternalLinkIcon } from "img/external-link.svg";
 
-function NotifyModal() {
+export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();
 
   return (
@@ -72,5 +72,3 @@ const NotifyBulletList = memo(function NotifyBulletList() {
     </div>
   );
 });
-
-export default NotifyModal;
