@@ -653,8 +653,8 @@ msgid "Code already taken"
 msgstr "Code already taken"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
+#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
+#~ msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -1419,6 +1419,10 @@ msgstr "Close Fee"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
+msgstr "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
