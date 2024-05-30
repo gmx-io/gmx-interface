@@ -207,7 +207,13 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               >
                 Uniswap
               </Button>
-              <Button variant="secondary" textAlign="left" imgInfo={GMX_IMG_INFO} to={externalLinks.buyGmx.gmx}>
+              <Button
+                variant="secondary"
+                textAlign="left"
+                imgInfo={GMX_IMG_INFO}
+                to={externalLinks.buyGmx.gmx}
+                showExternalLinkArrow={false}
+              >
                 GMX
               </Button>
             </div>
