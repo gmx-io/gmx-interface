@@ -978,8 +978,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1862,6 +1860,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -5506,8 +5508,8 @@ msgid "Looks like you don't have a referral code to share. <0/> Create one now a
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-msgstr ""
+#~ msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
+#~ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
@@ -6504,6 +6506,11 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "APY"
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
