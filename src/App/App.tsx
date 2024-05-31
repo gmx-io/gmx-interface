@@ -1,7 +1,7 @@
 import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
@@ -68,12 +68,13 @@ import {
   REFERRAL_CODE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
-import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
 import { Provider } from "ethers";
@@ -93,7 +94,6 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -119,12 +119,7 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-  const whiteListedPages = useMemo(() => ["/v1"], []);
-  const hasV1LostFocus = useHasLostFocus({
-    timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages,
-    debugId: "V1 Events",
-  });
+  const { hasV1LostFocus } = useHasLostFocus();
 
   useEventToast();
   const query = useRouteQuery();

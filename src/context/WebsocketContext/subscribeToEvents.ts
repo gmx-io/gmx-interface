@@ -69,17 +69,14 @@ export function subscribeToV2Events(
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, provider);
 
   function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-    // console.log("handleEventLog", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-    // console.log("handleEventLog1", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-    // console.log("handleEventLog2", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
@@ -208,10 +205,12 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
   ];
 }
 
-export function getTotalSubscribersEventsCount(chainId: number, provider: Provider) {
-  return (
-    createV2EventFilters(chainId, ZeroAddress, provider).length +
-    Object.keys(vaultEvents).length +
-    Object.keys(positionRouterEvents).length
-  );
+export function getTotalSubscribersEventsCount(
+  chainId: number,
+  provider: Provider,
+  { v1, v2 }: { v1: boolean; v2: boolean }
+) {
+  const v1Count = v1 ? Object.keys(vaultEvents).length + Object.keys(positionRouterEvents).length : 0;
+  const v2Count = v2 ? createV2EventFilters(chainId, ZeroAddress, provider).length : 0;
+  return v1Count + v2Count;
 }

@@ -1,6 +1,5 @@
-import { JsonRpcProvider, WebSocketProvider } from "ethers";
 import { isDevelopment } from "config/env";
-import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+import { JsonRpcProvider, WebSocketProvider } from "ethers";
 import { useChainId } from "lib/chains";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
@@ -25,13 +24,17 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
   const { active } = useWallet();
   const { chainId } = useChainId();
   const [wsProvider, setWsProvider] = useState<WebSocketProvider | JsonRpcProvider>();
-  const hasLostFocus = useHasLostFocus({ timeout: WS_LOST_FOCUS_TIMEOUT, checkIsTabFocused: true, debugId: "Tab" });
+  const { hasPageLostFocus, hasV1LostFocus, hasV2LostFocus } = useHasLostFocus();
   const initializedTime = useRef<number>();
   const healthCheckTimerId = useRef<any>();
+  const lostFocusRef = useRef({ hasV1LostFocus, hasV2LostFocus });
+
+  lostFocusRef.current.hasV1LostFocus = hasV1LostFocus;
+  lostFocusRef.current.hasV2LostFocus = hasV2LostFocus;
 
   useEffect(
     function updateProviderEffect() {
-      if (!active || hasLostFocus) {
+      if (!active || hasPageLostFocus) {
         return;
       }
 
@@ -56,12 +59,12 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         console.log(`ws provider for chain ${chainId} disconnected at ${Date.now()}`);
       };
     },
-    [active, chainId, hasLostFocus]
+    [active, chainId, hasPageLostFocus]
   );
 
   useEffect(
     function healthCheckEff() {
-      if (!active || hasLostFocus || !isWebsocketProvider(wsProvider)) {
+      if (!active || hasPageLostFocus || !isWebsocketProvider(wsProvider)) {
         return;
       }
 
@@ -74,13 +77,17 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         const isReconnectingIntervalPassed =
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
         const listenerCount = await wsProvider.listenerCount();
+        const requiredListenerCount = getTotalSubscribersEventsCount(chainId, wsProvider, {
+          v1: !lostFocusRef.current.hasV1LostFocus,
+          v2: !lostFocusRef.current.hasV2LostFocus,
+        });
 
         if (isDevelopment() && isReconnectingIntervalPassed) {
           // eslint-disable-next-line no-console
-          console.log(`ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${listenerCount}`);
+          console.log(
+            `ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${listenerCount} / ${requiredListenerCount}`
+          );
         }
-
-        const requiredListenerCount = getTotalSubscribersEventsCount(chainId, wsProvider);
 
         if (
           (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) ||
@@ -106,7 +113,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         clearTimeout(healthCheckTimerId.current);
       };
     },
-    [active, chainId, hasLostFocus, wsProvider]
+    [active, chainId, hasPageLostFocus, wsProvider]
   );
 
   const state: WebsocketContextType = useMemo(() => {

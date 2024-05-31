@@ -4,7 +4,6 @@ import { GmStatusNotification } from "components/Synthetics/StatusNotification/G
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
-import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
@@ -57,12 +56,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
 
-  const whiteListedPages = useMemo(() => ["/trade", "/v2", "/pools"], []);
-  const hasLostFocus = useHasLostFocus({
-    timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages,
-    debugId: "V2 Events",
-  });
+  const { hasV2LostFocus } = useHasLostFocus();
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
@@ -443,7 +437,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasLostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !wsProvider || !currentAccount) {
         return;
       }
 
@@ -453,7 +447,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribe();
       };
     },
-    [chainId, currentAccount, hasLostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
