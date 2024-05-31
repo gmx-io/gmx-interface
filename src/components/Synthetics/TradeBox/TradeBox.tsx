@@ -498,7 +498,7 @@ export function TradeBox(p: Props) {
 
         case "liqPrice > markPrice":
           tooltipContent = (
-            <Trans>The position would be immediately liquidated upon open. Try reducing the size.</Trans>
+            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
           );
           break;
 

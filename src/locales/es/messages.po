@@ -923,8 +923,8 @@ msgid "Click on the Position to select its market, then use the trade box to inc
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "The position would be immediately liquidated upon open. Try reducing the size."
-msgstr ""
+#~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -3163,6 +3163,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
