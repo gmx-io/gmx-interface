@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { formatUsd } from "lib/numbers";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
 
@@ -44,6 +46,16 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
+    // console.log(
+    //   "checking",
+    //   marketsInfoData[e.marketAddress].name,
+    //   "from",
+    //   e.from,
+    //   "to",
+    //   e.to,
+    //   "usdIn",
+    //   formatUsd(usdIn)
+    // );
     const swapStats = getSwapStats({
       marketInfo,
       usdIn,
@@ -54,33 +66,49 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
     const usdOut = swapStats?.usdOut;
+    const priceImpactDeltaUsd = swapStats?.priceImpactDeltaUsd;
 
     if (usdOut === undefined || isOutLiquidity) {
       return {
         usdOut: 0n,
+        priceImpactDeltaUsd,
       };
     }
 
     return {
       usdOut,
+      priceImpactDeltaUsd,
     };
   };
 };
 
-export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: SwapEstimator) {
+export function getBestSwapPath(
+  routes: SwapRoute[],
+  usdIn: bigint,
+  estimator: SwapEstimator,
+  marketsInfoData?: MarketsInfoData
+) {
   if (routes.length === 0) {
     return undefined;
   }
 
   let bestPath = routes[0].path;
   let bestUsdOut = 0n;
+  console.log("-------------");
+  console.log("usdIn", formatUsd(usdIn));
+  console.log("-------------");
 
   for (const route of routes) {
     try {
+      console.log("calculating usdOut from path", route.path.map((p) => marketsInfoData?.[p]?.name).join(" -> "));
       const pathUsdOut = route.edged.reduce((prevUsdOut, edge) => {
-        const { usdOut } = estimator(edge, prevUsdOut);
+        const { usdOut, priceImpactDeltaUsd } = estimator(edge, prevUsdOut);
+        console.log({ priceImpactDeltaUsd: formatUsd(priceImpactDeltaUsd), usdOut: formatUsd(usdOut) });
         return usdOut;
       }, usdIn);
+
+      console.log("pathUsdOut", formatUsd(pathUsdOut));
+      console.log("bestUsdOut", formatUsd(bestUsdOut));
 
       if (pathUsdOut > bestUsdOut) {
         bestPath = route.path;

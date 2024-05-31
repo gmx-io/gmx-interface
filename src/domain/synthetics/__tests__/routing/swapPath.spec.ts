@@ -169,6 +169,7 @@ describe("swapPath", () => {
           const fees: bigint = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] ?? BASE_FEE;
           return {
             usdOut: usdIn + fees,
+            priceImpactDeltaUsd: 0n,
           };
         };
         const allRoutes = findAllPaths(marketsInfoData, graph, from, to);

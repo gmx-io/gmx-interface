@@ -46,19 +46,8 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         : undefined;
       const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
 
-      const { graph, estimator } = (() => {
-        if (!marketsInfoData) {
-          return {
-            graph: undefined,
-            estimator: undefined,
-          };
-        }
-
-        return {
-          graph: getMarketsGraph(Object.values(marketsInfoData)),
-          estimator: createSwapEstimator(marketsInfoData),
-        };
-      })();
+      const graph = marketsInfoData ? getMarketsGraph(Object.values(marketsInfoData)) : undefined;
+      const estimator = marketsInfoData ? createSwapEstimator(marketsInfoData) : undefined;
 
       const allRoutes = (() => {
         if (
@@ -114,7 +103,7 @@ export const makeSelectSwapRoutes = createSelectorFactory(
         if (opts.byLiquidity) {
           swapPath = allRoutes[0].path;
         } else {
-          swapPath = getBestSwapPath(allRoutes, usdIn, estimator);
+          swapPath = getBestSwapPath(allRoutes, usdIn, estimator, marketsInfoData);
         }
 
         if (!swapPath) {
