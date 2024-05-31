@@ -251,12 +251,15 @@ function StakeModal(props: {
         </BuyInputSection>
 
         {(needApproval || isApproving) && (
-          <ApproveTokenButton
-            tokenAddress={stakingTokenAddress}
-            spenderAddress={farmAddress}
-            tokenSymbol={stakingTokenSymbol}
-            isApproved={!needApproval}
-          />
+          <>
+            <ApproveTokenButton
+              tokenAddress={stakingTokenAddress}
+              spenderAddress={farmAddress}
+              tokenSymbol={stakingTokenSymbol}
+              isApproved={!needApproval}
+            />
+            <br />
+          </>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -1039,12 +1042,15 @@ function CompoundModal(props: {
           </div>
         </div>
         {(needApproval || isApproving) && (
-          <ApproveTokenButton
-            tokenAddress={gmxAddress}
-            spenderAddress={stakedGmxTrackerAddress}
-            tokenSymbol={"GMX"}
-            isApproved={!needApproval}
-          />
+          <>
+            <ApproveTokenButton
+              tokenAddress={gmxAddress}
+              spenderAddress={stakedGmxTrackerAddress}
+              tokenSymbol={"GMX"}
+              isApproved={!needApproval}
+            />
+            <br />
+          </>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
