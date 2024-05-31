@@ -62,7 +62,11 @@ export async function callContract(
     const signerRaceContracts = opts.customSigners?.map((signer) => contract.connect(signer));
 
     const res = signerRaceContracts
-      ? await Promise.any([contract, ...signerRaceContracts].map((cnt) => cnt[method](...params, txnOpts)))
+      ? await Promise.any([contract, ...signerRaceContracts].map((cnt) => cnt[method](...params, txnOpts))).catch(
+          ({ errors }) => {
+            throw errors[0];
+          }
+        )
       : await contract[method](...params, txnOpts);
 
     if (!opts.hideSentMsg) {
