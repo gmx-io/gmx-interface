@@ -29,6 +29,7 @@ export function getFooterLinks(isHome) {
     ],
     app: [
       { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
+      { label: t`Charts by TradingView`, link: "https://www.tradingview.com/", external: true },
       // { label: "Jobs", link: "/jobs" },
     ],
   };
