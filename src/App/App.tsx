@@ -1,7 +1,7 @@
 import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
@@ -93,6 +93,7 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
+import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -118,10 +119,10 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-
+  const whiteListedPages = useMemo(() => ["/v1"], []);
   const hasV1LostFocus = useHasLostFocus({
     timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages: ["/trade", "/v2"],
+    whiteListedPages,
     debugId: "V1 Events",
   });
 
@@ -206,27 +207,10 @@ function FullApp() {
 
     // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
     // each time the Exchange components re-renders, which happens on every data update
-    const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
-    const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
-    const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
-    const onDecreasePosition = (...args) => callExchangeRef("onDecreasePosition", ...args);
-    const onCancelIncreasePosition = (...args) => callExchangeRef("onCancelIncreasePosition", ...args);
-    const onCancelDecreasePosition = (...args) => callExchangeRef("onCancelDecreasePosition", ...args);
-
-    wsVault.on("UpdatePosition", onUpdatePosition);
-    wsVault.on("ClosePosition", onClosePosition);
-    wsVault.on("IncreasePosition", onIncreasePosition);
-    wsVault.on("DecreasePosition", onDecreasePosition);
-    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
-    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+    const unsubscribe = subscribeToV1Events(wsVault, wsPositionRouter, callExchangeRef);
 
     return function cleanup() {
-      wsVault.off("UpdatePosition", onUpdatePosition);
-      wsVault.off("ClosePosition", onClosePosition);
-      wsVault.off("IncreasePosition", onIncreasePosition);
-      wsVault.off("DecreasePosition", onDecreasePosition);
-      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
-      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+      unsubscribe();
     };
   }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 

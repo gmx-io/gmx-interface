@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
-import EventEmitter from "abis/EventEmitter.json";
+import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -17,13 +17,14 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { AbiCoder, ProviderEvent, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -44,26 +45,6 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { parseEventLogData } from "./utils";
-import useWallet from "lib/wallets/useWallet";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
-import { usePendingTxns } from "lib/usePendingTxns";
-
-export const DEPOSIT_CREATED_HASH = ethers.id("DepositCreated");
-export const DEPOSIT_EXECUTED_HASH = ethers.id("DepositExecuted");
-export const DEPOSIT_CANCELLED_HASH = ethers.id("DepositCancelled");
-
-export const WITHDRAWAL_CREATED_HASH = ethers.id("WithdrawalCreated");
-export const WITHDRAWAL_EXECUTED_HASH = ethers.id("WithdrawalExecuted");
-export const WITHDRAWAL_CANCELLED_HASH = ethers.id("WithdrawalCancelled");
-
-export const ORDER_CREATED_HASH = ethers.id("OrderCreated");
-export const ORDER_EXECUTED_HASH = ethers.id("OrderExecuted");
-export const ORDER_CANCELLED_HASH = ethers.id("OrderCancelled");
-export const ORDER_UPDATED_HASH = ethers.id("OrderUpdated");
-
-export const POSITION_INCREASE_HASH = ethers.id("PositionIncrease");
-export const POSITION_DECREASE_HASH = ethers.id("PositionDecrease");
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -76,9 +57,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
 
+  const whiteListedPages = useMemo(() => ["/trade", "/v2", "/pools"], []);
   const hasLostFocus = useHasLostFocus({
     timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages: ["/trade", "/v2", "/pools"],
+    whiteListedPages,
     debugId: "V2 Events",
   });
 
@@ -465,121 +447,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [currentAccount]);
+      const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
 
-      const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
-      const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
-      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
-      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
-
-      function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-        // console.log("handleEventLog", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-        // console.log("handleEventLog1", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-        // console.log("handleEventLog2", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleCommonLog(e) {
-        const txnOpts: EventTxnParams = {
-          transactionHash: e.transactionHash,
-          blockNumber: e.blockNumber,
-        };
-
-        try {
-          const parsed = eventEmitter.interface.parseLog(e);
-
-          if (!parsed) throw new Error("Could not parse event");
-          if (parsed.name === "EventLog") {
-            handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
-          } else if (parsed.name === "EventLog1") {
-            handleEventLog1(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], parsed.args[4], txnOpts);
-          } else if (parsed.name === "EventLog2") {
-            handleEventLog2(
-              parsed.args[0],
-              parsed.args[1],
-              parsed.args[2],
-              parsed.args[3],
-              parsed.args[4],
-              parsed.args[5],
-              txnOpts
-            );
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error("error parsing event", e);
-        }
-      }
-
-      const filters: ProviderEvent[] = [
-        // DEPOSITS AND WITHDRAWALS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
-        },
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [
-            EVENT_LOG_TOPIC,
-            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-          ],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [
-            EVENT_LOG2_TOPIC,
-            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-            null,
-            addressHash,
-          ],
-        },
-        // ORDERS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
-        },
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH]],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [
-            EVENT_LOG2_TOPIC,
-            [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH],
-            null,
-            addressHash,
-          ],
-        },
-        // POSITIONS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
-        },
-      ];
-
-      filters.forEach((filter) => {
-        wsProvider.on(filter, handleCommonLog);
-      });
-
-      return () => {
-        filters.forEach((filter) => {
-          wsProvider.off(filter, handleCommonLog);
-        });
+      return function cleanup() {
+        unsubscribe();
       };
     },
     [chainId, currentAccount, hasLostFocus, wsProvider]

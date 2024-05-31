@@ -6,6 +6,7 @@ import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketP
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { getTotalSubscribersEventsCount } from "./subscribeToEvents";
 
 const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;
@@ -72,25 +73,28 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         // wait ws provider to be connected and avoid too often reconnects
         const isReconnectingIntervalPassed =
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
+        const listenerCount = await wsProvider.listenerCount();
 
         if (isDevelopment() && isReconnectingIntervalPassed) {
-          let subsCount = 0;
-          wsProvider._forEachSubscriber(() => subsCount++);
           // eslint-disable-next-line no-console
-          console.log(
-            `ws provider health check, state: ${
-              wsProvider.websocket.readyState
-            }, subs: ${await wsProvider.listenerCount()}`
-          );
+          console.log(`ws provider health check, state: ${wsProvider.websocket.readyState}, subs: ${listenerCount}`);
         }
 
-        if (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) {
+        const requiredListenerCount = getTotalSubscribersEventsCount(chainId, wsProvider);
+
+        if (
+          (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) ||
+          (listenerCount < requiredListenerCount && isReconnectingIntervalPassed)
+        ) {
           closeWsConnection(wsProvider);
           const nextProvider = getWsProvider(chainId);
           setWsProvider(nextProvider);
           initializedTime.current = Date.now();
           // eslint-disable-next-line no-console
-          console.log("ws provider health check failed, reconnecting", initializedTime.current);
+          console.log("ws provider health check failed, reconnecting", initializedTime.current, {
+            requiredListenerCount,
+            listenerCount,
+          });
         } else {
           healthCheckTimerId.current = setTimeout(nextHealthCheck, WS_HEALTH_CHECK_INTERVAL);
         }
