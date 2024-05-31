@@ -51,23 +51,30 @@ export async function callContract(
       });
     }
 
-    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    if (!contract.runner?.provider) {
-      throw new Error("No provider found on contract.");
-    }
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+      const txnInstance = { ...txnOpts };
 
-    await setGasPrice(txnOpts, contract.runner.provider, chainId);
+      txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
 
-    const signerRaceContracts = opts.customSigners?.map((signer) => contract.connect(signer));
+      if (!cntrct.runner?.provider) {
+        throw new Error("No provider found on contract.");
+      }
 
-    const res = signerRaceContracts
-      ? await Promise.any([contract, ...signerRaceContracts].map((cnt) => cnt[method](...params, txnOpts))).catch(
-          ({ errors }) => {
-            throw errors[0];
-          }
-        )
-      : await contract[method](...params, txnOpts);
+      await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
+
+      return cntrct[method](...params, txnOpts);
+    });
+
+    const res = await Promise.any(txnCalls).catch(({ errors }) => {
+      if (errors.length > 1) {
+        // eslint-disable-next-line no-console
+        console.error("All transactions failed", ...errors);
+      }
+
+      throw errors[0];
+    });
 
     if (!opts.hideSentMsg) {
       showCallContractToast({
