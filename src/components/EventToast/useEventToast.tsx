@@ -86,7 +86,8 @@ function useEventToast() {
               toast={t}
               onClick={() => {
                 toast.dismiss(event.id);
-                setVisited((x) => (x ? [...x, event.id] : [event.id]));
+                const newVisited = visited ? [...visited, event.id] : [event.id];
+                setVisited(newVisited);
               }}
             />
           ),

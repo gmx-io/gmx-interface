@@ -133,7 +133,7 @@ export default function Home({ showRedirectModal }) {
             </div>
             <div className="Home-description">
               <Trans>
-                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet
+                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet
               </Trans>
             </div>
             <LaunchExchangeButton />
