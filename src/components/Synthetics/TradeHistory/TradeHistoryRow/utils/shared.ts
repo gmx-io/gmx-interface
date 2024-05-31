@@ -100,6 +100,9 @@ export type RowDetails = {
   price: string;
   priceComment: TooltipContent;
   pnl?: string;
+  direction?: string;
+  isLong?: boolean;
+  indexTokenSymbol?: string;
   //#region CSV fields
   marketPrice?: string;
   executionPrice?: string;

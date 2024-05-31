@@ -49,6 +49,7 @@ export const formatPositionMessage = (
   const isIncrease = isIncreaseOrderType(tradeAction.orderType);
   const isLong = tradeAction.isLong;
   const longShortText = isLong ? t`Long` : t`Short`;
+  const indexTokenSymbol = tradeAction.indexToken.symbol;
 
   //          | long | short
   // increase |  <   |  >
@@ -599,6 +600,9 @@ export const formatPositionMessage = (
   return {
     action,
     market,
+    direction: longShortText,
+    isLong,
+    indexTokenSymbol,
     fullMarket,
     timestamp,
     timestampISO,
