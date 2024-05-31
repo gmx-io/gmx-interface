@@ -170,9 +170,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </div>
       ) : (
         <div className="inline-block border-b border-dashed border-b-gray-400">
-          <span className={cx(msg.isLong ? "text-green-500" : "text-red-500")}>{msg.direction} </span>
-          <TokenIcon displaySize={20} symbol={msg.indexTokenSymbol!} />
-          <span> {msg.indexName}</span>
+          <span className={cx(msg.isLong ? "text-green-500" : "text-red-500")}>{msg.direction}</span>
+          <TokenIcon className="mx-5" displaySize={20} symbol={msg.indexTokenSymbol!} />
+          <span>{msg.indexName}</span>
         </div>
       ),
     [msg.direction, msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
