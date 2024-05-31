@@ -922,6 +922,10 @@ msgstr "Request Withdraw"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon open. Try reducing the size."
+msgstr "The position would be immediately liquidated upon open. Try reducing the size."
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -4451,6 +4455,8 @@ msgstr "Transaction"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
