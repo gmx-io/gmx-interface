@@ -22,7 +22,7 @@ export function useHasLostFocus(p: {
     }
 
     if (whiteListedPages?.length) {
-      checks.push(whiteListedPages.some((whitelistedPart) => location.pathname.includes(whitelistedPart)));
+      checks.push(whiteListedPages.some((whitelistedPart) => location.pathname.startsWith(whitelistedPart)));
     }
 
     return checks.every(Boolean);
