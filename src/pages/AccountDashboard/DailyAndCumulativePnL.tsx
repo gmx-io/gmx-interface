@@ -1,5 +1,6 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
+import { subDays } from "date-fns";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -46,8 +47,10 @@ const CSV_ICON_INFO = {
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
+const getInitialDate = () => subDays(new Date(), 90);
+
 export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
-  const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
+  const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStartRounded(fromDate), [fromDate]);
 
   const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp);

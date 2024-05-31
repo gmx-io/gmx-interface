@@ -93,6 +93,12 @@ const PRESETS = {
   days7: {
     days: 7,
   } satisfies Duration,
+  days90: {
+    days: 90,
+  } satisfies Duration,
+  days365: {
+    days: 365,
+  } satisfies Duration,
   allTime: undefined,
 };
 
@@ -100,6 +106,8 @@ const PRESET_LABELS = {
   month: msg`Last month`,
   days30: msg`Last 30d`,
   days7: msg`Last 7d`,
+  days90: msg`Last 90d`,
+  days365: msg`Last 365d`,
   allTime: msg`All time`,
 };
 
@@ -284,7 +292,7 @@ export function DateSelect({
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
           <div className="DateRangeSelect-common-items">
-            {["days7", "days30", "allTime"].map((preset) => (
+            {["days7", "days30", "days90", "days365", "allTime"].map((preset) => (
               <Button
                 key={preset}
                 variant="secondary"
