@@ -212,6 +212,7 @@ export type SwapEstimator = (
 ) => {
   usdOut: bigint;
   priceImpactDeltaUsd: bigint;
+  fees: bigint;
 };
 
 export type FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;

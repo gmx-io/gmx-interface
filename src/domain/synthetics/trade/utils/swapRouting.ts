@@ -67,17 +67,20 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
     const isOutLiquidity = swapStats?.isOutLiquidity;
     const usdOut = swapStats?.usdOut;
     const priceImpactDeltaUsd = swapStats?.priceImpactDeltaUsd;
+    const fees = swapStats?.swapFeeUsd;
 
     if (usdOut === undefined || isOutLiquidity) {
       return {
         usdOut: 0n,
         priceImpactDeltaUsd,
+        fees,
       };
     }
 
     return {
       usdOut,
       priceImpactDeltaUsd,
+      fees,
     };
   };
 };
@@ -102,8 +105,12 @@ export function getBestSwapPath(
     try {
       console.log("calculating usdOut from path", route.path.map((p) => marketsInfoData?.[p]?.name).join(" -> "));
       const pathUsdOut = route.edged.reduce((prevUsdOut, edge) => {
-        const { usdOut, priceImpactDeltaUsd } = estimator(edge, prevUsdOut);
-        console.log({ priceImpactDeltaUsd: formatUsd(priceImpactDeltaUsd), usdOut: formatUsd(usdOut) });
+        const { usdOut, priceImpactDeltaUsd, fees } = estimator(edge, prevUsdOut);
+        console.log({
+          priceImpactDeltaUsd: formatUsd(priceImpactDeltaUsd),
+          usdOut: formatUsd(usdOut),
+          fees: formatUsd(fees),
+        });
         return usdOut;
       }, usdIn);
 

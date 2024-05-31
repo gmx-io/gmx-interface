@@ -170,6 +170,7 @@ describe("swapPath", () => {
           return {
             usdOut: usdIn + fees,
             priceImpactDeltaUsd: 0n,
+            fees: 0n,
           };
         };
         const allRoutes = findAllPaths(marketsInfoData, graph, from, to);
