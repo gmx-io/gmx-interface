@@ -17,6 +17,7 @@ import { formatSwapMessage } from "./utils/swap";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
@@ -158,21 +159,23 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
 
   const marketTooltipHandle = useMemo(
     () =>
-      !msg.indexTokenSymbol ? (
-        msg.market
+      msg.pathTokenSymbols ? (
+        <div>
+          {msg.pathTokenSymbols!.map((symbol, index) => (
+            <span key={symbol} className="border-b border-dashed border-b-gray-400">
+              {index > 0 && " → "}
+              <TokenWithIcon symbol={symbol} displaySize={20} />
+            </span>
+          ))}
+        </div>
       ) : (
-        <div
-          className={cx(
-            "underline decoration-dashed decoration-1 underline-offset-2",
-            msg.isLong ? "decoration-green text-green-500" : "decoration-red text-red-500"
-          )}
-        >
-          <span>{msg.direction} </span>
-          <TokenIcon displaySize={20} symbol={msg.indexTokenSymbol} />
+        <div className="inline-block border-b border-dashed border-b-gray-400">
+          <span className={cx(msg.isLong ? "text-green-500" : "text-red-500")}>{msg.direction} </span>
+          <TokenIcon displaySize={20} symbol={msg.indexTokenSymbol!} />
           <span> {msg.indexName}</span>
         </div>
       ),
-    [msg.direction, msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.market]
+    [msg.direction, msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
   );
 
   return (
@@ -222,11 +225,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </td>
         <td>
-          <TooltipWithPortal
-            disableHandleStyle={Boolean(msg.indexTokenSymbol)}
-            handle={marketTooltipHandle}
-            renderContent={renderMarketContent}
-          />
+          <TooltipWithPortal disableHandleStyle handle={marketTooltipHandle} renderContent={renderMarketContent} />
         </td>
         <td>{msg.size}</td>
         <td>

@@ -103,6 +103,7 @@ export type RowDetails = {
   direction?: string;
   isLong?: boolean;
   indexTokenSymbol?: string;
+  pathTokenSymbols?: string[];
   //#region CSV fields
   marketPrice?: string;
   executionPrice?: string;

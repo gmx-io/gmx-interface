@@ -89,26 +89,27 @@ export const formatSwapMessage = (
     adapt(tokensMinRatio?.largestToken)
   );
 
-  const market = !marketsInfoData
-    ? ELLIPSIS
-    : tradeAction.swapPath
-        ?.map((marketAddress) => marketsInfoData?.[marketAddress])
-        .reduce(
-          (acc: TokenData[], marketInfo: MarketInfo) => {
-            const last = acc[acc.length - 1];
+  const pathTokenSymbols: string[] | undefined =
+    marketsInfoData &&
+    tradeAction.swapPath
+      ?.map((marketAddress) => marketsInfoData?.[marketAddress])
+      .reduce(
+        (acc: TokenData[], marketInfo: MarketInfo) => {
+          const last = acc[acc.length - 1];
 
-            if (last.address === marketInfo?.longToken.address) {
-              acc.push(marketInfo.shortToken);
-            } else if (last.address === marketInfo?.shortToken.address) {
-              acc.push(marketInfo.longToken);
-            }
+          if (last.address === marketInfo?.longToken.address) {
+            acc.push(marketInfo.shortToken);
+          } else if (last.address === marketInfo?.shortToken.address) {
+            acc.push(marketInfo.longToken);
+          }
 
-            return acc;
-          },
-          [tradeAction.initialCollateralToken] as TokenData[]
-        )
-        .map((token: TokenData) => token?.symbol)
-        .join(ARROW_SEPARATOR);
+          return acc;
+        },
+        [tradeAction.initialCollateralToken] as TokenData[]
+      )
+      .map((token: TokenData) => token?.symbol);
+
+  const market = !pathTokenSymbols ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
@@ -267,6 +268,7 @@ export const formatSwapMessage = (
     acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,
+    pathTokenSymbols,
     ...result!,
   };
 };
