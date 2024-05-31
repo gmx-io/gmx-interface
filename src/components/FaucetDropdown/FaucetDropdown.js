@@ -11,6 +11,7 @@ import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useState, useEffect, useContext } from "react";
 import WETH from "abis/WETH.json";
+import TMX from "abis/TMX.json";
 import BN from "bignumber.js";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
@@ -25,6 +26,7 @@ function FaucetDropdown() {
   const [amount] = useState(1000);
   const [wethAmount] = useState("0.01");
   const [wbtcamount] = useState("0.01");
+  const [txmAmount] = useState(10);
   const [tokens, setTokens] = useState();
 
   useEffect(() => {
@@ -49,6 +51,49 @@ function FaucetDropdown() {
         ethamount = (amount * 10 ** token.decimals).toLocaleString("fullwide", {
           useGrouping: false,
         });
+      }
+      if (tokenSymbol === "TMX") {
+        const txmAmt = (txmAmount * 10 ** token.decimals).toLocaleString("fullwide", {
+          useGrouping: false,
+        });
+        const contract = new ethers.Contract(token.address, TMX.abi, signer);
+        contract
+          .transferTmx(account, txmAmt.toString())
+          .then(async (res) => {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
+            helperToast.success(
+              <div>
+                <Trans>
+                  Submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+                </Trans>
+                <br />
+              </div>
+            );
+          })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.error(e);
+            let failMsg;
+            if (
+              ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
+                e.data?.message
+              )
+            ) {
+              failMsg = (
+                <div>
+                  <Trans>
+                    There is not enough ETH in your account to send this transaction.
+                    <br />
+                  </Trans>
+                </div>
+              );
+            } else if (e.message?.includes("User denied transaction signature")) {
+              failMsg = t`Transaction was cancelled`;
+            } else {
+              failMsg = t`Minting...`;
+            }
+            helperToast.error(failMsg);
+          });
       }
 
       if (tokenSymbol === "ETH" || tokenSymbol === "WETH") {
