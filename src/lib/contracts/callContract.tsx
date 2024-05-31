@@ -53,7 +53,24 @@ export async function callContract(
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+    const toCall: any = [];
+
+    // @ts-expect-error
+    if (!window.disableBrowserWalletRpc) {
+      toCall.push(contract);
+    }
+
+    // @ts-expect-error
+    if (!window.disablePublicRpc) {
+      toCall.push(customSignerContracts[0]);
+    }
+
+    // @ts-expect-error
+    if (!window.disableFallbackRpc) {
+      toCall.push(customSignerContracts[1]);
+    }
+
+    const txnCalls = toCall.map(async (cntrct) => {
       const txnInstance = { ...txnOpts };
 
       txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
