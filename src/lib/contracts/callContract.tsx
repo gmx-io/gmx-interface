@@ -81,7 +81,7 @@ export async function callContract(
 
       await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
 
-      return cntrct[method](...params, txnOpts);
+      return cntrct[method](...params, txnInstance);
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
