@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import { CardRow } from "components/CardRow/CardRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useMemo } from "react";
+
+import { getBridgingOptionsForToken } from "config/bridging";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -16,13 +17,16 @@ import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domai
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import "./MarketStats.scss";
-import BridgingInfo from "../BridgingInfo/BridgingInfo";
-import { getBridgingOptionsForToken } from "config/bridging";
-import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
-import { useMemo } from "react";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+
+import { AprInfo } from "components/AprInfo/AprInfo";
+import { CardRow } from "components/CardRow/CardRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import BridgingInfo from "../BridgingInfo/BridgingInfo";
+
+import "./MarketStats.scss";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -175,7 +179,16 @@ export function MarketStats(p: Props) {
               renderContent={() => {
                 return (
                   <div>
-                    <Trans>GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees.</Trans>
+                    <Trans>
+                      GM token pricing includes price impact pool amounts, the pending PnL of open positions, and
+                      borrowing fees. It excludes funding fees, which are exchanged between traders.
+                      <br />
+                      <br />
+                      <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+                        Read more about GM token pricing
+                      </ExternalLink>
+                      .
+                    </Trans>
                   </div>
                 );
               }}
