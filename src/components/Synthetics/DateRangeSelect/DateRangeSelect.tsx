@@ -54,9 +54,9 @@ const CALENDAR_ICON_INFO = {
 };
 
 /**
- * 21 Feb 2022
+ * GMX v1 launch date is 06 sept 2021
  */
-const MIN_DATE = new Date(2022, 1, 21);
+const MIN_DATE = new Date(2021, 8, 6);
 const MAX_DATE = addYears(new Date(), 1);
 
 const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
