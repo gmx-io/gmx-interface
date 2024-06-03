@@ -215,6 +215,10 @@ function createClaimCollateralAction(
     const price = bigNumberify(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
+    if (amount === 0n) {
+      continue;
+    }
+
     if (!marketInfo) {
       return null;
     }
