@@ -331,7 +331,7 @@ export default function ClaimEsGmx() {
 
   return (
     <div className="ClaimEsGmx Page page-layout">
-      <div className="Page-title-section mt-0">
+      <div className="default-container">
         <div className="Page-title">
           <Trans>Claim esGMX</Trans>
         </div>
@@ -343,7 +343,7 @@ export default function ClaimEsGmx() {
         )}
         {isArbitrum && (
           <div>
-            <div className="Page-description">
+            <div className="Page-description hyphens-auto">
               <br />
               <Trans>You have {formatAmount(esGmxIouBalance, 18, 2, true)} esGMX (IOU) tokens.</Trans>
               <br />

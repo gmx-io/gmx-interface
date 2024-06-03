@@ -135,7 +135,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <div className="CompetitionPrizes default-container-mobile-one-sided">
+    <div className="CompetitionPrizes default-container">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
