@@ -1,6 +1,7 @@
+import { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
@@ -10,6 +11,7 @@ import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import {
   formatTradeActionTimestamp,
@@ -19,7 +21,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
-import { MessageDescriptor } from "@lingui/core";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
@@ -30,8 +31,6 @@ export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName
   [ClaimType.SettleFundingFeeCreated]: msg`Request Settlement of Funding Fees`,
   [ClaimType.SettleFundingFeeExecuted]: msg`Settled Funding Fees`,
 };
-
-const NBSP = String.fromCharCode(160);
 
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
   const { chainId } = useChainId();
@@ -47,22 +46,21 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
   const marketContent = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
-      const formattedMarketNames = claimAction.markets
-        .map((market, index) => {
-          const isLong = claimAction.isLongOrders[index];
-
-          let res = "";
-          if (index !== 0) {
-            res += ", ";
-          }
-          res += `${isLong ? t`Long` : t`Short`}${NBSP}${getMarketIndexName(market)}`;
-
-          return res;
-        })
-        .join("");
+      const formattedMarketNames = claimAction.markets.map((market, index) => (
+        <React.Fragment key={index}>
+          {index !== 0 && ", "}
+          <MarketWithDirectionLabel
+            bordered
+            indexName={getMarketIndexName(market)}
+            tokenSymbol={market.indexToken.symbol}
+            isLong={claimAction.isLongOrders[index]}
+          />
+        </React.Fragment>
+      ));
 
       return (
         <Tooltip
+          disableHandleStyle
           handle={formattedMarketNames}
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
@@ -87,10 +85,14 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
         <TooltipWithPortal
+          disableHandleStyle
           handle={
-            <span className="flex items-start">
-              {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
-            </span>
+            <MarketWithDirectionLabel
+              bordered
+              indexName={indexName}
+              tokenSymbol={claimAction.markets[0].indexToken.symbol}
+              isLong={claimAction.isLongOrders[0]}
+            />
           }
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
@@ -115,9 +117,11 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
 
       const positionName = (
-        <span className="flex items-start">
-          {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
-        </span>
+        <MarketWithDirectionLabel
+          indexName={indexName}
+          tokenSymbol={claimAction.markets[0].indexToken.symbol}
+          isLong={claimAction.isLongOrders[0]}
+        />
       );
 
       return positionName;

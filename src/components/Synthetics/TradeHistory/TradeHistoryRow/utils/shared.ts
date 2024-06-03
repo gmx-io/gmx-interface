@@ -100,7 +100,6 @@ export type RowDetails = {
   price: string;
   priceComment: TooltipContent;
   pnl?: string;
-  direction?: string;
   isLong?: boolean;
   indexTokenSymbol?: string;
   pathTokenSymbols?: string[];

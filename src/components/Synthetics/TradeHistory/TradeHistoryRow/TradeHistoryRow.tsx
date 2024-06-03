@@ -15,8 +15,8 @@ import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -169,13 +169,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           ))}
         </div>
       ) : (
-        <div className="inline-block border-b border-dashed border-b-gray-400">
-          <span className={cx(msg.isLong ? "text-green-500" : "text-red-500")}>{msg.direction}</span>
-          <TokenIcon className="mx-5" displaySize={20} symbol={msg.indexTokenSymbol!} />
-          <span>{msg.indexName}</span>
-        </div>
+        <MarketWithDirectionLabel
+          bordered
+          indexName={msg.indexName!}
+          isLong={msg.isLong!}
+          tokenSymbol={msg.indexTokenSymbol!}
+        />
       ),
-    [msg.direction, msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
+    [msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
   );
 
   return (

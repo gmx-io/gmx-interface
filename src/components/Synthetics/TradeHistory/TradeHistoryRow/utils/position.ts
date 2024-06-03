@@ -600,7 +600,6 @@ export const formatPositionMessage = (
   return {
     action,
     market,
-    direction: longShortText,
     isLong,
     indexTokenSymbol,
     fullMarket,
