@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useChainId } from "lib/chains";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 
 import Button from "components/Button/Button";
@@ -40,7 +41,7 @@ type Props = {
 
 export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, forAllAccounts, account } = p;
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);

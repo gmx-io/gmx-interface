@@ -8,7 +8,8 @@ import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthe
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useChainId } from "lib/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
@@ -104,7 +105,7 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
 const PRICE_TOOLTIP_WIDTH = 400;
 
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
 
   const msg = useMemo(() => {

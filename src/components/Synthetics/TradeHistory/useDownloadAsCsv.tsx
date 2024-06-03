@@ -4,6 +4,8 @@ import { useCallback, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { isSwapOrderType } from "domain/synthetics/orders/utils";
 import {
@@ -12,7 +14,6 @@ import {
   SwapTradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
-import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
@@ -50,7 +51,7 @@ export function useDownloadAsCsv({
 
   minCollateralUsd?: bigint;
 }): [boolean, () => Promise<void>] {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const [isLoading, setIsLoading] = useState(false);
