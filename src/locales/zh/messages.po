@@ -922,6 +922,10 @@ msgstr "要求提款"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
+#~ msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr ""
@@ -3156,6 +3160,10 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr "请将您的网络切换到Arbitrum"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr ""
@@ -4444,6 +4452,8 @@ msgstr "交易"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"

@@ -496,6 +496,12 @@ export function TradeBox(p: Props) {
           break;
         }
 
+        case "liqPrice > markPrice":
+          tooltipContent = (
+            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+          );
+          break;
+
         default:
           mustNeverExist(tooltipName);
       }
