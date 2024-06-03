@@ -7,6 +7,7 @@ import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
+import { ARBITRUM } from "config/chains";
 
 export async function callContract(
   chainId: number,
@@ -65,20 +66,20 @@ export async function callContract(
 
     // @ts-expect-error
     if (!window.disableBrowserWalletRpc) {
-      toCall.push(contract);
+      toCall.push({ contract, caption: "Browser Wallet RPC" });
     }
 
     // @ts-expect-error
     if (!window.disablePublicRpc) {
-      toCall.push(customSignerContracts[0]);
+      toCall.push({ contract: customSignerContracts[0], caption: "Public RPC" });
     }
 
     // @ts-expect-error
     if (!window.disableFallbackRpc) {
-      toCall.push(customSignerContracts[1]);
+      toCall.push({ contract: customSignerContracts[1], caption: "Fallback RPC" });
     }
 
-    const txnCalls = toCall.map(async (cntrct) => {
+    const txnCalls = toCall.map(async ({ contract: cntrct, caption }) => {
       const txnInstance = { ...txnOpts };
 
       txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
@@ -89,8 +90,17 @@ export async function callContract(
 
       await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).then((res) => {
+        if (chainId === ARBITRUM) {
+          // eslint-disable-next-line no-console
+          console.log(`Transaction sent via ${caption}`, res);
+        }
+        return res;
+      });
     });
+
+    // eslint-disable-next-line no-console
+    console.log("All RPC calls: ", txnCalls);
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
       if (errors.length > 1) {
