@@ -191,7 +191,7 @@ const PROD_QUERY = gql`
   }
 `;
 
-function usePnlHistoricalData(chainId: number, account: string, fromTimestamp: number | undefined) {
+function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
     client: getSubsquidGraphClient(chainId)!,
