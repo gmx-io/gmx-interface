@@ -1,16 +1,19 @@
 import { gql } from "@apollo/client";
-import { getToken } from "config/tokens";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { bigNumberify, BN_ZERO } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
-import useWallet from "lib/wallets/useWallet";
+import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
+
+import { getToken } from "config/tokens";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { BN_ZERO, bigNumberify } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
+
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
-import { getAddress } from "ethers";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -48,7 +51,7 @@ export function useClaimCollateralHistory(
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
-  const { account } = useWallet();
+  const account = useSelector(selectAccount);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 

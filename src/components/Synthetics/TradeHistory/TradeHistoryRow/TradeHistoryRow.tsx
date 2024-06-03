@@ -160,7 +160,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketTooltipHandle = useMemo(
     () =>
       msg.pathTokenSymbols ? (
-        <div>
+        <div className="cursor-help">
           {msg.pathTokenSymbols!.map((symbol, index) => (
             <span key={symbol} className="border-b border-dashed border-b-gray-400">
               {index > 0 && " → "}
@@ -169,12 +169,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           ))}
         </div>
       ) : (
-        <MarketWithDirectionLabel
-          bordered
-          indexName={msg.indexName!}
-          isLong={msg.isLong!}
-          tokenSymbol={msg.indexTokenSymbol!}
-        />
+        <div className="cursor-help">
+          <MarketWithDirectionLabel
+            bordered
+            indexName={msg.indexName!}
+            isLong={msg.isLong!}
+            tokenSymbol={msg.indexTokenSymbol!}
+          />
+        </div>
       ),
     [msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
   );
@@ -215,8 +217,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           </div>
           <TooltipWithPortal
             disableHandleStyle
-            handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
-            portalClassName="TradeHistoryRow-tooltip-portal"
+            handle={<span className="TradeHistoryRow-time muted cursor-help">{msg.timestamp}</span>}
+            portalClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
@@ -226,7 +228,12 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </td>
         <td>
-          <TooltipWithPortal disableHandleStyle handle={marketTooltipHandle} renderContent={renderMarketContent} />
+          <TooltipWithPortal
+            disableHandleStyle
+            portalClassName="cursor-help *:cursor-auto"
+            handle={marketTooltipHandle}
+            renderContent={renderMarketContent}
+          />
         </td>
         <td>{msg.size}</td>
         <td>

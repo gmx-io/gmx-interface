@@ -4,9 +4,10 @@ import { useLingui } from "@lingui/react";
 import React, { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
@@ -33,7 +34,7 @@ export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName
 };
 
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const { _ } = useLingui();
 
   const eventTitleDescriptor = claimFundingFeeEventTitles[claimAction.eventName];
@@ -61,6 +62,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       return (
         <Tooltip
           disableHandleStyle
+          handleClassName="cursor-help"
           handle={formattedMarketNames}
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
@@ -86,6 +88,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       return (
         <TooltipWithPortal
           disableHandleStyle
+          handleClassName="cursor-help *:cursor-auto"
           handle={
             <MarketWithDirectionLabel
               bordered
