@@ -11,7 +11,7 @@ const BACKEND_URLS = {
   [ARBITRUM]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [AVALANCHE]: "https://gmx-avax-server.uc.r.appspot.com",
   [SEPOLIA_TESTNET]: "https://t3-trade-history-sepolia-jy22.onrender.com",
-  [OPTIMISM_MAINNET] : "https://t3-trade-history-optimism.fly.dev",
+  [OPTIMISM_MAINNET] : "https://t3-trade-history-api.onrender.com",
   [BLAST_SEPOLIA_TESTNET]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
   [MORPH_L2] : "https://t3-trade-history-blast-sepolia-9dfi.onrender.com"
 };
