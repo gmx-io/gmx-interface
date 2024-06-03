@@ -23,6 +23,8 @@ function FaucetDropdown() {
   // const { active, account, library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
+  const txmContractAddress = "0x98e9944fdF31890F5823f351B4797e97C5f86088";
+
   const [amount] = useState(1000);
   const [wethAmount] = useState("0.01");
   const [wbtcamount] = useState("0.01");
@@ -56,7 +58,7 @@ function FaucetDropdown() {
         const txmAmt = (txmAmount * 10 ** token.decimals).toLocaleString("fullwide", {
           useGrouping: false,
         });
-        const contract = new ethers.Contract(token.address, TMX.abi, signer);
+        const contract = new ethers.Contract(txmContractAddress, TMX.abi, signer);
         contract
           .transferTmx(account, txmAmt.toString())
           .then(async (res) => {
