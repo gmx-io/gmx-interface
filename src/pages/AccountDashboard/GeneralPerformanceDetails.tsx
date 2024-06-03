@@ -50,6 +50,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               </th>
               <th className="px-5 py-13 opacity-70">
                 <TooltipWithPortal
+                  portalClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
                 >
                   <Trans>PnL ($)</Trans>
@@ -57,6 +58,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               </th>
               <th className="px-5 py-13 opacity-70">
                 <TooltipWithPortal
+                  portalClassName="cursor-help *:cursor-auto"
                   content={
                     <Trans>
                       The PnL ($) compared to the capital used.
@@ -70,7 +72,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                   <Trans>PnL (%)</Trans>
                 </TooltipWithPortal>
               </th>
-              <th className="py-13 pl-5 pr-16 opacity-70">
+              <th className="py-13 pl-5 pr-16 !text-right opacity-70">
                 <Trans>Win / Loss</Trans>
               </th>
             </tr>
@@ -101,8 +103,9 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <td className="px-5 py-13">
         <TooltipWithPortal
           disableHandleStyle
+          portalClassName="cursor-help *:cursor-auto"
           className={cx(
-            "underline decoration-dashed decoration-1 underline-offset-2",
+            "cursor-help underline decoration-dashed decoration-1 underline-offset-2",
             row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
           )}
           content={
@@ -138,8 +141,9 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <td className="px-5 py-13">
         <TooltipWithPortal
           disableHandleStyle
+          portalClassName="cursor-help *:cursor-auto"
           className={cx(
-            "underline decoration-dashed decoration-1 underline-offset-2",
+            "cursor-help underline decoration-dashed decoration-1 underline-offset-2",
             row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
           )}
           content={<StatsTooltipRow label={t`Capital Used`} showDollar={false} value={formatUsd(row.usedCapitalUsd)} />}
@@ -147,7 +151,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           {formatPercentage(row.pnlBps, { signed: true })}
         </TooltipWithPortal>
       </td>
-      <td className="py-13 pl-5 pr-16">
+      <td className="py-13 pl-5 pr-16 text-right">
         <TooltipWithPortal
           handle={`${row.wins} / ${row.losses}`}
           content={
