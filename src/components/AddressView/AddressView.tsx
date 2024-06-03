@@ -15,6 +15,7 @@ type AddressViewProps = {
   avatarUrl?: string;
   breakpoint?: keyof typeof lengths;
   maxLength?: number;
+  noLink?: boolean;
 };
 
 export default function AddressView({
@@ -24,6 +25,7 @@ export default function AddressView({
   size = 24,
   breakpoint,
   maxLength,
+  noLink,
 }: AddressViewProps) {
   const { account } = useWallet();
   const strLength = (breakpoint && lengths[breakpoint]) ?? maxLength;
@@ -52,6 +54,19 @@ export default function AddressView({
     }),
     [avatarUrl, size]
   );
+
+  if (noLink) {
+    return (
+      <div className="AddressView">
+        {avatarUrl ? (
+          <span className="AddressView-ens-avatar" style={style} />
+        ) : (
+          <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
+        )}
+        <span className="AddressView-trader-id">{trader}</span>
+      </div>
+    );
+  }
 
   return (
     <Link target="_blank" className="AddressView" to={`/actions/v2/${address}`}>

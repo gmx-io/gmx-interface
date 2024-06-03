@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ethers } from "ethers";
 import { useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
+import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
@@ -22,6 +23,7 @@ import { NETWORK_ID_SLUGS_MAP, NETWORK_QUERY_PARAM, NETWORK_SLUGS_ID_MAP, VERSIO
 
 export function AccountDashboard() {
   const { chainId: initialChainId } = useChainId();
+  const isMobile = useMedia("(max-width: 600px)");
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
@@ -50,7 +52,7 @@ export function AccountDashboard() {
               <Trans>
                 GMX {versionName} {networkName} information for account:
               </Trans>
-              <AddressView address={account} size={20} breakpoint="XL" />
+              <AddressView noLink address={account} size={20} breakpoint={isMobile ? "XL" : undefined} />
             </div>
             <div className="flex flex-wrap items-center gap-12">
               <Trans>Switch to:</Trans>
