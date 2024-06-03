@@ -101,7 +101,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         <DebugLegend lastPoint={clusteredPnlData.at(-1)} />
       </div>
 
-      <div className="relative min-h-[150px] grow">
+      <div className="relative min-h-[250px] grow">
         <div className="absolute size-full">
           <ResponsiveContainer debounce={500}>
             <ComposedChart width={500} height={300} data={clusteredPnlData} barGap={0}>
