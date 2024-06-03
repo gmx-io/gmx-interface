@@ -54,9 +54,9 @@ const CALENDAR_ICON_INFO = {
 };
 
 /**
- * 4th of August 2023
+ * 21 Feb 2022
  */
-const MIN_DATE = new Date(2023, 7, 4);
+const MIN_DATE = new Date(2022, 1, 21);
 const MAX_DATE = addYears(new Date(), 1);
 
 const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
@@ -79,6 +79,7 @@ const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
   dayStartOfMonth: "DateRangeSelect-dayStartOfMonth",
   dayEndOfMonth: "DateRangeSelect-dayEndOfMonth",
   selected: "DateRangeSelect-selected",
+  dayDisabled: "DateRangeSelect-dayDisabled",
 };
 
 const RANGE_COLORS = ["#262843", "#3ecf8e", "#fed14c"];

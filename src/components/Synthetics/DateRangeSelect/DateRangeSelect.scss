@@ -120,6 +120,10 @@
     }
   }
 
+  &-dayDisabled {
+    background-color: var(--color-gray-900);
+  }
+
   @media (max-width: 600px) {
     &-month {
       width: auto;
