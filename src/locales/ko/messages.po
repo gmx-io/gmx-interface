@@ -151,6 +151,10 @@ msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 
 msgid "Withdrawal error."
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Performance"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "탈중앙화<0/>퍼페추얼 거래소"
@@ -315,7 +319,6 @@ msgstr "손절 주문 취소"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
 msgstr "포지션"
 
@@ -361,7 +364,6 @@ msgstr "{0}에서 {1}로 1inch에서 스왑"
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
@@ -1042,10 +1044,6 @@ msgstr "지정가 스왑 실패"
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "Actions"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
 msgstr "롱 실행중..."
@@ -1090,7 +1088,6 @@ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -1735,7 +1732,6 @@ msgstr "사이즈"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -2198,10 +2194,6 @@ msgstr ""
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}에서 {toMinText}로"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Open dashboard page"
-msgstr ""
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2269,7 +2261,6 @@ msgstr "트랜잭션 전송됨."
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 msgstr ""
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
@@ -3140,7 +3131,6 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "GMX V2 Account"
 msgstr ""
 
@@ -7254,10 +7244,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "커뮤니티 프로젝트"
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx

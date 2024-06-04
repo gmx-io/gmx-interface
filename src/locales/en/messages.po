@@ -151,6 +151,10 @@ msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tok
 msgid "Withdrawal error."
 msgstr "Withdrawal error."
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Performance"
+msgstr "Performance"
+
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Decentralized<0/>Perpetual Exchange"
@@ -315,7 +319,6 @@ msgstr "Cancel Stop-Loss Order"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
 msgstr "Positions"
 
@@ -361,7 +364,6 @@ msgstr "Swap {0} to {1} on 1inch"
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
@@ -1042,10 +1044,6 @@ msgstr "Failed Limit Swap"
 msgid "Overall protocol analytics"
 msgstr "Overall protocol analytics"
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "Actions"
-msgstr "Actions"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
 msgstr "Longing..."
@@ -1090,7 +1088,6 @@ msgstr "Leftover position below 10 USD"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -1735,7 +1732,6 @@ msgstr "Size"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -2198,10 +2194,6 @@ msgstr "Generate & Activate Subaccount"
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} to {toMinText}"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Open dashboard page"
-msgstr "Open dashboard page"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2269,7 +2261,6 @@ msgstr "Transaction sent."
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
@@ -3140,7 +3131,6 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "GMX V2 Account"
 msgstr "GMX V2 Account"
 
@@ -7260,10 +7250,6 @@ msgstr "Withdrawing {0} from {positionText}"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "Community Projects"
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
-msgstr "GMX V2 {networkName} information for account: {checkSummedAccount}"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
