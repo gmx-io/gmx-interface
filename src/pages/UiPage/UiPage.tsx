@@ -4,6 +4,23 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
+// src/img
+
+// @ts-ignore
+const iconsContext = require.context("img", true, /img\/ic_.+\.svg$/);
+
+// @ts-ignore
+const iconSrcs = iconsContext.keys().map(iconsContext);
+
+// @ts-ignore
+const otherImagesContext = require.context("img", true, /img\/.+\.(png|jpg|jpeg|gif|svg)$/);
+
+// @ts-ignore
+const otherImagesSrcs = otherImagesContext
+  .keys()
+  .filter((key) => !key.includes("/ic_"))
+  .map(otherImagesContext);
+
 const colors = {
   blue: {
     "300": "bg-blue-300",
@@ -240,6 +257,21 @@ export default function UiPage() {
         handle={"Lorem ipsum dolor."}
         closeDelay={100000000000}
       />
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Icons</h2>
+      <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
+        {iconSrcs.map((src) => (
+          <img key={src} src={src} className="max-w-[50px]" />
+        ))}
+      </div>
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Images</h2>
+
+      <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
+        {otherImagesSrcs.map((src) => (
+          <img key={src} src={src} className="max-w-[100px]" />
+        ))}
+      </div>
 
       <div className="h-50"></div>
     </main>
