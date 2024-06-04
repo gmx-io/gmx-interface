@@ -373,6 +373,7 @@ function FullApp() {
               </Route>
               <Redirect exact from="/actions/v2" to="/accounts" />
               <Redirect exact from="/actions" to="/accounts" />
+              <Redirect exact from="/actions/:account" to="/accounts/:account" />
               <Route exact path="/accounts">
                 <SyntheticsStateContextProvider pageType="accounts" skipLocalReferralCode>
                   <SyntheticsActions />
