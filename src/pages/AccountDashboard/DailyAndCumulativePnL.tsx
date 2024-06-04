@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   TooltipProps,
   XAxis,
+  YAxis,
 } from "recharts";
 import type { Address } from "viem";
 
@@ -121,10 +122,21 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
                 tickLine={false}
                 angle={-90}
                 fontSize={12}
-                tickMargin={12}
-                height={35}
+                tickMargin={20}
+                height={45}
                 dx={-4}
                 minTickGap={10}
+                tick={CHART_TICK_PROPS}
+              />
+              <YAxis
+                mirror
+                type="number"
+                allowDecimals={false}
+                markerWidth={0}
+                tickMargin={-6}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={yAxisTickFormatter}
                 tick={CHART_TICK_PROPS}
               />
               {DebugLines()}
@@ -161,6 +173,11 @@ function renderPnlBar(entry: AccountPnlHistoryPoint) {
     fill = "var(--color-gray-900)";
   }
   return <Cell key={entry.date} fill={fill} />;
+}
+
+function yAxisTickFormatter(value: number) {
+  if (value === 0) return "";
+  return formatUsd(BigInt(value as number) * 10n ** 30n, { displayDecimals: 0 })!;
 }
 
 function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" | "cumulativePnl" | "date">) {
