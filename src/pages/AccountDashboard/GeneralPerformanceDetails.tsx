@@ -72,7 +72,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                   <Trans>PnL (%)</Trans>
                 </TooltipWithPortal>
               </th>
-              <th className="py-13 pl-5 pr-16 !text-right opacity-70">
+              <th className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right opacity-70">
                 <Trans>Win / Loss</Trans>
               </th>
             </tr>
