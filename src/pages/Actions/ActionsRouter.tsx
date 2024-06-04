@@ -16,7 +16,7 @@ export function AccountsRouter() {
   const { chainId } = useWallet();
 
   // We must ensure v1 is not on unsupported chains
-  const { v } = useSearchParams<{ [VERSION_QUERY_PARAM]: string }>();
+  const { [VERSION_QUERY_PARAM]: v } = useSearchParams<{ [VERSION_QUERY_PARAM]: string }>();
 
   const isV1Supported = useMemo(() => chainId !== undefined && getIsV1Supported(chainId), [chainId]);
 
