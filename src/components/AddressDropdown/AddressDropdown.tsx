@@ -74,7 +74,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
               <img width={20} src={copy} alt="Copy user address" />
               <p>
-                <Trans>Performance</Trans>
+                <Trans>PnL Analysis</Trans>
               </p>
             </Link>
           </Menu.Item>

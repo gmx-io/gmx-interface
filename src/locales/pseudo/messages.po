@@ -151,10 +151,6 @@ msgstr ""
 msgid "Withdrawal error."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
-msgid "Performance"
-msgstr ""
-
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr ""
@@ -3589,6 +3585,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "PnL Analysis"
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
