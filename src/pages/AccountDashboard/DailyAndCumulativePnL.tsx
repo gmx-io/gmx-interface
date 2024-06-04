@@ -1,6 +1,6 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
-import { subDays } from "date-fns";
+import { subDays, lightFormat } from "date-fns";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -11,6 +11,7 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
   TooltipProps,
+  XAxis,
 } from "recharts";
 import type { Address } from "viem";
 
@@ -41,6 +42,8 @@ import {
 
 import downloadIcon from "img/ic_download_simple.svg";
 
+import "./DailyAndCumulativePnL.css";
+
 const CSV_ICON_INFO = {
   src: downloadIcon,
 };
@@ -48,6 +51,8 @@ const CSV_ICON_INFO = {
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
 const getInitialDate = () => subDays(new Date(), 90);
+
+const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = { fill: "var(--color-gray-400)" };
 
 export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
   const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
@@ -102,24 +107,26 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
       </div>
 
       <div className="relative min-h-[250px] grow">
-        <div className="absolute size-full">
+        <div className="DailyAndCumulativePnL-hide-last-tick absolute size-full">
           <ResponsiveContainer debounce={500}>
             <ComposedChart width={500} height={300} data={clusteredPnlData} barGap={0}>
               <RechartsTooltip content={ChartTooltip} wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE} />
               <Bar dataKey="pnlFloat" minPointSize={1}>
-                {clusteredPnlData.map((entry) => {
-                  let fill;
-                  if (entry.pnl > 0n) {
-                    fill = "var(--color-green-500)";
-                  } else if (entry.pnl < 0n) {
-                    fill = "var(--color-red-500)";
-                  } else {
-                    fill = "var(--color-gray-900)";
-                  }
-                  return <Cell key={entry.date} fill={fill} />;
-                })}
+                {clusteredPnlData.map(renderPnlBar)}
               </Bar>
               <Line type="monotone" dataKey="cumulativePnlFloat" stroke="#468AE3" strokeWidth={2} dot={false} />
+              <XAxis
+                dataKey="dateCompact"
+                axisLine={false}
+                tickLine={false}
+                angle={-90}
+                fontSize={12}
+                tickMargin={12}
+                height={35}
+                dx={-4}
+                minTickGap={10}
+                tick={CHART_TICK_PROPS}
+              />
               {DebugLines()}
             </ComposedChart>
           </ResponsiveContainer>
@@ -142,6 +149,18 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
       </div>
     </div>
   );
+}
+
+function renderPnlBar(entry: AccountPnlHistoryPoint) {
+  let fill: string;
+  if (entry.pnl > 0n) {
+    fill = "var(--color-green-500)";
+  } else if (entry.pnl < 0n) {
+    fill = "var(--color-red-500)";
+  } else {
+    fill = "var(--color-gray-900)";
+  }
+  return <Cell key={entry.date} fill={fill} />;
 }
 
 function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" | "cumulativePnl" | "date">) {
@@ -173,6 +192,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
 
 export type AccountPnlHistoryPoint = {
   date: string;
+  dateCompact: string;
   pnlFloat: number;
   pnl: bigint;
   cumulativePnlFloat: number;
@@ -219,6 +239,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
           date: showDebugValues
             ? formatDateTime(row.timestamp - 86400) + " - " + formatDateTime(row.timestamp) + " local"
             : formatDate(row.timestamp),
+          dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
           pnl: BigInt(row.pnl),
           pnlFloat: usdBigIntToFloat(BigInt(row.pnl)),
           cumulativePnl: BigInt(row.cumulativePnl),
