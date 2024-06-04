@@ -152,7 +152,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   const stats = payload[0].payload as PnlHistoricalData[number];
 
   return (
-    <div className="z-50 rounded-4 border border-gray-950 bg-slate-800 p-8">
+    <div className="z-50 rounded-4 border border-gray-950 bg-slate-800 p-8 text-14">
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow
         label={t`PnL`}
