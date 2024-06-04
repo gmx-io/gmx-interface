@@ -99,7 +99,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   return (
     <tr key={row.bucketLabel}>
       <td className="py-13 pl-16 pr-5">{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</td>
-      <td className="px-5 py-13">{formatUsd(row.volume)}</td>
+      <td className="px-5 py-13">{formatUsd(row.volume, { maxThreshold: null })}</td>
       <td className="px-5 py-13">
         <TooltipWithPortal
           disableHandleStyle

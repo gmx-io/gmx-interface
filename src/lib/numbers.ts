@@ -36,10 +36,10 @@ export function expandDecimals(n: BigNumberish, decimals: number): bigint {
 function getLimitedDisplay(
   amount: bigint,
   tokenDecimals: number,
-  opts: { maxThreshold?: string; minThreshold?: string } = {}
+  opts: { maxThreshold?: string | null; minThreshold?: string } = {}
 ) {
   const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
-  const max = expandDecimals(maxThreshold, tokenDecimals);
+  const max = maxThreshold === null ? null : expandDecimals(maxThreshold, tokenDecimals);
   const min = ethers.parseUnits(minThreshold, tokenDecimals);
   const absAmount = bigMath.abs(amount);
 
@@ -50,8 +50,8 @@ function getLimitedDisplay(
     };
   }
 
-  const symbol = absAmount > max ? TRIGGER_PREFIX_ABOVE : absAmount < min ? TRIGGER_PREFIX_BELOW : "";
-  const value = absAmount > max ? max : absAmount < min ? min : absAmount;
+  const symbol = max !== null && absAmount > max ? TRIGGER_PREFIX_ABOVE : absAmount < min ? TRIGGER_PREFIX_BELOW : "";
+  const value = max !== null && absAmount > max ? max : absAmount < min ? min : absAmount;
 
   return {
     symbol,
@@ -169,7 +169,7 @@ export function formatUsd(
   opts: {
     fallbackToZero?: boolean;
     displayDecimals?: number;
-    maxThreshold?: string;
+    maxThreshold?: string | null;
     minThreshold?: string;
     displayPlus?: boolean;
   } = {}
