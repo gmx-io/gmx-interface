@@ -334,7 +334,7 @@ msgstr "Subaccount Balance"
 msgid "Main Account Balance"
 msgstr "Main Account Balance"
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 
@@ -1091,7 +1091,7 @@ msgstr "Dashboard"
 msgid "Swap Price Impact"
 msgstr "Swap Price Impact"
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "No PnLs found"
 msgstr "No PnLs found"
 
@@ -2064,6 +2064,10 @@ msgstr "Cancel submitted."
 msgid "Buy GMX from Traderjoe:"
 msgstr "Buy GMX from Traderjoe:"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "V1 is not supported on {chainName}. Please switch to Arbitrum to use V1."
+msgstr "V1 is not supported on {chainName}. Please switch to Arbitrum to use V1."
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Limit Price."
@@ -2144,7 +2148,8 @@ msgstr "You have an existing position with {0} as collateral."
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "GMX V1 Actions"
 msgstr "GMX V1 Actions"
 
@@ -2257,7 +2262,7 @@ msgstr "Transaction sent."
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
 msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 
@@ -2293,7 +2298,7 @@ msgstr "Invalid price, see warning"
 msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>Read more</0>."
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr "GMX V1 {networkName} actions for all accounts."
 
@@ -2555,7 +2560,7 @@ msgstr "Subaccount created"
 msgid "Forfeit profit and Short"
 msgstr "Forfeit profit and Short"
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "Profit"
 msgstr "Profit"
 
@@ -3001,7 +3006,7 @@ msgstr "Failed Deposit"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "Loss"
 msgstr "Loss"
 
@@ -3045,7 +3050,7 @@ msgstr "More Options"
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 {networkName} actions for all accounts."
 msgstr "GMX V2 {networkName} actions for all accounts."
 
@@ -3075,7 +3080,7 @@ msgstr "Swap submitted."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -3448,8 +3453,8 @@ msgstr "Trigger price for the order."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.tsx
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6247,7 +6252,7 @@ msgstr "Telegram Group (Portuguese)"
 msgid "Withdrawn {0} to Main Account"
 msgstr "Withdrawn {0} to Main Account"
 
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 Actions"
 msgstr "GMX V2 Actions"
 
@@ -6328,8 +6333,8 @@ msgstr "Fulfilling Sell request"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/Actions.tsx
-#: src/pages/Actions/Actions.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx

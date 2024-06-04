@@ -10,7 +10,7 @@ import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
-import Actions from "pages/Actions/Actions";
+import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
@@ -58,6 +58,7 @@ import { I18nProvider } from "@lingui/react";
 import { watchAccount } from "@wagmi/core";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
+import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
@@ -90,12 +91,11 @@ import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboa
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
-import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import { NotifyModal } from "components/NotifyModal/NotifyModal";
+import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -357,9 +357,6 @@ function FullApp() {
                 <ClaimEsGmx />
               </Route>
 
-              <Route exact path="/actions/v1">
-                <Actions />
-              </Route>
               <Route exact path="/actions/:v/:account">
                 {({ match }) => (
                   <Redirect
@@ -371,13 +368,13 @@ function FullApp() {
                   />
                 )}
               </Route>
+              <Redirect exact from="/actions/v1" to={`/accounts?${VERSION_QUERY_PARAM}=1`} />
               <Redirect exact from="/actions/v2" to="/accounts" />
               <Redirect exact from="/actions" to="/accounts" />
               <Redirect exact from="/actions/:account" to="/accounts/:account" />
+
               <Route exact path="/accounts">
-                <SyntheticsStateContextProvider pageType="accounts" skipLocalReferralCode>
-                  <SyntheticsActions />
-                </SyntheticsStateContextProvider>
+                <AccountsRouter />
               </Route>
               <Route exact path="/accounts/:account">
                 <AccountDashboard />

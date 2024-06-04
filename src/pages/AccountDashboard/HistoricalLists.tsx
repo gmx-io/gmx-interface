@@ -20,7 +20,12 @@ import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { AccountActionsV1, AccountOrdersV1, AccountPositionsV1, usePositionsV1 } from "pages/Actions/Actions";
+import {
+  AccountActionsV1,
+  AccountOrdersV1,
+  AccountPositionsV1,
+  usePositionsV1,
+} from "pages/Actions/ActionsV1/ActionsV1";
 
 enum TabKey {
   Positions = "Positions",

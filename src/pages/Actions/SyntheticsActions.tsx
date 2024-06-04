@@ -12,7 +12,7 @@ import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 
-import "./Actions.scss";
+import "./SyntheticsActions.scss";
 
 export default function SyntheticsActions() {
   const { chainId } = useChainId();

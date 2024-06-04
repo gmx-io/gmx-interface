@@ -2,12 +2,12 @@ import { ethers } from "ethers";
 import useSWR from "swr";
 import type { Address } from "viem";
 
-import "./Actions.css";
+import "./ActionsV1.css";
 
 import { getContract } from "config/contracts";
 import { useAccountOrders } from "lib/legacy";
 
-import { getPositionQuery, getPositions } from "../Exchange/Exchange";
+import { getPositionQuery, getPositions } from "../../Exchange/Exchange";
 
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
@@ -34,14 +34,14 @@ import useWallet from "lib/wallets/useWallet";
 
 const USD_DECIMALS = 30;
 
-export default function ActionsPage() {
+export default function ActionsPageV1() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
 
-  return <Actions chainId={chainId} signer={signer} active={active} />;
+  return <ActionsV1 chainId={chainId} signer={signer} active={active} />;
 }
 
-export function Actions({
+function ActionsV1({
   chainId,
   signer,
   active,
