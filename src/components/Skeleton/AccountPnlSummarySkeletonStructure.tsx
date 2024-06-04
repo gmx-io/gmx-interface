@@ -15,7 +15,7 @@ export default function AccountPnlSummarySkeletonStructure() {
       <td className="px-5 py-13">
         <Skeleton width={63} />
       </td>
-      <td className="py-13 pl-5 pr-16">
+      <td className="py-13 pl-5 pr-16 text-right">
         <Skeleton width={51} />
       </td>
     </tr>
