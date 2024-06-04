@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { Contract, Wallet } from "ethers";
+import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
@@ -29,6 +29,8 @@ export async function callContract(
   }
 ) {
   try {
+    const wallet = contract.runner as Wallet;
+
     if (!Array.isArray(params) && typeof params === "object" && opts === undefined) {
       opts = params;
       params = [];
@@ -38,7 +40,7 @@ export async function callContract(
       opts = {};
     }
 
-    const txnOpts: any = {};
+    const txnOpts: Overrides = {};
 
     if (opts.value) {
       txnOpts.value = opts.value;
@@ -50,6 +52,11 @@ export async function callContract(
         sentMsg: opts.sentMsg || t`Transaction sent.`,
         detailsMsg: opts.detailsMsg || "",
       });
+    }
+
+    if (opts.customSigners) {
+      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await wallet.getNonce();
     }
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
