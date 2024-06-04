@@ -47,6 +47,7 @@ module.exports = {
     },
     lineHeight: {
       1: "1",
+      2: "2",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
     },

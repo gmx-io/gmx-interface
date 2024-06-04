@@ -16,7 +16,7 @@ export function MarketWithDirectionLabel({
 }) {
   return (
     <div
-      className={cx("inline-block", {
+      className={cx("inline-block leading-base", {
         "border-b border-dashed border-b-gray-400": bordered,
       })}
     >

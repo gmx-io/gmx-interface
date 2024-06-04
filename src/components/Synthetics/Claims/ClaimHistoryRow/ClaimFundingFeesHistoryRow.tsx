@@ -47,17 +47,21 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
   const marketContent = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
-      const formattedMarketNames = claimAction.markets.map((market, index) => (
-        <React.Fragment key={index}>
-          {index !== 0 && ", "}
-          <MarketWithDirectionLabel
-            bordered
-            indexName={getMarketIndexName(market)}
-            tokenSymbol={market.indexToken.symbol}
-            isLong={claimAction.isLongOrders[index]}
-          />
-        </React.Fragment>
-      ));
+      const formattedMarketNames = (
+        <div className="leading-2">
+          {claimAction.markets.map((market, index) => (
+            <React.Fragment key={index}>
+              {index !== 0 && ", "}
+              <MarketWithDirectionLabel
+                bordered
+                indexName={getMarketIndexName(market)}
+                tokenSymbol={market.indexToken.symbol}
+                isLong={claimAction.isLongOrders[index]}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+      );
 
       return (
         <Tooltip

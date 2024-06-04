@@ -40,17 +40,19 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const eventTitle = useMemo(() => _(claimCollateralEventTitles[claimAction.eventName]), [_, claimAction.eventName]);
 
   const marketNamesJoined = useMemo(() => {
-    return claimAction.claimItems.map(({ marketInfo }, index) => {
-      return (
-        <React.Fragment key={index}>
-          {index !== 0 && ", "}
-          <span className="whitespace-nowrap">
-            <TokenIcon className="mr-5" symbol={marketInfo.indexToken.symbol} displaySize={20} />
-            {getMarketIndexName(marketInfo)}
-          </span>
-        </React.Fragment>
-      );
-    });
+    return (
+      <div className="leading-2">
+        {claimAction.claimItems.map(({ marketInfo }, index) => (
+          <React.Fragment key={index}>
+            {index !== 0 && ", "}
+            <div className="inline-block whitespace-nowrap leading-base">
+              <TokenIcon className="mr-5" symbol={marketInfo.indexToken.symbol} displaySize={20} />
+              {getMarketIndexName(marketInfo)}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    );
   }, [claimAction.claimItems]);
 
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
