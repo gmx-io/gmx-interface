@@ -7,7 +7,6 @@ import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
-import { ARBITRUM } from "config/chains";
 
 export async function callContract(
   chainId: number,
@@ -46,6 +45,11 @@ export async function callContract(
       txnOpts.value = opts.value;
     }
 
+    if (opts.customSigners) {
+      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await wallet.getNonce();
+    }
+
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
       showCallContractToast({
         chainId,
@@ -54,31 +58,9 @@ export async function callContract(
       });
     }
 
-    if (opts.customSigners) {
-      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await wallet.getNonce();
-    }
-
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    const toCall: any = [];
-
-    // @ts-expect-error
-    if (!window.disableBrowserWalletRpc) {
-      toCall.push({ contract, caption: "Browser Wallet RPC" });
-    }
-
-    // @ts-expect-error
-    if (!window.disablePublicRpc) {
-      toCall.push({ contract: customSignerContracts[0], caption: "Public RPC" });
-    }
-
-    // @ts-expect-error
-    if (!window.disableFallbackRpc) {
-      toCall.push({ contract: customSignerContracts[1], caption: "Fallback RPC" });
-    }
-
-    const txnCalls = toCall.map(async ({ contract: cntrct, caption }) => {
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
       const txnInstance = { ...txnOpts };
 
       txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
@@ -89,17 +71,8 @@ export async function callContract(
 
       await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
 
-      return cntrct[method](...params, txnInstance).then((res) => {
-        if (chainId === ARBITRUM) {
-          // eslint-disable-next-line no-console
-          console.log(`Transaction sent via ${caption}`, res);
-        }
-        return res;
-      });
+      return cntrct[method](...params, txnInstance);
     });
-
-    // eslint-disable-next-line no-console
-    console.log("All RPC calls: ", txnCalls);
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
       if (errors.length > 1) {
