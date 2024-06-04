@@ -161,12 +161,12 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketTooltipHandle = useMemo(
     () =>
       msg.pathTokenSymbols ? (
-        <div className="cursor-help">
-          {msg.pathTokenSymbols!.map((symbol, index) => (
-            <span key={symbol} className="border-b border-dashed border-b-gray-400">
-              {index > 0 && " → "}
+        <div className="leading-2 cursor-help">
+          {msg.pathTokenSymbols!.map((symbol, index, arr) => (
+            <div key={symbol} className="inline-block border-b border-dashed border-b-gray-400 leading-base">
               <TokenWithIcon symbol={symbol} displaySize={20} />
-            </span>
+              {index < arr.length - 1 && <span className="mx-5">→</span>}
+            </div>
           ))}
         </div>
       ) : (
