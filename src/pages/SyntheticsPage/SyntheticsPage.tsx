@@ -21,14 +21,13 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Address } from "viem";
 
 import Helmet from "react-helmet";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useAccount, useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
@@ -41,13 +40,8 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "lib/usePendingTxns";
-import { DailyAndCumulativePnL } from "pages/AccountDashboard/DailyAndCumulativePnL";
-import { GeneralPerformanceDetails } from "pages/AccountDashboard/GeneralPerformanceDetails";
-import ButtonLink from "components/Button/ButtonLink";
-import { useTradePageVersion } from "lib/useTradePageVersion";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   openSettings: () => void;
@@ -58,7 +52,6 @@ enum ListSection {
   Orders = "Orders",
   Trades = "Trades",
   Claims = "Claims",
-  Dashboard = "Dashboard",
 }
 
 export function SyntheticsPage(p: Props) {
@@ -212,7 +205,6 @@ export function SyntheticsPage(p: Props) {
       [ListSection.Orders]: renderOrdersTabTitle(),
       [ListSection.Trades]: t`Trades`,
       [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
-      [ListSection.Dashboard]: t`Dashboard`,
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
@@ -302,7 +294,6 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
             {listSection === ListSection.Claims && renderClaims()}
-            {listSection === ListSection.Dashboard && <SyntheticsPageEmbeddedAccountDashboard />}
           </div>
         </div>
 
@@ -348,7 +339,6 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
           {listSection === ListSection.Claims && renderClaims()}
-          {listSection === ListSection.Dashboard && <SyntheticsPageEmbeddedAccountDashboard />}
         </div>
       </div>
 
@@ -361,39 +351,6 @@ export function SyntheticsPage(p: Props) {
       <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
 
       <Footer />
-    </div>
-  );
-}
-
-function SyntheticsPageEmbeddedAccountDashboard() {
-  const account = useAccount();
-  const { chainId } = useChainId();
-  const [tradePageVersion] = useTradePageVersion();
-
-  if (!account) {
-    return (
-      <div className="rounded-4 bg-slate-800 p-16">
-        <Trans>Connect Wallet</Trans>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-12">
-      <GeneralPerformanceDetails chainId={chainId} account={account as Address} />
-      <DailyAndCumulativePnL chainId={chainId} account={account as Address} />
-      <div>
-        <ButtonLink
-          className={"text-gray-300 hover:text-white"}
-          to={buildAccountDashboardUrl(account as Address, chainId, tradePageVersion)}
-          showExternalLinkArrow={false}
-        >
-          <span className="underline decoration-1 underline-offset-2">
-            <Trans>Open dashboard page</Trans>
-          </span>
-          .
-        </ButtonLink>
-      </div>
     </div>
   );
 }

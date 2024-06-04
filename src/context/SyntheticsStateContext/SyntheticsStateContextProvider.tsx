@@ -26,7 +26,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
-export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
+export type SyntheticsPageType = "accounts" | "trade" | "pools" | "leaderboard" | "competitions";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
@@ -89,7 +89,7 @@ export function SyntheticsStateContextProvider({
     checkSummedAccount = ethers.getAddress(paramsAccount);
   }
 
-  const account = pageType === "actions" ? checkSummedAccount : walletAccount;
+  const account = pageType === "accounts" ? checkSummedAccount : walletAccount;
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;

@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
+import type { Address } from "viem";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
@@ -85,7 +86,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
-import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
+import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
@@ -361,16 +362,23 @@ function FullApp() {
               </Route>
               <Route exact path="/actions/:v/:account">
                 {({ match }) => (
-                  <Redirect to={`/actions/${match?.params.account}?v=${match?.params.v === "v1" ? 1 : 2}`} />
+                  <Redirect
+                    to={buildAccountDashboardUrl(
+                      match?.params.account as Address,
+                      chainId,
+                      match?.params.v === "v1" ? 1 : 2
+                    )}
+                  />
                 )}
               </Route>
-              <Route exact path="/actions">
-                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode>
+              <Redirect exact from="/actions/v2" to="/accounts" />
+              <Redirect exact from="/actions" to="/accounts" />
+              <Route exact path="/accounts">
+                <SyntheticsStateContextProvider pageType="accounts" skipLocalReferralCode>
                   <SyntheticsActions />
                 </SyntheticsStateContextProvider>
               </Route>
-              <Redirect exact from="/actions/v2" to="/actions" />
-              <Route exact path="/actions/:account">
+              <Route exact path="/accounts/:account">
                 <AccountDashboard />
               </Route>
 

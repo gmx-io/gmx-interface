@@ -62,7 +62,7 @@ export function AccountDashboard() {
       />
 
       {version === 2 && (
-        <SyntheticsStateContextProvider overrideChainId={chainId} pageType="actions" skipLocalReferralCode={false}>
+        <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
           <div className="flex flex-col gap-20">
             <div className="flex flex-row flex-wrap gap-20">
               <div className="max-w-full grow-[2] *:size-full">
@@ -84,8 +84,22 @@ export function AccountDashboard() {
   );
 }
 
-export function buildAccountDashboardUrl(account: Address, chainId: number, version: number) {
-  return `/actions/${account}?${VERSION_QUERY_PARAM}=${version}&${NETWORK_QUERY_PARAM}=${NETWORK_ID_SLUGS_MAP[chainId]}`;
+export function buildAccountDashboardUrl(
+  account: Address,
+  chainId: number | undefined,
+  version: number | undefined = 2
+) {
+  let path = `/accounts/${account}`;
+
+  const qs = new URLSearchParams();
+
+  if (chainId) {
+    qs.set(NETWORK_QUERY_PARAM, NETWORK_ID_SLUGS_MAP[chainId]);
+  }
+
+  qs.set(VERSION_QUERY_PARAM, version.toString());
+
+  return path + "?" + qs.toString();
 }
 
 function usePageParams(initialChainId: number) {

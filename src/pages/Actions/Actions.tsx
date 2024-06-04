@@ -121,7 +121,7 @@ export function Actions({
                 {getIsSyntheticsSupported(chainId) && (
                   <Trans>
                     <div>
-                      <ExternalLink newTab={false} href="/#/actions">
+                      <ExternalLink newTab={false} href="/#/accounts">
                         Check on GMX V2 {networkName}
                       </ExternalLink>{" "}
                       or{" "}

@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import type { Address } from "viem";
 
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
@@ -11,6 +12,7 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
@@ -223,7 +225,10 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
-            <Link className="TradeHistoryRow-account muted underline" to={`/actions/${tradeAction.account}`}>
+            <Link
+              className="TradeHistoryRow-account muted underline"
+              to={buildAccountDashboardUrl(tradeAction.account as Address, undefined, 2)}
+            >
               {tradeAction.account}
             </Link>
           )}
