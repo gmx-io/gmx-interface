@@ -21,6 +21,7 @@ import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import disconnect from "img/ic_sign_out_20.svg";
 import oneClickTradingIcon from "img/one_click_trading_20.svg";
+import pnlAnalysisIcon from "img/ic_pnl_analysis_20.svg";
 
 import "./AddressDropdown.scss";
 
@@ -64,7 +65,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                 helperToast.success(t`Address copied to your clipboard`);
               }}
             >
-              <img width={20} src={copy} alt="Copy user address" />
+              <img width={20} className="size-20" src={copy} alt="Copy user address" />
               <p>
                 <Trans>Copy Address</Trans>
               </p>
@@ -72,7 +73,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
-              <img width={20} src={copy} alt="Copy user address" />
+              <img width={20} className="size-20" src={pnlAnalysisIcon} alt="Copy user address" />
               <p>
                 <Trans>PnL Analysis</Trans>
               </p>
@@ -80,7 +81,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <ExternalLink href={accountUrl} className="menu-item">
-              <img width={20} src={externalLink} alt="Open address in explorer" />
+              <img width={20} className="size-20" src={externalLink} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
@@ -88,7 +89,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={handleSubaccountClick}>
-              <img width={20} src={oneClickTradingIcon} alt="Open One-click Trading settings" />
+              <img width={20} className="size-20" src={oneClickTradingIcon} alt="Open One-click Trading settings" />
               <p>
                 <Trans>One-Click Trading</Trans>
               </p>
@@ -96,7 +97,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img width={20} src={disconnect} alt="Disconnect the wallet" />
+              <img width={20} className="size-20" src={disconnect} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>
               </p>
