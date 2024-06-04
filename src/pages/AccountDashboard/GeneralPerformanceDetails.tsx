@@ -157,11 +157,13 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           content={
             <>
               <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={String(row.wins + row.losses)} />
-              <StatsTooltipRow
-                label={t`Win Rate`}
-                showDollar={false}
-                value={formatPercentage(row.winsLossesRatioBps)}
-              />
+              {row.winsLossesRatioBps !== undefined && (
+                <StatsTooltipRow
+                  label={t`Win Rate`}
+                  showDollar={false}
+                  value={formatPercentage(row.winsLossesRatioBps)}
+                />
+              )}
             </>
           }
         />
