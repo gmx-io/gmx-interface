@@ -656,10 +656,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
 msgstr ""
@@ -828,6 +824,10 @@ msgstr "GMXの基本"
 msgid "Referral Code"
 msgstr "紹介コード"
 
+#: src/components/Footer/constants.ts
+msgid "Charts by TradingView"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
@@ -934,6 +934,10 @@ msgstr "出金リクエスト"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -1163,6 +1167,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Discover GMX Alerts"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -1430,6 +1438,10 @@ msgstr ""
 msgid "V1 Airdrop"
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
 msgstr "執行価格に近すぎます"
@@ -1519,8 +1531,8 @@ msgstr "{0} {longOrShortText}を増やす  +{1} USD, {2} 価格: {3} USD"
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
 
-#: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Alerts"
 msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -1969,6 +1981,10 @@ msgstr "更新"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
 msgstr "移転が開始されました。"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Risk Alerts"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
@@ -3162,6 +3178,10 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr ""
@@ -3472,6 +3492,10 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "清算価格"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trading Pair Price Alerts"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>マーケットが選択されました</4>"
@@ -3559,6 +3583,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -4155,6 +4183,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "利用率"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "GMX Announcements"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid execution fee buffer value"
 msgstr ""
@@ -4448,6 +4480,8 @@ msgstr "取引"
 #: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
 msgstr "無効な清算価格"
 
@@ -4582,6 +4616,10 @@ msgstr ""
 msgid "Useful Links"
 msgstr "有用なリンク"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Confirmations"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -4611,6 +4649,10 @@ msgstr "市場減少"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet 365d expected Fees"
+msgstr ""
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Governance Alerts"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4873,6 +4915,10 @@ msgstr ""
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "または、別の\"担保\"トークンを選択することもできます。"
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
@@ -4991,6 +5037,10 @@ msgstr ""
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr ""
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Powered by"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed"
 msgstr ""
@@ -5040,6 +5090,10 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "ウォレット未接続"
+
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Liquidation Confirmations"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above highest Limit Price."
@@ -5592,6 +5646,10 @@ msgstr "レバレッジ有効化中..."
 msgid "Enable One-Click Trading"
 msgstr ""
 
+#: src/components/NotifyModal/NotifyModal.tsx
+msgid "Trade Errors"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr ""
@@ -5692,6 +5750,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
+msgstr ""
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
@@ -6336,10 +6398,6 @@ msgstr ""
 msgid "Increase"
 msgstr "増加"
 
-#: src/components/Common/SEO.js
-msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.tsx
 #~ msgid "Avalanche Max. APR: {0}"
 #~ msgstr ""
@@ -6592,6 +6650,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "Alerts"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
@@ -7003,6 +7065,10 @@ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
+msgstr ""
+
+#: src/pages/Home/Home.js
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

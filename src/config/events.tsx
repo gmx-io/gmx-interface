@@ -78,7 +78,7 @@ export const appEventsData: EventData[] = [
   {
     id: "delegate-voting-power",
     title: "Delegate your GMX Voting Power",
-    isActive: true,
+    isActive: false,
     endDate: "6 Jun 2024, 23:59",
     bodyText: (
       <>
@@ -87,5 +87,29 @@ export const appEventsData: EventData[] = [
         before staking or claiming GMX rewards.
       </>
     ),
+  },
+  {
+    id: "max-leverage-100x",
+    title: "Leverage increased to 100x",
+    isActive: true,
+    endDate: "14 Jun 2024, 0:00",
+    bodyText: "Trade BTC/USD and ETH/USD with up to 100x leverage on Arbitrum.",
+    link: {
+      text: "Read more",
+      href: "https://snapshot.org/#/gmx.eth/proposal/0x70f1477cee26a04c8dc1606b2cc157b7d4811c63057e56c1259eefe200165145",
+      newTab: true,
+    },
+  },
+  {
+    id: "gmxusdc-market",
+    title: "GMX/USD market added on Arbitrum",
+    isActive: true,
+    endDate: "14 Jun 2024, 0:00",
+    bodyText: "Trade GMX/USD, or provide liquidity using GMX or USDC.",
+    link: {
+      text: "Read more",
+      href: "https://snapshot.org/#/gmx.eth/proposal/0x5fc32bea68c7e2ee237c86bae73859f742304c130df9a44495b816cc62b4f30f",
+      newTab: true,
+    },
   },
 ];

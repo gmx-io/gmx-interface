@@ -394,7 +394,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-trade-link {
-  margin-right: 2.4rem;
+  margin-right: 0.8rem;
 }
 
 .App-header-user-address {
@@ -935,9 +935,8 @@ button.App-button-option:disabled {
   width: 1.85rem;
   height: 1.85rem;
 }
-
-.App-header-user-netowork {
-  margin-right: 2.4rem;
+.App-header-user {
+  gap: 1.6rem;
 }
 
 .App-content {
@@ -1246,6 +1245,17 @@ button.App-button {
   display: none;
 }
 
+@media (max-width: 1400px) {
+  .App-header-container-left .a,
+  .App-header-container-left a {
+    padding: 1.8rem 1.4rem;
+  }
+
+  .App-header-trade-link {
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 1100px) {
   .chart-positions-settings {
     display: block;
@@ -1262,15 +1272,6 @@ button.App-button {
   .short-connect-btn {
     display: flex !important;
   }
-
-  .App-header-trade-link {
-    margin-right: 1.6rem;
-  }
-
-  .App-header-user-netowork {
-    margin-right: 1.6rem;
-  }
-
   button.App-connect-wallet {
     margin-top: 0.465rem;
     margin-bottom: 0.465rem;
@@ -1406,15 +1407,11 @@ button.App-button {
 }
 
 @media (max-width: 450px) {
-  .App-header-trade-link {
-    margin-right: 0.6rem;
+  .App-header-user {
+    gap: 0.6rem;
   }
   .App-header-trade-link a {
     padding: 0 0.8rem;
-  }
-
-  .App-header-user-netowork {
-    margin-right: 0.6rem;
   }
 
   .App-header-menu-icon-block {
