@@ -247,16 +247,17 @@ s .default-btn:active {
   padding-left: var(--default-container-padding);
   padding-right: var(--default-container-padding);
 
-  @media (max-width: 600px) {
-    margin-left: var(--default-container-padding-mobile);
+  // Media order matters
+  @media (max-width: 1264px) {
+    margin-left: var(--default-container-padding);
     padding-left: 0;
     max-width: none;
   }
 
-  @media (max-width: 1264px) {
-    max-width: none;
+  @media (max-width: 600px) {
+    margin-left: var(--default-container-padding-mobile);
     padding-left: 0;
-    margin-left: var(--default-container-padding);
+    max-width: none;
   }
 }
 

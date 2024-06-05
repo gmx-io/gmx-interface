@@ -86,7 +86,7 @@ export function LeaderboardNavigation() {
   }, [pageKey]);
 
   return (
-    <div className="LeaderboardNavigation default-container ">
+    <div className="LeaderboardNavigation default-container !ml-10 !pl-0">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}
