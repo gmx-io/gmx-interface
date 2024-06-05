@@ -116,9 +116,16 @@ const CUSTOM_DATE_LOCALES = Object.fromEntries(
       ...dateLocale,
       formatRelative: (...args) => {
         const token = args[0];
+        // @see docs for patterns https://date-fns.org/v3.6.0/docs/format
+
         if (token === "other" || !originalFormatRelative) {
           return "dd MMM yyyy, HH:mm";
         }
+
+        if (token === "lastWeek") {
+          return "eeee, HH:mm";
+        }
+
         return originalFormatRelative(...args);
       },
     };
