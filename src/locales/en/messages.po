@@ -4655,7 +4655,7 @@ msgstr "Governance"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+#: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
 msgstr "Remove Row"
 
@@ -7230,7 +7230,7 @@ msgstr "Order Execution Price"
 msgid "Slippage is too high"
 msgstr "Slippage is too high"
 
-#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+#: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Add Row"
 msgstr "Add Row"
 

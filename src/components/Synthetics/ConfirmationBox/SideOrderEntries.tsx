@@ -1,19 +1,21 @@
-import "./SidecarEntries.scss";
+import { useRef, useMemo, useCallback } from "react";
+import cx from "classnames";
+import { FaPlus } from "react-icons/fa";
+import { t } from "@lingui/macro";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { FaPlus } from "react-icons/fa";
-import cx from "classnames";
-import { formatUsd } from "lib/numbers";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import { MarketInfo } from "domain/synthetics/markets";
-import { t } from "@lingui/macro";
-import { useRef, useMemo, useCallback } from "react";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { SidecarOrderEntryGroup, SidecarOrderEntry } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
+import { formatUsd } from "lib/numbers";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
+const ADD_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-green-500) 15%,#0000)" };
+const REMOVE_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-red-500) 15%,#0000)" };
 
 interface SidecarEntryProps {
   entry: SidecarOrderEntry;
@@ -31,7 +33,7 @@ interface SidecarEntryProps {
   entriesCount: number;
 }
 
-function SidecarEntry({
+function SideOrderEntry({
   entry,
   commonError,
   indexToken,
@@ -101,24 +103,32 @@ function SidecarEntry({
   const removeRowTooltip = useMemo(() => <span>{t`Remove Row`}</span>, []);
 
   return (
-    <div className="SidecarEntry-row" key={entry.id}>
-      <div className={cx("Sidecar-price", { "input-error": priceError })}>
-        <span className="price-symbol">$</span>
+    <div className={cx("flex flex-row gap-10")} key={entry.id}>
+      <div
+        className={cx(
+          "group relative rounded-4 border border-solid border-[#212540] bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
+          { "border-red-500": priceError }
+        )}
+      >
+        <span className="cursor-pointer opacity-70">$</span>
 
         <NumberInput
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className="price-input"
+          className="max-w-[7rem] rounded-4 py-2 pr-5 text-right text-[1.4rem]"
         />
 
         {priceError && (
-          <div className={cx("Sidecar-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>{priceError}</div>
+          <div className={cx("z-[1001] hidden w-max min-w-0 group-hover:block", "Tooltip-popup bottom")}>
+            {priceError}
+          </div>
         )}
       </div>
       {displayMode === "percentage" && (
-        <div className={cx("Sidecar-percentage", { "input-error": !!percentageError })}>
+        <div className={cx("relative", { "border-red-500": !!percentageError })}>
           <SuggestionInput
+            inputClassName="w-48"
             value={entry.percentage?.input ?? ""}
             setValue={onPercentageSetValue}
             placeholder="Size"
@@ -126,34 +136,49 @@ function SidecarEntry({
             symbol="%"
           />
           {sizeTooltipMsg && (
-            <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>{sizeTooltipMsg}</div>
+            <div className={cx("z-[1001] hidden min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+              {sizeTooltipMsg}
+            </div>
           )}
         </div>
       )}
       {displayMode === "sizeUsd" && (
-        <div className={cx("Sidecar-size", { "input-error": !!sizeError })}>
-          <span className="price-symbol">$</span>
+        <div
+          className={cx(
+            "group relative rounded-4 border border-solid border-[#212540] bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
+            { "border-red-500": !!sizeError }
+          )}
+        >
+          <span className="cursor-pointer opacity-70">$</span>
           <NumberInput
             value={entry.sizeUsd.input ?? ""}
             onValueChange={onSizeUsdValueChange}
             placeholder="Size"
-            className="size-input"
+            className="w-[8.1rem] rounded-4 py-2 pr-5 text-right text-[1.4rem]"
           />
           {sizeTooltipMsg && (
-            <div className={cx("Sidecar-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>{sizeTooltipMsg}</div>
+            <div className={cx("z-[1001] hidden min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+              {sizeTooltipMsg}
+            </div>
           )}
         </div>
       )}
-      <div className="Sidecar-actions">
+
+      <div className="flex h-full items-center">
         {canAddEntry && (
           <TooltipWithPortal
             handle={
-              <button className="action-add" disabled={!allowAddEntry} onClick={handleAddEntry}>
+              <button
+                className="inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70"
+                style={ADD_BUTTON_STYLE}
+                disabled={!allowAddEntry}
+                onClick={handleAddEntry}
+              >
                 <FaPlus color="#5EC989" />
               </button>
             }
-            portalClassName="Sidecar-helper-text"
-            handleClassName="mr-5"
+            portalClassName="min-w-min whitespace-nowrap"
+            handleClassName="leading-1 mr-5"
             position="right"
             content={addRowTooltip}
             openDelay={1500}
@@ -162,14 +187,16 @@ function SidecarEntry({
         <TooltipWithPortal
           handle={
             <button
-              className="action-remove"
+              className="inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70"
+              style={REMOVE_BUTTON_STYLE}
               onClick={onDeleteEntry}
               disabled={entriesCount === 1 && !entry.percentage && !entry.price}
             >
               <FaPlus color="#E74E5D" className="rotate-45" />
             </button>
           }
-          portalClassName="Sidecar-helper-text"
+          portalClassName="min-w-min whitespace-nowrap"
+          handleClassName="leading-1"
           position="right"
           content={removeRowTooltip}
           openDelay={1500}
@@ -181,11 +208,11 @@ function SidecarEntry({
 
 type SidecarEntriesProps = {
   entriesInfo: SidecarOrderEntryGroup;
-  marketInfo?: MarketInfo;
   displayMode: "percentage" | "sizeUsd";
 };
 
-function SidecarEntries({ entriesInfo, marketInfo, displayMode }: SidecarEntriesProps) {
+export function SideOrderEntries({ entriesInfo, displayMode }: SidecarEntriesProps) {
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -203,9 +230,9 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: SidecarEntries
   );
 
   return (
-    <div className="SidecarEntries-wrapper" ref={containerRef}>
+    <div className="grid gap-y-3" ref={containerRef}>
       {displayableEntries?.map((entry) => (
-        <SidecarEntry
+        <SideOrderEntry
           key={entry.id}
           entry={entry}
           commonError={entriesInfo.error}
@@ -222,5 +249,3 @@ function SidecarEntries({ entriesInfo, marketInfo, displayMode }: SidecarEntries
     </div>
   );
 }
-
-export default SidecarEntries;

@@ -4652,7 +4652,7 @@ msgstr ""
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+#: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
 msgstr ""
 
@@ -7224,7 +7224,7 @@ msgstr "注文執行価格"
 msgid "Slippage is too high"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
+#: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Add Row"
 msgstr ""
 
