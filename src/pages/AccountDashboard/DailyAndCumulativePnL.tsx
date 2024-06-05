@@ -1,6 +1,6 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
-import { subDays, lightFormat } from "date-fns";
+import { lightFormat } from "date-fns";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
