@@ -652,10 +652,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-#~ msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
 msgstr ""
@@ -824,6 +820,10 @@ msgstr "GMX 펀더멘탈"
 msgid "Referral Code"
 msgstr "추천인 코드"
 
+#: src/components/Footer/constants.ts
+msgid "Charts by TradingView"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
@@ -921,6 +921,10 @@ msgstr "인출 요청"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -1520,10 +1524,6 @@ msgstr "esGMX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr ""
-
-#: src/pages/Home/Home.js
-#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -3160,6 +3160,10 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr ""
@@ -4448,6 +4452,8 @@ msgstr "거래"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"

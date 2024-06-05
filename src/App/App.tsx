@@ -68,12 +68,13 @@ import {
   REFERRAL_CODE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
-import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
 import { Provider } from "ethers";
@@ -119,12 +120,7 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-
-  const hasV1LostFocus = useHasLostFocus({
-    timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages: ["/trade", "/v2"],
-    debugId: "V1 Events",
-  });
+  const { hasV1LostFocus } = useHasLostFocus();
 
   useEventToast();
   const query = useRouteQuery();
@@ -207,27 +203,10 @@ function FullApp() {
 
     // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
     // each time the Exchange components re-renders, which happens on every data update
-    const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
-    const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
-    const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
-    const onDecreasePosition = (...args) => callExchangeRef("onDecreasePosition", ...args);
-    const onCancelIncreasePosition = (...args) => callExchangeRef("onCancelIncreasePosition", ...args);
-    const onCancelDecreasePosition = (...args) => callExchangeRef("onCancelDecreasePosition", ...args);
-
-    wsVault.on("UpdatePosition", onUpdatePosition);
-    wsVault.on("ClosePosition", onClosePosition);
-    wsVault.on("IncreasePosition", onIncreasePosition);
-    wsVault.on("DecreasePosition", onDecreasePosition);
-    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
-    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+    const unsubscribe = subscribeToV1Events(wsVault, wsPositionRouter, callExchangeRef);
 
     return function cleanup() {
-      wsVault.off("UpdatePosition", onUpdatePosition);
-      wsVault.off("ClosePosition", onClosePosition);
-      wsVault.off("IncreasePosition", onIncreasePosition);
-      wsVault.off("DecreasePosition", onDecreasePosition);
-      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
-      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+      unsubscribe();
     };
   }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 

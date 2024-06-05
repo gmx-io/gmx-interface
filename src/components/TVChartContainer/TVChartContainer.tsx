@@ -1,7 +1,7 @@
 import Loader from "components/Common/Loader";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
-import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
@@ -34,7 +34,7 @@ type Props = {
         symbol: string;
       } & TokenPrices)
     | { symbol: string };
-  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
 };
 
 export default function TVChartContainer({

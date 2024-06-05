@@ -652,10 +652,6 @@ msgstr "Closing..."
 msgid "Code already taken"
 msgstr "Code already taken"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-#~ msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
 msgstr "Slippage should be less than -5%"
@@ -824,6 +820,10 @@ msgstr "GMX fundamentals"
 msgid "Referral Code"
 msgstr "Referral Code"
 
+#: src/components/Footer/constants.ts
+msgid "Charts by TradingView"
+msgstr "Charts by TradingView"
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
@@ -921,6 +921,10 @@ msgstr "Request Withdraw"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
+#~ msgstr "The position would be immediately liquidated upon open. Try reducing the size."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -1520,10 +1524,6 @@ msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr "GMX Alerts"
-
-#: src/pages/Home/Home.js
-#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-#~ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -3160,6 +3160,10 @@ msgstr "Pending {0} approval"
 msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr "The position would be immediately liquidated upon order execution. Try reducing the size."
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr "BUYABLE"
@@ -4451,6 +4455,8 @@ msgstr "Transaction"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
