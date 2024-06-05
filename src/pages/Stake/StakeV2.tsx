@@ -644,9 +644,7 @@ function VesterDepositModal(props: {
                 <div className="align-right">
                   <TooltipWithPortal
                     handle={`${formatAmount(
-                      reserveAmount !== undefined && reserveAmount >= additionalReserveAmount
-                        ? reserveAmount
-                        : additionalReserveAmount,
+                      nextReserveAmount,
                       18,
                       2,
                       true
