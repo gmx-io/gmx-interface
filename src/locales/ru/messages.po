@@ -333,8 +333,8 @@ msgid "Treasury"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2/><3>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</3><4/><5>Check GM pools' performance against other LP Positions in the <6>GMX Dune Dashboard</6>.</5>"
-msgstr ""
+#~ msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2/><3>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</3><4/><5>Check GM pools' performance against other LP Positions in the <6>GMX Dune Dashboard</6>.</5>"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "View status"
@@ -938,6 +938,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
 #~ msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
