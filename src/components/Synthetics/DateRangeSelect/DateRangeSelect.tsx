@@ -134,7 +134,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
     [onChange]
   );
 
-  const { i18n } = useLingui();
+  const { _, i18n } = useLingui();
   const localeStr = i18n.locale;
 
   const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
@@ -152,20 +152,32 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
     return `${start} — ${end}`;
   }, [startDate, locale, endDate]);
 
-  const handleSelectLastMonth = useCallback(() => {
-    const now = setTime(new Date(), {
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      milliseconds: 0,
-    });
-    const lastMonth = subMonths(now, 1);
-    onChange([lastMonth, now]);
-  }, [onChange]);
+  const handlePresetSelect = useCallback(
+    (event: React.MouseEvent) => {
+      const button = event.target as HTMLButtonElement;
+      const preset = button.dataset.preset as keyof typeof PRESETS;
 
-  const handleSelectAllTime = useCallback(() => {
-    onChange([undefined, undefined]);
-  }, [onChange]);
+      if (!preset) {
+        return;
+      }
+
+      if (preset === "allTime") {
+        onChange([undefined, undefined]);
+        return;
+      }
+
+      const duration = PRESETS[preset];
+
+      if (!duration) {
+        return;
+      }
+
+      const res = sub(new Date(), duration);
+
+      onChange([res, new Date()]);
+    },
+    [onChange]
+  );
 
   return (
     <>
@@ -181,12 +193,17 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
           <div className="DateRangeSelect-common-items">
-            <Button variant="secondary" onClick={handleSelectLastMonth}>
-              {t`Last month`}
-            </Button>
-            <Button variant="secondary" onClick={handleSelectAllTime}>
-              {t`All time`}
-            </Button>
+            {["days7", "days30", "days90", "days365", "allTime"].map((preset) => (
+              <Button
+                key={preset}
+                variant="secondary"
+                className="!px-10 !py-6"
+                data-preset={preset}
+                onClick={handlePresetSelect}
+              >
+                {_(PRESET_LABELS[preset])}
+              </Button>
+            ))}
           </div>
           <DateRange
             classNames={DATE_RANGE_CLASSNAMES}
