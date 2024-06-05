@@ -4104,7 +4104,6 @@ msgstr "Une image instantanée de la valeur en USD de votre {0} collatéral init
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "Tout le temps"
 
@@ -6650,7 +6649,6 @@ msgstr "Les lettres, les chiffres et les caractères de soulignement sont autori
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Le mois dernier"

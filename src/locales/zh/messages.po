@@ -4104,7 +4104,6 @@ msgstr "您的{0}抵押品快照在您开启头寸时已以USD价值被存取"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "所有时间"
 
@@ -6650,7 +6649,6 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "上个月"

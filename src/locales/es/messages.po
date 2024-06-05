@@ -4104,7 +4104,6 @@ msgstr "Se registra el valor en USD de tu {0} garantía en el momento que la pos
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "Todo el tiempo"
 
@@ -6650,7 +6649,6 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "El mes pasado"

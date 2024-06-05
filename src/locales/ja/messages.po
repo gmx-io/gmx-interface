@@ -4104,7 +4104,6 @@ msgstr "{0}の担保のUSドル建の価値は、ポジションがオープン�
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "すべての時間"
 
@@ -6650,7 +6649,6 @@ msgstr "英数字とアンダースコア記号のみ使用できます。"
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "先月"

@@ -4107,7 +4107,6 @@ msgstr "A snapshot of the USD value of your {0} collateral is taken when the pos
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "All time"
 
@@ -6656,7 +6655,6 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Referral code submitted!"
 msgstr "Referral code submitted!"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Last month"

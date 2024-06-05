@@ -4104,7 +4104,6 @@ msgstr "{0}담보의 USD가치 스냅샷은 해당 포지션이 열려있을 때
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "All time"
 msgstr "모든 시간"
 
@@ -6650,7 +6649,6 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "지난 달"
