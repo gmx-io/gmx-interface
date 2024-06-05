@@ -174,7 +174,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasExistingPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasExistingPositionWarning" type="info" compact textColor={textColor}>
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
           <WithActon>
@@ -270,7 +270,7 @@ export const useTradeboxPoolWarnings = (
     const address = marketsOptions.collateralWithOrder!.address;
 
     warning.push(
-      <AlertInfo key="showHasExistingOrderWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
         <Trans>
           You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
@@ -292,7 +292,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterOpenFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterOpenFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
           You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
@@ -312,7 +312,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterNetFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterNetFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterNetFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
           You can get a {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
           {getMarketPoolName(bestNetFeeMarket)} market pool.
@@ -332,7 +332,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterOpenFeesAndNetFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
           You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
