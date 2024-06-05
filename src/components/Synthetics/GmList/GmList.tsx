@@ -477,20 +477,26 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
 }
 
 function ApyTooltipContent() {
-  const daysConsidered = useDaysConsideredInMarketsApr();
   return (
     <p className="text-white">
       <Trans>
         <p>
-          APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current
-          borrowing fee.{" "}
+          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
+          borrowing fee. It excludes:
+          <br />
+          <br />
+          - price changes of the underlying token(s)
+          <br />
+          - traders' PnL, which is expected to be neutral in the long term
+          <br />
+          - funding fees, which are exchanged between traders
+          <br />
+          <br />
           <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
             Read more about GM token pricing
           </ExternalLink>
           .
         </p>
-        <br />
-        <p>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</p>
         <br />
         <p>
           Check GM pools' performance against other LP Positions in the{" "}
