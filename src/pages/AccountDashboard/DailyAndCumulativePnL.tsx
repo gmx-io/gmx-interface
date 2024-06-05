@@ -122,8 +122,8 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
                 tickLine={false}
                 angle={-90}
                 fontSize={12}
-                tickMargin={20}
-                height={45}
+                tickMargin={25}
+                height={50}
                 dx={-4}
                 minTickGap={10}
                 tick={CHART_TICK_PROPS}
