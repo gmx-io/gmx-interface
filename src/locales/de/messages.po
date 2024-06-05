@@ -2284,10 +2284,6 @@ msgstr "Min. Empfangen"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Verfügbarer Auszahlungsbetrag aus GLP. Mittel, die nicht durch aktuelle offene Positionen in Anspruch genommen werden."
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Month"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -5273,6 +5269,7 @@ msgid "Limit order submitted!"
 msgstr "Limit-Order übermittelt!"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
 msgstr ""
 
@@ -7135,6 +7132,7 @@ msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 30d"
 msgstr ""
 
@@ -7549,8 +7547,4 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"
-msgstr ""
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Week"
 msgstr ""

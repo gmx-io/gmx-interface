@@ -51,7 +51,7 @@ const CSV_ICON_INFO = {
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
-const getInitialDate = () => subDays(new Date(), 90);
+const getInitialDate = () => undefined;
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = { fill: "var(--color-gray-400)" };
 

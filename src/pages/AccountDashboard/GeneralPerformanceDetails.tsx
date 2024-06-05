@@ -23,8 +23,8 @@ import {
 const bucketLabelMap = {
   today: msg`Today`,
   yesterday: msg`Yesterday`,
-  week: msg`Week`,
-  month: msg`Month`,
+  week: msg`Last 7d`,
+  month: msg`Last 30d`,
   year: msg`This Year`,
   all: msg`All Time`,
 };
