@@ -104,10 +104,11 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
         <TooltipWithPortal
           disableHandleStyle
           portalClassName="cursor-help *:cursor-auto"
-          className={cx(
-            "cursor-help underline decoration-dashed decoration-1 underline-offset-2",
-            row.pnlUsd > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
-          )}
+          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
+            "text-green-500 decoration-green": row.pnlUsd > 0,
+            "text-red-500 decoration-red": row.pnlUsd < 0,
+            "decoration-gray-400": row.pnlUsd === 0n,
+          })}
           content={
             showDebugValues ? (
               <GeneralPerformanceDetailsDebugTooltip row={row} />
@@ -142,10 +143,11 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
         <TooltipWithPortal
           disableHandleStyle
           portalClassName="cursor-help *:cursor-auto"
-          className={cx(
-            "cursor-help underline decoration-dashed decoration-1 underline-offset-2",
-            row.pnlBps > 0 ? "text-green-500 decoration-green" : "text-red-500 decoration-red"
-          )}
+          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
+            "text-green-500 decoration-green": row.pnlBps > 0n,
+            "text-red-500 decoration-red": row.pnlBps < 0n,
+            "decoration-gray-400": row.pnlBps === 0n,
+          })}
           content={<StatsTooltipRow label={t`Capital Used`} showDollar={false} value={formatUsd(row.usedCapitalUsd)} />}
         >
           {formatPercentage(row.pnlBps, { signed: true })}
