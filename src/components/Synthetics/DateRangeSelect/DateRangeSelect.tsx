@@ -8,8 +8,6 @@ import { Calendar, DateRange, ClassNames as DateRangeClassNames, Range, RangeKey
 
 import addYears from "date-fns/addYears";
 import format from "date-fns/format";
-import setTime from "date-fns/set";
-import subMonths from "date-fns/subMonths";
 
 import dateDe from "date-fns/locale/de";
 import dateEn from "date-fns/locale/en-US";
