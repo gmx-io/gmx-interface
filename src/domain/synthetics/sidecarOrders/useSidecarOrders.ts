@@ -8,7 +8,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxSwapRoutes,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxCollateralToken,
@@ -17,6 +16,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxNextPositionValues,
+  selectTradeboxFindSwapPath,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectConfirmationBoxSidecarOrdersExistingSlEntries,
@@ -37,7 +37,7 @@ export function useSidecarOrders() {
   const uiFeeFactor = useUiFeeFactor();
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
-  const swapRoute = useSelector(selectTradeboxSwapRoutes);
+  const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -166,7 +166,7 @@ export function useSidecarOrders() {
       )
         return;
 
-      if (!marketInfo || !mockPositionInfo || !swapRoute || !order) {
+      if (!marketInfo || !mockPositionInfo || !findSwapPath || !order) {
         return;
       }
 
@@ -182,13 +182,13 @@ export function useSidecarOrders() {
         indexTokenAmount: size,
         triggerPrice: price.value,
         position: mockPositionInfo,
-        findSwapPath: swapRoute.findSwapPath,
+        findSwapPath,
         userReferralInfo,
         uiFeeFactor,
         strategy: "independent",
       });
     },
-    [marketInfo, mockPositionInfo, swapRoute, uiFeeFactor, userReferralInfo]
+    [marketInfo, mockPositionInfo, findSwapPath, uiFeeFactor, userReferralInfo]
   );
 
   const limit = useMemo(() => {

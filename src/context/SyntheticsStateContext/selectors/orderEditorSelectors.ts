@@ -44,7 +44,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { makeSelectNextPositionValuesForIncrease, makeSelectSwapRoutes } from "./tradeSelectors";
+import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { getWrappedToken } from "config/tokens";
 import {
@@ -435,8 +435,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
   if (!market) return undefined;
 
-  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
-  const swapRoute = q(selectSwapRoutes);
+  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
+  const findSwapPath = q(selectFindSwapPath);
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const existingPosition = q(selectOrderEditorExistingPosition);
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
@@ -457,21 +457,21 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
     position: existingPosition,
-    findSwapPath: swapRoute.findSwapPath,
+    findSwapPath,
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
   });
 });
 
-export const selectOrderEditorSwapRoutes = createSelector((q) => {
+export const selectOrderEditorFindSwapPath = createSelector((q) => {
   const order = q(selectEditingOrder);
   if (!order) throw new Error("selectOrderEditorSwapRoutes: Order is not defined");
 
   const toToken = q(selectOrderEditorToToken);
-  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
+  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
 
-  return q(selectSwapRoutes);
+  return q(selectFindSwapPath);
 });
 
 export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {

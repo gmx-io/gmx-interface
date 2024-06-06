@@ -78,7 +78,7 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorSwapRoutes,
+  selectOrderEditorFindSwapPath,
   selectOrderEditorToToken,
   selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
@@ -156,7 +156,7 @@ export function OrderEditor(p: Props) {
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
-  const swapRoute = useSelector(selectOrderEditorSwapRoutes);
+  const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
   const uiFeeFactor = useUiFeeFactor(chainId);
@@ -325,7 +325,7 @@ export function OrderEditor(p: Props) {
         const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
-          findSwapPath: swapRoute.findSwapPath,
+          findSwapPath,
           indexToken: positionIndexToken,
           indexTokenAmount,
           initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
