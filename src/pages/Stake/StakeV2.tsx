@@ -1042,15 +1042,14 @@ function CompoundModal(props: {
           </div>
         </div>
         {(needApproval || isApproving) && (
-          <>
+          <div className="mb-12">
             <ApproveTokenButton
               tokenAddress={gmxAddress}
               spenderAddress={stakedGmxTrackerAddress}
               tokenSymbol={"GMX"}
               isApproved={!needApproval}
             />
-            <br />
-          </>
+          </div>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
