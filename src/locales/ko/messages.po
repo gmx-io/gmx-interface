@@ -4007,6 +4007,10 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
+#: src/lib/contracts/transactionErrors.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4>Read more</4>."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "최대 {0} 숏 수용량"
@@ -5132,8 +5136,8 @@ msgid "Execute Limit Swap"
 msgstr "지정가 스왑 실행"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 읽기</2>."
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+#~ msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 읽기</2>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
