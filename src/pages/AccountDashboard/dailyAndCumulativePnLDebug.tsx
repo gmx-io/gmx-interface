@@ -60,6 +60,22 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
           ),
           value: -stats.unrealizedFees,
         },
+        {
+          label: (
+            <span>
+              <Trans>Start unrealized pnl</Trans>
+            </span>
+          ),
+          value: stats.startUnrealizedPnl,
+        },
+        {
+          label: (
+            <span>
+              <Trans>Start unrealized fees</Trans>
+            </span>
+          ),
+          value: -stats.startUnrealizedPnl,
+        },
       ].map(({ label, value }, index) => (
         <StatsTooltipRow
           key={index}
@@ -110,6 +126,16 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
       text: "Last Unrealized Fees",
       value: -lastPoint!.unrealizedFees,
     },
+    {
+      className: "bg-[#00ff00]",
+      text: "Start Unrealized PnL",
+      value: lastPoint!.startUnrealizedPnl,
+    },
+    {
+      className: "bg-[#ff0000]",
+      text: "Start Unrealized Fees",
+      value: -lastPoint!.startUnrealizedFees,
+    },
   ].map(({ className, text, value }) => (
     <div key={text}>
       <div className={`inline-block size-10 rounded-full ${className}`} /> {text} {formatUsd(value)}
@@ -131,6 +157,8 @@ export const DEV_QUERY = gql`
       timestamp
       unrealizedFees
       unrealizedPnl
+      startUnrealizedPnl
+      startUnrealizedFees
     }
   }
 `;
@@ -144,6 +172,8 @@ export const DEBUG_FIELDS = [
   "cumulativeRealizedFees",
   "cumulativeRealizedPnl",
   "cumulativeRealizedPriceImpact",
+  "startUnrealizedPnl",
+  "startUnrealizedFees",
 ];
 
 export type AccountPnlHistoryPointDebugFields = {
@@ -165,6 +195,10 @@ export type AccountPnlHistoryPointDebugFields = {
   cumulativeRealizedPnlFloat: number;
   cumulativeRealizedPriceImpact: bigint;
   cumulativeRealizedPriceImpactFloat: number;
+  startUnrealizedPnl: bigint;
+  startUnrealizedFeesFloat: number;
+  startUnrealizedFees: bigint;
+  startUnrealizedPnlFloat: number;
   // #endregion
 };
 

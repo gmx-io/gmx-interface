@@ -18,7 +18,7 @@ import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
-import { formatDate, formatDateTime, toUtcDayStartRounded } from "lib/dates";
+import { formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "lib/legacy";
@@ -57,7 +57,7 @@ const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = { fill: "var(--color-gr
 
 export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
   const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
-  const fromTimestamp = useMemo(() => fromDate && toUtcDayStartRounded(fromDate), [fromDate]);
+  const fromTimestamp = useMemo(() => fromDate && toUtcDayStart(fromDate), [fromDate]);
 
   const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp);
 
