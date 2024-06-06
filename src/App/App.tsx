@@ -501,8 +501,7 @@ function App() {
       onChange: ({ chainId }) => {
         const chains = rainbowKitConfig.chains;
         const chain = chains.find((c) => c.id === chainId);
-        if (!chain || !chains) return;
-        const isValidChain = chains.some((c) => c.id === chain.id);
+        const isValidChain = chain && chains && chains.some((c) => c.id === chain.id);
         if (!isValidChain) {
           disconnect();
         }
