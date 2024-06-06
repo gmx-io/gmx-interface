@@ -74,7 +74,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
               <Trans>Start unrealized fees</Trans>
             </span>
           ),
-          value: -stats.startUnrealizedPnl,
+          value: -stats.startUnrealizedFees,
         },
       ].map(({ label, value }, index) => (
         <StatsTooltipRow
