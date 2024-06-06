@@ -254,7 +254,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 
         return {
           date: showDebugValues
-            ? formatDateTime(row.timestamp - 86400) + " - " + formatDateTime(row.timestamp) + " local"
+            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + 86400) + " local"
             : formatDate(row.timestamp),
           dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
           pnl: BigInt(row.pnl),
