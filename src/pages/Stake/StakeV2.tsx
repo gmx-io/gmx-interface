@@ -251,15 +251,14 @@ function StakeModal(props: {
         </BuyInputSection>
 
         {(needApproval || isApproving) && (
-          <>
+          <div className="mb-12">
             <ApproveTokenButton
               tokenAddress={stakingTokenAddress}
               spenderAddress={farmAddress}
               tokenSymbol={stakingTokenSymbol}
               isApproved={!needApproval}
             />
-            <br />
-          </>
+          </div>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
