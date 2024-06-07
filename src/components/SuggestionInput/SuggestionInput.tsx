@@ -9,9 +9,17 @@ type Props = {
   placeholder?: string;
   suggestionList?: number[];
   symbol?: string;
+  inputClassName?: string;
 };
 
-export default function SuggestionInput({ placeholder, value, setValue, suggestionList, symbol }: Props) {
+export default function SuggestionInput({
+  placeholder,
+  value,
+  setValue,
+  suggestionList,
+  symbol,
+  inputClassName,
+}: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -30,6 +38,7 @@ export default function SuggestionInput({ placeholder, value, setValue, suggesti
     <div className="Suggestion-input-wrapper">
       <div className={cx("Suggestion-input", { "input-error": false })}>
         <NumberInput
+          className={inputClassName}
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={value ?? ""}
