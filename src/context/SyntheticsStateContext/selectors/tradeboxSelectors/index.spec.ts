@@ -8,7 +8,7 @@ describe("tradeboxSelectors", () => {
     expect(getTradeboxLeverageSliderMarks(140 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 15, 30, 50, 70]);
     expect(getTradeboxLeverageSliderMarks(160 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 15, 30, 60, 80]);
     expect(getTradeboxLeverageSliderMarks(180 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 15, 30, 60, 90]);
-    expect(getTradeboxLeverageSliderMarks(200 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 20, 50, 75, 100]);
+    expect(getTradeboxLeverageSliderMarks(200 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 15, 25, 50, 75, 100]);
 
     expect(getTradeboxLeverageSliderMarks(220 * BASIS_POINTS_DIVISOR)).toEqual([
       0.1, 1, 2, 5, 10, 25, 50, 75, 100, 110,
