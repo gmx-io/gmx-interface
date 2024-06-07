@@ -106,7 +106,7 @@ function SideOrderEntry({
     <div className={cx("flex flex-row gap-10")} key={entry.id}>
       <div
         className={cx(
-          "group relative rounded-4 border border-solid border-[#212540] bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
+          "group relative rounded-4 border border-solid border-slate-700 bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
           { "border-red-500": priceError }
         )}
       >
@@ -116,7 +116,7 @@ function SideOrderEntry({
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className="max-w-[7rem] rounded-4 py-2 pr-5 text-right text-[1.4rem]"
+          className="max-w-70 rounded-4 py-2 pr-5 text-right text-14"
         />
 
         {priceError && (
@@ -145,7 +145,7 @@ function SideOrderEntry({
       {displayMode === "sizeUsd" && (
         <div
           className={cx(
-            "group relative rounded-4 border border-solid border-[#212540] bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
+            "group relative rounded-4 border border-solid border-slate-700 bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
             { "border-red-500": !!sizeError }
           )}
         >
@@ -154,10 +154,10 @@ function SideOrderEntry({
             value={entry.sizeUsd.input ?? ""}
             onValueChange={onSizeUsdValueChange}
             placeholder="Size"
-            className="w-[8.1rem] rounded-4 py-2 pr-5 text-right text-[1.4rem]"
+            className="w-81 rounded-4 py-2 pr-5 text-right text-14"
           />
           {sizeTooltipMsg && (
-            <div className={cx("z-[1001] hidden min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+            <div className={cx("z-[1001] hidden min-w-25 group-hover:block", "Tooltip-popup top-end")}>
               {sizeTooltipMsg}
             </div>
           )}
