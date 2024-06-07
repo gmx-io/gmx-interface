@@ -10,6 +10,7 @@ describe("domain/synthetics/utils", () => {
 
     expect(getMaxLeverageByMinCollateralFactor(6666666666666666666666666666n)).toBe(150 * BASIS_POINTS_DIVISOR);
     expect(getMaxLeverageByMinCollateralFactor(6660000000000000000000000000n)).toBe(150 * BASIS_POINTS_DIVISOR);
+    expect(getMaxLeverageByMinCollateralFactor(6670000000000000000000000000n)).toBe(150 * BASIS_POINTS_DIVISOR);
 
     expect(getMaxLeverageByMinCollateralFactor(5000000000000000000000000000n)).toBe(200 * BASIS_POINTS_DIVISOR);
     expect(getMaxLeverageByMinCollateralFactor(4999999999999999999999999999n)).toBe(200 * BASIS_POINTS_DIVISOR);
