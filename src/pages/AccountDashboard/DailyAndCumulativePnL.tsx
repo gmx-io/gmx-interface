@@ -176,7 +176,8 @@ function renderPnlBar(entry: AccountPnlHistoryPoint) {
 }
 
 function yAxisTickFormatter(value: number) {
-  if (value === 0) return "";
+  if (value === 0 || !isFinite(value)) return "";
+
   return formatUsd(BigInt(value as number) * 10n ** 30n, { displayDecimals: 0 })!;
 }
 
