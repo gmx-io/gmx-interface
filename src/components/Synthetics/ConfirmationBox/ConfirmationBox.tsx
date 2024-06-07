@@ -125,12 +125,12 @@ import {
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxSwapAmounts,
+  selectTradeboxSwapRoutes,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
   selectTradeboxSelectedPositionKey,
-  selectTradeboxMaxLiquidityPath,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
@@ -184,7 +184,8 @@ export function ConfirmationBox(p: Props) {
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
-  const { maxLiquidity: swapLiquidityUsd } = useSelector(selectTradeboxMaxLiquidityPath);
+  const swapRoute = useSelector(selectTradeboxSwapRoutes);
+  const swapLiquidityUsd = swapRoute.maxSwapLiquidity;
   const { indexToken } = marketInfo || {};
 
   const { signer, account } = useWallet();

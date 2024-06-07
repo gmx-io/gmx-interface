@@ -12,9 +12,8 @@ import {
 } from "./globalSelectors";
 import {
   makeSelectDecreasePositionAmounts,
-  makeSelectFindSwapPath,
-  makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
+  makeSelectSwapRoutes,
 } from "./tradeSelectors";
 import {
   getMinCollateralFactorForPosition,
@@ -187,39 +186,26 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
   return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 });
 
-export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
+export const selectPositionSellerSwapRoutes = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
-  const selectMakeLiquidityPath = makeSelectMaxLiquidityPath(position?.collateralTokenAddress, receiveTokenAddress);
 
-  return q(selectMakeLiquidityPath);
-});
-
-export const selectPositionSellerFindSwapPath = createSelector((q) => {
-  const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
-  const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
-
-  return q(selectFindSwapPath);
+  const selectSwapRoutes = makeSelectSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
+  return q(selectSwapRoutes);
 });
 
 export const selectPositionSellerSwapAmounts = createSelector((q) => {
-  const position = q(selectPositionSellerPosition);
-
-  if (!position) {
-    return undefined;
-  }
-
   const shouldSwap = q(selectPositionSellerShouldSwap);
   const receiveToken = q(selectPositionSellerReceiveToken);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const position = q(selectPositionSellerPosition);
   const uiFeeFactor = q(selectUiFeeFactor);
 
-  if (!shouldSwap || !receiveToken || decreaseAmounts?.receiveTokenAmount === undefined) {
+  if (!shouldSwap || !receiveToken || decreaseAmounts?.receiveTokenAmount === undefined || !position) {
     return undefined;
   }
 
-  const findSwapPath = q(selectPositionSellerFindSwapPath);
+  const findSwapPath = q(selectPositionSellerSwapRoutes).findSwapPath;
 
   return getSwapAmountsByFromValue({
     tokenIn: position.collateralToken,

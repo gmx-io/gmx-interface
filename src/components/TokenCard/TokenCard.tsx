@@ -14,10 +14,10 @@ import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import BannerButton from "components/Banner/BannerButton";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { mergeWith } from "lodash";
 import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -46,24 +46,25 @@ export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
-  const { marketsTokensApyData: arbApy, marketsTokensIncentiveAprData: arbIncentiveApr } = useGmMarketsApy(ARBITRUM);
-  const { marketsTokensApyData: avaxApy, marketsTokensIncentiveAprData: avaxIncentiveApr } = useGmMarketsApy(AVALANCHE);
+  const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
+  const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
+    useMarketTokensAPR(AVALANCHE);
 
-  const maxApyText = useMemo(() => {
-    if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
+  const maxAprText = useMemo(() => {
+    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr)
       return {
         [ARBITRUM]: "...%",
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr);
-    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr);
+    const maxArbApr = calculateMaxApr(arbApr, arbIncentiveApr);
+    const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
 
     return {
-      [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
-      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
+      [ARBITRUM]: `${formatAmount(maxArbApr, 28, 2)}%`,
+      [AVALANCHE]: `${formatAmount(maxAvaxApr, 28, 2)}%`,
     };
-  }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
+  }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -151,8 +152,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
             />
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
-            <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
+            <Trans>Avalanche Max. APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
           </div>
         </div>
 

@@ -226,7 +226,6 @@ export async function createIncreaseOrderTxn({
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
   });
 

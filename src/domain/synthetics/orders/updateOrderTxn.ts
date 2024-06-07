@@ -59,7 +59,6 @@ export function updateOrderTxn(
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
-    customSigners: subaccount?.customSigners,
     setPendingTxns,
     showPreliminaryMsg: Boolean(subaccount),
   });

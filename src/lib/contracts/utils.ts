@@ -1,5 +1,5 @@
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
-import { Contract, BaseContract, Provider } from "ethers";
+import { Contract, Provider } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
@@ -26,12 +26,7 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   return;
 }
 
-export async function getGasLimit(
-  contract: Contract | BaseContract,
-  method,
-  params: any[] = [],
-  value?: bigint | number
-) {
+export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: bigint | number) {
   const defaultValue = 0n;
 
   if (!value) {

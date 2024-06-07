@@ -173,8 +173,8 @@ msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
-#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
+msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
+msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -331,10 +331,6 @@ msgstr "Referral code added!"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Treasury"
 msgstr "Treasury"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2/><3>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</3><4/><5>Check GM pools' performance against other LP Positions in the <6>GMX Dune Dashboard</6>.</5>"
-#~ msgstr "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2/><3>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</3><4/><5>Check GM pools' performance against other LP Positions in the <6>GMX Dune Dashboard</6>.</5>"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "View status"
@@ -867,10 +863,6 @@ msgstr "Overview"
 msgid "Allow all my tokens to be transferred to a new account"
 msgstr "Allow all my tokens to be transferred to a new account"
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche Max. APY: {0}"
-msgstr "Avalanche Max. APY: {0}"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -891,11 +883,6 @@ msgstr "Collateral"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
-msgid "Base APY"
-msgstr "Base APY"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -938,10 +925,6 @@ msgstr "Click on the Position to select its market, then use the trade box to in
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #~ msgid "The position would be immediately liquidated upon open. Try reducing the size."
 #~ msgstr "The position would be immediately liquidated upon open. Try reducing the size."
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
-msgstr "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -989,6 +972,9 @@ msgid "WEIGHT"
 msgstr "WEIGHT"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1578,10 +1564,6 @@ msgstr "Total Fees"
 msgid "Max Bonus Rebate"
 msgstr "Max Bonus Rebate"
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum Max. APY:"
-msgstr "Arbitrum Max. APY:"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vault Capacity for your Account:"
 msgstr "Vault Capacity for your Account:"
@@ -1880,10 +1862,6 @@ msgstr "Index"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr "Decentralized Finance Dashboard"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-#~ msgstr "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
@@ -3191,8 +3169,8 @@ msgid "BUYABLE"
 msgstr "BUYABLE"
 
 #: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Arbitrum Max. APR:"
-#~ msgstr "Arbitrum Max. APR:"
+msgid "Arbitrum Max. APR:"
+msgstr "Arbitrum Max. APR:"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Order"
@@ -3869,10 +3847,6 @@ msgstr "Shorts Net Rate / 1h"
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
-msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
-
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
@@ -3922,10 +3896,6 @@ msgstr "Voting"
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "This position was liquidated as the max leverage of 100x was exceeded."
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-#~ msgstr "<0>APY is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APY is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
@@ -5579,8 +5549,8 @@ msgid "Looks like you don't have a referral code to share. <0/> Create one now a
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-#~ msgstr "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
+msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
+msgstr "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
@@ -5790,8 +5760,8 @@ msgstr "Max {0} Capacity"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
-#~ msgid "Base APR"
-#~ msgstr "Base APR"
+msgid "Base APR"
+msgstr "Base APR"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -6409,8 +6379,8 @@ msgid "Increase"
 msgstr "Increase"
 
 #: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche Max. APR: {0}"
-#~ msgstr "Avalanche Max. APR: {0}"
+msgid "Avalanche Max. APR: {0}"
+msgstr "Avalanche Max. APR: {0}"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -6582,12 +6552,6 @@ msgstr "Only letters, numbers and underscores are allowed."
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
 msgstr "Referral code submitted!"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "APY"
-msgstr "APY"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"

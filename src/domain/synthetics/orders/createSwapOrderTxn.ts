@@ -84,7 +84,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
   });
 

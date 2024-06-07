@@ -39,7 +39,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   marketTokensData?: TokensData;
-  marketsTokensApyData: MarketTokensAPRData | undefined;
+  marketsTokensAPRData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
@@ -52,7 +52,7 @@ export function GmList({
   marketTokensData,
   marketsInfoData,
   tokensData,
-  marketsTokensApyData,
+  marketsTokensAPRData,
   marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
@@ -120,10 +120,29 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={t`APY`}
+                    handle={t`APR`}
                     className="normal-case"
                     position="bottom-end"
-                    renderContent={ApyTooltipContent}
+                    renderContent={() => (
+                      <p className="text-white">
+                        <Trans>
+                          <p>
+                            APR is based on the fees collected for the past {daysConsidered} days while extrapolating
+                            the current borrowing fee.{" "}
+                            <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+                              Read more about GM token pricing
+                            </ExternalLink>
+                            .
+                          </p>
+                          <p>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</p>
+                          <p>
+                            Check GM pools' performance against other LP Positions in the{" "}
+                            <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>
+                            .
+                          </p>
+                        </Trans>
+                      </p>
+                    )}
                   />
                 </th>
 
@@ -140,7 +159,7 @@ export function GmList({
                   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
                   const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                  const apy = getByKey(marketsTokensApyData, token?.address);
+                  const apr = getByKey(marketsTokensAPRData, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
                   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -220,7 +239,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apy={apy} incentiveApr={incentiveApr} isIncentiveActive={false} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={false} />
                       </td>
 
                       <td className="GmList-actions">
@@ -260,7 +279,7 @@ export function GmList({
 
           <div className="token-grid">
             {sortedMarketsByIndexToken.map((token, index) => {
-              const apr = marketsTokensApyData?.[token.address];
+              const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -372,15 +391,10 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Tooltip
-                          handle={t`APY`}
-                          className="normal-case"
-                          position="bottom-start"
-                          renderContent={ApyTooltipContent}
-                        />
+                        <Trans>APR</Trans>
                       </div>
                       <div>
-                        <AprInfo apy={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </div>
                     </div>
 
@@ -473,36 +487,5 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
         </>
       )}
     />
-  );
-}
-
-function ApyTooltipContent() {
-  return (
-    <p className="text-white">
-      <Trans>
-        <p>
-          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
-          borrowing fee. It excludes:
-          <br />
-          <br />
-          - price changes of the underlying token(s)
-          <br />
-          - traders' PnL, which is expected to be neutral in the long term
-          <br />
-          - funding fees, which are exchanged between traders
-          <br />
-          <br />
-          <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
-            Read more about GM token pricing
-          </ExternalLink>
-          .
-        </p>
-        <br />
-        <p>
-          Check GM pools' performance against other LP Positions in the{" "}
-          <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>.
-        </p>
-      </Trans>
-    </p>
   );
 }

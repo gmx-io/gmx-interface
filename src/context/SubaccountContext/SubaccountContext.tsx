@@ -1,13 +1,6 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
-  getRpcUrl,
-  getFallbackRpcUrl,
-} from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -35,10 +28,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
-import { clientToSigner } from "lib/wallets/useEthersSigner";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -295,73 +288,38 @@ function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? 0n;
 }
 
-function useSubaccountCustomSigners() {
-  const { chainId } = useChainId();
-  const privateKey = useSubaccountPrivateKey();
-
-  return useMemo(() => {
-    const publicRpc = getRpcUrl(chainId);
-    const fallbackRpc = getFallbackRpcUrl(chainId);
-
-    const rpcUrls: string[] = [];
-
-    if (publicRpc) rpcUrls.push(publicRpc);
-    if (fallbackRpc) rpcUrls.push(fallbackRpc);
-
-    if (!rpcUrls.length || !privateKey) return undefined;
-
-    return rpcUrls.map((rpcUrl) => {
-      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId, {
-        staticNetwork: ethers.Network.from(chainId),
-      });
-
-      return new ethers.Wallet(privateKey, provider);
-    });
-  }, [chainId, privateKey]);
-}
-
 export function useSubaccount(requiredBalance: bigint | null, requiredActions = 1) {
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
+  const { chainId } = useChainId();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
   const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultExecutionFee);
-  const subaccountCustomSigners = useSubaccountCustomSigners();
 
   const { remaining } = useSubaccountActionCounts();
-  const { walletClient } = useWallet();
 
   return useMemo(() => {
     if (
       !address ||
       !active ||
       !privateKey ||
-      !walletClient ||
       insufficientFunds ||
       remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;
 
-    const signer = clientToSigner(walletClient);
+    const provider = getProvider(undefined, chainId);
+    const wallet = new ethers.Wallet(privateKey, provider);
+    const signer = wallet.connect(provider);
 
-    const wallet = new ethers.Wallet(privateKey, signer.provider);
     return {
       address,
       active,
-      signer: wallet,
-      customSigners: subaccountCustomSigners,
+      signer,
+      wallet,
     };
-  }, [
-    address,
-    active,
-    privateKey,
-    insufficientFunds,
-    walletClient,
-    remaining,
-    requiredActions,
-    subaccountCustomSigners,
-  ]);
+  }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefined | null) {

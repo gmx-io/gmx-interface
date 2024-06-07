@@ -120,30 +120,30 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      setOrderStatuses((old) => {
-        if (old[key]) {
-          return updateByKey(old, key, {
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) =>
+          updateByKey(old, key, {
             updatedTxnHash: txnParams.transactionHash,
             isViewed: false,
-          });
-        } else {
-          return setByKey(old, key, {
+          })
+        );
+      } else {
+        setOrderStatuses((old) =>
+          setByKey(old, key, {
             key,
             createdAt: Date.now(),
             updatedTxnHash: txnParams.transactionHash,
-          });
-        }
-      });
+          })
+        );
+      }
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
-      setOrderStatuses((old) => {
-        if (!old[key]) return old;
-
-        return updateByKey(old, key, { executedTxnHash: txnParams.transactionHash });
-      });
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
     },
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -154,20 +154,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      setOrderStatuses((old) => {
-        if (old[key]) {
-          return updateByKey(old, key, {
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) =>
+          updateByKey(old, key, {
             cancelledTxnHash: txnParams.transactionHash,
             isViewed: false,
-          });
-        } else {
-          return setByKey(old, key, {
+          })
+        );
+      } else {
+        setOrderStatuses((old) =>
+          setByKey(old, key, {
             key,
             createdAt: Date.now(),
             cancelledTxnHash: txnParams.transactionHash,
-          });
-        }
-      });
+          })
+        );
+      }
 
       const order = orderStatuses[key]?.data;
 

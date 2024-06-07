@@ -41,11 +41,10 @@ import {
 import {
   createTradeFlags,
   makeSelectDecreasePositionAmounts,
-  makeSelectFindSwapPath,
   makeSelectIncreasePositionAmounts,
-  makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
+  makeSelectSwapRoutes,
 } from "../tradeSelectors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
@@ -97,7 +96,7 @@ export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.s
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 
-export const selectTradeboxFindSwapPath = createSelector((q) => {
+export const selectTradeboxSwapRoutes = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -105,20 +104,7 @@ export const selectTradeboxFindSwapPath = createSelector((q) => {
   const tradeType = q(selectTradeboxTradeType);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
 
-  return q(makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
-});
-
-export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
-  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-
-  return q(
-    makeSelectMaxLiquidityPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
-  );
+  return q(makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
@@ -223,8 +209,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return undefined;
   }
 
-  const findSwapPath = q(
-    makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
+  const { findSwapPath } = q(
+    makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
   );
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);

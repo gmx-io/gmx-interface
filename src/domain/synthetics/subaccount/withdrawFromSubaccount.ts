@@ -12,7 +12,7 @@ export async function withdrawFromSubaccount({
   if (!subaccount) throw new Error("No subaccount available.");
 
   const subaccountAddress = subaccount.address;
-  const wallet = subaccount.signer;
+  const wallet = subaccount.wallet;
   const provider = ethers.getDefaultProvider();
   const [value, feeData] = await Promise.all([provider.getBalance(subaccountAddress), provider.getFeeData()]);
   const gasPrice = feeData.gasPrice ?? 0n;
