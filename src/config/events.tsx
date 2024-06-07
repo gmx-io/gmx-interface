@@ -1,7 +1,9 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import type { JSX } from "react";
+import { memo, type JSX } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getNormalizedTokenSymbol } from "./tokens";
 
 export type EventData = {
   id: string;
@@ -19,6 +21,13 @@ export type EventData = {
 };
 
 export const homeEventsData: EventData[] = [];
+
+const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
+  <span className="whitespace-nowrap">
+    <TokenIcon className="relative -top-3" symbol={symbol} displaySize={14} importSize={40} />
+    &nbsp;{symbol}
+  </span>
+));
 
 export const appEventsData: EventData[] = [
   {
@@ -89,16 +98,22 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: "max-leverage-100x",
-    title: "Leverage increased to 100x",
+    id: "max-leverage-doge",
+    title: "Leverage increased to 100x and 75x",
     isActive: true,
     endDate: "14 Jun 2024, 0:00",
-    bodyText: "Trade BTC/USD and ETH/USD with up to 100x leverage on Arbitrum.",
-    link: {
-      text: "Read more",
-      href: "https://snapshot.org/#/gmx.eth/proposal/0x70f1477cee26a04c8dc1606b2cc157b7d4811c63057e56c1259eefe200165145",
-      newTab: true,
-    },
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("DOGE")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("BNB")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("SOL")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LTC")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LINK")} />
+        {" and "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("XRP")} /> with up to 100x leverage, and{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ARB")} /> with up to 75x leverage on Arbitrum.
+      </>
+    ),
   },
   {
     id: "gmxusdc-market",
