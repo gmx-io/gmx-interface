@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { Contract } from "ethers";
+import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
@@ -23,10 +23,13 @@ export async function callContract(
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
+    customSigners?: Wallet[];
     setPendingTxns?: (txns: any) => void;
   }
 ) {
   try {
+    const wallet = contract.runner as Wallet;
+
     if (!Array.isArray(params) && typeof params === "object" && opts === undefined) {
       opts = params;
       params = [];
@@ -36,10 +39,15 @@ export async function callContract(
       opts = {};
     }
 
-    const txnOpts: any = {};
+    const txnOpts: Overrides = {};
 
     if (opts.value) {
       txnOpts.value = opts.value;
+    }
+
+    if (opts.customSigners) {
+      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await wallet.getNonce();
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
@@ -50,15 +58,30 @@ export async function callContract(
       });
     }
 
-    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    if (!contract.runner?.provider) {
-      throw new Error("No provider found on contract.");
-    }
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+      const txnInstance = { ...txnOpts };
 
-    await setGasPrice(txnOpts, contract.runner.provider, chainId);
+      txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
 
-    const res = await contract[method](...params, txnOpts);
+      if (!cntrct.runner?.provider) {
+        throw new Error("No provider found on contract.");
+      }
+
+      await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
+
+      return cntrct[method](...params, txnInstance);
+    });
+
+    const res = await Promise.any(txnCalls).catch(({ errors }) => {
+      if (errors.length > 1) {
+        // eslint-disable-next-line no-console
+        console.error("All transactions failed", ...errors);
+      }
+
+      throw errors[0];
+    });
 
     if (!opts.hideSentMsg) {
       showCallContractToast({

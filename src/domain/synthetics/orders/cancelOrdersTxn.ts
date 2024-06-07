@@ -33,6 +33,7 @@ export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccoun
     failMsg: t`Failed to cancel ${ordersText}`,
     setPendingTxns: p.setPendingTxns,
     detailsMsg: p.detailsMsg,
+    customSigners: subaccount?.customSigners,
   });
 }
 

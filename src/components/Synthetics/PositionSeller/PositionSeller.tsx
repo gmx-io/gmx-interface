@@ -72,12 +72,12 @@ import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/
 import {
   selectPositionSellerAcceptablePrice,
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerSwapRoutes,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
@@ -180,7 +180,7 @@ export function PositionSeller(p: Props) {
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
     : undefined;
 
-  const { maxSwapLiquidity } = useSelector(selectPositionSellerSwapRoutes);
+  const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
   const acceptablePrice = useSelector(selectPositionSellerAcceptablePrice);
 
