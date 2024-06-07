@@ -143,8 +143,10 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
             Please try changing the RPC url in your wallet settings with the help of{" "}
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
             <br />
+            <br />
             <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">Read more</ExternalLink>.
           </Trans>
+          <br />
           <br />
           {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
         </div>
@@ -157,6 +159,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
       failMsg = (
         <div>
           {txnMessage || t`Transaction failed`}
+          <br />
           <br />
           {message && <ToastifyDebug>{message}</ToastifyDebug>}
         </div>
