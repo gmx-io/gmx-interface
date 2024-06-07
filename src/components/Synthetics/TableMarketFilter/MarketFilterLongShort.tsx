@@ -5,10 +5,11 @@ import type { Address } from "viem";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
@@ -27,7 +28,7 @@ export type MarketFilterLongShortProps = {
 };
 
 export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShortProps) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const positions = usePositionsInfoData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
