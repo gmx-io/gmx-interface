@@ -7,6 +7,8 @@ export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const EXECUTION_FEE_BUFFER_BPS_KEY = "execution-fee-buffer-basis-points";
+export const HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY =
+  "has-overridden-default-arb-30-execution-fee-buffer-basis-points";
 export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
@@ -84,6 +86,11 @@ export function getAllowedSlippageKey(chainId: number) {
 
 export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
+}
+
+// TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then
+export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: number) {
+  return [chainId, HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY];
 }
 
 export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
