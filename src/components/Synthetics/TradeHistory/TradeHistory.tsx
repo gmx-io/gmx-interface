@@ -14,6 +14,7 @@ import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -144,7 +145,9 @@ export function TradeHistory(p: Props) {
                   <Trans>Price</Trans>
                 </th>
                 <th className="TradeHistorySynthetics-pnl-fees-header">
-                  <Trans>PnL ($)</Trans>
+                  <TooltipWithPortal content={<Trans>Realized PnL after fees and price impact.</Trans>}>
+                    <Trans>RPnL ($)</Trans>
+                  </TooltipWithPortal>
                 </th>
               </tr>
             </thead>

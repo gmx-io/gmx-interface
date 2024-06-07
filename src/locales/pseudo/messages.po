@@ -3251,6 +3251,10 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "RPnL ($)"
+msgstr ""
+
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
 msgstr ""
@@ -3458,7 +3462,6 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4327,6 +4330,10 @@ msgstr ""
 msgid "CONCLUDED"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL after fees and price impact."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -4510,6 +4517,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
+msgstr ""
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Start unrealized pnl"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -5592,6 +5603,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Order"
+msgstr ""
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Start unrealized fees"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

@@ -3251,6 +3251,10 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "RPnL ($)"
+msgstr ""
+
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
 msgstr ""
@@ -3458,7 +3462,6 @@ msgstr "订单的触发价格"
 msgid "Short"
 msgstr "做空"
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4327,6 +4330,10 @@ msgstr "电报群"
 msgid "CONCLUDED"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL after fees and price impact."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -4511,6 +4518,10 @@ msgstr "交易"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
 msgstr "无效的流动资金价格"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Start unrealized pnl"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
@@ -5593,6 +5604,10 @@ msgstr "解除质押失败"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Order"
 msgstr "更新限价单"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+msgid "Start unrealized fees"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
