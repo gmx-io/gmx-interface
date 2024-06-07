@@ -4,7 +4,7 @@
   }
 
   &-table {
-    width: max(100%, 750px);
+    width: max(100%, 900px);
 
     // Table causes global layout issues on mobile
     margin-right: -10px;
@@ -66,33 +66,15 @@
     width: 23%;
   }
   &-market-column {
-    width: 23%;
+    width: 22%;
   }
   &-size-column {
-    width: 28%;
+    width: 25%;
   }
   &-price-column {
-    width: 17%;
+    width: 16%;
   }
   &-pnl-fees-column {
-    width: 9%;
-  }
-
-  @media (max-width: 800px) {
-    &-action-column {
-      width: 27%;
-    }
-    &-market-column {
-      width: 23%;
-    }
-    &-size-column {
-      width: 25%;
-    }
-    &-price-column {
-      width: 15%;
-    }
-    &-pnl-fees-column {
-      width: 10%;
-    }
+    width: 14%;
   }
 }
