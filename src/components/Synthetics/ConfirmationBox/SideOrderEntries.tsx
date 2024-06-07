@@ -120,13 +120,13 @@ function SideOrderEntry({
         />
 
         {priceError && (
-          <div className={cx("z-[1001] hidden w-max min-w-0 group-hover:block", "Tooltip-popup bottom")}>
+          <div className={cx("z-[1001] hidden w-max !min-w-[25rem] group-hover:block", "Tooltip-popup bottom")}>
             {priceError}
           </div>
         )}
       </div>
       {displayMode === "percentage" && (
-        <div className={cx("relative", { "border-red-500": !!percentageError })}>
+        <div className={cx("group relative", { "border-red-500": !!percentageError })}>
           <SuggestionInput
             inputClassName="w-48"
             value={entry.percentage?.input ?? ""}
@@ -136,7 +136,7 @@ function SideOrderEntry({
             symbol="%"
           />
           {sizeTooltipMsg && (
-            <div className={cx("z-[1001] hidden min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+            <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
               {sizeTooltipMsg}
             </div>
           )}
@@ -157,7 +157,7 @@ function SideOrderEntry({
             className="w-81 rounded-4 py-2 pr-5 text-right text-14"
           />
           {sizeTooltipMsg && (
-            <div className={cx("z-[1001] hidden min-w-25 group-hover:block", "Tooltip-popup top-end")}>
+            <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
               {sizeTooltipMsg}
             </div>
           )}
@@ -168,14 +168,9 @@ function SideOrderEntry({
         {canAddEntry && (
           <TooltipWithPortal
             handle={
-              <button
-                className="inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70"
-                style={ADD_BUTTON_STYLE}
-                disabled={!allowAddEntry}
-                onClick={handleAddEntry}
-              >
+              <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} style={ADD_BUTTON_STYLE}>
                 <FaPlus color="#5EC989" />
-              </button>
+              </EntryButton>
             }
             portalClassName="min-w-min whitespace-nowrap"
             handleClassName="leading-1 mr-5"
@@ -186,14 +181,13 @@ function SideOrderEntry({
         )}
         <TooltipWithPortal
           handle={
-            <button
-              className="inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70"
-              style={REMOVE_BUTTON_STYLE}
+            <EntryButton
               onClick={onDeleteEntry}
               disabled={entriesCount === 1 && !entry.percentage && !entry.price}
+              style={REMOVE_BUTTON_STYLE}
             >
               <FaPlus color="#E74E5D" className="rotate-45" />
-            </button>
+            </EntryButton>
           }
           portalClassName="min-w-min whitespace-nowrap"
           handleClassName="leading-1"
@@ -203,6 +197,18 @@ function SideOrderEntry({
         />
       </div>
     </div>
+  );
+}
+
+function EntryButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className="
+        inline-flex items-center justify-center rounded-4 border-none
+        p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70
+      "
+      {...props}
+    />
   );
 }
 
