@@ -99,7 +99,7 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "max-leverage-doge",
-    title: "Leverage increased to 100x and 75x",
+    title: "Max leverage increased",
     isActive: true,
     endDate: "14 Jun 2024, 0:00",
     bodyText: (
@@ -110,8 +110,14 @@ export const appEventsData: EventData[] = [
         <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LTC")} />,{" "}
         <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LINK")} />
         {" and "}
-        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("XRP")} /> with up to 100x leverage, and{" "}
-        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ARB")} /> with up to 75x leverage on Arbitrum.
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("XRP")} /> with up to 100x leverage.
+        <br />
+        <br />
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ARB")} /> with up to 75x leverage on Arbitrum. <br />
+        <br /> And
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ATOM")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("AVAX")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("UNI")} /> with up to 60x.
       </>
     ),
   },
