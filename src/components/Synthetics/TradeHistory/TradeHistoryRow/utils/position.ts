@@ -345,6 +345,7 @@ export const formatPositionMessage = (
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -388,6 +389,7 @@ export const formatPositionMessage = (
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -462,6 +464,7 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -593,6 +596,7 @@ export const formatPositionMessage = (
       ),
       isActionError: true,
       pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion Liquidation
   }

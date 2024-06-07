@@ -163,7 +163,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketTooltipHandle = useMemo(
     () =>
       msg.pathTokenSymbols ? (
-        <div className="leading-2 cursor-help">
+        <div className="cursor-help leading-2">
           {msg.pathTokenSymbols!.map((symbol, index, arr) => (
             <div key={symbol} className="inline-block border-b border-dashed border-b-gray-400 leading-base">
               <TokenWithIcon symbol={symbol} displaySize={20} />
@@ -252,7 +252,18 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </td>
         <td className="TradeHistoryRow-pnl-fees">
-          {!msg.pnl ? <span className="text-gray-300">-</span> : <>{msg.pnl}</>}
+          {!msg.pnl ? (
+            <span className="text-gray-300">-</span>
+          ) : (
+            <span
+              className={cx({
+                "text-red-500": msg.pnlState === "error",
+                "text-green-500": msg.pnlState === "success",
+              })}
+            >
+              {msg.pnl}
+            </span>
+          )}
         </td>
       </tr>
       {showDebugValues && (
