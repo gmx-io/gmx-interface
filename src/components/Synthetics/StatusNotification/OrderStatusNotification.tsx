@@ -289,17 +289,17 @@ export function OrdersStatusNotificiation({
   );
 
   const [ordersByPendingKey, ordersByContractKey] = useMemo(() => {
-    const pendingKeyMap = new Map<string, PendingOrderData>();
-    const contractKeyMap = new Map<string, PendingOrderData>();
+    const ordersByPendingKey = new Map<string, PendingOrderData>();
+    const ordersByContractKey = new Map<string, PendingOrderData>();
     pendingOrders.forEach((order) => {
       if (order.orderKey) {
-        contractKeyMap.set(order.orderKey, order);
+        ordersByContractKey.set(order.orderKey, order);
       }
 
       const key = getPendingOrderKey(order);
-      pendingKeyMap.set(key, order);
+      ordersByPendingKey.set(key, order);
     });
-    return [pendingKeyMap, contractKeyMap];
+    return [ordersByPendingKey, ordersByContractKey];
   }, [pendingOrders]);
 
   useEffect(() => {

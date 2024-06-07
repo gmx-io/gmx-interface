@@ -581,9 +581,12 @@ export default function DashboardV2() {
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
-              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">V1</ExternalLink>}
-              {chainId === AVALANCHE && <ExternalLink href="https://stats.gmx.io/avalanche">V1</ExternalLink>} |{" "}
-              <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2</ExternalLink>.
+              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">V1 Analytics</ExternalLink>}
+              {chainId === AVALANCHE && <ExternalLink href="https://stats.gmx.io/avalanche">V1 Analytics</ExternalLink>}
+              {(chainId === ARBITRUM || chainId === AVALANCHE) && " | "}
+              <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2 Analytics</ExternalLink>
+              {" | "}
+              <ExternalLink href="https://app.gmx.io/#/stats">V2 Pools Stats</ExternalLink>.
             </div>
           }
         />

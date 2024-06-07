@@ -1929,6 +1929,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@davatar/react@patch:@davatar/react@npm:1.8.1#.yarn/patches/@davatar-react-npm-1.8.1-0cbe6a2c33::locator=gambit-interface%40workspace%3A.":
+  version: 1.8.1
+  resolution: "@davatar/react@patch:@davatar/react@npm%3A1.8.1#.yarn/patches/@davatar-react-npm-1.8.1-0cbe6a2c33::version=1.8.1&hash=5b9b84&locator=gambit-interface%40workspace%3A."
+  dependencies:
+    "@ethersproject/contracts": ^5.4.1
+    "@ethersproject/providers": ^5.4.5
+    "@types/react-blockies": ^1.4.1
+    bn.js: ^5.2.0
+    color: ^3.2.1
+    mersenne-twister: ^1.1.0
+    react-blockies: ^1.4.1
+  peerDependencies:
+    react: ">=16.8"
+  checksum: df7f3079859be849ec9b544d390cce4e7162478c710e2534e4bd867ab5dcdad9115c946e94c22d499d7ba730d463269535fcd600641245f63ed3e20417ca2476
+  languageName: node
+  linkType: hard
+
 "@emotion/babel-plugin@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/babel-plugin@npm:11.11.0"
@@ -10300,6 +10317,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ethers@patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c::locator=gambit-interface%40workspace%3A.":
+  version: 6.12.1
+  resolution: "ethers@patch:ethers@npm%3A6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c::version=6.12.1&hash=383490&locator=gambit-interface%40workspace%3A."
+  dependencies:
+    "@adraffy/ens-normalize": 1.10.1
+    "@noble/curves": 1.2.0
+    "@noble/hashes": 1.3.2
+    "@types/node": 18.15.13
+    aes-js: 4.0.0-beta.5
+    tslib: 2.4.0
+    ws: 8.5.0
+  checksum: 684b1e1551c4764bb3de5607bd00b739443648bf287eba911652ca68b175c1d601aab841223b63aa9a3739e022daa5713f758dda5c5873baf4f22ad9a7777551
+  languageName: node
+  linkType: hard
+
 "eventemitter2@npm:^6.4.5, eventemitter2@npm:^6.4.7":
   version: 6.4.9
   resolution: "eventemitter2@npm:6.4.9"
@@ -13070,7 +13102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-runner@npm:^27.5.1":
+"jest-runner@npm:27.5.1":
   version: 27.5.1
   resolution: "jest-runner@npm:27.5.1"
   dependencies:
@@ -13096,6 +13128,35 @@ __metadata:
     source-map-support: ^0.5.6
     throat: ^6.0.1
   checksum: 5bbe6cf847dd322b3332ec9d6977b54f91bd5f72ff620bc1a0192f0f129deda8aa7ca74c98922187a7aa87d8e0ce4f6c50e99a7ccb2a310bf4d94be2e0c3ce8e
+  languageName: node
+  linkType: hard
+
+"jest-runner@patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8::locator=gambit-interface%40workspace%3A.":
+  version: 27.5.1
+  resolution: "jest-runner@patch:jest-runner@npm%3A27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8::version=27.5.1&hash=e61bc9&locator=gambit-interface%40workspace%3A."
+  dependencies:
+    "@jest/console": ^27.5.1
+    "@jest/environment": ^27.5.1
+    "@jest/test-result": ^27.5.1
+    "@jest/transform": ^27.5.1
+    "@jest/types": ^27.5.1
+    "@types/node": "*"
+    chalk: ^4.0.0
+    emittery: ^0.8.1
+    graceful-fs: ^4.2.9
+    jest-docblock: ^27.5.1
+    jest-environment-jsdom: ^27.5.1
+    jest-environment-node: ^27.5.1
+    jest-haste-map: ^27.5.1
+    jest-leak-detector: ^27.5.1
+    jest-message-util: ^27.5.1
+    jest-resolve: ^27.5.1
+    jest-runtime: ^27.5.1
+    jest-util: ^27.5.1
+    jest-worker: ^27.5.1
+    source-map-support: ^0.5.6
+    throat: ^6.0.1
+  checksum: d032ab3e2489112b8e15a0004524c644363404f4c806628d617ad88345d36951f9b7bcec7a8d8b11a51595e9a7a4d4d1e00e3123f92e8099a7a1369bba4ab105
   languageName: node
   linkType: hard
 

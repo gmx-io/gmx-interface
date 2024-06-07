@@ -36,18 +36,19 @@ import {
   selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
   selectTradeboxFees,
+  selectTradeboxFindSwapPath,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
   selectTradeboxLeverageSliderMarks,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMaxLeverage,
+  selectTradeboxMaxLiquidityPath,
   selectTradeboxNextLeverageWithoutPnl,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
-  selectTradeboxSwapRoutes,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
@@ -255,7 +256,9 @@ export function TradeBox(p: Props) {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
-  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
+  const findSwapPath = useSelector(selectTradeboxFindSwapPath);
+  const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
+
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
@@ -294,8 +297,6 @@ export function TradeBox(p: Props) {
     [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
   );
 
-  const swapOutLiquidity = swapRoutes.maxSwapLiquidity;
-
   const userReferralInfo = useUserReferralInfo();
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
@@ -309,7 +310,7 @@ export function TradeBox(p: Props) {
         const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
-          findSwapPath: swapRoutes.findSwapPath,
+          findSwapPath,
           indexToken: toToken,
           indexTokenAmount: toTokenAmount,
           initialCollateralAmount: fromTokenAmount,
@@ -380,6 +381,7 @@ export function TradeBox(p: Props) {
   }, [
     acceptablePriceImpactBuffer,
     collateralToken,
+    findSwapPath,
     fromToken,
     fromTokenAmount,
     isLeverageEnabled,
@@ -391,7 +393,6 @@ export function TradeBox(p: Props) {
     selectedTriggerAcceptablePriceImpactBps,
     setLeverageOption,
     setToTokenInputValue,
-    swapRoutes.findSwapPath,
     toToken,
     toTokenAmount,
     triggerPrice,
@@ -495,6 +496,12 @@ export function TradeBox(p: Props) {
 
           break;
         }
+
+        case "liqPrice > markPrice":
+          tooltipContent = (
+            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+          );
+          break;
 
         default:
           mustNeverExist(tooltipName);

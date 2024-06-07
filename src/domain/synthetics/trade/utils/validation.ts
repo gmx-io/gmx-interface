@@ -21,7 +21,7 @@ export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
-  | [errorMessage: string, tooltipName: "maxLeverage"];
+  | [errorMessage: string, tooltipName: "maxLeverage" | "liqPrice > markPrice"];
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -299,6 +299,16 @@ export function getIncreaseError(p: {
 
     if (maxLeverageError) {
       return [t`Max. Leverage exceeded`, "maxLeverage"];
+    }
+  }
+
+  if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
+    if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
+      return [t`Invalid liq. price`, "liqPrice > markPrice"];
+    }
+
+    if (!isLong && nextPositionValues.nextLiqPrice < markPrice) {
+      return [t`Invalid liq. price`, "liqPrice > markPrice"];
     }
   }
 

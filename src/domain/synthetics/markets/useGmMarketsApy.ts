@@ -4,7 +4,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
@@ -16,6 +16,7 @@ import { useTokensDataRequest } from "../tokens";
 import { MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
+import mapValues from "lodash/mapValues";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -26,15 +27,16 @@ type RawPoolValue = {
   poolValue: string;
 };
 
-type MarketTokensAPRResult = {
+type GmTokensAPRResult = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
-  marketsTokensAPRData?: MarketTokensAPRData;
-  avgMarketsAPR?: bigint;
+
+  marketsTokensApyData?: MarketTokensAPRData;
+  avgMarketsApy?: bigint;
 };
 
 type SwrResult = {
-  marketsTokensAPRData: MarketTokensAPRData;
-  avgMarketsAPR: bigint;
+  marketsTokensApyData: MarketTokensAPRData;
+  avgMarketsApy: bigint;
 };
 
 function useMarketAddresses(chainId: number) {
@@ -92,7 +94,7 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
   }, [chainId, marketAddresses, marketsInfoData, rawIncentivesStats, tokensData]);
 }
 
-export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
+export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const marketAddresses = useMarketAddresses(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
@@ -150,8 +152,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       if (!responseOrNull) {
         return {
-          marketsTokensAPRData: {},
-          avgMarketsAPR: 0n,
+          marketsTokensApyData: {},
+          avgMarketsApy: 0n,
         };
       }
 
@@ -189,14 +191,16 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const avgMarketsAPR =
-        Object.values(marketsTokensAPRData).reduce((acc, apr) => {
+      const marketsTokensApyData = mapValues(marketsTokensAPRData, calculateAPY);
+
+      const avgMarketsApy =
+        Object.values(marketsTokensApyData).reduce((acc, apr) => {
           return acc + apr;
         }, 0n) / BigInt(marketAddresses.length);
 
       return {
-        marketsTokensAPRData,
-        avgMarketsAPR,
+        avgMarketsApy,
+        marketsTokensApyData,
       };
     },
   });
@@ -205,8 +209,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
   return {
     marketsTokensIncentiveAprData,
-    marketsTokensAPRData: data?.marketsTokensAPRData,
-    avgMarketsAPR: data?.avgMarketsAPR,
+    avgMarketsApy: data?.avgMarketsApy,
+    marketsTokensApyData: data?.marketsTokensApyData,
   };
 }
 
@@ -222,4 +226,10 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
   const borrowingFeeUsdPerPoolValuePerYear = bigMath.mulDiv(borrowingFeeUsdForPoolPerYear, PRECISION, poolValue);
 
   return borrowingFeeUsdPerPoolValuePerYear;
+}
+
+function calculateAPY(apr: bigint) {
+  const aprNumber = bigintToNumber(apr, 30);
+  const apyNumber = Math.exp(aprNumber) - 1;
+  return numberToBigint(apyNumber, 30);
 }

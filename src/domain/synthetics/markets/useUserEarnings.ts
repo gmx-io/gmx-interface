@@ -6,11 +6,11 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
-import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { bigMath } from "lib/bigmath";
 import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
+import { useGmMarketsApy } from "./useGmMarketsApy";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -43,7 +43,7 @@ export const useUserEarnings = (chainId: number) => {
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
-  const marketsTokensAPRData = useMarketTokensAPR(chainId).marketsTokensAPRData;
+  const marketsTokensAPRData = useGmMarketsApy(chainId).marketsTokensApyData;
 
   const { data } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {
@@ -186,7 +186,7 @@ export const useUserEarnings = (chainId: number) => {
         result.allMarkets.recent = result.allMarkets.recent + recentIncome;
 
         if (marketsTokensAPRData && marketTokensData) {
-          const apr = marketsTokensAPRData[marketAddress];
+          const apy = marketsTokensAPRData[marketAddress];
           const token = marketTokensData[marketAddress];
           const balance = token.balance;
 
@@ -194,7 +194,7 @@ export const useUserEarnings = (chainId: number) => {
 
           const price = token.prices.maxPrice;
 
-          const expected365d = bigMath.mulDiv(apr * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
+          const expected365d = bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
           result.allMarkets.expected365d = result.allMarkets.expected365d + expected365d;
         }
       });
