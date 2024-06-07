@@ -29,7 +29,7 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 
-import { cssTransition, ToastContainer } from "react-toastify";
+import { cssTransition, toast, ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 import "styles/Font.css";
@@ -81,6 +81,7 @@ import { useWebsocketProvider, WebsocketContextProvider } from "context/Websocke
 import { PendingTransaction } from "domain/legacy";
 import { Provider } from "ethers";
 import { useChainId } from "lib/chains";
+import { getInvalidNetworkErrorMessage } from "lib/contracts/transactionErrors";
 import { useErrorReporting } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
@@ -498,17 +499,22 @@ function App() {
 
   useEffect(() => {
     const unwatch = watchAccount(rainbowKitConfig, {
-      onChange: ({ chainId }) => {
+      onChange: ({ chainId: newChainId }) => {
         const chains = rainbowKitConfig.chains;
-        const chain = chains.find((c) => c.id === chainId);
+        const chain = chains.find((c) => c.id === newChainId);
         const isValidChain = chain && chains && chains.some((c) => c.id === chain.id);
+
         if (!isValidChain) {
-          disconnect();
+          helperToast.error(getInvalidNetworkErrorMessage(chainId), {
+            toastId: "invalid-network",
+          });
+        } else {
+          toast.dismiss("invalid-network");
         }
       },
     } as any);
     return () => unwatch();
-  }, [disconnect]);
+  }, [chainId, disconnect]);
 
   let app = <FullApp />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;

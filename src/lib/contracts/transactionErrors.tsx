@@ -113,15 +113,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
       );
       break;
     case NETWORK_CHANGED:
-      failMsg = (
-        <Trans>
-          <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-          <br />
-          <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-            Switch to {getChainName(chainId)}
-          </div>
-        </Trans>
-      );
+      failMsg = getInvalidNetworkErrorMessage(chainId);
       break;
     case USER_DENIED:
       failMsg = t`Transaction was cancelled.`;
@@ -167,4 +159,16 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
   }
 
   return { failMsg, autoCloseToast };
+}
+
+export function getInvalidNetworkErrorMessage(chainId: number) {
+  return (
+    <Trans>
+      <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+      <br />
+      <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+        Switch to {getChainName(chainId)}
+      </div>
+    </Trans>
+  );
 }
