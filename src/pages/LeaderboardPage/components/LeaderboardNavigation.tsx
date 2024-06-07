@@ -86,7 +86,7 @@ export function LeaderboardNavigation() {
   }, [pageKey]);
 
   return (
-    <div className="LeaderboardNavigation default-container !ml-10 !pl-0">
+    <div className="LeaderboardNavigation default-container-mobile-one-sided">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}
