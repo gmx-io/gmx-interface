@@ -1929,23 +1929,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@davatar/react@patch:@davatar/react@npm:1.8.1#.yarn/patches/@davatar-react-npm-1.8.1-0cbe6a2c33::locator=gambit-interface%40workspace%3A.":
-  version: 1.8.1
-  resolution: "@davatar/react@patch:@davatar/react@npm%3A1.8.1#.yarn/patches/@davatar-react-npm-1.8.1-0cbe6a2c33::version=1.8.1&hash=5b9b84&locator=gambit-interface%40workspace%3A."
-  dependencies:
-    "@ethersproject/contracts": ^5.4.1
-    "@ethersproject/providers": ^5.4.5
-    "@types/react-blockies": ^1.4.1
-    bn.js: ^5.2.0
-    color: ^3.2.1
-    mersenne-twister: ^1.1.0
-    react-blockies: ^1.4.1
-  peerDependencies:
-    react: ">=16.8"
-  checksum: df7f3079859be849ec9b544d390cce4e7162478c710e2534e4bd867ab5dcdad9115c946e94c22d499d7ba730d463269535fcd600641245f63ed3e20417ca2476
-  languageName: node
-  linkType: hard
-
 "@emotion/babel-plugin@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/babel-plugin@npm:11.11.0"
