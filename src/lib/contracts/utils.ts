@@ -1,5 +1,5 @@
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
-import { Contract, BaseContract, Provider } from "ethers";
+import { Contract, BaseContract, Provider, Wallet } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
@@ -45,4 +45,19 @@ export async function getGasLimit(
   }
 
   return (gasLimit * 11n) / 10n; // add a 10% buffer
+}
+
+export async function getBestNonce(providers: Wallet[], timeout = 3000): Promise<number> {
+  const results: number[] = [];
+
+  const promises = providers.map((provider) => provider.getNonce().then((nonce) => results.push(nonce)));
+
+  // wait for either: 1. all providers requests are settled 2. or timeout
+  await Promise.any([Promise.allSettled(promises), new Promise((resolve) => setTimeout(resolve, timeout))]);
+
+  if (results.length === 0) {
+    throw new Error(`None of providers returned nonce in ${timeout} ms`);
+  }
+
+  return Math.max(...results);
 }
