@@ -1893,6 +1893,10 @@ msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 msgid "Migrating..."
 msgstr "移行中..."
 
+#: src/lib/contracts/transactionErrors.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
+msgstr ""
+
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "あなたのウォレット: {0}"
@@ -4033,6 +4037,10 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
+#: src/lib/contracts/transactionErrors.tsx
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4>Read more</4>."
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "{0}の最大ショートキャパシティ"
@@ -5158,8 +5166,8 @@ msgid "Execute Limit Swap"
 msgstr "指値スワップの執行"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-msgstr "RPCエラーにより取引できませんでした。<0/><1/>ウォレットの設定でRPCのURLを変更してください。<2>詳細を読む</2>"
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+#~ msgstr "RPCエラーにより取引できませんでした。<0/><1/>ウォレットの設定でRPCのURLを変更してください。<2>詳細を読む</2>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."

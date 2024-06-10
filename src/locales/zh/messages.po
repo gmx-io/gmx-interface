@@ -1893,6 +1893,10 @@ msgstr "GLP购买已禁止，等待{0}升级"
 msgid "Migrating..."
 msgstr "转移中"
 
+#: src/lib/contracts/transactionErrors.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
+msgstr ""
+
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "你的钱包: {0}"
@@ -4033,6 +4037,10 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "推荐代码已更新"
 
+#: src/lib/contracts/transactionErrors.tsx
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4>Read more</4>."
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "最大{0}做空范围"
@@ -5158,8 +5166,8 @@ msgid "Execute Limit Swap"
 msgstr "执行限价交换"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中改变RPC网址 <2>阅读更多</2>"
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+#~ msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中改变RPC网址 <2>阅读更多</2>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."

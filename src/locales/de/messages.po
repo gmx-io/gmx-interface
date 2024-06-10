@@ -1893,6 +1893,10 @@ msgstr "GLP-Kauf deaktiviert, {0} Aktualisierung steht noch aus"
 msgid "Migrating..."
 msgstr "Migrieren..."
 
+#: src/lib/contracts/transactionErrors.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
+msgstr ""
+
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "Dein Wallet: {0}"
@@ -4033,6 +4037,10 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "Referral Code aktualisiert!"
 
+#: src/lib/contracts/transactionErrors.tsx
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4>Read more</4>."
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "Max. {0} Short-Kapazität"
@@ -5158,8 +5166,8 @@ msgid "Execute Limit Swap"
 msgstr "Limit Swap ausführen"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-msgstr "Die Transaktion ist aufgrund eines RPC-Fehlers fehlgeschlagen.<0/><1/>Bitte versuche, die RPC-URL in deinem Wallet-Einstellungen zu ändern. <2>Mehr lesen</2>."
+#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+#~ msgstr "Die Transaktion ist aufgrund eines RPC-Fehlers fehlgeschlagen.<0/><1/>Bitte versuche, die RPC-URL in deinem Wallet-Einstellungen zu ändern. <2>Mehr lesen</2>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
