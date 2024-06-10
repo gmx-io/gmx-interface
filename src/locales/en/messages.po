@@ -3535,10 +3535,6 @@ msgstr "Cancel failed"
 msgid "Your APR"
 msgstr "Your APR"
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
-msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
@@ -6168,6 +6164,10 @@ msgstr "You have set a high Acceptable Price Impact. The current Price Impact is
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "GLP to GM Airdrop"
 msgstr "GLP to GM Airdrop"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
+msgstr "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Vaults"

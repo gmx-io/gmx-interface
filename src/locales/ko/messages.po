@@ -3532,10 +3532,6 @@ msgstr "취소 실패"
 msgid "Your APR"
 msgstr ""
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr ""
@@ -6161,6 +6157,10 @@ msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "GLP to GM Airdrop"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
