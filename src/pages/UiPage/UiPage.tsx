@@ -123,35 +123,37 @@ export default function UiPage() {
       <p>This page demonstrates the use of the UI components in the app.</p>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
-      <div className="flex flex-col">
-        {entries(colors).map(([color, shades]) => {
-          if (typeof shades === "string") {
+      <div className="overflow-auto">
+        <div className="flex flex-col">
+          {entries(colors).map(([color, shades]) => {
+            if (typeof shades === "string") {
+              return (
+                <div key={color}>
+                  <div className="flex w-fit overflow-hidden *:size-64">
+                    <div className="!w-96 text-12">{color}</div>
+                    <div className={shades} />
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div key={color}>
                 <div className="flex w-fit overflow-hidden *:size-64">
-                  <div className="!w-96 text-12">{color}</div>
-                  <div className={shades} />
+                  <div className="!w-96 text-12"> {color}</div>
+                  {entries(shades).map(([shade, value]) => {
+                    if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
+                    return (
+                      <div key={shade + value} className={value}>
+                        {shade}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
-          }
-
-          return (
-            <div key={color}>
-              <div className="flex w-fit overflow-hidden *:size-64">
-                <div className="!w-96 text-12"> {color}</div>
-                {entries(shades).map(([shade, value]) => {
-                  if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
-                  return (
-                    <div key={shade + value} className={value}>
-                      {shade}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+          })}
+        </div>
       </div>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Text colors</h2>

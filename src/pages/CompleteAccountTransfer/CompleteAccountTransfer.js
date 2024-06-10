@@ -84,7 +84,7 @@ export default function CompleteAccountTransfer() {
   if (!isSenderAndReceiverValid) {
     return (
       <div className="CompleteAccountTransfer Page page-layout">
-        <div className="Page-title-section">
+        <div className="default-container !m-0">
           <div className="Page-title">
             <Trans>Complete Account Transfer</Trans>
           </div>
@@ -110,7 +110,7 @@ export default function CompleteAccountTransfer() {
           <Trans>Continue</Trans>
         </Link>
       </Modal>
-      <div className="Page-title-section">
+      <div className="default-container !m-0 pb-16">
         <div className="Page-title">
           <Trans>Complete Account Transfer</Trans>
         </div>
@@ -136,14 +136,14 @@ export default function CompleteAccountTransfer() {
           </div>
         )}
         {isCorrectAccount && (
-          <div className="Page-description">
+          <div className="Page-description hyphens-auto">
             <Trans>You have a pending transfer from {sender}.</Trans>
             <br />
           </div>
         )}
       </div>
       {isCorrectAccount && (
-        <div className="Page-content">
+        <div className="default-container !m-0">
           <div className="input-form">
             <div className="input-row">
               <Button
