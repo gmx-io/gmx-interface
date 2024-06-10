@@ -22,7 +22,7 @@ import { formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
+import { bigintToNumber, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -246,7 +246,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 
                 const bn = raw ? BigInt(raw) : 0n;
                 acc[key] = bn;
-                acc[`${key}Float`] = usdBigIntToFloat(bn);
+                acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
                 return acc;
               },
               {} as Record<string, bigint | number>
@@ -259,9 +259,9 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
             : formatDate(row.timestamp),
           dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
           pnl: BigInt(row.pnl),
-          pnlFloat: usdBigIntToFloat(BigInt(row.pnl)),
+          pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
           cumulativePnl: BigInt(row.cumulativePnl),
-          cumulativePnlFloat: usdBigIntToFloat(BigInt(row.cumulativePnl)),
+          cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
           ...parsedDebugFields,
         };
       }) || EMPTY_ARRAY
@@ -269,13 +269,6 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
   }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
-}
-
-function usdBigIntToFloat(usd: bigint) {
-  if (typeof usd !== "bigint") {
-    throw new Error(`usdBigIntToFloat: expected bigint, got ${typeof usd}, ${usd}`);
-  }
-  return Number((usd * 1_0000n) / 10n ** BigInt(USD_DECIMALS)) / 1_0000;
 }
 
 function useImageDownload() {

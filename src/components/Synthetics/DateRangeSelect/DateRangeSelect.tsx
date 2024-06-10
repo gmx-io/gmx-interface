@@ -1,5 +1,6 @@
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
+import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { sub, type Locale as DateLocale } from "date-fns";
@@ -101,7 +102,9 @@ const PRESETS = {
   allTime: undefined,
 };
 
-const PRESET_LABELS = {
+type PresetPeriod = keyof typeof PRESETS;
+
+const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
   month: msg`Last month`,
   days30: msg`Last 30d`,
   days7: msg`Last 7d`,
@@ -109,6 +112,8 @@ const PRESET_LABELS = {
   days365: msg`Last 365d`,
   allTime: msg`All time`,
 };
+
+const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
 export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
   const rangeState = useMemo<[Range]>(
@@ -191,7 +196,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
           <div className="DateRangeSelect-common-items">
-            {["days7", "days30", "days90", "days365", "allTime"].map((preset) => (
+            {DATE_RANGE_SELECT_PRESETS.map((preset) => (
               <Button
                 key={preset}
                 variant="secondary"
@@ -221,6 +226,8 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
     </>
   );
 }
+
+const DATE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
 export function DateSelect({
   date,
@@ -308,7 +315,7 @@ export function DateSelect({
         </Popover.Button>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
           <div className="DateRangeSelect-common-items">
-            {["days7", "days30", "days90", "days365", "allTime"].map((preset) => (
+            {DATE_SELECT_PRESETS.map((preset) => (
               <Button
                 key={preset}
                 variant="secondary"

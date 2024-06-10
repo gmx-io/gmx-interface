@@ -17,6 +17,7 @@ export type PnlSummaryPointDebugFields = {
   unrealizedFeesUsd: bigint;
   startUnrealizedBasePnlUsd: bigint;
   startUnrealizedFeesUsd: bigint;
+  // #endregion
 };
 
 export const DEBUG_QUERY = gql`

@@ -14,7 +14,7 @@ export type NetworkMetadata = {
   blockExplorerUrls: string[];
 };
 
-export async function switchNetwork(chainId: number, active: boolean): Promise<void> | never {
+export async function switchNetwork(chainId: number, active: boolean): Promise<void> {
   if (active) {
     await switchChain(rainbowKitConfig, {
       chainId,
@@ -23,7 +23,7 @@ export async function switchNetwork(chainId: number, active: boolean): Promise<v
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
-    document.location.reload() as never;
+    document.location.reload();
     return;
   }
 }
