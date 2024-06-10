@@ -47,17 +47,54 @@ export async function getGasLimit(
   return (gasLimit * 11n) / 10n; // add a 10% buffer
 }
 
-export async function getBestNonce(providers: Wallet[], timeout = 3000): Promise<number> {
-  const results: number[] = [];
+export function getBestNonce(providers: Wallet[]): Promise<number> {
+  return new Promise(async (resolve, reject) => {
+    const results: number[] = [];
 
-  const promises = providers.map((provider) => provider.getNonce().then((nonce) => results.push(nonce)));
+    let pending = providers.length;
+    let threshold = 3;
 
-  // wait for either: 1. all providers requests are settled 2. or timeout
-  await Promise.any([Promise.allSettled(promises), new Promise((resolve) => setTimeout(resolve, timeout))]);
+    const handleSuccess = () => resolve(Math.max(...results));
+    const handleFailure = () => reject("Failed to fetch nonce from any provider");
 
-  if (results.length === 0) {
-    throw new Error(`None of providers returned nonce in ${timeout} ms`);
-  }
+    const checkExit = () => {
+      if (!pending) {
+        if (results.length) {
+          handleSuccess();
+        } else {
+          handleFailure();
+        }
+      }
 
-  return Math.max(...results);
+      if (results.length >= threshold) {
+        handleSuccess();
+      }
+    };
+
+    providers.forEach((provider, i) =>
+      provider
+        .getNonce()
+        .then((nonce) => results.push(nonce))
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(`Error fetching nonce from provider ${i}: ${error.message}`);
+        })
+        .finally(() => pending--)
+        .finally(checkExit)
+    );
+
+    setTimeout(() => {
+      threshold = 2;
+      checkExit();
+    }, 1000);
+
+    setTimeout(() => {
+      threshold = 1;
+      checkExit();
+    }, 3000);
+
+    setTimeout(() => {
+      handleFailure();
+    }, 5000);
+  });
 }
