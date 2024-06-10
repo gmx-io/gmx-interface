@@ -4,7 +4,7 @@ import { getExplorerUrl } from "config/chains";
 import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, setGasPrice } from "./utils";
+import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
 
@@ -46,8 +46,9 @@ export async function callContract(
     }
 
     if (opts.customSigners) {
-      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await wallet.getNonce();
+      // If we send the transaction to multiple RPCs simultaneously,
+      // we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
