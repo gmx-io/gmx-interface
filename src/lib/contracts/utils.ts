@@ -53,8 +53,16 @@ export function getBestNonce(providers: Wallet[]): Promise<number> {
 
     let pending = providers.length;
     let threshold = 3;
+    let shown = false;
 
-    const handleSuccess = () => resolve(Math.max(...results));
+    const handleSuccess = () => {
+      if (!shown) {
+        shown = true;
+        // eslint-disable-next-line no-console
+        console.log("Nonces been received: ", results);
+      }
+      resolve(Math.max(...results));
+    };
     const handleFailure = () => reject("Failed to fetch nonce from any provider");
 
     const checkExit = () => {

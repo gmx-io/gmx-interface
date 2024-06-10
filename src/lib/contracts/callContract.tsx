@@ -47,9 +47,26 @@ export async function callContract(
     }
 
     if (opts.customSigners) {
+      const wallets: Wallet[] = [];
+
+      // @ts-expect-error
+      if (!window.disableBrowserWalletRpc) {
+        wallets.push(wallet);
+      }
+
+      // @ts-expect-error
+      if (!window.disablePublicRpc) {
+        wallets.push(opts.customSigners[0]);
+      }
+
+      // @ts-expect-error
+      if (!window.disableFallbackRpc) {
+        wallets.push(opts.customSigners[1]);
+      }
+
       // If we send the transaction to multiple RPCs simultaneously,
       // we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
+      txnOpts.nonce = await getBestNonce(wallets);
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
