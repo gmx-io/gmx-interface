@@ -48,61 +48,57 @@ export async function getGasLimit(
 }
 
 export function getBestNonce(providers: Wallet[]): Promise<number> {
+  const MAX_NONCE_NEEDED = 3;
+  const MAX_WAIT = 5000;
+  const ONE_MORE_WAIT = 1000;
+
   return new Promise(async (resolve, reject) => {
     const results: number[] = [];
+    let resolved = false;
 
-    let pending = providers.length;
-    let threshold = 3;
-    let shown = false;
+    const handleResolve = () => {
+      resolved = true;
 
-    const handleSuccess = () => {
-      if (!shown) {
-        shown = true;
-        // eslint-disable-next-line no-console
-        console.log("Nonces been received: ", results);
-      }
-      resolve(Math.max(...results));
-    };
-    const handleFailure = () => reject("Failed to fetch nonce from any provider");
-
-    const checkExit = () => {
-      if (!pending) {
-        if (results.length) {
-          handleSuccess();
-        } else {
-          handleFailure();
-        }
-      }
-
-      if (results.length >= threshold) {
-        handleSuccess();
+      if (results.length) {
+        resolve(Math.max(...results));
+      } else {
+        reject(new Error("Failed to fetch nonce from any provider"));
       }
     };
 
-    providers.forEach((provider, i) =>
-      provider
-        .getNonce()
-        .then((nonce) => results.push(nonce))
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(`Error fetching nonce from provider ${i}: ${error.message}`);
-        })
-        .finally(() => pending--)
-        .finally(checkExit)
+    let timer = setTimeout(handleResolve, MAX_WAIT);
+
+    const setResolveTimeout = (t: number) => {
+      clearTimeout(timer);
+
+      if (resolved) return;
+
+      if (t) {
+        timer = setTimeout(handleResolve, t);
+      } else {
+        handleResolve();
+      }
+    };
+
+    await Promise.all(
+      providers.map((provider, i) =>
+        provider
+          .getNonce("pending")
+          .then((nonce) => results.push(nonce))
+          .then(() => {
+            if (results.length === providers.length || results.length >= MAX_NONCE_NEEDED) {
+              setResolveTimeout(0);
+            } else {
+              setResolveTimeout(ONE_MORE_WAIT);
+            }
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(`Error fetching nonce from provider ${i}: ${error.message}`);
+          })
+      )
     );
 
-    setTimeout(() => {
-      threshold = 2;
-      checkExit();
-    }, 1000);
-
-    setTimeout(() => {
-      threshold = 1;
-      checkExit();
-    }, 3000);
-
-    setTimeout(() => {
-      handleFailure();
-    }, 5000);
+    setResolveTimeout(0);
   });
 }
