@@ -31,14 +31,14 @@ describe("getBestNonce", () => {
     jest.spyOn(console, "error").mockImplementation(jest.fn());
   });
 
-  test("Should resolve to the highest nonce from successful responses under timeout", async () => {
+  test("Case 1", async () => {
     const providers: any[] = [new MockWallet(1, true, 100), new MockWallet(2, true, 200), new MockWallet(3, true, 300)];
     const res = getBestNonce(providers);
     jest.advanceTimersByTime(400);
     expect(res).resolves.toBe(3);
   });
 
-  test("Should resolve to the highest nonce from successful responses, excluding failed ones", async () => {
+  test("Case 2", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, true, 200),
@@ -49,7 +49,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(2);
   });
 
-  test("Should resolve with the only successful response when others fail", async () => {
+  test("Case 3", async () => {
     const providers: any[] = [
       new MockWallet(1, false, 100),
       new MockWallet(2, true, 200),
@@ -60,7 +60,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(2);
   });
 
-  test("Should throw error when all providers fail", async () => {
+  test("Case 4", async () => {
     const providers: any[] = [
       new MockWallet(1, false, 100),
       new MockWallet(2, false, 200),
@@ -73,7 +73,7 @@ describe("getBestNonce", () => {
     });
   });
 
-  test("Should resolve to the highest nonce under intermediate timeouts", async () => {
+  test("Case 5", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, true, 200),
@@ -86,7 +86,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(2);
   });
 
-  test("Should resolve to the highest nonce even if later response is delayed", async () => {
+  test("Case 6", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, false, 900),
@@ -97,7 +97,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(3);
   });
 
-  test("Should resolve to the first nonce if later responses fail", async () => {
+  test("Case 7", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, false, 900),
@@ -108,7 +108,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(1);
   });
 
-  test("Should resolve to nonce from the provider that responds within timeout", async () => {
+  test("Case 8", async () => {
     const providers: any[] = [
       new MockWallet(1, false, 100),
       new MockWallet(2, false, 200),
@@ -119,7 +119,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(3);
   });
 
-  test("Should resolve to the first nonce when later providers fail", async () => {
+  test("Case 9", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, false, 300),
@@ -132,7 +132,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(1);
   });
 
-  test("", async () => {
+  test("Case 10", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 4000),
       new MockWallet(2, true, 5800),
@@ -145,7 +145,7 @@ describe("getBestNonce", () => {
     await await expect(res).resolves.toBe(1);
   });
 
-  test("", async () => {
+  test("Case 11", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 4900),
       new MockWallet(2, true, 6100),
@@ -158,7 +158,7 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(1);
   });
 
-  test("Should throw error when all providers respond past their timeout", async () => {
+  test("Case 12", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 6000),
       new MockWallet(2, true, 7000),
@@ -171,14 +171,14 @@ describe("getBestNonce", () => {
     });
   });
 
-  test("", async () => {
+  test("Case 13", async () => {
     const providers: any[] = [new MockWallet(1, true, 100)];
     const res = getBestNonce(providers);
     jest.advanceTimersByTime(200);
     expect(res).resolves.toBe(1);
   });
 
-  test("", async () => {
+  test("Case 14", async () => {
     const providers: any[] = [new MockWallet(1, true, 4900)];
     const res = getBestNonce(providers);
     jest.advanceTimersByTime(4950);
@@ -187,21 +187,21 @@ describe("getBestNonce", () => {
     expect(res).resolves.toBe(1);
   });
 
-  test("", async () => {
+  test("Case 15", async () => {
     const providers: any[] = [new MockWallet(1, true, 100), new MockWallet(2, true, 200)];
     const res = getBestNonce(providers);
     jest.advanceTimersByTime(300);
     expect(res).resolves.toBe(2);
   });
 
-  test("", async () => {
+  test("Case 16", async () => {
     const providers: any[] = [new MockWallet(1, true, 100), new MockWallet(2, true, 1000)];
     const res = getBestNonce(providers);
     jest.advanceTimersByTime(1100);
     expect(res).resolves.toBe(2);
   });
 
-  test("", async () => {
+  test("Case 17", async () => {
     const providers: any[] = [
       new MockWallet(1, true, 100),
       new MockWallet(2, true, 200),
