@@ -1,12 +1,16 @@
+import { Trans, t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import Token from "abis/Token.json";
+import { Link } from "react-router-dom";
+
 import { getChainName, getExplorerUrl } from "config/chains";
+import { getNativeToken } from "config/tokens";
+import { getRealChainId } from "lib/chains/getRealChainId";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { t, Trans } from "@lingui/macro";
-import { getNativeToken } from "config/tokens";
-import { Link } from "react-router-dom";
+
+import Token from "abis/Token.json";
 
 type Params = {
   setIsApproving: (val: boolean) => void;

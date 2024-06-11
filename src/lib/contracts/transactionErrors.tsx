@@ -161,6 +161,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
   return { failMsg, autoCloseToast };
 }
 
+export const INVALID_NETWORK_TOAST_ID = "invalid-network";
 export function getInvalidNetworkErrorMessage(chainId: number) {
   return (
     <Trans>
