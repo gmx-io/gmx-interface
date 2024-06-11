@@ -287,6 +287,10 @@ msgstr ""
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Incrementado {tokenSymbol} {longOrShortText}, +{0} USD."
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Pending {stakingTokenSymbol} approval"
+msgstr ""
+
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open Positions"
 msgstr ""
@@ -4083,10 +4087,6 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
 
-#: src/lib/contracts/transactionErrors.tsx
-#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4>Read more</4>."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "Capacidad Máx. {0} cortos"
@@ -5243,10 +5243,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
 msgstr "Ejecutar Intercambio Límite"
-
-#: src/lib/contracts/transactionErrors.tsx
-#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-#~ msgstr "La transacción falló debido a un error de RPC.<0/><1/>Por favor, prueba a cambiar la RPC url en los ajustes de tu monedero. <2>Leer más</2>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
@@ -6948,10 +6944,6 @@ msgstr "Guardar"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Profit"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Approving GMX..."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
