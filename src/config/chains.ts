@@ -168,7 +168,7 @@ const constants = {
   },
 };
 
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
+const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "1ct-best-nonce.gmx-interface.pages.dev"];
 
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],

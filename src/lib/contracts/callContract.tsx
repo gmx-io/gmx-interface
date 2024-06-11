@@ -4,9 +4,10 @@ import { getExplorerUrl } from "config/chains";
 import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, setGasPrice } from "./utils";
+import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
+import { ARBITRUM } from "config/chains";
 
 export async function callContract(
   chainId: number,
@@ -46,8 +47,26 @@ export async function callContract(
     }
 
     if (opts.customSigners) {
-      // If we send the transaction to multiple RPCs simultaneously, we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await wallet.getNonce();
+      const wallets: Wallet[] = [];
+
+      // @ts-expect-error
+      if (!window.disableBrowserWalletRpc) {
+        wallets.push(wallet);
+      }
+
+      // @ts-expect-error
+      if (!window.disablePublicRpc) {
+        wallets.push(opts.customSigners[0]);
+      }
+
+      // @ts-expect-error
+      if (!window.disableFallbackRpc) {
+        wallets.push(opts.customSigners[1]);
+      }
+
+      // If we send the transaction to multiple RPCs simultaneously,
+      // we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await getBestNonce(wallets);
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
@@ -60,7 +79,24 @@ export async function callContract(
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+    const toCall: any = [];
+
+    // @ts-expect-error
+    if (!window.disableBrowserWalletRpc) {
+      toCall.push({ contract, caption: "Browser Wallet RPC" });
+    }
+
+    // @ts-expect-error
+    if (!window.disablePublicRpc) {
+      toCall.push({ contract: customSignerContracts[0], caption: "Public RPC" });
+    }
+
+    // @ts-expect-error
+    if (!window.disableFallbackRpc) {
+      toCall.push({ contract: customSignerContracts[1], caption: "Fallback RPC" });
+    }
+
+    const txnCalls = toCall.map(async ({ contract: cntrct, caption }) => {
       const txnInstance = { ...txnOpts };
 
       txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
@@ -71,8 +107,17 @@ export async function callContract(
 
       await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).then((res) => {
+        if (chainId === ARBITRUM) {
+          // eslint-disable-next-line no-console
+          console.log(`Transaction sent via ${caption}`, res);
+        }
+        return res;
+      });
     });
+
+    // eslint-disable-next-line no-console
+    console.log("All RPC calls: ", txnCalls);
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
       if (errors.length > 1) {
