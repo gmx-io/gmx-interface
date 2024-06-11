@@ -118,6 +118,7 @@ async function getParams(
   const createOrderParams = {
     addresses: {
       receiver: p.account,
+      cancellationReceiver: ethers.ZeroAddress,
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
       market: ZeroAddress,
