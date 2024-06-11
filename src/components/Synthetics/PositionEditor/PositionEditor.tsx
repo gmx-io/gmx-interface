@@ -341,7 +341,7 @@ export function PositionEditor(p: Props) {
     }
 
     if (isHighFeeConsentError) {
-      return [t`High Execution Fee not yet acknowledged`];
+      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
