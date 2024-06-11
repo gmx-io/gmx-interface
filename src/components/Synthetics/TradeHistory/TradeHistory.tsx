@@ -3,19 +3,21 @@ import { useEffect, useState } from "react";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useChainId } from "lib/chains";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { MarketFilterLongShort } from "../TableMarketFilter/MarketFilterLongShort";
+import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
@@ -40,10 +42,10 @@ type Props = {
 
 export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, forAllAccounts, account } = p;
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
-  const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
       orderType: OrderType;
@@ -51,7 +53,6 @@ export function TradeHistory(p: Props) {
       isDepositOrWithdraw: boolean;
     }[]
   >([]);
-  const [isLongFilter, setIsLongFilter] = useState<boolean | undefined>(undefined);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -67,9 +68,8 @@ export function TradeHistory(p: Props) {
     pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
-    isLong: isLongFilter,
   });
 
   const isConnected = Boolean(account);
@@ -82,7 +82,7 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(startDate || endDate || marketAddressesFilter.length || actionFilter.length);
+  const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -100,7 +100,7 @@ export function TradeHistory(p: Props) {
     forAllAccounts,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
   });
@@ -128,6 +128,7 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-market-column" />
               <col className="TradeHistorySynthetics-size-column" />
               <col className="TradeHistorySynthetics-price-column" />
+              <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
             <thead className="TradeHistorySynthetics-header">
               <tr>
@@ -135,18 +136,18 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilterLongShort
-                    value={marketAddressesFilter}
-                    onChange={setMarketAddressesFilter}
-                    valueIsLong={isLongFilter}
-                    onChangeIsLong={setIsLongFilter}
-                  />
+                  <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
                 </th>
                 <th>
                   <Trans>Size</Trans>
                 </th>
-                <th className="TradeHistorySynthetics-price-header">
+                <th>
                   <Trans>Price</Trans>
+                </th>
+                <th className="TradeHistorySynthetics-pnl-fees-header">
+                  <TooltipWithPortal content={<Trans>Realized PnL after fees and price impact.</Trans>}>
+                    <Trans>RPnL ($)</Trans>
+                  </TooltipWithPortal>
                 </th>
               </tr>
             </thead>

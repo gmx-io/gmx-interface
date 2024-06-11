@@ -1,21 +1,26 @@
+import { t } from "@lingui/macro";
+import { useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
+import type { Address } from "viem";
+
 import { shortenAddress } from "lib/legacy";
-import "./AddressView.scss";
-import { useMemo } from "react";
 import useWallet from "lib/wallets/useWallet";
-import { t } from "@lingui/macro";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+
+import "./AddressView.scss";
+
+const lengths = { S: 9, M: 13, L: 13, XL: 13 };
 
 type AddressViewProps = {
   address: string;
   size: number;
   ensName?: string;
   avatarUrl?: string;
-  breakpoint?: string;
+  breakpoint?: keyof typeof lengths;
   maxLength?: number;
+  noLink?: boolean;
 };
-
-const lengths = { S: 9, M: 13, L: 13, XL: 13 };
 
 export default function AddressView({
   address,
@@ -24,6 +29,7 @@ export default function AddressView({
   size = 24,
   breakpoint,
   maxLength,
+  noLink,
 }: AddressViewProps) {
   const { account } = useWallet();
   const strLength = (breakpoint && lengths[breakpoint]) ?? maxLength;
@@ -53,8 +59,21 @@ export default function AddressView({
     [avatarUrl, size]
   );
 
+  if (noLink) {
+    return (
+      <div className="AddressView">
+        {avatarUrl ? (
+          <span className="AddressView-ens-avatar" style={style} />
+        ) : (
+          <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
+        )}
+        <span className="AddressView-trader-id">{trader}</span>
+      </div>
+    );
+  }
+
   return (
-    <Link target="_blank" className="AddressView" to={`/actions/v2/${address}`}>
+    <Link target="_blank" className="AddressView" to={buildAccountDashboardUrl(address as Address, undefined, 2)}>
       {avatarUrl ? (
         <span className="AddressView-ens-avatar" style={style} />
       ) : (

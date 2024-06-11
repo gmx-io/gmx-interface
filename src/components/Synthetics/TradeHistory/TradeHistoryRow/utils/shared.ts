@@ -99,6 +99,11 @@ export type RowDetails = {
   size: string;
   price: string;
   priceComment: TooltipContent;
+  pnl?: string;
+  pnlState?: TooltipState;
+  isLong?: boolean;
+  indexTokenSymbol?: string;
+  pathTokenSymbols?: string[];
   //#region CSV fields
   marketPrice?: string;
   executionPrice?: string;
