@@ -27,7 +27,7 @@ export function useGasPrice(chainId: number) {
             let gasPrice = feeData.gasPrice ?? 0n;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-              const maxPriorityFeePerGas = feeData?.maxPriorityFeePerGas || 1500000000n;
+              const maxPriorityFeePerGas = bigMath.max(feeData?.maxPriorityFeePerGas ?? 0n, 1500000000n);
 
               gasPrice = gasPrice + maxPriorityFeePerGas;
             }
