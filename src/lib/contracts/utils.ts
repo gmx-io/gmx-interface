@@ -68,15 +68,15 @@ export function getBestNonce(providers: Wallet[]): Promise<number> {
       }
     };
 
-    let timer = setTimeout(handleResolve, MAX_WAIT);
+    let timerId = setTimeout(handleResolve, MAX_WAIT);
 
-    const setResolveTimeout = (t: number) => {
-      clearTimeout(timer);
+    const setResolveTimeout = (time: number) => {
+      clearTimeout(timerId);
 
       if (resolved) return;
 
-      if (t) {
-        timer = setTimeout(handleResolve, t);
+      if (time) {
+        timerId = setTimeout(handleResolve, time);
       } else {
         handleResolve();
       }
