@@ -89,17 +89,23 @@ export const formatSwapMessage = (
     adapt(tokensMinRatio?.largestToken)
   );
 
+  let pathTokenSymbolsLoading = false;
   const pathTokenSymbols: string[] | undefined =
     marketsInfoData &&
     tradeAction.swapPath
       ?.map((marketAddress) => marketsInfoData?.[marketAddress])
       .reduce(
-        (acc: TokenData[], marketInfo: MarketInfo) => {
+        (acc: TokenData[], marketInfo: MarketInfo | undefined) => {
+          if (!marketInfo || pathTokenSymbolsLoading) {
+            pathTokenSymbolsLoading = true;
+            return [];
+          }
+
           const last = acc[acc.length - 1];
 
-          if (last.address === marketInfo?.longToken.address) {
+          if (last.address === marketInfo.longToken.address) {
             acc.push(marketInfo.shortToken);
-          } else if (last.address === marketInfo?.shortToken.address) {
+          } else if (last.address === marketInfo.shortToken.address) {
             acc.push(marketInfo.longToken);
           }
 
@@ -109,19 +115,27 @@ export const formatSwapMessage = (
       )
       .map((token: TokenData) => token?.symbol);
 
-  const market = !pathTokenSymbols ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
+  const market = !pathTokenSymbols || pathTokenSymbolsLoading ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
     : tradeAction.swapPath
         ?.filter((marketAddress) => marketsInfoData?.[marketAddress])
-        .map((marketAddress) => marketsInfoData?.[marketAddress].name)
+        .map((marketAddress) => marketsInfoData?.[marketAddress]?.name ?? ELLIPSIS)
         .join(ARROW_SEPARATOR);
 
   const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
     ? undefined
     : tradeAction.swapPath?.map((marketAddress) => {
-        const marketInfo = marketsInfoData?.[marketAddress];
+        const marketInfo = marketsInfoData[marketAddress];
+
+        if (!marketInfo) {
+          return {
+            indexName: ELLIPSIS,
+            poolName: ELLIPSIS,
+          };
+        }
+
         const indexName = getMarketIndexName({
           indexToken: marketInfo.indexToken,
           isSpotOnly: marketInfo.isSpotOnly,
