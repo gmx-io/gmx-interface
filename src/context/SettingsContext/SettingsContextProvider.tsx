@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
 
-import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -13,6 +13,7 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
@@ -60,7 +61,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER
   );
 
-  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
+  const [hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey, setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey] =
+    useLocalStorageSerializeKey(getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId), false);
+
+  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
@@ -111,6 +115,18 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
     }
   }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
+
+  useEffect(() => {
+    if (!hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey && chainId === ARBITRUM) {
+      setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps);
+      setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(true);
+    }
+  }, [
+    chainId,
+    hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
+    setExecutionFeeBufferBps,
+    setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
+  ]);
 
   const contextState: SettingsContextType = useMemo(() => {
     return {
