@@ -60,6 +60,8 @@ export function getBestNonce(providers: Wallet[]): Promise<number> {
       resolved = true;
 
       if (results.length) {
+        // eslint-disable-next-line no-console
+        console.log("Nonces been received: ", results);
         resolve(Math.max(...results));
       } else {
         reject(new Error("Failed to fetch nonce from any provider"));
