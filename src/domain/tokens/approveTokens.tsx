@@ -98,7 +98,7 @@ export function approveTokens({
             <Trans>Approval failed</Trans>
             <br />
             <br />
-            <ToastifyDebug>{String(e)}</ToastifyDebug>
+            <ToastifyDebug error={String(e)} />
           </>
         );
       }

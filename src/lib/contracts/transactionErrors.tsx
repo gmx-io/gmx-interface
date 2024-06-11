@@ -140,7 +140,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           </Trans>
           <br />
           <br />
-          {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
+          {originalError && <ToastifyDebug error={originalError} />}
         </div>
       );
       break;
@@ -153,7 +153,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           {txnMessage || t`Transaction failed`}
           <br />
           <br />
-          {message && <ToastifyDebug>{message}</ToastifyDebug>}
+          {message && <ToastifyDebug error={message} />}
         </div>
       );
   }

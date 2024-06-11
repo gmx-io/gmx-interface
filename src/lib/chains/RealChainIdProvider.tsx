@@ -33,6 +33,7 @@ export function RealChainIdProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     const timer = setInterval(() => {
       const realChainId = getRealChainId();
+
       if (realChainId !== chainId) {
         setChainId(realChainId);
       }
@@ -42,13 +43,13 @@ export function RealChainIdProvider({ children }: { children: React.ReactNode })
   }, [chainId]);
 
   useEffect(() => {
-    if (chainId !== assumedChainId && !isActive && isConnected) {
+    if (chainId !== undefined && chainId !== assumedChainId && !isActive && isConnected) {
       toast.error(getInvalidNetworkErrorMessage(assumedChainId), {
         toastId: INVALID_NETWORK_TOAST_ID,
         autoClose: false,
         closeButton: false,
       });
-    } else if ((chainId === assumedChainId && isActive) || !isConnected) {
+    } else if ((chainId === assumedChainId || !isConnected || chainId === undefined) && isActive) {
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     }
   }, [assumedChainId, chainId, isActive, isConnected]);
