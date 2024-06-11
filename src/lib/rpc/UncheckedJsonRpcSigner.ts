@@ -1,16 +1,14 @@
 import { JsonRpcSigner, TransactionRequest, TransactionResponse } from "ethers";
-import { getRealChainId } from "lib/chains/getRealChainId";
 
 export class UncheckedJsonRpcSigner extends JsonRpcSigner {
-  async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
-    const assumedChainId = Number((await this.provider.getNetwork()).chainId);
-    const realChainId = getRealChainId();
+  async estimateGas(tx: TransactionRequest): Promise<bigint> {
+    await this.assertNetwork();
 
-    if (assumedChainId !== realChainId) {
-      throw new Error(
-        `Invalid chainId: wallet is connected to chain ${assumedChainId}, but the app is running on chain ${realChainId}.`
-      );
-    }
+    return super.estimateGas(tx);
+  }
+
+  async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
+    await this.assertNetwork();
 
     return this.sendUncheckedTransaction(transaction).then((hash) => {
       return {
@@ -28,5 +26,12 @@ export class UncheckedJsonRpcSigner extends JsonRpcSigner {
         },
       } as unknown as TransactionResponse;
     });
+  }
+
+  /**
+   * Provider asserts network under the hood on request
+   */
+  private async assertNetwork() {
+    await this.provider.getNetwork();
   }
 }

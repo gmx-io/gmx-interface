@@ -8,6 +8,7 @@ import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import Token from "abis/Token.json";
 
@@ -92,7 +93,14 @@ export function approveTokens({
       } else if (e.message?.includes("User denied transaction signature")) {
         failMsg = t`Approval was cancelled`;
       } else {
-        failMsg = t`Approval failed`;
+        failMsg = (
+          <>
+            <Trans>Approval failed</Trans>
+            <br />
+            <br />
+            <ToastifyDebug>{String(e)}</ToastifyDebug>
+          </>
+        );
       }
       helperToast.error(failMsg);
     })
