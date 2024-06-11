@@ -4,8 +4,8 @@ import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+// Warning: do not import through reexport, it will break jest
+import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
@@ -20,7 +20,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
-  const account = useSelector(selectAccount);
+  const account = useSelector((s) => s.globals.account);
   const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 

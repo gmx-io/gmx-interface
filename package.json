@@ -126,7 +126,8 @@
     "setupFilesAfterEnv": [
       "./jest-env.js"
     ],
-    "globalSetup": "./jest-global-setup.js"
+    "globalSetup": "./jest-global-setup.js",
+    "prettierPath": null
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
