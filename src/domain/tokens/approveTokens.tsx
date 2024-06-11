@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
 import { getNativeToken } from "config/tokens";
-import { getRealChainId } from "lib/chains/getRealChainId";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 
