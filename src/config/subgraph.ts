@@ -10,7 +10,7 @@ const SUBGRAPH_URLS = {
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
     // subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
     // subsquid: "http://37.27.100.223:4110/graphql",
-    subsquid: "https://gmx-test.squids.live/midas-gmx-arbitrum/v/v1/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/v/v17/graphql",
   },
 
   [ARBITRUM_GOERLI]: {
@@ -26,7 +26,7 @@ const SUBGRAPH_URLS = {
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
     // subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche/graphql",
     // subsquid: "http://37.27.100.223:4100/graphql",
-    subsquid: "https://gmx-test.squids.live/midas-gmx-avalanche/v/v1/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche/v/v17/graphql",
   },
 
   [AVALANCHE_FUJI]: {
