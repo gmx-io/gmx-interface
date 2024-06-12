@@ -129,8 +129,9 @@ function SideOrderEntry({
         )}
       </div>
       {displayMode === "percentage" && (
-        <div className={cx("group relative", { "border-red-500": !!percentageError })}>
+        <div className="group relative">
           <SuggestionInput
+            isError={!!percentageError}
             inputClassName="w-48"
             value={entry.percentage?.input ?? ""}
             setValue={onPercentageSetValue}
