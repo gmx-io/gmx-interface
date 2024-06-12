@@ -1,5 +1,6 @@
 import { isDevelopment, isLocal } from "config/env";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
+import { get } from "lodash";
 import { useEffect } from "react";
 
 export function useErrorReporting(chainId: number) {
@@ -79,6 +80,7 @@ function getWalletNames() {
     { name: "browserWallet", check: checkWalletProperty("isBrowserWallet") },
     { name: "trust", check: checkWalletProperty("trustwallet") },
     { name: "binance", check: checkWalletProperty("BinanceChain") },
+    { name: "core", check: get(window, "web3.currentProvider.coreProvider.info.name") === "Core" },
     { name: "metamask", check: checkWalletProperty("isMetaMask") },
   ];
 
@@ -89,7 +91,7 @@ function checkWalletProperty(property: string) {
   return (
     (typeof window.ethereum !== "undefined"
       ? Boolean(window?.ethereum?.[property])
-      : Boolean((window as any)?.web3?.currentProvider?.[property])) || Boolean(window[property])
+      : Boolean((window as any)?.web3?.currentProvider?.[property])) || typeof window[property] !== "undefined"
   );
 }
 
