@@ -26,6 +26,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 export default function Home({ showRedirectModal }) {
   const arbV2Stats = useV2Stats(ARBITRUM);
@@ -258,7 +259,9 @@ export default function Home({ showRedirectModal }) {
               <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
-          <TokenCard showRedirectModal={showRedirectModal} />
+          <SyntheticsStateContextProvider pageType="home">
+            <TokenCard showRedirectModal={showRedirectModal} />
+          </SyntheticsStateContextProvider>
         </div>
       </div>
 

@@ -34,7 +34,8 @@ export type SyntheticsPageType =
   | "competitions"
   | "dashboard"
   | "earn"
-  | "buy";
+  | "buy"
+  | "home";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
