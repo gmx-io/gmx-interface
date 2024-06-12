@@ -5,6 +5,7 @@ import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { ThemeContext } from "./theme-provider";
+import { DYNAMIC_ENVIRONMENT_KEY } from "config/env";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -96,7 +97,7 @@ export function Providers({ children }: ProvidersProps) {
       theme={themeContext.isLight ? "light" : "dark"}
       settings={{
         cssOverrides,
-        environmentId: "e2b597d3-4634-4d19-9802-301ddcd8bc5a",
+        environmentId: DYNAMIC_ENVIRONMENT_KEY ?? "",
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],
