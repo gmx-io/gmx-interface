@@ -1,24 +1,25 @@
 import { isDevelopment, isLocal } from "config/env";
-import { getOracleKeeperUrl } from "config/oracleKeeper";
+import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useEffect } from "react";
 
 export function useErrorReporting(chainId: number) {
+  const fetcher = useOracleKeeperFetcher(chainId);
   useEffect(() => {
-    return subscribeToErrorEvents(chainId);
-  }, [chainId]);
+    return subscribeToErrorEvents(fetcher);
+  }, [fetcher]);
 }
 
-function subscribeToErrorEvents(chainId: number) {
+function subscribeToErrorEvents(fetcher: OracleFetcher) {
   const handleError = (event) => {
     const error = event.error;
     if (error) {
-      sendErrorToServer(chainId, error, "globalError");
+      sendErrorToServer(fetcher, error, "globalError");
     }
   };
   const handleUnhandledRejection = (event) => {
     const error = event.reason;
     if (error) {
-      sendErrorToServer(chainId, error, "unhandledRejection");
+      sendErrorToServer(fetcher, error, "unhandledRejection");
     }
   };
 
@@ -31,9 +32,8 @@ function subscribeToErrorEvents(chainId: number) {
   };
 }
 
-export function sendErrorToServer(chainId: number, error: unknown, source: string) {
-  const baseUrl = getOracleKeeperUrl(chainId, 0);
-  const url = `${baseUrl}/report/ui`;
+export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, source: string) {
+  if (isLocal()) return;
 
   let errorMessage = "Unknown error";
 
@@ -52,7 +52,6 @@ export function sendErrorToServer(chainId: number, error: unknown, source: strin
         REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
       },
       isDevelopment: isDevelopment(),
-      isLocal: isLocal(),
       host: window.location.host,
       url: window.location.href,
     },
@@ -60,13 +59,7 @@ export function sendErrorToServer(chainId: number, error: unknown, source: strin
     isError: true,
   };
 
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+  return fetcher.fetchPostReport(body);
 }
 
 function hasMessage(error: unknown): error is { message: string } {
