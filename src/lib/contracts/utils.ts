@@ -1,4 +1,9 @@
-import { GAS_PRICE_PREMIUM_MAP, GAS_PRICE_BUFFER_MAP, MAX_FEE_PER_GAS_MAP } from "config/chains";
+import {
+  GAS_PRICE_PREMIUM_MAP,
+  GAS_PRICE_BUFFER_MAP,
+  MAX_FEE_PER_GAS_MAP,
+  MAX_PRIORITY_FEE_PER_GAS_MAP,
+} from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { Contract, BaseContract, Provider } from "ethers";
 import { bigMath } from "lib/bigmath";
@@ -15,15 +20,19 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   }
 
   if (maxFeePerGas) {
-    if (gasPrice !== undefined && gasPrice !== null && gasPrice > maxFeePerGas) {
-      maxFeePerGas = gasPrice;
+    if (gasPrice !== undefined && gasPrice !== null) {
+      maxFeePerGas = bigMath.max(gasPrice, maxFeePerGas);
     }
 
     // the wallet provider might not return maxPriorityFeePerGas in feeData
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas !== undefined && feeData.maxPriorityFeePerGas !== null) {
+      const maxPriorityFeePerGas = bigMath.max(
+        feeData.maxPriorityFeePerGas,
+        MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n
+      );
       txnOpts.maxFeePerGas = maxFeePerGas;
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas + premium;
+      txnOpts.maxPriorityFeePerGas = maxPriorityFeePerGas + premium;
       return;
     }
   }

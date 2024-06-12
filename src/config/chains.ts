@@ -72,6 +72,15 @@ export const GAS_PRICE_BUFFER_MAP = {
   [ARBITRUM]: 2000n, // 20%
 };
 
+/*
+  that was a constant value in ethers v5, after ethers v6 migration we use it as a minimum for maxPriorityFeePerGas
+*/
+export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = {
+  [ARBITRUM]: 1500000000n,
+  [AVALANCHE]: 1500000000n,
+  [AVALANCHE_FUJI]: 1500000000n,
+};
+
 // added to maxPriorityFeePerGas
 // applied to EIP-1559 transactions only
 // is not applied to execution fee calculation
