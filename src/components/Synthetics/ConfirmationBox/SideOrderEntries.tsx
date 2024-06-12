@@ -105,10 +105,13 @@ function SideOrderEntry({
   return (
     <div className={cx("flex flex-row gap-10")} key={entry.id}>
       <div
-        className={cx(
-          "group relative rounded-4 border border-solid border-slate-700 bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
-          { "border-red-500": priceError }
-        )}
+        className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
+          "border-red-500": !!priceError,
+          "border-slate-700": !priceError,
+          "focus-within:border-cold-blue-500": !priceError,
+          "hover:border-cold-blue-700": !priceError,
+          "hover:focus-within:border-cold-blue-500": !priceError,
+        })}
       >
         <span className="cursor-pointer opacity-70">$</span>
 
@@ -144,10 +147,13 @@ function SideOrderEntry({
       )}
       {displayMode === "sizeUsd" && (
         <div
-          className={cx(
-            "group relative rounded-4 border border-solid border-slate-700 bg-slate-700 pl-5 leading-1 focus-within:border-cold-blue-500 hover:border-cold-blue-700 hover:focus-within:border-cold-blue-500",
-            { "border-red-500": !!sizeError }
-          )}
+          className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
+            "border-red-500": !!sizeError,
+            "border-slate-700": !sizeError,
+            "focus-within:border-cold-blue-500": !sizeError,
+            "hover:border-cold-blue-700": !sizeError,
+            "hover:focus-within:border-cold-blue-500": !sizeError,
+          })}
         >
           <span className="cursor-pointer opacity-70">$</span>
           <NumberInput
