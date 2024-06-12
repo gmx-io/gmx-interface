@@ -81,6 +81,7 @@ import { useWebsocketProvider, WebsocketContextProvider } from "context/Websocke
 import { PendingTransaction } from "domain/legacy";
 import { Provider } from "ethers";
 import { useChainId } from "lib/chains";
+import { useErrorReporting } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
@@ -89,6 +90,7 @@ import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
@@ -96,7 +98,6 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -123,6 +124,7 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   const { hasV1LostFocus } = useHasLostFocus();
+  useErrorReporting(chainId);
 
   useEventToast();
   const query = useRouteQuery();
