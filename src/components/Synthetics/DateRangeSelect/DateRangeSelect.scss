@@ -17,12 +17,14 @@
     padding-bottom: 0;
 
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5em;
   }
 
   &-calendarWrapper {
     color: var(--color-white);
     background-color: inherit;
+    display: block;
   }
 
   &-monthAndYearPickers select {
@@ -63,7 +65,8 @@
   }
 
   &-startEdge,
-  &-endEdge {
+  &-endEdge,
+  &-selected {
     &::before {
       content: "";
       position: absolute;
@@ -80,7 +83,8 @@
 
   &-dayInPreview,
   &-dayStartPreview,
-  &-dayEndPreview {
+  &-dayEndPreview,
+  &-dayHovered {
     color: var(--color-blue-600) !important;
   }
 
@@ -109,6 +113,16 @@
   &-dayStartOfMonth &-dayEndPreview,
   &-dayEndOfMonth &-dayStartPreview {
     border-radius: 4px;
+  }
+
+  &-dayHovered {
+    ::after {
+      border-radius: 4px !important;
+    }
+  }
+
+  &-dayDisabled {
+    background-color: var(--color-gray-900);
   }
 
   @media (max-width: 600px) {

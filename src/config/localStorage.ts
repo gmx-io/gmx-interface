@@ -34,6 +34,7 @@ export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
+export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
@@ -54,6 +55,10 @@ export function getSyntheticsDepositMarketKey(chainId: number) {
 
 export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
+}
+
+export function getAccountDashboardTabKey(chainId: number) {
+  return [chainId, ACCOUNT_DASHBOARD_TAB_KEY];
 }
 
 export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {

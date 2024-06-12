@@ -15,6 +15,7 @@
     z-index: 1000;
 
     border-radius: var(--border-radius-sm);
+    overflow: hidden;
     background-color: var(--dark-blue-bg);
     border: 1px solid var(--color-gray-800);
   }

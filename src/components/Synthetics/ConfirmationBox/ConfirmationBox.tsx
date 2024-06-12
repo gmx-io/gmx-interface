@@ -96,7 +96,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import SidecarEntries from "./SidecarEntries";
+import { SideOrderEntries } from "./SideOrderEntries";
 import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
@@ -1095,7 +1095,7 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadInfo]);
 
-  function renderSidecar(type: "stopLoss" | "takeProfit" | "limit") {
+  function renderSideOrders(type: "stopLoss" | "takeProfit" | "limit") {
     const isStopLoss = type === "stopLoss";
     const isLimitGroup = type === "limit";
 
@@ -1122,11 +1122,7 @@ export function ConfirmationBox(p: Props) {
           label={label}
           value={
             <div className="profit-loss-wrapper">
-              <SidecarEntries
-                entriesInfo={entriesInfo}
-                marketInfo={marketInfo}
-                displayMode={type === "limit" ? "sizeUsd" : "percentage"}
-              />
+              <SideOrderEntries entriesInfo={entriesInfo} displayMode={type === "limit" ? "sizeUsd" : "percentage"} />
             </div>
           }
         />
@@ -1252,11 +1248,11 @@ export function ConfirmationBox(p: Props) {
           {renderDifferentTokensWarning()}
         </ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSidecar("limit")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSideOrders("limit")}</ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSidecar("takeProfit")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSideOrders("takeProfit")}</ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>{renderSidecar("stopLoss")}</ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSideOrders("stopLoss")}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}

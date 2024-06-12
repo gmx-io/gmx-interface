@@ -296,7 +296,7 @@ export default function BeginAccountTransfer() {
   );
 
   return (
-    <div className="BeginAccountTransfer Page page-layout">
+    <div className="BeginAccountTransfer Page page-layout ">
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
@@ -309,7 +309,8 @@ export default function BeginAccountTransfer() {
           <Trans>Continue</Trans>
         </Link>
       </Modal>
-      <div className="Page-title-section">
+
+      <div className="default-container !m-0 pb-16">
         <div className="Page-title">
           <Trans>Transfer Account</Trans>
         </div>
@@ -332,7 +333,7 @@ export default function BeginAccountTransfer() {
           </div>
         )}
       </div>
-      <div className="Page-content">
+      <div className="default-container !m-0">
         <div className="input-form">
           <div className="input-row">
             <label className="input-label">

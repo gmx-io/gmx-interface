@@ -1,14 +1,10 @@
-.Positions-overview {
-  font-size: var(--font-sm);
-  margin: 1.5rem 3.1rem;
-}
-
 .Positions-overview-stats {
   line-height: 1.5;
 }
 
 .Positions-overview-table {
   border-collapse: collapse;
+  min-width: max-content;
 }
 
 .Positions-overview th {

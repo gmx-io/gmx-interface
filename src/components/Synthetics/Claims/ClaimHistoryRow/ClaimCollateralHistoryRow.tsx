@@ -1,17 +1,19 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { Fragment, useCallback, useMemo } from "react";
+import React, { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import {
@@ -32,17 +34,25 @@ export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const { _ } = useLingui();
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const { claimAction } = p;
 
   const eventTitle = useMemo(() => _(claimCollateralEventTitles[claimAction.eventName]), [_, claimAction.eventName]);
 
   const marketNamesJoined = useMemo(() => {
-    return claimAction.claimItems
-      .map(({ marketInfo }) => {
-        return getMarketIndexName(marketInfo);
-      })
-      .join(", ");
+    return (
+      <div className="leading-2">
+        {claimAction.claimItems.map(({ marketInfo }, index) => (
+          <React.Fragment key={index}>
+            {index !== 0 && ", "}
+            <div className="inline-block whitespace-nowrap leading-base">
+              <TokenIcon className="mr-5" symbol={marketInfo.indexToken.symbol} displaySize={20} />
+              {getMarketIndexName(marketInfo)}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    );
   }, [claimAction.claimItems]);
 
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
@@ -77,8 +87,8 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         </div>
         <TooltipWithPortal
           disableHandleStyle
-          handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
-          portalClassName="ClaimHistoryRow-tooltip-portal"
+          handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
+          portalClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
           renderContent={renderIsoTimestamp}
         />
       </td>
