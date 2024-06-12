@@ -26,7 +26,15 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
-export type SyntheticsPageType = "accounts" | "trade" | "pools" | "leaderboard" | "competitions";
+export type SyntheticsPageType =
+  | "accounts"
+  | "trade"
+  | "pools"
+  | "leaderboard"
+  | "competitions"
+  | "dashboard"
+  | "earn"
+  | "buy";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;

@@ -249,7 +249,9 @@ function FullApp() {
                 <Exchange ref={exchangeRef} openSettings={openSettings} />
               </Route>
               <Route exact path="/dashboard">
-                <DashboardV2 />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="dashboard">
+                  <DashboardV2 />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />
@@ -259,10 +261,14 @@ function FullApp() {
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
-                <Stake />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+                  <Stake />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/buy">
-                <Buy />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
+                  <Buy />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
