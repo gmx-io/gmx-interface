@@ -1,4 +1,4 @@
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
+import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { bigMath } from "lib/bigmath";
@@ -27,7 +27,10 @@ export function useGasPrice(chainId: number) {
             let gasPrice = feeData.gasPrice ?? 0n;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-              const maxPriorityFeePerGas = feeData?.maxPriorityFeePerGas || 1500000000n;
+              const maxPriorityFeePerGas = bigMath.max(
+                feeData?.maxPriorityFeePerGas ?? 0n,
+                MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n
+              );
 
               gasPrice = gasPrice + maxPriorityFeePerGas;
             }
@@ -41,7 +44,7 @@ export function useGasPrice(chainId: number) {
               gasPrice = gasPrice + buffer;
             }
 
-            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] ?? 0n;
+            const premium = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
 
             resolve(gasPrice + premium);
           } catch (e) {
