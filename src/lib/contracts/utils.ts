@@ -15,10 +15,6 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   const feeData = await provider.getFeeData();
   const gasPrice = feeData.gasPrice;
 
-  if (gasPrice === null) {
-    throw new Error("Can't fetch gas price");
-  }
-
   if (maxFeePerGas) {
     if (gasPrice !== undefined && gasPrice !== null) {
       maxFeePerGas = bigMath.max(gasPrice, maxFeePerGas);
@@ -35,6 +31,10 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
       txnOpts.maxPriorityFeePerGas = maxPriorityFeePerGas + premium;
       return;
     }
+  }
+
+  if (gasPrice === null) {
+    throw new Error("Can't fetch gas price");
   }
 
   const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] || 0n;
