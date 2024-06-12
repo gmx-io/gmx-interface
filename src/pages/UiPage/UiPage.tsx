@@ -1,8 +1,52 @@
-import { entries } from "lodash";
+import { camelCase, entries, upperFirst } from "lodash";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
+// @ts-ignore
+const iconsContext = require.context("img", true, /img\/ic_.+\.svg$/);
+
+// @ts-ignore
+const icons = iconsContext.keys().map((rawPath) => {
+  let name = camelCase(rawPath.match(/ic_(.+)\.svg$/)?.[1]) + "Icon";
+
+  if (/[0-9]/.test(name[0])) {
+    name = camelCase("ic " + name);
+  }
+
+  let componentName = upperFirst(name);
+
+  return {
+    path: rawPath,
+    name: name,
+    importUrl: `import ${name} from "${rawPath}";`,
+    importSvg: `import { ReactComponent as ${componentName} } from "${rawPath}";`,
+    src: iconsContext(rawPath),
+  };
+}) as { src: string; name: string; path: string; importUrl: string; importSvg: string }[];
+
+// @ts-ignore
+const otherImagesContext = require.context("img", true, /img\/.+\.(png|jpg|jpeg|gif|svg)$/);
+
+// @ts-ignore
+const otherImages = otherImagesContext
+  .keys()
+  .filter((key) => !key.includes("/ic_"))
+  .map((key) => {
+    let name = camelCase(key.match(/img\/(.+)\.(png|jpg|jpeg|gif|svg)$/)?.[1]) + "Image";
+
+    if (/[0-9]/.test(name[0])) {
+      name = "img" + name;
+    }
+
+    return {
+      path: key,
+      name: name,
+      importUrl: `import ${name} from "${key}";`,
+      src: otherImagesContext(key),
+    };
+  }) as { src: string; name: string; path: string; importUrl: string }[];
 
 const colors = {
   blue: {
@@ -123,35 +167,37 @@ export default function UiPage() {
       <p>This page demonstrates the use of the UI components in the app.</p>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
-      <div className="flex flex-col">
-        {entries(colors).map(([color, shades]) => {
-          if (typeof shades === "string") {
+      <div className="overflow-auto">
+        <div className="flex flex-col">
+          {entries(colors).map(([color, shades]) => {
+            if (typeof shades === "string") {
+              return (
+                <div key={color}>
+                  <div className="flex w-fit overflow-hidden *:size-64">
+                    <div className="!w-96 text-12">{color}</div>
+                    <div className={shades} />
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div key={color}>
                 <div className="flex w-fit overflow-hidden *:size-64">
-                  <div className="!w-96 text-12">{color}</div>
-                  <div className={shades} />
+                  <div className="!w-96 text-12"> {color}</div>
+                  {entries(shades).map(([shade, value]) => {
+                    if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
+                    return (
+                      <div key={shade + value} className={value}>
+                        {shade}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
-          }
-
-          return (
-            <div key={color}>
-              <div className="flex w-fit overflow-hidden *:size-64">
-                <div className="!w-96 text-12"> {color}</div>
-                {entries(shades).map(([shade, value]) => {
-                  if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
-                  return (
-                    <div key={shade + value} className={value}>
-                      {shade}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+          })}
+        </div>
       </div>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Text colors</h2>
@@ -240,6 +286,66 @@ export default function UiPage() {
         handle={"Lorem ipsum dolor."}
         closeDelay={100000000000}
       />
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Icons</h2>
+      <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
+      <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
+        {icons.map((icon) => (
+          <Tooltip
+            key={icon.src}
+            disableHandleStyle
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {icon.name}
+                    <br />
+                    Path: {icon.path}
+                    <br />
+                    Import URL: {icon.importUrl}
+                    <br />
+                    Import SVG: {icon.importSvg}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <img className="max-w-[50px]" src={icon.src} />
+          </Tooltip>
+        ))}
+      </div>
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Images</h2>
+
+      <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
+        {otherImages.map((src) => (
+          <Tooltip
+            key={src.src}
+            disableHandleStyle
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {src.name}
+                    <br />
+                    Path: {src.path}
+                    <br />
+                    Import URL: {src.importUrl}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <img className="max-w-[100px]" src={src.src} />
+          </Tooltip>
+        ))}
+      </div>
 
       <div className="h-50"></div>
     </main>

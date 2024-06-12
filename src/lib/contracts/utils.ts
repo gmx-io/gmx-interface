@@ -1,11 +1,11 @@
 import {
-  GAS_PRICE_PREMIUM_MAP,
   GAS_PRICE_BUFFER_MAP,
+  GAS_PRICE_PREMIUM_MAP,
   MAX_FEE_PER_GAS_MAP,
   MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { Contract, BaseContract, Provider } from "ethers";
+import { BaseContract, Contract, Provider, Wallet } from "ethers";
 import { bigMath } from "lib/bigmath";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
@@ -62,4 +62,60 @@ export async function getGasLimit(
   }
 
   return (gasLimit * 11n) / 10n; // add a 10% buffer
+}
+
+export function getBestNonce(providers: Wallet[]): Promise<number> {
+  const MAX_NONCE_NEEDED = 3;
+  const MAX_WAIT = 5000;
+  const ONE_MORE_WAIT = 1000;
+
+  return new Promise(async (resolve, reject) => {
+    const results: number[] = [];
+    let resolved = false;
+
+    const handleResolve = () => {
+      resolved = true;
+
+      if (results.length) {
+        resolve(Math.max(...results));
+      } else {
+        reject(new Error("Failed to fetch nonce from any provider"));
+      }
+    };
+
+    let timerId = setTimeout(handleResolve, MAX_WAIT);
+
+    const setResolveTimeout = (time: number) => {
+      clearTimeout(timerId);
+
+      if (resolved) return;
+
+      if (time) {
+        timerId = setTimeout(handleResolve, time);
+      } else {
+        handleResolve();
+      }
+    };
+
+    await Promise.all(
+      providers.map((provider, i) =>
+        provider
+          .getNonce("pending")
+          .then((nonce) => results.push(nonce))
+          .then(() => {
+            if (results.length === providers.length || results.length >= MAX_NONCE_NEEDED) {
+              setResolveTimeout(0);
+            } else {
+              setResolveTimeout(ONE_MORE_WAIT);
+            }
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(`Error fetching nonce from provider ${i}: ${error.message}`);
+          })
+      )
+    );
+
+    setResolveTimeout(0);
+  });
 }

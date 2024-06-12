@@ -3,13 +3,14 @@ import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
+import type { Address } from "viem";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
-import Actions from "pages/Actions/Actions";
+import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
@@ -57,6 +58,7 @@ import { I18nProvider } from "@lingui/react";
 import { watchAccount } from "@wagmi/core";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
+import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
@@ -86,15 +88,15 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
-import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import { NotifyModal } from "components/NotifyModal/NotifyModal";
+import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -247,7 +249,9 @@ function FullApp() {
                 <Exchange ref={exchangeRef} openSettings={openSettings} />
               </Route>
               <Route exact path="/dashboard">
-                <DashboardV2 />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="dashboard">
+                  <DashboardV2 />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />
@@ -257,10 +261,14 @@ function FullApp() {
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
-                <Stake />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+                  <Stake />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/buy">
-                <Buy />
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
+                  <Buy />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
@@ -334,26 +342,29 @@ function FullApp() {
                 <ClaimEsGmx />
               </Route>
 
-              <Route exact path="/actions/v1">
-                <Actions />
+              <Route exact path="/actions/:v/:account">
+                {({ match }) => (
+                  <Redirect
+                    to={buildAccountDashboardUrl(
+                      match?.params.account as Address,
+                      chainId,
+                      match?.params.v === "v1" ? 1 : 2
+                    )}
+                  />
+                )}
               </Route>
-              <Route exact path="/actions/v1/:account">
-                <Actions />
+              <Redirect exact from="/actions/v1" to={`/accounts?${VERSION_QUERY_PARAM}=1`} />
+              <Redirect exact from="/actions/v2" to="/accounts" />
+              <Redirect exact from="/actions" to="/accounts" />
+              <Redirect exact from="/actions/:account" to="/accounts/:account" />
+
+              <Route exact path="/accounts">
+                <AccountsRouter />
               </Route>
-              <Route exact path="/actions">
-                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode>
-                  <SyntheticsActions />
-                </SyntheticsStateContextProvider>
+              <Route exact path="/accounts/:account">
+                <AccountDashboard />
               </Route>
-              <Redirect exact from="/actions/v2" to="/actions" />
-              <Route exact path="/actions/:account">
-                <SyntheticsStateContextProvider pageType="actions" skipLocalReferralCode={false}>
-                  <SyntheticsActions />
-                </SyntheticsStateContextProvider>
-              </Route>
-              <Route path="/actions/v2/:account">
-                {({ match }) => <Redirect to={`/actions/${match?.params.account}`} />}
-              </Route>
+
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
               </Route>

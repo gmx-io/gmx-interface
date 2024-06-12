@@ -703,15 +703,17 @@ export default function PositionsList(props) {
                 <td>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
                 <td>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
 
-                <td>
-                  <button
-                    className="Exchange-list-action"
-                    onClick={() => sellPosition(position)}
-                    disabled={position.size == 0n}
-                  >
-                    <Trans>Close</Trans>
-                  </button>
-                </td>
+                {!hideActions && (
+                  <td>
+                    <button
+                      className="Exchange-list-action"
+                      onClick={() => sellPosition(position)}
+                      disabled={position.size == 0n}
+                    >
+                      <Trans>Close</Trans>
+                    </button>
+                  </td>
+                )}
                 {!hideActions && (
                   <td>
                     <PositionDropdown

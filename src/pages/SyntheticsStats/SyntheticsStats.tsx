@@ -97,7 +97,7 @@ export function SyntheticsStats() {
   });
 
   return (
-    <div className="SyntheticsStats">
+    <div className="SyntheticsStats page-layout default-container">
       <div className="SyntheticsStats-table-wrap">
         <table>
           <thead>
@@ -1097,12 +1097,14 @@ export function SyntheticsStats() {
           </tbody>
         </table>
       </div>
-      <DownloadAsCsv
-        excludedFields={CSV_EXCLUDED_FIELDS}
-        data={markets}
-        fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
-        className="download-csv mt-15"
-      />
+      <div>
+        <DownloadAsCsv
+          excludedFields={CSV_EXCLUDED_FIELDS}
+          data={markets}
+          fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
+          className="download-csv mt-15"
+        />
+      </div>
     </div>
   );
 }

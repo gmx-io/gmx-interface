@@ -1,17 +1,18 @@
 import { t, Trans } from "@lingui/macro";
-import formatDate from "date-fns/format";
 import { useLingui } from "@lingui/react";
+import formatDate from "date-fns/format";
 import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
@@ -37,8 +38,8 @@ const CSV_ICON_INFO = {
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
 export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPaginationButtons: boolean }) {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useAccount();
 
   const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
@@ -151,7 +152,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 }
 
 function useDownloadAsCsv(claimActions?: ClaimAction[]) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const { _ } = useLingui();
 
   const handleCsvDownload = useCallback(() => {

@@ -25,7 +25,18 @@ const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
   [NETWORK_CHANGED]: [{ msg: "underlying network changed" }],
   [RPC_ERROR]: [
     // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
-    { code: -32005 },
+    { code: -32700 }, // Parse error: Invalid JSON
+    { code: -32600 }, // Invalid request: JSON is not a valid request object
+    { code: -32601 }, // Method not found: Method does not exist
+    { code: -32602 }, // Invalid params: Invalid method parameters
+    { code: -32603 }, // Internal error: Internal JSON-RPC error
+    { code: -32000 }, // Invalid input: Missing or invalid parameters	non-standard
+    { code: -32001 }, // Resource not found: Requested resource not found
+    { code: -32002 }, // Resource unavailable: Requested resource not available
+    { code: -32003 }, // Transaction rejected: Transaction creation failed
+    { code: -32004 }, // Method not supported: Method is not implemented
+    { code: -32005 }, // Limit exceeded: Request exceeds defined limit
+    { code: -32006 }, // JSON-RPC version not supported: Version of JSON-RPC protocol is not supported
     { msg: "Non-200 status code" },
     { msg: "Request limit exceeded" },
     { msg: "Internal JSON-RPC error" },
@@ -46,8 +57,8 @@ export function extractError(ex: TxError) {
   if (!ex) {
     return [];
   }
-  let message = ex.data?.message || ex.message;
-  let code = ex.code;
+  let message = ex.error?.message || ex.data?.message || ex.message;
+  let code = ex.error?.code || ex.code;
 
   if (ex.error?.body) {
     try {
@@ -129,9 +140,13 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
             Transaction failed due to RPC error.
             <br />
             <br />
-            Please try changing the RPC url in your wallet settings.{" "}
+            Please try changing the RPC url in your wallet settings with the help of{" "}
+            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
+            <br />
+            <br />
             <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">Read more</ExternalLink>.
           </Trans>
+          <br />
           <br />
           {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
         </div>
@@ -144,6 +159,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
       failMsg = (
         <div>
           {txnMessage || t`Transaction failed`}
+          <br />
           <br />
           {message && <ToastifyDebug>{message}</ToastifyDebug>}
         </div>
