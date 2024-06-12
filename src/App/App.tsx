@@ -95,6 +95,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
+import { useErrorReporting } from "lib/errors";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -121,6 +122,7 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   const { hasV1LostFocus } = useHasLostFocus();
+  useErrorReporting(chainId);
 
   useEventToast();
   const query = useRouteQuery();
