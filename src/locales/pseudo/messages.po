@@ -185,6 +185,10 @@ msgstr ""
 msgid "Enable leverage sent."
 msgstr ""
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Show error"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
@@ -954,6 +958,10 @@ msgstr ""
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr ""
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copied"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr ""
@@ -1081,6 +1089,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+msgstr ""
+
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Hide error"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -2755,6 +2767,10 @@ msgstr ""
 msgid "Positions{0}"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Unknown Error"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
 msgstr ""
@@ -3625,6 +3641,10 @@ msgstr ""
 msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 msgstr ""
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Error"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
@@ -4307,7 +4327,7 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr ""
 
-#: src/App/App.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5868,6 +5888,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Max {0} Capacity"
+msgstr ""
+
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copy error"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
