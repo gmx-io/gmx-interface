@@ -1,11 +1,11 @@
 import { createSelector } from "../utils";
 import { selectPositionsInfoData } from "./globalSelectors";
-import { selectTradeboxMarketsOrder } from "./tradeboxSelectors";
+import { selectTradeboxMarketsOrderMap } from "./tradeboxSelectors";
 import { bigintToNumber } from "lib/numbers";
 
 export const selectPositionsInfoDataSortedByMarket = createSelector((q) => {
   const positionsInfoData = q(selectPositionsInfoData);
-  const marketsOrder = q(selectTradeboxMarketsOrder);
+  const marketsOrder = q(selectTradeboxMarketsOrderMap);
 
   const positions = Object.values(positionsInfoData || {});
 
@@ -14,7 +14,7 @@ export const selectPositionsInfoDataSortedByMarket = createSelector((q) => {
     const aMarketIdx = marketsOrder[b.indexToken.symbol];
 
     if (aMarketIdx === bMarketIdx) {
-      return bigintToNumber(a.sizeInUsd - b.sizeInUsd, 1);
+      return bigintToNumber(b.sizeInUsd - a.sizeInUsd, 1);
     }
 
     return bMarketIdx - aMarketIdx;
