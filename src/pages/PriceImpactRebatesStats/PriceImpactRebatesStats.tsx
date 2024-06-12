@@ -1,19 +1,24 @@
 import { Trans } from "@lingui/macro";
-import Checkbox from "components/Checkbox/Checkbox";
-import SpinningLoader from "components/Common/SpinningLoader";
-import Footer from "components/Footer/Footer";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { useCopyToClipboard } from "react-use";
+import type { Address } from "viem";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { MarketInfo } from "domain/synthetics/markets";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useCopyToClipboard } from "react-use";
-import "./PriceImpactRebatesStats.scss";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
-import { bigMath } from "lib/bigmath";
+
+import Checkbox from "components/Checkbox/Checkbox";
+import SpinningLoader from "components/Common/SpinningLoader";
+import Footer from "components/Footer/Footer";
+
+import "./PriceImpactRebatesStats.scss";
 
 export const PriceImpactRebatesStatsPage = memo(() => {
   const [pageIndex, setPageIndex] = useState(0);
@@ -181,7 +186,9 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
             <div className="PriceImpactRebatesStatsPage-cell-time"></div>
             <div className="PriceImpactRebatesStatsPage-cell-market">
-              <Link to={`/actions/${rebateItem.account}`}>{shortenAddressOrEns(rebateItem.account, 15)}</Link>
+              <Link to={buildAccountDashboardUrl(rebateItem.account as Address, undefined, 2)}>
+                {shortenAddressOrEns(rebateItem.account, 15)}
+              </Link>
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-token"></div>
             <div className="PriceImpactRebatesStatsPage-cell-approved">

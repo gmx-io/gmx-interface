@@ -419,6 +419,10 @@ $tabs-threshold: 990px;
   &_selected {
     background: var(--color-slate-500) !important;
   }
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .Leaderboard__another-network {
@@ -571,19 +575,6 @@ table.Table.Exchange-list th {
 .Table_tr td {
   z-index: 1;
   position: relative;
-}
-
-.GlobalLeaderboards__table {
-  max-width: var(--default-container-max-width);
-  margin: 0 auto;
-  padding-left: var(--default-container-padding);
-  padding-right: var(--default-container-padding);
-
-  @media (max-width: 1200px) {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: var(--default-container-padding);
-  }
 }
 
 .Table-SizeTooltip .Tooltip-popup {

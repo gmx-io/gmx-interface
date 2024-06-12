@@ -59,7 +59,7 @@
     "react-tabs": "3.2.3",
     "react-toastify": "10.0.5",
     "react-use": "17.3.1",
-    "recharts": "2.1.8",
+    "recharts": "2.12.7",
     "reselect": "5.1.0",
     "sass": "1.55.0",
     "shallowequal": "1.1.0",
@@ -125,7 +125,8 @@
     "setupFilesAfterEnv": [
       "./jest-env.js"
     ],
-    "globalSetup": "./jest-global-setup.js"
+    "globalSetup": "./jest-global-setup.js",
+    "prettierPath": null
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",

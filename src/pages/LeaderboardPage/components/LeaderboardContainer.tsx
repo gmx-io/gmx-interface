@@ -241,7 +241,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
       <AccountsTable activeCompetition={activeCompetition} />
     );
 
-  return <div className="GlobalLeaderboards__table">{table}</div>;
+  return <div className="default-container !pr-0">{table}</div>;
 }
 
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {

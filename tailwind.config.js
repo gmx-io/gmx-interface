@@ -47,6 +47,7 @@ module.exports = {
     },
     lineHeight: {
       1: "1",
+      2: "2",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
     },
@@ -102,6 +103,8 @@ module.exports = {
     },
     textDecorationColor: {
       "gray-400": "rgba(255, 255, 255, 0.6)",
+      green: "#56dba880",
+      red: "#ff637a80",
     },
     placeholderColor: {
       gray: "rgb(117, 117, 117)",

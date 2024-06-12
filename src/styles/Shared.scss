@@ -80,7 +80,7 @@ input {
 
   --default-container-max-width: 126.4rem;
   --default-container-padding: 3.2rem;
-  --default-container-padding-mobile: 3.2rem;
+  --default-container-padding-mobile: 1rem;
 }
 
 a {
@@ -140,10 +140,6 @@ td {
   margin: 0;
   padding: 0;
   padding-right: 0.465rem;
-}
-
-.border {
-  border: 1px solid var(--color-gray-900);
 }
 
 .align-right {
@@ -247,16 +243,17 @@ s .default-btn:active {
   padding-left: var(--default-container-padding);
   padding-right: var(--default-container-padding);
 
-  @media (max-width: 600px) {
-    margin-left: var(--default-container-padding-mobile);
+  // Media order matters
+  @media (max-width: 1264px) {
+    margin-left: var(--default-container-padding);
     padding-left: 0;
     max-width: none;
   }
 
-  @media (max-width: 1264px) {
-    max-width: none;
+  @media (max-width: 600px) {
+    margin-left: var(--default-container-padding-mobile);
     padding-left: 0;
-    margin-left: var(--default-container-padding);
+    max-width: none;
   }
 }
 
