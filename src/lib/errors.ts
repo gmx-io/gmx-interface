@@ -73,23 +73,23 @@ function getAppVersion() {
 
 function getWalletNames() {
   const wallets = [
-    { name: "rabby", check: () => checkWalletProperty("isRabbyWallet") },
-    { name: "coinbase", check: () => checkWalletProperty("isCoinbaseWallet") },
-    { name: "walletConnect", check: () => checkWalletProperty("isWalletConnect") },
-    { name: "browserWallet", check: () => checkWalletProperty("isBrowserWallet") },
-    { name: "trust", check: () => (window as any).trustwallet },
-    { name: "binance", check: () => typeof (window as any).BinanceChain !== "undefined" },
-    { name: "metamask", check: () => checkWalletProperty("isMetaMask") },
+    { name: "rabby", check: checkWalletProperty("isRabbyWallet") },
+    { name: "coinbase", check: checkWalletProperty("isCoinbaseWallet") },
+    { name: "walletConnect", check: checkWalletProperty("isWalletConnect") },
+    { name: "browserWallet", check: checkWalletProperty("isBrowserWallet") },
+    { name: "trust", check: checkWalletProperty("trustwallet") },
+    { name: "binance", check: checkWalletProperty("BinanceChain") },
+    { name: "metamask", check: checkWalletProperty("isMetaMask") },
   ];
 
-  return wallets.filter((wallet) => wallet.check()).map((wallet) => wallet.name);
+  return wallets.filter((wallet) => wallet.check).map((wallet) => wallet.name);
 }
 
 function checkWalletProperty(property: string) {
   return (
     (typeof window.ethereum !== "undefined"
       ? Boolean(window?.ethereum?.[property])
-      : Boolean((window as any)?.web3?.currentProvider?.[property])) || window[property]
+      : Boolean((window as any)?.web3?.currentProvider?.[property])) || Boolean(window[property])
   );
 }
 
