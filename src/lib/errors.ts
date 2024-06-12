@@ -54,6 +54,7 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, source
       isDevelopment: isDevelopment(),
       host: window.location.host,
       url: window.location.href,
+      wallets: getWalletNames(),
     },
     version: getAppVersion(),
     isError: true,
@@ -69,3 +70,28 @@ function hasMessage(error: unknown): error is { message: string } {
 function getAppVersion() {
   return process.env.REACT_APP_VERSION;
 }
+
+function getWalletNames() {
+  const wallets = [
+    { name: "rabby", check: () => checkWalletProperty("isRabbyWallet") },
+    { name: "coinbase", check: () => checkWalletProperty("isCoinbaseWallet") },
+    { name: "walletConnect", check: () => checkWalletProperty("isWalletConnect") },
+    { name: "browserWallet", check: () => checkWalletProperty("isBrowserWallet") },
+    { name: "trust", check: () => (window as any).trustwallet },
+    { name: "binance", check: () => typeof (window as any).BinanceChain !== "undefined" },
+    { name: "metamask", check: () => checkWalletProperty("isMetaMask") },
+  ];
+
+  return wallets.filter((wallet) => wallet.check()).map((wallet) => wallet.name);
+}
+
+function checkWalletProperty(property: string) {
+  return (
+    (typeof window.ethereum !== "undefined"
+      ? Boolean(window?.ethereum?.[property])
+      : Boolean((window as any)?.web3?.currentProvider?.[property])) || window[property]
+  );
+}
+
+(window as any).getWalletNames = getWalletNames;
+(window as any).getAppVersion = getAppVersion;
