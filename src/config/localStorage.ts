@@ -97,6 +97,5 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
 }
 
 export function getSyntheticsReceiveMoneyTokenKey(chainId: number, marketName: string | undefined, direction: string) {
-  debugger; // eslint-disable-line
   return [chainId, CLOSE_POSITION_RECEIVE_TOKEN_KEY, marketName, direction];
 }

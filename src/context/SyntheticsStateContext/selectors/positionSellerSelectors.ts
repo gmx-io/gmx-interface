@@ -173,7 +173,7 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   }
 });
 
-export const selectPositionSellerReceiveToken = createSelectorFactory((defaulReceiveTokenAddress?: string) =>
+export const makeSelectPositionSellerReceiveToken = createSelectorFactory((defaulReceiveTokenAddress?: string) =>
   createSelector((q) => {
     const orderOption = q(selectPositionSellerOrderOption);
     const position = q(selectPositionSellerPosition);
@@ -187,9 +187,11 @@ export const selectPositionSellerReceiveToken = createSelectorFactory((defaulRec
   })
 );
 
+export const selectPositionSellerReceiveToken = makeSelectPositionSellerReceiveToken();
+
 export const selectPositionSellerShouldSwap = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveToken = q(selectPositionSellerReceiveToken());
+  const receiveToken = q(selectPositionSellerReceiveToken);
 
   return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 });
@@ -218,7 +220,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
   }
 
   const shouldSwap = q(selectPositionSellerShouldSwap);
-  const receiveToken = q(selectPositionSellerReceiveToken());
+  const receiveToken = q(selectPositionSellerReceiveToken);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
 

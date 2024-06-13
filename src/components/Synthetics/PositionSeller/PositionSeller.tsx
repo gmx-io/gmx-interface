@@ -70,12 +70,12 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  makeSelectPositionSellerReceiveToken,
   selectPositionSellerAcceptablePrice,
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
-  selectPositionSellerReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
@@ -182,7 +182,7 @@ export function PositionSeller(p: Props) {
     [setReceiveTokenAddress, setIsReceiveTokenChanged]
   );
 
-  const receiveToken = useSelector(selectPositionSellerReceiveToken(defaultReceiveToken));
+  const receiveToken = useSelector(makeSelectPositionSellerReceiveToken(defaultReceiveToken));
 
   useEffect(() => {
     if (!isVisible) {
