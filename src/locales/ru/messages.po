@@ -954,10 +954,6 @@ msgstr "Запрос на вывод"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr ""
@@ -1809,6 +1805,10 @@ msgstr "Вы получите не менее {0} {1}, если этот орд�
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "Позиция будет открыта по цене {0}, не учитывая влияние цены, с максимальным скольжением -{1}%.<0/><1/>Сумма скольжения может быть настроена в Настройках, найденных по нажатию на ваш адрес в верхнем правом углу страницы после подключения вашего кошелька.<2/><3/><4>Подробнее</4>."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2> price changes of the underlying token(s)</2><3> traders' PnL, which is expected to be neutral in the long term</3><4> funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
@@ -4529,10 +4529,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "Недостаточно доступной ликвидности обмена для выполнения ордера. Ордер будет выполнен, когда условие будет выполнено и будет достаточно доступной ликвидности обмена."
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2> price changes of the underlying token(s)</2><3> traders' PnL, which is expected to be neutral in the long term</3><4> funding fees, which are exchanged between traders</4></1><5>Read more about GM token pricing</5>.<6>Check GM pools' performance against other LP Positions in the <7>GMX Dune Dashboard</7>.</6>"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
