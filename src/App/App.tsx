@@ -24,7 +24,6 @@ import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
 import { useChainId } from "lib/chains";
-import { RealChainIdProvider } from "lib/chains/RealChainIdProvider";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
@@ -115,7 +114,6 @@ function App() {
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
-  app = <RealChainIdProvider>{app}</RealChainIdProvider>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
