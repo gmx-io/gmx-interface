@@ -351,10 +351,13 @@ export function getDecreasePositionAmounts(p: {
       pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
       pendingFundingFeesUsd: position.pendingFundingFeesUsd,
       pnl: undefined,
-    })!;
+    });
 
     values.collateralDeltaUsd =
-      remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl);
+      // https://app.asana.com/0/1204313444805313/1207549197964321/f
+      leverageWithoutPnl !== undefined
+        ? remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl)
+        : 0n;
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
       collateralToken.decimals,
