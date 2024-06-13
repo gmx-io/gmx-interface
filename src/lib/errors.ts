@@ -59,7 +59,7 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
 
   const body = {
     report: {
-      error: errorMessage,
+      errorMessage,
       errorSource,
       errorStack,
       errorStackHash,
