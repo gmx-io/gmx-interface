@@ -3644,10 +3644,6 @@ msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exc
 msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 msgstr "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 
-#: src/components/ToastifyDebug/ToastifyDebug.tsx
-msgid "Error"
-msgstr "Error"
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"

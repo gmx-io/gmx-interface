@@ -3641,10 +3641,6 @@ msgstr ""
 msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 msgstr ""
 
-#: src/components/ToastifyDebug/ToastifyDebug.tsx
-msgid "Error"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
