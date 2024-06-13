@@ -1,8 +1,10 @@
+import { watchAccount } from "@wagmi/core";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import { useEffect, useState } from "react";
+import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
 /**
  * This returns default chainId if chainId is not supported or not found
@@ -44,12 +46,28 @@ export function useChainId() {
     }
   }, [chainIdFromLocalStorage, localStorageChainIdIsSupported, mustChangeChainId]);
 
+  useEffect(() => {
+    const unsubscribe = watchAccount(rainbowKitConfig, {
+      onChange: (account) => {
+        if (!account.chainId) return;
+        if (!SUPPORTED_CHAIN_IDS.includes(account.chainId)) return;
+
+        setFakeChainId(account.chainId);
+        localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   if (mustChangeChainId) {
-    if (!localStorageChainIdIsSupported) {
-      return { chainId: DEFAULT_CHAIN_ID };
+    if (localStorageChainIdIsSupported) {
+      return { chainId: chainIdFromLocalStorage };
     }
 
-    return { chainId: chainIdFromLocalStorage };
+    return { chainId: DEFAULT_CHAIN_ID };
   }
 
   return { chainId: fakeChainId };
