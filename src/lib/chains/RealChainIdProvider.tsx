@@ -3,10 +3,10 @@ import { createContext, useContext, useEffect, useState, useSyncExternalStore } 
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 
-import { useChainId } from "lib/chains";
 import { getRealChainId } from "lib/chains/getRealChainId";
 import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkErrorMessage } from "lib/contracts/transactionErrors";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { useChainId as useAssumedChainId } from ".";
 
 const context = createContext<number | undefined>(undefined);
 const { Provider } = context;
@@ -25,8 +25,10 @@ const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function RealChainIdProvider({ children }: { children: React.ReactNode }) {
   const [chainId, setChainId] = useState(() => getRealChainId());
-  const { chainId: assumedChainId } = useChainId();
+
   const { isConnected } = useAccount();
+
+  const { chainId: assumedChainId } = useAssumedChainId();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
@@ -43,13 +45,22 @@ export function RealChainIdProvider({ children }: { children: React.ReactNode })
   }, [chainId]);
 
   useEffect(() => {
-    if (chainId !== undefined && chainId !== assumedChainId && !isActive && isConnected) {
+    if (
+      chainId !== undefined &&
+      assumedChainId !== undefined &&
+      chainId !== assumedChainId &&
+      !isActive &&
+      isConnected
+    ) {
       toast.error(getInvalidNetworkErrorMessage(assumedChainId), {
         toastId: INVALID_NETWORK_TOAST_ID,
         autoClose: false,
         closeButton: false,
       });
-    } else if ((chainId === assumedChainId || !isConnected || chainId === undefined) && isActive) {
+    } else if (
+      (chainId === assumedChainId || !isConnected || assumedChainId === undefined || chainId === undefined) &&
+      isActive
+    ) {
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     }
   }, [assumedChainId, chainId, isActive, isConnected]);
