@@ -2,6 +2,7 @@ import { isDevelopment, isLocal } from "config/env";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { get } from "lodash";
 import { useEffect } from "react";
+import cryptoJs from "crypto-js";
 
 export function useErrorReporting(chainId: number) {
   const fetcher = useOracleKeeperFetcher(chainId);
@@ -33,21 +34,36 @@ function subscribeToErrorEvents(fetcher: OracleFetcher) {
   };
 }
 
-export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, source: string) {
+export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
   if (isLocal()) return;
 
   let errorMessage = "Unknown error";
+  let errorStack: string | undefined = undefined;
+  let errorStackHash: string | undefined = undefined;
+  let errorName: string | undefined = undefined;
 
   try {
     errorMessage = hasMessage(error) ? error.message : String(error);
+    errorStack = hasStack(error) ? error.stack : undefined;
+
+    if (hasName(error)) {
+      errorName = error.name;
+    }
   } catch (e) {
     //
+  }
+
+  if (errorStack) {
+    errorStackHash = cryptoJs.SHA256(errorStack).toString(cryptoJs.enc.Hex);
   }
 
   const body = {
     report: {
       error: errorMessage,
-      errorSource: source,
+      errorSource,
+      errorStack,
+      errorStackHash,
+      errorName,
       env: {
         REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
         REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
@@ -66,6 +82,14 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, source
 
 function hasMessage(error: unknown): error is { message: string } {
   return typeof (error as { message: string }).message === "string";
+}
+
+function hasStack(error: unknown): error is { stack: string } {
+  return typeof (error as { stack: string }).stack === "string";
+}
+
+function hasName(error: unknown): error is { name: string } {
+  return typeof (error as { name: string }).name === "string";
 }
 
 function getAppVersion() {
