@@ -775,7 +775,7 @@ export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
   return getTradeboxLeverageSliderMarks(maxAllowedLeverage);
 });
 
-export const selectTradeboxMarketsOrderMap = createSelector((q) => {
+export const selectTradeboxMarketsSortMap = createSelector((q) => {
   const { sortedIndexTokensWithPoolValue } = q(selectTradeboxAvailableTokensOptions);
 
   return sortedIndexTokensWithPoolValue.reduce((acc, address, idx) => {
