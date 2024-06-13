@@ -1,8 +1,8 @@
 import { isDevelopment, isLocal } from "config/env";
-import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
-import { get } from "lodash";
-import { useEffect } from "react";
 import cryptoJs from "crypto-js";
+import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
+import { useEffect } from "react";
+import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
 
 export function useErrorReporting(chainId: number) {
   const fetcher = useOracleKeeperFetcher(chainId);
@@ -96,27 +96,17 @@ function getAppVersion() {
   return process.env.REACT_APP_VERSION;
 }
 
-function getWalletNames() {
-  const wallets = [
-    { name: "rabby", check: checkWalletProperty("isRabbyWallet") },
-    { name: "coinbase", check: checkWalletProperty("isCoinbaseWallet") },
-    { name: "walletConnect", check: checkWalletProperty("isWalletConnect") },
-    { name: "browserWallet", check: checkWalletProperty("isBrowserWallet") },
-    { name: "trust", check: checkWalletProperty("trustwallet") },
-    { name: "binance", check: checkWalletProperty("BinanceChain") },
-    { name: "core", check: get(window, "web3.currentProvider.coreProvider.info.name") === "Core" },
-    { name: "metamask", check: checkWalletProperty("isMetaMask") },
-  ];
+async function getWalletNames() {
+  const walletNames = new Set<string>();
 
-  return wallets.filter((wallet) => wallet.check).map((wallet) => wallet.name);
-}
+  for (const connector of rainbowKitConfig.connectors) {
+    const isAuthorized = await connector.isAuthorized();
+    if (isAuthorized) {
+      walletNames.add(connector.name);
+    }
+  }
 
-function checkWalletProperty(property: string) {
-  return (
-    (typeof window.ethereum !== "undefined"
-      ? Boolean(window?.ethereum?.[property])
-      : Boolean((window as any)?.web3?.currentProvider?.[property])) || typeof window[property] !== "undefined"
-  );
+  return [...walletNames];
 }
 
 (window as any).getWalletNames = getWalletNames;
