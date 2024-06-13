@@ -1,14 +1,12 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { Trans, t } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 async function copy(raw: string) {
   const text = typeof raw === "string" ? raw : JSON.stringify(raw, null, 2);
-  const data: ShareData = { text: text, title: t`Error` };
-  if (navigator.canShare?.(data)) {
-    navigator.share(data);
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(text);
+
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text);
   }
 }
 
