@@ -1,9 +1,13 @@
+import { useAccount } from "wagmi";
+
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import useWallet from "lib/wallets/useWallet";
 
+/**
+ * This returns default chainId if chainId is not supported or not found
+ */
 export function useChainId() {
-  let { chainId } = useWallet();
+  let { chainId } = useAccount();
 
   if (!chainId) {
     const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
