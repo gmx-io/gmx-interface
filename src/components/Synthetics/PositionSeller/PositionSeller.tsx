@@ -87,6 +87,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
 import "./PositionSeller.scss";
 import { useLocalizedMap } from "lib/i18n";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
+import { Token } from "domain/tokens";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -146,6 +149,7 @@ export function PositionSeller(p: Props) {
     setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
+    setIsReceiveTokenChanged,
   } = usePositionSeller();
   const keepLeverage = usePositionSellerKeepLeverage();
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
@@ -165,7 +169,20 @@ export function PositionSeller(p: Props) {
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
-  const receiveToken = useSelector(selectPositionSellerReceiveToken);
+  const [defaultReceiveToken, setDefaultReceiveToken] = useLocalStorageSerializeKey<string | undefined>(
+    getSyntheticsReceiveMoneyTokenKey(chainId, position?.marketInfo.name, position?.isLong ? "long" : "short"),
+    undefined
+  );
+
+  const setReceiveTokenManually = useCallback(
+    (token: Token) => {
+      setIsReceiveTokenChanged(true);
+      setReceiveTokenAddress(token.address);
+    },
+    [setReceiveTokenAddress, setIsReceiveTokenChanged]
+  );
+
+  const receiveToken = useSelector(selectPositionSellerReceiveToken(defaultReceiveToken));
 
   useEffect(() => {
     if (!isVisible) {
@@ -398,6 +415,7 @@ export function PositionSeller(p: Props) {
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
     });
   }
 
@@ -603,7 +621,7 @@ export function PositionSeller(p: Props) {
             showBalances={false}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
-            onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+            onSelectToken={setReceiveTokenManually}
             tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={

@@ -3,7 +3,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector } from "../utils";
+import { createSelector, createSelectorFactory } from "../utils";
 import {
   selectClosingPositionKey,
   selectPositionsInfoData,
@@ -37,6 +37,8 @@ export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =
   state.positionSeller.closeUsdInputValue;
 const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
 export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
+export const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
+  state.positionSeller.isReceiveTokenChanged;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
@@ -171,18 +173,23 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   }
 });
 
-export const selectPositionSellerReceiveToken = createSelector((q) => {
-  const orderOption = q(selectPositionSellerOrderOption);
-  const position = q(selectPositionSellerPosition);
-  const isTrigger = orderOption === OrderOption.Trigger;
-  const tokensData = q(selectTokensData);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
-  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
-});
+export const selectPositionSellerReceiveToken = createSelectorFactory((defaulReceiveTokenAddress?: string) =>
+  createSelector((q) => {
+    const orderOption = q(selectPositionSellerOrderOption);
+    const position = q(selectPositionSellerPosition);
+    const isTrigger = orderOption === OrderOption.Trigger;
+    const tokensData = q(selectTokensData);
+    const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
+    const receiveTokenAddress = isChanged
+      ? q(selectPositionSellerReceiveTokenAddress)
+      : defaulReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
+    return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+  })
+);
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveToken = q(selectPositionSellerReceiveToken);
+  const receiveToken = q(selectPositionSellerReceiveToken());
 
   return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 });
@@ -211,7 +218,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
   }
 
   const shouldSwap = q(selectPositionSellerShouldSwap);
-  const receiveToken = q(selectPositionSellerReceiveToken);
+  const receiveToken = q(selectPositionSellerReceiveToken());
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
 

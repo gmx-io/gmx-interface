@@ -21,6 +21,7 @@ export function usePositionSellerState(chainId: number) {
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReceiveTokenChanged, setIsReceiveTokenChanged] = useState(false);
 
   const resetPositionSeller = useCallback(() => {
     setOrderOption(OrderOption.Market);
@@ -31,7 +32,8 @@ export function usePositionSellerState(chainId: number) {
     setReceiveTokenAddress("");
     setAllowedSlippage(savedAllowedSlippage);
     setIsSubmitting(false);
-  }, [savedAllowedSlippage]);
+    setIsReceiveTokenChanged(false);
+  }, [savedAllowedSlippage, setReceiveTokenAddress]);
 
   return {
     orderOption,
@@ -53,5 +55,7 @@ export function usePositionSellerState(chainId: number) {
     isSubmitting,
     setIsSubmitting,
     resetPositionSeller,
+    isReceiveTokenChanged,
+    setIsReceiveTokenChanged,
   };
 }
