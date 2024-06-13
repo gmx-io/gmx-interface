@@ -2,7 +2,7 @@ import { watchAccount } from "@wagmi/core";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { DEFAULT_CHAIN_ID, isSupportedChain } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
@@ -10,37 +10,36 @@ import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
  * This returns default chainId if chainId is not supported or not found
  */
 export function useChainId() {
-  let { chainId } = useAccount();
+  let { chainId: unsanitizedChainId } = useAccount();
 
-  const [fakeChainId, setFakeChainId] = useState(chainId ?? DEFAULT_CHAIN_ID);
+  const [displayedChainId, setDisplayedChainId] = useState(unsanitizedChainId ?? DEFAULT_CHAIN_ID);
 
   const chainIdFromLocalStorage = parseInt(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || "");
 
-  const currentChainIdIsSupported = chainId && SUPPORTED_CHAIN_IDS.includes(chainId);
-  const localStorageChainIdIsSupported =
-    chainIdFromLocalStorage && SUPPORTED_CHAIN_IDS.includes(chainIdFromLocalStorage);
+  const currentChainIdIsSupported = unsanitizedChainId && isSupportedChain(unsanitizedChainId);
+  const localStorageChainIdIsSupported = chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage);
 
-  const mustChangeChainId = !currentChainIdIsSupported || !chainId;
+  const mustChangeChainId = !currentChainIdIsSupported || !unsanitizedChainId;
 
   useEffect(() => {
     if (currentChainIdIsSupported) {
-      setFakeChainId(chainId);
+      setDisplayedChainId(unsanitizedChainId);
       return;
     }
     if (localStorageChainIdIsSupported) {
-      setFakeChainId(chainIdFromLocalStorage);
+      setDisplayedChainId(chainIdFromLocalStorage);
       return;
     }
 
-    setFakeChainId(DEFAULT_CHAIN_ID);
-  }, [chainId, chainIdFromLocalStorage, currentChainIdIsSupported, localStorageChainIdIsSupported]);
+    setDisplayedChainId(DEFAULT_CHAIN_ID);
+  }, [unsanitizedChainId, chainIdFromLocalStorage, currentChainIdIsSupported, localStorageChainIdIsSupported]);
 
   useEffect(() => {
     if (mustChangeChainId) {
       if (localStorageChainIdIsSupported) {
-        setFakeChainId(chainIdFromLocalStorage);
+        setDisplayedChainId(chainIdFromLocalStorage);
       } else {
-        setFakeChainId(DEFAULT_CHAIN_ID);
+        setDisplayedChainId(DEFAULT_CHAIN_ID);
         localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
       }
     }
@@ -50,9 +49,9 @@ export function useChainId() {
     const unsubscribe = watchAccount(rainbowKitConfig, {
       onChange: (account) => {
         if (!account.chainId) return;
-        if (!SUPPORTED_CHAIN_IDS.includes(account.chainId)) return;
+        if (!isSupportedChain(account.chainId)) return;
 
-        setFakeChainId(account.chainId);
+        setDisplayedChainId(account.chainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
       },
     });
@@ -70,5 +69,5 @@ export function useChainId() {
     return { chainId: DEFAULT_CHAIN_ID };
   }
 
-  return { chainId: fakeChainId };
+  return { chainId: displayedChainId, isConnectedToChainId: displayedChainId === unsanitizedChainId };
 }

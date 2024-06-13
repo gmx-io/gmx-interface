@@ -2,7 +2,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 
-import { useChainId as useAssumedChainId } from "lib/chains";
+import { useChainId as useDisplayedChainId } from "lib/chains";
 import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkErrorMessage } from "lib/contracts/transactionErrors";
 
 const toastSubscribe = (onStoreChange: () => void): (() => void) => {
@@ -18,31 +18,22 @@ const toastSubscribe = (onStoreChange: () => void): (() => void) => {
 const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function useRealChainIdWarning() {
-  const { isConnected, chainId } = useAccount();
-  const { chainId: assumedChainId } = useAssumedChainId();
+  const { isConnected } = useAccount();
+  const { chainId: displayedChainId, isConnectedToChainId } = useDisplayedChainId();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
   useEffect(() => {
-    if (
-      chainId !== undefined &&
-      assumedChainId !== undefined &&
-      chainId !== assumedChainId &&
-      !isActive &&
-      isConnected
-    ) {
-      toast.error(getInvalidNetworkErrorMessage(assumedChainId), {
+    if (!isConnectedToChainId && !isActive && isConnected) {
+      toast.error(getInvalidNetworkErrorMessage(displayedChainId), {
         toastId: INVALID_NETWORK_TOAST_ID,
         autoClose: false,
         closeButton: false,
       });
-    } else if (
-      (chainId === assumedChainId || !isConnected || assumedChainId === undefined || chainId === undefined) &&
-      isActive
-    ) {
+    } else if ((isConnectedToChainId || !isConnected) && isActive) {
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     }
-  }, [assumedChainId, chainId, isActive, isConnected]);
+  }, [displayedChainId, isActive, isConnected, isConnectedToChainId]);
 
   useEffect(() => {
     return () => {
