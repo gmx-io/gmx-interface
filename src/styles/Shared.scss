@@ -8,6 +8,12 @@ body,
   background-color: var(--main-bg-color);
 }
 
+/** @see https://aykevl.nl/2014/09/fix-jumping-scrollbar */
+html {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
