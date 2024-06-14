@@ -125,7 +125,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   }
 }
 
-function extractDataFromError(error_message) {
+export function extractDataFromError(error_message) {
   const pattern = /data="([^"]+)"/;
   const match = error_message.match(pattern);
 

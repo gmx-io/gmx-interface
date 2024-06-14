@@ -1,8 +1,13 @@
 import { isDevelopment, isLocal } from "config/env";
 import cryptoJs from "crypto-js";
+import CustomErrors from "abis/CustomErrors.json";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useEffect } from "react";
 import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
+import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
+import { ethers } from "ethers";
+
+const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
 export function useErrorReporting(chainId: number) {
   const fetcher = useOracleKeeperFetcher(chainId);
@@ -34,6 +39,8 @@ function subscribeToErrorEvents(fetcher: OracleFetcher) {
   };
 }
 
+const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+
 export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
   if (isLocal()) return;
 
@@ -41,13 +48,28 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
   let errorStack: string | undefined = undefined;
   let errorStackHash: string | undefined = undefined;
   let errorName: string | undefined = undefined;
+  let contractError: string | undefined = undefined;
 
   try {
     errorMessage = hasMessage(error) ? error.message : String(error);
+
+    if (IGNORE_ERROR_MESSAGES.some((ignore) => errorMessage.toLowerCase().startsWith(ignore))) {
+      return;
+    }
+
     errorStack = hasStack(error) ? error.stack : undefined;
 
     if (hasName(error)) {
       errorName = error.name;
+    }
+
+    if (errorMessage) {
+      const errorData = extractDataFromError(errorMessage);
+      const parsedError = customErrors.interface.parseError(errorData);
+
+      if (parsedError) {
+        contractError = parsedError.name;
+      }
     }
   } catch (e) {
     //
@@ -64,6 +86,7 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
       errorStack,
       errorStackHash,
       errorName,
+      contractError,
       env: {
         REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
         REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
