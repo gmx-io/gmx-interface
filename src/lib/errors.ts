@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
 import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
 import { ethers } from "ethers";
+import { extractError } from "./contracts/transactionErrors";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
@@ -49,6 +50,7 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
   let errorStackHash: string | undefined = undefined;
   let errorName: string | undefined = undefined;
   let contractError: string | undefined = undefined;
+  let txError: any = undefined;
 
   try {
     errorMessage = hasMessage(error) ? error.message : String(error);
@@ -61,6 +63,17 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
 
     if (hasName(error)) {
       errorName = error.name;
+    }
+
+    try {
+      txError = extractError(error as any);
+      if (txError && txError.length) {
+        const [message, type, errorData] = txError;
+        errorMessage = message;
+        txError = { type, errorData };
+      }
+    } catch (e) {
+      //
     }
 
     if (errorMessage) {
@@ -87,6 +100,7 @@ export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorS
       errorStackHash,
       errorName,
       contractError,
+      txError,
       env: {
         REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
         REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
