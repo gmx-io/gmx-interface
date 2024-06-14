@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
@@ -20,10 +22,12 @@ import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
 import downloadIcon from "img/ic_download_simple.svg";
+import pnlAnalysisIcon from "img/ic_pnl_analysis_20.svg";
 
 import "./TradeHistorySynthetics.scss";
 
@@ -34,9 +38,14 @@ const CSV_ICON_INFO = {
   src: downloadIcon,
 };
 
+const PNL_ANALYSIS_ICON_INFO = {
+  src: pnlAnalysisIcon,
+  className: "h-16 !mr-8",
+};
+
 type Props = {
   shouldShowPaginationButtons: boolean;
-  account: string | null | undefined;
+  account: Address | null | undefined;
   forAllAccounts?: boolean;
 };
 
@@ -84,6 +93,20 @@ export function TradeHistory(p: Props) {
   const currentPageData = getCurrentData();
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
+  const pnlAnalysisButton = useMemo(() => {
+    if (!account) {
+      return null;
+    }
+
+    const url = buildAccountDashboardUrl(account, chainId, 2);
+
+    return (
+      <Button variant="secondary" imgInfo={PNL_ANALYSIS_ICON_INFO} to={url}>
+        <Trans>PnL Analysis</Trans>
+      </Button>
+    );
+  }, [account, chainId]);
+
   useEffect(() => {
     if (!pageCount || !currentPage) return;
     const totalPossiblePages = (TRADE_HISTORY_PREFETCH_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
@@ -113,6 +136,7 @@ export function TradeHistory(p: Props) {
             <Trans>Trade History</Trans>
           </div>
           <div className="TradeHistorySynthetics-controls-right">
+            {pnlAnalysisButton}
             <div className="TradeHistorySynthetics-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
