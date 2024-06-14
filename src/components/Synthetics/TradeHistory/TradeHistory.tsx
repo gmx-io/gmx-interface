@@ -27,7 +27,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboar
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
 import downloadIcon from "img/ic_download_simple.svg";
-import pnlAnalysisIcon from "img/ic_pnl_analysis_20.svg";
+import { ReactComponent as PnlAnalysisIcon } from "img/ic_pnl_analysis_20.svg";
 
 import "./TradeHistorySynthetics.scss";
 
@@ -36,11 +36,6 @@ const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
 const CSV_ICON_INFO = {
   src: downloadIcon,
-};
-
-const PNL_ANALYSIS_ICON_INFO = {
-  src: pnlAnalysisIcon,
-  className: "h-16 !mr-8",
 };
 
 type Props = {
@@ -101,7 +96,8 @@ export function TradeHistory(p: Props) {
     const url = buildAccountDashboardUrl(account, chainId, 2);
 
     return (
-      <Button variant="secondary" imgInfo={PNL_ANALYSIS_ICON_INFO} to={url}>
+      <Button variant="secondary" to={url}>
+        <PnlAnalysisIcon className="mr-8 h-16 text-white" />
         <Trans>PnL Analysis</Trans>
       </Button>
     );

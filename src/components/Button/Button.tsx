@@ -1,4 +1,4 @@
-import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject, useMemo } from "react";
+import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
 import cx from "classnames";
 
 import ButtonLink from "./ButtonLink";
@@ -19,7 +19,6 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   imgInfo?: {
     src: string;
     alt?: string;
-    className?: string;
   };
   newTab?: boolean;
   showExternalLinkArrow?: boolean;
@@ -44,14 +43,6 @@ export default function Button({
   const classNames = cx("button", variant, className, textAlign);
   const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";
 
-  const img = useMemo(() => {
-    if (!imgInfo) {
-      return null;
-    }
-
-    return <img className={cx("btn-image", imgInfo.className)} src={imgInfo.src} alt={imgInfo.alt || ""} />;
-  }, [imgInfo]);
-
   function handleClick(event: ReactMouseEvent) {
     if (disabled || !onClick) {
       return;
@@ -74,7 +65,7 @@ export default function Button({
         ref={buttonRef}
         {...rest}
       >
-        {img}
+        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </ButtonLink>
     );
@@ -83,7 +74,7 @@ export default function Button({
   if (onClick) {
     return (
       <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
-        {img}
+        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </button>
     );
@@ -91,7 +82,7 @@ export default function Button({
 
   return (
     <button ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
-      {img}
+      {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
       {children}
     </button>
   );

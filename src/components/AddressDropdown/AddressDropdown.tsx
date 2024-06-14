@@ -21,7 +21,7 @@ import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import disconnect from "img/ic_sign_out_20.svg";
 import oneClickTradingIcon from "img/one_click_trading_20.svg";
-import pnlAnalysisIcon from "img/ic_pnl_analysis_20.svg";
+import { ReactComponent as PnlAnalysisIcon } from "img/ic_pnl_analysis_20.svg";
 
 import "./AddressDropdown.scss";
 
@@ -73,7 +73,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
-              <img width={20} className="size-20" src={pnlAnalysisIcon} alt="Copy user address" />
+              <PnlAnalysisIcon width={20} className="size-20" />
               <p>
                 <Trans>PnL Analysis</Trans>
               </p>
