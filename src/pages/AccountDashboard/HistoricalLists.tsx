@@ -104,7 +104,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
 function useTabLabelsV1(
   chainId: number,
   account: Address,
-  signer: ethers.JsonRpcSigner | undefined,
+  signer: ethers.Signer | undefined,
   active: boolean
 ): Record<TabKeyV1, React.ReactNode> {
   const [orders] = useAccountOrders(true, account, chainId, signer, active);

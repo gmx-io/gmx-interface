@@ -21,7 +21,7 @@ import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupp
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
-import { ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
@@ -83,7 +83,6 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -98,7 +97,7 @@ function StakeModal(props: {
   maxAmount: bigint | undefined;
   value: string;
   setValue: (value: string) => void;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   stakingTokenSymbol: string;
   stakingTokenAddress: string;
   farmAddress: string;
@@ -278,7 +277,7 @@ function UnstakeModal(props: {
   maxAmount: bigint | undefined;
   value: string;
   setValue: (value: string) => void;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   unstakingTokenSymbol: string;
   rewardRouterAddress: string;
   unstakeMethodName: string;
@@ -472,7 +471,7 @@ function VesterDepositModal(props: {
   vestedAmount: bigint | undefined;
   averageStakedAmount: bigint | undefined;
   maxVestableAmount: bigint | undefined;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   stakeTokenLabel: string;
   reserveAmount: bigint | undefined;
   maxReserveAmount: bigint | undefined;
@@ -702,7 +701,7 @@ function VesterWithdrawModal(props: {
   setIsVisible: (isVisible: boolean) => void;
   chainId: number;
   title: string;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   vesterAddress: string;
   setPendingTxns: SetPendingTransactions;
 }) {
@@ -809,7 +808,7 @@ function CompoundModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
   totalVesterRewards: bigint | undefined;
@@ -1064,7 +1063,7 @@ function ClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
   nativeTokenSymbol: string;
@@ -1203,7 +1202,7 @@ function ClaimModal(props: {
 function AffiliateClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  signer: UncheckedJsonRpcSigner | undefined;
+  signer: Signer | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
   totalVesterRewards: bigint | undefined;

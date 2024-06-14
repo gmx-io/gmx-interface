@@ -865,7 +865,7 @@ export function useAccountOrders(
   flagOrdersEnabled: boolean,
   overrideAccount?: string,
   overrideChainId?: number,
-  overrideSigner?: ethers.JsonRpcSigner,
+  overrideSigner?: ethers.Signer,
   overrideActive?: boolean
 ) {
   const { signer: fallbackSigner, account: connectedAccount } = useWallet();

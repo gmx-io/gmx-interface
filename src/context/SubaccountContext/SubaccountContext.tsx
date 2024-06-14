@@ -331,37 +331,44 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const { remaining } = useSubaccountActionCounts();
   const { walletClient } = useWallet();
 
+  const [wallet, setWallet] = useState<ethers.Wallet | null>(null);
+
+  useEffect(() => {
+    async function load() {
+      if (!walletClient || !privateKey) {
+        setWallet(null);
+        return;
+      }
+
+      const signer = await clientToSigner(walletClient);
+
+      const wallet = new ethers.Wallet(privateKey, signer.provider);
+      setWallet(wallet);
+    }
+
+    load();
+  }, [privateKey, walletClient]);
+
   return useMemo(() => {
     if (
       !address ||
       !active ||
       !privateKey ||
-      !walletClient ||
+      !wallet ||
       insufficientFunds ||
       remaining === undefined ||
       remaining < Math.max(1, requiredActions)
-    )
+    ) {
       return null;
+    }
 
-    const signer = clientToSigner(walletClient);
-
-    const wallet = new ethers.Wallet(privateKey, signer.provider);
     return {
       address,
       active,
       signer: wallet,
       customSigners: subaccountCustomSigners,
     };
-  }, [
-    address,
-    active,
-    privateKey,
-    insufficientFunds,
-    walletClient,
-    remaining,
-    requiredActions,
-    subaccountCustomSigners,
-  ]);
+  }, [active, address, insufficientFunds, privateKey, remaining, requiredActions, subaccountCustomSigners, wallet]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefined | null) {

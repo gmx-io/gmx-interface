@@ -47,7 +47,7 @@ function ActionsV1({
   active,
 }: {
   chainId: number;
-  signer: ethers.JsonRpcSigner | undefined;
+  signer: ethers.Signer | undefined;
   active: boolean;
 }) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -153,12 +153,7 @@ function ActionsV1({
   );
 }
 
-export function usePositionsV1(
-  chainId: number,
-  account: Address,
-  signer: ethers.JsonRpcSigner | undefined,
-  active: boolean
-) {
+export function usePositionsV1(chainId: number, account: Address, signer: ethers.Signer | undefined, active: boolean) {
   const { isPnlInLeverage: savedIsPnlInLeverage, showPnlAfterFees: savedShowPnlAfterFees } = useSettings();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -213,7 +208,7 @@ export function AccountPositionsV1({
 }: {
   account: Address;
   chainId: number;
-  signer: ethers.JsonRpcSigner | undefined;
+  signer: ethers.Signer | undefined;
   active: boolean;
 }) {
   const { isPnlInLeverage: savedIsPnlInLeverage, showPnlAfterFees: savedShowPnlAfterFees } = useSettings();
@@ -274,7 +269,7 @@ export function AccountOrdersV1({
 }: {
   account: Address;
   chainId: number;
-  signer: ethers.JsonRpcSigner | undefined;
+  signer: ethers.Signer | undefined;
   active: boolean;
 }) {
   const { isPnlInLeverage: savedIsPnlInLeverage, showPnlAfterFees: savedShowPnlAfterFees } = useSettings();
@@ -348,7 +343,7 @@ export function AccountActionsV1({
 }: {
   account: Address;
   chainId: number;
-  signer: ethers.JsonRpcSigner | undefined;
+  signer: ethers.Signer | undefined;
   active: boolean;
 }) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
