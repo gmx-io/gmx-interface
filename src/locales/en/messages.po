@@ -185,6 +185,10 @@ msgstr "EIP-4844, 13-20 Mar"
 msgid "Enable leverage sent."
 msgstr "Enable leverage sent."
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Show error"
+msgstr "Show error"
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
@@ -954,6 +958,10 @@ msgstr "Request Withdraw"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copied"
+msgstr "Copied"
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -1082,6 +1090,10 @@ msgstr "Withdrawing {0} to Main Account"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Hide error"
+msgstr "Hide error"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
@@ -2755,6 +2767,10 @@ msgstr "Accrued Price Impact Rebates. They will become Claimable after some time
 msgid "Positions{0}"
 msgstr "Positions{0}"
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Unknown Error"
+msgstr "Unknown Error"
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
 msgstr "Buying..."
@@ -4310,7 +4326,7 @@ msgstr "Swap {0}"
 msgid "Swap Order submitted!"
 msgstr "Swap Order submitted!"
 
-#: src/App/App.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5875,6 +5891,10 @@ msgstr "Buy GMX"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Max {0} Capacity"
 msgstr "Max {0} Capacity"
+
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copy error"
+msgstr "Copy error"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."

@@ -392,6 +392,6 @@ export function getExcessiveExecutionFee(chainId) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
-export function isSupportedChain(chainId) {
+export function isSupportedChain(chainId: number) {
   return SUPPORTED_CHAIN_IDS.includes(chainId);
 }
