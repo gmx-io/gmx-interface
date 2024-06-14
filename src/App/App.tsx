@@ -35,6 +35,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
+import "styles/recharts.css";
 import "./App.scss";
 
 import SEO from "components/Common/SEO";

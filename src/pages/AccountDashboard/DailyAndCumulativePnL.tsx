@@ -43,7 +43,6 @@ import {
 
 import downloadIcon from "img/ic_download_simple.svg";
 
-import "styles/recharts.css";
 import "./DailyAndCumulativePnL.css";
 
 const CSV_ICON_INFO = {
