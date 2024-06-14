@@ -131,4 +131,12 @@ export const appEventsData: EventData[] = [
       newTab: true,
     },
   },
+  {
+    id: "account-dashboard-feature",
+    title: "New PnL Analysis Dashboard",
+    isActive: true,
+    endDate: "21 Jun 2024, 0:00",
+    bodyText:
+      "Check the new PnL dashboard for traders under the wallet submenu or the trades history tab when connected.",
+  },
 ];
