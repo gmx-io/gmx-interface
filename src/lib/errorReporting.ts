@@ -42,7 +42,7 @@ function subscribeToErrorEvents(fetcher: OracleFetcher) {
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-export function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
+function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
   if (isLocal()) return;
 
   let errorMessage = "Unknown error";
