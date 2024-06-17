@@ -31,7 +31,8 @@ export async function callContract(
   try {
     const wallet = contract.runner as Wallet;
 
-    if (wallet.provider) {
+    // dont assert network if custom signers are provided (subaccount transaction)
+    if (wallet.provider && !opts.customSigners) {
       await assertNetwork(wallet.provider);
     }
 
