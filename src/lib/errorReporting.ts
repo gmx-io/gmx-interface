@@ -8,27 +8,30 @@ import { ethers } from "ethers";
 import { useEffect } from "react";
 import { extractError } from "./contracts/transactionErrors";
 import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
+import { useLocalStorageSerializeKey } from "./localStorage";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
 export function useErrorReporting(chainId: number) {
+  const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const fetcher = useOracleKeeperFetcher(chainId);
   useEffect(() => {
-    return subscribeToErrorEvents(fetcher);
-  }, [fetcher]);
+    return subscribeToErrorEvents(fetcher, showDebugValues ?? false);
+  }, [fetcher, showDebugValues]);
 }
 
-function subscribeToErrorEvents(fetcher: OracleFetcher) {
+function subscribeToErrorEvents(fetcher: OracleFetcher, showDebugValues: boolean) {
   const handleError = (event) => {
     const error = event.error;
     if (error) {
-      sendErrorToServer(fetcher, error, "globalError");
+      sendErrorToServer(fetcher, error, "globalError", showDebugValues);
     }
   };
   const handleUnhandledRejection = (event) => {
     const error = event.reason;
     if (error) {
-      sendErrorToServer(fetcher, error, "unhandledRejection");
+      sendErrorToServer(fetcher, error, "unhandledRejection", showDebugValues);
     }
   };
 
@@ -43,8 +46,14 @@ function subscribeToErrorEvents(fetcher: OracleFetcher) {
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
-  if (isLocal()) return;
+async function sendErrorToServer(
+  fetcher: OracleFetcher,
+  error: unknown,
+  errorSource: string,
+  showDebugValues: boolean
+) {
+  // all human readable details are in info field
+  const errorInfo = (error as any)?.info?.error;
 
   let errorMessage = "Unknown error";
   let errorStack: string | undefined = undefined;
@@ -54,7 +63,9 @@ async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSo
   let txError: any = undefined;
 
   try {
-    errorMessage = hasMessage(error) ? error.message : String(error);
+    errorMessage = hasMessage(errorInfo)
+      ? errorInfo.message ?? (hasMessage(error) ? error.message : String(error))
+      : String(error);
 
     if (IGNORE_ERROR_MESSAGES.some((ignore) => errorMessage.toLowerCase().startsWith(ignore))) {
       return;
@@ -62,12 +73,15 @@ async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSo
 
     errorStack = hasStack(error) ? error.stack : undefined;
 
-    if (hasName(error)) {
+    if (hasName(errorInfo)) {
+      errorName = errorInfo.name;
+    } else if (hasName(error)) {
       errorName = error.name;
     }
 
     try {
-      txError = extractError(error as any);
+      txError = errorInfo ? extractError(errorInfo as any) : extractError(error as any);
+
       if (txError && txError.length) {
         const [message, type, errorData] = txError;
         errorMessage = message;
@@ -78,11 +92,13 @@ async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSo
     }
 
     if (errorMessage) {
-      const errorData = extractDataFromError(errorMessage);
-      const parsedError = customErrors.interface.parseError(errorData);
+      const errorData = extractDataFromError(errorMessage) ?? extractDataFromError((error as any)?.message);
+      if (errorData) {
+        const parsedError = customErrors.interface.parseError(errorData);
 
-      if (parsedError) {
-        contractError = parsedError.name;
+        if (parsedError) {
+          contractError = parsedError.name;
+        }
       }
     }
   } catch (e) {
@@ -114,6 +130,13 @@ async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSo
     version: getAppVersion(),
     isError: true,
   };
+
+  if (showDebugValues) {
+    // eslint-disable-next-line no-console
+    console.log("sendErrorToServer", body);
+  }
+
+  if (isLocal()) return;
 
   return fetcher.fetchPostReport(body);
 }
