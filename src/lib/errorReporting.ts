@@ -1,12 +1,13 @@
+import { getAccount } from "@wagmi/core";
+import CustomErrors from "abis/CustomErrors.json";
 import { isDevelopment, isLocal } from "config/env";
 import cryptoJs from "crypto-js";
-import CustomErrors from "abis/CustomErrors.json";
-import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
-import { useEffect } from "react";
-import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
 import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
+import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
+import { useEffect } from "react";
 import { extractError } from "./contracts/transactionErrors";
+import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
@@ -42,7 +43,7 @@ function subscribeToErrorEvents(fetcher: OracleFetcher) {
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
+async function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: string) {
   if (isLocal()) return;
 
   let errorMessage = "Unknown error";
@@ -108,7 +109,7 @@ function sendErrorToServer(fetcher: OracleFetcher, error: unknown, errorSource: 
       isDevelopment: isDevelopment(),
       host: window.location.host,
       url: window.location.href,
-      wallets: getWalletNames(),
+      wallets: await getWalletNames(),
     },
     version: getAppVersion(),
     isError: true,
@@ -134,16 +135,24 @@ function getAppVersion() {
 }
 
 async function getWalletNames() {
-  const walletNames = new Set<string>();
+  try {
+    const walletNames = new Set<string>();
 
-  for (const connector of rainbowKitConfig.connectors) {
-    const isAuthorized = await connector.isAuthorized();
-    if (isAuthorized) {
-      walletNames.add(connector.name);
+    for (const connector of rainbowKitConfig.connectors) {
+      const isAuthorized = await connector.isAuthorized();
+      if (isAuthorized) {
+        walletNames.add(connector.name);
+      }
     }
-  }
 
-  return [...walletNames];
+    return { current: getAccount(rainbowKitConfig).connector?.name, authorized: [...walletNames] };
+  } catch (e) {
+    return {
+      current: null,
+      authorized: [],
+      error: true,
+    };
+  }
 }
 
 (window as any).getWalletNames = getWalletNames;
