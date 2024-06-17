@@ -49,7 +49,7 @@ type Props = {
 };
 
 const CALENDAR_ICON_INFO = {
-  src: calendarIcon,
+  imgSrc: calendarIcon,
 };
 
 /**
@@ -189,7 +189,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
           as={Button}
           className={handleClassName}
           variant="secondary"
-          imgInfo={CALENDAR_ICON_INFO}
+          {...CALENDAR_ICON_INFO}
           refName="buttonRef"
         >
           {buttonText}
@@ -308,7 +308,7 @@ export function DateSelect({
           as={Button}
           className={handleClassName}
           variant="secondary"
-          imgInfo={CALENDAR_ICON_INFO}
+          {...CALENDAR_ICON_INFO}
           refName="buttonRef"
         >
           {buttonText}
