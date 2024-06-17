@@ -9,6 +9,7 @@ type Props = {
   placeholder?: string;
   suggestionList?: number[];
   symbol?: string;
+  isError?: boolean;
   inputClassName?: string;
 };
 
@@ -18,6 +19,7 @@ export default function SuggestionInput({
   setValue,
   suggestionList,
   symbol,
+  isError,
   inputClassName,
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -36,7 +38,7 @@ export default function SuggestionInput({
 
   return (
     <div className="Suggestion-input-wrapper">
-      <div className={cx("Suggestion-input", { "input-error": false })}>
+      <div className={cx("Suggestion-input", { "input-error": isError })}>
         <NumberInput
           className={inputClassName}
           onFocus={() => setIsPanelVisible(true)}

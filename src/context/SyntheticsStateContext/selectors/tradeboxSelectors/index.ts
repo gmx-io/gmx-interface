@@ -774,3 +774,12 @@ export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
   const maxAllowedLeverage = q(selectTradeboxMaxLeverage);
   return getTradeboxLeverageSliderMarks(maxAllowedLeverage);
 });
+
+export const selectTradeboxMarketsSortMap = createSelector((q) => {
+  const { sortedIndexTokensWithPoolValue } = q(selectTradeboxAvailableTokensOptions);
+
+  return sortedIndexTokensWithPoolValue.reduce((acc, address, idx) => {
+    acc[address] = idx;
+    return acc;
+  }, {});
+});

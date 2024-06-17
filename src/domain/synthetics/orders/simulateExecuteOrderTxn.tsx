@@ -95,9 +95,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
           {errorTitle}
           <br />
           <br />
-          <ToastifyDebug>
-            {parsedError?.name} {JSON.stringify(parsedArgs, null, 2)}
-          </ToastifyDebug>
+          <ToastifyDebug error={`${parsedError?.name} ${JSON.stringify(parsedArgs, null, 2)}`} />
         </div>
       );
     } catch (parsingError) {
@@ -114,7 +112,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
           <Trans>Execute order simulation failed.</Trans>
           <br />
           <br />
-          <ToastifyDebug>Unknown Error</ToastifyDebug>
+          <ToastifyDebug error={t`Unknown Error`} />
         </div>
       );
     }
