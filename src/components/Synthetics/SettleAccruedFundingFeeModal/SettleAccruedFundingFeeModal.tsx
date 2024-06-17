@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  usePositionsInfoData,
+  usePositiveFeePositions,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -24,6 +24,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
+import { shouldPreSelectPosition } from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
 
@@ -31,19 +32,10 @@ type Props = {
   allowedSlippage: number;
   isVisible: boolean;
   onClose: () => void;
-  positionKeys: string[];
-  setPositionKeys: (keys: string[]) => void;
   setPendingTxns: (txns: any) => void;
 };
 
-export function SettleAccruedFundingFeeModal({
-  allowedSlippage,
-  isVisible,
-  onClose,
-  positionKeys,
-  setPositionKeys,
-  setPendingTxns,
-}: Props) {
+export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose, setPendingTxns }: Props) {
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
@@ -51,22 +43,7 @@ export function SettleAccruedFundingFeeModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const positionsInfoData = usePositionsInfoData();
-
-  const positiveFeePositions = useMemo(
-    () => Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0),
-    [positionsInfoData]
-  );
-  const selectedPositions = useMemo(
-    () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
-    [positionKeys, positiveFeePositions]
-  );
-  const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
-  const totalStr = formatDeltaUsd(total);
-
-  useEffect(() => {
-    if (!isVisible) setIsSubmitting(false);
-  }, [isVisible]);
+  const [pristine, setPristine] = useState(true);
 
   const { executionFee, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -78,6 +55,38 @@ export function SettleAccruedFundingFeeModal({
     };
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
+  const positiveFeePositions = usePositiveFeePositions();
+
+  const preCheckedPositionKeys = useMemo(() => {
+    return positiveFeePositions
+      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n))
+      .map((position) => position.key);
+  }, [positiveFeePositions, feeUsd]);
+
+  const [positionKeys, setPositionKeys] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!pristine) return;
+    setPositionKeys(preCheckedPositionKeys);
+  }, [preCheckedPositionKeys, pristine]);
+
+  const selectedPositions = useMemo(
+    () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
+    [positionKeys, positiveFeePositions]
+  );
+  const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
+  const totalStr = formatDeltaUsd(total);
+
+  const handleOnClose = useCallback(() => {
+    setPositionKeys([]);
+    setPristine(true);
+    onClose();
+  }, [onClose, setPositionKeys, setPristine]);
+
+  useEffect(() => {
+    if (!isVisible) setIsSubmitting(false);
+  }, [isVisible]);
+
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select Positions`, true];
@@ -86,6 +95,7 @@ export function SettleAccruedFundingFeeModal({
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
+      setPristine(false);
       if (value) {
         setPositionKeys([...positionKeys, positionKey].filter((key, index, array) => array.indexOf(key) === index));
       } else {
@@ -135,7 +145,7 @@ export function SettleAccruedFundingFeeModal({
         setPendingFundingFeeSettlement,
       }
     )
-      .then(onClose)
+      .then(handleOnClose)
       .finally(() => {
         setIsSubmitting(false);
       });
@@ -144,7 +154,7 @@ export function SettleAccruedFundingFeeModal({
     allowedSlippage,
     chainId,
     executionFee,
-    onClose,
+    handleOnClose,
     selectedPositions,
     setPendingFundingFeeSettlement,
     setPendingTxns,
@@ -166,7 +176,7 @@ export function SettleAccruedFundingFeeModal({
     <Modal
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
-      setIsVisible={onClose}
+      setIsVisible={handleOnClose}
       label={t`Confirm Settle`}
     >
       <div className="ConfirmationBox-main">
@@ -177,8 +187,8 @@ export function SettleAccruedFundingFeeModal({
         <div className="App-card-content">
           <AlertInfo type="warning" compact>
             <Trans>
-              Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is
-              around {formatUsd(feeUsd)} per each selected Position.
+              Consider selecting only positions where the accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost
+              to settle each position.
             </Trans>
           </AlertInfo>
 

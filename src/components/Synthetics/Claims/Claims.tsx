@@ -26,16 +26,12 @@ export function Claims({
   shouldShowPaginationButtons,
   isSettling,
   setIsSettling,
-  gettingPendingFeePositionKeys,
-  setGettingPendingFeePositionKeys,
   setPendingTxns,
   allowedSlippage,
 }: {
   shouldShowPaginationButtons: boolean;
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
-  gettingPendingFeePositionKeys: string[];
-  setGettingPendingFeePositionKeys: (keys: string[]) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
 }) {
@@ -64,9 +60,8 @@ export function Claims({
   );
 
   const handleSettleCloseClick = useCallback(() => {
-    setGettingPendingFeePositionKeys([]);
     setIsSettling(false);
-  }, [setGettingPendingFeePositionKeys, setIsSettling]);
+  }, [setIsSettling]);
 
   const handleAccruedPositionPriceImpactRebateCloseClick = useCallback(() => {
     setIsAccruedPositionPriceImpactRebateModalVisible(false);
@@ -87,9 +82,7 @@ export function Claims({
       <ClaimModal isVisible={isClaiming} onClose={handleClaimModalClose} setPendingTxns={setPendingTxns} />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
-        positionKeys={gettingPendingFeePositionKeys}
         allowedSlippage={allowedSlippage}
-        setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         onClose={handleSettleCloseClick}
       />
