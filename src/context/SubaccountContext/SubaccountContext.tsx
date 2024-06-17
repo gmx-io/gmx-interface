@@ -39,6 +39,7 @@ import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -113,9 +114,17 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return [null, null];
 
+    const gasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+      swapsCount: 1,
+    });
+    const oraclePriceCount = estimateOrderOraclePriceCount(1);
+    const executionFee =
+      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount)?.feeTokenAmount ?? 0n;
+
     const approxNetworkGasLimit =
       applyFactor(
-        applyFactor(gasLimits.estimatedFeeBaseGasLimit, gasLimits.estimatedFeeMultiplierFactor),
+        // I dont know what to do here
+        applyFactor(gasLimits.estimatedGasFeeBaseAmount, gasLimits.estimatedFeeMultiplierFactor),
         getFactorByChainId(chainId)
       ) +
       // createOrder is smaller than executeOrder
@@ -123,11 +132,6 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       800_000n;
     const networkFee = approxNetworkGasLimit * gasPrice;
 
-    const gasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-      swapsCount: 1,
-    });
-
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? 0n;
     return [executionFee, networkFee];
   }, [chainId, gasLimits, gasPrice, tokensData]);
 

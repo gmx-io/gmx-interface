@@ -50,6 +50,7 @@ import {
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
 import { selectIsPnlInLeverage } from "../settingsSelectors";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxChooseSuitableMarket";
@@ -321,6 +322,7 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
 
       return estimateExecuteSwapOrderGasLimit(gasLimits, {
         swapsCount: swapAmounts.swapPathStats.swapPath.length,
+        callbackGasLimit: 0n,
       });
     }
     case "increase": {
@@ -338,7 +340,9 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
       if (!decreaseAmounts) return null;
 
       return estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapsCount: decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1,
+        callbackGasLimit: 0n,
+        decreaseSwapType: decreaseAmounts.decreaseSwapType,
+        swapsCount: 0,
       });
     }
     case "edit":
@@ -363,7 +367,13 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
 
   const chainId = q(selectChainId);
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+  const swapPathLength = q(selectTradeboxSwapAmounts)?.swapPathStats?.swapPath.length;
+
+  if (swapPathLength === undefined) return undefined;
+
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+
+  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
 
 const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {

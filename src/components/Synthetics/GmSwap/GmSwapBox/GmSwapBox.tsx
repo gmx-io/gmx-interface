@@ -66,6 +66,10 @@ import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import "./GmSwapBox.scss";
 import { bigMath } from "lib/bigmath";
+import {
+  estimateDepositOraclePriceCount,
+  estimateWithdrawalOraclePriceCount,
+} from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 type SearchParams = {
   market?: string;
@@ -410,7 +414,9 @@ export function GmSwapBox(p: Props) {
         })
       : estimateExecuteWithdrawalGasLimit(gasLimits, {});
 
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice);
+    const oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
+
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
 
     return {
       fees,

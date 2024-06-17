@@ -26,6 +26,7 @@ export type GasLimitsConfig = {
   swapOrder: bigint;
   increaseOrder: bigint;
   decreaseOrder: bigint;
-  estimatedFeeBaseGasLimit: bigint;
+  estimatedGasFeeBaseAmount: bigint;
+  estimatedGasFeePerOraclePrice: bigint;
   estimatedFeeMultiplierFactor: bigint;
 };
