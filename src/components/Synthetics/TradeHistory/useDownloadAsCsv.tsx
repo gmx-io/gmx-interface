@@ -118,7 +118,7 @@ export function useDownloadAsCsv({
           <Trans>Failed to download trade history CSV.</Trans>
           <br />
           <br />
-          <ToastifyDebug>{String(error)}</ToastifyDebug>
+          <ToastifyDebug error={String(error)} />
         </div>
       );
     } finally {
