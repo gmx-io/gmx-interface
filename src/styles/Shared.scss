@@ -8,10 +8,14 @@ body,
   background-color: var(--main-bg-color);
 }
 
-/** @see https://aykevl.nl/2014/09/fix-jumping-scrollbar */
-html {
+/**
+ * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
+ * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
+ * attached by react-remove-scroll lib, which is uncontrollable.
+ */
+body {
   width: 100vw;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 
 body {
