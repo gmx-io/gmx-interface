@@ -7,6 +7,7 @@ import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
+import { assertNetwork } from "lib/rpc/assertNetwork";
 
 export async function callContract(
   chainId: number,
@@ -29,6 +30,10 @@ export async function callContract(
 ) {
   try {
     const wallet = contract.runner as Wallet;
+
+    if (wallet.provider) {
+      await assertNetwork(wallet.provider);
+    }
 
     if (!Array.isArray(params) && typeof params === "object" && opts === undefined) {
       opts = params;
