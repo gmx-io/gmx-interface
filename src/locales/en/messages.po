@@ -3624,6 +3624,7 @@ msgid "Accrued Borrow Fee"
 msgstr "Accrued Borrow Fee"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
 msgstr "PnL Analysis"
 
