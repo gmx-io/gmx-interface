@@ -776,10 +776,10 @@ export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
 });
 
 export const selectTradeboxMarketsSortMap = createSelector((q) => {
-  const { sortedIndexTokensWithPoolValue } = q(selectTradeboxAvailableTokensOptions);
+  const { sortedAllMarkets } = q(selectTradeboxAvailableTokensOptions);
 
-  return sortedIndexTokensWithPoolValue.reduce((acc, address, idx) => {
-    acc[address] = idx;
+  return sortedAllMarkets.reduce((acc, market, idx) => {
+    acc[market.indexTokenAddress] = idx;
     return acc;
   }, {});
 });
