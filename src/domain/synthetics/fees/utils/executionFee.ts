@@ -134,5 +134,5 @@ export function estimateExecuteSwapOrderGasLimit(
   const gasPerSwap = gasLimits.singleSwap;
   const swapsCount = BigInt(order.swapsCount);
 
-  return gasLimits.swapOrder + gasLimits.singleSwap * swapsCount + (order.callbackGasLimit ?? 0n);
+  return gasLimits.swapOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
 }

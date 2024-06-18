@@ -123,7 +123,6 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
     const approxNetworkGasLimit =
       applyFactor(
-        // I dont know what to do here
         applyFactor(gasLimits.estimatedGasFeeBaseAmount, gasLimits.estimatedFeeMultiplierFactor),
         getFactorByChainId(chainId)
       ) +

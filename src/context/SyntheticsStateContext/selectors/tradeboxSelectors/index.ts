@@ -12,7 +12,7 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
+import { isSwapOrderType } from "domain/synthetics/orders";
 import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   SwapAmounts,
