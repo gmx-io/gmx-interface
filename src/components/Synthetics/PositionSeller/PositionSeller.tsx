@@ -70,7 +70,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
-  makeSelectPositionSellerReceiveToken,
   selectPositionSellerAcceptablePrice,
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerMaxLiquidityPath,
@@ -78,6 +77,8 @@ import {
   selectPositionSellerPosition,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
+  selectPositionSellerSetDefaultReceiveToken,
+  selectPositionSellerReceiveToken,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
@@ -87,8 +88,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
 import "./PositionSeller.scss";
 import { useLocalizedMap } from "lib/i18n";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { Token } from "domain/tokens";
 
 export type Props = {
@@ -130,6 +129,8 @@ export function PositionSeller(p: Props) {
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
+  const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
+
   const {
     allowedSlippage,
     closeUsdInputValue: closeUsdInputValueRaw,
@@ -169,11 +170,6 @@ export function PositionSeller(p: Props) {
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
-  const [defaultReceiveToken, setDefaultReceiveToken] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsReceiveMoneyTokenKey(chainId, position?.marketInfo.name, position?.isLong ? "long" : "short"),
-    undefined
-  );
-
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
       setIsReceiveTokenChanged(true);
@@ -182,7 +178,7 @@ export function PositionSeller(p: Props) {
     [setReceiveTokenAddress, setIsReceiveTokenChanged]
   );
 
-  const receiveToken = useSelector(makeSelectPositionSellerReceiveToken(defaultReceiveToken));
+  const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
   useEffect(() => {
     if (!isVisible) {

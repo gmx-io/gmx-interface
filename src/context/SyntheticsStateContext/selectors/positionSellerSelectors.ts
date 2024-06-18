@@ -3,7 +3,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorFactory } from "../utils";
+import { createSelector } from "../utils";
 import {
   selectClosingPositionKey,
   selectPositionsInfoData,
@@ -44,6 +44,11 @@ export const selectPositionSellerPosition = createSelector((q) => {
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
 });
 
+export const selectPositionSellerSetDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.setDefaultReceiveToken;
+export const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.defaultReceiveToken;
+
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
@@ -69,7 +74,7 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const marketAddress = position.marketInfo.marketTokenAddress;
   const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -173,21 +178,18 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   }
 });
 
-export const makeSelectPositionSellerReceiveToken = createSelectorFactory((defaulReceiveTokenAddress?: string) =>
-  createSelector((q) => {
-    const orderOption = q(selectPositionSellerOrderOption);
-    const position = q(selectPositionSellerPosition);
-    const isTrigger = orderOption === OrderOption.Trigger;
-    const tokensData = q(selectTokensData);
-    const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
-    const receiveTokenAddress = isChanged
-      ? q(selectPositionSellerReceiveTokenAddress)
-      : defaulReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
-    return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
-  })
-);
-
-export const selectPositionSellerReceiveToken = makeSelectPositionSellerReceiveToken();
+export const selectPositionSellerReceiveToken = createSelector((q) => {
+  const orderOption = q(selectPositionSellerOrderOption);
+  const position = q(selectPositionSellerPosition);
+  const isTrigger = orderOption === OrderOption.Trigger;
+  const tokensData = q(selectTokensData);
+  const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
+  const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
+  const receiveTokenAddress = isChanged
+    ? q(selectPositionSellerReceiveTokenAddress)
+    : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
+  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+});
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
@@ -198,7 +200,7 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
 
 export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
   const selectMakeLiquidityPath = makeSelectMaxLiquidityPath(position?.collateralTokenAddress, receiveTokenAddress);
 
   return q(selectMakeLiquidityPath);
@@ -206,7 +208,7 @@ export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
 
 export const selectPositionSellerFindSwapPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
   const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
 
   return q(selectFindSwapPath);
