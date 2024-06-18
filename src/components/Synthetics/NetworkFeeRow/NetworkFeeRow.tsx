@@ -42,7 +42,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     () =>
       isAdditionOrdersMsg && (
         <Trans>
-          Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they
+          Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they
           don't trigger and are cancelled.{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
         </Trans>
@@ -101,12 +101,12 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
         position="top-end"
         renderContent={() => (
           <>
-            <StatsTooltipRow label={t`Max Execution Fee`} showDollar={false} value={executionFeeText} />
+            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={executionFeeText} />
             <div className="h-8" />
             <p>
               <Trans>
-                The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any
-                excess execution fee is sent back to your account.
+                The max network fee is overestimated, including by the buffer set under settings. Upon execution, any
+                excess network fee is sent back to your account.
               </Trans>{" "}
               <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
                 <Trans>Read more</Trans>
@@ -138,8 +138,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
           renderContent={() => (
             <div>
               <Trans>
-                Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
-                does not impact your collateral.
+                Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
+                not impact your collateral.
               </Trans>
             </div>
           )}

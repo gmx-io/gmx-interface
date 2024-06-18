@@ -408,10 +408,6 @@ msgstr "Comisiones de Apertura"
 msgid "Realized PnL"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "Puedes transferir ETH desde otras redes a Arbitrum usando cualquiera de las siguientes opciones:"
@@ -477,6 +473,10 @@ msgstr "ocultar"
 msgid "in liquidity"
 msgstr "en liquidez"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee buffer below {0}% may result in failed orders."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
@@ -532,10 +532,6 @@ msgstr ""
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr ""
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-msgstr "La tasa de ejecución máxima está sobreestimada, incluyendo el buffer establecido en ajustes. Al ejecutar, cualquier tasa de ejecución excedente se envía de vuelta a tu cuenta."
-
 #: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -558,6 +554,10 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr "Redes y Ajustes"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max network fee buffer precision is 0.01%"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Max. Leverage Exceeded"
@@ -740,6 +740,10 @@ msgstr ""
 msgid "Positions ({positionsCount})"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "As network fees have increased, an additional network fee is needed."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposited"
 msgstr ""
@@ -817,6 +821,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Insufficient Liquidity"
+msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
@@ -964,6 +972,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Invalid network fee buffer value"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -1900,10 +1912,6 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee"
-msgstr "Máx. Comisión de Ejecución"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "Índice"
@@ -2549,10 +2557,6 @@ msgstr ""
 msgid "Update Order"
 msgstr "Actualizar orden"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max execution fee buffer precision is 0.01%"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "Precio de referencia para la liquidación."
@@ -2643,7 +2647,9 @@ msgstr "Activación de órdenes falló."
 msgid "Total Staked"
 msgstr "Total Stakeado"
 
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
 msgstr "Comisión de Red"
 
@@ -2870,6 +2876,10 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "El saldo de su esGMX (IOU) disminuirá en la cantidad de su reclamación después de reclamar, este es el comportamiento esperado."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2944,10 +2954,6 @@ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
-msgstr ""
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -3650,6 +3656,13 @@ msgstr ""
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "High Network Fee not yet acknowledged"
+msgstr ""
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below lowest Limit Price."
 msgstr ""
@@ -3707,10 +3720,6 @@ msgstr "Composición Índice GLP"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee Buffer"
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -4224,6 +4233,10 @@ msgstr ""
 msgid "Collateral ({0})"
 msgstr "Garantía ({0})"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee Buffer"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order updated!"
 msgstr "¡Orden actualizada!"
@@ -4253,10 +4266,6 @@ msgstr "UTILIZACIÓN"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Announcements"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Invalid execution fee buffer value"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -5798,11 +5807,6 @@ msgstr "Recibir"
 msgid "Returns calculator for GMX and GLP"
 msgstr "Calculadora de retorno para GMX y GLP"
 
-#: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Execution Fee"
-msgstr ""
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
 msgstr "tiempo para liq."
@@ -5930,6 +5934,10 @@ msgstr "No se puede ejecutar debido a un error"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
+msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -6445,10 +6453,6 @@ msgstr ""
 msgid "Avg. Lev."
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "As network fees have increased, an additional execution fee is needed."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "Grupo de Telegram (Chino)"
@@ -6739,10 +6743,6 @@ msgstr ""
 msgid "Image generation error, please refresh and try again."
 msgstr "Error de generación de imagen, por favor actualice e intente de nuevo"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee buffer below {0}% may result in failed orders."
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
@@ -6938,10 +6938,6 @@ msgstr ""
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-msgstr "Comisión máxima de ejecución pagada a la red. Esta comisión es un costo de la cadena de bloques no específico de GMX, y no afecta tu garantía."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
@@ -7026,13 +7022,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "Explorador de GMX para estadísticas y traders"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "High Execution Fee not yet acknowledged"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -7513,6 +7502,10 @@ msgstr "Posiciones largas"
 msgid "Depositing {0} to {positionText}"
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -7533,6 +7526,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Incrementar activo: {0}, ejecutado: {1}, cancelado: {2}"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"

@@ -408,10 +408,6 @@ msgstr "오픈 수수료"
 msgid "Realized PnL"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
@@ -477,6 +473,10 @@ msgstr "숨기기"
 msgid "in liquidity"
 msgstr "유동성"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee buffer below {0}% may result in failed orders."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
@@ -532,10 +532,6 @@ msgstr ""
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr ""
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-msgstr "최대 실행 수수료가 과도하게 추정되었습니다. 설정에서 설정된 버퍼를 포함하여 계산되었습니다. 실행시, 초과된 실행 수수료는 귀하의 계정으로 반환됩니다."
-
 #: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -558,6 +554,10 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr "네트워크 및 설정"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max network fee buffer precision is 0.01%"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Max. Leverage Exceeded"
@@ -740,6 +740,10 @@ msgstr ""
 msgid "Positions ({positionsCount})"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "As network fees have increased, an additional network fee is needed."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposited"
 msgstr ""
@@ -817,6 +821,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Insufficient Liquidity"
+msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
@@ -964,6 +972,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Invalid network fee buffer value"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -1900,10 +1912,6 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee"
-msgstr "최대 실행 수수료"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "인덱스"
@@ -2549,10 +2557,6 @@ msgstr ""
 msgid "Update Order"
 msgstr "주문 업데이트"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max execution fee buffer precision is 0.01%"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "청산을 위한 시장 평균가"
@@ -2643,7 +2647,9 @@ msgstr "주문 유효화 실패"
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
 msgstr "네트워크 수수료"
 
@@ -2870,6 +2876,10 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2944,10 +2954,6 @@ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
-msgstr ""
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -3650,6 +3656,13 @@ msgstr ""
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "High Network Fee not yet acknowledged"
+msgstr ""
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below lowest Limit Price."
 msgstr ""
@@ -3707,10 +3720,6 @@ msgstr "GLP 인덱스 구성"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee Buffer"
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -4224,6 +4233,10 @@ msgstr ""
 msgid "Collateral ({0})"
 msgstr "담보 ({0})"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee Buffer"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order updated!"
 msgstr "주문 업데이트됨!"
@@ -4253,10 +4266,6 @@ msgstr "이용률"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Announcements"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Invalid execution fee buffer value"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -5798,11 +5807,6 @@ msgstr "수령하기"
 msgid "Returns calculator for GMX and GLP"
 msgstr "GMX 및 GLP 수익 계산기"
 
-#: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Execution Fee"
-msgstr ""
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
 msgstr "청산까지의 시간"
@@ -5930,6 +5934,10 @@ msgstr "에러로 인해 실행되지 못했습니다"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
+msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -6445,10 +6453,6 @@ msgstr ""
 msgid "Avg. Lev."
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "As network fees have increased, an additional execution fee is needed."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "텔레그램 그룹 (중국어)"
@@ -6739,10 +6743,6 @@ msgstr ""
 msgid "Image generation error, please refresh and try again."
 msgstr "이미지 생성 에러. 새로고침 후 다시 시도해주세요."
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee buffer below {0}% may result in failed orders."
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
@@ -6938,10 +6938,6 @@ msgstr ""
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-msgstr "네트워크에 지불되는 최대 실행 수수료. 이 수수료는 GMX에 특정된 것이 아니며 담보에 영향을 미치지 않는 블록체인 비용입니다."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
@@ -7026,13 +7022,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "통계와 트레이드 정보를 위한 GMX 익스플로러"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "High Execution Fee not yet acknowledged"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -7513,6 +7502,10 @@ msgstr "롱 포지션"
 msgid "Depositing {0} to {positionText}"
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"
 msgstr "2021년 9월 1일"
@@ -7533,6 +7526,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "중가 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"
