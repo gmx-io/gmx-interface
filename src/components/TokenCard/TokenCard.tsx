@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -14,6 +13,7 @@ import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import BannerButton from "components/Banner/BannerButton";
+import Button from "components/Button/Button";
 import { mergeWith } from "lodash";
 import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
@@ -42,7 +42,6 @@ type Props = {
 };
 
 export default function TokenCard({ showRedirectModal }: Props) {
-  const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
@@ -81,22 +80,6 @@ export default function TokenCard({ showRedirectModal }: Props) {
     [chainId, active]
   );
 
-  const BuyLink = ({ className, to, children, network }) => {
-    if (isHome && showRedirectModal) {
-      return (
-        <HeaderLink to={to} className={className} showRedirectModal={showRedirectModal}>
-          {children}
-        </HeaderLink>
-      );
-    }
-
-    return (
-      <Link to={to} className={className} onClick={() => changeNetwork(network)}>
-        {children}
-      </Link>
-    );
-  };
-
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -119,16 +102,33 @@ export default function TokenCard({ showRedirectModal }: Props) {
         </div>
         <div className="Home-token-card-option-action">
           <div className="buy">
-            <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
+            <BuyLink
+              to="/buy_gmx"
+              className="default-btn"
+              network={ARBITRUM}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
-            <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
+            <BuyLink
+              to="/buy_gmx"
+              className="default-btn"
+              network={AVALANCHE}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
-          <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
+          <Button
+            className="!py-11 tracking-normal"
+            newTab
+            variant="primary"
+            to="https://docs.gmx.io/docs/category/tokenomics"
+          >
             <Trans>Read more</Trans>
-          </ExternalLink>
+          </Button>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -158,11 +158,23 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
-            <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
+            <BuyLink
+              to="/pools"
+              className="default-btn"
+              network={ARBITRUM}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
 
-            <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+            <BuyLink
+              to="/pools"
+              className="default-btn"
+              network={AVALANCHE}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
@@ -202,10 +214,22 @@ export default function TokenCard({ showRedirectModal }: Props) {
         </div>
         <div className="Home-token-card-option-action">
           <div className="buy">
-            <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
+            <BuyLink
+              to="/buy_glp"
+              className="default-btn"
+              network={ARBITRUM}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
-            <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
+            <BuyLink
+              to="/buy_glp"
+              className="default-btn"
+              network={AVALANCHE}
+              showRedirectModal={showRedirectModal}
+              changeNetwork={changeNetwork}
+            >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
@@ -220,5 +244,24 @@ export default function TokenCard({ showRedirectModal }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+function BuyLink({ className, to, children, network, showRedirectModal, changeNetwork }) {
+  const isHome = isHomeSite();
+  const onLinkClick = useCallback(() => changeNetwork(network), [network, changeNetwork]);
+
+  if (isHome && showRedirectModal) {
+    return (
+      <HeaderLink to={to} className={className} showRedirectModal={showRedirectModal}>
+        {children}
+      </HeaderLink>
+    );
+  }
+
+  return (
+    <Link to={to} className={className} onClick={onLinkClick}>
+      {children}
+    </Link>
   );
 }

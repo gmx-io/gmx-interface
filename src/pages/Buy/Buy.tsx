@@ -13,9 +13,11 @@ export default function BuyGMXGLP() {
   return (
     <SEO title={getPageTitle(t`Buy GLP or GMX`)}>
       <div className="BuyGMXGLP page-layout">
-        <div className="BuyGMXGLP-container default-container">
-          <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} />
-          <TokenCard />
+        <div className="default-container">
+          <div className="BuyGMXGLP-container">
+            <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} />
+            <TokenCard />
+          </div>
         </div>
         <Footer />
       </div>
