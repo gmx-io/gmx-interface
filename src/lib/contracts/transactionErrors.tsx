@@ -57,6 +57,11 @@ export function extractError(ex: TxError) {
   if (!ex) {
     return [];
   }
+
+  // ethers v6 moved error to `.info` field 🤷‍♂️,
+  // we also fallback to `ex` cos we might catch errors from ethers v5
+  // from some outdated dependency like @davatar/react
+  ex = (ex as any)?.info ?? ex;
   let message = ex.error?.message || ex.data?.message || ex.message;
   let code = ex.error?.code || ex.code;
 
@@ -106,7 +111,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
           <br />
           <br />
-          <Link to="/buy_gmx#bridge">
+          <Link className="underline" to="/buy_gmx#bridge">
             Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>

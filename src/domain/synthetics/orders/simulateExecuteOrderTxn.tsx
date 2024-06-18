@@ -74,7 +74,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
     let msg: any = undefined;
 
     try {
-      const errorData = extractDataFromError(txnError.message);
+      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
+
+      if (!errorData) throw new Error("No data found in error.");
+
       const parsedError = customErrors.interface.parseError(errorData);
       const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
 
@@ -95,7 +98,9 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
           {errorTitle}
           <br />
           <br />
-          <ToastifyDebug error={`${parsedError?.name} ${JSON.stringify(parsedArgs, null, 2)}`} />
+          <ToastifyDebug
+            error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
+          />
         </div>
       );
     } catch (parsingError) {
@@ -123,9 +128,11 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   }
 }
 
-function extractDataFromError(error_message) {
+export function extractDataFromError(errorMessage: unknown) {
+  if (typeof errorMessage !== "string") return null;
+
   const pattern = /data="([^"]+)"/;
-  const match = error_message.match(pattern);
+  const match = errorMessage.match(pattern);
 
   if (match && match[1]) {
     return match[1];
