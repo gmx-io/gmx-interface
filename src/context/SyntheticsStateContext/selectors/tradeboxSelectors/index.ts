@@ -18,7 +18,7 @@ import {
   SwapAmounts,
   TradeFeesType,
   TradeType,
-  getExecutionPriceForDecrease,
+  getNextPositionExecutionPrice,
   getMarkPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
@@ -768,20 +768,28 @@ export const selectTradeboxExecutionPrice = createSelector(function selectTradeb
   const marketInfo = q(selectTradeboxMarketInfo);
   const fees = q(selectTradeboxFees);
   const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
   const triggerPrice = q(selectTradeboxTriggerPrice);
-  const { isLong } = q(selectTradeboxTradeFlags);
+  const markPrice = q(selectTradeboxMarkPrice);
+
+  const { isLong, isIncrease, isMarket } = q(selectTradeboxTradeFlags);
 
   if (!marketInfo) return null;
   if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
-  if (!decreaseAmounts) return null;
-  if (triggerPrice === undefined) return null;
 
-  return getExecutionPriceForDecrease(
-    triggerPrice,
-    fees.positionPriceImpact.deltaUsd,
-    decreaseAmounts.sizeDeltaUsd,
-    isLong
-  );
+  const nextTriggerPrice = isMarket ? markPrice : triggerPrice;
+  const sizeDeltaUsd = isIncrease ? increaseAmounts?.sizeDeltaUsd : decreaseAmounts?.sizeDeltaUsd;
+
+  if (nextTriggerPrice === undefined) return null;
+  if (sizeDeltaUsd === undefined) return null;
+
+  return getNextPositionExecutionPrice({
+    triggerPrice: nextTriggerPrice,
+    priceImpactUsd: fees.positionPriceImpact.deltaUsd,
+    sizeDeltaUsd,
+    isLong,
+    isIncrease,
+  });
 });
 
 export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {

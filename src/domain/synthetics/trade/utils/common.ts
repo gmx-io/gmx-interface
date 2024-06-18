@@ -2,6 +2,7 @@ import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapSta
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { bigMath } from "lib/bigmath";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;
@@ -150,4 +151,31 @@ export function getTradeFees(p: {
     uiFee,
     uiSwapFee,
   };
+}
+
+export function getNextPositionExecutionPrice(p: {
+  triggerPrice: bigint;
+  priceImpactUsd: bigint;
+  sizeDeltaUsd: bigint;
+  isLong: boolean;
+  isIncrease: boolean;
+}) {
+  if (p.sizeDeltaUsd == 0n) {
+    return null;
+  }
+
+  // const adjustedPriceImpactUsd = isLong ? priceImpactUsd : -priceImpactUsd;
+  // const adjustment = bigMath.mulDiv(triggerPrice, adjustedPriceImpactUsd, sizeDeltaUsd);
+  // return triggerPrice + adjustment;
+
+  const adjustedPriceImpactUsd = p.isIncrease
+    ? p.isLong
+      ? -p.priceImpactUsd
+      : p.priceImpactUsd
+    : p.isLong
+      ? p.priceImpactUsd
+      : -p.priceImpactUsd;
+
+  const adjustment = bigMath.mulDiv(p.triggerPrice, adjustedPriceImpactUsd, p.sizeDeltaUsd);
+  return p.triggerPrice + adjustment;
 }

@@ -109,6 +109,7 @@ import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 
 import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -193,6 +194,7 @@ export function TradeBox(p: Props) {
     setStage,
     focusedInput,
     setFocusedInput,
+    fixedTriggerOrderType,
     fixedTriggerThresholdType,
     setFixedTriggerThresholdType,
     setFixedTriggerOrderType,
@@ -263,6 +265,7 @@ export function TradeBox(p: Props) {
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
+  const executionPrice = useSelector(selectTradeboxExecutionPrice);
 
   const maxAllowedLeverage = maxLeverage / 2;
 
@@ -1145,6 +1148,15 @@ export function TradeBox(p: Props) {
   function renderIncreaseOrderInfo() {
     return (
       <>
+        <ExecutionPriceRow
+          tradeFlags={tradeFlags}
+          displayDecimals={toToken?.priceDecimals}
+          fees={fees}
+          executionPrice={executionPrice ?? undefined}
+          acceptablePrice={decreaseAmounts?.acceptablePrice}
+          triggerOrderType={fixedTriggerOrderType}
+        />
+
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Entry Price`}
@@ -1194,8 +1206,6 @@ export function TradeBox(p: Props) {
     );
   }
 
-  const executionPriceUsd = useSelector(selectTradeboxExecutionPrice);
-
   function renderTriggerOrderInfo() {
     return (
       <>
@@ -1209,16 +1219,13 @@ export function TradeBox(p: Props) {
           }`}
         />
 
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Execution Price`}
-          value={
-            executionPriceUsd
-              ? formatUsd(executionPriceUsd, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              : "-"
-          }
+        <ExecutionPriceRow
+          tradeFlags={tradeFlags}
+          displayDecimals={toToken?.priceDecimals}
+          fees={fees}
+          executionPrice={executionPrice ?? undefined}
+          acceptablePrice={decreaseAmounts?.acceptablePrice}
+          triggerOrderType={fixedTriggerOrderType}
         />
 
         {selectedPosition && (
