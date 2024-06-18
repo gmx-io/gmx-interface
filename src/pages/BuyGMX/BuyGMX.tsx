@@ -183,11 +183,6 @@ export default function BuyGMX() {
   );
 }
 
-const UNISWAP_IMG_INFO = { imgSrc: uniswapArbitrumIcon, imgAlt: "Uniswap" };
-const GMX_IMG_INFO = { imgSrc: gmxArbitrumIcon, imgAlt: "GMX" };
-const TRADERJOE_IMG_INFO = { imgSrc: traderjoeIcon, imgAlt: "Traderjoe" };
-const BOND_PROTOCOL_IMG_INFO = { imgSrc: bondProtocolIcon, imgAlt: "Bond Protocol" };
-
 function DecentralisedExchanges({ chainId, externalLinks }) {
   const isArbitrum = chainId === ARBITRUM;
   return (
@@ -202,7 +197,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Button
                 variant="secondary"
                 textAlign="left"
-                {...UNISWAP_IMG_INFO}
+                imgSrc={uniswapArbitrumIcon}
+                imgAlt={"Uniswap"}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
               >
@@ -211,7 +207,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Button
                 variant="secondary"
                 textAlign="left"
-                {...GMX_IMG_INFO}
+                imgSrc={gmxArbitrumIcon}
+                imgAlt="GMX"
                 to={externalLinks.buyGmx.gmx}
                 showExternalLinkArrow={false}
               >
@@ -229,7 +226,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 variant="secondary"
                 textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
-                {...TRADERJOE_IMG_INFO}
+                imgSrc={traderjoeIcon}
+                imgAlt="Traderjoe"
                 newTab
               >
                 TraderJoe
@@ -295,7 +293,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 variant="secondary"
                 textAlign="left"
                 to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
-                {...BOND_PROTOCOL_IMG_INFO}
+                imgSrc={bondProtocolIcon}
+                imgAlt="Bond Protocol"
                 newTab
               >
                 Bond Protocol
@@ -352,7 +351,6 @@ function CentralisedExchanges({ chainId }) {
                   textAlign="left"
                   key={exchange.name}
                   to={link}
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
                   imgSrc={icon}
                   imgAlt={exchange.name}
                   newTab

@@ -30,10 +30,6 @@ import "./TradeHistorySynthetics.scss";
 const TRADE_HISTORY_PREFETCH_SIZE = 100;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
-const CSV_ICON_INFO = {
-  imgSrc: downloadIcon,
-};
-
 type Props = {
   shouldShowPaginationButtons: boolean;
   account: string | null | undefined;
@@ -116,7 +112,7 @@ export function TradeHistory(p: Props) {
             <div className="TradeHistorySynthetics-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
-            <Button variant="secondary" disabled={isCsvDownloading} {...CSV_ICON_INFO} onClick={handleCsvDownload}>
+            <Button variant="secondary" disabled={isCsvDownloading} imgSrc={downloadIcon} onClick={handleCsvDownload}>
               CSV
             </Button>
           </div>

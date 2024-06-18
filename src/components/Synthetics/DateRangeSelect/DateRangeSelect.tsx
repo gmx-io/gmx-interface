@@ -48,10 +48,6 @@ type Props = {
   handleClassName?: string;
 };
 
-const CALENDAR_ICON_INFO = {
-  imgSrc: calendarIcon,
-};
-
 /**
  * GMX v1 launch date is 06 sept 2021
  */
@@ -189,7 +185,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
           as={Button}
           className={handleClassName}
           variant="secondary"
-          {...CALENDAR_ICON_INFO}
+          imgSrc={calendarIcon}
           refName="buttonRef"
         >
           {buttonText}
@@ -308,7 +304,7 @@ export function DateSelect({
           as={Button}
           className={handleClassName}
           variant="secondary"
-          {...CALENDAR_ICON_INFO}
+          imgSrc={calendarIcon}
           refName="buttonRef"
         >
           {buttonText}

@@ -31,10 +31,6 @@ import downloadIcon from "img/ic_download_simple.svg";
 
 import "./ClaimsHistory.scss";
 
-const CSV_ICON_INFO = {
-  imgSrc: downloadIcon,
-};
-
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
 export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPaginationButtons: boolean }) {
@@ -96,7 +92,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
             <div className="ClaimsHistory-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
-            <Button variant="secondary" {...CSV_ICON_INFO} onClick={handleCsvDownload}>
+            <Button variant="secondary" imgSrc={downloadIcon} onClick={handleCsvDownload}>
               CSV
             </Button>
           </div>

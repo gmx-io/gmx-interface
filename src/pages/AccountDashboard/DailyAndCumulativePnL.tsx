@@ -45,10 +45,6 @@ import downloadIcon from "img/ic_download_simple.svg";
 
 import "./DailyAndCumulativePnL.css";
 
-const CSV_ICON_INFO = {
-  imgSrc: downloadIcon,
-};
-
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
 const getInitialDate = () => undefined;
@@ -74,7 +70,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
             variant="secondary"
             data-exclude
             className="!px-10 !py-6"
-            {...CSV_ICON_INFO}
+            imgSrc={downloadIcon}
             onClick={handleImageDownload}
           >
             PNG
