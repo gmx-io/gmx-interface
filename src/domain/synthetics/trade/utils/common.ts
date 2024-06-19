@@ -50,7 +50,6 @@ export function getTradeFlagsForOrder(order: OrderInfo) {
 }
 
 export function getTradeFees(p: {
-  isIncrease: boolean;
   initialCollateralUsd: bigint;
   sizeDeltaUsd: bigint;
   swapSteps: SwapStats[];
@@ -65,7 +64,6 @@ export function getTradeFees(p: {
   uiFeeFactor: bigint;
 }): TradeFees {
   const {
-    isIncrease,
     initialCollateralUsd,
     sizeDeltaUsd,
     swapSteps,
@@ -117,7 +115,6 @@ export function getTradeFees(p: {
     swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,
-    positionPriceImpact,
     borrowFee,
     fundingFee,
     uiFee,
@@ -133,7 +130,6 @@ export function getTradeFees(p: {
     fundingFee,
     uiFee,
     uiSwapFee,
-    !isIncrease ? positionPriceImpact : undefined,
   ]);
 
   return {

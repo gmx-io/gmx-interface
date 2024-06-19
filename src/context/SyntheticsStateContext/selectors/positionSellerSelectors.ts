@@ -221,7 +221,6 @@ export const selectPositionSellerFees = createSelector((q) => {
 
   return {
     fees: getTradeFees({
-      isIncrease: false,
       initialCollateralUsd: position.collateralUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
