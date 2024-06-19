@@ -7,7 +7,7 @@ import {
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
-  selectPositiveFeePositions,
+  selectPositiveFeePositionsSortedByUsd,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -20,7 +20,7 @@ export const useOrdersInfoData = () => useSelector(selectOrdersInfoData);
 export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);
-export const usePositiveFeePositions = () => useSelector(selectPositiveFeePositions);
+export const usePositiveFeePositionsSortedByUsd = () => useSelector(selectPositiveFeePositionsSortedByUsd);
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);
 export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
 

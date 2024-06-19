@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  usePositiveFeePositions,
+  usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -55,7 +55,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     };
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
-  const positiveFeePositions = usePositiveFeePositions();
+  const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions

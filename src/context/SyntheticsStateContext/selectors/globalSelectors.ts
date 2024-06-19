@@ -42,3 +42,10 @@ export const selectPositiveFeePositions = createSelector((q) => {
   const positionsInfoData = q(selectPositionsInfoData);
   return Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0);
 });
+
+export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
+  const positiveFeePositions = q(selectPositiveFeePositions);
+  return positiveFeePositions.sort((a, b) =>
+    a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
+  );
+});
