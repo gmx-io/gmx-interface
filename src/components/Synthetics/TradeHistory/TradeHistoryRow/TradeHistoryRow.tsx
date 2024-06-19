@@ -164,7 +164,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     () =>
       msg.pathTokenSymbols ? (
         <div className="cursor-help">
-          <SwapTokenPathLabel pathTokenSymbols={msg.pathTokenSymbols} />
+          <SwapTokenPathLabel bordered pathTokenSymbols={msg.pathTokenSymbols} />
         </div>
       ) : (
         <div className="cursor-help">

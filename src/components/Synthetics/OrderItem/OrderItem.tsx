@@ -30,7 +30,7 @@ import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legac
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
-import { getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
+import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 import "./OrderItem.scss";
 
 type Props = {
@@ -84,7 +84,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
     if (showDebugValues) {
       return (
         <Tooltip
-          handle={<TitleWithIcon order={order} />}
+          disableHandleStyle
+          handle={<TitleWithIcon bordered order={order} />}
           position="bottom-start"
           content={
             <>
@@ -107,7 +108,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
     if (errors.length) {
       return (
         <Tooltip
-          handle={<TitleWithIcon order={order} />}
+          disableHandleStyle
+          handle={<TitleWithIcon bordered order={order} />}
           className={cx(`order-error-text-msg`, `level-${level}`)}
           position="bottom-start"
           content={
@@ -132,8 +134,6 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   }
 
   const positionOrder = order as PositionOrderInfo;
-  const indexName = getMarketIndexName(positionOrder.marketInfo);
-  const poolName = getMarketPoolName(positionOrder.marketInfo);
   const isCollateralSwap =
     positionOrder.shouldUnwrapNativeToken ||
     positionOrder.initialCollateralToken.address !== positionOrder.targetCollateralToken.address;
@@ -164,21 +164,12 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 
   return (
     <Tooltip
-      handle={<TitleWithIcon order={order} />}
+      disableHandleStyle
+      handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
       className={level ? `order-error-text-msg level-${level}` : undefined}
       content={
         <>
-          <StatsTooltipRow
-            label={t`Market`}
-            value={
-              <div className="flex items-center">
-                <span>{indexName && indexName}</span>
-                <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-              </div>
-            }
-            showDollar={false}
-          />
           <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
 
           {isCollateralSwap && (
@@ -223,32 +214,18 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   );
 }
 
-function TitleWithIcon({ order }: { order: OrderInfo }) {
+function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
   if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
     const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
-    const fromTokenWithIcon = (
-      <TokenWithIcon
-        symbol={initialCollateralToken.symbol}
-        displaySize={18}
-        importSize={24}
-        className="underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-2"
-      />
-    );
+    const fromTokenWithIcon = <TokenWithIcon symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
-    const toTokenWithIcon = (
-      <TokenWithIcon
-        symbol={targetCollateralToken.symbol}
-        displaySize={18}
-        importSize={24}
-        className="underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-2"
-      />
-    );
+    const toTokenWithIcon = <TokenWithIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     return (
-      <div className="leading-2">
+      <div className={cx("inline leading-2", { "border-b border-dashed border-b-gray-400": bordered })}>
         <Trans>
           {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
         </Trans>
@@ -259,7 +236,7 @@ function TitleWithIcon({ order }: { order: OrderInfo }) {
   const { sizeDeltaUsd } = order;
   const sizeText = formatUsd(sizeDeltaUsd, { displayPlus: true });
 
-  return <>{sizeText}</>;
+  return <span className={cx({ "border-b border-dashed border-b-gray-400": bordered })}>{sizeText}</span>;
 }
 
 function MarkPrice({ order }: { order: OrderInfo }) {
@@ -383,7 +360,7 @@ function OrderItemLarge({
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isSwapOrderType(order.orderType);
-  const { indexName, tokenSymbol } = useMemo(() => {
+  const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
     if (!marketInfo || isSwap)
@@ -393,13 +370,16 @@ function OrderItemLarge({
       };
     return {
       indexName: getMarketIndexName(marketInfo),
+      poolName: getMarketPoolName(marketInfo),
       tokenSymbol: marketInfo.indexToken.symbol,
     };
   }, [isSwap, marketInfoData, order.marketAddress]);
 
-  const swapPathTokenSymbols = useMemo(() => {
-    if (!isSwap) return [];
-    return getSwapPathTokenSymbols(marketInfoData, order.initialCollateralToken, order.swapPath);
+  const { swapPathTokenSymbols, swapPathMarketFullNames } = useMemo(() => {
+    if (!isSwap) return {};
+    const swapPathTokenSymbols = getSwapPathTokenSymbols(marketInfoData, order.initialCollateralToken, order.swapPath);
+    const swapPathMarketFullNames = getSwapPathMarketFullNames(marketInfoData, order.swapPath);
+    return { swapPathTokenSymbols, swapPathMarketFullNames };
   }, [isSwap, marketInfoData, order.initialCollateralToken, order.swapPath]);
 
   return (
@@ -411,9 +391,45 @@ function OrderItemLarge({
       )}
       <ExchangeTd>
         {isSwap ? (
-          <SwapTokenPathLabel pathTokenSymbols={swapPathTokenSymbols} />
+          <Tooltip
+            handle={<SwapTokenPathLabel bordered pathTokenSymbols={swapPathTokenSymbols} />}
+            content={
+              <>
+                {swapPathMarketFullNames?.map((market, index) => (
+                  <span key={market.indexName}>
+                    {index > 0 && " → "}
+                    <span>{market.indexName}</span>
+                    <span className="subtext leading-1">[{market.poolName}]</span>
+                  </span>
+                ))}
+              </>
+            }
+            disableHandleStyle
+          />
         ) : (
-          <MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />
+          <Tooltip
+            handle={
+              <MarketWithDirectionLabel
+                bordered
+                indexName={indexName}
+                isLong={order.isLong}
+                tokenSymbol={tokenSymbol}
+              />
+            }
+            content={
+              <StatsTooltipRow
+                label={t`Market`}
+                value={
+                  <div className="flex items-center">
+                    <span>{indexName && indexName}</span>
+                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                  </div>
+                }
+                showDollar={false}
+              />
+            }
+            disableHandleStyle
+          />
         )}
       </ExchangeTd>
       <ExchangeTd>

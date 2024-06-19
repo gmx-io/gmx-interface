@@ -100,32 +100,10 @@ export const formatSwapMessage = (
         .map((marketAddress) => marketsInfoData?.[marketAddress]?.name ?? ELLIPSIS)
         .join(ARROW_SEPARATOR);
 
-  const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
-    ? undefined
-    : tradeAction.swapPath?.map((marketAddress) => {
-        const marketInfo = marketsInfoData[marketAddress];
-
-        if (!marketInfo) {
-          return {
-            indexName: ELLIPSIS,
-            poolName: ELLIPSIS,
-          };
-        }
-
-        const indexName = getMarketIndexName({
-          indexToken: marketInfo.indexToken,
-          isSpotOnly: marketInfo.isSpotOnly,
-        });
-        const poolName = getMarketPoolName({
-          longToken: marketInfo.longToken,
-          shortToken: marketInfo.shortToken,
-        });
-
-        return {
-          indexName: indexName,
-          poolName: poolName,
-        };
-      });
+  const fullMarketNames: RowDetails["fullMarketNames"] = getSwapPathMarketFullNames(
+    marketsInfoData,
+    tradeAction.swapPath
+  );
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
@@ -262,6 +240,40 @@ export const formatSwapMessage = (
     ...result!,
   };
 };
+
+export function getSwapPathMarketFullNames(
+  marketsInfoData: MarketsInfoData | undefined,
+  swapPath: string[]
+): { indexName: string; poolName: string }[] | undefined {
+  if (!marketsInfoData) {
+    return undefined;
+  }
+
+  return swapPath.map((marketAddress) => {
+    const marketInfo = marketsInfoData[marketAddress];
+
+    if (!marketInfo) {
+      return {
+        indexName: ELLIPSIS,
+        poolName: ELLIPSIS,
+      };
+    }
+
+    const indexName = getMarketIndexName({
+      indexToken: marketInfo.indexToken,
+      isSpotOnly: marketInfo.isSpotOnly,
+    });
+    const poolName = getMarketPoolName({
+      longToken: marketInfo.longToken,
+      shortToken: marketInfo.shortToken,
+    });
+
+    return {
+      indexName: indexName,
+      poolName: poolName,
+    };
+  });
+}
 
 export function getSwapPathTokenSymbols(
   marketsInfoData: MarketsInfoData | undefined,
