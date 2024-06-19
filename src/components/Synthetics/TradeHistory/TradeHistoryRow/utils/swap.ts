@@ -89,33 +89,9 @@ export const formatSwapMessage = (
     adapt(tokensMinRatio?.largestToken)
   );
 
-  let pathTokenSymbolsLoading = false;
-  const pathTokenSymbols: string[] | undefined =
-    marketsInfoData &&
-    tradeAction.swapPath
-      ?.map((marketAddress) => marketsInfoData?.[marketAddress])
-      .reduce(
-        (acc: TokenData[], marketInfo: MarketInfo | undefined) => {
-          if (!marketInfo || pathTokenSymbolsLoading) {
-            pathTokenSymbolsLoading = true;
-            return [];
-          }
+  const pathTokenSymbols = getSwapPathTokenSymbols(marketsInfoData, tokenIn, tradeAction.swapPath!);
 
-          const last = acc[acc.length - 1];
-
-          if (last.address === marketInfo.longToken.address) {
-            acc.push(marketInfo.shortToken);
-          } else if (last.address === marketInfo.shortToken.address) {
-            acc.push(marketInfo.longToken);
-          }
-
-          return acc;
-        },
-        [tradeAction.initialCollateralToken] as TokenData[]
-      )
-      .map((token: TokenData) => token?.symbol);
-
-  const market = !pathTokenSymbols || pathTokenSymbolsLoading ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
+  const market = !pathTokenSymbols ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
@@ -286,3 +262,44 @@ export const formatSwapMessage = (
     ...result!,
   };
 };
+
+export function getSwapPathTokenSymbols(
+  marketsInfoData: MarketsInfoData | undefined,
+  initialCollateralToken: TokenData,
+  swapPath: string[]
+): string[] | undefined {
+  if (!marketsInfoData || !swapPath) {
+    return undefined;
+  }
+
+  let pathTokenSymbolsLoading = false;
+
+  const pathTokenSymbols: string[] = swapPath
+    .map((marketAddress) => marketsInfoData[marketAddress])
+    .reduce(
+      (acc: TokenData[], marketInfo: MarketInfo | undefined) => {
+        if (!marketInfo || pathTokenSymbolsLoading) {
+          pathTokenSymbolsLoading = true;
+          return [];
+        }
+
+        const last = acc[acc.length - 1];
+
+        if (last.address === marketInfo.longToken.address) {
+          acc.push(marketInfo.shortToken);
+        } else if (last.address === marketInfo.shortToken.address) {
+          acc.push(marketInfo.longToken);
+        }
+
+        return acc;
+      },
+      [initialCollateralToken] as TokenData[]
+    )
+    .map((token: TokenData) => token?.symbol);
+
+  if (pathTokenSymbolsLoading) {
+    return undefined;
+  }
+
+  return pathTokenSymbols;
+}

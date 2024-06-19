@@ -5,10 +5,12 @@ import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
-import { getOrderInfo, isVisibleOrder } from "./utils";
+import { getOrderInfo } from "./utils";
+import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
+  count?: number;
   isLoading: boolean;
 };
 
@@ -16,12 +18,13 @@ export function useOrdersInfoRequest(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
+    marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     tokensData?: TokensData;
     account: string | null | undefined;
   }
 ): AggregatedOrdersDataResult {
-  const { marketsInfoData, tokensData, account } = p;
-  const { ordersData } = useOrders(chainId, { account });
+  const { marketsInfoData, tokensData, account, marketsDirectionsFilter } = p;
+  const { ordersData, count } = useOrders(chainId, { account, marketsDirectionsFilter });
 
   const wrappedToken = getWrappedToken(chainId);
 
@@ -38,33 +41,32 @@ export function useOrdersInfoRequest(
       };
     }
 
-    const ordersInfoData = Object.keys(ordersData)
-      .filter((orderKey) => isVisibleOrder(ordersData[orderKey].orderType))
-      .reduce((acc: OrdersInfoData, orderKey: string) => {
-        const order = getByKey(ordersData, orderKey)!;
+    const ordersInfoData = Object.keys(ordersData).reduce((acc: OrdersInfoData, orderKey: string) => {
+      const order = getByKey(ordersData, orderKey)!;
 
-        const orderInfo = getOrderInfo({
-          marketsInfoData,
-          tokensData,
-          wrappedNativeToken: wrappedToken,
-          order,
-        });
+      const orderInfo = getOrderInfo({
+        marketsInfoData,
+        tokensData,
+        wrappedNativeToken: wrappedToken,
+        order,
+      });
 
-        if (!orderInfo) {
-          // eslint-disable-next-line no-console
-          console.warn(`OrderInfo parsing error`, order);
-
-          return acc;
-        }
-
-        acc[orderKey] = orderInfo;
+      if (!orderInfo) {
+        // eslint-disable-next-line no-console
+        console.warn(`OrderInfo parsing error`, order);
 
         return acc;
-      }, {} as OrdersInfoData);
+      }
+
+      acc[orderKey] = orderInfo;
+
+      return acc;
+    }, {} as OrdersInfoData);
 
     return {
+      count: count,
       ordersInfoData,
       isLoading: false,
     };
-  }, [account, marketsInfoData, ordersData, tokensData, wrappedToken]);
+  }, [account, count, marketsInfoData, ordersData, tokensData, wrappedToken]);
 }

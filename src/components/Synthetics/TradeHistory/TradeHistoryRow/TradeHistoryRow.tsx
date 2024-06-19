@@ -20,8 +20,8 @@ import { formatSwapMessage } from "./utils/swap";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import SwapTokenPathLabel from "components/SwapTokenPathLabel/SwapTokenPathLabel";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
 
@@ -163,13 +163,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketTooltipHandle = useMemo(
     () =>
       msg.pathTokenSymbols ? (
-        <div className="cursor-help leading-2">
-          {msg.pathTokenSymbols!.map((symbol, index, arr) => (
-            <div key={symbol} className="inline-block border-b border-dashed border-b-gray-400 leading-base">
-              <TokenWithIcon symbol={symbol} displaySize={20} />
-              {index < arr.length - 1 && <span className="mx-5">→</span>}
-            </div>
-          ))}
+        <div className="cursor-help">
+          <SwapTokenPathLabel pathTokenSymbols={msg.pathTokenSymbols} />
         </div>
       ) : (
         <div className="cursor-help">

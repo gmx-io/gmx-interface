@@ -1,25 +1,31 @@
 import { Trans, t } from "@lingui/macro";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { useMedia } from "react-use";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import {
   useIsOrdersLoading,
   useMarketsInfoData,
   usePositionsInfoData,
+  useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
-
-import Checkbox from "components/Checkbox/Checkbox";
 import {
   useCancellingOrdersKeysState,
   useEditingOrderKeyState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectEditingOrder, selectOrdersList } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { selectEditingOrder } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import useWallet from "lib/wallets/useWallet";
+
+import Checkbox from "components/Checkbox/Checkbox";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
+import { values } from "lodash";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
+import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
 
 type Props = {
   hideActions?: boolean;
@@ -32,19 +38,30 @@ type Props = {
 
 export function OrderList(p: Props) {
   const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
-  const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
-  const { chainId } = useChainId();
+  const isMobile = useMedia("(max-width: 1000px)");
+
+  const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
 
   const subaccount = useSubaccount(null);
+  const account = useSelector(selectAccount);
 
-  const [canellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
+  const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [, setEditingOrderKey] = useEditingOrderKeyState();
   const editingOrder = useSelector(selectEditingOrder);
-  const orders = useSelector(selectOrdersList);
+
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+
+  const ordersRaw = useOrdersInfoRequest(chainId, {
+    account: subaccount?.address ?? account,
+    marketsDirectionsFilter,
+    marketsInfoData: useMarketsInfoData(),
+    tokensData: useTokensData(),
+  });
+  const orders = useMemo(() => values(ordersRaw.ordersInfoData ?? {}), [ordersRaw.ordersInfoData]);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
@@ -106,81 +123,77 @@ export function OrderList(p: Props) {
           {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
-      <div className="Exchange-list Orders small">
-        {!isLoading &&
-          orders.map((order) => (
-            <OrderItem
-              key={order.key}
-              order={order}
-              isLarge={false}
-              isSelected={p.selectedOrdersKeys?.[order.key]}
-              onSelectOrder={() => onSelectOrder(order.key)}
-              isCanceling={canellingOrdersKeys.includes(order.key)}
-              onCancelOrder={() => onCancelOrder(order.key)}
-              marketsInfoData={marketsInfoData}
-              positionsInfoData={positionsData}
-              hideActions={p.hideActions}
-            />
-          ))}
-      </div>
-
-      <table className="Exchange-list Orders large App-box">
-        <tbody>
-          <tr className="Exchange-list-header">
-            {!p.hideActions && orders.length > 0 && (
-              <th>
-                <div className="checkbox-inline ">
-                  <Checkbox isChecked={isAllOrdersSelected} setIsChecked={onSelectAllOrders} />
-                </div>
-              </th>
-            )}
-
-            <th>
-              <div>
-                <Trans>Type</Trans>
-              </div>
-            </th>
-            <th>
-              <div>
-                <Trans>Order</Trans>
-              </div>
-            </th>
-            <th>
-              <div>
-                <Trans>Trigger Price</Trans>
-              </div>
-            </th>
-            <th>
-              <div>
-                <Trans>Mark Price</Trans>
-              </div>
-            </th>
-          </tr>
-          {orders.length === 0 && (
-            <tr>
-              <td colSpan={5}>{isLoading ? t`Loading...` : t`No open orders`}</td>
-            </tr>
-          )}
+      {isMobile && (
+        <div className="Exchange-list Orders small">
           {!isLoading &&
-            orders.map((order) => {
-              return (
+            orders.map((order) => (
+              <OrderItem
+                key={order.key}
+                order={order}
+                isLarge={false}
+                isSelected={p.selectedOrdersKeys?.[order.key]}
+                onSelectOrder={() => onSelectOrder(order.key)}
+                isCanceling={cancellingOrdersKeys.includes(order.key)}
+                onCancelOrder={() => onCancelOrder(order.key)}
+                positionsInfoData={positionsData}
+                hideActions={p.hideActions}
+              />
+            ))}
+        </div>
+      )}
+
+      {!isMobile && (
+        <ExchangeTable>
+          <thead>
+            <ExchangeTheadTr>
+              {!p.hideActions && orders.length > 0 && (
+                <ExchangeTh>
+                  <div className="checkbox-inline">
+                    <Checkbox isChecked={isAllOrdersSelected} setIsChecked={onSelectAllOrders} />
+                  </div>
+                </ExchangeTh>
+              )}
+              <ExchangeTh>
+                <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+              </ExchangeTh>
+              <ExchangeTh>
+                <Trans>Type</Trans>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Trans>Order</Trans>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Trans>Trigger Price</Trans>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Trans>Mark Price</Trans>
+              </ExchangeTh>
+            </ExchangeTheadTr>
+          </thead>
+          <tbody>
+            {orders.length === 0 && (
+              <tr>
+                <ExchangeTd colSpan={5}>{isLoading ? t`Loading...` : t`No open orders`}</ExchangeTd>
+              </tr>
+            )}
+            {!isLoading &&
+              orders.map((order) => (
                 <OrderItem
+                  isLarge
                   isSelected={p.selectedOrdersKeys?.[order.key]}
                   key={order.key}
                   order={order}
-                  isLarge={true}
                   onSelectOrder={() => onSelectOrder(order.key)}
-                  isCanceling={canellingOrdersKeys.includes(order.key)}
+                  isCanceling={cancellingOrdersKeys.includes(order.key)}
                   onCancelOrder={() => onCancelOrder(order.key)}
                   hideActions={p.hideActions}
-                  marketsInfoData={marketsInfoData}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
                 />
-              );
-            })}
-        </tbody>
-      </table>
+              ))}
+          </tbody>
+        </ExchangeTable>
+      )}
 
       {editingOrder && (
         <OrderEditor

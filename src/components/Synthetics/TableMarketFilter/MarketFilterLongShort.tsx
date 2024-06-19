@@ -25,9 +25,10 @@ export type MarketFilterLongShortItemData = {
 export type MarketFilterLongShortProps = {
   value: MarketFilterLongShortItemData[];
   onChange: (value: MarketFilterLongShortItemData[]) => void;
+  withPositions?: boolean;
 };
 
-export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShortProps) {
+export function MarketFilterLongShort({ value, onChange, withPositions }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const positions = usePositionsInfoData();
@@ -35,13 +36,16 @@ export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShort
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
-    const strippedOpenPositions: Item<MarketFilterLongShortItemData>[] = values(positions).map((position) => ({
-      text: (position.isLong ? "long " : "short ") + position.marketInfo.name,
-      data: {
-        marketAddress: position.marketInfo.marketTokenAddress as Address,
-        direction: position.isLong ? "long" : "short",
-      },
-    }));
+    let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
+    if (withPositions) {
+      strippedOpenPositions = values(positions).map((position) => ({
+        text: (position.isLong ? "long " : "short ") + position.marketInfo.name,
+        data: {
+          marketAddress: position.marketInfo.marketTokenAddress as Address,
+          direction: position.isLong ? "long" : "short",
+        },
+      }));
+    }
 
     const strippedMarkets: Item<MarketFilterLongShortItemData>[] = allMarkets.map((market) => {
       return {
@@ -77,17 +81,26 @@ export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShort
       },
     ];
 
+    if (withPositions) {
+      return [
+        {
+          groupName: t`Open Positions`,
+          items: strippedOpenPositions!,
+        },
+        {
+          groupName: t`Markets`,
+          items: anyMarketDirected.concat(strippedMarkets),
+        },
+      ];
+    }
+
     return [
-      {
-        groupName: t`Open Positions`,
-        items: strippedOpenPositions,
-      },
       {
         groupName: t`Markets`,
         items: anyMarketDirected.concat(strippedMarkets),
       },
     ];
-  }, [allMarkets, positions]);
+  }, [allMarkets, positions, withPositions]);
 
   const ItemComponent = useCallback(
     (props: { item: MarketFilterLongShortItemData }) => {

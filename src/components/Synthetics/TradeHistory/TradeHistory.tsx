@@ -152,7 +152,11 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                  <MarketFilterLongShort
+                    withPositions
+                    value={marketsDirectionsFilter}
+                    onChange={setMarketsDirectionsFilter}
+                  />
                 </th>
                 <th>
                   <Trans>Size</Trans>
