@@ -304,26 +304,26 @@ export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
 }
 
 export function getMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
-  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
-  const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
-
-  return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
+  return isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
 }
 
-export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
+function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
   const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
-
   const capacityAmount = maxPoolAmount - poolAmount;
 
   return capacityAmount > 0 ? capacityAmount : 0n;
 }
 
 export function getMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
-  const maxAmountForDeposit = isLong ? marketInfo.maxLongPoolAmountForDeposit : marketInfo.maxShortPoolAmountForDeposit;
+  const maxPoolUsdForDeposit = getMaxPoolUsdForDeposit(marketInfo, isLong);
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const maxPoolAmountForDeposit = convertToTokenAmount(maxPoolUsdForDeposit, token.decimals, getMidPrice(token.prices));
   const maxAmountForSwap = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
 
-  return maxAmountForDeposit < maxAmountForSwap ? maxAmountForDeposit : maxAmountForSwap;
+  if (maxPoolAmountForDeposit === undefined) return maxAmountForSwap;
+
+  return bigMath.min(maxAmountForSwap, maxPoolAmountForDeposit);
 }
 
 export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {

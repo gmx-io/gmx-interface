@@ -6,7 +6,7 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxPoolAmountForDeposit,
+  getMaxPoolUsdForDeposit,
   getMintableMarketTokens,
   getTotalGmInfo,
 } from "domain/synthetics/markets";
@@ -410,37 +410,43 @@ export function GmList({
   );
 }
 
-function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+function MintableAmount({
+  mintableInfo,
+  market,
+  token,
+  longToken,
+  shortToken,
+}: {
+  mintableInfo:
+    | {
+        mintableAmount: bigint;
+        mintableUsd: bigint;
+        longDepositCapacityUsd: bigint;
+        shortDepositCapacityUsd: bigint;
+        longDepositCapacityAmount: bigint;
+        shortDepositCapacityAmount: bigint;
+      }
+    | undefined;
+  market: any;
+  token: any;
+  longToken: any;
+  shortToken: any;
+}) {
   const longTokenMaxValue = useMemo(
     () => [
-      formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
-        useCommas: true,
-      }),
-      `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
-        useCommas: true,
-        displayDecimals: 0,
-      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, true), longToken.decimals, longToken.symbol, {
-        useCommas: true,
-        displayDecimals: 0,
-      })})`,
+      formatUsd(mintableInfo?.longDepositCapacityUsd),
+      `(${formatUsd(convertToUsd(market.longPoolAmount, longToken.decimals, longToken.prices?.minPrice))} / ${formatUsd(getMaxPoolUsdForDeposit(market, true))})`,
     ],
-    [longToken.decimals, longToken.symbol, market, mintableInfo?.longDepositCapacityAmount]
+    [longToken.decimals, longToken.prices?.minPrice, market, mintableInfo?.longDepositCapacityUsd]
   );
   const shortTokenMaxValue = useMemo(
     () => [
-      formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
-        useCommas: true,
-      }),
-      `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
-        useCommas: true,
-        displayDecimals: 0,
-      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, false), shortToken.decimals, shortToken.symbol, {
-        useCommas: true,
-        displayDecimals: 0,
-      })})`,
+      formatUsd(mintableInfo?.shortDepositCapacityUsd),
+      `(${formatUsd(convertToUsd(market.shortPoolAmount, shortToken.decimals, shortToken.prices?.minPrice))} / ${formatUsd(getMaxPoolUsdForDeposit(market, false))})`,
     ],
-    [market, mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol]
+    [market, mintableInfo?.shortDepositCapacityUsd, shortToken.decimals, shortToken.prices?.minPrice]
   );
+
   return (
     <Tooltip
       maxAllowedWidth={350}

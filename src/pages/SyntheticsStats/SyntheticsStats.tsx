@@ -97,7 +97,7 @@ export function SyntheticsStats() {
   });
 
   return (
-    <div className="SyntheticsStats page-layout default-container">
+    <div className="SyntheticsStats mt-20">
       <div className="SyntheticsStats-table-wrap">
         <table>
           <thead>
@@ -307,17 +307,12 @@ export function SyntheticsStats() {
 
                           <StatsTooltipRow
                             label="Pool Max Long Amount For Deposit"
-                            value={formatAmount(market.maxLongPoolAmountForDeposit, market.longToken.decimals, 0, true)}
+                            value={formatAmount(market.maxLongPoolUsdForDeposit, market.longToken.decimals, 0, true)}
                             showDollar={false}
                           />
                           <StatsTooltipRow
                             label="Pool Max Short Amount For Deposit"
-                            value={formatAmount(
-                              market.maxShortPoolAmountForDeposit,
-                              market.shortToken.decimals,
-                              0,
-                              true
-                            )}
+                            value={formatAmount(market.maxShortPoolUsdForDeposit, market.shortToken.decimals, 0, true)}
                             showDollar={false}
                           />
 
@@ -374,16 +369,16 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
-                const maxPoolAmountForDeposit = isLong
-                  ? market.maxLongPoolAmountForDeposit
-                  : market.maxShortPoolAmountForDeposit;
+                const maxPoolUsdForDeposit = isLong
+                  ? market.maxLongPoolUsdForDeposit
+                  : market.maxShortPoolUsdForDeposit;
                 const token = isLong ? market.longToken : market.shortToken;
+                const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
                 return (
                   <div className="cell">
-                    {formatAmountHuman(poolAmount, token.decimals)} /{" "}
-                    {formatAmountHuman(maxPoolAmountForDeposit, token.decimals)} {token.symbol}
-                    <ShareBar share={poolAmount} total={maxPoolAmountForDeposit} warningThreshold={90} />
+                    {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForDeposit)}{" "}
+                    <ShareBar share={poolUsd} total={maxPoolUsdForDeposit} warningThreshold={90} />
                   </div>
                 );
               }
