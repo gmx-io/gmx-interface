@@ -273,16 +273,29 @@ export function subscribeBars({
       });
       missingBarsInfoRef.current.bars = [];
     } else {
-      tvDataProviderRef.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-        if (
-          bar &&
-          bar.ticker === tvDataProviderRef.current?.currentTicker &&
-          bar.period === tvDataProviderRef.current?.currentPeriod &&
-          bar.time >= lastBarTimeRef.current
-        ) {
-          lastBarTimeRef.current = bar.time;
-          onRealtimeCallback(formatTimeInBarToMs(bar));
-        }
+      tvDataProviderRef.current?.getLiveBars(chainId, ticker, period).then((bars) => {
+        bars &&
+          // eslint-disable-next-line no-console
+          console.log(
+            "Close: " +
+              bars[0].close +
+              " Open: " +
+              bars[1].open +
+              " Shift: " +
+              (bars[0].close - bars[1].open + ` (${((bars[0].close - bars[1].open) / bars[1].open) * 100}%)`)
+          );
+
+        bars?.forEach((bar) => {
+          if (
+            bar &&
+            bar.ticker === tvDataProviderRef.current?.currentTicker &&
+            bar.period === tvDataProviderRef.current?.currentPeriod &&
+            bar.time >= lastBarTimeRef.current
+          ) {
+            lastBarTimeRef.current = bar.time;
+            onRealtimeCallback(formatTimeInBarToMs(bar));
+          }
+        });
       });
     }
   };
