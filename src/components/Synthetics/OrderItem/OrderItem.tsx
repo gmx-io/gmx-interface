@@ -21,7 +21,8 @@ import {
   SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
-  isSwapOrderType,
+  isLimitOrderType,
+  isLimitSwapOrderType,
 } from "domain/synthetics/orders";
 import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -80,7 +81,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   const { errors, level } = useOrderErrors(order.key);
   const chainId = useSelector(selectChainId);
 
-  if (isSwapOrderType(order.orderType)) {
+  if (isLimitOrderType(order.orderType)) {
     if (showDebugValues) {
       return (
         <Tooltip
@@ -215,7 +216,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 }
 
 function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
-  if (isSwapOrderType(order.orderType)) {
+  if (isLimitOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
     const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
@@ -241,7 +242,7 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
 
 function MarkPrice({ order }: { order: OrderInfo }) {
   const markPrice = useMemo(() => {
-    if (isSwapOrderType(order.orderType)) {
+    if (isLimitOrderType(order.orderType)) {
       return undefined;
     }
 
@@ -254,7 +255,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [order]);
 
-  if (isSwapOrderType(order.orderType)) {
+  if (isLimitOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return markSwapRatioText;
@@ -286,7 +287,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
-  if (isSwapOrderType(order.orderType)) {
+  if (isLimitOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
@@ -359,7 +360,7 @@ function OrderItemLarge({
   isSelected: boolean | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
-  const isSwap = isSwapOrderType(order.orderType);
+  const isSwap = isLimitOrderType(order.orderType);
   const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
@@ -478,12 +479,43 @@ function OrderItemSmall({
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
 }) {
+  const marketInfoData = useSelector(selectMarketsInfoData);
+
+  const title = useMemo(() => {
+    if (isLimitSwapOrderType(order.orderType)) {
+      const swapPathTokenSymbols = getSwapPathTokenSymbols(
+        marketInfoData,
+        order.initialCollateralToken,
+        order.swapPath
+      );
+
+      return <SwapTokenPathLabel pathTokenSymbols={swapPathTokenSymbols} />;
+    }
+
+    const marketInfo = marketInfoData?.[order.marketAddress];
+
+    if (!marketInfo) {
+      return "...";
+    }
+
+    const indexName = getMarketIndexName(marketInfo);
+
+    const tokenSymbol = marketInfoData?.[order.marketAddress]?.indexToken.symbol;
+
+    return <MarketWithDirectionLabel isLong={order.isLong} indexName={indexName} tokenSymbol={tokenSymbol} />;
+  }, [
+    marketInfoData,
+    order.initialCollateralToken,
+    order.isLong,
+    order.marketAddress,
+    order.orderType,
+    order.swapPath,
+  ]);
+
   return (
     <div className="App-card">
       <div>
-        <div className="Order-list-card-title">
-          <Title order={order} showDebugValues={showDebugValues} />
-        </div>
+        <div>{title}</div>
         <div className="App-card-divider" />
         <div className="App-card-content">
           {showDebugValues && (
@@ -538,7 +570,7 @@ function OrderItemSmall({
 }
 
 function getSwapRatioText(order: OrderInfo) {
-  if (!isSwapOrderType(order.orderType)) return {};
+  if (!isLimitOrderType(order.orderType)) return {};
 
   const fromToken = order.initialCollateralToken;
   const toToken = order.targetCollateralToken;
