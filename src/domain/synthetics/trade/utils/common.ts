@@ -164,10 +164,6 @@ export function getNextPositionExecutionPrice(p: {
     return null;
   }
 
-  // const adjustedPriceImpactUsd = isLong ? priceImpactUsd : -priceImpactUsd;
-  // const adjustment = bigMath.mulDiv(triggerPrice, adjustedPriceImpactUsd, sizeDeltaUsd);
-  // return triggerPrice + adjustment;
-
   const adjustedPriceImpactUsd = p.isIncrease
     ? p.isLong
       ? -p.priceImpactUsd
