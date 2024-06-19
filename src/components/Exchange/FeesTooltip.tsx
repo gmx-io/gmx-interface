@@ -18,7 +18,7 @@ function getFeeLabel(type: FeeType) {
     swap: t`Swap Fee`,
     borrow: t`Borrow Fee`,
     deposit: t`Deposit Fee`,
-    execution: t`Execution Fee`,
+    execution: t`Network Fee`,
   };
   return labels[type];
 }

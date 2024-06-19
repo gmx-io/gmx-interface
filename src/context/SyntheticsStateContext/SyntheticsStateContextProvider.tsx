@@ -139,7 +139,8 @@ export function SyntheticsStateContextProvider({
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
-  const positionSellerState = usePositionSellerState(chainId);
+  // TODO move closingPositionKey to positionSellerState
+  const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId);
   const confirmationBoxState = useConfirmationBoxState();
 

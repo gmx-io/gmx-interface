@@ -397,7 +397,7 @@ export function ConfirmationBox(p: Props) {
 
     if (isHighFeeConsentError) {
       return {
-        text: t`High Execution Fee not yet acknowledged`,
+        text: t`High Network Fee not yet acknowledged`,
         disabled: true,
       };
     }

@@ -148,7 +148,7 @@ export default function PercentageInput({
       </TooltipWithPortal>
 
       {shouldShowPanel && (
-        <ul className="Percentage-list  ">
+        <ul className="Percentage-list">
           {suggestions.map((slippage) => (
             <li
               key={slippage}
