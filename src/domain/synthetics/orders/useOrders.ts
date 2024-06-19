@@ -1,3 +1,4 @@
+import identity from "lodash/identity";
 import { useMemo } from "react";
 import { Address } from "viem";
 
@@ -24,26 +25,47 @@ export function useOrders(
   {
     account,
     marketsDirectionsFilter = EMPTY_ARRAY,
-  }: { account?: string | null; marketsDirectionsFilter?: MarketFilterLongShortItemData[] }
+    orderTypesFilter = EMPTY_ARRAY,
+  }: {
+    account?: string | null;
+    marketsDirectionsFilter?: MarketFilterLongShortItemData[];
+    orderTypesFilter?: OrderType[];
+  }
 ): OrdersResult {
-  const nonSwapRelevantFilterLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
-    .filter((filter) => filter.direction !== "swap")
-    .map((filter) => ({
-      marketAddress: filter.marketAddress.toLowerCase() as Address | "any",
-      direction: filter.direction,
-    }));
+  const {
+    nonSwapRelevantFilterLowercased,
+    hasNonSwapRelevantMarkets,
+    swapRelevantDefinedMarketsLowercased,
+    hasAllSwapsFilter,
+    hasSwapRelevantDefinedMarkets,
+  } = useMemo(() => {
+    const nonSwapRelevantFilterLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+      .filter((filter) => filter.direction !== "swap")
+      .map((filter) => ({
+        marketAddress: filter.marketAddress.toLowerCase() as Address | "any",
+        direction: filter.direction,
+      }));
 
-  const hasNonSwapRelevantMarkets = nonSwapRelevantFilterLowercased.length > 0;
+    const hasNonSwapRelevantMarkets = nonSwapRelevantFilterLowercased.length > 0;
 
-  const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
-    .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-    .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
+    const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
+      .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
+      .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
 
-  let hasAllSwapsFilter = marketsDirectionsFilter.some(
-    (filter) => filter.direction === "swap" && filter.marketAddress === "any"
-  );
+    let hasAllSwapsFilter = marketsDirectionsFilter.some(
+      (filter) => filter.direction === "swap" && filter.marketAddress === "any"
+    );
 
-  const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
+    const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
+
+    return {
+      nonSwapRelevantFilterLowercased,
+      hasNonSwapRelevantMarkets,
+      swapRelevantDefinedMarketsLowercased,
+      hasAllSwapsFilter,
+      hasSwapRelevantDefinedMarkets,
+    };
+  }, [marketsDirectionsFilter]);
 
   const key = useMemo(
     () =>
@@ -55,8 +77,13 @@ export function useOrders(
               .map((f) => f.marketAddress + f.direction)
               .sort()
               .join(","),
+            orderTypesFilter
+              // in order not to mutate default EMPTY_ARRAY
+              .map(identity)
+              .sort()
+              .join(","),
           ],
-    [account, marketsDirectionsFilter]
+    [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
   const { data } = useMulticall(chainId, "useOrdersData", {
@@ -71,35 +98,22 @@ export function useOrders(
         return false;
       }
 
-      if (!hasNonSwapRelevantMarkets && !hasSwapRelevantDefinedMarkets && !hasAllSwapsFilter) {
-        return true;
+      const matchByMarketResult = matchByMarket({
+        order,
+        hasNonSwapRelevantMarkets,
+        hasSwapRelevantDefinedMarkets,
+        hasAllSwapsFilter,
+        nonSwapRelevantFilterLowercased,
+        swapRelevantDefinedMarketsLowercased,
+      });
+
+      let matchByOrderType = true;
+
+      if (orderTypesFilter.length > 0) {
+        matchByOrderType = orderTypesFilter.includes(order.orderType);
       }
 
-      if (isSwapOrderType(order.orderType)) {
-        if (hasAllSwapsFilter) {
-          return true;
-        }
-
-        if (hasSwapRelevantDefinedMarkets) {
-          const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-            order.swapPath.at(0)!.toLowerCase() as Address
-          );
-
-          const destinationMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-            order.swapPath.at(-1)!.toLowerCase() as Address
-          );
-
-          return sourceMarketInSwapPath || destinationMarketInSwapPath;
-        }
-      } else if (hasNonSwapRelevantMarkets) {
-        return nonSwapRelevantFilterLowercased.some(
-          (filter) =>
-            (filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase()) &&
-            (filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short"))
-        );
-      }
-
-      return false;
+      return matchByMarketResult && matchByOrderType;
     });
 
     return filteredOrders?.reduce((acc, order) => {
@@ -108,11 +122,12 @@ export function useOrders(
     }, {} as OrdersData);
   }, [
     data?.orders,
-    hasAllSwapsFilter,
     hasNonSwapRelevantMarkets,
-    hasSwapRelevantDefinedMarkets,
     nonSwapRelevantFilterLowercased,
+    hasAllSwapsFilter,
+    hasSwapRelevantDefinedMarkets,
     swapRelevantDefinedMarketsLowercased,
+    orderTypesFilter,
   ]);
 
   return {
@@ -188,4 +203,50 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
       };
     }),
   };
+}
+
+function matchByMarket({
+  order,
+  hasNonSwapRelevantMarkets,
+  hasSwapRelevantDefinedMarkets,
+  hasAllSwapsFilter,
+  nonSwapRelevantFilterLowercased,
+  swapRelevantDefinedMarketsLowercased,
+}: {
+  order: ReturnType<typeof parseResponse>["orders"][number];
+  hasNonSwapRelevantMarkets: boolean;
+  hasSwapRelevantDefinedMarkets: boolean;
+  hasAllSwapsFilter: boolean;
+  nonSwapRelevantFilterLowercased: MarketFilterLongShortItemData[];
+  swapRelevantDefinedMarketsLowercased: (Address | "any")[];
+}) {
+  if (!hasNonSwapRelevantMarkets && !hasSwapRelevantDefinedMarkets && !hasAllSwapsFilter) {
+    return true;
+  }
+
+  if (isSwapOrderType(order.orderType)) {
+    if (hasAllSwapsFilter) {
+      return true;
+    }
+
+    if (hasSwapRelevantDefinedMarkets) {
+      const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
+        order.swapPath.at(0)!.toLowerCase() as Address
+      );
+
+      const destinationMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
+        order.swapPath.at(-1)!.toLowerCase() as Address
+      );
+
+      return sourceMarketInSwapPath || destinationMarketInSwapPath;
+    }
+  } else if (hasNonSwapRelevantMarkets) {
+    return nonSwapRelevantFilterLowercased.some(
+      (filter) =>
+        (filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase()) &&
+        (filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short"))
+    );
+  }
+
+  return false;
 }

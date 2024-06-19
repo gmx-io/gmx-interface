@@ -3,7 +3,7 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
-import { OrdersInfoData } from "./types";
+import { OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { getOrderInfo } from "./utils";
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
@@ -19,12 +19,13 @@ export function useOrdersInfoRequest(
   p: {
     marketsInfoData?: MarketsInfoData;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
+    orderTypesFilter?: OrderType[];
     tokensData?: TokensData;
     account: string | null | undefined;
   }
 ): AggregatedOrdersDataResult {
-  const { marketsInfoData, tokensData, account, marketsDirectionsFilter } = p;
-  const { ordersData, count } = useOrders(chainId, { account, marketsDirectionsFilter });
+  const { marketsInfoData, tokensData, account, marketsDirectionsFilter, orderTypesFilter } = p;
+  const { ordersData, count } = useOrders(chainId, { account, marketsDirectionsFilter, orderTypesFilter });
 
   const wrappedToken = getWrappedToken(chainId);
 

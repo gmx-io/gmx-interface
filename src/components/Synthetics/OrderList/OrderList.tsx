@@ -20,12 +20,14 @@ import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { OrderType } from "domain/synthetics/orders";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { values } from "lodash";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
+import { OrderTypeFilter } from "./filters/OrderTypeFilter";
 
 type Props = {
   hideActions?: boolean;
@@ -54,10 +56,12 @@ export function OrderList(p: Props) {
   const editingOrder = useSelector(selectEditingOrder);
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
 
   const ordersRaw = useOrdersInfoRequest(chainId, {
     account: subaccount?.address ?? account,
     marketsDirectionsFilter,
+    orderTypesFilter,
     marketsInfoData: useMarketsInfoData(),
     tokensData: useTokensData(),
   });
@@ -157,7 +161,7 @@ export function OrderList(p: Props) {
                 <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
               </ExchangeTh>
               <ExchangeTh>
-                <Trans>Type</Trans>
+                <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
               </ExchangeTh>
               <ExchangeTh>
                 <Trans>Order</Trans>
