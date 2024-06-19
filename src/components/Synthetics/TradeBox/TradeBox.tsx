@@ -1153,7 +1153,7 @@ export function TradeBox(p: Props) {
           displayDecimals={toToken?.priceDecimals}
           fees={fees}
           executionPrice={executionPrice ?? undefined}
-          acceptablePrice={decreaseAmounts?.acceptablePrice}
+          acceptablePrice={increaseAmounts?.acceptablePrice}
           triggerOrderType={fixedTriggerOrderType}
         />
 
