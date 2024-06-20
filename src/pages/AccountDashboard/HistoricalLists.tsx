@@ -145,13 +145,14 @@ export function HistoricalLists({ chainId, account }: Props) {
           onSelectPositionClick={noop}
           onClosePositionClick={noop}
           openSettings={noop}
+          onCancelOrder={noop}
           hideActions
         />
       )}
       {tabKey === TabKey.Orders && (
         <OrderList
           selectedOrdersKeys={undefined}
-          setSelectedOrdersKeys={noop}
+          setSelectedOrderKeys={noop}
           setPendingTxns={noop}
           selectedPositionOrderKey={undefined}
           setSelectedPositionOrderKey={noop}

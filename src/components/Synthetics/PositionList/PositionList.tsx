@@ -1,31 +1,41 @@
 import { Trans, t } from "@lingui/macro";
-import PositionShare from "components/Exchange/PositionShare";
-import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
+import { memo, useCallback, useState } from "react";
+
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
-import { memo, useCallback, useState } from "react";
+
+import PositionShare from "components/Exchange/PositionShare";
+import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (key?: string) => void;
+  onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, hideActions } = p;
+  const {
+    onClosePositionClick,
+    onOrdersClick,
+    onSelectPositionClick,
+    onSettlePositionFeesClick,
+    openSettings,
+    onCancelOrder,
+    hideActions,
+  } = p;
   const positionsInfoData = usePositionsInfoData();
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -58,6 +68,7 @@ export function PositionList(p: Props) {
               onShareClick={handleSharePositionClick}
               openSettings={openSettings}
               hideActions={hideActions}
+              onCancelOrder={onCancelOrder}
             />
           ))}
       </div>
@@ -109,6 +120,7 @@ export function PositionList(p: Props) {
                 onShareClick={handleSharePositionClick}
                 openSettings={openSettings}
                 hideActions={hideActions}
+                onCancelOrder={onCancelOrder}
               />
             ))}
         </tbody>
@@ -143,6 +155,7 @@ const PositionItemWrapper = memo(
     onSelectPositionClick,
     onShareClick,
     openSettings,
+    onCancelOrder,
   }: {
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
@@ -153,6 +166,7 @@ const PositionItemWrapper = memo(
     onShareClick: (positionKey: string) => void;
     openSettings: () => void;
     hideActions: boolean | undefined;
+    onCancelOrder: (orderKey: string) => void;
   }) => {
     const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
     const handleEditCollateralClick = useCallback(
@@ -169,6 +183,7 @@ const PositionItemWrapper = memo(
       [onSelectPositionClick, position.key]
     );
     const handleShareClick = useCallback(() => onShareClick(position.key), [onShareClick, position.key]);
+    const handleCancelOrder = useCallback((orderKey: string) => onCancelOrder(orderKey), [onCancelOrder]);
 
     return (
       <PositionItem
@@ -182,6 +197,8 @@ const PositionItemWrapper = memo(
         openSettings={openSettings}
         hideActions={hideActions}
         onShareClick={handleShareClick}
+        onCancelOrder={handleCancelOrder}
+        onGetPendingFeesClick={onSettlePositionFeesClick}
       />
     );
   }

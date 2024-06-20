@@ -25,21 +25,6 @@
   }
 }
 
-.Position-list-order {
-  .order-error-text {
-    margin-top: 0.5rem;
-    white-space: normal;
-
-    &.level-error {
-      color: var(--error-red);
-    }
-
-    &.level-warning {
-      color: var(--color-yellow-500);
-    }
-  }
-}
-
 .order-error-text-msg.level-error .Tooltip-handle,
 .position-order-error.level-error {
   text-decoration-color: var(--error-red);

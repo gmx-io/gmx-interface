@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import values from "lodash/values";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { useMeasure } from "react-use";
 
@@ -13,16 +14,16 @@ import {
   useCancellingOrdersKeysState,
   useEditingOrderKeyState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectEditingOrder } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { OrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
+import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { OrderType } from "domain/synthetics/orders";
-import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
-import { values } from "lodash";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -31,15 +32,15 @@ import { OrderTypeFilter } from "./filters/OrderTypeFilter";
 
 type Props = {
   hideActions?: boolean;
-  setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
-  selectedOrdersKeys?: { [key: string]: boolean };
+  setSelectedOrderKeys?: Dispatch<SetStateAction<string[]>>;
+  selectedOrdersKeys?: string[];
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
 };
 
 export function OrderList(p: Props) {
-  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
+  const { setSelectedOrderKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
@@ -68,7 +69,7 @@ export function OrderList(p: Props) {
   });
   const orders = useMemo(() => values(ordersRaw.ordersInfoData ?? {}), [ordersRaw.ordersInfoData]);
 
-  const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
+  const areAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.includes(o.key));
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
@@ -92,19 +93,25 @@ export function OrderList(p: Props) {
     };
   }, [selectedPositionOrderKey, setSelectedPositionOrderKey]);
 
-  function onSelectOrder(key: string) {
-    setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
+  function onToggleOrder(key: string) {
+    setSelectedOrderKeys?.((prev) => {
+      if (prev.includes(key)) {
+        return prev.filter((k) => k !== key);
+      }
+
+      return prev.concat(key);
+    });
   }
 
   function onSelectAllOrders() {
-    if (isAllOrdersSelected) {
-      setSelectedOrdersKeys?.({});
+    if (areAllOrdersSelected) {
+      setSelectedOrderKeys?.(EMPTY_ARRAY);
       return;
     }
 
-    const allSelectedOrders = orders.reduce((acc, order) => ({ ...acc, [order.key]: true }), {});
+    const allSelectedOrders = orders.map((o) => o.key);
 
-    setSelectedOrdersKeys?.(allSelectedOrders);
+    setSelectedOrderKeys?.(allSelectedOrders);
   }
 
   function onCancelOrder(key: string) {
@@ -117,18 +124,16 @@ export function OrderList(p: Props) {
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => {
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
-      setSelectedOrdersKeys?.({});
+      setSelectedOrderKeys?.(EMPTY_ARRAY);
     });
   }
 
   return (
     <div ref={ref}>
-      {orders.length === 0 && (
-        <div className="Exchange-empty-positions-list-note App-card">
-          {isLoading ? t`Loading...` : t`No open orders`}
-        </div>
+      {((isMobile && orders.length === 0) || isLoading) && (
+        <div className="rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
       )}
-      {isMobile && !isLoading && (
+      {isMobile && !isLoading && orders.length !== 0 && (
         <div className="flex flex-col gap-8">
           <div className="flex gap-8">
             <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
@@ -140,8 +145,8 @@ export function OrderList(p: Props) {
                 key={order.key}
                 order={order}
                 isLarge={false}
-                isSelected={p.selectedOrdersKeys?.[order.key]}
-                onSelectOrder={() => onSelectOrder(order.key)}
+                isSelected={p.selectedOrdersKeys?.includes(order.key)}
+                onToggleOrder={() => onToggleOrder(order.key)}
                 isCanceling={cancellingOrdersKeys.includes(order.key)}
                 onCancelOrder={() => onCancelOrder(order.key)}
                 positionsInfoData={positionsData}
@@ -159,7 +164,7 @@ export function OrderList(p: Props) {
               {!p.hideActions && orders.length > 0 && (
                 <ExchangeTh>
                   <div className="checkbox-inline">
-                    <Checkbox isChecked={isAllOrdersSelected} setIsChecked={onSelectAllOrders} />
+                    <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
                   </div>
                 </ExchangeTh>
               )}
@@ -190,10 +195,10 @@ export function OrderList(p: Props) {
               orders.map((order) => (
                 <OrderItem
                   isLarge
-                  isSelected={p.selectedOrdersKeys?.[order.key]}
+                  isSelected={p.selectedOrdersKeys?.includes(order.key)}
                   key={order.key}
                   order={order}
-                  onSelectOrder={() => onSelectOrder(order.key)}
+                  onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
                   onCancelOrder={() => onCancelOrder(order.key)}
                   hideActions={p.hideActions}

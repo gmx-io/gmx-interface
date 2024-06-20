@@ -1,12 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import SwapTokenPathLabel from "components/SwapTokenPathLabel/SwapTokenPathLabel";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useCallback, useMemo } from "react";
+import { AiOutlineEdit } from "react-icons/ai";
+import { MdClose } from "react-icons/md";
+
 import { getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -29,14 +26,22 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
-import { useCallback, useMemo } from "react";
-import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
+
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import SwapTokenPathLabel from "components/SwapTokenPathLabel/SwapTokenPathLabel";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
+
 import "./OrderItem.scss";
 
 type Props = {
   order: OrderInfo;
-  onSelectOrder?: () => void;
+  onToggleOrder?: () => void;
   onCancelOrder?: () => void;
   isSelected?: boolean;
   isCanceling?: boolean;
@@ -60,7 +65,7 @@ export function OrderItem(p: Props) {
       order={p.order}
       hideActions={p.hideActions}
       showDebugValues={showDebugValues}
-      onSelectOrder={p.onSelectOrder}
+      onToggleOrder={p.onToggleOrder}
       setEditingOrderKey={setEditingOrderKey}
       onCancelOrder={p.onCancelOrder}
       isCanceling={p.isCanceling}
@@ -342,7 +347,7 @@ function OrderItemLarge({
   order,
   setRef,
   hideActions,
-  onSelectOrder,
+  onToggleOrder,
   showDebugValues,
   setEditingOrderKey,
   onCancelOrder,
@@ -353,7 +358,7 @@ function OrderItemLarge({
   setRef?: (el: HTMLTableRowElement | null) => void;
   hideActions: boolean | undefined;
   showDebugValues: boolean | undefined;
-  onSelectOrder: undefined | (() => void);
+  onToggleOrder: undefined | (() => void);
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
   isCanceling: boolean | undefined;
@@ -385,9 +390,9 @@ function OrderItemLarge({
 
   return (
     <ExchangeTr ref={setRef}>
-      {!hideActions && onSelectOrder && (
-        <ExchangeTd onClick={onSelectOrder}>
-          <Checkbox isChecked={isSelected} setIsChecked={onSelectOrder} />
+      {!hideActions && onToggleOrder && (
+        <ExchangeTd onClick={onToggleOrder}>
+          <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
         </ExchangeTd>
       )}
       <ExchangeTd>
@@ -447,20 +452,22 @@ function OrderItemLarge({
         <MarkPrice order={order} />
       </ExchangeTd>
       {!hideActions && (
-        <>
-          <ExchangeTd>
-            <button className="Exchange-list-action" onClick={setEditingOrderKey}>
-              <Trans>Edit</Trans>
+        <ExchangeTd>
+          <div className="flex items-center">
+            <button className="cursor-pointer p-6 text-gray-300 hover:text-white" onClick={setEditingOrderKey}>
+              <AiOutlineEdit title={t`Edit order`} fontSize={16} />
             </button>
-          </ExchangeTd>
-          {onCancelOrder && (
-            <ExchangeTd>
-              <button className="Exchange-list-action" onClick={onCancelOrder} disabled={isCanceling}>
-                <Trans>X</Trans>
+            {onCancelOrder && (
+              <button
+                className="cursor-pointer p-6 text-gray-300 hover:text-white disabled:cursor-wait"
+                disabled={isCanceling}
+                onClick={onCancelOrder}
+              >
+                <MdClose title={t`Close order`} fontSize={16} />
               </button>
-            </ExchangeTd>
-          )}
-        </>
+            )}
+          </div>
+        </ExchangeTd>
       )}
     </ExchangeTr>
   );

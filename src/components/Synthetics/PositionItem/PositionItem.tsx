@@ -1,23 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import PositionDropdown from "components/Exchange/PositionDropdown";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
-import {
-  PositionInfo,
-  formatEstimatedLiquidationTime,
-  formatLeverage,
-  formatLiquidationPrice,
-  getEstimatedLiquidationTimeInHours,
-  getTriggerNameByOrderType,
-} from "domain/synthetics/positions";
-import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
+import { MdClose } from "react-icons/md";
+import { useMedia } from "react-use";
 
-import Button from "components/Button/Button";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -30,12 +17,26 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import {
+  PositionInfo,
+  formatEstimatedLiquidationTime,
+  formatLeverage,
+  formatLiquidationPrice,
+  getEstimatedLiquidationTimeInHours,
+  getTriggerNameByOrderType,
+} from "domain/synthetics/positions";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
+import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { Fragment } from "react";
-import { FaAngleRight } from "react-icons/fa";
-import { useMedia } from "react-use";
+
+import Button from "components/Button/Button";
+import PositionDropdown from "components/Exchange/PositionDropdown";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "components/Tooltip/Tooltip";
+
 import "./PositionItem.scss";
 
 export type Props = {
@@ -46,9 +47,11 @@ export type Props = {
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
-  onOrdersClick?: (key?: string) => void;
   isLarge: boolean;
   openSettings: () => void;
+  onGetPendingFeesClick: () => void;
+  onOrdersClick?: (key?: string) => void;
+  onCancelOrder?: (orderKey: string) => void;
 };
 
 export function PositionItem(p: Props) {
@@ -413,36 +416,52 @@ export function PositionItem(p: Props) {
             "clickable",
             "text-gray-300",
           ])}
-          renderContent={() => (
-            <div className="order__list">
-              <strong>
+          content={
+            <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
+              <div className="font-bold">
                 <Trans>Active Orders</Trans>
-              </strong>
+              </div>
               {ordersWithErrors.map(({ order, orderErrors }) => {
                 const errors = orderErrors.errors;
                 return (
-                  <div
-                    key={order.key}
-                    className="Position-list-order active-order-tooltip"
-                    onClick={() => {
-                      p.onOrdersClick?.(order.key);
-                    }}
-                  >
-                    <div className="Position-list-order-label">
+                  <div key={order.key}>
+                    <div className="flex items-center justify-between">
                       {renderOrderText(order)}
-                      <FaAngleRight fontSize={14} />
+                      <div className="flex items-center gap-6">
+                        <Button
+                          variant="secondary"
+                          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+                          onClick={() => p.onOrdersClick?.(order.key)}
+                        >
+                          <AiOutlineEdit fontSize={16} />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+                          onClick={() => p.onCancelOrder?.(order.key)}
+                        >
+                          <MdClose fontSize={16} />
+                        </Button>
+                      </div>
                     </div>
-                    {errors.map((err, i) => (
-                      <Fragment key={err.key}>
-                        <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>
-                        {i < errors.length - 1 && <br />}
-                      </Fragment>
-                    ))}
+                    <div className="flex flex-col gap-10">
+                      {errors.map((err) => (
+                        <div
+                          key={err.key}
+                          className={cx("break-all", {
+                            "text-red-500": err.level === "error",
+                            "text-yellow-500": err.level === "warning",
+                          })}
+                        >
+                          {err.msg}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 );
               })}
             </div>
-          )}
+          }
         />
       </div>
     );
