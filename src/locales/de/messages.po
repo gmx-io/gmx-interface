@@ -852,6 +852,10 @@ msgstr "Charts von TradingView"
 msgid "Staked Tokens"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool amount exceeded LOL"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
 msgstr ""

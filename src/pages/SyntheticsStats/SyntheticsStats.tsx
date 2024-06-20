@@ -306,13 +306,13 @@ export function SyntheticsStats() {
                           />
 
                           <StatsTooltipRow
-                            label="Pool Max Long Amount For Deposit"
-                            value={formatAmount(market.maxLongPoolUsdForDeposit, market.longToken.decimals, 0, true)}
+                            label="Pool Max Long USD For Deposit"
+                            value={formatUsd(market.maxLongPoolUsdForDeposit)}
                             showDollar={false}
                           />
                           <StatsTooltipRow
-                            label="Pool Max Short Amount For Deposit"
-                            value={formatAmount(market.maxShortPoolUsdForDeposit, market.shortToken.decimals, 0, true)}
+                            label="Pool Max Short USD For Deposit"
+                            value={formatUsd(market.maxShortPoolUsdForDeposit)}
                             showDollar={false}
                           />
 
