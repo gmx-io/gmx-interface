@@ -1156,26 +1156,28 @@ export function TradeBox(p: Props) {
           triggerOrderType={fixedTriggerOrderType}
         />
 
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Entry Price`}
-          value={
-            nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
-              <ValueTransition
-                from={formatUsd(selectedPosition?.entryPrice, {
+        {selectedPosition && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Entry Price`}
+            value={
+              nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
+                <ValueTransition
+                  from={formatUsd(selectedPosition?.entryPrice, {
+                    displayDecimals: toToken?.priceDecimals,
+                  })}
+                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                    displayDecimals: toToken?.priceDecimals,
+                  })}
+                />
+              ) : (
+                formatUsd(markPrice, {
                   displayDecimals: toToken?.priceDecimals,
-                })}
-                to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })}
-              />
-            ) : (
-              formatUsd(markPrice, {
-                displayDecimals: toToken?.priceDecimals,
-              })
-            )
-          }
-        />
+                })
+              )
+            }
+          />
+        )}
 
         <ExchangeInfoRow
           className="SwapBox-info-row"

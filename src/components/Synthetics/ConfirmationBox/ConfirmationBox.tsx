@@ -1275,20 +1275,22 @@ export function ConfirmationBox(p: Props) {
             triggerOrderType={fixedTriggerOrderType}
           />
 
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Entry Price`}
-            value={
-              <ValueTransition
-                from={formatUsd(existingPosition?.entryPrice, {
-                  displayDecimals: existingPriceDecimals,
-                })}
-                to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                  displayDecimals: toTokenPriceDecimals,
-                })}
-              />
-            }
-          />
+          {existingPosition && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Entry Price`}
+              value={
+                <ValueTransition
+                  from={formatUsd(existingPosition.entryPrice, {
+                    displayDecimals: existingPriceDecimals,
+                  })}
+                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}
+                />
+              }
+            />
+          )}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
