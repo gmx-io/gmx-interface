@@ -25,15 +25,15 @@ const GROUPS: Groups = [
     items: [
       {
         data: OrderType.LimitIncrease,
-        text: msg`Limit Increase`,
+        text: msg`Limit`,
       },
       {
         data: OrderType.LimitDecrease,
-        text: msg`Limit Decrease`,
+        text: msg`Take-Profit`,
       },
       {
         data: OrderType.StopLossDecrease,
-        text: msg`Stop Loss Decrease`,
+        text: msg`Stop-Loss`,
       },
     ],
   },
@@ -42,7 +42,7 @@ const GROUPS: Groups = [
     items: [
       {
         data: OrderType.LimitSwap,
-        text: msg`Limit Swap`,
+        text: msg`Swap`,
       },
     ],
   },
