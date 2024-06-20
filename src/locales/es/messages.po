@@ -571,6 +571,10 @@ msgstr ""
 msgid "Search Token"
 msgstr "Buscar Token"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "There are not enough funds in your subaccount to cover withdrawing gas costs.<0/><1/>Approximate additional funds to<2/>top-up: {0}"
+#~ msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
@@ -1517,6 +1521,10 @@ msgstr ""
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr "Máx. {0} fuera"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The amount left in the sub-account is not enough to cover network gas costs."
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
@@ -5261,6 +5269,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche GM Pools are incentivized."
 msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+#~ msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx

@@ -62,7 +62,7 @@
   border-radius: 0.4rem;
   font-size: 1.4rem;
   color: var(--color-white);
-  padding: 0.5rem 0.8rem;
+  padding: 0.5rem 0;
   flex: 1;
   text-decoration: none;
   border: none;
@@ -74,14 +74,6 @@
 
   &:not([disabled]):active {
     background: var(--color-slate-500);
-  }
-
-  &:first-child {
-    margin-right: 0.2rem;
-  }
-
-  &:last-child {
-    margin-left: 0.2rem;
   }
 
   &.warning {
