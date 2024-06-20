@@ -24,7 +24,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
-import { OrderEditor } from "../OrderEditor/OrderEditor";
+import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
@@ -210,13 +210,7 @@ export function OrderList(p: Props) {
         </ExchangeTable>
       )}
 
-      {editingOrder && (
-        <OrderEditor
-          order={editingOrder}
-          onClose={() => setEditingOrderKey(undefined)}
-          setPendingTxns={p.setPendingTxns}
-        />
-      )}
+      <OrderEditorContainer />
     </div>
   );
 }

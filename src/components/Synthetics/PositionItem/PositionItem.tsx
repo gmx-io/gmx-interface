@@ -7,7 +7,7 @@ import { useMedia } from "react-use";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
@@ -17,7 +17,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderErrors, PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -38,6 +38,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./PositionItem.scss";
+import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 
 export type Props = {
   position: PositionInfo;
@@ -55,7 +56,6 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
-  const ordersWithErrors = usePositionOrdersWithErrors(p.position.key);
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const currentTradeType = useSelector(selectTradeboxTradeType);
@@ -326,147 +326,6 @@ export function PositionItem(p: Props) {
     return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
   }
 
-  function renderOrderText(order: PositionOrderInfo) {
-    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
-    const isIncrease = isIncreaseOrderType(order.orderType);
-    return (
-      <div key={order.key}>
-        {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
-        {triggerThresholdType}{" "}
-        {formatUsd(order.triggerPrice, {
-          displayDecimals: order.indexToken?.priceDecimals,
-        })}
-        :{" "}
-        <span>
-          {isIncrease ? "+" : "-"}
-          {formatUsd(order.sizeDeltaUsd)}
-        </span>
-      </div>
-    );
-  }
-
-  function renderPositionOrders(isSmall = false) {
-    if (ordersWithErrors.length === 0) return null;
-
-    if (isSmall) {
-      return ordersWithErrors.map(({ order, orderErrors }) => {
-        const { errors, level } = orderErrors;
-        if (level) {
-          return (
-            <div key={order.key} className="Position-list-order">
-              <Tooltip
-                handle={renderOrderText(order)}
-                position="bottom-end"
-                handleClassName={cx("position-order-error", {
-                  "level-warning": level === "warning",
-                  "level-error": level === "error",
-                })}
-                renderContent={() =>
-                  errors.map((error) => (
-                    <span
-                      key={error.key}
-                      className={cx("mb-5", "position-order-error", {
-                        "level-warning": level === "warning",
-                        "level-error": level === "error",
-                      })}
-                    >
-                      {error.msg}
-                    </span>
-                  ))
-                }
-              />
-            </div>
-          );
-        }
-        return (
-          <div key={order.key} className="Position-list-order">
-            {renderOrderText(order)}
-          </div>
-        );
-      });
-    }
-
-    const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
-    const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
-    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
-
-    return (
-      <div>
-        <Tooltip
-          className="Position-list-active-orders"
-          handle={
-            <Trans>
-              Orders{" "}
-              <span
-                className={cx({
-                  "position-order-error": hasErrors,
-                  "level-error": ordersErrorList.length > 0,
-                  "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
-                })}
-              >
-                ({ordersWithErrors.length})
-              </span>
-            </Trans>
-          }
-          position="bottom-start"
-          handleClassName={cx([
-            "Exchange-list-info-label",
-            "Exchange-position-list-orders",
-            "plain",
-            "clickable",
-            "text-gray-300",
-          ])}
-          content={
-            <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-              <div className="font-bold">
-                <Trans>Active Orders</Trans>
-              </div>
-              {ordersWithErrors.map(({ order, orderErrors }) => {
-                const errors = orderErrors.errors;
-                return (
-                  <div key={order.key}>
-                    <div className="flex items-center justify-between">
-                      {renderOrderText(order)}
-                      <div className="flex items-center gap-6">
-                        <Button
-                          variant="secondary"
-                          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-                          onClick={() => p.onOrdersClick?.(order.key)}
-                        >
-                          <AiOutlineEdit fontSize={16} />
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-                          onClick={() => p.onCancelOrder?.(order.key)}
-                        >
-                          <MdClose fontSize={16} />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-10">
-                      {errors.map((err) => (
-                        <div
-                          key={err.key}
-                          className={cx("break-all", {
-                            "text-red-500": err.level === "error",
-                            "text-yellow-500": err.level === "warning",
-                          })}
-                        >
-                          {err.msg}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          }
-        />
-      </div>
-    );
-  }
-
   function renderLarge() {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
@@ -564,7 +423,7 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {formatUsd(p.position.sizeInUsd)}
-          {renderPositionOrders()}
+          <PositionItemOrders positionKey={p.position.key} />
         </td>
         <td>
           {/* collateral */}
@@ -740,8 +599,7 @@ export function PositionItem(p: Props) {
                 <Trans>Orders</Trans>
               </div>
               <div>
-                {ordersWithErrors.length ? undefined : t`None`}
-                {renderPositionOrders(true)}
+                <PositionItemOrders isSmall positionKey={p.position.key} />
               </div>
             </div>
           </div>
@@ -787,4 +645,159 @@ export function PositionItem(p: Props) {
   }
 
   return p.isLarge ? renderLarge() : renderSmall();
+}
+
+function PositionItemOrders({ positionKey, isSmall }: { isSmall?: boolean; positionKey: string }) {
+  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
+
+  const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
+  const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
+  const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
+
+  if (ordersWithErrors.length === 0) return null;
+
+  if (isSmall) {
+    return ordersWithErrors.map(({ order, orderErrors }) => {
+      const { errors, level } = orderErrors;
+      if (level) {
+        return (
+          <div key={order.key} className="Position-list-order">
+            <Tooltip
+              handle={<PositionItemOrderText order={order} />}
+              position="bottom-end"
+              handleClassName={cx("position-order-error", {
+                "level-warning": level === "warning",
+                "level-error": level === "error",
+              })}
+              renderContent={() =>
+                errors.map((error) => (
+                  <span
+                    key={error.key}
+                    className={cx("mb-5", "position-order-error", {
+                      "level-warning": level === "warning",
+                      "level-error": level === "error",
+                    })}
+                  >
+                    {error.msg}
+                  </span>
+                ))
+              }
+            />
+          </div>
+        );
+      }
+      return (
+        <div key={order.key} className="Position-list-order">
+          <PositionItemOrderText order={order} />
+        </div>
+      );
+    });
+  }
+
+  return (
+    <div>
+      <Tooltip
+        className="Position-list-active-orders"
+        handle={
+          <Trans>
+            Orders{" "}
+            <span
+              className={cx({
+                "position-order-error": hasErrors,
+                "level-error": ordersErrorList.length > 0,
+                "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
+              })}
+            >
+              ({ordersWithErrors.length})
+            </span>
+          </Trans>
+        }
+        position="bottom-start"
+        handleClassName={cx([
+          "Exchange-list-info-label",
+          "Exchange-position-list-orders",
+          "plain",
+          "clickable",
+          "text-gray-300",
+        ])}
+        content={
+          <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
+            <div className="font-bold">
+              <Trans>Active Orders</Trans>
+            </div>
+            {ordersWithErrors.map((params) => (
+              <PositionItemOrder key={params.order.key} {...params} />
+            ))}
+          </div>
+        }
+      />
+    </div>
+  );
+}
+
+function PositionItemOrder({ order, orderErrors }: { order: PositionOrderInfo; orderErrors: OrderErrors }) {
+  const [, setEditingOrderKey] = useEditingOrderKeyState();
+  const [isCancelling, cancel] = useCancelOrder(order.key);
+
+  const errors = orderErrors.errors;
+
+  return (
+    <div key={order.key}>
+      <div className="flex items-center justify-between">
+        <PositionItemOrderText order={order} />
+        <div className="flex items-center gap-6">
+          <Button
+            variant="secondary"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            onClick={() => {
+              setEditingOrderKey(order.key);
+            }}
+          >
+            <AiOutlineEdit fontSize={16} />
+          </Button>
+          <Button
+            variant="secondary"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            disabled={isCancelling}
+            onClick={cancel}
+          >
+            <MdClose fontSize={16} />
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-10">
+        {errors.map((err) => (
+          <div
+            key={err.key}
+            className={cx("break-all", {
+              "text-red-500": err.level === "error",
+              "text-yellow-500": err.level === "warning",
+            })}
+          >
+            {err.msg}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
+  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+  const isIncrease = isIncreaseOrderType(order.orderType);
+
+  return (
+    <div key={order.key}>
+      {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
+      {triggerThresholdType}{" "}
+      {formatUsd(order.triggerPrice, {
+        displayDecimals: order.indexToken?.priceDecimals,
+      })}
+      :{" "}
+      <span>
+        {isIncrease ? "+" : "-"}
+        {formatUsd(order.sizeDeltaUsd)}
+      </span>
+    </div>
+  );
 }

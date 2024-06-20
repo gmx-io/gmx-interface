@@ -12,6 +12,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 
 import PositionShare from "components/Exchange/PositionShare";
+import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 
 type Props = {
@@ -140,6 +141,7 @@ export function PositionList(p: Props) {
           account={account}
         />
       )}
+      <OrderEditorContainer />
     </div>
   );
 }
