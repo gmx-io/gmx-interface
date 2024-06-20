@@ -357,7 +357,7 @@ export function getNextFromAmount(
   toTokenAddress,
   infoTokens,
   toTokenPriceUsd,
-  ratio: bigint,
+  ratio: bigint | undefined,
   usdgSupply,
   totalTokenWeights,
   forSwap
