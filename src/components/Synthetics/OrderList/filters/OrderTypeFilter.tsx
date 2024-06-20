@@ -51,9 +51,10 @@ const GROUPS: Groups = [
 type Props = {
   value: OrderType[];
   onChange: (value: OrderType[]) => void;
+  asButton?: boolean;
 };
 
-export function OrderTypeFilter({ value, onChange }: Props) {
+export function OrderTypeFilter({ value, onChange, asButton }: Props) {
   const { i18n } = useLingui();
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
@@ -78,6 +79,7 @@ export function OrderTypeFilter({ value, onChange }: Props) {
       options={localizedGroups}
       onChange={onChange}
       popupPlacement="bottom-start"
+      asButton={asButton}
     />
   );
 }

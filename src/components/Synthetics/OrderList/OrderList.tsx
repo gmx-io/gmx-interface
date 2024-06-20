@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { useMedia } from "react-use";
+import { useMeasure } from "react-use";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -43,7 +43,8 @@ export function OrderList(p: Props) {
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
-  const isMobile = useMedia("(max-width: 1000px)");
+  const [ref, { width }] = useMeasure<HTMLDivElement>();
+  const isMobile = width < 1000;
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
@@ -121,16 +122,20 @@ export function OrderList(p: Props) {
   }
 
   return (
-    <>
+    <div ref={ref}>
       {orders.length === 0 && (
-        <div className="Exchange-empty-positions-list-note App-card small">
+        <div className="Exchange-empty-positions-list-note App-card">
           {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
-      {isMobile && (
-        <div className="Exchange-list Orders small">
-          {!isLoading &&
-            orders.map((order) => (
+      {isMobile && !isLoading && (
+        <div className="flex flex-col gap-8">
+          <div className="flex gap-8">
+            <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+            <OrderTypeFilter asButton value={orderTypesFilter} onChange={setOrderTypesFilter} />
+          </div>
+          <div className="sm:grid-cols-auto-fill-350 grid gap-8">
+            {orders.map((order) => (
               <OrderItem
                 key={order.key}
                 order={order}
@@ -143,6 +148,7 @@ export function OrderList(p: Props) {
                 hideActions={p.hideActions}
               />
             ))}
+          </div>
         </div>
       )}
 
@@ -206,6 +212,6 @@ export function OrderList(p: Props) {
           setPendingTxns={p.setPendingTxns}
         />
       )}
-    </>
+    </div>
   );
 }

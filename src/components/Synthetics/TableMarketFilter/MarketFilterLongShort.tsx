@@ -26,9 +26,10 @@ export type MarketFilterLongShortProps = {
   value: MarketFilterLongShortItemData[];
   onChange: (value: MarketFilterLongShortItemData[]) => void;
   withPositions?: boolean;
+  asButton?: boolean;
 };
 
-export function MarketFilterLongShort({ value, onChange, withPositions }: MarketFilterLongShortProps) {
+export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const positions = usePositionsInfoData();
@@ -157,6 +158,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions }: Market
       options={marketsOptions}
       ItemComponent={ItemComponent}
       value={value}
+      asButton={asButton}
     />
   );
 }

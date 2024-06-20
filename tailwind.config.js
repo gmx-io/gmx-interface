@@ -109,6 +109,11 @@ module.exports = {
     placeholderColor: {
       gray: "rgb(117, 117, 117)",
     },
+    extend: {
+      gridTemplateColumns: fromPairs(
+        range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
+      ),
+    },
   },
   plugins: [injectColorsPlugin],
 };
