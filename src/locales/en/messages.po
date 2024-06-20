@@ -486,7 +486,6 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "Exit Price"
 
@@ -608,6 +607,10 @@ msgstr "MARKET"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Exit)"
+msgstr "Bid Price (Exit)"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
@@ -3215,6 +3218,10 @@ msgstr "Bonus APR"
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Exit Price (Exit)"
+msgstr "Exit Price (Exit)"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
 msgstr "GMX V2 Account"
@@ -4839,6 +4846,10 @@ msgstr "Cancel"
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
 msgstr "Remove Row"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Entry)"
+msgstr "Bid Price (Entry)"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -6943,7 +6954,6 @@ msgstr "Vested GLP not withdrawn"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -7245,6 +7255,10 @@ msgstr "Unknown order"
 #: src/pages/Jobs/Jobs.js
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Entry)"
+msgstr "Ask Price (Entry)"
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."

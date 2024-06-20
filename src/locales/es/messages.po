@@ -486,7 +486,6 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "Precio de Salida"
 
@@ -607,6 +606,10 @@ msgstr "MERCADO"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Exit)"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -3215,6 +3218,10 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX no se encuentra contratando en este momento. Sin embargo, si crees que puedes contribuir al proyecto, manda un email por favor <0>jobs@gmx.io</0>."
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Exit Price (Exit)"
+msgstr ""
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
 msgstr ""
@@ -4835,6 +4842,10 @@ msgstr "Cancelar"
 
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Entry)"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -6937,7 +6948,6 @@ msgstr "GLP adquirido no retirado"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -7239,6 +7249,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.js
 msgid "No open positions at GMX currently"
 msgstr "No hay posiciones abiertas en GMX en este momento"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Entry)"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."

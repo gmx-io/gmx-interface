@@ -113,7 +113,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
         />
         <ExchangeInfoRow
-          label={t`Entry Price`}
+          label={isLong ? t`Ask Price (Entry)` : t`Bid Price (Entry)`}
           value={
             <Tooltip
               handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
@@ -137,7 +137,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Exit Price`}
+          label={isLong ? t`Bid Price (Exit)` : t`Exit Price (Exit)`}
           value={
             <Tooltip
               handle={
