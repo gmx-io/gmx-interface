@@ -65,7 +65,7 @@ export default function ReferralsTier() {
   }
 
   return (
-    <div className="ReferralsTier">
+    <div className="page-layout default-container">
       <h1>Referrals Tier</h1>
       {!active && <div>Wallet is not connected</div>}
       {renderForm()}

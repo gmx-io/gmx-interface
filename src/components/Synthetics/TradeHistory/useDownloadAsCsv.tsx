@@ -4,6 +4,8 @@ import { useCallback, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { isSwapOrderType } from "domain/synthetics/orders/utils";
 import {
@@ -12,21 +14,21 @@ import {
   SwapTradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
-import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
 import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import type { MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
-import { RowDetails } from "./TradeHistoryRow/utils/shared";
+import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 
 const GRAPHQL_MAX_SIZE = 10_000;
 
 export function useDownloadAsCsv({
-  marketAddresses,
+  marketsDirectionsFilter,
   forAllAccounts,
   account,
   fromTxTimestamp,
@@ -34,7 +36,7 @@ export function useDownloadAsCsv({
   orderEventCombinations,
   minCollateralUsd,
 }: {
-  marketAddresses: string[] | undefined;
+  marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
   fromTxTimestamp: number | undefined;
@@ -49,7 +51,7 @@ export function useDownloadAsCsv({
 
   minCollateralUsd?: bigint;
 }): [boolean, () => Promise<void>] {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +67,7 @@ export function useDownloadAsCsv({
         chainId,
         pageIndex: 0,
         pageSize: GRAPHQL_MAX_SIZE,
-        marketAddresses,
+        marketsDirectionsFilter,
         forAllAccounts,
         account,
         fromTxTimestamp,
@@ -108,13 +110,15 @@ export function useDownloadAsCsv({
         triggerPrice: t`Trigger Price`,
         priceImpact: t`Price Impact`,
         explorerUrl: t`Transaction ID`,
+        pnl: t`PnL ($)`,
       });
     } catch (error) {
       helperToast.error(
         <div>
           <Trans>Failed to download trade history CSV.</Trans>
           <br />
-          <ToastifyDebug>{String(error)}</ToastifyDebug>
+          <br />
+          <ToastifyDebug error={String(error)} />
         </div>
       );
     } finally {
@@ -125,7 +129,7 @@ export function useDownloadAsCsv({
     chainId,
     forAllAccounts,
     fromTxTimestamp,
-    marketAddresses,
+    marketsDirectionsFilter,
     marketsInfoData,
     minCollateralUsd,
     orderEventCombinations,

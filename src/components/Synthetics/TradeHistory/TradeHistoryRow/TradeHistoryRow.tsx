@@ -2,20 +2,25 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import type { Address } from "viem";
 
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useChainId } from "lib/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { formatPositionMessage } from "./utils/position";
-import { formatSwapMessage } from "./utils/swap";
 import { TooltipContent, TooltipString } from "./utils/shared";
+import { formatSwapMessage } from "./utils/swap";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
@@ -102,7 +107,7 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
 const PRICE_TOOLTIP_WIDTH = 400;
 
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
 
   const msg = useMemo(() => {
@@ -155,6 +160,30 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.actionComment]
   );
 
+  const marketTooltipHandle = useMemo(
+    () =>
+      msg.pathTokenSymbols ? (
+        <div className="cursor-help leading-2">
+          {msg.pathTokenSymbols!.map((symbol, index, arr) => (
+            <div key={symbol} className="inline-block border-b border-dashed border-b-gray-400 leading-base">
+              <TokenWithIcon symbol={symbol} displaySize={20} />
+              {index < arr.length - 1 && <span className="mx-5">→</span>}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="cursor-help">
+          <MarketWithDirectionLabel
+            bordered
+            indexName={msg.indexName!}
+            isLong={msg.isLong!}
+            tokenSymbol={msg.indexTokenSymbol!}
+          />
+        </div>
+      ),
+    [msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
+  );
+
   return (
     <>
       <tr
@@ -191,21 +220,29 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           </div>
           <TooltipWithPortal
             disableHandleStyle
-            handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
-            portalClassName="TradeHistoryRow-tooltip-portal"
+            handle={<span className="TradeHistoryRow-time muted cursor-help">{msg.timestamp}</span>}
+            portalClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
-            <Link className="TradeHistoryRow-account muted underline" to={`/actions/${tradeAction.account}`}>
+            <Link
+              className="TradeHistoryRow-account muted underline"
+              to={buildAccountDashboardUrl(tradeAction.account as Address, undefined, 2)}
+            >
               {tradeAction.account}
             </Link>
           )}
         </td>
         <td>
-          <TooltipWithPortal handle={msg.market} renderContent={renderMarketContent} />
+          <TooltipWithPortal
+            disableHandleStyle
+            portalClassName="cursor-help *:cursor-auto"
+            handle={marketTooltipHandle}
+            renderContent={renderMarketContent}
+          />
         </td>
         <td>{msg.size}</td>
-        <td className="TradeHistoryRow-price">
+        <td>
           <TooltipWithPortal
             portalClassName="TradeHistoryRow-price-tooltip-portal"
             handle={msg.price}
@@ -213,6 +250,20 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderPriceContent}
             maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
           />
+        </td>
+        <td className="TradeHistoryRow-pnl-fees">
+          {!msg.pnl ? (
+            <span className="text-gray-300">-</span>
+          ) : (
+            <span
+              className={cx({
+                "text-red-500": msg.pnlState === "error",
+                "text-green-500": msg.pnlState === "success",
+              })}
+            >
+              {msg.pnl}
+            </span>
+          )}
         </td>
       </tr>
       {showDebugValues && (

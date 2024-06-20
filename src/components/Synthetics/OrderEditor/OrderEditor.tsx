@@ -647,7 +647,7 @@ export function OrderEditor(p: Props) {
                     renderContent={() => (
                       <>
                         <StatsTooltipRow
-                          label={<div className="text-white">{t`Execution Fee`}:</div>}
+                          label={<div className="text-white">{t`Network Fee`}:</div>}
                           value={formatTokenAmountWithUsd(
                             additionalExecutionFee.feeTokenAmount * -1n,
                             additionalExecutionFee.feeUsd === undefined
@@ -663,7 +663,7 @@ export function OrderEditor(p: Props) {
                         />
                         <br />
                         <div className="text-white">
-                          <Trans>As network fees have increased, an additional execution fee is needed.</Trans>
+                          <Trans>As network fees have increased, an additional network fee is needed.</Trans>
                         </div>
                       </>
                     )}

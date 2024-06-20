@@ -33,13 +33,13 @@
 
     // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
     tbody tr {
-      cursor: default !important;
+      cursor: auto !important;
     }
   }
 
   &-header {
     tr {
-      cursor: default !important;
+      cursor: auto !important;
       border-bottom: none !important;
 
       &:hover {

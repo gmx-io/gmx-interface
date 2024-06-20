@@ -3,6 +3,7 @@ import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
@@ -36,7 +37,7 @@ export function PositionList(p: Props) {
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
-  const positions = Object.values(positionsInfoData || {});
+  const positions = useSelector(selectPositionsInfoDataSortedByMarket);
   const handleSharePositionClick = useCallback((positionKey: string) => {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);

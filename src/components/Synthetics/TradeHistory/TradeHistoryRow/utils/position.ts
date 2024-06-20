@@ -1,5 +1,6 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
+import { MaxInt256 } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -31,7 +32,6 @@ import {
   numberToState,
   tryGetError,
 } from "./shared";
-import { MaxInt256 } from "ethers";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
@@ -49,6 +49,7 @@ export const formatPositionMessage = (
   const isIncrease = isIncreaseOrderType(tradeAction.orderType);
   const isLong = tradeAction.isLong;
   const longShortText = isLong ? t`Long` : t`Short`;
+  const indexTokenSymbol = tradeAction.indexToken.symbol;
 
   //          | long | short
   // increase |  <   |  >
@@ -325,6 +326,8 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
+    const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
+
     result = {
       action: customAction,
       size: customSize,
@@ -341,6 +344,8 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -366,6 +371,8 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
+    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -381,6 +388,8 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -436,6 +445,8 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
     const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
 
+    const formattedPnl = formatUsd(tradeAction.pnlUsd);
+
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -452,6 +463,8 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
+      pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -582,6 +595,8 @@ export const formatPositionMessage = (
         infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
       isActionError: true,
+      pnl: formattedPnl,
+      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion Liquidation
   }
@@ -589,6 +604,8 @@ export const formatPositionMessage = (
   return {
     action,
     market,
+    isLong,
+    indexTokenSymbol,
     fullMarket,
     timestamp,
     timestampISO,

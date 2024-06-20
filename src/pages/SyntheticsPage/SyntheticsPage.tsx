@@ -40,8 +40,8 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   openSettings: () => void;
@@ -308,7 +308,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="Exchange-lists small">
+        <div className="Exchange-lists small min-w-0">
           <div className="Exchange-list-tab-container">
             <Tab
               options={tabOptions}

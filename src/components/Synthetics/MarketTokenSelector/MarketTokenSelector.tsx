@@ -143,7 +143,7 @@ export default function MarketTokenSelector(props: Props) {
                           <th>MARKET</th>
                           <th>BUYABLE</th>
                           <th>SELLABLE</th>
-                          <th>APR</th>
+                          <th>APY</th>
                         </tr>
                       </thead>
                     )}

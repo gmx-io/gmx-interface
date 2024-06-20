@@ -411,7 +411,7 @@ export default function Migration() {
           const { cap, price, bonus } = token;
           const hasCap = cap < MaxUint256;
           return (
-            <div className={cx("border", "App-card", { primary: index === 0 })} key={index}>
+            <div className={cx("App-card border border-gray-900", { primary: index === 0 })} key={index}>
               <div className="Stake-card-title App-card-title">{token.name}</div>
               <div className="Stake-card-bottom App-card-content">
                 <div className="Stake-info App-card-row">

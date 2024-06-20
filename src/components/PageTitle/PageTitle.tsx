@@ -11,6 +11,7 @@ type Props = {
   isTop?: boolean;
   showNetworkIcon?: boolean;
   afterTitle?: ReactNode;
+  chainId?: number;
 };
 
 export default function PageTitle({
@@ -20,10 +21,11 @@ export default function PageTitle({
   isTop = false,
   showNetworkIcon = true,
   afterTitle,
+  chainId,
 }: Props) {
   const classNames = cx("Page-title-wrapper", className, { gapTop: !isTop });
-  const { chainId } = useChainId();
-  const currentNetworkIcon = getIcon(chainId, "network");
+  const { chainId: fallbackChainId } = useChainId();
+  const currentNetworkIcon = getIcon(chainId ?? fallbackChainId, "network");
   return (
     <div className={classNames}>
       <div className="Page-title-group">
