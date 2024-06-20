@@ -134,20 +134,18 @@ export function ExecutionPriceRow({
                   )}
                 />
               )}
-              <StatsTooltipRow
-                label={t`Order Acceptable Price`}
-                value={
-                  acceptablePriceFormated !== undefined ? (
+              {acceptablePriceFormated !== undefined && (
+                <StatsTooltipRow
+                  label={t`Order Acceptable Price`}
+                  value={
                     <>
                       {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
                       {acceptablePriceFormated}
                     </>
-                  ) : (
-                    "-"
-                  )
-                }
-                showDollar={false}
-              />
+                  }
+                  showDollar={false}
+                />
+              )}
               <br />
               {clarificationText}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#order-execution">{t`Read more`}</ExternalLink>.
