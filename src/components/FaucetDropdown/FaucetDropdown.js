@@ -25,6 +25,16 @@ function FaucetDropdown() {
 
   const txmContractAddress = "0x98e9944fdF31890F5823f351B4797e97C5f86088";
 
+  const TMX_FAUCET = {
+    name: "TMX",
+    symbol: "TMX",
+    address: "0x98e9944fdF31890F5823f351B4797e97C5f86088",
+    decimals: 18,
+    isStable: false,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+  };
+
   const [amount] = useState(1000);
   const [wethAmount] = useState("0.01");
   const [wbtcamount] = useState("0.01");
@@ -38,15 +48,7 @@ function FaucetDropdown() {
       if (chainId === MORPH_L2) {
         const tmx = faucetTokens.find((token) => token.name === "TMX");
         if (!tmx) {
-          faucetTokens.push({
-            name: "TMX",
-            symbol: "TMX",
-            address: "0x98e9944fdF31890F5823f351B4797e97C5f86088",
-            decimals: 18,
-            isStable: false,
-            isShortable: true,
-            imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
-          });
+          faucetTokens.push(TMX_FAUCET);
         }
       }
       if (token) {
@@ -60,17 +62,16 @@ function FaucetDropdown() {
   function mint(tokenSymbol) {
     let ethamount;
     if (active) {
-      const token = getTokenBySymbol(chainId, tokenSymbol);
-
       if (tokenSymbol === "WBTC") {
         ethamount = new BN(0.1).times(1e8).toString();
-      } else {
+      } else if (tokenSymbol != "TMX") {
+        const token = getTokenBySymbol(chainId, tokenSymbol);
         ethamount = (amount * 10 ** token.decimals).toLocaleString("fullwide", {
           useGrouping: false,
         });
       }
       if (tokenSymbol === "TMX") {
-        const txmAmt = (txmAmount * 10 ** token.decimals).toLocaleString("fullwide", {
+        const txmAmt = (txmAmount * 10 ** TMX_FAUCET.decimals).toLocaleString("fullwide", {
           useGrouping: false,
         });
         const contract = new ethers.Contract(txmContractAddress, TMX.abi, signer);
@@ -114,6 +115,8 @@ function FaucetDropdown() {
       }
 
       if (tokenSymbol === "ETH" || tokenSymbol === "WETH") {
+        const token = getTokenBySymbol(chainId, tokenSymbol);
+
         const contract = new ethers.Contract(token.address, WETH.abi, signer);
         contract
           .deposit({
@@ -154,7 +157,9 @@ function FaucetDropdown() {
             }
             helperToast.error(failMsg);
           });
-      } else {
+      } else if (tokenSymbol != "TMX") {
+        const token = getTokenBySymbol(chainId, tokenSymbol);
+
         const contract = new ethers.Contract(token.address, Token.abi, signer);
         contract
           .mint(account, ethamount.toString())
