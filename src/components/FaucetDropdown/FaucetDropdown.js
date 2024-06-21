@@ -4,7 +4,7 @@ import { helperToast } from "lib/helperToast";
 import { FaChevronDown, FaParachuteBox } from "react-icons/fa";
 import "./FaucetDropdown.css";
 import { ethers } from "ethers";
-import { getExplorerUrl } from "config/chains";
+import { getExplorerUrl, MORPH_L2 } from "config/chains";
 import Token from "abis/Token.json";
 import { getTokenBySymbol, getTokens } from "config/tokens";
 import { useDynamicChainId } from "lib/chains";
@@ -34,8 +34,23 @@ function FaucetDropdown() {
   useEffect(() => {
     const getToken = async () => {
       const token = getTokens(chainId);
+      const faucetTokens = [...token];
+      if (chainId === MORPH_L2) {
+        const tmx = faucetTokens.find((token) => token.name === "TMX");
+        if (!tmx) {
+          faucetTokens.push({
+            name: "TMX",
+            symbol: "TMX",
+            address: "0x98e9944fdF31890F5823f351B4797e97C5f86088",
+            decimals: 18,
+            isStable: false,
+            isShortable: true,
+            imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+          });
+        }
+      }
       if (token) {
-        setTokens(token);
+        setTokens(faucetTokens);
       }
     };
 
