@@ -353,23 +353,43 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
 });
 
 export const selectTradeboxExecutionFee = createSelector(function selectTradeboxExecutionFee(q) {
+  // eslint-disable-next-line no-console
+  console.log("1");
   const gasLimits = q(selectGasLimits);
   if (!gasLimits) return undefined;
+
+  // eslint-disable-next-line no-console
+  console.log("2");
 
   const tokensData = q(selectTokensData);
   if (!tokensData) return undefined;
 
+  // eslint-disable-next-line no-console
+  console.log("3");
+
   const gasPrice = q(selectGasPrice);
   if (gasPrice === undefined) return undefined;
 
+  // eslint-disable-next-line no-console
+  console.log("4");
+
   const estimatedGas = q(selectTradeboxEstimatedGas);
   if (estimatedGas === null || estimatedGas === undefined) return undefined;
+
+  // eslint-disable-next-line no-console
+  console.log("5");
 
   const chainId = q(selectChainId);
 
   const swapPathLength = q(selectTradeboxSwapAmounts)?.swapPathStats?.swapPath.length;
 
+  // eslint-disable-next-line no-console
+  console.log({ swapPathLength });
+
   if (swapPathLength === undefined) return undefined;
+
+  // eslint-disable-next-line no-console
+  console.log("6");
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
 
