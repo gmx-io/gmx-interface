@@ -73,7 +73,7 @@ export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT];
 export const SWAP_OPTION = [SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 20;
+export const DEFAULT_SLIPPAGE_AMOUNT = 50;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
