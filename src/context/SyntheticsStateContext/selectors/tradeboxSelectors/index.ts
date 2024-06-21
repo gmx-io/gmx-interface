@@ -12,7 +12,7 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
-import { isSwapOrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
 import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   SwapAmounts,
@@ -123,8 +123,6 @@ export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
-  // eslint-disable-next-line no-console
-  console.log("selectTradeboxIncreasePositionAmounts 1");
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
@@ -308,21 +306,13 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
-  // eslint-disable-next-line no-console
-  console.log("selectTradeboxEstimatedGas 1");
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;
 
-  // eslint-disable-next-line no-console
-  console.log("selectTradeboxEstimatedGas 2");
-
   const gasLimits = q(selectGasLimits);
 
   if (!gasLimits) return null;
-
-  // eslint-disable-next-line no-console
-  console.log("selectTradeboxEstimatedGas 3", { tradeFeesType });
 
   switch (tradeFeesType) {
     case "swap": {
@@ -336,14 +326,9 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
       });
     }
     case "increase": {
-      // eslint-disable-next-line no-console
-      console.log("selectTradeboxEstimatedGas 4");
       const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 
       if (!increaseAmounts) return null;
-
-      // eslint-disable-next-line no-console
-      console.log("selectTradeboxEstimatedGas 5");
 
       return estimateExecuteIncreaseOrderGasLimit(gasLimits, {
         swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
@@ -367,46 +352,39 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
   }
 });
 
+const selectTradeboxSwapCount = createSelector(function selectTradeboxSwapCount(q) {
+  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
+  if (isSwap) {
+    return q(selectTradeboxSwapAmounts)?.swapPathStats?.swapPath.length;
+  } else if (isIncrease) {
+    return q(selectTradeboxIncreasePositionAmounts)?.swapPathStats?.swapPath.length;
+  } else {
+    const decreaseSwapType = q(selectTradeboxDecreasePositionAmounts)?.decreaseSwapType;
+    if (decreaseSwapType === undefined) return undefined;
+    return decreaseSwapType !== DecreasePositionSwapType.NoSwap ? 1 : 0;
+  }
+});
+
 export const selectTradeboxExecutionFee = createSelector(function selectTradeboxExecutionFee(q) {
-  // eslint-disable-next-line no-console
-  console.log("1");
   const gasLimits = q(selectGasLimits);
   if (!gasLimits) return undefined;
-
-  // eslint-disable-next-line no-console
-  console.log("2");
 
   const tokensData = q(selectTokensData);
   if (!tokensData) return undefined;
 
-  // eslint-disable-next-line no-console
-  console.log("3");
-
   const gasPrice = q(selectGasPrice);
   if (gasPrice === undefined) return undefined;
-
-  // eslint-disable-next-line no-console
-  console.log("4");
 
   const estimatedGas = q(selectTradeboxEstimatedGas);
   if (estimatedGas === null || estimatedGas === undefined) return undefined;
 
-  // eslint-disable-next-line no-console
-  console.log("5");
-
   const chainId = q(selectChainId);
 
-  const swapPathLength = q(selectTradeboxSwapAmounts)?.swapPathStats?.swapPath.length;
+  const swapsCount = q(selectTradeboxSwapCount);
 
-  // eslint-disable-next-line no-console
-  console.log({ swapPathLength });
+  if (swapsCount === undefined) return undefined;
 
-  if (swapPathLength === undefined) return undefined;
-
-  // eslint-disable-next-line no-console
-  console.log("6");
-
-  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
