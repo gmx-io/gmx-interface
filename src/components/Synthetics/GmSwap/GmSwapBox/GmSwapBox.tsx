@@ -452,6 +452,7 @@ export function GmSwapBox(p: Props) {
       fees,
       isHighPriceImpact: Boolean(isHighPriceImpact),
       isHighPriceImpactAccepted,
+      priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     })[0];
 
     const error = commonError || swapError;
