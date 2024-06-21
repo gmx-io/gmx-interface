@@ -3219,8 +3219,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Exit Price (Exit)"
-msgstr ""
+#~ msgid "Exit Price (Exit)"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
@@ -7099,6 +7099,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Exit)"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx

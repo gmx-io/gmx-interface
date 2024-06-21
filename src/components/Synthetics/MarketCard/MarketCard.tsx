@@ -137,7 +137,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={isLong ? t`Bid Price (Exit)` : t`Exit Price (Exit)`}
+          label={isLong ? t`Bid Price (Exit)` : t`Ask Price (Exit)`}
           value={
             <Tooltip
               handle={
