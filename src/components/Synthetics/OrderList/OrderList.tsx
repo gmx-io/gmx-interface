@@ -10,12 +10,8 @@ import {
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  useCancellingOrdersKeysState,
-  useEditingOrderKeyState,
-} from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectEditingOrder } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -54,8 +50,6 @@ export function OrderList(p: Props) {
   const account = useSelector(selectAccount);
 
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-  const [, setEditingOrderKey] = useEditingOrderKeyState();
-  const editingOrder = useSelector(selectEditingOrder);
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
