@@ -123,6 +123,8 @@ export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
+  // eslint-disable-next-line no-console
+  console.log("selectTradeboxIncreasePositionAmounts 1");
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
@@ -306,13 +308,21 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  // eslint-disable-next-line no-console
+  console.log("selectTradeboxEstimatedGas 1");
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;
 
+  // eslint-disable-next-line no-console
+  console.log("selectTradeboxEstimatedGas 2");
+
   const gasLimits = q(selectGasLimits);
 
   if (!gasLimits) return null;
+
+  // eslint-disable-next-line no-console
+  console.log("selectTradeboxEstimatedGas 3", { tradeFeesType });
 
   switch (tradeFeesType) {
     case "swap": {
@@ -326,9 +336,14 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
       });
     }
     case "increase": {
+      // eslint-disable-next-line no-console
+      console.log("selectTradeboxEstimatedGas 4");
       const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 
       if (!increaseAmounts) return null;
+
+      // eslint-disable-next-line no-console
+      console.log("selectTradeboxEstimatedGas 5");
 
       return estimateExecuteIncreaseOrderGasLimit(gasLimits, {
         swapsCount: increaseAmounts.swapPathStats?.swapPath.length,

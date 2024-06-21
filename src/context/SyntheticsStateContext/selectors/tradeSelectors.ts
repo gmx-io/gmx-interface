@@ -225,6 +225,9 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
 
+        // eslint-disable-next-line no-console
+        console.log("makeSelectIncreasePositionAmounts 1");
+
         if (
           indexTokenAmount === undefined ||
           !tradeFlags.isIncrease ||
@@ -233,6 +236,15 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
           !collateralToken ||
           !marketInfo
         ) {
+          // eslint-disable-next-line no-console
+          console.log("makeSelectIncreasePositionAmounts 2", {
+            x1: indexTokenAmount === undefined,
+            x2: !tradeFlags.isIncrease,
+            x3: !indexToken,
+            x4: !initialCollateralToken,
+            x5: !collateralToken,
+            x6: !marketInfo,
+          });
           return undefined;
         }
 
