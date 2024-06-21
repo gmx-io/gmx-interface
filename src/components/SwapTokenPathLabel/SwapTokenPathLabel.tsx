@@ -20,8 +20,8 @@ export default function SwapTokenPathLabel({
 
   return (
     <div
-      className={cx("inline leading-2", {
-        "border-b border-dashed border-b-gray-400": bordered,
+      className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
+        "*:border-b *:border-dashed *:border-b-gray-400": bordered,
       })}
     >
       {pathTokenSymbols.map((symbol, index, arr) => (

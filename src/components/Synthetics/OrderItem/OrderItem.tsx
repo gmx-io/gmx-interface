@@ -231,7 +231,11 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
     const toTokenWithIcon = <TokenWithIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     return (
-      <div className={cx("inline leading-2", { "border-b border-dashed border-b-gray-400": bordered })}>
+      <div
+        className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
+          "border-b border-dashed border-b-gray-400": bordered,
+        })}
+      >
         <Trans>
           {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
         </Trans>
@@ -536,6 +540,12 @@ function OrderItemSmall({
               <Trans>Order Type</Trans>
             </div>
             <div>{isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType) : t`Limit`}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">
+              <Trans>Order</Trans>
+            </div>
+            <TitleWithIcon order={order} />
           </div>
           <div className="App-card-row">
             <div className="label">
