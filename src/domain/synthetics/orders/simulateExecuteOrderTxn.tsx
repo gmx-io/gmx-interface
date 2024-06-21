@@ -26,6 +26,7 @@ type SimulateExecuteOrderParams = {
   value: bigint;
   method?: string;
   errorTitle?: string;
+  extraArgs?: any[];
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
@@ -52,6 +53,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
         minTimestamp: priceTimestamp,
         maxTimestamp: priceTimestamp,
       },
+      ...(p.extraArgs ?? []),
     ]),
   ];
 

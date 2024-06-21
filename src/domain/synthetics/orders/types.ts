@@ -24,6 +24,12 @@ export enum OrderType {
   Liquidation = 7,
 }
 
+export enum SwapPricingType {
+  TwoStep = 0,
+  Shift = 1,
+  Atomic = 2,
+}
+
 export enum DecreasePositionSwapType {
   NoSwap = 0,
   SwapPnlTokenToCollateralToken = 1,
