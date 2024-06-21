@@ -104,10 +104,17 @@ export function estimateExecuteIncreaseOrderGasLimit(
   gasLimits: GasLimitsConfig,
   order: { swapsCount?: number; callbackGasLimit?: bigint }
 ) {
+  // eslint-disable-next-line no-console
+  console.log("estimateExecuteIncreaseOrderGasLimit 1", { gasLimits, order });
   const gasPerSwap = gasLimits.singleSwap;
   const swapsCount = BigInt(order.swapsCount ?? 0);
+  // eslint-disable-next-line no-console
+  console.log("estimateExecuteIncreaseOrderGasLimit 2", { gasPerSwap, swapsCount });
 
-  return gasLimits.increaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
+  const res = gasLimits.increaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
+  // eslint-disable-next-line no-console
+  console.log("estimateExecuteIncreaseOrderGasLimit 3", { res });
+  return res;
 }
 
 /**
