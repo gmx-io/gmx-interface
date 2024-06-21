@@ -55,7 +55,16 @@ export async function getGasLimit(
     value = defaultValue;
   }
 
-  let gasLimit = await contract[method].estimateGas(...params, { value });
+  let gasLimit = 0n;
+  try {
+    gasLimit = await contract[method].estimateGas(...params, { value });
+  } catch (error) {
+    // this call should throw another error instead of the `error`
+    await contract[method].staticCall(...params, { value });
+
+    // if not we throw estimateGas error
+    throw error;
+  }
 
   if (gasLimit < 22000) {
     gasLimit = 22000n;

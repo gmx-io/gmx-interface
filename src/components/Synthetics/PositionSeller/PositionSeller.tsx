@@ -76,6 +76,7 @@ import {
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
+  selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
@@ -84,10 +85,11 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { bigMath } from "lib/bigmath";
-import "./PositionSeller.scss";
-import { useLocalizedMap } from "lib/i18n";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
+import "./PositionSeller.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -128,6 +130,8 @@ export function PositionSeller(p: Props) {
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
+  const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
+
   const {
     allowedSlippage,
     closeUsdInputValue: closeUsdInputValueRaw,
@@ -147,6 +151,7 @@ export function PositionSeller(p: Props) {
     setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
+    setIsReceiveTokenChanged,
   } = usePositionSeller();
   const keepLeverage = usePositionSellerKeepLeverage();
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
@@ -165,6 +170,14 @@ export function PositionSeller(p: Props) {
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
+
+  const setReceiveTokenManually = useCallback(
+    (token: Token) => {
+      setIsReceiveTokenChanged(true);
+      setReceiveTokenAddress(token.address);
+    },
+    [setReceiveTokenAddress, setIsReceiveTokenChanged]
+  );
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
@@ -303,7 +316,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighFeeConsentError) {
-      return [t`High Execution Fee not yet acknowledged`];
+      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
@@ -400,6 +413,7 @@ export function PositionSeller(p: Props) {
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
     });
   }
 
@@ -605,7 +619,7 @@ export function PositionSeller(p: Props) {
             showBalances={false}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
-            onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+            onSelectToken={setReceiveTokenManually}
             tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={

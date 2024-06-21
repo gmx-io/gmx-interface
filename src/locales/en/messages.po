@@ -185,6 +185,10 @@ msgstr "EIP-4844, 13-20 Mar"
 msgid "Enable leverage sent."
 msgstr "Enable leverage sent."
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Show error"
+msgstr "Show error"
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
@@ -404,10 +408,6 @@ msgstr "Open Fees"
 msgid "Realized PnL"
 msgstr "Realized PnL"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -473,6 +473,10 @@ msgstr "hide"
 msgid "in liquidity"
 msgstr "in liquidity"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee buffer below {0}% may result in failed orders."
+msgstr "Max Network Fee buffer below {0}% may result in failed orders."
+
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
@@ -528,10 +532,6 @@ msgstr "There may not be sufficient liquidity to execute the Pay Token to Collat
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-msgstr "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-
 #: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -554,6 +554,10 @@ msgstr "Stake esGMX Rewards"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr "Networks and Settings"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max network fee buffer precision is 0.01%"
+msgstr "Max network fee buffer precision is 0.01%"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Max. Leverage Exceeded"
@@ -736,6 +740,10 @@ msgstr "Stop-Loss"
 msgid "Positions ({positionsCount})"
 msgstr "Positions ({positionsCount})"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "As network fees have increased, an additional network fee is needed."
+msgstr "As network fees have increased, an additional network fee is needed."
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposited"
 msgstr "Deposited"
@@ -814,6 +822,10 @@ msgstr "Escrowed GMX"
 #: src/components/Exchange/SwapBox.js
 msgid "Insufficient Liquidity"
 msgstr "Insufficient Liquidity"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
+msgstr "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -958,13 +970,17 @@ msgstr "Request Withdraw"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
-msgstr "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:<1/><2/>- price changes of the underlying token(s)<3/>- traders' PnL, which is expected to be neutral in the long term<4/>- funding fees, which are exchanged between traders<5/><6/><7>Read more about GM token pricing</7>.</0><8/><9>Check GM pools' performance against other LP Positions in the <10>GMX Dune Dashboard</10>.</9>"
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copied"
+msgstr "Copied"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
 msgstr "Requested deposit of {0} {1} into {2} {longOrShortText}."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Invalid network fee buffer value"
+msgstr "Invalid network fee buffer value"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit Order"
@@ -1090,6 +1106,10 @@ msgstr "Withdrawing {0} to Main Account"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Hide error"
+msgstr "Hide error"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
@@ -1896,10 +1916,6 @@ msgstr "Collateral Spread"
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee"
-msgstr "Max Execution Fee"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "Index"
@@ -2545,10 +2561,6 @@ msgstr "Liq. {longOrShortText} {tokenSymbol}"
 msgid "Update Order"
 msgstr "Update Order"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max execution fee buffer precision is 0.01%"
-msgstr "Max execution fee buffer precision is 0.01%"
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "Mark price for the liquidation."
@@ -2639,7 +2651,9 @@ msgstr "Enable orders failed."
 msgid "Total Staked"
 msgstr "Total Staked"
 
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
 msgstr "Network Fee"
 
@@ -2763,6 +2777,10 @@ msgstr "Accrued Price Impact Rebates. They will become Claimable after some time
 msgid "Positions{0}"
 msgstr "Positions{0}"
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Unknown Error"
+msgstr "Unknown Error"
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
 msgstr "Buying..."
@@ -2862,6 +2880,10 @@ msgstr "Enable withdraw sent."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+msgstr "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2937,10 +2959,6 @@ msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read mor
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
 msgstr "<0>Set Recommended Impact: {0}</0>."
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
-msgstr "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
@@ -3645,6 +3663,13 @@ msgstr "Unknown sell GM order"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "High Network Fee not yet acknowledged"
+msgstr "High Network Fee not yet acknowledged"
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below lowest Limit Price."
 msgstr "Price below lowest Limit Price."
@@ -3703,10 +3728,6 @@ msgstr "GLP Index Composition"
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee Buffer"
-msgstr "Max Execution Fee Buffer"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
@@ -4219,6 +4240,10 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max Network Fee Buffer"
+msgstr "Max Network Fee Buffer"
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order updated!"
 msgstr "Order updated!"
@@ -4249,10 +4274,6 @@ msgstr "UTILIZATION"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Announcements"
 msgstr "GMX Announcements"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Invalid execution fee buffer value"
-msgstr "Invalid execution fee buffer value"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -4319,7 +4340,7 @@ msgstr "Swap {0}"
 msgid "Swap Order submitted!"
 msgstr "Swap Order submitted!"
 
-#: src/App/App.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -5796,11 +5817,6 @@ msgstr "Receive"
 msgid "Returns calculator for GMX and GLP"
 msgstr "Returns calculator for GMX and GLP"
 
-#: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Execution Fee"
-msgstr "Execution Fee"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
 msgstr "time to liq"
@@ -5885,6 +5901,10 @@ msgstr "Buy GMX"
 msgid "Max {0} Capacity"
 msgstr "Max {0} Capacity"
 
+#: src/components/ToastifyDebug/ToastifyDebug.tsx
+msgid "Copy error"
+msgstr "Copy error"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -5925,6 +5945,10 @@ msgstr "Can't execute because of an error"
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
 msgstr "Keep Leverage is not possible"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
+msgstr "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"
@@ -6439,10 +6463,6 @@ msgstr "Increasing"
 msgid "Avg. Lev."
 msgstr "Avg. Lev."
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "As network fees have increased, an additional execution fee is needed."
-msgstr "As network fees have increased, an additional execution fee is needed."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "Telegram Group (Chinese)"
@@ -6733,10 +6753,6 @@ msgstr "Withdraw from GLP Vault"
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Execution Fee buffer below {0}% may result in failed orders."
-msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
@@ -6932,10 +6948,6 @@ msgstr "{prefix} <0>{text}</0>"
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-msgstr "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
@@ -7005,6 +7017,10 @@ msgstr "Net Rate"
 msgid "2nd Place"
 msgstr "2nd Place"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
+msgstr "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
@@ -7016,13 +7032,6 @@ msgstr "Orders ({ordersCount})"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "GMX explorer for stats and traders"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "High Execution Fee not yet acknowledged"
-msgstr "High Execution Fee not yet acknowledged"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -7507,6 +7516,10 @@ msgstr "Long Positions"
 msgid "Depositing {0} to {positionText}"
 msgstr "Depositing {0} to {positionText}"
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Network Fee"
+msgstr "Max Network Fee"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -7527,6 +7540,10 @@ msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Increase active: {0}, executed: {1}, cancelled: {2}"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr "Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"

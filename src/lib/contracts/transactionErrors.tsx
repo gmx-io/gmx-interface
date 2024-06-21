@@ -57,6 +57,11 @@ export function extractError(ex: TxError) {
   if (!ex) {
     return [];
   }
+
+  // ethers v6 moved error to `.info` field 🤷‍♂️,
+  // we also fallback to `ex` cos we might catch errors from ethers v5
+  // from some outdated dependency like @davatar/react
+  ex = (ex as any)?.info ?? ex;
   let message = ex.error?.message || ex.data?.message || ex.message;
   let code = ex.error?.code || ex.code;
 
@@ -106,22 +111,14 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
           <br />
           <br />
-          <Link to="/buy_gmx#bridge">
+          <Link className="underline" to="/buy_gmx#bridge">
             Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
       break;
     case NETWORK_CHANGED:
-      failMsg = (
-        <Trans>
-          <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-          <br />
-          <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-            Switch to {getChainName(chainId)}
-          </div>
-        </Trans>
-      );
+      failMsg = getInvalidNetworkErrorMessage(chainId);
       break;
     case USER_DENIED:
       failMsg = t`Transaction was cancelled.`;
@@ -148,7 +145,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           </Trans>
           <br />
           <br />
-          {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
+          {originalError && <ToastifyDebug error={originalError} />}
         </div>
       );
       break;
@@ -161,10 +158,23 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           {txnMessage || t`Transaction failed`}
           <br />
           <br />
-          {message && <ToastifyDebug>{message}</ToastifyDebug>}
+          {message && <ToastifyDebug error={message} />}
         </div>
       );
   }
 
   return { failMsg, autoCloseToast };
+}
+
+export const INVALID_NETWORK_TOAST_ID = "invalid-network";
+export function getInvalidNetworkErrorMessage(chainId: number) {
+  return (
+    <Trans>
+      <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+      <br />
+      <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+        Switch to {getChainName(chainId)}
+      </div>
+    </Trans>
+  );
 }

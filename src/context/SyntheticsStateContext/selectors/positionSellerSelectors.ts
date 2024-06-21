@@ -37,10 +37,17 @@ export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =
   state.positionSeller.closeUsdInputValue;
 const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
 export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
+export const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
+  state.positionSeller.isReceiveTokenChanged;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
 });
+
+export const selectPositionSellerSetDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.setDefaultReceiveToken;
+export const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.defaultReceiveToken;
 
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
@@ -67,7 +74,7 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const marketAddress = position.marketInfo.marketTokenAddress;
   const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -176,7 +183,11 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const isTrigger = orderOption === OrderOption.Trigger;
   const tokensData = q(selectTokensData);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
+  const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
+  const receiveTokenAddress = isChanged
+    ? q(selectPositionSellerReceiveTokenAddress)
+    : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
   return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 });
 
@@ -189,7 +200,7 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
 
 export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
   const selectMakeLiquidityPath = makeSelectMaxLiquidityPath(position?.collateralTokenAddress, receiveTokenAddress);
 
   return q(selectMakeLiquidityPath);
@@ -197,7 +208,7 @@ export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
 
 export const selectPositionSellerFindSwapPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
   const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
 
   return q(selectFindSwapPath);
