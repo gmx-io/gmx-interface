@@ -355,9 +355,13 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
 const selectTradeboxSwapCount = createSelector(function selectTradeboxSwapCount(q) {
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
   if (isSwap) {
-    return q(selectTradeboxSwapAmounts)?.swapPathStats?.swapPath.length;
+    const swapAmounts = q(selectTradeboxSwapAmounts);
+    if (!swapAmounts) return undefined;
+    return swapAmounts?.swapPathStats?.swapPath.length ?? 0;
   } else if (isIncrease) {
-    return q(selectTradeboxIncreasePositionAmounts)?.swapPathStats?.swapPath.length;
+    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+    if (!increaseAmounts) return undefined;
+    return increaseAmounts?.swapPathStats?.swapPath.length ?? 0;
   } else {
     const decreaseSwapType = q(selectTradeboxDecreasePositionAmounts)?.decreaseSwapType;
     if (decreaseSwapType === undefined) return undefined;
