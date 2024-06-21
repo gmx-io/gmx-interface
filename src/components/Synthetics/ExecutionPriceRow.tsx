@@ -55,7 +55,7 @@ export function ExecutionPriceRow({
       ? fees?.positionPriceImpact?.deltaUsd + fees?.priceImpactDiff?.deltaUsd * -1n
       : undefined;
 
-  const clarificationText = useMemo(() => {
+  const acceptablePriceClarification = useMemo(() => {
     if (isMarket) {
       return t`The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed.`;
     }
@@ -134,20 +134,24 @@ export function ExecutionPriceRow({
                   )}
                 />
               )}
-              {acceptablePriceFormated !== undefined && (
-                <StatsTooltipRow
-                  label={t`Order Acceptable Price`}
-                  value={
-                    <>
-                      {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
-                      {acceptablePriceFormated}
-                    </>
-                  }
-                  showDollar={false}
-                />
+              {acceptablePriceFormated !== undefined ? (
+                <>
+                  <StatsTooltipRow
+                    label={t`Order Acceptable Price`}
+                    value={
+                      <>
+                        {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
+                        {acceptablePriceFormated}
+                      </>
+                    }
+                    showDollar={false}
+                  />
+                  <br />
+                  {acceptablePriceClarification}{" "}
+                </>
+              ) : (
+                <br />
               )}
-              <br />
-              {clarificationText}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#order-execution">{t`Read more`}</ExternalLink>.
             </>
           }
