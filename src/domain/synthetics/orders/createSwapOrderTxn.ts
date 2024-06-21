@@ -134,6 +134,7 @@ async function getParams(
       callbackGasLimit: 0n,
       minOutputAmount,
     },
+    autoCancel: false,
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,

@@ -183,6 +183,7 @@ export function createDecreaseEncodedPayload({
         : p.minOutputUsd;
       const orderParams = {
         addresses: {
+          cancellationReceiver: ethers.ZeroAddress,
           receiver: p.account,
           initialCollateralToken: initialCollateralTokenAddress,
           callbackContract: ZeroAddress,

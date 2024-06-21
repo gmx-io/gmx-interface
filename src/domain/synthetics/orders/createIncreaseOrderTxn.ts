@@ -307,6 +307,7 @@ function createOrderParams({
 }) {
   return {
     addresses: {
+      cancellationReceiver: ethers.ZeroAddress,
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
