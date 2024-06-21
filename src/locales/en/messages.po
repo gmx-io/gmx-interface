@@ -853,8 +853,8 @@ msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max pool amount exceeded LOL"
-msgstr "Max pool amount exceeded LOL"
+#~ msgid "Max pool amount exceeded LOL"
+#~ msgstr "Max pool amount exceeded LOL"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
@@ -7145,6 +7145,10 @@ msgstr "Deposit Fee"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new size or price"
 msgstr "Enter a new size or price"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool amount exceeded"
+msgstr "Max pool amount exceeded"
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
