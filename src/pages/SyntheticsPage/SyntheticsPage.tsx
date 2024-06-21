@@ -3,7 +3,9 @@ import cx from "classnames";
 import { uniq } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
+import type { Address } from "viem";
 
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -20,6 +22,7 @@ import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import type { OrderType } from "domain/synthetics/orders/types";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
@@ -94,20 +97,39 @@ export function SyntheticsPage(p: Props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const { isCancelOrdersProcessing, selectedOrderKeys, setSelectedOrderKeys, onCancelSelectedOrders, onCancelOrder } =
-    useOrdersControl();
+  const {
+    isCancelOrdersProcessing,
+    selectedOrderKeys,
+    setSelectedOrderKeys,
+    onCancelSelectedOrders,
+    onCancelOrder,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
+  } = useOrdersControl();
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
   const handlePositionListOrdersClick = useCallback(
-    (key?: string) => {
+    (positionKey: string, orderKey: string | undefined) => {
       setListSection(ListSection.Orders);
-      setSelectedPositionOrderKey(key);
-      if (key) {
-        setSelectedOrderKeys((prev) => uniq(prev.concat(key)));
+      setSelectedPositionOrderKey(orderKey);
+
+      if (orderKey) {
+        setSelectedOrderKeys((prev) => uniq(prev.concat(orderKey)));
+        const position = calcSelector(selectPositionsInfoData)?.[positionKey];
+        if (position) {
+          setMarketsDirectionsFilter([
+            {
+              direction: "any",
+              marketAddress: position.marketAddress as Address,
+            },
+          ]);
+        }
       }
     },
-    [setListSection, setSelectedOrderKeys]
+    [calcSelector, setListSection, setMarketsDirectionsFilter, setSelectedOrderKeys]
   );
 
   useEffect(() => {
@@ -261,6 +283,10 @@ export function SyntheticsPage(p: Props) {
                 setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                marketsDirectionsFilter={marketsDirectionsFilter}
+                setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                orderTypesFilter={orderTypesFilter}
+                setOrderTypesFilter={setOrderTypesFilter}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -306,6 +332,10 @@ export function SyntheticsPage(p: Props) {
               setPendingTxns={setPendingTxns}
               selectedPositionOrderKey={selectedPositionOrderKey}
               setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+              marketsDirectionsFilter={marketsDirectionsFilter}
+              setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+              orderTypesFilter={orderTypesFilter}
+              setOrderTypesFilter={setOrderTypesFilter}
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -335,6 +365,9 @@ function useOrdersControl() {
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
   const subaccount = useSubaccount(null, selectedOrderKeys.length);
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
+
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
 
   const onCancelSelectedOrders = useCallback(
     function cancelSelectedOrders() {
@@ -382,5 +415,9 @@ function useOrdersControl() {
     onCancelOrder,
     selectedOrderKeys,
     setSelectedOrderKeys,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
   };
 }

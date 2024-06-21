@@ -18,7 +18,7 @@ import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
-  onOrdersClick: (key?: string) => void;
+  onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
@@ -154,7 +154,7 @@ const PositionItemWrapper = memo(
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
-    onOrdersClick: (key: string | undefined) => void;
+    onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
@@ -178,13 +178,19 @@ const PositionItemWrapper = memo(
     );
     const handleShareClick = useCallback(() => onShareClick(position.key), [onShareClick, position.key]);
     const handleCancelOrder = useCallback((orderKey: string) => onCancelOrder(orderKey), [onCancelOrder]);
+    const handleOrdersClick = useCallback(
+      (orderKey: string | undefined) => {
+        onOrdersClick(position.key, orderKey);
+      },
+      [onOrdersClick, position.key]
+    );
 
     return (
       <PositionItem
         position={position}
         onEditCollateralClick={handleEditCollateralClick}
         onClosePositionClick={handleClosePositionClick}
-        onOrdersClick={onOrdersClick}
+        onOrdersClick={handleOrdersClick}
         onSelectPositionClick={handleSelectPositionClick}
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}

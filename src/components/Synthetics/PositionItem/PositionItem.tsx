@@ -1,12 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { useCallback } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
+import { BiSelectMultiple } from "react-icons/bi";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import { useMedia } from "react-use";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -38,7 +41,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./PositionItem.scss";
-import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 
 export type Props = {
   position: PositionInfo;
@@ -422,7 +424,7 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {formatUsd(p.position.sizeInUsd)}
-          <PositionItemOrders positionKey={p.position.key} />
+          <PositionItemOrders positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </td>
         <td>
           {/* collateral */}
@@ -598,7 +600,7 @@ export function PositionItem(p: Props) {
                 <Trans>Orders</Trans>
               </div>
               <div>
-                <PositionItemOrders isSmall positionKey={p.position.key} />
+                <PositionItemOrders isSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
               </div>
             </div>
           </div>
@@ -646,7 +648,15 @@ export function PositionItem(p: Props) {
   return p.isLarge ? renderLarge() : renderSmall();
 }
 
-function PositionItemOrders({ positionKey, isSmall }: { isSmall?: boolean; positionKey: string }) {
+function PositionItemOrders({
+  positionKey,
+  isSmall,
+  onOrdersClick,
+}: {
+  isSmall?: boolean;
+  positionKey: string;
+  onOrdersClick?: (key?: string) => void;
+}) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
   const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
@@ -725,7 +735,7 @@ function PositionItemOrders({ positionKey, isSmall }: { isSmall?: boolean; posit
               <Trans>Active Orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
-              <PositionItemOrder key={params.order.key} {...params} />
+              <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
             ))}
           </div>
         }
@@ -734,9 +744,20 @@ function PositionItemOrders({ positionKey, isSmall }: { isSmall?: boolean; posit
   );
 }
 
-function PositionItemOrder({ order, orderErrors }: { order: PositionOrderInfo; orderErrors: OrderErrors }) {
+function PositionItemOrder({
+  order,
+  orderErrors,
+  onOrdersClick,
+}: {
+  order: PositionOrderInfo;
+  orderErrors: OrderErrors;
+  onOrdersClick?: (key?: string) => void;
+}) {
   const [, setEditingOrderKey] = useEditingOrderKeyState();
   const [isCancelling, cancel] = useCancelOrder(order.key);
+  const handleOrdersClick = useCallback(() => {
+    onOrdersClick?.(order.key);
+  }, [onOrdersClick, order.key]);
 
   const errors = orderErrors.errors;
 
@@ -745,6 +766,13 @@ function PositionItemOrder({ order, orderErrors }: { order: PositionOrderInfo; o
       <div className="flex items-center justify-between">
         <PositionItemOrderText order={order} />
         <div className="flex items-center gap-6">
+          <Button
+            variant="secondary"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            onClick={handleOrdersClick}
+          >
+            <BiSelectMultiple fontSize={16} />
+          </Button>
           <Button
             variant="secondary"
             className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"

@@ -12,6 +12,7 @@ import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orde
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
@@ -157,6 +158,10 @@ export function HistoricalLists({ chainId, account }: Props) {
           selectedPositionOrderKey={undefined}
           setSelectedPositionOrderKey={noop}
           hideActions
+          marketsDirectionsFilter={EMPTY_ARRAY}
+          orderTypesFilter={EMPTY_ARRAY}
+          setMarketsDirectionsFilter={noop}
+          setOrderTypesFilter={noop}
         />
       )}
       {tabKey === TabKey.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}

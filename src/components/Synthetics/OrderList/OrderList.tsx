@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import values from "lodash/values";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import { useMeasure } from "react-use";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
@@ -33,6 +33,10 @@ type Props = {
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
+  marketsDirectionsFilter: MarketFilterLongShortItemData[];
+  setMarketsDirectionsFilter: Dispatch<SetStateAction<MarketFilterLongShortItemData[]>>;
+  orderTypesFilter: OrderType[];
+  setOrderTypesFilter: Dispatch<SetStateAction<OrderType[]>>;
 };
 
 export function OrderList(p: Props) {
@@ -49,15 +53,12 @@ export function OrderList(p: Props) {
   const subaccount = useSubaccount(null);
   const account = useSelector(selectAccount);
 
-  const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-
-  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
   const ordersRaw = useOrdersInfoRequest(chainId, {
     account: subaccount?.address ?? account,
-    marketsDirectionsFilter,
-    orderTypesFilter,
+    marketsDirectionsFilter: p.marketsDirectionsFilter,
+    orderTypesFilter: p.orderTypesFilter,
     marketsInfoData: useMarketsInfoData(),
     tokensData: useTokensData(),
   });
@@ -110,14 +111,14 @@ export function OrderList(p: Props) {
 
   function onCancelOrder(key: string) {
     if (!signer) return;
-    setCanellingOrdersKeys((prev) => [...prev, key]);
+    setCancellingOrdersKeys((prev) => [...prev, key]);
 
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
       setPendingTxns: p.setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => {
-      setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+      setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
     });
   }
@@ -130,10 +131,10 @@ export function OrderList(p: Props) {
       {isMobile && !isLoading && orders.length !== 0 && (
         <div className="flex flex-col gap-8">
           <div className="flex gap-8">
-            <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
-            <OrderTypeFilter asButton value={orderTypesFilter} onChange={setOrderTypesFilter} />
+            <MarketFilterLongShort asButton value={p.marketsDirectionsFilter} onChange={p.setMarketsDirectionsFilter} />
+            <OrderTypeFilter asButton value={p.orderTypesFilter} onChange={p.setOrderTypesFilter} />
           </div>
-          <div className="sm:grid-cols-auto-fill-350 grid gap-8">
+          <div className="grid gap-8 sm:grid-cols-auto-fill-350">
             {orders.map((order) => (
               <OrderItem
                 key={order.key}
@@ -163,10 +164,10 @@ export function OrderList(p: Props) {
                 </ExchangeTh>
               )}
               <ExchangeTh>
-                <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                <MarketFilterLongShort value={p.marketsDirectionsFilter} onChange={p.setMarketsDirectionsFilter} />
               </ExchangeTh>
               <ExchangeTh>
-                <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
+                <OrderTypeFilter value={p.orderTypesFilter} onChange={p.setOrderTypesFilter} />
               </ExchangeTh>
               <ExchangeTh>
                 <Trans>Order</Trans>
