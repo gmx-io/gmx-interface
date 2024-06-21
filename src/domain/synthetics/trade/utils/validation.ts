@@ -583,6 +583,10 @@ export function getGmSwapError(p: {
       }
     }
 
+    if (!getIsValidPoolUsdForDeposit(marketInfo)) {
+      return [t`Max pool USD exceeded`];
+    }
+
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
     const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
@@ -647,6 +651,19 @@ export function getGmSwapError(p: {
   return [undefined];
 }
 
+function getIsValidPoolUsdForDeposit(marketInfo: MarketInfo) {
+  const tokenIn = getTokenIn(marketInfo);
+  const poolAmount =
+    tokenIn.address === marketInfo.longToken.address ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const poolUsd = bigMath.mulDiv(tokenIn.prices.maxPrice, poolAmount, expandDecimals(1, tokenIn.decimals));
+  const maxPoolUsd =
+    tokenIn.address === marketInfo.longToken.address
+      ? marketInfo.maxLongPoolUsdForDeposit
+      : marketInfo.maxShortPoolUsdForDeposit;
+
+  return poolUsd <= maxPoolUsd;
+}
+
 function applySwapImpactWithCap(marketInfo: MarketInfo, priceImpactUsd: bigint) {
   const impactAmount = getSwapImpactAmountWithCap(marketInfo, priceImpactUsd);
   const newSwapImpactPoolAmount = applyDeltaToSwapImpactPool(marketInfo, -impactAmount);
@@ -705,6 +722,10 @@ function applyDeltaToPoolAmount(marketInfo: MarketInfo, delta: bigint) {
 
 function getTokenOut(marketInfo: MarketInfo) {
   return marketInfo.longToken;
+}
+
+function getTokenIn(marketInfo: MarketInfo) {
+  return marketInfo.shortToken;
 }
 
 function getSwapImpactPoolAmount(marketInfo: MarketInfo) {
