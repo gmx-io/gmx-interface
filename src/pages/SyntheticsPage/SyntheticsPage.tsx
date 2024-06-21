@@ -20,7 +20,6 @@ import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
@@ -81,8 +80,6 @@ export function SyntheticsPage(p: Props) {
   useTradeParamsProcessor();
 
   const chartToken = useSelector(selectChartToken);
-
-  const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
   const ordersCount = useSelector(selectOrdersCount);

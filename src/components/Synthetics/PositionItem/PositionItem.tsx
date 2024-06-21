@@ -50,7 +50,6 @@ export type Props = {
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   isLarge: boolean;
   openSettings: () => void;
-  onGetPendingFeesClick: () => void;
   onOrdersClick?: (key?: string) => void;
   onCancelOrder?: (orderKey: string) => void;
 };

@@ -25,15 +25,7 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
-  const {
-    onClosePositionClick,
-    onOrdersClick,
-    onSelectPositionClick,
-    onSettlePositionFeesClick,
-    openSettings,
-    onCancelOrder,
-    hideActions,
-  } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -200,7 +192,6 @@ const PositionItemWrapper = memo(
         hideActions={hideActions}
         onShareClick={handleShareClick}
         onCancelOrder={handleCancelOrder}
-        onGetPendingFeesClick={onSettlePositionFeesClick}
       />
     );
   }
