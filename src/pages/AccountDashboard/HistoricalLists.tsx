@@ -142,7 +142,6 @@ export function HistoricalLists({ chainId, account }: Props) {
       {tabKey === TabKey.Positions && (
         <PositionList
           onOrdersClick={noop}
-          onSettlePositionFeesClick={noop}
           onSelectPositionClick={noop}
           onClosePositionClick={noop}
           openSettings={noop}

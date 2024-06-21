@@ -1,5 +1,5 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelectorDeprecated } from "../utils";
+import { createSelectorDeprecated, createSelector } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -37,3 +37,15 @@ export const selectClosingPositionKeyState = createSelectorDeprecated(
   [selectClosingPositionKey, selectSetClosingPositionKey],
   (closingPositionKey, setClosingPositionKey) => [closingPositionKey, setClosingPositionKey] as const
 );
+
+export const selectPositiveFeePositions = createSelector((q) => {
+  const positionsInfoData = q(selectPositionsInfoData);
+  return Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0);
+});
+
+export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
+  const positiveFeePositions = q(selectPositiveFeePositions);
+  return positiveFeePositions.sort((a, b) =>
+    a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
+  );
+});

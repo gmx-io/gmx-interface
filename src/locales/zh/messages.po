@@ -5766,6 +5766,10 @@ msgstr ""
 msgid "Trade Errors"
 msgstr ""
 
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr ""
@@ -7192,8 +7196,8 @@ msgid "Close {0} {1}"
 msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
-msgstr ""
+#~ msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"

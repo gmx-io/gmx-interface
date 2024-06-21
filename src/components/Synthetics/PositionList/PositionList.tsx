@@ -16,21 +16,13 @@ import { memo, useCallback, useState } from "react";
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
-  onSettlePositionFeesClick: (key: string) => void;
   onOrdersClick: (key?: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
-  const {
-    onClosePositionClick,
-    onOrdersClick,
-    onSelectPositionClick,
-    onSettlePositionFeesClick,
-    openSettings,
-    hideActions,
-  } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const { chainId } = useChainId();
   const { account } = useWallet();
@@ -60,7 +52,6 @@ export function PositionList(p: Props) {
               position={position}
               onEditCollateralClick={setEditingPositionKey}
               onClosePositionClick={onClosePositionClick}
-              onGetPendingFeesClick={onSettlePositionFeesClick}
               onOrdersClick={onOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               isLarge={false}
@@ -112,7 +103,6 @@ export function PositionList(p: Props) {
                 position={position}
                 onEditCollateralClick={setEditingPositionKey}
                 onClosePositionClick={onClosePositionClick}
-                onGetPendingFeesClick={onSettlePositionFeesClick}
                 onOrdersClick={onOrdersClick}
                 onSelectPositionClick={onSelectPositionClick}
                 isLarge
@@ -149,7 +139,6 @@ const PositionItemWrapper = memo(
     isLarge,
     onClosePositionClick,
     onEditCollateralClick,
-    onGetPendingFeesClick,
     onOrdersClick,
     onSelectPositionClick,
     onShareClick,
@@ -158,7 +147,6 @@ const PositionItemWrapper = memo(
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
-    onGetPendingFeesClick: (positionKey: string) => void;
     onOrdersClick: (key: string | undefined) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined) => void;
     isLarge: boolean;
@@ -175,10 +163,7 @@ const PositionItemWrapper = memo(
       () => onClosePositionClick(position.key),
       [onClosePositionClick, position.key]
     );
-    const handleGetPendingFeesClick = useCallback(
-      () => onGetPendingFeesClick(position.key),
-      [onGetPendingFeesClick, position.key]
-    );
+
     const handleSelectPositionClick = useCallback(
       (tradeMode?: TradeMode) => onSelectPositionClick(position.key, tradeMode),
       [onSelectPositionClick, position.key]
@@ -190,7 +175,6 @@ const PositionItemWrapper = memo(
         position={position}
         onEditCollateralClick={handleEditCollateralClick}
         onClosePositionClick={handleClosePositionClick}
-        onGetPendingFeesClick={handleGetPendingFeesClick}
         onOrdersClick={onOrdersClick}
         onSelectPositionClick={handleSelectPositionClick}
         showPnlAfterFees={showPnlAfterFees}

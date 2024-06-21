@@ -49,7 +49,6 @@ export type Props = {
   onOrdersClick?: (key?: string) => void;
   isLarge: boolean;
   openSettings: () => void;
-  onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {

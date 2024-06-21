@@ -14,7 +14,6 @@ import Tab from "components/Tab/Tab";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -78,8 +77,6 @@ export function SyntheticsPage(p: Props) {
   useTradeParamsProcessor();
 
   const chartToken = useSelector(selectChartToken);
-
-  const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
@@ -173,11 +170,6 @@ export function SyntheticsPage(p: Props) {
     [calcSelector, setActivePosition]
   );
 
-  const handleSettlePositionFeesClick = useCallback((positionKey: PositionInfo["key"]) => {
-    setGettingPendingFeePositionKeys((keys) => keys.concat(positionKey).filter((x, i, self) => self.indexOf(x) === i));
-    setIsSettling(true);
-  }, []);
-
   const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
       return (
@@ -216,8 +208,6 @@ export function SyntheticsPage(p: Props) {
         shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
-        gettingPendingFeePositionKeys={gettingPendingFeePositionKeys}
-        setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         allowedSlippage={allowedSlippage}
       />
@@ -277,7 +267,6 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <PositionList
                 onOrdersClick={handlePositionListOrdersClick}
-                onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 openSettings={openSettings}
@@ -324,7 +313,6 @@ export function SyntheticsPage(p: Props) {
               onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
-              onSettlePositionFeesClick={handleSettlePositionFeesClick}
               openSettings={openSettings}
             />
           )}
