@@ -406,6 +406,7 @@ export function PositionSeller(p: Props) {
     if (subaccount) {
       onClose();
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
       return;
     }
 
