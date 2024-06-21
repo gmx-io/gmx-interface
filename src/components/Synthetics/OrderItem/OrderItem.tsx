@@ -78,6 +78,8 @@ export function OrderItem(p: Props) {
       hideActions={p.hideActions}
       onCancelOrder={p.onCancelOrder}
       setEditingOrderKey={setEditingOrderKey}
+      isSelected={p.isSelected}
+      onToggleOrder={p.onToggleOrder}
     />
   );
 }
@@ -483,12 +485,16 @@ function OrderItemSmall({
   setEditingOrderKey,
   onCancelOrder,
   hideActions,
+  isSelected,
+  onToggleOrder,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
   hideActions: boolean | undefined;
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
+  isSelected: boolean | undefined;
+  onToggleOrder: undefined | (() => void);
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -526,7 +532,10 @@ function OrderItemSmall({
   return (
     <div className="App-card">
       <div>
-        <div>{title}</div>
+        <div className="flex cursor-pointer items-center" onClick={onToggleOrder}>
+          {!hideActions && <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />}
+          {title}
+        </div>
         <div className="App-card-divider" />
         <div className="App-card-content">
           {showDebugValues && (
