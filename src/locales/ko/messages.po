@@ -317,6 +317,10 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 msgid "Cancel Stop-Loss Order"
 msgstr "손절 주문 취소"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool USD exceeded"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"

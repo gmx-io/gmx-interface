@@ -317,6 +317,10 @@ msgstr "Max {0} Short überschritten"
 msgid "Cancel Stop-Loss Order"
 msgstr "Stop-Loss Order abbrechen"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool USD exceeded"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
