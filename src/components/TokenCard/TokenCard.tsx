@@ -18,6 +18,7 @@ import { mergeWith } from "lodash";
 import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { INCENTIVES_V2_URL } from "config/ui";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -162,11 +163,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </div>
           </div>
           {poolsIncentivizedLabel && (
-            <BannerButton
-              className="mt-15"
-              label={poolsIncentivizedLabel}
-              link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
-            />
+            <BannerButton className="mt-15" label={poolsIncentivizedLabel} link={INCENTIVES_V2_URL} />
           )}
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
@@ -208,7 +205,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
                 <BannerButton
                   className="mt-15"
                   label="Migrating from GLP to GM is incentivized in Arbitrum."
-                  link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+                  link={INCENTIVES_V2_URL}
                 />
               )}
             </div>

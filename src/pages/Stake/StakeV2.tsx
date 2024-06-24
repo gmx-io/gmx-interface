@@ -54,7 +54,7 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { INCENTIVES_V2_URL, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -1964,10 +1964,7 @@ export default function StakeV2() {
               <div>
                 <Trans>
                   Liquidity and trading incentives program is live on Arbitrum.{" "}
-                  <ExternalLink
-                    newTab
-                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
-                  >
+                  <ExternalLink newTab href={INCENTIVES_V2_URL}>
                     Read more
                   </ExternalLink>
                   .

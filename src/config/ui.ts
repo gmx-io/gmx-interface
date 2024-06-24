@@ -17,3 +17,6 @@ export const DEFAULT_TOOLTIP_POSITION = "bottom-start";
 
 export const TOOLTIP_OPEN_DELAY = 100; // ms
 export const TOOLTIP_CLOSE_DELAY = 100; // ms
+
+export const INCENTIVES_V2_URL =
+  "https://www.notion.so/gmxio/GMX-STIP-Bridge-Incentives-6967a56615b644eabc10f9a1a81b83ab";

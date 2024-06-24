@@ -4,6 +4,7 @@ import { memo, type JSX } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "./tokens";
+import { INCENTIVES_V2_URL } from "./ui";
 
 export type EventData = {
   id: string;
@@ -43,7 +44,7 @@ export const appEventsData: EventData[] = [
     ],
     link: {
       text: "Read more.",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+      href: INCENTIVES_V2_URL,
       newTab: true,
     },
   },
@@ -55,7 +56,7 @@ export const appEventsData: EventData[] = [
     bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
     link: {
       text: "Read more",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+      href: INCENTIVES_V2_URL,
       newTab: true,
     },
   },

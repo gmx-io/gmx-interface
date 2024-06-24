@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import { INCENTIVES_V2_URL as INCENTIVES_V2_URL } from "config/ui";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -42,10 +43,7 @@ export function AprInfo({
         <br />
         <Trans>
           The Bonus APR will be airdropped as {airdropTokenSymbol} tokens.{" "}
-          <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#5c07d62e5676466db25f30807ef0a647">
-            Read more
-          </ExternalLink>
-          .
+          <ExternalLink href={INCENTIVES_V2_URL}>Read more</ExternalLink>.
         </Trans>
       </>
     );
