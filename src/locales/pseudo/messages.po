@@ -1655,6 +1655,7 @@ msgstr ""
 msgid "Vault Capacity for your Account:"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"

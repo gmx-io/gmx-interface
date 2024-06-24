@@ -1655,6 +1655,7 @@ msgstr "Arbitrum Max. APY:"
 msgid "Vault Capacity for your Account:"
 msgstr "Vault Capacity for your Account:"
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"

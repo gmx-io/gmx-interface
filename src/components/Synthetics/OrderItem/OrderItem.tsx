@@ -89,7 +89,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   const { errors, level } = useOrderErrors(order.key);
   const chainId = useSelector(selectChainId);
 
-  if (isLimitOrderType(order.orderType)) {
+  if (isLimitSwapOrderType(order.orderType)) {
     if (showDebugValues) {
       return (
         <Tooltip
@@ -244,7 +244,7 @@ function TitleWithIcon({
         className={cx(
           "inline-flex flex-wrap gap-y-8 whitespace-pre-wrap",
           {
-            "*:border-b *:border-dashed": bordered,
+            "cursor-help *:border-b *:border-dashed": bordered,
           },
           {
             "text-red-500": errorLevel === "error",
@@ -274,7 +274,7 @@ function TitleWithIcon({
   return (
     <span
       className={cx({
-        "border-b border-dashed": bordered,
+        "cursor-help border-b border-dashed": bordered,
         "border-b-gray-400": bordered && !errorLevel,
         "text-red-500": errorLevel === "error",
         "text-yellow-500": errorLevel === "warning",
@@ -678,7 +678,7 @@ function OrderItemSwapMarketLabel({
   bordered?: boolean;
 }) {
   return (
-    <span className={cx({ "border-b border-dashed border-b-gray-400": bordered })}>
+    <span className={cx({ "cursor-help border-b border-dashed border-b-gray-400": bordered })}>
       {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
       {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
       {fromSymbol}/{toSymbol}

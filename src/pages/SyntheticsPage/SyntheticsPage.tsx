@@ -277,6 +277,7 @@ export function SyntheticsPage(p: Props) {
                 setMarketsDirectionsFilter={setMarketsDirectionsFilter}
                 orderTypesFilter={orderTypesFilter}
                 setOrderTypesFilter={setOrderTypesFilter}
+                onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}

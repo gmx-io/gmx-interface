@@ -70,7 +70,7 @@ function GroupComponent<T>({
   }, [group, onToggleGroup]);
 
   return (
-    <div key={group.groupName} className="TableOptionsFilter-group">
+    <div key={group.groupName} className="TableOptionsFilter-group group/group">
       {showGroupToggle ? (
         <div className="TableOptionsFilter-group-name" onClick={handleGroupToggle}>
           {group.isSomethingSelected && !group.isEverythingSelected ? (
@@ -117,7 +117,7 @@ function ItemComponentWrapper<T>({ item, onTogglePair, getIsSelected, ItemCompon
   return (
     <div
       key={item.text}
-      className="TableOptionsFilter-option TableOptionsFilter-option-in-group"
+      className="TableOptionsFilter-option TableOptionsFilter-option-in-group group-last-of-type/group:pb-10"
       onClick={handleTogglePair}
     >
       <Checkbox isChecked={getIsSelected(item.data)} setIsChecked={handleTogglePair}>

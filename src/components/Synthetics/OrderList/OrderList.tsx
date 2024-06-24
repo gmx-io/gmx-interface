@@ -1,6 +1,6 @@
-import { Trans, t } from "@lingui/macro";
+import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
-import { useMeasure } from "react-use";
+import { useMeasure, useMedia } from "react-use";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -34,6 +34,7 @@ import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
+import Button from "components/Button/Button";
 
 type Props = {
   hideActions?: boolean;
@@ -46,15 +47,29 @@ type Props = {
   setMarketsDirectionsFilter: Dispatch<SetStateAction<MarketFilterLongShortItemData[]>>;
   orderTypesFilter: OrderType[];
   setOrderTypesFilter: Dispatch<SetStateAction<OrderType[]>>;
+  onCancelSelectedOrders?: () => void;
 };
 
-export function OrderList(p: Props) {
-  const { setSelectedOrderKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
+export function OrderList({
+  selectedOrdersKeys,
+  setSelectedOrderKeys,
+  selectedPositionOrderKey,
+  setSelectedPositionOrderKey,
+  marketsDirectionsFilter,
+  orderTypesFilter,
+  setMarketsDirectionsFilter,
+  setOrderTypesFilter,
+  setPendingTxns,
+  hideActions,
+  onCancelSelectedOrders,
+}: Props) {
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const isMobile = width < 1000;
+  const isContainerSmall = width < 1000;
+
+  const isScreenSmall = useMedia("(max-width: 1100px)");
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
@@ -68,11 +83,11 @@ export function OrderList(p: Props) {
     chainId,
     subaccount,
     account,
-    marketsDirectionsFilter: p.marketsDirectionsFilter,
-    orderTypesFilter: p.orderTypesFilter,
+    marketsDirectionsFilter: marketsDirectionsFilter,
+    orderTypesFilter: orderTypesFilter,
   });
 
-  const areAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.includes(o.key));
+  const areAllOrdersSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
@@ -123,7 +138,7 @@ export function OrderList(p: Props) {
 
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
-      setPendingTxns: p.setPendingTxns,
+      setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
@@ -133,38 +148,53 @@ export function OrderList(p: Props) {
 
   return (
     <div ref={ref}>
-      {((isMobile && orders.length === 0) || isLoading) && (
+      {((isContainerSmall && orders.length === 0) || isLoading) && (
         <div className="rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
       )}
-      {isMobile && !isLoading && orders.length !== 0 && (
+
+      {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
         <div className="flex flex-col gap-8">
-          <div className="flex gap-8">
-            <MarketFilterLongShort asButton value={p.marketsDirectionsFilter} onChange={p.setMarketsDirectionsFilter} />
-            <OrderTypeFilter asButton value={p.orderTypesFilter} onChange={p.setOrderTypesFilter} />
+          <div className="flex items-center justify-between gap-8">
+            {isContainerSmall ? (
+              <div className="flex gap-8">
+                <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                <OrderTypeFilter asButton value={orderTypesFilter} onChange={setOrderTypesFilter} />
+              </div>
+            ) : (
+              <div />
+            )}
+            {isScreenSmall && selectedOrdersKeys && selectedOrdersKeys.length > 0 && (
+              <Button variant="secondary" onClick={onCancelSelectedOrders}>
+                <Plural value={selectedOrdersKeys.length} one="Cancel order" other="Cancel # orders" />
+              </Button>
+            )}
           </div>
-          <div className="grid gap-8 sm:grid-cols-auto-fill-350">
-            {orders.map((order) => (
-              <OrderItem
-                key={order.key}
-                order={order}
-                isLarge={false}
-                isSelected={p.selectedOrdersKeys?.includes(order.key)}
-                onToggleOrder={() => onToggleOrder(order.key)}
-                isCanceling={cancellingOrdersKeys.includes(order.key)}
-                onCancelOrder={() => onCancelOrder(order.key)}
-                positionsInfoData={positionsData}
-                hideActions={p.hideActions}
-              />
-            ))}
-          </div>
+          {isContainerSmall && (
+            <div className="grid gap-8 sm:grid-cols-auto-fill-350">
+              {orders.map((order) => (
+                <OrderItem
+                  key={order.key}
+                  order={order}
+                  isLarge={false}
+                  isSelected={selectedOrdersKeys?.includes(order.key)}
+                  onToggleOrder={() => onToggleOrder(order.key)}
+                  isCanceling={cancellingOrdersKeys.includes(order.key)}
+                  onCancelOrder={() => onCancelOrder(order.key)}
+                  positionsInfoData={positionsData}
+                  hideActions={hideActions}
+                />
+              ))}
+            </div>
+          )}
+          {!isContainerSmall && <div />}
         </div>
       )}
 
-      {!isMobile && (
+      {!isContainerSmall && (
         <ExchangeTable>
           <thead>
             <ExchangeTheadTr>
-              {!p.hideActions && (
+              {!hideActions && (
                 <ExchangeTh>
                   <div className="checkbox-inline">
                     <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
@@ -172,10 +202,10 @@ export function OrderList(p: Props) {
                 </ExchangeTh>
               )}
               <ExchangeTh>
-                <MarketFilterLongShort value={p.marketsDirectionsFilter} onChange={p.setMarketsDirectionsFilter} />
+                <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
               </ExchangeTh>
               <ExchangeTh>
-                <OrderTypeFilter value={p.orderTypesFilter} onChange={p.setOrderTypesFilter} />
+                <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
               </ExchangeTh>
               <ExchangeTh>
                 <Trans>Order</Trans>
@@ -198,13 +228,13 @@ export function OrderList(p: Props) {
               orders.map((order) => (
                 <OrderItem
                   isLarge
-                  isSelected={p.selectedOrdersKeys?.includes(order.key)}
+                  isSelected={selectedOrdersKeys?.includes(order.key)}
                   key={order.key}
                   order={order}
                   onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
                   onCancelOrder={() => onCancelOrder(order.key)}
-                  hideActions={p.hideActions}
+                  hideActions={hideActions}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
                 />

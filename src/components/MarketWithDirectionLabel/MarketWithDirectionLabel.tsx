@@ -17,7 +17,7 @@ export function MarketWithDirectionLabel({
   return (
     <div
       className={cx("inline leading-base", {
-        "border-b border-dashed border-b-gray-400": bordered,
+        "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
