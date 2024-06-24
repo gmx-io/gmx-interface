@@ -118,8 +118,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       return (
         <Tooltip
           disableHandleStyle
-          handle={<TitleWithIcon bordered order={order} />}
-          className={cx(`order-error-text-msg`, `level-${level}`)}
+          handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
           position="bottom-start"
           content={
             <>
@@ -174,9 +173,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   return (
     <Tooltip
       disableHandleStyle
-      handle={<TitleWithIcon bordered order={order} />}
+      handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
       position="bottom-start"
-      className={level ? `order-error-text-msg level-${level}` : undefined}
       content={
         <>
           <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
@@ -223,7 +221,15 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   );
 }
 
-function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
+function TitleWithIcon({
+  order,
+  bordered,
+  errorLevel,
+}: {
+  order: OrderInfo;
+  bordered?: boolean;
+  errorLevel?: "error" | "warning";
+}) {
   if (isLimitSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
@@ -235,9 +241,19 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
 
     return (
       <div
-        className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
-          "*:border-b *:border-dashed *:border-b-gray-400": bordered,
-        })}
+        className={cx(
+          "inline-flex flex-wrap gap-y-8 whitespace-pre-wrap",
+          {
+            "*:border-b *:border-dashed": bordered,
+          },
+          {
+            "text-red-500": errorLevel === "error",
+            "text-yellow-500": errorLevel === "warning",
+            "*:border-b-gray-400": bordered && !errorLevel,
+            "*:border-red-500 *:border-opacity-50": bordered && errorLevel === "error",
+            "*:border-yellow-500 *:border-opacity-50": bordered && errorLevel === "warning",
+          }
+        )}
       >
         <Trans>
           <span>{fromTokenText} </span>
@@ -255,7 +271,20 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
     displayPlus: true,
   });
 
-  return <span className={cx({ "border-b border-dashed border-b-gray-400": bordered })}>{sizeText}</span>;
+  return (
+    <span
+      className={cx({
+        "border-b border-dashed": bordered,
+        "border-b-gray-400": bordered && !errorLevel,
+        "text-red-500": errorLevel === "error",
+        "text-yellow-500": errorLevel === "warning",
+        "border-red-500 border-opacity-50": bordered && errorLevel === "error",
+        "border-yellow-500 border-opacity-50": bordered && errorLevel === "warning",
+      })}
+    >
+      {sizeText}
+    </span>
+  );
 }
 
 function MarkPrice({ order }: { order: OrderInfo }) {

@@ -25,18 +25,6 @@
   }
 }
 
-.order-error-text-msg.level-error .Tooltip-handle,
-.position-order-error.level-error {
-  text-decoration-color: var(--error-red);
-  color: var(--error-red);
-}
-
-.order-error-text-msg.level-warning .Tooltip-handle,
-.position-order-error.level-warning {
-  text-decoration-color: var(--warning-yellow);
-  color: var(--warning-yellow);
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;
