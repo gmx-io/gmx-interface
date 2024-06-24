@@ -86,7 +86,6 @@ export function OrderItem(p: Props) {
 }
 
 function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: boolean | undefined }) {
-  const { errors, level } = useOrderErrors(order.key);
   const chainId = useSelector(selectChainId);
 
   if (isLimitSwapOrderType(order.orderType)) {
@@ -94,7 +93,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       return (
         <Tooltip
           disableHandleStyle
-          handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
+          handle={<TitleWithIcon bordered order={order} />}
           position="bottom-start"
           content={
             <>
@@ -108,30 +107,6 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
                 value={<div className="debug-key muted">{order.minOutputAmount.toString()}</div>}
                 showDollar={false}
               />
-            </>
-          }
-        />
-      );
-    }
-
-    if (errors.length) {
-      return (
-        <Tooltip
-          disableHandleStyle
-          handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
-          position="bottom-start"
-          content={
-            <>
-              {errors.map((error, i) => (
-                <div
-                  className={cx({
-                    "OrderItem-tooltip-row": i > 0,
-                  })}
-                  key={error.key}
-                >
-                  <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                </div>
-              ))}
             </>
           }
         />
@@ -173,7 +148,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   return (
     <Tooltip
       disableHandleStyle
-      handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
+      handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
       content={
         <>
@@ -205,31 +180,13 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
               />
             </div>
           )}
-
-          {errors.length ? (
-            <>
-              {errors.map((error) => (
-                <div className="OrderItem-tooltip-row" key={error.key}>
-                  <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                </div>
-              ))}
-            </>
-          ) : null}
         </>
       }
     />
   );
 }
 
-function TitleWithIcon({
-  order,
-  bordered,
-  errorLevel,
-}: {
-  order: OrderInfo;
-  bordered?: boolean;
-  errorLevel?: "error" | "warning";
-}) {
+function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
   if (isLimitSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
@@ -241,19 +198,9 @@ function TitleWithIcon({
 
     return (
       <div
-        className={cx(
-          "inline-flex flex-wrap gap-y-8 whitespace-pre-wrap",
-          {
-            "cursor-help *:border-b *:border-dashed": bordered,
-          },
-          {
-            "text-red-500": errorLevel === "error",
-            "text-yellow-500": errorLevel === "warning",
-            "*:border-b-gray-400": bordered && !errorLevel,
-            "*:border-red-500 *:border-opacity-50": bordered && errorLevel === "error",
-            "*:border-yellow-500 *:border-opacity-50": bordered && errorLevel === "warning",
-          }
-        )}
+        className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
+          "cursor-help *:border-b *:border-dashed *:border-b-gray-400": bordered,
+        })}
       >
         <Trans>
           <span>{fromTokenText} </span>
@@ -274,12 +221,7 @@ function TitleWithIcon({
   return (
     <span
       className={cx({
-        "cursor-help border-b border-dashed": bordered,
-        "border-b-gray-400": bordered && !errorLevel,
-        "text-red-500": errorLevel === "error",
-        "text-yellow-500": errorLevel === "warning",
-        "border-red-500 border-opacity-50": bordered && errorLevel === "error",
-        "border-yellow-500 border-opacity-50": bordered && errorLevel === "warning",
+        "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
       {sizeText}
@@ -488,7 +430,7 @@ function OrderItemLarge({
         )}
       </ExchangeTd>
       <ExchangeTd>
-        {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType) : t`Limit`}
+        <OrderItemTypeLabel order={order} />
       </ExchangeTd>
       <ExchangeTd>
         <Title order={order} showDebugValues={showDebugValues} />
@@ -593,7 +535,9 @@ function OrderItemSmall({
             <div className="label">
               <Trans>Order Type</Trans>
             </div>
-            <div>{isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType) : t`Limit`}</div>
+            <div>
+              <OrderItemTypeLabel order={order} />
+            </div>
           </div>
           <div className="App-card-row">
             <div className="label">
@@ -683,5 +627,49 @@ function OrderItemSwapMarketLabel({
       {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
       {fromSymbol}/{toSymbol}
     </span>
+  );
+}
+
+function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
+  const { errors, level } = useOrderErrors(order.key);
+
+  const handle = isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType) : t`Limit`;
+
+  if (errors.length === 0) {
+    return <>{handle}</>;
+  }
+
+  return (
+    <Tooltip
+      disableHandleStyle
+      handle={
+        <span
+          className={cx("cursor-help border-b border-dashed", {
+            "border-red-500 border-opacity-50 text-red-500": level === "error",
+            "border-yellow-500 border-opacity-50 text-yellow-500": level === "warning",
+          })}
+        >
+          {handle}
+        </span>
+      }
+      content={
+        errors.length ? (
+          <>
+            {errors.map((error) => (
+              <div className="mt-20" key={error.key}>
+                <span
+                  className={cx({
+                    "text-red-500": error!.level === "error",
+                    "text-yellow-500": error!.level === "warning",
+                  })}
+                >
+                  {error.msg}
+                </span>
+              </div>
+            ))}
+          </>
+        ) : null
+      }
+    />
   );
 }

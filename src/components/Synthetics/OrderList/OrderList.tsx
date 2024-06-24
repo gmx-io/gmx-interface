@@ -148,7 +148,7 @@ export function OrderList({
 
   return (
     <div ref={ref}>
-      {((isContainerSmall && orders.length === 0) || isLoading) && (
+      {isContainerSmall && orders.length === 0 && (
         <div className="rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
       )}
 
