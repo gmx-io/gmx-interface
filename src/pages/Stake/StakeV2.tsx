@@ -15,7 +15,7 @@ import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
 import cx from "classnames";
-import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
@@ -39,6 +39,7 @@ import { getContract } from "config/contracts";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
@@ -60,6 +61,8 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { bigMath } from "lib/bigmath";
@@ -77,16 +80,13 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { shortenAddressOrEns } from "lib/wallets";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
 
 const { ZeroAddress } = ethers;
 
@@ -1273,8 +1273,28 @@ function AffiliateClaimModal(props: {
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
+  const incentivesTargets = useMemo(() => {
+    if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
+      return t`Liquidity and trading`;
+    } else if (incentiveStats?.lp?.isActive) {
+      return t`Liquidity`;
+    } else if (incentiveStats?.trading?.isActive) {
+      return t`Trading`;
+    }
+  }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
+
+  const incentivesToken = useMemo(() => {
+    if (incentiveStats?.lp?.isActive) {
+      return tokensData?.[incentiveStats.lp.token]?.symbol;
+    } else if (incentiveStats?.trading?.isActive) {
+      return tokensData?.[incentiveStats.trading.token ?? ""]?.symbol;
+    }
+
+    return "";
+  }, [incentiveStats?.lp, incentiveStats?.trading, tokensData]);
 
   const [, setPendingTxns] = usePendingTxns();
 
@@ -1379,7 +1399,6 @@ export default function StakeV2() {
   ];
 
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
@@ -1960,10 +1979,10 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive) && (
+            {incentivesTargets && (
               <div>
                 <Trans>
-                  Liquidity and trading incentives program is live on Arbitrum.{" "}
+                  {incentivesTargets} incentives program is live on {getChainName(chainId)}.{" "}
                   <ExternalLink newTab href={INCENTIVES_V2_URL}>
                     Read more
                   </ExternalLink>
@@ -2925,12 +2944,7 @@ export default function StakeV2() {
           title={t`Incentives & Prizes`}
           subtitle={
             incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-              <Trans>
-                Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
-                V2.
-                <br />
-                Earn prizes by participating in GMX Trading Competitions.
-              </Trans>
+              <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
             ) : (
               <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
             )
