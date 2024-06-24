@@ -1,11 +1,12 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback } from "react";
+import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsV1Supported } from "config/features";
-import { useChainId } from "lib/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { switchNetwork } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
@@ -15,12 +16,12 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import "./SyntheticsActions.scss";
 
 export default function SyntheticsActions() {
-  const { chainId } = useChainId();
-  const { active } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const { isConnected } = useAccount();
   const networkName = getChainName(chainId);
   const toggleNetwork = useCallback(
-    () => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active),
-    [active, chainId]
+    () => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, isConnected),
+    [isConnected, chainId]
   );
 
   return (

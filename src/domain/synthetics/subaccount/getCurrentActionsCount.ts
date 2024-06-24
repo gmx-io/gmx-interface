@@ -1,21 +1,18 @@
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { SUBACCOUNT_ORDER_ACTION, subaccountActionCountKey } from "config/dataStore";
-import { Signer } from "ethers";
 import { executeMulticall } from "lib/multicall";
 
 export async function getCurrentMaxActionsCount({
   accountAddress,
   subaccountAddress,
   chainId,
-  signer,
 }: {
   accountAddress: string;
   subaccountAddress: string;
   chainId: number;
-  signer: Signer;
 }) {
-  const response = await executeMulticall(chainId, signer, {
+  const response = await executeMulticall(chainId, {
     dataStore: {
       contractAddress: getContract(chainId, "DataStore"),
       abi: DataStore.abi,
