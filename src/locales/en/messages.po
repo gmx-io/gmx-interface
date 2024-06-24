@@ -1009,7 +1009,6 @@ msgid "FUNDING FEE"
 msgstr "FUNDING FEE"
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
 msgstr "Markets"
 
@@ -7578,7 +7577,6 @@ msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Imp
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
