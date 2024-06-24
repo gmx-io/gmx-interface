@@ -4983,8 +4983,8 @@ msgid "Position Price Impact"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
-msgstr ""
+#~ msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5752,6 +5752,10 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Sieht so aus, als hättest du keinen Empfehlungscode, den du weitergeben kannst. <0/> Erstelle jetzt einen und beginne, Rabatte zu verdienen!"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
