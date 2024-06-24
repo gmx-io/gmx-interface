@@ -321,6 +321,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
                 The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
                 {formatUsd(positionOrder.triggerPrice, { displayDecimals: priceDecimals })}.
               </p>
+              <br />
               <p>
                 Note that there may be rare cases where the order cannot be executed, for example, if the chain is down
                 and no oracle reports are produced or if the price impact exceeds your acceptable price.
