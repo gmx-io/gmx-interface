@@ -3,7 +3,6 @@ import cx from "classnames";
 import { uniq } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
-import type { Address } from "viem";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
@@ -118,18 +117,9 @@ export function SyntheticsPage(p: Props) {
 
       if (orderKey) {
         setSelectedOrderKeys((prev) => uniq(prev.concat(orderKey)));
-        const position = calcSelector(selectPositionsInfoData)?.[positionKey];
-        if (position) {
-          setMarketsDirectionsFilter([
-            {
-              direction: "any",
-              marketAddress: position.marketAddress as Address,
-            },
-          ]);
-        }
       }
     },
-    [calcSelector, setListSection, setMarketsDirectionsFilter, setSelectedOrderKeys]
+    [setListSection, setSelectedOrderKeys]
   );
 
   useEffect(() => {

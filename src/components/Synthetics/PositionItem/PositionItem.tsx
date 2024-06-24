@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
-import { BiSelectMultiple } from "react-icons/bi";
+import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import { useMedia } from "react-use";
@@ -706,7 +706,7 @@ function PositionItemOrders({
   return (
     <div>
       <Tooltip
-        className="Position-list-active-orders z-10"
+        className="Position-list-active-orders"
         handle={
           <Trans>
             Orders{" "}
@@ -729,6 +729,8 @@ function PositionItemOrders({
           "clickable",
           "text-gray-300",
         ])}
+        tooltipClassName="!z-10"
+        closeDelay={1000000}
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
             <div className="font-bold">
@@ -763,35 +765,34 @@ function PositionItemOrder({
 
   return (
     <div key={order.key}>
-      <div className="flex items-center justify-between">
-        <PositionItemOrderText order={order} />
-        <div className="flex items-center gap-6">
-          <Button
-            variant="secondary"
-            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-            onClick={handleOrdersClick}
-          >
-            <BiSelectMultiple fontSize={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-            onClick={() => {
-              setEditingOrderKey(order.key);
-            }}
-          >
-            <AiOutlineEdit fontSize={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-            disabled={isCancelling}
-            onClick={cancel}
-          >
-            <MdClose fontSize={16} />
-          </Button>
-        </div>
+      <div className="flex items-stretch justify-between gap-6">
+        <Button
+          variant="secondary"
+          className="flex w-full items-center !justify-between !bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          onClick={handleOrdersClick}
+        >
+          <PositionItemOrderText order={order} />
+          <FaAngleRight fontSize={14} className="ml-5" />
+        </Button>
+        <Button
+          variant="secondary"
+          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          onClick={() => {
+            setEditingOrderKey(order.key);
+          }}
+        >
+          <AiOutlineEdit fontSize={16} />
+        </Button>
+        <Button
+          variant="secondary"
+          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          disabled={isCancelling}
+          onClick={cancel}
+        >
+          <MdClose fontSize={16} />
+        </Button>
       </div>
+
       <div className="flex flex-col gap-10">
         {errors.map((err) => (
           <div
