@@ -1982,9 +1982,9 @@ export default function StakeV2() {
             {incentivesTargets && (
               <div>
                 <Trans>
-                  {incentivesTargets} incentives program is live on {getChainName(chainId)}.{" "}
+                  {incentivesTargets} incentives program is live on{" "}
                   <ExternalLink newTab href={INCENTIVES_V2_URL}>
-                    Read more
+                    {getChainName(chainId)}
                   </ExternalLink>
                   .
                 </Trans>
