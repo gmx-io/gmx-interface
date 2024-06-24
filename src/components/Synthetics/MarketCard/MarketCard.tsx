@@ -113,7 +113,16 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
         />
         <ExchangeInfoRow
-          label={isLong ? t`Ask Price (Entry)` : t`Bid Price (Entry)`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Ask Price (Entry)` : t`Bid Price (Entry)`}
+              content={
+                isLong
+                  ? t`The ask price is used for opening longs and closing shorts.`
+                  : t`The bid price is used for opening shorts and closing longs.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
@@ -137,7 +146,16 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={isLong ? t`Bid Price (Exit)` : t`Ask Price (Exit)`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Bid Price (Exit)` : t`Ask Price (Exit)`}
+              content={
+                isLong
+                  ? t`The bid price is used for opening shorts and closing longs.`
+                  : t`The ask price is used for opening longs and closing shorts.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={
