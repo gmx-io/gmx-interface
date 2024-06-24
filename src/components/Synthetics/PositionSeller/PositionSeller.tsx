@@ -418,7 +418,7 @@ export function PositionSeller(p: Props) {
       isPosition: true,
       isTrigger: orderOption === OrderOption.Trigger,
     }),
-    [position, orderOption]
+    [position?.isLong, orderOption]
   );
 
   const limitPriceRow = (

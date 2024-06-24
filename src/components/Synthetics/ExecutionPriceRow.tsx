@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { t, Trans } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -22,7 +22,7 @@ interface Props {
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
 }
 
-export function ExecutionPriceRow({
+export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   fees,
   executionPrice,
   tradeFlags,
@@ -47,12 +47,12 @@ export function ExecutionPriceRow({
 
   const fullPositionPriceImpactBps =
     fees?.positionPriceImpact?.bps !== undefined && fees?.priceImpactDiff?.bps !== undefined
-      ? fees?.positionPriceImpact?.bps + fees?.priceImpactDiff?.bps * -1n
+      ? fees?.positionPriceImpact?.bps - fees?.priceImpactDiff?.bps
       : undefined;
 
   const positionPriceImpactDeltaUsd =
     fees?.positionPriceImpact?.deltaUsd !== undefined && fees?.priceImpactDiff?.deltaUsd !== undefined
-      ? fees?.positionPriceImpact?.deltaUsd + fees?.priceImpactDiff?.deltaUsd * -1n
+      ? fees?.positionPriceImpact?.deltaUsd - fees?.priceImpactDiff?.deltaUsd
       : undefined;
 
   const acceptablePriceClarification = useMemo(() => {
@@ -161,4 +161,4 @@ export function ExecutionPriceRow({
       )}
     </ExchangeInfoRow>
   );
-}
+});
