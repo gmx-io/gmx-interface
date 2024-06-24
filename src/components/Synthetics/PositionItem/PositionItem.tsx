@@ -706,7 +706,7 @@ function PositionItemOrders({
   return (
     <div>
       <Tooltip
-        className="Position-list-active-orders"
+        className="Position-list-active-orders z-10"
         handle={
           <Trans>
             Orders{" "}
