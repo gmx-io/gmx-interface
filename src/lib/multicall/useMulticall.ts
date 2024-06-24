@@ -1,9 +1,10 @@
-import useSWR, { SWRConfiguration } from "swr";
-import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
-import { executeMulticall } from "./utils";
-import { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import useWallet from "lib/wallets/useWallet";
 import { useRef } from "react";
+import useSWR, { SWRConfiguration } from "swr";
+
+import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
+
+import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+import { executeMulticall } from "./utils";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -27,8 +28,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
 ) {
-  const { signer } = useWallet();
-
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
@@ -57,7 +56,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           throw new Error(`Multicall request is empty`);
         }
 
-        const responseOrFailure = await executeMulticall(chainId, signer, request);
+        const responseOrFailure = await executeMulticall(chainId, request);
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
