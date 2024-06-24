@@ -4,7 +4,7 @@
   }
 
   &-table {
-    width: max(100%, 900px);
+    width: max(100%, 900px) !important;
 
     // Table causes global layout issues on mobile
     margin-right: -10px;
