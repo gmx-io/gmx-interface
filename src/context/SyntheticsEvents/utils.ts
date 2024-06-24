@@ -1,31 +1,6 @@
-import { EventLogData, PendingDepositData, PendingOrderData, PendingWithdrawalData } from "./types";
+import { PendingDepositData, PendingOrderData, PendingWithdrawalData } from "./types";
 
-export function parseEventLogData(eventData): EventLogData {
-  const ret: any = {};
-  for (const typeKey of [
-    "addressItems",
-    "uintItems",
-    "intItems",
-    "boolItems",
-    "bytes32Items",
-    "bytesItems",
-    "stringItems",
-  ]) {
-    ret[typeKey] = {};
-
-    for (const listKey of ["items", "arrayItems"]) {
-      ret[typeKey][listKey] = {};
-
-      for (const item of eventData[typeKey][listKey]) {
-        ret[typeKey][listKey][item.key] = item.value;
-      }
-    }
-  }
-
-  return ret as EventLogData;
-}
-
-export function getPendingOrderKey(data: PendingOrderData) {
+export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
   return [
     data.account,
     data.marketAddress,
@@ -47,7 +22,7 @@ export function getPendingDepositKey(data: PendingDepositData) {
       data.initialLongTokenAddress,
       data.longTokenSwapPath.join("-"),
       data.shouldUnwrapNativeToken,
-      data.initialLongTokenAmount.add(data.initialShortTokenAmount).toString(),
+      (data.initialLongTokenAmount + data.initialShortTokenAmount).toString(),
     ].join(":");
   }
 

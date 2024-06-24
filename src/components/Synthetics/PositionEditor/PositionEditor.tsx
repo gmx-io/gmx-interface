@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -52,7 +52,7 @@ import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
@@ -85,6 +85,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useKey } from "react-use";
 import "./PositionEditor.scss";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 export type Props = {
   allowedSlippage: number;
@@ -97,8 +99,8 @@ enum Operation {
 }
 
 const OPERATION_LABELS = {
-  [Operation.Deposit]: t`Deposit`,
-  [Operation.Withdraw]: t`Withdraw`,
+  [Operation.Deposit]: msg`Deposit`,
+  [Operation.Withdraw]: msg`Withdraw`,
 };
 
 export function PositionEditor(p: Props) {
@@ -116,6 +118,7 @@ export function PositionEditor(p: Props) {
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
+  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -132,7 +135,7 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { data: tokenAllowance } = useSWR<BigNumber>(
+  const { data: tokenAllowance } = useSWR<bigint>(
     position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
     {
       fetcher: contractFetcher(signer, Token) as any,
@@ -182,46 +185,43 @@ export function PositionEditor(p: Props) {
 
   const needCollateralApproval =
     isDeposit &&
-    tokenAllowance &&
-    collateralDeltaAmount &&
-    selectedCollateralAddress !== ethers.constants.AddressZero &&
-    collateralDeltaAmount.gt(tokenAllowance);
+    tokenAllowance !== undefined &&
+    collateralDeltaAmount !== undefined &&
+    selectedCollateralAddress !== ethers.ZeroAddress &&
+    collateralDeltaAmount > tokenAllowance;
 
   const maxWithdrawAmount = useMemo(() => {
-    if (!position) return BigNumber.from(0);
+    if (!position) return 0n;
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
     let _minCollateralUsd = minCollateralUsdForLeverage;
 
-    if (minCollateralUsd?.gt(_minCollateralUsd)) {
+    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
       _minCollateralUsd = minCollateralUsd;
     }
 
-    _minCollateralUsd = _minCollateralUsd
-      .add(position?.pendingBorrowingFeesUsd || 0)
-      .add(position?.pendingFundingFeesUsd || 0);
+    _minCollateralUsd =
+      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
 
-    if (position.collateralUsd.lt(_minCollateralUsd)) {
-      return BigNumber.from(0);
+    if (position.collateralUsd < _minCollateralUsd) {
+      return 0n;
     }
 
-    const maxWithdrawUsd = position.collateralUsd.sub(_minCollateralUsd);
+    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
     const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
 
     return maxWithdrawAmount;
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
-    const collateralBasisUsd = isDeposit
-      ? position.collateralUsd.add(collateralDeltaUsd || BigNumber.from(0))
-      : position.collateralUsd;
+    const collateralBasisUsd = isDeposit ? position.collateralUsd + (collateralDeltaUsd ?? 0n) : position.collateralUsd;
 
-    const fundingFee = getFeeItem(position.pendingFundingFeesUsd.mul(-1), collateralBasisUsd);
-    const borrowFee = getFeeItem(position.pendingBorrowingFeesUsd.mul(-1), collateralBasisUsd);
+    const fundingFee = getFeeItem(-position.pendingFundingFeesUsd, collateralBasisUsd);
+    const borrowFee = getFeeItem(-position.pendingBorrowingFeesUsd, collateralBasisUsd);
     const totalFees = getTotalFeeItem([fundingFee, borrowFee]);
 
     const fees: TradeFees = {
@@ -246,27 +246,33 @@ export function PositionEditor(p: Props) {
   );
 
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
-    if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
+    if (
+      !position ||
+      collateralDeltaUsd === undefined ||
+      collateralDeltaUsd < 0 ||
+      minCollateralUsd === undefined ||
+      !fees?.totalFees
+    ) {
       return {};
     }
 
-    const totalFeesUsd = fees.totalFees.deltaUsd.abs();
+    const totalFeesUsd = bigMath.abs(fees.totalFees.deltaUsd);
 
     const nextCollateralUsd = isDeposit
-      ? position.collateralUsd.sub(totalFeesUsd).add(collateralDeltaUsd)
-      : position.collateralUsd.sub(totalFeesUsd).sub(collateralDeltaUsd);
+      ? position.collateralUsd - totalFeesUsd + collateralDeltaUsd
+      : position.collateralUsd - totalFeesUsd - collateralDeltaUsd;
 
     const nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
 
-    const receiveUsd = isDeposit ? BigNumber.from(0) : collateralDeltaUsd;
+    const receiveUsd = isDeposit ? 0n : collateralDeltaUsd;
     const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
     const nextLeverage = getLeverage({
       sizeInUsd: position.sizeInUsd,
       collateralUsd: nextCollateralUsd,
-      pendingBorrowingFeesUsd: BigNumber.from(0),
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pnl: isPnlInLeverage ? position.pnl : BigNumber.from(0),
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      pnl: isPnlInLeverage ? position.pnl : 0n,
     });
 
     const nextLiqPrice = getLiquidationPrice({
@@ -277,8 +283,8 @@ export function PositionEditor(p: Props) {
       collateralToken: position.collateralToken,
       marketInfo: position.marketInfo,
       userReferralInfo,
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pendingBorrowingFeesUsd: BigNumber.from(0),
+      pendingFundingFeesUsd: 0n,
+      pendingBorrowingFeesUsd: 0n,
       isLong: position.isLong,
       minCollateralUsd,
     });
@@ -335,7 +341,7 @@ export function PositionEditor(p: Props) {
     }
 
     if (isHighFeeConsentError) {
-      return [t`High Execution Fee not yet acknowledged`];
+      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
@@ -361,23 +367,17 @@ export function PositionEditor(p: Props) {
   ]);
 
   const detectAndSetMaxSize = useCallback(() => {
-    if (!maxWithdrawAmount) return;
+    if (maxWithdrawAmount === undefined) return;
     if (!collateralToken) return;
     if (!position) return;
-    if (!minCollateralFactor) return;
+    if (minCollateralFactor === undefined) return;
 
     const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigNumber.from(1),
+      BigInt(1),
       maxWithdrawAmount,
       expandDecimals(1, Math.ceil(collateralToken.decimals / 3)),
       (x) => {
-        const isValid = willPositionCollateralBeSufficientForPosition(
-          position,
-          x,
-          BigNumber.from(0),
-          minCollateralFactor,
-          BigNumber.from(0)
-        );
+        const isValid = willPositionCollateralBeSufficientForPosition(position, x, 0n, minCollateralFactor, 0n);
         return { isValid, returnValue: null };
       }
     );
@@ -411,11 +411,11 @@ export function PositionEditor(p: Props) {
     }
 
     if (
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
-      !markPrice ||
+      markPrice === undefined ||
       !position?.indexToken ||
-      !collateralDeltaAmount ||
+      collateralDeltaAmount === undefined ||
       !selectedCollateralAddress ||
       !signer
     ) {
@@ -427,32 +427,37 @@ export function PositionEditor(p: Props) {
     if (isDeposit) {
       setIsSubmitting(true);
 
-      txnPromise = createIncreaseOrderTxn(chainId, signer, subaccount, {
-        account,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: selectedCollateralAddress,
-        initialCollateralAmount: collateralDeltaAmount,
-        targetCollateralAddress: position.collateralTokenAddress,
-        collateralDeltaAmount,
-        swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        orderType: OrderType.MarketIncrease,
-        isLong: position.isLong,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: shouldDisableValidationForTesting,
-        setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
+      txnPromise = createIncreaseOrderTxn({
+        chainId,
+        signer,
+        subaccount,
+        createIncreaseOrderParams: {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: selectedCollateralAddress,
+          initialCollateralAmount: collateralDeltaAmount,
+          targetCollateralAddress: position.collateralTokenAddress,
+          collateralDeltaAmount,
+          swapPath: [],
+          sizeDeltaUsd: 0n,
+          sizeDeltaInTokens: 0n,
+          acceptablePrice: markPrice,
+          triggerPrice: undefined,
+          orderType: OrderType.MarketIncrease,
+          isLong: position.isLong,
+          executionFee: executionFee.feeTokenAmount,
+          allowedSlippage,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          indexToken: position.indexToken,
+          tokensData,
+          skipSimulation: shouldDisableValidationForTesting,
+          setPendingTxns,
+          setPendingOrder,
+          setPendingPosition,
+        },
       });
     } else {
-      if (!receiveUsd) {
+      if (receiveUsd === undefined) {
         return;
       }
 
@@ -469,8 +474,8 @@ export function PositionEditor(p: Props) {
           initialCollateralDeltaAmount: collateralDeltaAmount,
           receiveTokenAddress: selectedCollateralAddress,
           swapPath: [],
-          sizeDeltaUsd: BigNumber.from(0),
-          sizeDeltaInTokens: BigNumber.from(0),
+          sizeDeltaUsd: 0n,
+          sizeDeltaInTokens: 0n,
           acceptablePrice: markPrice,
           triggerPrice: undefined,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -541,7 +546,9 @@ export function PositionEditor(p: Props) {
   );
 
   const showMaxOnDeposit = collateralToken?.isNative
-    ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
+    ? minResidualAmount !== undefined &&
+      collateralToken?.balance !== undefined &&
+      collateralToken.balance > minResidualAmount
     : true;
 
   const renderErrorTooltipContent = useCallback(() => errorTooltipContent, [errorTooltipContent]);
@@ -554,7 +561,7 @@ export function PositionEditor(p: Props) {
       disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
     >
-      {error || OPERATION_LABELS[operation]}
+      {error || localizedOperationLabels[operation]}
     </Button>
   );
   const button = errorTooltipContent ? (
@@ -588,7 +595,7 @@ export function PositionEditor(p: Props) {
               onChange={setOperation}
               option={operation}
               options={Object.values(Operation)}
-              optionLabels={OPERATION_LABELS}
+              optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
             <SubaccountNavigationButton
@@ -599,7 +606,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={OPERATION_LABELS[operation]}
+              topLeftLabel={localizedOperationLabels[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={
@@ -614,25 +621,33 @@ export function PositionEditor(p: Props) {
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               showMaxButton={
-                isDeposit
-                  ? collateralToken?.balance && showMaxOnDeposit && !collateralDeltaAmount?.eq(collateralToken?.balance)
-                  : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
+                (isDeposit
+                  ? collateralToken?.balance &&
+                    showMaxOnDeposit &&
+                    (collateralDeltaAmount === undefined ||
+                      collateralDeltaAmount != collateralToken?.balance ||
+                      collateralDeltaAmount === undefined)
+                  : maxWithdrawAmount !== undefined &&
+                    (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false
               }
               showPercentSelector={!isDeposit}
               onPercentChange={(percent) => {
                 if (!isDeposit) {
                   setCollateralInputValue(
-                    formatAmountFree(maxWithdrawAmount!.mul(percent).div(100), position?.collateralToken?.decimals || 0)
+                    formatAmountFree(
+                      (maxWithdrawAmount! * BigInt(percent)) / 100n,
+                      position?.collateralToken?.decimals || 0
+                    )
                   );
                 }
               }}
               onClickMax={() => {
                 let maxDepositAmount = collateralToken?.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
+                  ? collateralToken!.balance! - BigInt(minResidualAmount ?? 0)
                   : collateralToken!.balance!;
 
-                if (maxDepositAmount.isNegative()) {
-                  maxDepositAmount = BigNumber.from(0);
+                if (maxDepositAmount < 0) {
+                  maxDepositAmount = 0n;
                 }
 
                 const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
@@ -651,7 +666,7 @@ export function PositionEditor(p: Props) {
             >
               {availableSwapTokens ? (
                 <TokenSelector
-                  label={OPERATION_LABELS[operation]}
+                  label={localizedOperationLabels[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
                   onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
@@ -692,7 +707,7 @@ export function PositionEditor(p: Props) {
                     <ValueTransition
                       from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
                       to={
-                        collateralDeltaAmount?.gt(0)
+                        collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
                           ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
                           : undefined
                       }
@@ -720,7 +735,11 @@ export function PositionEditor(p: Props) {
                   <div className="align-right">
                     <ValueTransition
                       from={formatUsd(position?.collateralUsd)!}
-                      to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
+                      to={
+                        collateralDeltaUsd !== undefined && collateralDeltaUsd > 0
+                          ? formatUsd(nextCollateralUsd)
+                          : undefined
+                      }
                     />
                   </div>
                 </div>
@@ -744,13 +763,14 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {needCollateralApproval && collateralToken && (
+                {(needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
                     tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
                     spenderAddress={routerAddress}
                   />
-                )}
+                )) ||
+                  null}
                 {highExecutionFeeAcknowledgement}
               </ExchangeInfo.Group>
             </ExchangeInfo>

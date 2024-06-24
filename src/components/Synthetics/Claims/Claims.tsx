@@ -1,10 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
 import { useMedia } from "react-use";
+
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
@@ -37,8 +39,8 @@ export function Claims({
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
 }) {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
   const [isClaiming, setIsClaiming] = useState(false);
 
   const [isAccruedPositionPriceImpactRebateModalVisible, setIsAccruedPositionPriceImpactRebateModalVisible] =
@@ -109,7 +111,7 @@ export function Claims({
         )}
         <div
           className={cx("flex", "w-full", {
-            "flex-column": isMobile,
+            "flex-col": isMobile,
           })}
         >
           {account && !isLoading && (

@@ -14,11 +14,12 @@ export type NetworkMetadata = {
   blockExplorerUrls: string[];
 };
 
-export async function switchNetwork(chainId: number, active: boolean) {
+export async function switchNetwork(chainId: number, active: boolean): Promise<void> {
   if (active) {
     await switchChain(rainbowKitConfig, {
       chainId,
     });
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
   } else {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all

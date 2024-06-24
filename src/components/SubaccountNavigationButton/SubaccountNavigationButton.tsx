@@ -10,7 +10,6 @@ import {
   useSubaccountModalOpen,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import cx from "classnames";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -34,7 +33,7 @@ export const SubaccountNavigationButton = memo(
     requiredActions = 0,
   }: {
     closeConfirmationBox: () => void;
-    executionFee: BigNumber | undefined;
+    executionFee: bigint | undefined;
     isNativeToken?: boolean;
     isWrapOrUnwrap?: boolean;
     tradeFlags: TradeFlags | undefined;
@@ -82,7 +81,7 @@ export const SubaccountNavigationButton = memo(
     const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
     const shouldShowAllowedActionsWarning =
-      isSubaccountActive && (remaining?.eq(0) || remaining?.lt(requiredActions)) && !isNativeToken;
+      isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken;
     const shouldShowWrapOrUnwrapWarning =
       !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
     const shouldShowNativeTokenWarning =

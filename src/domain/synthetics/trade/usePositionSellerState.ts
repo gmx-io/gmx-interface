@@ -1,8 +1,8 @@
-import { getKeepLeverageKey } from "config/localStorage";
+import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useState } from "react";
+import { PositionInfo } from "../positions";
 
 export enum OrderOption {
   Market = "Market",
@@ -11,17 +11,18 @@ export enum OrderOption {
 
 export type PositionSellerState = ReturnType<typeof usePositionSellerState>;
 
-export function usePositionSellerState(chainId: number) {
+export function usePositionSellerState(chainId: number, closingPosition: PositionInfo | undefined) {
   const { savedAllowedSlippage } = useSettings();
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReceiveTokenChanged, setIsReceiveTokenChanged] = useState(false);
 
   const resetPositionSeller = useCallback(() => {
     setOrderOption(OrderOption.Market);
@@ -32,7 +33,17 @@ export function usePositionSellerState(chainId: number) {
     setReceiveTokenAddress("");
     setAllowedSlippage(savedAllowedSlippage);
     setIsSubmitting(false);
-  }, [savedAllowedSlippage]);
+    setIsReceiveTokenChanged(false);
+  }, [savedAllowedSlippage, setReceiveTokenAddress]);
+
+  const [defaultReceiveToken, setDefaultReceiveToken] = useLocalStorageSerializeKey<string | undefined>(
+    getSyntheticsReceiveMoneyTokenKey(
+      chainId,
+      closingPosition?.marketInfo.name,
+      closingPosition?.isLong ? "long" : "short"
+    ),
+    undefined
+  );
 
   return {
     orderOption,
@@ -54,5 +65,9 @@ export function usePositionSellerState(chainId: number) {
     isSubmitting,
     setIsSubmitting,
     resetPositionSeller,
+    isReceiveTokenChanged,
+    setIsReceiveTokenChanged,
+    defaultReceiveToken,
+    setDefaultReceiveToken,
   };
 }

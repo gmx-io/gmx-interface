@@ -1,12 +1,12 @@
 import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "config/tokens";
 import { callContract } from "lib/contracts";
 import WETH from "abis/WETH.json";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { t } from "@lingui/macro";
 import { formatTokenAmount } from "lib/numbers";
 
 type WrapOrUnwrapParams = {
-  amount: BigNumber;
+  amount: bigint;
   isWrap: boolean;
   setPendingTxns: (txns: any) => void;
 };

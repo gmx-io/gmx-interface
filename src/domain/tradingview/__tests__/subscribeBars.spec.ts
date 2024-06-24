@@ -26,7 +26,7 @@ class MockOracleKeeperFetcher implements OracleFetcher {
         maxPrice: "1",
         oracleDecimals: 30,
         tokenSymbol: "ETH",
-        tokenAddress: ethers.constants.AddressZero,
+        tokenAddress: ethers.ZeroAddress,
         updatedAt: 1700000000,
       },
     ]);
@@ -67,6 +67,10 @@ class MockOracleKeeperFetcher implements OracleFetcher {
         period: 0,
       },
     });
+  }
+
+  fetchPostReport(): Promise<Response> {
+    return Promise.resolve(new Response());
   }
 }
 

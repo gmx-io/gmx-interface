@@ -1,30 +1,32 @@
-import React, { useState } from "react";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "config/contracts";
+import { ethers } from "ethers";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import { ethers } from "ethers";
 
-import { getContract } from "config/contracts";
-
-import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
 
+import RewardRouter from "abis/RewardRouter.json";
+import RewardTracker from "abis/RewardTracker.json";
 import Token from "abis/Token.json";
 import Vester from "abis/Vester.json";
-import RewardTracker from "abis/RewardTracker.json";
-import RewardRouter from "abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { Trans, t } from "@lingui/macro";
 
-import "./BeginAccountTransfer.css";
-import { callContract, contractFetcher } from "lib/contracts";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import Button from "components/Button/Button";
-import useWallet from "lib/wallets/useWallet";
-import Checkbox from "components/Checkbox/Checkbox";
+import { callContract, contractFetcher } from "lib/contracts";
 import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
+import { zeroAddress } from "viem";
+import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -47,8 +49,8 @@ export default function BeginAccountTransfer() {
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
-  let parsedReceiver = ethers.constants.AddressZero;
-  if (ethers.utils.isAddress(receiver)) {
+  let parsedReceiver = ethers.ZeroAddress;
+  if (ethers.isAddress(receiver)) {
     parsedReceiver = receiver;
   }
 
@@ -77,6 +79,22 @@ export default function BeginAccountTransfer() {
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, RewardTracker),
+    }
+  );
+
+  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
+  const { data: cumulativeBonusGmxTrackerRewards } = useSWR(
+    [active, chainId, bonusGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, RewardTracker),
+    }
+  );
+
+  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const { data: cumulativeFeeGlpTrackerRewards } = useSWR(
+    [active, chainId, feeGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
       fetcher: contractFetcher(signer, RewardTracker),
     }
@@ -125,18 +143,20 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance && gmxStaked && gmxStaked.gt(gmxAllowance);
+  const needApproval = gmxAllowance && gmxStaked && gmxStaked > gmxAllowance;
 
-  const hasVestedGmx = gmxVesterBalance?.gt(0);
-  const hasVestedGlp = glpVesterBalance?.gt(0);
-  const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
+  const hasVestedGmx = gmxVesterBalance > 0;
+  const hasVestedGlp = glpVesterBalance > 0;
+  const hasVestedAffiliate = affiliateVesterBalance > 0;
   const hasStakedGmx =
-    (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0));
+    (cumulativeGmxRewards && cumulativeGmxRewards > 0) ||
+    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards > 0) ||
+    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards > 0);
   const hasStakedGlp =
-    (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0));
-  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
+    (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
+    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0) ||
+    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards > 0);
+  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.ZeroAddress;
 
   const getError = () => {
     if (!account) {
@@ -151,7 +171,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
     }
-    if (!ethers.utils.isAddress(receiver)) {
+    if (!ethers.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
 
@@ -175,6 +195,14 @@ export default function BeginAccountTransfer() {
     }
   };
 
+  const isReadyForSbfGmxTokenApproval = !(
+    hasVestedGlp ||
+    hasVestedGmx ||
+    (hasVestedAffiliate && !isAffiliateVesterSkipValidation) ||
+    hasStakedGmx ||
+    hasStakedGlp
+  );
+
   const isPrimaryEnabled = () => {
     const error = getError();
     if (error) {
@@ -184,6 +212,10 @@ export default function BeginAccountTransfer() {
       return false;
     }
     if (isTransferring) {
+      return false;
+    }
+
+    if (needFeeGmxTrackerApproval) {
       return false;
     }
     return true;
@@ -202,6 +234,10 @@ export default function BeginAccountTransfer() {
     }
     if (isTransferring) {
       return t`Transferring`;
+    }
+
+    if (needFeeGmxTrackerApproval) {
+      return t`Pending Transfer Approval`;
     }
 
     return t`Begin Transfer`;
@@ -238,8 +274,29 @@ export default function BeginAccountTransfer() {
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
 
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: parsedReceiver,
+    tokenAddresses: [feeGmxTrackerAddress],
+  });
+  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTrackerAddress }], 1000);
+
+  const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
+  const needFeeGmxTrackerApproval = useMemo(
+    () =>
+      Boolean(
+        parsedReceiver &&
+          feeGmxTrackerBalance !== undefined &&
+          parsedReceiver !== zeroAddress &&
+          tokensAllowanceData &&
+          getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)
+      ),
+    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
+  );
+
   return (
-    <div className="BeginAccountTransfer Page page-layout">
+    <div className="BeginAccountTransfer Page page-layout ">
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
@@ -252,7 +309,8 @@ export default function BeginAccountTransfer() {
           <Trans>Continue</Trans>
         </Link>
       </Modal>
-      <div className="Page-title-section">
+
+      <div className="default-container !m-0 pb-16">
         <div className="Page-title">
           <Trans>Transfer Account</Trans>
         </div>
@@ -275,7 +333,7 @@ export default function BeginAccountTransfer() {
           </div>
         )}
       </div>
-      <div className="Page-content">
+      <div className="default-container !m-0">
         <div className="input-form">
           <div className="input-row">
             <label className="input-label">
@@ -313,7 +371,7 @@ export default function BeginAccountTransfer() {
                   isChecked={isAffiliateVesterSkipValidation}
                   setIsChecked={setIsAffiliateVesterSkipValidation}
                 >
-                  <span className="text-warning font-sm">
+                  <span className="text-sm text-yellow-500">
                     <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
                   </span>
                 </Checkbox>
@@ -327,6 +385,19 @@ export default function BeginAccountTransfer() {
               <Trans>Receiver has not staked GLP tokens before</Trans>
             </ValidationRow>
           </div>
+
+          {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
+            <>
+              <ApproveTokenButton
+                tokenAddress={feeGmxTrackerAddress}
+                tokenSymbol={"sbfGMX"}
+                customLabel={t`Allow all my tokens to be transferred to a new account`}
+                spenderAddress={parsedReceiver}
+                approveAmount={feeGmxTrackerBalance}
+              />
+              <br />
+            </>
+          )}
           <div className="input-row">
             <Button
               variant="primary-action"

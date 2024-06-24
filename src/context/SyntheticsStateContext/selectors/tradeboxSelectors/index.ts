@@ -6,7 +6,12 @@ import {
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  getAvailableUsdLiquidityForPosition,
+  getMaxLeverageByMinCollateralFactor,
+  getTradeboxLeverageSliderMarks,
+} from "domain/synthetics/markets";
 import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
 import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
@@ -33,14 +38,14 @@ import {
   selectTokensData,
   selectUiFeeFactor,
 } from "../globalSelectors";
-import { BigNumber } from "ethers";
 import {
   createTradeFlags,
   makeSelectDecreasePositionAmounts,
+  makeSelectFindSwapPath,
   makeSelectIncreasePositionAmounts,
+  makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
-  makeSelectSwapRoutes,
 } from "../tradeSelectors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
@@ -92,7 +97,7 @@ export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.s
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 
-export const selectTradeboxSwapRoutes = createSelector((q) => {
+export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -100,7 +105,20 @@ export const selectTradeboxSwapRoutes = createSelector((q) => {
   const tradeType = q(selectTradeboxTradeType);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
 
-  return q(makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
+  return q(makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
+});
+
+export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+  return q(
+    makeSelectMaxLiquidityPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
+  );
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
@@ -121,10 +139,10 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
+  const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const positionKey = q(selectTradeboxSelectedPositionKey);
 
@@ -193,20 +211,20 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
 
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
 
   const fromTokenPrice = fromToken?.prices.minPrice;
 
-  if (!fromToken || !toToken || !fromTokenPrice) {
+  if (!fromToken || !toToken || fromTokenPrice === undefined) {
     return undefined;
   }
 
-  const { findSwapPath } = q(
-    makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
+  const findSwapPath = q(
+    makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
   );
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
@@ -260,31 +278,31 @@ export const selectTradeboxTradeFlags = createSelectorDeprecated(
 );
 
 export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
-  BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
+  BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
 
-export const selectTradeboxTradeFeesType = createSelector(function selectTradeboxTradeFeesType(
-  q
-): TradeFeesType | null {
-  const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
+export const selectTradeboxTradeFeesType = createSelector(
+  function selectTradeboxTradeFeesType(q): TradeFeesType | null {
+    const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
-  if (isSwap) {
-    const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
-    if (swapAmounts) return "swap";
+    if (isSwap) {
+      const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
+      if (swapAmounts) return "swap";
+    }
+
+    if (isIncrease) {
+      const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+      if (increaseAmounts) return "increase";
+    }
+
+    if (isTrigger) {
+      const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+      if (decreaseAmounts) return "decrease";
+    }
+
+    return null;
   }
-
-  if (isIncrease) {
-    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    if (increaseAmounts) return "increase";
-  }
-
-  if (isTrigger) {
-    const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
-    if (decreaseAmounts) return "decrease";
-  }
-
-  return null;
-});
+);
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);
@@ -338,10 +356,10 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   if (!tokensData) return undefined;
 
   const gasPrice = q(selectGasPrice);
-  if (!gasPrice) return undefined;
+  if (gasPrice === undefined) return undefined;
 
   const estimatedGas = q(selectTradeboxEstimatedGas);
-  if (!estimatedGas) return undefined;
+  if (estimatedGas === null || estimatedGas === undefined) return undefined;
 
   const chainId = q(selectChainId);
 
@@ -369,16 +387,16 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       return getTradeFees({
         isIncrease: false,
         initialCollateralUsd: swapAmounts.usdIn,
-        sizeDeltaUsd: BigNumber.from(0),
+        sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapPathStats.swapSteps,
-        positionFeeUsd: BigNumber.from(0),
+        positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
-        positionPriceImpactDeltaUsd: BigNumber.from(0),
-        priceImpactDiffUsd: BigNumber.from(0),
-        borrowingFeeUsd: BigNumber.from(0),
-        fundingFeeUsd: BigNumber.from(0),
-        feeDiscountUsd: BigNumber.from(0),
-        swapProfitFeeUsd: BigNumber.from(0),
+        positionPriceImpactDeltaUsd: 0n,
+        priceImpactDiffUsd: 0n,
+        borrowingFeeUsd: 0n,
+        fundingFeeUsd: 0n,
+        feeDiscountUsd: 0n,
+        swapProfitFeeUsd: 0n,
         uiFeeFactor,
       });
     }
@@ -395,13 +413,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
         positionFeeUsd: increaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
+        swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
         positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-        priceImpactDiffUsd: BigNumber.from(0),
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+        priceImpactDiffUsd: 0n,
+        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
+        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
-        swapProfitFeeUsd: BigNumber.from(0),
+        swapProfitFeeUsd: 0n,
         uiFeeFactor,
       });
     }
@@ -414,11 +432,11 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       return getTradeFees({
         isIncrease: false,
-        initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
+        initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: BigNumber.from(0),
+        swapPriceImpactDeltaUsd: 0n,
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
@@ -455,10 +473,10 @@ const selectNextValuesForIncrease = createSelector(
 
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
     const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-    const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
+    const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
     const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 
@@ -633,7 +651,7 @@ export type AvailableMarketsOptions = {
   collateralWithOrderShouldUnwrapNativeToken?: boolean;
   maxLiquidityMarket?: MarketInfo;
   minPriceImpactMarket?: MarketInfo;
-  minPriceImpactBps?: BigNumber;
+  minPriceImpactBps?: bigint;
   isNoSufficientLiquidityInAnyMarket?: boolean;
 };
 
@@ -653,7 +671,7 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
   const fromTokenPrice = fromToken?.prices.minPrice;
   const markPrice = q(selectTradeboxMarkPrice);
 
-  if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
+  if (!isSwap || !fromToken || !toToken || fromTokenPrice === undefined || markPrice === undefined) {
     return {};
   }
 
@@ -664,12 +682,12 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
     toPrice: markPrice,
   });
 
-  if (!triggerRatioValue) {
+  if (triggerRatioValue === undefined) {
     return { markRatio };
   }
 
   const triggerRatio: TokensRatio = {
-    ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
+    ratio: triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -709,8 +727,8 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 
   const isOutPositionLiquidity = isLong
-    ? longLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0)
-    : shortLiquidity.lt(increaseAmounts?.sizeDeltaUsd || 0);
+    ? longLiquidity < (increaseAmounts?.sizeDeltaUsd || 0)
+    : shortLiquidity < (increaseAmounts?.sizeDeltaUsd || 0);
 
   return {
     longLiquidity,
@@ -727,9 +745,9 @@ export const selectTradeboxExecutionPrice = createSelector(function selectTradeb
   const { isLong } = q(selectTradeboxTradeFlags);
 
   if (!marketInfo) return null;
-  if (!fees?.positionPriceImpact?.deltaUsd) return null;
+  if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
   if (!decreaseAmounts) return null;
-  if (!triggerPrice) return null;
+  if (triggerPrice === undefined) return null;
 
   return getExecutionPriceForDecrease(
     triggerPrice,
@@ -745,4 +763,23 @@ export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) =>
   const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
 
   return symbol;
+});
+
+export const selectTradeboxMaxLeverage = createSelector((q) => {
+  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
+  return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
+});
+
+export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
+  const maxAllowedLeverage = q(selectTradeboxMaxLeverage);
+  return getTradeboxLeverageSliderMarks(maxAllowedLeverage);
+});
+
+export const selectTradeboxMarketsSortMap = createSelector((q) => {
+  const { sortedAllMarkets } = q(selectTradeboxAvailableTokensOptions);
+
+  return sortedAllMarkets.reduce((acc, market, idx) => {
+    acc[market.indexTokenAddress] = idx;
+    return acc;
+  }, {});
 });

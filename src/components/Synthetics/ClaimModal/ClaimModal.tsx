@@ -7,7 +7,6 @@ import {
   getTotalClaimableFundingUsd,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
@@ -50,19 +49,17 @@ export function ClaimModal(p: Props) {
     const fundingLongUsd = convertToUsd(fundingLongAmount, longToken?.decimals, longToken?.prices?.minPrice);
     const fundingShortUsd = convertToUsd(fundingShortAmount, shortToken?.decimals, shortToken?.prices?.minPrice);
 
-    const totalFundingUsd = BigNumber.from(0)
-      .add(fundingLongUsd || 0)
-      ?.add(fundingShortUsd || 0);
+    const totalFundingUsd = (fundingLongUsd ?? 0n) + (fundingShortUsd ?? 0n);
 
-    if (!totalFundingUsd?.gt(0)) return null;
+    if (totalFundingUsd <= 0) return null;
 
     const claimableAmountsItems: string[] = [];
 
-    if (fundingLongAmount?.gt(0)) {
+    if (fundingLongAmount !== undefined) {
       claimableAmountsItems.push(formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (fundingShortAmount?.gt(0)) {
+    if (fundingShortAmount !== undefined) {
       claimableAmountsItems.push(formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol)!);
     }
 
@@ -70,7 +67,7 @@ export function ClaimModal(p: Props) {
       <div key={market.marketTokenAddress} className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="items-top ClaimSettleModal-row-text">
+            <div className="ClaimSettleModal-row-text flex items-start">
               <span>{indexName}</span>
               {poolName ? <span className="subtext">[{poolName}]</span> : null}
             </div>
@@ -101,12 +98,12 @@ export function ClaimModal(p: Props) {
     const fundingTokenAddresses: string[] = [];
 
     for (const market of markets) {
-      if (market.claimableFundingAmountLong?.gt(0)) {
+      if (market.claimableFundingAmountLong !== undefined) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.longTokenAddress);
       }
 
-      if (market.claimableFundingAmountShort?.gt(0)) {
+      if (market.claimableFundingAmountShort !== undefined) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.shortTokenAddress);
       }
@@ -144,14 +141,14 @@ export function ClaimModal(p: Props) {
       <div className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="items-top">
+            <div className="flex items-start">
               <Trans>MARKET</Trans>
             </div>
           </div>
         </div>
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
-            className="ClaimSettleModal-tooltip-text-grey"
+            className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
             handle={t`FUNDING FEE`}
             renderContent={() => (

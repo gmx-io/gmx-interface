@@ -1,14 +1,17 @@
 import { gql } from "@apollo/client";
-import { getToken } from "config/tokens";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { getAddress } from "ethers/lib/utils.js";
-import { bigNumberify, BN_ZERO } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
-import useWallet from "lib/wallets/useWallet";
+import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
+
+import { getToken } from "config/tokens";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { BN_ZERO, bigNumberify } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
+
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
 
@@ -48,7 +51,7 @@ export function useClaimCollateralHistory(
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
-  const { account } = useWallet();
+  const account = useSelector(selectAccount);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 
@@ -212,6 +215,10 @@ function createClaimCollateralAction(
     const price = bigNumberify(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
+    if (amount === 0n) {
+      continue;
+    }
+
     if (!marketInfo) {
       return null;
     }
@@ -227,15 +234,13 @@ function createClaimCollateralAction(
     }
 
     if (tokenAddress === marketInfo.longTokenAddress) {
-      claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
-      claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
-        amount.mul(price)
-      );
+      claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount + amount;
+      claimItemsMap[marketAddress].longTokenAmountUsd =
+        claimItemsMap[marketAddress].longTokenAmountUsd + amount * price;
     } else {
-      claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
-      claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
-        amount.mul(price)
-      );
+      claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount + amount;
+      claimItemsMap[marketAddress].shortTokenAmountUsd =
+        claimItemsMap[marketAddress].shortTokenAmountUsd + amount * price;
     }
   }
 
@@ -287,15 +292,13 @@ function createSettleFundingFeeAction(
       }
 
       if (tokenAddress === marketInfo.longTokenAddress) {
-        claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
-        claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
-          amount.mul(price)
-        );
+        claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount + amount;
+        claimItemsMap[marketAddress].longTokenAmountUsd =
+          claimItemsMap[marketAddress].longTokenAmountUsd + amount * price;
       } else {
-        claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
-        claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
-          amount.mul(price)
-        );
+        claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount + amount;
+        claimItemsMap[marketAddress].shortTokenAmountUsd =
+          claimItemsMap[marketAddress].shortTokenAmountUsd + amount * price;
       }
     }
   }

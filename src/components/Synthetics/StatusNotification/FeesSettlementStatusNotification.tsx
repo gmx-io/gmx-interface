@@ -43,8 +43,8 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
   useEffect(() => {
     Object.values(allOrderStatuses).forEach((orderStatus) => {
+      if (orderStatus.isViewed || !orderStatus.data) return;
       const key = getPendingOrderKey(orderStatus.data);
-      if (orderStatus.isViewed) return;
       const order = orderByKey.get(key);
       if (order) {
         if (getPendingOrderKey(order) === getPendingOrderKey(orderStatus.data)) {
@@ -58,6 +58,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   const orderStatusByOrder = useMemo(() => {
     const res = new Map<PendingOrderData, OrderStatus>();
     matchedOrderStatuses.forEach((orderStatus) => {
+      if (!orderStatus.data) return;
       const key = getPendingOrderKey(orderStatus.data);
       const order = orderByKey.get(key);
       if (order) {
@@ -84,17 +85,20 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
       return {};
     }
 
-    return orders.reduce((acc, order) => {
-      const marketInfo = getByKey(marketsInfoData, order.marketAddress);
-      const key = keyByOrder.get(order);
+    return orders.reduce(
+      (acc, order) => {
+        const marketInfo = getByKey(marketsInfoData, order.marketAddress);
+        const key = keyByOrder.get(order);
 
-      if (!key) throw new Error("key not found");
+        if (!key) throw new Error("key not found");
 
-      return {
-        ...acc,
-        [key]: marketInfo,
-      };
-    }, {} as Record<string, MarketInfo | undefined>);
+        return {
+          ...acc,
+          [key]: marketInfo,
+        };
+      },
+      {} as Record<string, MarketInfo | undefined>
+    );
   }, [keyByOrder, marketsInfoData, orders]);
 
   const creationStatus = useMemo(() => {

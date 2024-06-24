@@ -4,21 +4,31 @@ import { getContract } from "config/contracts";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
-import { BigNumber } from "ethers";
 import useWallet from "lib/wallets/useWallet";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
-export function useTokenBalances(chainId: number, overrideAccount?: string | undefined): BalancesDataResult {
+export function useTokenBalances(
+  chainId: number,
+  overrideAccount?: string | undefined,
+  overrideTokenList?: {
+    address: string;
+    isSynthetic?: boolean;
+  }[],
+  refreshInterval?: number
+): BalancesDataResult {
   const { account: currentAccount } = useWallet();
   const account = overrideAccount ?? currentAccount;
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
-    key: account ? [account] : null,
+    key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
+
+    refreshInterval,
+
     request: () =>
-      getV2Tokens(chainId).reduce((acc, token) => {
+      (overrideTokenList ?? getV2Tokens(chainId)).reduce((acc, token) => {
         // Skip synthetic tokens
         if (token.isSynthetic) return acc;
 
@@ -52,7 +62,7 @@ export function useTokenBalances(chainId: number, overrideAccount?: string | und
       }, {}),
     parseResponse: (res) =>
       Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = BigNumber.from(res.data[tokenAddress].balance.returnValues[0]);
+        tokenBalances[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
 
         return tokenBalances;
       }, {} as TokenBalancesData),

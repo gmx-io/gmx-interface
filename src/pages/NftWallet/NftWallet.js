@@ -25,13 +25,13 @@ export default function NftWallet() {
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
     }
-    if (!ethers.utils.isAddress(receiver)) {
+    if (!ethers.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
     if (!nftAddress || nftAddress.length === 0) {
       return t`Enter NFT Address`;
     }
-    if (!ethers.utils.isAddress(nftAddress)) {
+    if (!ethers.isAddress(nftAddress)) {
       return t`Invalid NFT Address`;
     }
     if (!nftId || nftId.toString().length === 0) {

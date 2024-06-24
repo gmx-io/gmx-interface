@@ -12,8 +12,9 @@ import {
 } from "./globalSelectors";
 import {
   makeSelectDecreasePositionAmounts,
+  makeSelectFindSwapPath,
+  makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
-  makeSelectSwapRoutes,
 } from "./tradeSelectors";
 import {
   getMinCollateralFactorForPosition,
@@ -36,10 +37,17 @@ export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =
   state.positionSeller.closeUsdInputValue;
 const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
 export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
+export const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
+  state.positionSeller.isReceiveTokenChanged;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
 });
+
+export const selectPositionSellerSetDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.setDefaultReceiveToken;
+export const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) =>
+  state.positionSeller.defaultReceiveToken;
 
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
@@ -66,7 +74,7 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const marketAddress = position.marketInfo.marketTokenAddress;
   const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -132,21 +140,21 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
 
   if (!decreaseAmountsWithKeepLeverage) return false;
 
-  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+  if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd >= position.sizeInUsd) return false;
 
   const minCollateralFactor = getMinCollateralFactorForPosition(
     position,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 
-  if (!minCollateralFactor) return false;
+  if (minCollateralFactor === undefined) return false;
 
   return !willPositionCollateralBeSufficientForPosition(
     position,
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,
     minCollateralFactor,
-    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+    -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
 });
 
@@ -154,7 +162,7 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
-  if (!position || !decreaseAmounts?.acceptablePrice) {
+  if (!position || decreaseAmounts?.acceptablePrice === undefined) {
     return undefined;
   }
 
@@ -175,7 +183,11 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const isTrigger = orderOption === OrderOption.Trigger;
   const tokensData = q(selectTokensData);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
+  const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
+  const receiveTokenAddress = isChanged
+    ? q(selectPositionSellerReceiveTokenAddress)
+    : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
   return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 });
 
@@ -186,26 +198,39 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
   return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 });
 
-export const selectPositionSellerSwapRoutes = createSelector((q) => {
+export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const receiveTokenAddress = q(selectPositionSellerReceiveTokenAddress);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
+  const selectMakeLiquidityPath = makeSelectMaxLiquidityPath(position?.collateralTokenAddress, receiveTokenAddress);
 
-  const selectSwapRoutes = makeSelectSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
-  return q(selectSwapRoutes);
+  return q(selectMakeLiquidityPath);
+});
+
+export const selectPositionSellerFindSwapPath = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
+  const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
+
+  return q(selectFindSwapPath);
 });
 
 export const selectPositionSellerSwapAmounts = createSelector((q) => {
-  const shouldSwap = q(selectPositionSellerShouldSwap);
-  const receiveToken = q(selectPositionSellerReceiveToken);
-  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const position = q(selectPositionSellerPosition);
-  const uiFeeFactor = q(selectUiFeeFactor);
 
-  if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
+  if (!position) {
     return undefined;
   }
 
-  const findSwapPath = q(selectPositionSellerSwapRoutes).findSwapPath;
+  const shouldSwap = q(selectPositionSellerShouldSwap);
+  const receiveToken = q(selectPositionSellerReceiveToken);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  if (!shouldSwap || !receiveToken || decreaseAmounts?.receiveTokenAmount === undefined) {
+    return undefined;
+  }
+
+  const findSwapPath = q(selectPositionSellerFindSwapPath);
 
   return getSwapAmountsByFromValue({
     tokenIn: position.collateralToken,

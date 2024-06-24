@@ -17,7 +17,7 @@
 
 .Checkbox .Checkbox-icon {
   font-size: 1.25rem;
-  color: rgba(61, 81, 255, 1);
+  color: var(--color-blue-500);
   margin-right: 0.62rem;
   margin-bottom: 0;
 }
@@ -31,7 +31,7 @@
 }
 
 .Checkbox-icon.inactive {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 }
 
 .Checkbox-label {

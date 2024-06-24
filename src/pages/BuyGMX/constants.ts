@@ -15,6 +15,7 @@ export const EXTERNAL_LINKS = {
     networkWebsite: "https://arbitrum.io/",
     buyGmx: {
       uniswap: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${ARBITRUM_GMX}`,
+      gmx: `https://app.gmx.io/#/trade/swap/?mode=market&from=usdc&to=gmx`,
     },
   },
   [ARBITRUM_GOERLI]: {
@@ -38,14 +39,6 @@ export const EXTERNAL_LINKS = {
 };
 
 export const FIAT_GATEWAYS: Exchange[] = [
-  {
-    name: "Binance Connect",
-    icon: "ic_binance.svg",
-    links: {
-      [ARBITRUM]: "https://www.binancecnt.com/en/buy-sell-crypto",
-      [AVALANCHE]: "https://www.binancecnt.com/en/buy-sell-crypto",
-    },
-  },
   {
     name: "Banxa",
     icon: "ic_banxa.svg",

@@ -4,7 +4,7 @@ export function LeaderboardTopAccountsStructure() {
   return (
     <tr>
       <td>
-        <Skeleton className="my-xs" width={40} />
+        <Skeleton className="my-5" width={40} />
       </td>
       <td>
         <Skeleton width={250} />

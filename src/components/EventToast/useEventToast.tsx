@@ -31,6 +31,8 @@ function useEventToast() {
       const block = await provider.getBlock(blockNumber);
       const now = Date.now() / 1000;
 
+      if (!block) return;
+
       if (now - block.timestamp > 60) {
         setIsArbitrumDown(true);
       }
@@ -41,14 +43,14 @@ function useEventToast() {
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
     if (!marketsInfoData) return;
-    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond > 0);
   }, [marketsInfoData]);
 
   const isAdaptiveFundingActiveAllMarkets = useMemo(() => {
     if (!marketsInfoData) return;
     return Object.values(marketsInfoData)
       .filter((market) => !market.isSpotOnly)
-      .every((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+      .every((market) => market.fundingIncreaseFactorPerSecond > 0);
   }, [marketsInfoData]);
 
   useEffect(() => {
@@ -84,7 +86,8 @@ function useEventToast() {
               toast={t}
               onClick={() => {
                 toast.dismiss(event.id);
-                setVisited((x) => (x ? [...x, event.id] : [event.id]));
+                const newVisited = visited ? [...visited, event.id] : [event.id];
+                setVisited(newVisited);
               }}
             />
           ),

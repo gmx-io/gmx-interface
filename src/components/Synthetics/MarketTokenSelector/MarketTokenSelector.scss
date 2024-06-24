@@ -4,7 +4,7 @@
   margin-left: -5px;
 
   .Market-index-name {
-    color: #fff;
+    color: var(--color-white);
     font-size: 1.6rem;
     letter-spacing: 0;
     line-height: 2.1rem;
@@ -12,7 +12,7 @@
   }
 
   .Market-subtext {
-    color: #a9a9b0;
+    color: var(--color-gray-400);
     font-size: 1.2rem;
     letter-spacing: 0;
     line-height: 1.5rem;
@@ -22,7 +22,7 @@
   .chart-token-selector {
     border: none;
     background: transparent;
-    color: white;
+    color: var(--color-white);
     font-size: 2rem;
     display: inline-flex;
     align-items: center;
@@ -30,25 +30,25 @@
     border-radius: var(--border-radius-sm);
 
     &:hover {
-      color: #7885ff;
+      color: var(--color-blue-300);
       span,
       .Market-subtext {
-        color: #7885ff;
+        color: var(--color-blue-300);
       }
     }
   }
 
   .chart-token-label--active {
-    color: #7885ff;
+    color: var(--color-blue-300);
     span {
-      color: #7885ff;
+      color: var(--color-blue-300);
     }
   }
 
   .chart-token-selector--current {
     font-weight: 700;
     margin-right: 1rem;
-    color: white;
+    color: var(--color-white);
     vertical-align: bottom;
 
     .chart-token-current-icon {
@@ -67,7 +67,7 @@
   .chart-token-menu-items .menu-item {
     font-size: var(--font-sm);
     height: 3.4rem;
-    color: #a0a3c4;
+    color: var(--color-slate-100);
   }
 
   .chart-token-list {
@@ -88,7 +88,7 @@
       display: table-header-group;
       position: sticky;
       top: 0;
-      background: #16182e;
+      background: var(--color-slate-800);
       z-index: 2;
       tr {
         th {
@@ -98,7 +98,7 @@
           padding: 0.75rem 1.5rem 0.75rem 0;
           font-weight: normal;
           letter-spacing: 0.25px;
-          color: #a9a9b0;
+          color: var(--color-gray-400);
           text-transform: uppercase;
         }
       }
@@ -122,7 +122,7 @@
           font-weight: 400;
 
           &.token-item {
-            color: #a0a3c4;
+            color: var(--color-slate-100);
 
             .ChartToken-list-icon {
               margin-right: 0.75rem;

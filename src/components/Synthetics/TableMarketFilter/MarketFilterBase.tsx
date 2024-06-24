@@ -4,10 +4,11 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useChainId } from "lib/chains";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Item } from "components/Synthetics/TableOptionsFilter/types";
@@ -38,7 +39,7 @@ export function MarketFilterBase({
   forceIsActive,
 }: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: markets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
@@ -75,8 +76,8 @@ export function MarketFilterBase({
 
       return (
         <>
-          <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-xs" />
-          <div className="items-center">
+          <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-5" />
+          <div className="inline-flex items-center">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

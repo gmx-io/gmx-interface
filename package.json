@@ -7,13 +7,11 @@
     "@binance/w3w-utils": "1.1.4",
     "@davatar/react": "1.8.1",
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
-    "@ethersproject/providers": "5.5.1",
-    "@ethersproject/units": "5.5.0",
     "@floating-ui/dom": "1.6.3",
     "@floating-ui/react": "0.26.9",
     "@headlessui/react": "1.6.1",
-    "@lingui/core": "3.13.3",
-    "@lingui/react": "3.13.3",
+    "@lingui/core": "4.10.0",
+    "@lingui/react": "4.10.0",
     "@rainbow-me/rainbowkit": "2.0.2",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
@@ -37,8 +35,8 @@
     "eslint-config-prettier": "9.0.0",
     "eslint-config-recommended": "4.1.0",
     "eth-testing": "1.9.1",
-    "ethers": "5.6.8",
-    "framer-motion": "4.1.17",
+    "ethers": "6.12.1",
+    "framer-motion": "11.1.9",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
@@ -61,7 +59,7 @@
     "react-tabs": "3.2.3",
     "react-toastify": "10.0.5",
     "react-use": "17.3.1",
-    "recharts": "2.1.8",
+    "recharts": "2.12.7",
     "reselect": "5.1.0",
     "sass": "1.55.0",
     "shallowequal": "1.1.0",
@@ -73,27 +71,31 @@
     "web-vitals": "1.1.2"
   },
   "resolutions": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
+    "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8"
   },
   "scripts": {
-    "start": "PORT=3010 react-app-rewired start",
-    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-app-rewired start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-app-rewired start",
+    "start": "REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3010 react-app-rewired start",
+    "start-home": "yarn lingui:prepare && REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3010 env-cmd -e development-home react-app-rewired start",
+    "start-app": "yarn lingui:prepare && REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3011 env-cmd -e development-app react-app-rewired start",
     "start-win": "set PORT=3010&react-app-rewired start",
-    "build": "INLINE_RUNTIME_CHUNK=false react-app-rewired build",
-    "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
-    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
+    "build": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false react-app-rewired build",
+    "build-home": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
+    "build-app": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
     "test": "react-app-rewired test",
     "test:ci": "react-app-rewired test --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
+    "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit"
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}"
   },
   "eslintConfig": {
     "extends": [
@@ -123,28 +125,37 @@
     "setupFilesAfterEnv": [
       "./jest-env.js"
     ],
-    "globalSetup": "./jest-global-setup.js"
+    "globalSetup": "./jest-global-setup.js",
+    "prettierPath": null
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
-    "@lingui/cli": "3.13.3",
-    "@lingui/loader": "3.13.3",
-    "@lingui/macro": "3.13.3",
+    "@lingui/cli": "4.10.0",
+    "@lingui/loader": "4.10.0",
+    "@lingui/macro": "4.10.0",
     "@types/react-date-range": "1.4.9",
+    "@typescript-eslint/eslint-plugin": "6.5.0",
+    "@typescript-eslint/parser": "6.5.0",
     "buffer": "6.0.3",
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-local-rules": "2.0.1",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-perf": "3.3.2",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "prettier": "2.5.1",
-    "react-app-rewired": "2.2.1"
+    "prettier": "3.2.5",
+    "prettier-plugin-tailwindcss": "0.5.14",
+    "react-app-rewired": "2.2.1",
+    "tailwindcss": "3.4.1"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix --max-warnings=0 ./src",
+      "prettier --write"
+    ],
+    "src/**/*.{css,scss}": [
       "prettier --write"
     ]
   },

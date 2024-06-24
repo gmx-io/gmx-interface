@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -39,7 +38,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -72,13 +71,14 @@ import {
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
   selectOrderEditorMarkRatio,
+  selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorSwapRoutes,
+  selectOrderEditorFindSwapPath,
   selectOrderEditorToToken,
   selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
@@ -90,6 +90,7 @@ import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
 import "./OrderEditor.scss";
+import { bigMath } from "lib/bigmath";
 
 type Props = {
   order: OrderInfo;
@@ -127,12 +128,12 @@ export function OrderEditor(p: Props) {
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
   const additionalExecutionFee = useMemo(() => {
-    if (!executionFee || p.order.executionFee?.gte(executionFee.feeTokenAmount)) {
+    if (!executionFee || p.order.executionFee >= executionFee.feeTokenAmount) {
       return undefined;
     }
 
     const feeTokenData = getTokenData(tokensData, executionFee.feeToken.address);
-    const additionalTokenAmount = executionFee.feeTokenAmount.sub(p.order.executionFee ?? 0);
+    const additionalTokenAmount = executionFee.feeTokenAmount - p.order.executionFee;
 
     return {
       feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice),
@@ -155,7 +156,7 @@ export function OrderEditor(p: Props) {
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
-  const swapRoute = useSelector(selectOrderEditorSwapRoutes);
+  const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
   const uiFeeFactor = useUiFeeFactor(chainId);
@@ -165,14 +166,17 @@ export function OrderEditor(p: Props) {
   const initialAcceptablePriceImpactBps = useSelector(selectOrderEditorInitialAcceptablePriceImpactBps);
   const setAcceptablePriceImpactBps = useSelector(selectOrderEditorSetAcceptablePriceImpactBps);
   const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
+  const maxAllowedLeverage = useSelector(selectOrderEditorMaxAllowedLeverage);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
-      ? increaseAmounts?.acceptablePriceDeltaBps.abs()
-      : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
+      ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
+      : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
+        ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
+        : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
@@ -182,19 +186,19 @@ export function OrderEditor(p: Props) {
     }
 
     if (isSwapOrderType(p.order.orderType)) {
-      if (!triggerRatio?.ratio?.gt(0) || !minOutputAmount.gt(0)) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
         return t`Enter a ratio`;
       }
 
-      if (minOutputAmount.eq(p.order.minOutputAmount)) {
+      if (minOutputAmount === p.order.minOutputAmount) {
         return t`Enter a new ratio`;
       }
 
-      if (triggerRatio && !isRatioInverted && markRatio?.ratio.lt(triggerRatio.ratio)) {
+      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
         return t`Price above Mark Price`;
       }
 
-      if (triggerRatio && isRatioInverted && markRatio?.ratio.gt(triggerRatio.ratio)) {
+      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
         return t`Price below Mark Price`;
       }
 
@@ -203,90 +207,93 @@ export function OrderEditor(p: Props) {
 
     const positionOrder = p.order as PositionOrderInfo;
 
-    if (!markPrice) {
+    if (markPrice === undefined) {
       return t`Loading...`;
     }
 
-    if (!sizeDeltaUsd?.gt(0)) {
+    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
       return t`Enter an amount`;
     }
 
-    if (!triggerPrice?.gt(0)) {
+    if (triggerPrice === undefined || triggerPrice < 0) {
       return t`Enter a price`;
     }
 
     if (
-      sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) &&
-      triggerPrice?.eq(positionOrder.triggerPrice!) &&
-      acceptablePrice.eq(positionOrder.acceptablePrice)
+      sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
+      triggerPrice === positionOrder.triggerPrice! &&
+      acceptablePrice === positionOrder.acceptablePrice
     ) {
       return t`Enter new amount or price`;
     }
 
     if (isLimitOrderType(p.order.orderType)) {
       if (p.order.isLong) {
-        if (triggerPrice?.gte(markPrice)) {
+        if (triggerPrice >= markPrice) {
           return t`Price above Mark Price`;
         }
       } else {
-        if (triggerPrice?.lte(markPrice)) {
+        if (triggerPrice <= markPrice) {
           return t`Price below Mark Price`;
         }
       }
     }
 
     if (isTriggerDecreaseOrderType(p.order.orderType)) {
-      if (!markPrice) {
+      if (markPrice === undefined) {
         return t`Loading...`;
       }
 
       if (
-        sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) &&
-        triggerPrice?.eq(positionOrder.triggerPrice || 0) &&
-        acceptablePrice.eq(positionOrder.acceptablePrice)
+        sizeDeltaUsd === (p.order.sizeDeltaUsd ?? 0n) &&
+        triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
+        acceptablePrice === positionOrder.acceptablePrice
       ) {
         return t`Enter a new size or price`;
       }
 
       if (existingPosition?.liquidationPrice) {
-        if (existingPosition.isLong && triggerPrice?.lte(existingPosition?.liquidationPrice)) {
+        if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
           return t`Price below Liq. Price`;
         }
 
-        if (!existingPosition.isLong && triggerPrice?.gte(existingPosition?.liquidationPrice)) {
+        if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
           return t`Price above Liq. Price`;
         }
       }
 
       if (p.order.isLong) {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice?.lte(markPrice)) {
+        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
           return t`Price below Mark Price`;
         }
 
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice?.gte(markPrice)) {
+        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
           return t`Price above Mark Price`;
         }
       } else {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice?.gte(markPrice)) {
+        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
           return t`Price above Mark Price`;
         }
 
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice?.lte(markPrice)) {
+        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
           return t`Price below Mark Price`;
         }
       }
     }
 
     if (isLimitIncreaseOrder) {
-      if (nextPositionValuesForIncrease?.nextLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
-        return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      if (
+        nextPositionValuesForIncrease?.nextLeverage !== undefined &&
+        nextPositionValuesForIncrease?.nextLeverage > maxAllowedLeverage
+      ) {
+        return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
       }
     }
   }
 
   function getIsMaxLeverageError() {
-    if (isLimitIncreaseOrder && sizeDeltaUsd) {
-      if (!nextPositionValuesWithoutPnlForIncrease?.nextLeverage) {
+    if (isLimitIncreaseOrder && sizeDeltaUsd !== undefined) {
+      if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
       }
 
@@ -308,17 +315,17 @@ export function OrderEditor(p: Props) {
     const marketInfo = positionOrder.marketInfo;
     const collateralToken = positionOrder.targetCollateralToken;
 
-    if (!positionIndexToken || !fromToken || !minCollateralUsd) return;
+    if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
 
-    const { returnValue: newSizeDeltaUsd } = numericBinarySearch<BigNumber | undefined>(
+    const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
+      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
       (lev) => {
-        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
+        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
-          findSwapPath: swapRoute.findSwapPath,
+          findSwapPath,
           indexToken: positionIndexToken,
           indexTokenAmount,
           initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
@@ -350,7 +357,7 @@ export function OrderEditor(p: Props) {
           userReferralInfo,
         });
 
-        if (nextPositionValues.nextLeverage) {
+        if (nextPositionValues.nextLeverage !== undefined) {
           const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
@@ -371,7 +378,7 @@ export function OrderEditor(p: Props) {
       }
     );
 
-    if (newSizeDeltaUsd) {
+    if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
       helperToast.error(t`No available leverage found`);
@@ -425,10 +432,10 @@ export function OrderEditor(p: Props) {
 
     const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount || p.order.minOutputAmount,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
@@ -473,8 +480,10 @@ export function OrderEditor(p: Props) {
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
-        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, indexPriceDecimals || 2));
+        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        setTriggerPriceInputValue(
+          formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
+        );
       }
 
       setIsInited(true);
@@ -632,14 +641,18 @@ export function OrderEditor(p: Props) {
                   <TooltipWithPortal
                     position="top-end"
                     portalClassName="PositionEditor-fees-tooltip"
-                    handle={formatDeltaUsd(additionalExecutionFee.feeUsd?.mul(-1))}
+                    handle={formatDeltaUsd(
+                      additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
+                    )}
                     renderContent={() => (
                       <>
                         <StatsTooltipRow
-                          label={<div className="text-white">{t`Execution Fee`}:</div>}
+                          label={<div className="text-white">{t`Network Fee`}:</div>}
                           value={formatTokenAmountWithUsd(
-                            additionalExecutionFee.feeTokenAmount.mul(-1),
-                            additionalExecutionFee.feeUsd?.mul(-1),
+                            additionalExecutionFee.feeTokenAmount * -1n,
+                            additionalExecutionFee.feeUsd === undefined
+                              ? undefined
+                              : additionalExecutionFee.feeUsd * -1n,
                             additionalExecutionFee.feeToken.symbol,
                             additionalExecutionFee.feeToken.decimals,
                             {
@@ -650,7 +663,7 @@ export function OrderEditor(p: Props) {
                         />
                         <br />
                         <div className="text-white">
-                          <Trans>As network fees have increased, an additional execution fee is needed.</Trans>
+                          <Trans>As network fees have increased, an additional network fee is needed.</Trans>
                         </div>
                       </>
                     )}

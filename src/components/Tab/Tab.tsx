@@ -26,12 +26,12 @@ export default function Tab(props: Props) {
   };
 
   return (
-    <div className={cx("Tab", type, className)}>
+    <div className={cx("Tab", `Tab__${type}`, className)}>
       {options.map((opt) => {
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
           <div className={cx("Tab-option", "muted", { active: opt === option })} onClick={() => onClick(opt)} key={opt}>
-            {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={String(option)} />}
+            {icons && icons[opt] && <img className="Tab-option-icon inline" src={icons[opt]} alt={String(option)} />}
             {label}
           </div>
         );

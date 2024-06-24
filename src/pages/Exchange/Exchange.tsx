@@ -5,6 +5,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useSt
 import useSWR from "swr";
 
 import { getConstant, getExplorerUrl } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
   LONG,
@@ -20,7 +21,6 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -42,22 +42,23 @@ import Tab from "components/Tab/Tab";
 
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIsV1Supported } from "config/features";
 import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import "./Exchange.css";
-import { getIsV1Supported } from "config/features";
-import useWallet from "lib/wallets/useWallet";
-import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
-const { AddressZero } = ethers.constants;
+import useWallet from "lib/wallets/useWallet";
+import "./Exchange.css";
+const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
@@ -66,7 +67,7 @@ const notifications = {};
 
 function pushSuccessNotification(chainId, message, e) {
   const { transactionHash } = e;
-  const id = ethers.utils.id(message + transactionHash);
+  const id = ethers.id(message + transactionHash);
   if (notifications[id]) {
     return;
   }
@@ -86,7 +87,7 @@ function pushSuccessNotification(chainId, message, e) {
 
 function pushErrorNotification(chainId, message, e) {
   const { transactionHash } = e;
-  const id = ethers.utils.id(message + transactionHash);
+  const id = ethers.id(message + transactionHash);
   if (notifications[id]) {
     return;
   }
@@ -105,7 +106,7 @@ function pushErrorNotification(chainId, message, e) {
 }
 
 const getTokenAddress = (token, nativeTokenAddress) => {
-  if (token.address === AddressZero) {
+  if (token.address === ZeroAddress) {
     return nativeTokenAddress;
   }
   return token.address;
@@ -124,11 +125,11 @@ function applyPendingChanges(position, pendingPositions) {
     pendingPositions[key].updatedAt + PENDING_POSITION_VALID_DURATION > Date.now()
   ) {
     const { pendingChanges } = pendingPositions[key];
-    if (pendingChanges.size && position.size.eq(pendingChanges.size)) {
+    if (pendingChanges.size !== undefined && position.size == pendingChanges.size) {
       return;
     }
 
-    if (pendingChanges.expectingCollateralChange && !position.collateral.eq(pendingChanges.collateralSnapshot)) {
+    if (pendingChanges.expectingCollateralChange && position.collateral != pendingChanges.collateralSnapshot) {
       return;
     }
 
@@ -164,23 +165,45 @@ export function getPositions(
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     }
 
-    const position: any = {
+    const position = {
       key,
       contractKey,
       collateralToken,
       indexToken,
       isLong: isLong[i],
-      size: positionData[i * propsLength],
-      collateral: positionData[i * propsLength + 1],
-      averagePrice: positionData[i * propsLength + 2],
-      entryFundingRate: positionData[i * propsLength + 3],
-      cumulativeFundingRate: collateralToken.cumulativeFundingRate,
-      hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
-      realisedPnl: positionData[i * propsLength + 5],
-      lastIncreasedTime: positionData[i * propsLength + 6].toNumber(),
-      hasProfit: positionData[i * propsLength + 7].eq(1),
-      delta: positionData[i * propsLength + 8],
+      size: positionData[i * propsLength] as bigint,
+      collateral: positionData[i * propsLength + 1] as bigint,
+      averagePrice: positionData[i * propsLength + 2] as bigint,
+      entryFundingRate: positionData[i * propsLength + 3] as bigint,
+      cumulativeFundingRate: collateralToken.cumulativeFundingRate as bigint,
+      hasRealisedProfit: positionData[i * propsLength + 4] == 1,
+      realisedPnl: positionData[i * propsLength + 5] as bigint,
+      lastIncreasedTime: Number(positionData[i * propsLength + 6]),
+      hasProfit: positionData[i * propsLength + 7] == 1,
+      delta: positionData[i * propsLength + 8] as bigint,
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice,
+      fundingFee: 0n,
+      collateralAfterFee: 0n,
+      closingFee: 0n,
+      positionFee: 0n,
+      totalFees: 0n,
+      pendingDelta: 0n,
+      hasPendingChanges: false,
+      pendingChanges: null,
+      hasLowCollateral: false,
+      deltaPercentage: 0n,
+      deltaPercentageStr: "",
+      deltaStr: "",
+      deltaBeforeFeesStr: "",
+      deltaAfterFeesStr: "",
+      deltaAfterFeesPercentageStr: "",
+      hasProfitAfterFees: false,
+      pendingDeltaAfterFees: 0n,
+      deltaPercentageAfterFees: 0n,
+      leverage: 0n as bigint | undefined,
+      leverageWithPnl: 0n as bigint | undefined,
+      leverageStr: "",
+      netValue: 0n,
     };
 
     if (
@@ -197,35 +220,44 @@ export function getPositions(
     }
 
     let fundingFee = getFundingFee(position);
-    position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
-    position.collateralAfterFee = position.collateral.sub(position.fundingFee);
+    position.fundingFee = fundingFee ? fundingFee : 0n;
+    position.collateralAfterFee = position.collateral - position.fundingFee;
 
-    position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-    position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
-    position.totalFees = position.positionFee.add(position.fundingFee);
+    position.closingFee = bigMath.mulDiv(position.size, BigInt(MARGIN_FEE_BASIS_POINTS), BASIS_POINTS_DIVISOR_BIGINT);
+    position.positionFee = bigMath.mulDiv(
+      position.size * 2n,
+      BigInt(MARGIN_FEE_BASIS_POINTS),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
+    position.totalFees = position.positionFee + position.fundingFee;
 
     position.pendingDelta = position.delta;
 
-    if (position.collateral.gt(0)) {
+    if (position.collateral > 0) {
       position.hasLowCollateral =
-        position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
+        position.collateralAfterFee < 0 || position.size / bigMath.abs(position.collateralAfterFee) > 50;
 
-      if (position.averagePrice && position.markPrice) {
-        const priceDelta = position.averagePrice.gt(position.markPrice)
-          ? position.averagePrice.sub(position.markPrice)
-          : position.markPrice.sub(position.averagePrice);
-        position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+      if (position.averagePrice !== undefined && position.markPrice !== undefined) {
+        const priceDelta =
+          position.averagePrice > position.markPrice
+            ? position.averagePrice - position.markPrice
+            : position.markPrice - position.averagePrice;
+        position.pendingDelta = bigMath.mulDiv(position.size, priceDelta, position.averagePrice);
 
         position.delta = position.pendingDelta;
 
         if (position.isLong) {
-          position.hasProfit = position.markPrice.gte(position.averagePrice);
+          position.hasProfit = position.markPrice >= position.averagePrice;
         } else {
-          position.hasProfit = position.markPrice.lte(position.averagePrice);
+          position.hasProfit = position.markPrice <= position.averagePrice;
         }
       }
 
-      position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
+      position.deltaPercentage = bigMath.mulDiv(
+        position.pendingDelta,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.collateral
+      );
 
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
         delta: position.pendingDelta,
@@ -241,24 +273,26 @@ export function getPositions(
       let pendingDeltaAfterFees;
 
       if (position.hasProfit) {
-        if (position.pendingDelta.gt(position.totalFees)) {
+        if (position.pendingDelta > position.totalFees) {
           hasProfitAfterFees = true;
-          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees);
+          pendingDeltaAfterFees = position.pendingDelta - position.totalFees;
         } else {
           hasProfitAfterFees = false;
-          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta);
+          pendingDeltaAfterFees = position.totalFees - position.pendingDelta;
         }
       } else {
         hasProfitAfterFees = false;
-        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees);
+        pendingDeltaAfterFees = position.pendingDelta + position.totalFees;
       }
 
       position.hasProfitAfterFees = hasProfitAfterFees;
       position.pendingDeltaAfterFees = pendingDeltaAfterFees;
       // while calculating delta percentage after fees, we need to add opening fee (which is equal to closing fee) to collateral
-      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(position.collateral.add(position.closingFee));
+      position.deltaPercentageAfterFees = bigMath.mulDiv(
+        position.pendingDeltaAfterFees,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.collateral + position.closingFee
+      );
 
       const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
         delta: position.pendingDeltaAfterFees,
@@ -275,10 +309,10 @@ export function getPositions(
       }
 
       let netValue = position.hasProfit
-        ? position.collateral.add(position.pendingDelta)
-        : position.collateral.sub(position.pendingDelta);
+        ? position.collateral + position.pendingDelta
+        : position.collateral - position.pendingDelta;
 
-      netValue = netValue.sub(position.fundingFee).sub(position.closingFee);
+      netValue = netValue - position.fundingFee - position.closingFee;
       position.netValue = netValue;
     }
 
@@ -305,7 +339,7 @@ export function getPositions(
 
     applyPendingChanges(position, pendingPositions);
 
-    if (position.size.gt(0) || position.hasPendingChanges) {
+    if (position.size > 0 || position.hasPendingChanges) {
       positions.push(position);
     }
   }
@@ -417,16 +451,16 @@ export const Exchange = forwardRef(
     const defaultTokenSelection = useMemo(
       () => ({
         [SWAP]: {
-          from: AddressZero,
+          from: ZeroAddress,
           to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
         },
         [LONG]: {
-          from: AddressZero,
-          to: AddressZero,
+          from: ZeroAddress,
+          to: ZeroAddress,
         },
         [SHORT]: {
           from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
-          to: AddressZero,
+          to: ZeroAddress,
         },
       }),
       [chainId, defaultCollateralSymbol]
@@ -586,7 +620,6 @@ export const Exchange = forwardRef(
 
     const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
     const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
-      signer,
       active,
       chainId,
       infoTokens
@@ -609,16 +642,30 @@ export const Exchange = forwardRef(
       document.title = title;
     }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
-    const { positions, positionsMap } = getPositions(
-      chainId,
-      positionQuery,
-      positionData,
-      infoTokens,
-      isPnlInLeverage,
-      showPnlAfterFees,
-      account,
-      pendingPositions,
-      updatedPositions
+    const { positions, positionsMap } = useMemo(
+      () =>
+        getPositions(
+          chainId,
+          positionQuery,
+          positionData,
+          infoTokens,
+          isPnlInLeverage,
+          showPnlAfterFees,
+          account,
+          pendingPositions,
+          updatedPositions
+        ),
+      [
+        account,
+        chainId,
+        infoTokens,
+        isPnlInLeverage,
+        pendingPositions,
+        positionData,
+        positionQuery,
+        showPnlAfterFees,
+        updatedPositions,
+      ]
     );
 
     useImperativeHandle(ref, () => ({
@@ -645,8 +692,8 @@ export const Exchange = forwardRef(
           const position = positions[i];
           if (position.contractKey === key) {
             updatedPositions[position.key] = {
-              size: bigNumberify(0),
-              collateral: bigNumberify(0),
+              size: 0n,
+              collateral: 0n,
               averagePrice,
               entryFundingRate,
               reserveAmount,
@@ -670,7 +717,7 @@ export const Exchange = forwardRef(
           : indexTokenItem.symbol;
         const longOrShortText = isLong ? t`Long` : t`Short`;
         let message;
-        if (sizeDelta.eq(0)) {
+        if (sizeDelta == 0n) {
           message = t`Deposited ${formatAmount(
             collateralDelta,
             USD_DECIMALS,
@@ -701,7 +748,7 @@ export const Exchange = forwardRef(
         const longOrShortText = isLong ? t`Long` : t`Short`;
 
         let message;
-        if (sizeDelta.eq(0)) {
+        if (sizeDelta == 0n) {
           message = t`Withdrew ${formatAmount(
             collateralDelta,
             USD_DECIMALS,
@@ -886,7 +933,7 @@ export const Exchange = forwardRef(
       if (cancelOrderIdList.length === 0) return;
       return (
         <button
-          className="muted font-base cancel-order-btn"
+          className="muted cancel-order-btn text-15"
           disabled={isCancelMultipleOrderProcessing}
           type="button"
           onClick={onMultipleCancelClick}

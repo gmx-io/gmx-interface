@@ -1,5 +1,4 @@
 import { MarketInfo } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
 import { TokenData, TokensRatio } from "../tokens";
 import { SwapPathStats, TriggerThresholdType } from "../trade";
 import { ReactNode } from "react";
@@ -46,14 +45,14 @@ export type Order = {
   decreasePositionSwapType: DecreasePositionSwapType;
   receiver: string;
   swapPath: string[];
-  contractAcceptablePrice: BigNumber;
-  contractTriggerPrice: BigNumber;
-  callbackGasLimit: BigNumber;
-  executionFee: BigNumber;
-  initialCollateralDeltaAmount: BigNumber;
-  minOutputAmount: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  updatedAtBlock: BigNumber;
+  contractAcceptablePrice: bigint;
+  contractTriggerPrice: bigint;
+  callbackGasLimit: bigint;
+  executionFee: bigint;
+  initialCollateralDeltaAmount: bigint;
+  minOutputAmount: bigint;
+  sizeDeltaUsd: bigint;
+  updatedAtBlock: bigint;
   isFrozen: boolean;
   isLong: boolean;
   orderType: OrderType;
@@ -81,8 +80,8 @@ export type PositionOrderInfo = Order & {
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
   triggerThresholdType: TriggerThresholdType;
 };
 
@@ -95,3 +94,5 @@ export type OrdersData = {
 export type OrdersInfoData = {
   [orderKey: string]: OrderInfo;
 };
+
+export type OrderTxnType = "create" | "update" | "cancel";

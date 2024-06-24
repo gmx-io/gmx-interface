@@ -26,6 +26,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 export default function Home({ showRedirectModal }) {
   const arbV2Stats = useV2Stats(ARBITRUM);
@@ -60,24 +61,24 @@ export default function Home({ showRedirectModal }) {
   const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume);
   const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume);
 
-  let totalVolumeSum = bigNumberify(0);
-  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
-    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum);
-    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum);
-    totalVolumeSum = totalVolumeSum.add(arbV2Stats.totalVolume);
-    totalVolumeSum = totalVolumeSum.add(avaxV2Stats.totalVolume);
+  let totalVolumeSum = 0n;
+  if (arbitrumTotalVolumeSum !== undefined && avalancheTotalVolumeSum !== undefined && arbV2Stats && avaxV2Stats) {
+    totalVolumeSum = totalVolumeSum + arbitrumTotalVolumeSum;
+    totalVolumeSum = totalVolumeSum + avalancheTotalVolumeSum;
+    totalVolumeSum = totalVolumeSum + BigInt(arbV2Stats.totalVolume);
+    totalVolumeSum = totalVolumeSum + BigInt(avaxV2Stats.totalVolume);
   }
 
   // Open Interest
 
-  let openInterest = bigNumberify(0);
+  let openInterest = 0n;
   if (
     arbitrumPositionStats &&
     arbitrumPositionStats.totalLongPositionSizes &&
     arbitrumPositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes);
-    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes);
+    openInterest = openInterest + BigInt(arbitrumPositionStats.totalLongPositionSizes);
+    openInterest = openInterest + BigInt(arbitrumPositionStats.totalShortPositionSizes);
   }
 
   if (
@@ -85,13 +86,13 @@ export default function Home({ showRedirectModal }) {
     avalanchePositionStats.totalLongPositionSizes &&
     avalanchePositionStats.totalShortPositionSizes
   ) {
-    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes);
-    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes);
+    openInterest = openInterest + BigInt(avalanchePositionStats.totalLongPositionSizes);
+    openInterest = openInterest + BigInt(avalanchePositionStats.totalShortPositionSizes);
   }
 
   if (arbV2Stats && avaxV2Stats) {
-    openInterest = openInterest.add(arbV2Stats.openInterest);
-    openInterest = openInterest.add(avaxV2Stats.openInterest);
+    openInterest = openInterest + arbV2Stats.openInterest;
+    openInterest = openInterest + avaxV2Stats.openInterest;
   }
 
   // user stat
@@ -108,7 +109,7 @@ export default function Home({ showRedirectModal }) {
   }
 
   if (arbV2Stats && avaxV2Stats) {
-    totalUsers = bigNumberify(totalUsers).add(arbV2Stats.totalUsers).add(avaxV2Stats.totalUsers).toNumber();
+    totalUsers = Number(bigNumberify(totalUsers) + arbV2Stats.totalUsers + avaxV2Stats.totalUsers);
   }
 
   const LaunchExchangeButton = () => {
@@ -133,7 +134,7 @@ export default function Home({ showRedirectModal }) {
             </div>
             <div className="Home-description">
               <Trans>
-                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet
+                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet
               </Trans>
             </div>
             <LaunchExchangeButton />
@@ -258,7 +259,9 @@ export default function Home({ showRedirectModal }) {
               <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
-          <TokenCard showRedirectModal={showRedirectModal} />
+          <SyntheticsStateContextProvider pageType="home">
+            <TokenCard showRedirectModal={showRedirectModal} />
+          </SyntheticsStateContextProvider>
         </div>
       </div>
 

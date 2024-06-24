@@ -1,5 +1,6 @@
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { BigNumber } from "ethers";
+import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 
 export async function withdrawFromSubaccount({
   subaccount,
@@ -10,28 +11,31 @@ export async function withdrawFromSubaccount({
 }) {
   if (!subaccount) throw new Error("No subaccount available.");
 
-  const wallet = subaccount.wallet;
-  const [value, gasPrice] = await Promise.all([wallet.getBalance(), wallet.getGasPrice()]);
-  const gasLimit = 21000;
-  const approxAmountToSend = value.sub(gasPrice.mul(gasLimit));
+  const subaccountAddress = subaccount.address;
+  const wallet = subaccount.signer;
+  const provider = ethers.getDefaultProvider();
+  const [value, feeData] = await Promise.all([provider.getBalance(subaccountAddress), provider.getFeeData()]);
+  const gasPrice = feeData.gasPrice ?? 0n;
+  const gasLimit = 21000n;
+  const approxAmountToSend = value - gasPrice * gasLimit;
 
-  if (approxAmountToSend.lt(0)) {
+  if (approxAmountToSend < 0) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 
-  const estimatedGas = (
+  const estimatedGas = bigMath.mulDiv(
     (await wallet.estimateGas({
       to: mainAccountAddress,
       value,
-    })) as BigNumber
-  )
-    .mul(100)
-    .div(95);
+    })) as bigint,
+    100n,
+    95n
+  );
 
-  const gasCost = estimatedGas.mul(gasPrice);
-  const amountToSend = value.sub(gasCost);
+  const gasCost = estimatedGas * gasPrice;
+  const amountToSend = value - gasCost;
 
-  if (amountToSend.lt(0)) {
+  if (amountToSend < 0) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 
@@ -40,7 +44,7 @@ export async function withdrawFromSubaccount({
     value: amountToSend,
     gasLimit: estimatedGas,
     gasPrice,
-    nonce: await wallet.getTransactionCount(),
+    nonce: await wallet.getNonce(),
   });
 
   return signedTransaction.wait();

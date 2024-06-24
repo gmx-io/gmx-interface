@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
 
-export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
+export const NATIVE_TOKEN_ADDRESS = ethers.ZeroAddress;
 
 export const TOKENS: { [chainId: number]: Token[] } = {
   [ARBITRUM]: [
@@ -11,7 +11,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -198,6 +198,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: getContract(ARBITRUM, "GMX"),
       decimals: 18,
       isPlatformToken: true,
+      isPlatformTradingToken: true,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
       explorerUrl: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
@@ -296,7 +297,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
@@ -510,7 +511,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -701,7 +702,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
-      address: ethers.constants.AddressZero,
+      address: ethers.ZeroAddress,
       isNative: true,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
@@ -966,7 +967,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
       V1_TOKENS[chainId].push(token);
     }
 
-    if (!token.isPlatformToken && !token.isTempHidden) {
+    if ((!token.isPlatformToken || (token.isPlatformToken && token.isPlatformTradingToken)) && !token.isTempHidden) {
       V2_TOKENS[chainId].push(token);
     }
 
@@ -1095,7 +1096,7 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
     return false;
   }
 
-  if (token.isChartDisabled || token.isPlatformToken) return false;
+  if (token.isChartDisabled || (token.isPlatformToken && !token.isPlatformTradingToken)) return false;
 
   return true;
 }

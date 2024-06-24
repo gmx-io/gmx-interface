@@ -151,7 +151,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               <HeaderLink
                 to="/competitions/"
                 showRedirectModal={showRedirectModal}
-                className="underline inline-block clickable"
+                className="clickable inline-block underline"
               >
                 two&nbsp;weekly
               </HeaderLink>{" "}

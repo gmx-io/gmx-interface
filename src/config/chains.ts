@@ -1,9 +1,9 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
-const { parseEther } = ethers.utils;
+const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
@@ -25,7 +25,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI, ARBITRUM_GOERLI);
+  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -43,13 +43,49 @@ export const CHAIN_NAMES_MAP = {
   [AVALANCHE_FUJI]: "Avalanche Fuji",
 };
 
-export const GAS_PRICE_ADJUSTMENT_MAP = {
-  [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000", // 3 gwei
+// added to maxPriorityFeePerGas
+// applied to EIP-1559 transactions only
+// is also applied to the execution fee calculation
+export const GAS_PRICE_PREMIUM_MAP = {
+  [ARBITRUM]: 0n,
+  [AVALANCHE]: 3000000000n, // 3 gwei
 };
 
-export const MAX_GAS_PRICE_MAP = {
-  [AVALANCHE]: "200000000000", // 200 gwei
+// added to gasPrice
+// applied to *non* EIP-1559 transactions only
+//
+// it is *not* applied to the execution fee calculation, and in theory it could cause issues
+// if gas price used in the execution fee calculation is lower
+// than the gas price used in the transaction (e.g. create order transaction)
+// then the transaction will fail with InsufficientExecutionFee error.
+// it is not an issue on Arbitrum though because the passed gas price does not affect the paid gas price.
+// for example if current gas price is 0.1 gwei and UI passes 0.5 gwei the transaction
+// Arbitrum will still charge 0.1 gwei per gas
+//
+// it doesn't make much sense to set this buffer higher than the execution fee buffer
+// because if the paid gas price is higher than the gas price used in the execution fee calculation
+// and the transaction will still fail with InsufficientExecutionFee
+//
+// this buffer could also cause issues on a blockchain that uses passed gas price
+// especially if execution fee buffer and lower than gas price buffer defined bellow
+export const GAS_PRICE_BUFFER_MAP = {
+  [ARBITRUM]: 2000n, // 20%
+};
+
+/*
+  that was a constant value in ethers v5, after ethers v6 migration we use it as a minimum for maxPriorityFeePerGas
+*/
+export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = {
+  [ARBITRUM]: 1500000000n,
+  [AVALANCHE]: 1500000000n,
+  [AVALANCHE_FUJI]: 1500000000n,
+};
+
+// added to maxPriorityFeePerGas
+// applied to EIP-1559 transactions only
+// is not applied to execution fee calculation
+export const MAX_FEE_PER_GAS_MAP = {
+  [AVALANCHE]: 200000000000n, // 200 gwei
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -64,21 +100,10 @@ export const EXCESSIVE_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 10, // 10 USD
 };
 
-export const EXECUTION_FEE_MULTIPLIER_MAP = {
-  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
-  // for executing positions this is around 65,000 gas
-  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
-  // case yet
-  [ARBITRUM]: 65000,
-  // multiplier for Avalanche is just the average gas usage
-  [AVALANCHE]: 700000,
-  [AVALANCHE_FUJI]: 700000,
-};
-
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
-  [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
-  [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
-  [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
+  [ARBITRUM]: 10n ** 29n * 5n,
+  [AVALANCHE]: 10n ** 29n * 35n,
+  [AVALANCHE_FUJI]: 10n ** 29n * 2n,
 } as const;
 
 export const EXECUTION_FEE_CONFIG_V2: {
@@ -97,7 +122,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
   },
   [ARBITRUM]: {
     shouldUseMaxPriorityFeePerGas: false,
-    defaultBufferBps: 1000, // 10%
+    defaultBufferBps: 3000, // 30%
   },
   [ARBITRUM_GOERLI]: {
     shouldUseMaxPriorityFeePerGas: false,
@@ -367,10 +392,6 @@ export function getExcessiveExecutionFee(chainId) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
-export function getExecutionFeeMultiplier(chainId) {
-  return EXECUTION_FEE_MULTIPLIER_MAP[chainId] || 1;
-}
-
-export function isSupportedChain(chainId) {
+export function isSupportedChain(chainId: number) {
   return SUPPORTED_CHAIN_IDS.includes(chainId);
 }

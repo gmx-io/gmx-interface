@@ -1,0 +1,13 @@
+diff --git a/dist/index.js b/dist/index.js
+index 6bc48db1662c38df88d378bc0e7e99000fbfe024..f9e35ab14e3428537044726e389432d203dba788 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -33,7 +33,7 @@ function Davatar({ size, address, provider, graphApiKey, generatedAvatarType, de
+     const [ethersProvider, setEthersProvider] = (0, react_1.useState)(null);
+     (0, react_1.useEffect)(() => {
+         var _a, _b;
+-        let eth = (0, providers_1.getDefaultProvider)();
++        let eth = provider;
+         let chainId = null;
+         let isEthers = false;
+         // carlos: Only use the provided provider if ENS is actually on that chain

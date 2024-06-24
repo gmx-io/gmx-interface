@@ -13,10 +13,10 @@
   max-width: 225px;
 }
 .go-back span {
-  color: #a0a3c4;
+  color: var(--color-slate-100);
 }
 .go-back a {
-  color: white;
+  color: var(--color-white);
 }
 
 @media (max-width: 500px) {

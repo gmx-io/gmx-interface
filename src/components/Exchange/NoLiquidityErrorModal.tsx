@@ -6,7 +6,7 @@ import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type Props = {
   chainId: number;
@@ -30,10 +30,10 @@ export default function NoLiquidityErrorModal({
   setModalError,
 }: Props) {
   const nativeToken = getNativeToken(chainId);
-  const inputCurrency = fromToken.address === AddressZero ? nativeToken.symbol : fromToken.address;
+  const inputCurrency = fromToken.address === ZeroAddress ? nativeToken.symbol : fromToken.address;
   let outputCurrency;
   if (isLong) {
-    outputCurrency = toToken.address === AddressZero ? nativeToken.symbol : toToken.address;
+    outputCurrency = toToken.address === ZeroAddress ? nativeToken.symbol : toToken.address;
   } else {
     outputCurrency = shortCollateralToken.address;
   }
@@ -43,7 +43,7 @@ export default function NoLiquidityErrorModal({
     modalError === "BUFFER" ? t`${shortCollateralToken.symbol} Required` : t`${fromToken.symbol} Pool Capacity Reached`;
 
   return (
-    <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal font-base">
+    <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal text-15">
       <div>
         <Trans>
           You need to select {swapTokenSymbol} as the "Pay" token to use it for collateral to initiate this trade.

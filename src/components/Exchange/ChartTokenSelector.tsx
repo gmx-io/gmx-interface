@@ -5,13 +5,14 @@ import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
 import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { InfoTokens, Token } from "domain/tokens/types";
 import { getUsd } from "domain/tokens";
 import { BigNumberish } from "ethers";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { t } from "@lingui/macro";
+import { bigMath } from "lib/bigmath";
 
 type ChartToken = Token & {
   maxInUsd?: BigNumberish;
@@ -43,23 +44,30 @@ function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartTok
 function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
   return tokens.map((token) => {
     const { availableAmount, poolAmount, bufferAmount, maxUsdgAmount, usdgAmount } = infoTokens[token.address] || {};
-    if (!availableAmount || !poolAmount || !bufferAmount || !maxUsdgAmount || !usdgAmount)
+    if (
+      availableAmount === undefined ||
+      poolAmount === undefined ||
+      bufferAmount === undefined ||
+      maxUsdgAmount === undefined ||
+      usdgAmount === undefined
+    )
       return {
         ...token,
-        maxInUsd: bigNumberify(0),
-        maxOutUsd: bigNumberify(0),
+        maxInUsd: 0n,
+        maxOutUsd: 0n,
       };
-    const maxOut = availableAmount.gt(poolAmount.sub(bufferAmount)) ? poolAmount.sub(bufferAmount) : availableAmount;
+    const maxOut = availableAmount > poolAmount - bufferAmount ? poolAmount - bufferAmount : availableAmount;
     const maxOutUsd = getUsd(maxOut, token.address, false, infoTokens);
-    const maxInUsd = maxUsdgAmount
-      .sub(usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+    const maxInUsd = bigMath.mulDiv(
+      maxUsdgAmount - usdgAmount,
+      expandDecimals(1, USD_DECIMALS),
+      expandDecimals(1, USDG_DECIMALS)
+    );
 
     return {
       ...token,
-      maxOutUsd: maxOutUsd?.gt(0) ? maxOutUsd : bigNumberify(0),
-      maxInUsd: maxInUsd?.gt(0) ? maxInUsd : bigNumberify(0),
+      maxOutUsd: maxOutUsd !== undefined && maxOutUsd > 0 ? maxOutUsd : 0n,
+      maxInUsd: maxInUsd !== undefined && maxInUsd > 0 ? maxInUsd : 0n,
     };
   });
 }
@@ -109,7 +117,7 @@ export default function ChartTokenSelector(props: Props) {
           <>
             <Popover.Button as="div">
               <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
-                <span className="chart-token-selector--current inline-items-center">
+                <span className="chart-token-selector--current inline-flex items-center">
                   <TokenIcon
                     className="chart-token-current-icon"
                     symbol={selectedToken.symbol}
@@ -124,7 +132,7 @@ export default function ChartTokenSelector(props: Props) {
             <div className="chart-token-menu">
               <Popover.Panel as="div" className="menu-items chart-token-menu-items">
                 <SearchInput
-                  className="m-md"
+                  className="m-15"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {
@@ -155,7 +163,7 @@ export default function ChartTokenSelector(props: Props) {
                             className={isSwap ? "Swap-token-list" : "Position-token-list"}
                           >
                             <td className="token-item" onClick={() => onSelect(option)}>
-                              <span className="inline-items-center">
+                              <span className="inline-flex items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
                                   symbol={option.symbol}

@@ -35,7 +35,6 @@ import {
   useTokensDataRequest,
   getTokenData,
 } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 import { useChainId } from "lib/chains";
@@ -105,11 +104,10 @@ const MainView = memo(() => {
 
   const approxNumberOfOperationsByBalance = useMemo(() => {
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
-    return subAccNativeTokenBalance &&
-      baseFeePerAction &&
-      currentAutoTopUpAmount &&
-      mainAccWrappedTokenBalance &&
-      mainAccNativeTokenBalance
+    return subAccNativeTokenBalance !== undefined &&
+      currentAutoTopUpAmount !== undefined &&
+      mainAccWrappedTokenBalance !== undefined &&
+      mainAccNativeTokenBalance !== undefined
       ? getApproxSubaccountActionsCountByBalance(
           mainAccWrappedTokenBalance,
           subAccNativeTokenBalance,
@@ -263,7 +261,7 @@ const MainView = memo(() => {
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount !== null);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -389,7 +387,7 @@ const MainView = memo(() => {
             chainId,
             signer,
             subaccountAddress: address,
-          })) ?? BigNumber.from(0);
+          })) ?? 0n;
       }
 
       if (!address) {
@@ -397,7 +395,7 @@ const MainView = memo(() => {
         throw new Error("address is not defined");
       }
 
-      if (!count) {
+      if (count === undefined || count === null) {
         setNotificationState("activationFailed");
         throw new Error("Action counts are not defined");
       }
@@ -462,7 +460,7 @@ const MainView = memo(() => {
 
   const needPayTokenApproval = useMemo(
     () =>
-      tokensAllowanceData && baseFeePerAction
+      tokensAllowanceData && baseFeePerAction !== undefined
         ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
         : false,
     [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
@@ -517,8 +515,8 @@ const MainView = memo(() => {
     if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
-    if (!subAccNativeTokenBalance) throw new Error("subEthBalance is not defined");
-    if (!gasPrice) throw new Error("gasPrice is not defined");
+    if (subAccNativeTokenBalance === undefined) throw new Error("subEthBalance is not defined");
+    if (gasPrice === undefined) throw new Error("gasPrice is not defined");
 
     setWithdrawalLoading(true);
 
@@ -691,9 +689,11 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              topUp?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (topUp !== null &&
+                topUp > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
@@ -705,9 +705,11 @@ const MainView = memo(() => {
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              wntForAutoTopUps?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (wntForAutoTopUps !== null &&
+                wntForAutoTopUps > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
@@ -718,9 +720,11 @@ const MainView = memo(() => {
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              maxAutoTopUpAmount?.gt(0) &&
-              wrappedTokenData &&
-              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))
+              (maxAutoTopUpAmount !== null &&
+                maxAutoTopUpAmount > 0 &&
+                wrappedTokenData &&
+                formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
@@ -771,7 +775,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
 
     return (
       <div>
-        <div className="SubaccountModal-input-row flex text-gray">
+        <div className="SubaccountModal-input-row flex text-gray-300">
           <div className="SubaccountModal-input-row-label">
             <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>

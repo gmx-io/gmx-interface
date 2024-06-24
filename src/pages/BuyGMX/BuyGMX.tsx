@@ -10,6 +10,7 @@ import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import uniswapArbitrumIcon from "img/ic_uni_arbitrum.svg";
 import traderjoeIcon from "img/ic_traderjoe_avax.png";
@@ -62,7 +63,7 @@ export default function BuyGMX() {
           <div className="section-title-content">
             <div className="Page-title">
               <Trans>Buy GMX on {chainName}</Trans>
-              <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+              <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
@@ -84,7 +85,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
-                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
@@ -96,7 +97,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>
-                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
@@ -182,6 +183,7 @@ export default function BuyGMX() {
 }
 
 const UNISWAP_IMG_INFO = { src: uniswapArbitrumIcon, alt: "Uniswap" };
+const GMX_IMG_INFO = { src: gmxArbitrumIcon, alt: "GMX" };
 const TRADERJOE_IMG_INFO = { src: traderjoeIcon, alt: "Traderjoe" };
 const BOND_PROTOCOL_IMG_INFO = { src: bondProtocolIcon, alt: "Bond Protocol" };
 
@@ -193,9 +195,9 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
+              <Trans>Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):</Trans>
             </div>
-            <div className="buttons-group col-1">
+            <div className="buttons-group">
               <Button
                 variant="secondary"
                 textAlign="left"
@@ -204,6 +206,15 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 newTab
               >
                 Uniswap
+              </Button>
+              <Button
+                variant="secondary"
+                textAlign="left"
+                imgInfo={GMX_IMG_INFO}
+                to={externalLinks.buyGmx.gmx}
+                showExternalLinkArrow={false}
+              >
+                GMX
               </Button>
             </div>
           </div>

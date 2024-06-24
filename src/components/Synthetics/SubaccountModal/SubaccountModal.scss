@@ -1,6 +1,6 @@
 .SubaccountModal-alert {
   font-size: 1.2rem;
-  color: var(--text-gray);
+  color: var(--color-gray-300);
   display: flex;
   margin-bottom: 1.6rem;
   align-items: flex-start;
@@ -16,7 +16,7 @@
 
 .SubaccountModal-subaccount {
   align-items: center;
-  background-color: rgba(38, 43, 71, 0.9);
+  background-color: var(--color-slate-700);
   border-radius: 4px;
   cursor: default;
   justify-content: space-between;
@@ -34,22 +34,21 @@
 
 .SubaccountModal-button-icon {
   align-items: center;
-  background-color: rgb(52, 55, 86);
+  background-color: var(--color-slate-600);
   border-radius: 4px;
   display: inline-flex;
   height: 2.2rem;
   justify-content: center;
-  padding: 0.5rem 0.8rem;
   width: 2.2rem;
   margin-left: 0.4rem;
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: rgba(80, 87, 126, 0.6);
+    background: var(--color-slate-500);
   }
 
   &:not([disabled]):active {
-    background: rgba(80, 87, 126, 0.7);
+    background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
   }
 }
 
@@ -59,10 +58,10 @@
 }
 
 .SubaccountModal-mini-button {
-  background-color: rgba(180, 187, 255, 0.1);
+  background-color: var(--color-cold-blue-900);
   border-radius: 0.4rem;
   font-size: 1.4rem;
-  color: white;
+  color: var(--color-white);
   padding: 0.5rem 0.8rem;
   flex: 1;
   text-decoration: none;
@@ -70,11 +69,11 @@
   cursor: pointer;
 
   &:not([disabled]):hover {
-    background: rgba(80, 87, 126, 0.6);
+    background: var(--color-slate-600);
   }
 
   &:not([disabled]):active {
-    background: rgba(80, 87, 126, 0.7);
+    background: var(--color-slate-500);
   }
 
   &:first-child {
@@ -106,7 +105,7 @@
 }
 
 .SubaccountModal-section {
-  border-bottom: 1px solid #ffffff29;
+  border-bottom: 1px solid var(--color-gray-800);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
 }
@@ -118,11 +117,11 @@
 .SubaccountModal-input-wrapper {
   position: relative;
   width: 13rem;
-  
+
   .SubaccountModal-field-info {
     display: none;
     min-width: auto;
-    color: white;
+    color: var(--color-white);
   }
 
   &:hover {
@@ -133,11 +132,11 @@
 
   .SubaccountModal-input {
     display: flex;
-    border: 1px solid #212540;
+    border: 1px solid var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    background: #212540;
+    background: var(--color-slate-700);
 
     label {
       cursor: pointer;
@@ -148,14 +147,14 @@
 
     &:hover,
     &:focus {
-      border-color: #3a3f798f;
+      border-color: var(--color-cold-blue-700);
     }
     &:focus-within {
-      border-color: #3a3f79;
+      border-color: var(--color-cold-blue-500);
     }
 
     &.input-error {
-      border-color: #f3b50e;
+      border-color: var(--color-yellow-500);
     }
 
     input {

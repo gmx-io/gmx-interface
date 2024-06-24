@@ -3,9 +3,19 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  color: white;
+  color: var(--color-white);
   font-size: 10px;
   background-color: var(--main-bg-color);
+}
+
+/**
+ * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
+ * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
+ * attached by react-remove-scroll lib, which is uncontrollable.
+ */
+body {
+  width: 100vw;
+  overflow-x: hidden !important;
 }
 
 body {
@@ -40,12 +50,12 @@ input {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #17182e;
+  background: var(--color-slate-800);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #a0a3c4;
+  background: var(--color-slate-100);
   border-radius: 1.5rem;
 }
 
@@ -54,37 +64,37 @@ input {
   background: #b3b4c2;
 }
 :root {
-  --main-bg-color: #101124;
-  --dark-blue: #17182c;
-  --dark-blue-bg: #16182e;
-  --dark-blue-accent: #a0a3c4;
-  --primary-btn-bg: #2d42fc;
-  --primary-btn-hover: #4d5ffa;
-  --primary-btn-active: #5264fc;
-  --dark-blue-hover: #808aff14;
-  --dark-blue-border: #ffffff29;
-  --dark-blue-active: #818cef33;
-  --text-gray: rgba(255, 255, 255, 0.7);
-  --warning-yellow: rgb(243, 181, 12);
+  --main-bg-color: var(--color-slate-900);
+  --dark-blue: var(--color-slate-800);
+  --dark-blue-bg: var(--color-slate-800);
+  --dark-blue-accent: var(--color-slate-100);
+  --primary-btn-bg: var(--color-blue-600);
+  --primary-btn-hover: var(--color-blue-400);
+  --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
+  --dark-blue-hover: var(--color-cold-blue-900);
+  --dark-blue-border: var(--color-gray-800);
+  --dark-blue-active: var(--color-cold-blue-700);
+  --text-gray: var(--color-gray-300);
+  --warning-yellow: var(--color-yellow-500);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
-  --border-radius-sm: 0.4rem;
-  --error-red: #fa3c58;
-  --error-red-hover: #ff687e;
-  --green: #0ecc83;
+  --border-radius-sm: 0.4rem; // 4px
+  --error-red: var(--color-red-500);
+  --error-red-hover: var(--color-red-400);
+  --green: var(--color-green-500);
   --font-sm: 1.4rem;
-  --font-base: 1.5rem;
+  --font-base: 1.5rem; // 15px
   --font-md: 1.6rem;
   --font-lg: 2.4rem;
   --font-xl: 3.4rem;
 
   --default-container-max-width: 126.4rem;
   --default-container-padding: 3.2rem;
-  --default-container-padding-mobile: 3.2rem;
+  --default-container-padding-mobile: 1rem;
 }
 
 a {
-  color: white;
+  color: var(--color-white);
 }
 
 .Card-title {
@@ -104,7 +114,7 @@ input[type="number"] {
 
 input {
   font-size: 2rem;
-  color: white;
+  color: var(--color-white);
   outline: none;
   background: none;
   border: none;
@@ -142,10 +152,6 @@ td {
   padding-right: 0.465rem;
 }
 
-.border {
-  border: 1px solid rgba(163, 165, 196, 0.2);
-}
-
 .align-right {
   text-align: right;
   display: flex;
@@ -160,28 +166,8 @@ td {
   font-weight: bold;
 }
 
-.text-center {
-  text-align: center;
-}
-
 .clickable {
   cursor: pointer;
-}
-
-.underline {
-  text-decoration: underline;
-}
-
-.text-none {
-  text-transform: none;
-}
-
-.relative {
-  position: relative;
-}
-
-.margin-bottom {
-  margin-bottom: 0.465rem;
 }
 
 .transition-arrow {
@@ -189,21 +175,9 @@ td {
   margin-top: -0.31rem;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
-.display-inline {
-  display: inline;
-}
-
-.text-white {
-  color: white;
-}
-
 .label,
 .label a {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
 }
 
 ul {
@@ -224,13 +198,13 @@ a.plain {
 }
 
 .default-btn {
-  background: #2d42fc;
+  background: var(--color-blue-600);
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */
@@ -250,33 +224,11 @@ a.plain {
   background: var(--primary-btn-hover);
 }
 
-/* .default-btn:focus {
-  background: #515ed8;
-  border: 1px solid #3D4FFE;
-  box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 15px;
-} */
-
-.default-btn:active {
+s .default-btn:active {
   background: var(--primary-btn-active);
   border: none;
   overflow: hidden;
 }
-
-/* .default-btn:active::after {
-  opacity: 0.239;
-  content: " ";
-  width: 5.2rem;
-  height: 5.2rem;
-  position: absolute;
-  left: calc(50% - 2.6rem);
-  top: -0.8rem;
-  background: white;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 600ms linear;
-} */
 
 .default-btn:disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
@@ -301,16 +253,17 @@ a.plain {
   padding-left: var(--default-container-padding);
   padding-right: var(--default-container-padding);
 
-  @media (max-width: 600px) {
-    margin-left: var(--default-container-padding-mobile);
+  // Media order matters
+  @media (max-width: 1264px) {
+    margin-left: var(--default-container-padding);
     padding-left: 0;
     max-width: none;
   }
 
-  @media (max-width: 1264px) {
-    max-width: none;
+  @media (max-width: 600px) {
+    margin-left: var(--default-container-padding-mobile);
     padding-left: 0;
-    margin-left: var(--default-container-padding);
+    max-width: none;
   }
 }
 
@@ -386,7 +339,7 @@ a.plain {
 button.btn-link {
   margin-top: 1.5rem;
   background: none;
-  color: white;
+  color: var(--color-white);
   border: none;
   padding: 0;
   font-size: var(--font-base);
@@ -419,30 +372,6 @@ button.btn-link:hover .logout-icon {
   max-width: 108.8rem;
 }
 
-.mt-0 {
-  margin-top: 0 !important;
-}
-
-.m-0 {
-  margin: 0 !important;
-}
-
-.mt-xs {
-  margin-top: 0.5rem;
-}
-
-.mt-sm {
-  margin-top: 1rem;
-}
-
-.mt-md {
-  margin-top: 1.5rem;
-}
-
-.items-start {
-  align-items: flex-start;
-}
-
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -451,67 +380,10 @@ button.btn-link:hover .logout-icon {
   padding-top: 4.65rem;
 }
 
-.flex,
-.d-flex {
-  display: flex;
-}
-
-.space-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.items-center {
-  display: inline-flex;
-  align-items: center;
-}
-
-.items-top {
-  display: inline-flex;
-  align-items: flex-start;
-}
-
-.inline-flex {
-  display: inline-flex;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.max-w-full {
-  max-width: 100%;
-}
-
-.font-sm {
-  font-size: var(--font-sm);
-}
-.font-base {
-  font-size: var(--font-base);
-}
-
-.mr-sm {
-  margin-right: 1rem;
-}
-
-.mr-md {
-  margin-right: 1.5rem;
-}
-
 .default-cursor.App-cta {
   cursor: default;
 }
-.nowrap {
-  white-space: nowrap;
-}
+
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
 }
@@ -521,118 +393,14 @@ button.btn-link:hover .logout-icon {
   max-width: 30rem;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.text-gray {
-  color: var(--text-gray);
-}
-
-.inline-flex {
-  display: inline-flex;
-}
-
-.inline-items-center {
-  display: inline-flex;
-  align-items: center;
-}
-
-.mr-xxs {
-  margin-right: 0.25rem;
-}
-.mr-xs {
-  margin-right: 0.5rem;
-}
-
-.ml-xxs {
-  margin-left: 0.25rem;
-}
-.ml-xs {
-  margin-left: 0.5rem;
-}
-.ml-sm {
-  margin-left: 1rem;
-}
-.ml-base {
-  margin-left: 1.5rem;
-}
-
-.mx-xs {
-  margin: 0 0.5rem;
-}
-
-.my-sm {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.my-base {
-  margin: 1.5rem 0;
-}
-
-.mx-xxs {
-  margin: 0 0.25rem;
-}
-
-.m-sm {
-  margin-right: 1rem;
-}
-.m-md {
-  margin: 1.5rem;
-}
-.text-warning {
-  color: var(--warning-yellow);
-}
-
-.ml-xs {
-  margin-left: 0.5rem;
-}
-
-.mb-xs {
-  margin-bottom: 0.5rem;
-}
-
-.mb-sm {
-  margin-bottom: 1rem;
-}
-
-.mb-base {
-  margin-bottom: 1.5rem;
-}
-
 .subtext {
   font-size: 1.2rem;
-  color: var(--text-gray);
+  color: var(--color-gray-300);
   margin-left: 0.25rem;
-}
-
-.lh-1 {
-  line-height: 1;
-}
-
-.nobr {
-  white-space: nowrap;
-}
-
-.text-red {
-  color: var(--error-red);
 }
 
 a:hover .text-red {
   color: var(--error-red-hover);
-}
-
-.text-green {
-  color: var(--green);
-}
-
-.rotate-90 {
-  transform: rotate(90deg);
-}
-
-.self-center {
-  align-self: center;
 }
 
 .Toastify__toast-container {

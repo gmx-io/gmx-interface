@@ -173,7 +173,7 @@ export function LeaderboardContainer() {
       <LeaderboardNavigation />
       <div className="Leaderboard-Title default-container">
         <div>
-          <h1>
+          <h1 className="text-34 font-bold">
             {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
           </h1>
           <div className="Leaderboard-Title__description">{description}</div>
@@ -241,7 +241,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
       <AccountsTable activeCompetition={activeCompetition} />
     );
 
-  return <div className="GlobalLeaderboards__table">{table}</div>;
+  return <div className="default-container !pr-0">{table}</div>;
 }
 
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {

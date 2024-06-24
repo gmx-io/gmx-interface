@@ -27,7 +27,7 @@ export function getLargestRelatedExistingPosition({
       continue;
     }
 
-    if (position.sizeInUsd.gt(largestRelatedExistingPosition.sizeInUsd)) {
+    if (position.sizeInUsd > largestRelatedExistingPosition.sizeInUsd) {
       largestRelatedExistingPosition = position;
     }
   }
@@ -93,9 +93,8 @@ export function chooseSuitableMarket({
 
     let largestPosition: PositionInfo | undefined = undefined;
     if (largestLongPosition && largestShortPosition) {
-      largestPosition = largestLongPosition.sizeInUsd.gt(largestShortPosition.sizeInUsd)
-        ? largestLongPosition
-        : largestShortPosition;
+      largestPosition =
+        largestLongPosition.sizeInUsd > largestShortPosition.sizeInUsd ? largestLongPosition : largestShortPosition;
     } else {
       largestPosition = (largestLongPosition || largestShortPosition) as PositionInfo;
     }

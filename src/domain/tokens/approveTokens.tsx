@@ -1,12 +1,16 @@
+import { Trans, t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import Token from "abis/Token.json";
+import { Link } from "react-router-dom";
+
 import { getChainName, getExplorerUrl } from "config/chains";
+import { getNativeToken } from "config/tokens";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { t, Trans } from "@lingui/macro";
-import { getNativeToken } from "config/tokens";
-import { Link } from "react-router-dom";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
+import Token from "abis/Token.json";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -20,6 +24,7 @@ type Params = {
   pendingTxns?: any[];
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
+  approveAmount?: bigint;
 };
 
 export function approveTokens({
@@ -34,13 +39,14 @@ export function approveTokens({
   pendingTxns,
   setPendingTxns,
   includeMessage,
+  approveAmount,
 }: Params) {
   setIsApproving(true);
   const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract
-    .approve(spender, ethers.constants.MaxUint256)
+    .approve(spender, approveAmount ?? ethers.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(
@@ -87,7 +93,14 @@ export function approveTokens({
       } else if (e.message?.includes("User denied transaction signature")) {
         failMsg = t`Approval was cancelled`;
       } else {
-        failMsg = t`Approval failed`;
+        failMsg = (
+          <>
+            <Trans>Approval failed</Trans>
+            <br />
+            <br />
+            <ToastifyDebug error={String(e)} />
+          </>
+        );
       }
       helperToast.error(failMsg);
     })

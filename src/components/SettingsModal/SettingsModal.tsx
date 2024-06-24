@@ -75,13 +75,13 @@ export function SettingsModal({
     if (settings.shouldUseExecutionFeeBuffer) {
       const executionFeeBuffer = parseFloat(String(executionFeeBufferBps));
       if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
-        helperToast.error(t`Invalid execution fee buffer value`);
+        helperToast.error(t`Invalid network fee buffer value`);
         return;
       }
       const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
 
       if (parseInt(String(nextExecutionBufferFeeBps)) !== parseFloat(String(nextExecutionBufferFeeBps))) {
-        helperToast.error(t`Max execution fee buffer precision is 0.01%`);
+        helperToast.error(t`Max network fee buffer precision is 0.01%`);
         return;
       }
 
@@ -149,13 +149,13 @@ export function SettingsModal({
         <div className="App-settings-row">
           <div>
             <Tooltip
-              handle={<Trans>Max Execution Fee Buffer</Trans>}
+              handle={<Trans>Max Network Fee Buffer</Trans>}
               renderContent={() => (
                 <div>
                   <Trans>
-                    The Max Execution Fee is set to a higher value to handle potential increases in gas price during
-                    order execution. Any excess execution fee will be refunded to your account when the order is
-                    executed. Only applicable to GMX V2.
+                    The Max Network Fee is set to a higher value to handle potential increases in gas price during order
+                    execution. Any excess network fee will be refunded to your account when the order is executed. Only
+                    applicable to GMX V2.
                   </Trans>
                   <br />
                   <br />
@@ -175,10 +175,10 @@ export function SettingsModal({
           </div>
           {parseFloat(executionFeeBufferBps) <
             (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-base">
+            <div className="mb-15">
               <AlertInfo type="warning">
                 <Trans>
-                  Max Execution Fee buffer below{" "}
+                  Max Network Fee buffer below{" "}
                   {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
                   failed orders.
                 </Trans>
@@ -220,7 +220,7 @@ export function SettingsModal({
         </div>
       )}
 
-      <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
+      <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
     </Modal>

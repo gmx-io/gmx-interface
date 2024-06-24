@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import { selectPositionsInfoData } from "./globalSelectors";
@@ -18,5 +17,5 @@ export const selectPositionEditorPosition = createSelector((q) => {
 export const selectPositionEditorMinCollateralFactor = createSelector((q) => {
   const position = q(selectPositionEditorPosition);
   if (!position) return undefined;
-  return getMinCollateralFactorForPosition(position, BigNumber.from(0));
+  return getMinCollateralFactorForPosition(position, 0n);
 });

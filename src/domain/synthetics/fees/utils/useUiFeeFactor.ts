@@ -2,7 +2,6 @@ import { getContract } from "config/contracts";
 import DataStore from "abis/DataStore.json";
 import { useMulticall } from "lib/multicall";
 import { uiFeeFactorKey } from "config/dataStore";
-import { BigNumber } from "ethers";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { BN_ZERO } from "lib/numbers";
 
@@ -24,7 +23,7 @@ export default function useUiFeeFactor(chainId: number) {
       },
     }),
     parseResponse: (res) => {
-      return BigNumber.from(res.data.dataStore.keys.returnValues[0]);
+      return BigInt(res.data.dataStore.keys.returnValues[0]);
     },
   });
 

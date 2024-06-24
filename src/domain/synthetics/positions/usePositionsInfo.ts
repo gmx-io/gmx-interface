@@ -1,11 +1,9 @@
 import { useUserReferralInfoRequest } from "domain/referrals";
-import { BigNumber } from "ethers";
-import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import { MarketsInfoData } from "../markets";
+import { MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
@@ -47,7 +45,7 @@ export function usePositionsInfoRequest(
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
-    if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {
+    if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
       };
@@ -91,9 +89,7 @@ export function usePositionsInfoRequest(
         marketInfo.shortToken.prices.minPrice
       )!;
 
-      const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(
-        pendingClaimableFundingFeesShortUsd
-      );
+      const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd + pendingClaimableFundingFeesShortUsd;
 
       const totalPendingFeesUsd = getPositionPendingFeesUsd({
         pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
@@ -102,7 +98,7 @@ export function usePositionsInfoRequest(
 
       const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
         marketInfo,
-        position.sizeInUsd.mul(-1),
+        position.sizeInUsd * -1n,
         position.isLong,
         { fallbackToZero: true }
       );
@@ -110,17 +106,17 @@ export function usePositionsInfoRequest(
       const positionFeeInfo = getPositionFee(
         marketInfo,
         position.sizeInUsd,
-        closingPriceImpactDeltaUsd.gt(0),
+        closingPriceImpactDeltaUsd > 0,
         userReferralInfo,
         uiFeeFactor
       );
 
       const closingFeeUsd = positionFeeInfo.positionFeeUsd;
-      const uiFeeUsd = positionFeeInfo.uiFeeUsd || BigNumber.from(0);
+      const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
 
       const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
-      const remainingCollateralUsd = collateralUsd.sub(totalPendingFeesUsd);
+      const remainingCollateralUsd = collateralUsd - totalPendingFeesUsd;
 
       const remainingCollateralAmount = convertToTokenAmount(
         remainingCollateralUsd,
@@ -137,7 +133,7 @@ export function usePositionsInfoRequest(
       });
 
       const pnlPercentage =
-        collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigNumber.from(0);
+        collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
 
       const netValue = getPositionNetValue({
         collateralUsd: collateralUsd,
@@ -148,10 +144,9 @@ export function usePositionsInfoRequest(
         uiFeeUsd,
       });
 
-      const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd).sub(uiFeeUsd);
-      const pnlAfterFeesPercentage = !collateralUsd.eq(0)
-        ? getBasisPoints(pnlAfterFees, collateralUsd.add(closingFeeUsd))
-        : BigNumber.from(0);
+      const pnlAfterFees = pnl - totalPendingFeesUsd - closingFeeUsd - uiFeeUsd;
+      const pnlAfterFeesPercentage =
+        collateralUsd != 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;
 
       const leverage = getLeverage({
         sizeInUsd: position.sizeInUsd,
@@ -169,7 +164,9 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
+      const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+
+      const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
       const liquidationPrice = getLiquidationPrice({
         marketInfo,

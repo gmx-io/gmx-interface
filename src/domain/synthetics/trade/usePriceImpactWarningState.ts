@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
 import { FeeItem } from "../fees";
 import { TradeFlags } from "./types";
+import { bigMath } from "lib/bigmath";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
@@ -33,11 +34,13 @@ export function usePriceImpactWarningState({
   }, [prevFlags, tradeFlags]);
 
   const isHighPositionImpact = Boolean(
-    positionPriceImpact?.deltaUsd.lt(0) && positionPriceImpact?.bps.abs().gte(HIGH_POSITION_IMPACT_BPS)
+    positionPriceImpact &&
+      positionPriceImpact.deltaUsd < 0 &&
+      bigMath.abs(positionPriceImpact.bps) >= HIGH_POSITION_IMPACT_BPS
   );
 
   const isHighSwapImpact = Boolean(
-    swapPriceImpact?.deltaUsd.lt(0) && swapPriceImpact?.bps.abs().gte(HIGH_SWAP_IMPACT_BPS)
+    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) >= HIGH_SWAP_IMPACT_BPS
   );
 
   useEffect(

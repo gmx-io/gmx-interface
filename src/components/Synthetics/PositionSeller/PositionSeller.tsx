@@ -1,7 +1,6 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest } from "react-use";
 
@@ -73,19 +72,23 @@ import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/
 import {
   selectPositionSellerAcceptablePrice,
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
-  selectPositionSellerReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerSwapRoutes,
+  selectPositionSellerSetDefaultReceiveToken,
+  selectPositionSellerReceiveToken,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { bigMath } from "lib/bigmath";
 import "./PositionSeller.scss";
+import { useLocalizedMap } from "lib/i18n";
+import { Token } from "domain/tokens";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -94,8 +97,8 @@ export type Props = {
 };
 
 const ORDER_OPTION_LABELS = {
-  [OrderOption.Market]: t`Market`,
-  [OrderOption.Trigger]: t`TP/SL`,
+  [OrderOption.Market]: msg`Market`,
+  [OrderOption.Trigger]: msg`TP/SL`,
 };
 
 export function PositionSeller(p: Props) {
@@ -120,10 +123,13 @@ export function PositionSeller(p: Props) {
   const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   const isVisible = Boolean(position);
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
+  const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
 
   const {
     allowedSlippage,
@@ -144,6 +150,7 @@ export function PositionSeller(p: Props) {
     setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
+    setIsReceiveTokenChanged,
   } = usePositionSeller();
   const keepLeverage = usePositionSellerKeepLeverage();
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
@@ -161,7 +168,15 @@ export function PositionSeller(p: Props) {
   const isTrigger = orderOption === OrderOption.Trigger;
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
-  const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
+  const maxCloseSize = position?.sizeInUsd || 0n;
+
+  const setReceiveTokenManually = useCallback(
+    (token: Token) => {
+      setIsReceiveTokenChanged(true);
+      setReceiveTokenAddress(token.address);
+    },
+    [setReceiveTokenAddress, setIsReceiveTokenChanged]
+  );
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
@@ -178,7 +193,7 @@ export function PositionSeller(p: Props) {
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
     : undefined;
 
-  const { maxSwapLiquidity } = useSelector(selectPositionSellerSwapRoutes);
+  const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
   const acceptablePrice = useSelector(selectPositionSellerAcceptablePrice);
 
@@ -187,7 +202,7 @@ export function PositionSeller(p: Props) {
     marketInfo: position?.marketInfo,
     sizeInUsd: position?.sizeInUsd,
     sizeInTokens: position?.sizeInTokens,
-    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd ? decreaseAmounts.sizeDeltaUsd * -1n : undefined,
     isLong: position?.isLong,
   });
 
@@ -200,7 +215,7 @@ export function PositionSeller(p: Props) {
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
       return {};
     }
 
@@ -219,7 +234,7 @@ export function PositionSeller(p: Props) {
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
+        swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
@@ -254,7 +269,7 @@ export function PositionSeller(p: Props) {
     tradeFlags,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
+  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
   const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
@@ -299,7 +314,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighFeeConsentError) {
-      return [t`High Execution Fee not yet acknowledged`];
+      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
@@ -337,10 +352,10 @@ export function PositionSeller(p: Props) {
     if (
       !tokensData ||
       !position ||
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount == undefined ||
       !receiveToken?.address ||
-      !receiveUsd ||
-      !decreaseAmounts?.acceptablePrice ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
       !signer ||
       !orderType
     ) {
@@ -363,7 +378,7 @@ export function PositionSeller(p: Props) {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
         receiveTokenAddress: receiveToken.address,
         swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -371,7 +386,7 @@ export function PositionSeller(p: Props) {
         isLong: position.isLong,
         acceptablePrice: decreaseAmounts.acceptablePrice,
         triggerPrice: isTrigger ? triggerPrice : undefined,
-        minOutputUsd: BigNumber.from(0),
+        minOutputUsd: 0n,
         decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
         orderType,
         referralCode: userReferralInfo?.referralCodeForTxn,
@@ -396,6 +411,7 @@ export function PositionSeller(p: Props) {
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
     });
   }
 
@@ -424,11 +440,11 @@ export function PositionSeller(p: Props) {
   useEffect(() => {
     if (isTrigger && decreaseAmounts) {
       if (
-        !defaultTriggerAcceptablePriceImpactBps ||
-        !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
+        defaultTriggerAcceptablePriceImpactBps === undefined ||
+        defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
       ) {
-        setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
-        setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+        setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
+        setSelectedTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
       }
     }
   }, [
@@ -497,7 +513,7 @@ export function PositionSeller(p: Props) {
   let acceptablePriceValue: React.ReactNode = "-";
   if (isStopLoss) {
     acceptablePriceValue = t`NA`;
-  } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
+  } else if (decreaseAmounts?.sizeDeltaUsd) {
     acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
       displayDecimals: indexPriceDecimals,
     });
@@ -521,11 +537,11 @@ export function PositionSeller(p: Props) {
           to={
             decreaseAmounts?.isFullClose
               ? "-"
-              : decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })
-              : undefined
+              : decreaseAmounts?.sizeDeltaUsd
+                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })
+                : undefined
           }
         />
       }
@@ -553,7 +569,7 @@ export function PositionSeller(p: Props) {
               </>
             }
             to={
-              decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
+              decreaseAmounts?.sizeDeltaUsd ? (
                 <>
                   {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                   {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
@@ -601,7 +617,7 @@ export function PositionSeller(p: Props) {
             showBalances={false}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
-            onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+            onSelectToken={setReceiveTokenManually}
             tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
@@ -650,7 +666,7 @@ export function PositionSeller(p: Props) {
   if (decreaseAmounts?.isFullClose) {
     leverageValue = t`NA`;
   } else if (position) {
-    if (decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd)) {
+    if (decreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
       leverageValue = "-";
     } else {
       leverageValue = (
@@ -677,7 +693,7 @@ export function PositionSeller(p: Props) {
         <Tab
           options={Object.values(OrderOption)}
           option={orderOption}
-          optionLabels={ORDER_OPTION_LABELS}
+          optionLabels={localizedOrderOptionLabels}
           onChange={setOrderOption}
         />
         <SubaccountNavigationButton
@@ -695,11 +711,11 @@ export function PositionSeller(p: Props) {
                 topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+                showMaxButton={maxCloseSize > 0 && closeSizeUsd !== maxCloseSize}
                 onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
-                  const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
+                  const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
                   setCloseUsdInputValueRaw(formattedAmount);
                 }}
               >

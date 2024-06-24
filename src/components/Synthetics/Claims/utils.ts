@@ -1,6 +1,6 @@
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { expandDecimals } from "lib/numbers";
 
 export function calcTotalRebateUsd(
@@ -9,7 +9,7 @@ export function calcTotalRebateUsd(
   ignoreFactor: boolean
 ) {
   if (!tokensData) {
-    return BigNumber.from(0);
+    return 0n;
   }
 
   return rebates.reduce((total, rebate) => {
@@ -21,8 +21,8 @@ export function calcTotalRebateUsd(
 
     const price = token.prices.minPrice;
     const value = ignoreFactor ? rebate.value : rebate.valueByFactor;
-    const rebateUsd = value.mul(price).div(expandDecimals(1, token.decimals));
+    const rebateUsd = bigMath.mulDiv(value, price, expandDecimals(1, token.decimals));
 
-    return total.add(rebateUsd);
-  }, BigNumber.from(0));
+    return total + rebateUsd;
+  }, 0n);
 }

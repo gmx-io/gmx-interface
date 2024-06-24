@@ -1,5 +1,4 @@
 import { addDays, set, startOfWeek } from "date-fns";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { mapValues } from "lodash";
@@ -29,9 +28,9 @@ export const useLiquidityProvidersIncentives = (chainId: number) => {
   return useMemo(() => {
     if (!lpStats || !lpStats.isActive) return null;
     return {
-      totalRewards: BigNumber.from(lpStats.totalRewards),
+      totalRewards: BigInt(lpStats.totalRewards),
       period: lpStats.period,
-      rewardsPerMarket: mapValues(lpStats.rewardsPerMarket, BigNumber.from),
+      rewardsPerMarket: mapValues(lpStats.rewardsPerMarket, (x) => BigInt(x)),
       token: lpStats.token,
     };
   }, [lpStats]);
@@ -62,10 +61,10 @@ export const useTradingIncentives = (tokensData: TokensData | undefined) => {
       return null;
     }
 
-    const rebatePercent = BigNumber.from(raw.rebatePercent);
-    if (rebatePercent.eq(0)) return null;
+    const rebatePercent = BigInt(raw.rebatePercent);
+    if (rebatePercent == 0n) return null;
 
-    const allocation = BigNumber.from(raw.allocation);
+    const allocation = BigInt(raw.allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
 
     const tokenAddress = raw.token ?? (incentiveStats?.lp.isActive ? incentiveStats.lp.token : null);

@@ -1,12 +1,11 @@
 import { t } from "@lingui/macro";
-import EventEmitter from "abis/EventEmitter.json";
+import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
-import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -17,13 +16,14 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -44,25 +44,6 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { parseEventLogData } from "./utils";
-import useWallet from "lib/wallets/useWallet";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
-import { usePendingTxns } from "lib/usePendingTxns";
-
-export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
-export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
-export const DEPOSIT_CANCELLED_HASH = ethers.utils.id("DepositCancelled");
-
-export const WITHDRAWAL_CREATED_HASH = ethers.utils.id("WithdrawalCreated");
-export const WITHDRAWAL_EXECUTED_HASH = ethers.utils.id("WithdrawalExecuted");
-export const WITHDRAWAL_CANCELLED_HASH = ethers.utils.id("WithdrawalCancelled");
-
-export const ORDER_CREATED_HASH = ethers.utils.id("OrderCreated");
-export const ORDER_EXECUTED_HASH = ethers.utils.id("OrderExecuted");
-export const ORDER_CANCELLED_HASH = ethers.utils.id("OrderCancelled");
-
-export const POSITION_INCREASE_HASH = ethers.utils.id("PositionIncrease");
-export const POSITION_DECREASE_HASH = ethers.utils.id("PositionDecrease");
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -75,11 +56,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
 
-  const hasLostFocus = useHasLostFocus({
-    timeout: WS_LOST_FOCUS_TIMEOUT,
-    whiteListedPages: ["/trade", "/v2", "/pools"],
-    debugId: "V2 Events",
-  });
+  const { hasV2LostFocus } = useHasLostFocus();
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
@@ -135,20 +112,62 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
     },
 
+    OrderUpdated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      const account = eventData.addressItems.items.account;
+
+      if (account !== currentAccount) {
+        return;
+      }
+
+      setOrderStatuses((old) => {
+        if (old[key]) {
+          return updateByKey(old, key, {
+            updatedTxnHash: txnParams.transactionHash,
+            isViewed: false,
+          });
+        } else {
+          return setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            updatedTxnHash: txnParams.transactionHash,
+          });
+        }
+      });
+    },
+
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
-      if (orderStatuses[key]) {
-        setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
-      }
+      setOrderStatuses((old) => {
+        if (!old[key]) return old;
+
+        return updateByKey(old, key, { executedTxnHash: txnParams.transactionHash });
+      });
     },
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
+      const account = eventData.addressItems.items.account;
 
-      if (orderStatuses[key]) {
-        setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      if (account !== currentAccount) {
+        return;
       }
+
+      setOrderStatuses((old) => {
+        if (old[key]) {
+          return updateByKey(old, key, {
+            cancelledTxnHash: txnParams.transactionHash,
+            isViewed: false,
+          });
+        } else {
+          return setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            cancelledTxnHash: txnParams.transactionHash,
+          });
+        }
+      });
 
       const order = orderStatuses[key]?.data;
 
@@ -305,7 +324,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
-        increasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        increasedAtBlock: BigInt(txnParams.blockNumber),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -331,7 +350,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Deposited ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
@@ -368,7 +387,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
-        decreasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        decreasedAtBlock: BigInt(txnParams.blockNumber),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -394,7 +413,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
-        if (data.sizeDeltaUsd.eq(0)) {
+        if (data.sizeDeltaUsd == 0n) {
           text = t`Withdrew ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
@@ -416,122 +435,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasLostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !wsProvider || !currentAccount) {
         return;
       }
 
-      const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
+      const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
 
-      const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
-      const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");
-      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEventTopic("EventLog1");
-      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEventTopic("EventLog2");
-
-      function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-        // console.log("handleEventLog", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-        // console.log("handleEventLog1", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-        // console.log("handleEventLog2", eventName);
-        eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-      }
-
-      function handleCommonLog(e) {
-        const txnOpts: EventTxnParams = {
-          transactionHash: e.transactionHash,
-          blockNumber: e.blockNumber,
-        };
-
-        try {
-          const parsed = eventEmitter.interface.parseLog(e);
-
-          if (parsed.name === "EventLog") {
-            handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
-          } else if (parsed.name === "EventLog1") {
-            handleEventLog1(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], parsed.args[4], txnOpts);
-          } else if (parsed.name === "EventLog2") {
-            handleEventLog2(
-              parsed.args[0],
-              parsed.args[1],
-              parsed.args[2],
-              parsed.args[3],
-              parsed.args[4],
-              parsed.args[5],
-              txnOpts
-            );
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error("error parsing event", e);
-        }
-      }
-
-      const filters = [
-        // DEPOSITS AND WITHDRAWALS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
-        },
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [
-            EVENT_LOG_TOPIC,
-            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-          ],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [
-            EVENT_LOG2_TOPIC,
-            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-            null,
-            addressHash,
-          ],
-        },
-        // ORDERS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
-        },
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
-        },
-        // NEW CONTRACTS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
-        },
-        // POSITIONS
-        {
-          address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
-        },
-      ];
-
-      filters.forEach((filter) => {
-        wsProvider.on(filter, handleCommonLog);
-      });
-
-      return () => {
-        filters.forEach((filter) => {
-          wsProvider.off(filter, handleCommonLog);
-        });
+      return function cleanup() {
+        unsubscribe();
       };
     },
-    [chainId, currentAccount, hasLostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {

@@ -21,6 +21,7 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
     alt?: string;
   };
   newTab?: boolean;
+  showExternalLinkArrow?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
 };
 
@@ -36,10 +37,11 @@ export default function Button({
   type,
   newTab,
   buttonRef,
+  showExternalLinkArrow: showExternalLinkArrowOverride,
   ...rest
 }: ButtonProps) {
   const classNames = cx("button", variant, className, textAlign);
-  const showExternalLinkArrow = variant === "secondary";
+  const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";
 
   function handleClick(event: ReactMouseEvent) {
     if (disabled || !onClick) {

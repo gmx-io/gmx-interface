@@ -1,17 +1,17 @@
 .PositionDropdown-dots-icon {
   font-size: 1rem;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-gray-300);
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0);
+  background: transparent;
   border-radius: 2rem;
   padding: 0.5rem;
 }
 
 .PositionDropdown-dots-icon:hover {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
+  background: var(--color-gray-900);
 }
 
 .PositionDropdown-extra-options {

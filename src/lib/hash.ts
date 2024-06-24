@@ -1,8 +1,8 @@
-import { ethers } from "ethers";
+import { AbiCoder, ethers } from "ethers";
 
 export function hashData(dataTypes, dataValues) {
-  const bytes = ethers.utils.defaultAbiCoder.encode(dataTypes, dataValues);
-  const hash = ethers.utils.keccak256(ethers.utils.arrayify(bytes));
+  const bytes = AbiCoder.defaultAbiCoder().encode(dataTypes, dataValues);
+  const hash = ethers.keccak256(ethers.getBytes(bytes));
 
   return hash;
 }

@@ -1,5 +1,6 @@
 import { applyImpactFactor } from "domain/synthetics/fees";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { expandDecimals } from "lib/numbers";
 
 describe("applyImpactFactor", () => {
@@ -38,17 +39,17 @@ describe("applyImpactFactor", () => {
   ]) {
     it(`should keep difference >1/1e10 from the contract value: ${expected}`, () => {
       const result = applyImpactFactor(
-        ethers.utils.parseUnits(String(diffUsd), 30),
-        ethers.utils.parseUnits(String(impactFactor), 30),
-        ethers.utils.parseUnits(String(exponentFactor), 30)
+        ethers.parseUnits(String(diffUsd), 30),
+        ethers.parseUnits(String(impactFactor), 30),
+        ethers.parseUnits(String(exponentFactor), 30)
       );
 
-      const _expected = BigNumber.from(expected);
+      const _expected = BigInt(expected);
 
       expect(
-        _expected.eq(0)
-          ? result?.lt(expandDecimals(1, 20))
-          : _expected.div(_expected.sub(result!).abs()).gt(expandDecimals(1, 10))
+        _expected == 0n
+          ? result < expandDecimals(1, 20)
+          : _expected / bigMath.abs(_expected - result!) > expandDecimals(1, 10)
       ).toBe(true);
     });
   }

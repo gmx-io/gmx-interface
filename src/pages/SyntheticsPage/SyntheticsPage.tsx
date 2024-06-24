@@ -25,11 +25,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -44,8 +40,8 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   openSettings: () => void;
@@ -95,7 +91,6 @@ export function SyntheticsPage(p: Props) {
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
 
   const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
@@ -110,8 +105,7 @@ export function SyntheticsPage(p: Props) {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
-      setPendingTxns,
-      isLastSubaccountAction,
+      setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
@@ -123,15 +117,7 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
-  }, [
-    cancelOrdersDetailsMessage,
-    chainId,
-    isLastSubaccountAction,
-    selectedOrdersKeysArr,
-    setPendingTxns,
-    signer,
-    subaccount,
-  ]);
+  }, [cancelOrdersDetailsMessage, chainId, selectedOrdersKeysArr, setPendingTxns, signer, subaccount]);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
@@ -268,7 +254,7 @@ export function SyntheticsPage(p: Props) {
               <div className="align-right Exchange-should-show-position-lines">
                 {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
-                    className="muted font-base cancel-order-btn"
+                    className="muted cancel-order-btn text-15"
                     disabled={isCancelOrdersProcessig}
                     type="button"
                     onClick={onCancelOrdersClick}
@@ -322,7 +308,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="Exchange-lists small">
+        <div className="Exchange-lists small min-w-0">
           <div className="Exchange-list-tab-container">
             <Tab
               options={tabOptions}

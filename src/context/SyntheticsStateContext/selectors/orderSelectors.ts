@@ -5,10 +5,10 @@ import {
   isOrderForPosition,
   sortPositionOrders,
 } from "domain/synthetics/orders";
-import { createSelector, createSelectorFactory } from "../utils";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector, createSelectorFactory } from "../utils";
 import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
-import { makeSelectSwapRoutes } from "./tradeSelectors";
+import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 
@@ -22,8 +22,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
     if (!marketsInfoData) return { errors: [], level: undefined };
 
     const uiFeeFactor = q(selectUiFeeFactor);
-    const { findSwapPath } = q(
-      makeSelectSwapRoutes(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
+    const findSwapPath = q(
+      makeSelectFindSwapPath(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
     );
 
     const { errors, level } = getOrderErrors({
@@ -38,7 +38,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
   })
 );
 
-export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
+export const makeSelectOrdersByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
   createSelector(function selectOrdersByPositionKey(q) {
     if (!positionKey) {
       q(() => null);
@@ -47,7 +47,13 @@ export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((po
 
     const ordersInfoData = q(selectOrdersInfoData);
     const orders = Object.values(ordersInfoData || {});
-    const positionOrders = orders.filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
+    return orders.filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
+  })
+);
+
+export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((positionKey: string | undefined) =>
+  createSelector(function selectOrdersByPositionKey(q) {
+    const positionOrders = q(makeSelectOrdersByPositionKey(positionKey));
 
     sortPositionOrders(positionOrders);
 

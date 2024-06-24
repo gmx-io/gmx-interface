@@ -1,5 +1,4 @@
 import { TradeType } from "domain/synthetics/trade/types";
-import { BigNumber } from "ethers";
 import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 
 type Input = Parameters<typeof chooseSuitableMarket>[0];
@@ -11,14 +10,14 @@ describe("chooseSuitableMarket", () => {
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
-          maxLongLiquidity: BigNumber.from(101),
-          maxShortLiquidity: BigNumber.from(99),
+          maxLongLiquidity: BigInt(101),
+          maxShortLiquidity: BigInt(99),
         },
         maxShortLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x3",
-          maxLongLiquidity: BigNumber.from(99),
-          maxShortLiquidity: BigNumber.from(101),
+          maxLongLiquidity: BigInt(99),
+          maxShortLiquidity: BigInt(101),
         },
         indexTokenAddress: "0x1",
         preferredTradeType: TradeType.Long,
@@ -38,14 +37,14 @@ describe("chooseSuitableMarket", () => {
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
-          maxLongLiquidity: BigNumber.from(101),
-          maxShortLiquidity: BigNumber.from(99),
+          maxLongLiquidity: BigInt(101),
+          maxShortLiquidity: BigInt(99),
         },
         maxShortLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x3",
-          maxLongLiquidity: BigNumber.from(99),
-          maxShortLiquidity: BigNumber.from(101),
+          maxLongLiquidity: BigInt(99),
+          maxShortLiquidity: BigInt(101),
         },
         indexTokenAddress: "0x1",
         preferredTradeType: TradeType.Short,
@@ -65,14 +64,14 @@ describe("chooseSuitableMarket", () => {
         maxLongLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x2",
-          maxLongLiquidity: BigNumber.from(101),
-          maxShortLiquidity: BigNumber.from(99),
+          maxLongLiquidity: BigInt(101),
+          maxShortLiquidity: BigInt(99),
         },
         maxShortLiquidityPool: {
           indexTokenAddress: "0x1",
           marketTokenAddress: "0x3",
-          maxLongLiquidity: BigNumber.from(99),
-          maxShortLiquidity: BigNumber.from(101),
+          maxLongLiquidity: BigInt(99),
+          maxShortLiquidity: BigInt(101),
         },
         indexTokenAddress: "0x1",
         preferredTradeType: "largestPosition",
