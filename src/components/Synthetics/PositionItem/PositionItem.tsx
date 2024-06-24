@@ -730,7 +730,6 @@ function PositionItemOrders({
           "text-gray-300",
         ])}
         tooltipClassName="!z-10"
-        closeDelay={1000000}
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
             <div className="font-bold">
