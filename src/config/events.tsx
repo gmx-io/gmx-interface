@@ -32,28 +32,11 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
-    id: "all-incentives-launch",
-    title: "Incentives are live",
+    id: "arbitrum-incentives-launch-2",
+    title: "Arbitrum Incentives are live",
     isActive: true,
-    endDate: "27 Mar 2024, 00:00",
-    bodyText: [
-      `Arbitrum STIP incentives are live for:`,
-      "",
-      "• Arbitrum GM Pools Liquidity.",
-      "• Arbitrum GMX V2 Trading.",
-    ],
-    link: {
-      text: "Read more.",
-      href: INCENTIVES_V2_URL,
-      newTab: true,
-    },
-  },
-  {
-    id: "incentives-launch",
-    title: "Incentives are live",
-    isActive: true,
-    endDate: "31 Oct 2024, 12:00",
-    bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
+    endDate: "31 Jul 2024, 00:00",
+    bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
       href: INCENTIVES_V2_URL,
