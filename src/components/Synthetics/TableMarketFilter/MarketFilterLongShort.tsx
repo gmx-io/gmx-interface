@@ -36,7 +36,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
-  const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
+  const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[] | Item<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
     if (withPositions) {
       strippedOpenPositions = values(positions).map((position) => ({
@@ -95,12 +95,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       ];
     }
 
-    return [
-      {
-        groupName: t`Markets`,
-        items: anyMarketDirected.concat(strippedMarkets),
-      },
-    ];
+    return anyMarketDirected.concat(strippedMarkets);
   }, [allMarkets, positions, withPositions]);
 
   const ItemComponent = useCallback(
