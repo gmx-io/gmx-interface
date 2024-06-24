@@ -94,7 +94,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       return (
         <Tooltip
           disableHandleStyle
-          handle={<TitleWithIcon bordered order={order} />}
+          handle={<TitleWithIcon bordered order={order} errorLevel={level} />}
           position="bottom-start"
           content={
             <>
@@ -289,7 +289,7 @@ function TitleWithIcon({
 
 function MarkPrice({ order }: { order: OrderInfo }) {
   const markPrice = useMemo(() => {
-    if (isLimitOrderType(order.orderType)) {
+    if (isLimitSwapOrderType(order.orderType)) {
       return undefined;
     }
 
@@ -302,7 +302,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [order]);
 
-  if (isLimitOrderType(order.orderType)) {
+  if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return markSwapRatioText;
@@ -334,7 +334,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
-  if (isLimitOrderType(order.orderType)) {
+  if (isLimitSwapOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
@@ -407,7 +407,7 @@ function OrderItemLarge({
   isSelected: boolean | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
-  const isSwap = isLimitOrderType(order.orderType);
+  const isSwap = isLimitSwapOrderType(order.orderType);
   const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
