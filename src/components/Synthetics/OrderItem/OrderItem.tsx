@@ -18,6 +18,7 @@ import {
   SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
+  isLimitIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
 } from "domain/synthetics/orders";
@@ -32,11 +33,11 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import SwapTokenPathLabel from "components/SwapTokenPathLabel/SwapTokenPathLabel";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import "./OrderItem.scss";
 
 type Props = {
@@ -223,7 +224,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 }
 
 function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
-  if (isLimitOrderType(order.orderType)) {
+  if (isLimitSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
     const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
@@ -235,18 +236,24 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
     return (
       <div
         className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
-          "border-b border-dashed border-b-gray-400": bordered,
+          "*:border-b *:border-dashed *:border-b-gray-400": bordered,
         })}
       >
         <Trans>
-          {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
+          <span>{fromTokenText} </span>
+          {fromTokenWithIcon}
+          <span> for </span>
+          <span>{toTokenText} </span>
+          {toTokenWithIcon}
         </Trans>
       </div>
     );
   }
 
   const { sizeDeltaUsd } = order;
-  const sizeText = formatUsd(sizeDeltaUsd, { displayPlus: true });
+  const sizeText = formatUsd(sizeDeltaUsd * (isLimitIncreaseOrderType(order.orderType) ? 1n : -1n), {
+    displayPlus: true,
+  });
 
   return <span className={cx({ "border-b border-dashed border-b-gray-400": bordered })}>{sizeText}</span>;
 }
@@ -404,7 +411,12 @@ function OrderItemLarge({
       <ExchangeTd>
         {isSwap ? (
           <Tooltip
-            handle={<SwapTokenPathLabel bordered pathTokenSymbols={swapPathTokenSymbols} />}
+            handle={
+              <OrderItemSwapMarketLabel
+                fromSymbol={swapPathTokenSymbols?.at(0)}
+                toSymbol={swapPathTokenSymbols?.at(-1)}
+              />
+            }
             content={
               <>
                 {swapPathMarketFullNames?.map((market, index) => (
@@ -506,7 +518,9 @@ function OrderItemSmall({
         order.swapPath
       );
 
-      return <SwapTokenPathLabel pathTokenSymbols={swapPathTokenSymbols} />;
+      return (
+        <OrderItemSwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
+      );
     }
 
     const marketInfo = marketInfoData?.[order.marketAddress];
@@ -621,4 +635,20 @@ function getSwapRatioText(order: OrderInfo) {
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
   return { swapRatioText, markSwapRatioText };
+}
+
+function OrderItemSwapMarketLabel({
+  fromSymbol,
+  toSymbol,
+}: {
+  fromSymbol: string | undefined;
+  toSymbol: string | undefined;
+}) {
+  return (
+    <span className="border-b border-dashed border-b-gray-400">
+      {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
+      {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
+      {fromSymbol}/{toSymbol}
+    </span>
+  );
 }

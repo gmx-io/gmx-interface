@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import values from "lodash/values";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import { useMeasure } from "react-use";
 
@@ -13,7 +12,16 @@ import {
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { OrderType } from "domain/synthetics/orders";
+import {
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+  sortPositionOrders,
+  sortSwapOrders,
+} from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -21,6 +29,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
+import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
@@ -55,14 +64,13 @@ export function OrderList(p: Props) {
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
-  const ordersRaw = useOrdersInfoRequest(chainId, {
-    account: subaccount?.address ?? account,
+  const orders = useFilteredOrders({
+    chainId,
+    subaccount,
+    account,
     marketsDirectionsFilter: p.marketsDirectionsFilter,
     orderTypesFilter: p.orderTypesFilter,
-    marketsInfoData: useMarketsInfoData(),
-    tokensData: useTokensData(),
   });
-  const orders = useMemo(() => values(ordersRaw.ordersInfoData ?? {}), [ordersRaw.ordersInfoData]);
 
   const areAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.includes(o.key));
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
@@ -208,4 +216,51 @@ export function OrderList(p: Props) {
       <OrderEditorContainer />
     </div>
   );
+}
+
+function useFilteredOrders({
+  chainId,
+  subaccount,
+  account,
+  marketsDirectionsFilter,
+  orderTypesFilter,
+}: {
+  chainId: number;
+  subaccount;
+  account: string | undefined;
+  marketsDirectionsFilter: MarketFilterLongShortItemData[];
+  orderTypesFilter: OrderType[];
+}) {
+  const ordersResponse = useOrdersInfoRequest(chainId, {
+    account: subaccount?.address ?? account,
+    marketsDirectionsFilter: marketsDirectionsFilter,
+    orderTypesFilter: orderTypesFilter,
+    marketsInfoData: useMarketsInfoData(),
+    tokensData: useTokensData(),
+  });
+
+  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const orders = useMemo(() => {
+    const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;
+
+    const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
+      (acc, order) => {
+        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
+          if (isSwapOrderType(order.orderType)) {
+            acc.swapOrders.push(order);
+          } else {
+            acc.positionOrders.push(order as PositionOrderInfo);
+          }
+        }
+        return acc;
+      },
+      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
+    );
+
+    return [
+      ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
+      ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
+    ];
+  }, [availableTokensOptions, ordersResponse.ordersInfoData]);
+  return orders;
 }
