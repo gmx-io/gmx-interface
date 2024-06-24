@@ -443,6 +443,7 @@ function OrderItemLarge({
           <Tooltip
             handle={
               <OrderItemSwapMarketLabel
+                bordered
                 fromSymbol={swapPathTokenSymbols?.at(0)}
                 toSymbol={swapPathTokenSymbols?.at(-1)}
               />
@@ -670,12 +671,14 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemSwapMarketLabel({
   fromSymbol,
   toSymbol,
+  bordered,
 }: {
   fromSymbol: string | undefined;
   toSymbol: string | undefined;
+  bordered?: boolean;
 }) {
   return (
-    <span className="border-b border-dashed border-b-gray-400">
+    <span className={cx({ "border-b border-dashed border-b-gray-400": bordered })}>
       {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
       {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
       {fromSymbol}/{toSymbol}
