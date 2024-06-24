@@ -35,7 +35,7 @@ export const appEventsData: EventData[] = [
     id: "arbitrum-incentives-launch-2",
     title: "Arbitrum Incentives are live",
     isActive: true,
-    endDate: "31 Jul 2024, 00:00",
+    endDate: "16 Sep 2024, 00:00",
     bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
