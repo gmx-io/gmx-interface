@@ -164,7 +164,7 @@ export function OrderList(p: Props) {
         <ExchangeTable>
           <thead>
             <ExchangeTheadTr>
-              {!p.hideActions && orders.length > 0 && (
+              {!p.hideActions && (
                 <ExchangeTh>
                   <div className="checkbox-inline">
                     <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
