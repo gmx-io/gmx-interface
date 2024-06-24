@@ -932,8 +932,8 @@ msgid "Collateral"
 msgstr "Kollateral"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-msgstr ""
+#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -1028,6 +1028,7 @@ msgid "Select pool"
 msgstr "Pool wählen"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "Liquidität"
 
@@ -2341,6 +2342,10 @@ msgstr "Min. Empfangen"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Verfügbarer Auszahlungsbetrag aus GLP. Mittel, die nicht durch aktuelle offene Positionen in Anspruch genommen werden."
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2728,6 +2733,10 @@ msgstr "Markt"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3639,6 +3648,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
@@ -4969,6 +4982,10 @@ msgstr ""
 msgid "Position Price Impact"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "Nach Inanspruchnahme kannst du maximal {0} esGMX in einem Verhältnis von {1} {stakingToken} zu 1 esGMX erwerben."
@@ -5702,8 +5719,8 @@ msgid "Start unrealized fees"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr ""
+#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"

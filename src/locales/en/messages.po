@@ -920,8 +920,8 @@ msgid "Collateral"
 msgstr "Collateral"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+#~ msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -1016,6 +1016,7 @@ msgid "Select pool"
 msgstr "Select pool"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "Liquidity"
 
@@ -2329,6 +2330,10 @@ msgstr "Minimum received"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading"
+msgstr "Trading"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2717,6 +2722,10 @@ msgstr "Market"
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+msgstr "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdraw disabled, pending {0} upgrade"
@@ -3619,6 +3628,10 @@ msgstr "Buy AVAX directly to Avalanche or transfer it there."
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr "Single"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading"
+msgstr "Liquidity and trading"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
@@ -4944,6 +4957,10 @@ msgstr "Protocol Tokens"
 msgid "Position Price Impact"
 msgstr "Position Price Impact"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
+msgstr "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5676,8 +5693,8 @@ msgid "Start unrealized fees"
 msgstr "Start unrealized fees"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
+#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
+#~ msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"

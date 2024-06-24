@@ -932,8 +932,8 @@ msgid "Collateral"
 msgstr "담보"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-msgstr ""
+#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -1028,6 +1028,7 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "유동성"
 
@@ -2341,6 +2342,10 @@ msgstr "최소량 수치 완료"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용되고 있지 않은 유휴 수량"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2728,6 +2733,10 @@ msgstr "마켓"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3639,6 +3648,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
@@ -4969,6 +4982,10 @@ msgstr ""
 msgid "Position Price Impact"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "수령 후 {1} {stake} 대 1 esGMX 비율로 최대 {0}개의 esGMX를 베스팅 할 수 있습니다."
@@ -5702,8 +5719,8 @@ msgid "Start unrealized fees"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr ""
+#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
