@@ -220,7 +220,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apy={apy} incentiveApr={incentiveApr} isIncentiveActive={false} />
+                        <AprInfo apy={apy} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </td>
 
                       <td className="GmList-actions">

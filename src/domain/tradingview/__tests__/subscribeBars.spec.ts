@@ -51,6 +51,7 @@ class MockOracleKeeperFetcher implements OracleFetcher {
       lp: {
         isActive: true,
         totalRewards: "0",
+        token: "0x912CE59144191C1204E64559FE8253a0e49E6548",
         period: 0,
         rewardsPerMarket: {},
       },

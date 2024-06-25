@@ -18,6 +18,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { INCENTIVES_V2_URL } from "config/ui";
 
 type Props = {
   totalFees?: FeeItem;
@@ -48,7 +50,8 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tradingIncentives = useTradingIncentives();
+  const tokensData = useTokensData();
+  const tradingIncentives = useTradingIncentives(tokensData);
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
@@ -358,14 +361,13 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
-        <ExternalLink
-          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
-          newTab
-        >
-          Read more
-        </ExternalLink>
-        .
+        The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
+        <span className="whitespace-nowrap">
+          <ExternalLink href={INCENTIVES_V2_URL} newTab>
+            Read more
+          </ExternalLink>
+          .
+        </span>
       </Trans>
     );
   }, [rebateIsApplicable, tradingIncentives]);
