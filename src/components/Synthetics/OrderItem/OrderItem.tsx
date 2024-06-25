@@ -291,7 +291,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
             position="bottom-end"
             handle={swapRatioText}
             renderContent={() =>
-              t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
+              t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`
             }
           />
         ) : (

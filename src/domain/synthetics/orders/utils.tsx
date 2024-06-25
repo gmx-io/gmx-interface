@@ -325,7 +325,7 @@ export function getOrderErrors(p: {
 
     if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
       errors.push({
-        msg: t`Currently, There is a high Swap Price Impact for the Order Swap path.`,
+        msg: t`There is currently a high swap price impact for the order swap path.`,
         level: "warning",
         key: "highPriceImpact",
       });
@@ -373,7 +373,7 @@ export function getOrderErrors(p: {
 
     if (currentLiquidity < positionOrder.sizeDeltaUsd) {
       errors.push({
-        msg: t`There may not be sufficient liquidity to execute your Order when the Price conditions are met.`,
+        msg: t`There may not be sufficient liquidity to execute your order when the price conditions are met.`,
         level: "error",
         key: "liquidity1",
       });
@@ -394,7 +394,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < collateralSwapUsd) {
         errors.push({
-          msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
+          msg: t`There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met.`,
           level: "error",
           key: "liquidity2",
         });
