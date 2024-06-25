@@ -7,8 +7,6 @@ import Checkbox from "components/Checkbox/Checkbox";
 
 import { FilteredGroup, Group, Item } from "./types";
 
-import { ReactComponent as PartialCheckedIcon } from "img/ic_partial_checked.svg";
-
 type GroupsProps<T> = {
   filteredGroups: FilteredGroup<T>[];
   onToggleGroup?: (group: FilteredGroup<T>) => void;
