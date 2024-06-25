@@ -211,6 +211,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 imgAlt="GMX"
                 to={externalLinks.buyGmx.gmx}
                 showExternalLinkArrow={false}
+                newTab
               >
                 GMX
               </Button>
