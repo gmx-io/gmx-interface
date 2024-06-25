@@ -308,7 +308,7 @@ export function getOrderErrors(p: {
 
     if (swapPathLiquidity < minOutputUsd) {
       errors.push({
-        msg: t`There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met.`,
+        msg: t`There may not be sufficient liquidity to execute the swap when the min. receive conditions are met.`,
         level: "error",
         key: "liquidity0",
       });
@@ -454,7 +454,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < minOutputUsd) {
         errors.push({
-          msg: t`There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met.`,
+          msg: t`There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met.`,
           level: "error",
           key: "swapPath",
         });

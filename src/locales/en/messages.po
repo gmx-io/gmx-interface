@@ -2466,6 +2466,10 @@ msgstr "Settle"
 msgid "Create Stop-Loss Order"
 msgstr "Create Stop-Loss Order"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
+msgstr "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Select Market"
 msgstr "Select Market"
@@ -2924,10 +2928,6 @@ msgstr "Avg. Size"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
-msgstr "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable withdraw sent."
@@ -5861,6 +5861,10 @@ msgstr "Sell request sent"
 msgid "Enabling Leverage..."
 msgstr "Enabling Leverage..."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+msgstr "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
 msgstr "Enable One-Click Trading"
@@ -6737,10 +6741,6 @@ msgstr "Order size is bigger than position, will only be executable if position 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "Buy"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
-msgstr "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
