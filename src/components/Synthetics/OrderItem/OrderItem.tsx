@@ -543,7 +543,7 @@ function OrderItemSmall({
             <div className="label">
               <Trans>Order</Trans>
             </div>
-            <TitleWithIcon order={order} />
+            <Title order={order} showDebugValues={showDebugValues} />
           </div>
           <div className="App-card-row">
             <div className="label">
