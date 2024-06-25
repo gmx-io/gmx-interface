@@ -19,6 +19,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { applySlippageToPrice } from "domain/synthetics/trade";
 import {
   useClosingPositionKeyState,
   usePositionsConstants,
@@ -130,13 +131,13 @@ export function PositionSeller(p: Props) {
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
     orderOption,
+    handleSetOrderOption,
     receiveTokenAddress,
     setAllowedSlippage,
     setCloseUsdInputValue: setCloseUsdInputValueRaw,
     setDefaultTriggerAcceptablePriceImpactBps,
     setIsSubmitting,
     setKeepLeverage,
-    setOrderOption,
     setReceiveTokenAddress,
     setSelectedTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
@@ -421,13 +422,19 @@ export function PositionSeller(p: Props) {
     [position?.isLong, orderOption]
   );
 
+  const shouldApplySlippage = orderOption === OrderOption.Market;
+  const acceptablePrice =
+    shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, true, position.isLong)
+      : decreaseAmounts?.acceptablePrice;
+
   const limitPriceRow = (
     <ExecutionPriceRow
       tradeFlags={executionPriceFlags}
       displayDecimals={toToken?.priceDecimals}
       fees={fees}
       executionPrice={executionPrice ?? undefined}
-      acceptablePrice={decreaseAmounts?.acceptablePrice}
+      acceptablePrice={acceptablePrice}
       triggerOrderType={decreaseAmounts?.triggerOrderType}
     />
   );
@@ -633,7 +640,7 @@ export function PositionSeller(p: Props) {
           options={Object.values(OrderOption)}
           option={orderOption}
           optionLabels={localizedOrderOptionLabels}
-          onChange={setOrderOption}
+          onChange={handleSetOrderOption}
         />
         <SubaccountNavigationButton
           executionFee={executionFee?.feeTokenAmount}

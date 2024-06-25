@@ -936,8 +936,8 @@ msgid "Base APY"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition, and there must be sufficient liquidity for the order to be executed."
-msgstr ""
+#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition, and there must be sufficient liquidity for the order to be executed."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1375,6 +1375,10 @@ msgstr ""
 msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Transaction ID"
@@ -1610,6 +1614,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "Чтобы уменьшить комиссию, выберите другой способ оплаты."
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
@@ -3031,8 +3039,8 @@ msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Expected execution price for the order, including the current price impact, once the limit price is hit."
-msgstr ""
+#~ msgid "Expected execution price for the order, including the current price impact, once the limit price is hit."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -3478,8 +3486,8 @@ msgid "Net Rate / 1h"
 msgstr "Чистая ставка / 1ч"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be higher than the limit price."
-msgstr ""
+#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be higher than the limit price."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5301,6 +5309,9 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche GM Pools are incentivized."
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -6838,7 +6849,7 @@ msgid "Image generation error, please refresh and try again."
 msgstr "Ошибка генерации изображения, пожалуйста, обновите и попробуйте снова."
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price Impact Rebates"
 msgstr ""
 
@@ -7665,8 +7676,8 @@ msgid "Complete Account Transfer"
 msgstr "Завершить Перевод по Счету"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be lower than the limit price."
-msgstr ""
+#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be lower than the limit price."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim Rewards"

@@ -75,20 +75,6 @@ export function TradeFeesRow(p: Props) {
   );
 
   const feeRows: FeeRow[] = useMemo(() => {
-    const priceImpactDiffUsd = (p.priceImpactDiff ? bigMath.abs(p.priceImpactDiff.deltaUsd) > 0 : false)
-      ? {
-          id: "priceImpactDiff",
-          label: (
-            <>
-              <div className="text-white">{t`Price Impact Rebates`}:</div>
-              <div>({formatPercentage(bigMath.abs(p.priceImpactDiff!.bps))} of position size)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.priceImpactDiff!.deltaUsd),
-          className: getPositiveOrNegativeClass(p.priceImpactDiff!.deltaUsd, "text-green-500"),
-        }
-      : undefined;
-
     const swapPriceImpactRow = (
       p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
     )
@@ -299,7 +285,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
-        priceImpactDiffUsd,
         swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,

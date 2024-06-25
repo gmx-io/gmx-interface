@@ -65,21 +65,17 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
         <>
           {isLong ? (
             <Trans>
-              Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable
-              price. In the case of negative price impact, the mark price may need to be lower than the limit price.
+              Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable
+              price, which includes the set acceptable price impact. Note that if there is a negative price impact, the
+              mark price may need to be lower than the limit price.
             </Trans>
           ) : (
             <Trans>
-              Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable
-              price. In the case of negative price impact, the mark price may need to be higher than the limit price.
+              Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable
+              price, which includes the set acceptable price impact. Note that if there is a negative price impact, the
+              mark price may need to be higher than the limit price.
             </Trans>
           )}
-          <br />
-          <br />
-          <Trans>
-            The order's acceptable price includes the set acceptable price impact. The execution price must meet this
-            condition, and there must be sufficient liquidity for the order to be executed.
-          </Trans>
         </>
       );
     }
@@ -107,36 +103,47 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
         <TooltipWithPortal
           maxAllowedWidth={350}
           position="bottom-end"
+          handleClassName={(positionPriceImpactDeltaUsd ?? 0n) > 0n ? "text-green-500 !decoration-green" : ""}
           handle={formatUsd(executionPrice, {
             displayDecimals,
           })}
           content={
             <>
               {isLimit
-                ? t`Expected execution price for the order, including the current price impact, once the limit price is hit.`
+                ? t`Expected execution price for the order, including the current price impact, once the limit order executes.`
                 : t`Expected execution price for the order, including the current price impact.`}
               <br />
               <br />
               {fullPositionPriceImpactBps !== undefined && positionPriceImpactDeltaUsd !== undefined && (
                 <StatsTooltipRow
-                  label={t`Price Impact`}
-                  value={
-                    <span className={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd, "text-green-500")}>
-                      {formatDeltaUsd(positionPriceImpactDeltaUsd)}
-                      {fullPositionPriceImpactBps === undefined ? null : (
-                        <> ({formatPercentage(bigMath.abs(fullPositionPriceImpactBps))} of position size)</>
-                      )}
-                    </span>
+                  textClassName={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd)}
+                  label={
+                    <>
+                      <div className="text-white">{t`Price Impact`}:</div>
+                      <div>({formatPercentage(bigMath.abs(fullPositionPriceImpactBps))} of position size)</div>
+                    </>
                   }
+                  value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
                   showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(
-                    fees?.swapPriceImpact === undefined ? undefined : fees?.swapPriceImpact.deltaUsd
-                  )}
+                />
+              )}
+              {fees?.priceImpactDiff !== undefined && bigMath.abs(fees.priceImpactDiff.deltaUsd) > 0 && (
+                <StatsTooltipRow
+                  textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
+                  label={
+                    <>
+                      <div className="text-white">{t`Price Impact Rebates`}:</div>
+                      <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
+                    </>
+                  }
+                  value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
+                  showDollar={false}
                 />
               )}
               {acceptablePriceFormated !== undefined ? (
                 <>
                   <StatsTooltipRow
+                    labelClassName="text-white"
                     label={t`Order Acceptable Price`}
                     value={
                       <>
@@ -147,7 +154,13 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                     showDollar={false}
                   />
                   <br />
-                  {acceptablePriceClarification}{" "}
+                  {acceptablePriceClarification && (
+                    <>
+                      {acceptablePriceClarification}
+                      <br />
+                      <br />
+                    </>
+                  )}
                 </>
               ) : (
                 <br />
