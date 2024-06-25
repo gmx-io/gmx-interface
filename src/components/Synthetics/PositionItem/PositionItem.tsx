@@ -712,9 +712,8 @@ function PositionItemOrders({
             Orders{" "}
             <span
               className={cx({
-                "position-order-error": hasErrors,
-                "level-error": ordersErrorList.length > 0,
-                "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
+                "text-red-500": ordersErrorList.length > 0,
+                "text-yellow-500": !ordersErrorList.length && ordersWarningsList.length > 0,
               })}
             >
               ({ordersWithErrors.length})
