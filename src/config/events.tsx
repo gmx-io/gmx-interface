@@ -33,7 +33,7 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 export const appEventsData: EventData[] = [
   {
     id: "arbitrum-incentives-launch-2",
-    title: "Arbitrum Incentives are live",
+    title: "Arbitrum Incentives are Live",
     isActive: true,
     endDate: "16 Sep 2024, 00:00",
     bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
