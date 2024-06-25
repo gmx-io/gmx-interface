@@ -408,10 +408,6 @@ msgstr "开启费用"
 msgid "Realized PnL"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-#~ msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "您可以使用以下任何一种方式将ETH从其他网络转移到Arbitrum："
@@ -535,10 +531,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr ""
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#~ msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-#~ msgstr "最大执行费用被高估，包括在设置下设置的缓冲区。执行时，任何多余的执行费用都会退还到您的帐户"
 
 #: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
@@ -676,10 +668,6 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
 msgstr "已采取的代码"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -930,10 +918,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "抵押品"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -3271,10 +3255,6 @@ msgstr ""
 msgid "BUYABLE"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Arbitrum Max. APR:"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Order"
 msgstr "执行限价单"
@@ -3313,10 +3293,6 @@ msgstr ""
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Shorts"
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}.======="
-#~ msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Prev"
@@ -3621,10 +3597,6 @@ msgstr "没有头寸"
 msgid "Buy GLP"
 msgstr "购买GLP"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#~ msgid "Sell Fee>>>>>>> master"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel failed"
 msgstr "取消失败"
@@ -3857,10 +3829,6 @@ msgstr ""
 msgid "Transfer already initiated"
 msgstr "已启动转移"
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Withdraw submitted."
@@ -3969,10 +3937,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
@@ -4982,10 +4946,6 @@ msgstr ""
 msgid "Position Price Impact"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "申领后，您将能够以{1}{stakingToken}比1 esGMX的比例获得最多的{0}esGMX."
@@ -5403,10 +5363,6 @@ msgstr "数量"
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
 
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>.======="
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -5718,10 +5674,6 @@ msgstr "更新限价单"
 msgid "Start unrealized fees"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "推荐代码"
@@ -5963,11 +5915,6 @@ msgstr "最高{0}上限"
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
 msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "Base APR"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -6535,10 +6482,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "As network fees have increased, an additional execution fee is needed."
-#~ msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
 msgstr ""
@@ -6562,10 +6505,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
@@ -6612,10 +6551,6 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "增加"
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche Max. APR: {0}"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -7056,10 +6991,6 @@ msgstr "储存"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Profit"
 msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Approving GMX..."
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX tokens can be staked or vested at any time."
@@ -7611,10 +7542,6 @@ msgstr ""
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee"
 msgstr ""
-
-#: src/lib/legacy.ts
-#~ msgid "Decentralized Perpetual Exchange | GMX>>>>>>> master"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "01 Sep 2021"

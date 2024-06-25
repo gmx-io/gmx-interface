@@ -919,10 +919,6 @@ msgstr "Avalanche Max. APY: {0}"
 msgid "Collateral"
 msgstr "Collateral"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-#~ msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -3945,10 +3941,6 @@ msgstr "Unstake submitted!"
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-#~ msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr "This competition has ended."
@@ -4957,10 +4949,6 @@ msgstr "Protocol Tokens"
 msgid "Position Price Impact"
 msgstr "Position Price Impact"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
-#~ msgstr "{incentivesTargets} incentives program is live on {0}. <0>Read more</0>."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5691,10 +5679,6 @@ msgstr "Update Limit Order"
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
 msgstr "Start unrealized fees"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-#~ msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
@@ -6527,10 +6511,6 @@ msgstr "Voting Power"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-#~ msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
