@@ -67,9 +67,8 @@ export function OrderList({
   const isLoading = useIsOrdersLoading();
 
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const isContainerSmall = width < 1000;
-
   const isScreenSmall = useMedia("(max-width: 1100px)");
+  const isContainerSmall = width === 0 ? isScreenSmall : width < 1000;
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
@@ -156,7 +155,7 @@ export function OrderList({
 
       {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
         <div className="flex flex-col gap-8">
-          <div className="sticky top-0 z-10 -my-8 flex flex-wrap items-center justify-between gap-8 bg-slate-950 py-8">
+          <div className="flex flex-wrap items-center justify-between gap-8 bg-slate-950">
             {isContainerSmall ? (
               <div className="flex gap-8">
                 <Button variant="secondary" onClick={onSelectAllOrders}>
@@ -205,7 +204,11 @@ export function OrderList({
             <ExchangeTheadTr>
               {!hideActions && (
                 <ExchangeTh>
-                  <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
+                  <Checkbox
+                    isPartialChecked={onlySomeOrdersSelected}
+                    isChecked={areAllOrdersSelected}
+                    setIsChecked={onSelectAllOrders}
+                  />
                 </ExchangeTh>
               )}
               <ExchangeTh>

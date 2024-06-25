@@ -116,7 +116,7 @@ export function SyntheticsPage(p: Props) {
       setSelectedPositionOrderKey(orderKey);
 
       if (orderKey) {
-        setSelectedOrderKeys((prev) => uniq(prev.concat(orderKey)));
+        setSelectedOrderKeys([orderKey]);
       }
     },
     [setListSection, setSelectedOrderKeys]
