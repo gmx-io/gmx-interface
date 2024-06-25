@@ -518,8 +518,13 @@ function OrderItemSmall({
     <div className="App-card">
       <div>
         <div className="flex cursor-pointer items-center" onClick={onToggleOrder}>
-          {!hideActions && <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />}
-          {title}
+          {hideActions ? (
+            title
+          ) : (
+            <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}>
+              {title}
+            </Checkbox>
+          )}
         </div>
         <div className="App-card-divider" />
         <div className="App-card-content">

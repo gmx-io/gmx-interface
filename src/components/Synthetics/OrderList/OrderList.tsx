@@ -87,6 +87,8 @@ export function OrderList({
     orderTypesFilter: orderTypesFilter,
   });
 
+  const onlySomeOrdersSelected =
+    selectedOrdersKeys && selectedOrdersKeys.length > 0 && selectedOrdersKeys.length < orders.length;
   const areAllOrdersSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
@@ -154,9 +156,16 @@ export function OrderList({
 
       {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
         <div className="flex flex-col gap-8">
-          <div className="flex items-center justify-between gap-8">
+          <div className="sticky top-0 z-10 -my-8 flex flex-wrap items-center justify-between gap-8 bg-slate-950 py-8">
             {isContainerSmall ? (
               <div className="flex gap-8">
+                <Button variant="secondary" onClick={onSelectAllOrders}>
+                  <Checkbox
+                    isPartialChecked={onlySomeOrdersSelected}
+                    isChecked={areAllOrdersSelected}
+                    setIsChecked={onSelectAllOrders}
+                  ></Checkbox>
+                </Button>
                 <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
                 <OrderTypeFilter asButton value={orderTypesFilter} onChange={setOrderTypesFilter} />
               </div>
@@ -196,9 +205,7 @@ export function OrderList({
             <ExchangeTheadTr>
               {!hideActions && (
                 <ExchangeTh>
-                  <div className="checkbox-inline">
-                    <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
-                  </div>
+                  <Checkbox isChecked={areAllOrdersSelected} setIsChecked={onSelectAllOrders} />
                 </ExchangeTh>
               )}
               <ExchangeTh>
