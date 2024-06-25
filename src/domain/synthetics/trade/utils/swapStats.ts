@@ -286,10 +286,18 @@ export function getSwapStats(p: {
   let cappedImpactDeltaUsd: bigint;
 
   if (priceImpactDeltaUsd > 0) {
-    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
+    const { impactDeltaAmount: positiveImpactAmount } = applySwapImpactWithCap(
+      marketInfo,
+      tokenOut,
+      priceImpactDeltaUsd
+    );
     cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
+    const { impactDeltaAmount: negativeImpactAmount } = applySwapImpactWithCap(
+      marketInfo,
+      tokenIn,
+      priceImpactDeltaUsd
+    );
     cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
   }
 
