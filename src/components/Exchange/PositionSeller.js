@@ -877,6 +877,7 @@ export default function PositionSeller(props) {
       )
         .then(() => {
           setFromValue("");
+          setSavedRecieveTokenAddress(swapToToken.address);
           setIsVisible(false);
         })
         .finally(() => {
@@ -946,6 +947,7 @@ export default function PositionSeller(props) {
     })
       .then(async () => {
         setFromValue("");
+        setSavedRecieveTokenAddress(swapToToken.address);
         setIsVisible(false);
 
         let nextSize = position.size - sizeDelta;
@@ -1358,7 +1360,6 @@ export default function PositionSeller(props) {
                     tokenAddress={receiveToken.address}
                     onSelectToken={(token) => {
                       setSwapToToken(token);
-                      setSavedRecieveTokenAddress(token.address);
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {

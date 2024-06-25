@@ -1,7 +1,7 @@
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PositionInfo } from "../positions";
 
 export enum OrderOption {
@@ -36,12 +36,16 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
     setIsReceiveTokenChanged(false);
   }, [savedAllowedSlippage, setReceiveTokenAddress]);
 
-  const [defaultReceiveToken, setDefaultReceiveToken] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsReceiveMoneyTokenKey(
+  const closingPositionKey = useMemo(() => {
+    return getSyntheticsReceiveMoneyTokenKey(
       chainId,
       closingPosition?.marketInfo.name,
       closingPosition?.isLong ? "long" : "short"
-    ),
+    );
+  }, [chainId, closingPosition]);
+
+  const [defaultReceiveToken, setDefaultReceiveToken] = useLocalStorageSerializeKey<string | undefined>(
+    closingPositionKey,
     undefined
   );
 
