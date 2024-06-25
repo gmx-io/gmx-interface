@@ -593,6 +593,10 @@ msgstr ""
 msgid "Average position size."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
@@ -4490,6 +4494,10 @@ msgstr "당신의 주문에 대한 {0}/USD 시장 풀의 유동성이 부족합�
 msgid "You have not traded during the selected period."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
@@ -5438,10 +5446,6 @@ msgstr ""
 msgid "No rebates distribution history yet."
 msgstr "소개 보수 분배 내역이 없습니다."
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>{fromTokenText} </0>{fromTokenWithIcon}<1> for </1><2>{toTokenText} </2>{toTokenWithIcon}"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
 msgstr ""
@@ -6320,10 +6324,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "자금 수수료 결제 요청"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
-msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 기반으로 하여 주문 실행시 최소 {formattedMinReceive}를 보장합니다."
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -7384,6 +7384,10 @@ msgstr "24시간 거래량"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "전체 통계"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit sent."

@@ -661,7 +661,6 @@ function PositionItemOrders({
 
   const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
   const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
-  const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
   if (ordersWithErrors.length === 0) return null;
 

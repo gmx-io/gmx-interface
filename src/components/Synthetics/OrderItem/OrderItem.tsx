@@ -33,11 +33,11 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
+import { SwapMarketLabel } from "../../SwapMarketLabel/SwapMarketLabel";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import "./OrderItem.scss";
 
 type Props = {
@@ -186,15 +186,15 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   );
 }
 
-function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
+export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
   if (isLimitSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
     const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
-    const fromTokenWithIcon = <TokenWithIcon symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />;
+    const fromTokenIcon = <TokenIcon symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
-    const toTokenWithIcon = <TokenWithIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
+    const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     return (
       <div
@@ -204,10 +204,10 @@ function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boole
       >
         <Trans>
           <span>{fromTokenText} </span>
-          {fromTokenWithIcon}
-          <span> for </span>
+          {fromTokenIcon}
+          <span> to </span>
           <span>{toTokenText} </span>
-          {toTokenWithIcon}
+          {toTokenIcon}
         </Trans>
       </div>
     );
@@ -384,7 +384,7 @@ function OrderItemLarge({
         {isSwap ? (
           <Tooltip
             handle={
-              <OrderItemSwapMarketLabel
+              <SwapMarketLabel
                 bordered
                 fromSymbol={swapPathTokenSymbols?.at(0)}
                 toSymbol={swapPathTokenSymbols?.at(-1)}
@@ -491,9 +491,7 @@ function OrderItemSmall({
         order.swapPath
       );
 
-      return (
-        <OrderItemSwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
-      );
+      return <SwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />;
     }
 
     const marketInfo = marketInfoData?.[order.marketAddress];
@@ -612,24 +610,6 @@ function getSwapRatioText(order: OrderInfo) {
   return { swapRatioText, markSwapRatioText };
 }
 
-function OrderItemSwapMarketLabel({
-  fromSymbol,
-  toSymbol,
-  bordered,
-}: {
-  fromSymbol: string | undefined;
-  toSymbol: string | undefined;
-  bordered?: boolean;
-}) {
-  return (
-    <span className={cx({ "cursor-help border-b border-dashed border-b-gray-400": bordered })}>
-      {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
-      {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
-      {fromSymbol}/{toSymbol}
-    </span>
-  );
-}
-
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
@@ -644,9 +624,9 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
       disableHandleStyle
       handle={
         <span
-          className={cx("cursor-help border-b border-dashed", {
-            "border-red-500 border-opacity-50 text-red-500": level === "error",
-            "border-yellow-500 border-opacity-50 text-yellow-500": level === "warning",
+          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
+            "text-red-500 decoration-red-500/50": level === "error",
+            "text-yellow-500 decoration-yellow-500/50": level === "warning",
           })}
         >
           {handle}

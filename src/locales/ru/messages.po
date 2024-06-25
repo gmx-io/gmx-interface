@@ -593,6 +593,10 @@ msgstr ""
 msgid "Average position size."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
@@ -4490,6 +4494,10 @@ msgstr "Недостаточная ликвидность во всех из {0}
 msgid "You have not traded during the selected period."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
 msgstr "Обновление реферального кода не прошло"
@@ -5438,10 +5446,6 @@ msgstr ""
 msgid "No rebates distribution history yet."
 msgstr "История распределения возвратов пока отсутствует."
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>{fromTokenText} </0>{fromTokenWithIcon}<1> for </1><2>{toTokenText} </2>{toTokenWithIcon}"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
 msgstr ""
@@ -6320,10 +6324,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Запрос на урегулирование комиссии за финансирование"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
-msgstr "Цена триггера для этого ордера основана на комиссиях за обмен и ценовом воздействии, чтобы гарантировать, что вы получите не менее {formattedMinReceive} при исполнении ордера."
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -7384,6 +7384,10 @@ msgstr "24ч Объём"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Общая Статистика"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit sent."

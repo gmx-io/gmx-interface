@@ -46,10 +46,10 @@ export const formatSwapMessage = (
   const fromText = formatTokenAmount(amountIn, tokenIn.decimals, tokenIn.symbol, {
     useCommas: true,
   });
-
-  const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+  const fromAmountText = formatTokenAmount(amountIn, tokenIn.decimals, undefined, {
     useCommas: true,
   });
+
   const toMinText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, tokenOut?.symbol, {
     useCommas: true,
   });
@@ -117,20 +117,26 @@ export const formatSwapMessage = (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)
   ) {
-    const formattedMinReceive = formatTokenAmount(tradeAction.minOutputAmount!, tokenOut?.decimals, tokenOut?.symbol, {
+    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
       useCommas: true,
     });
-
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(
         t`Acceptable price for the order.`,
         "",
-        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${formattedMinReceive} on order execution.`
+        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${toMinText} on order execution.`
       ),
       size: t`${fromText} to ${toMinText}`,
+      swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted) {
+    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
     result = {
       price: executionRate,
       priceComment: lines(
@@ -139,6 +145,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -156,6 +163,9 @@ export const formatSwapMessage = (
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
+    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
 
     result = {
       actionComment:
@@ -171,18 +181,30 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
       isActionError: true,
     };
   } else if (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
   ) {
+    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(t`Acceptable price for the order.`),
       size: t`${fromText} to ${toMinText}`,
+      swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted) {
+    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
+
     result = {
       price: executionRate,
       priceComment: lines(
@@ -191,6 +213,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -208,6 +231,9 @@ export const formatSwapMessage = (
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
+    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
 
     result = {
       actionComment:
@@ -223,6 +249,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
       isActionError: true,
     };
   }
@@ -236,7 +263,9 @@ export const formatSwapMessage = (
     acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,
-    pathTokenSymbols,
+    swapFromTokenSymbol: tokenIn.symbol,
+    swapToTokenSymbol: tokenOut.symbol,
+    swapFromTokenAmount: fromAmountText,
     ...result!,
   };
 };
