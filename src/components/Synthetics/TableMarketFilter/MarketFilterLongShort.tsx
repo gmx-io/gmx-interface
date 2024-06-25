@@ -148,7 +148,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     <TableOptionsFilter<MarketFilterLongShortItemData>
       multiple
       label={t`Market`}
-      placeholder={t`Search market`}
+      placeholder={t`Search Market`}
       onChange={onChange}
       options={marketsOptions}
       ItemComponent={ItemComponent}

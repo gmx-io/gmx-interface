@@ -1374,6 +1374,8 @@ msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
 msgstr ""
 
@@ -1598,11 +1600,6 @@ msgstr "esGMX（IOU）代币的地址是{esGmxIouAddress}"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr ""
-
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "搜索操作"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
@@ -4454,6 +4451,11 @@ msgstr "交易"
 msgid "Telegram Groups"
 msgstr "电报群"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr ""
@@ -5678,6 +5680,10 @@ msgstr "公司"
 msgid "Fees exceed amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}购买GLP</2>，并<3>用{2}交换</3>其他代币"
@@ -6296,11 +6302,6 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "搜索市场"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "送出领取！<0>查看状态</0>"
@@ -6347,10 +6348,6 @@ msgstr "合作伙伴与整合"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
-msgstr ""
-
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-msgid "Search type"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

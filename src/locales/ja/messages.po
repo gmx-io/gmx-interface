@@ -1374,6 +1374,8 @@ msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
 msgstr ""
 
@@ -1598,11 +1600,6 @@ msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr ""
-
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "アクション検索"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
@@ -4454,6 +4451,11 @@ msgstr "トレード"
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr ""
@@ -5678,6 +5680,10 @@ msgstr "含む"
 msgid "Fees exceed amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>\"してください。"
@@ -6296,11 +6302,6 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "マーケット検索"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "請求申し込み完了! <0>状況を確認する。</0>"
@@ -6347,10 +6348,6 @@ msgstr "パートナーシップと統合"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
-msgstr ""
-
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-msgid "Search type"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

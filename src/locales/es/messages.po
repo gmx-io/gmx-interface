@@ -1374,6 +1374,8 @@ msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
 msgstr ""
 
@@ -1598,11 +1600,6 @@ msgstr "La dirección del token esGMX (IOU) es {esGmxIouAddress}."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr ""
-
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "Buscar acción"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
@@ -4454,6 +4451,11 @@ msgstr "Operaciones"
 msgid "Telegram Groups"
 msgstr "Grupos de Telegram"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr ""
@@ -5678,6 +5680,10 @@ msgstr "Inc."
 msgid "Fees exceed amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0} está por debajo de su peso objetivo.<0/><1/>Consigue menores comisiones <2>comprar GLP</2> con {1}, y para <3>intercambiar</3> {2} por otros tokens."
@@ -6296,11 +6302,6 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "Buscar mercado"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "¡Reclamación enviada! <0>Ver estado.</0>"
@@ -6347,10 +6348,6 @@ msgstr "Asociaciones e Integraciones"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
-msgstr ""
-
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-msgid "Search type"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

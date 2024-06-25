@@ -1374,6 +1374,8 @@ msgid "GMX staking calculator and guide"
 msgstr "GMX staking calculator and guide"
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
 msgstr "Search Market"
 
@@ -1598,11 +1600,6 @@ msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr "GMX Alerts"
-
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "Search action"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
@@ -4457,6 +4454,11 @@ msgstr "Trades"
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr "Search Action"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr "CONCLUDED"
@@ -5685,6 +5687,10 @@ msgstr "Inc."
 msgid "Fees exceed amount"
 msgstr "Fees exceed amount"
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr "Search Type"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
@@ -6303,11 +6309,6 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 msgid "Freeze"
 msgstr "Freeze"
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "Search market"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "Claim submitted! <0>View status.</0>"
@@ -6355,10 +6356,6 @@ msgstr "Partnerships and Integrations"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
 msgstr "Orders <0>({0})</0>"
-
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-msgid "Search type"
-msgstr "Search type"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"

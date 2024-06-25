@@ -74,7 +74,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
     <TableOptionsFilter<OrderType>
       multiple
       label={t`Type`}
-      placeholder={t`Search type`}
+      placeholder={t`Search Type`}
       value={value}
       options={localizedGroups}
       onChange={onChange}
