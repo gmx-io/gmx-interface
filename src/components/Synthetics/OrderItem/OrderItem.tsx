@@ -376,7 +376,7 @@ function OrderItemLarge({
   return (
     <ExchangeTr ref={setRef}>
       {!hideActions && onToggleOrder && (
-        <ExchangeTd onClick={onToggleOrder}>
+        <ExchangeTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
         </ExchangeTd>
       )}

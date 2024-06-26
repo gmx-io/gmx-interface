@@ -203,7 +203,7 @@ export function OrderList({
           <thead>
             <ExchangeTheadTr>
               {!hideActions && (
-                <ExchangeTh>
+                <ExchangeTh className="cursor-pointer" onClick={onSelectAllOrders}>
                   <Checkbox
                     isPartialChecked={onlySomeOrdersSelected}
                     isChecked={areAllOrdersSelected}
