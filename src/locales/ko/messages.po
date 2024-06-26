@@ -1913,6 +1913,10 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "인덱스"
@@ -2458,6 +2462,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "(Rebated)"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -3241,6 +3249,10 @@ msgstr "활성화된 추천 코드"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle} and Price Impact"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5852,7 +5864,6 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "{0} {longOrShortText}의 인출을 실행시키지 못했습니다>>>>>>> master"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr ""
 
@@ -5966,8 +5977,8 @@ msgid "{positionName} Failed to settle"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Rebated) and Price Impact"
-msgstr ""
+#~ msgid "Fees (Rebated) and Price Impact"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
