@@ -425,7 +425,7 @@ export function PositionSeller(p: Props) {
   const shouldApplySlippage = orderOption === OrderOption.Market;
   const acceptablePrice =
     shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, true, position.isLong)
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
       : decreaseAmounts?.acceptablePrice;
 
   const limitPriceRow = (
