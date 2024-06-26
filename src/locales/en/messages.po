@@ -5776,6 +5776,10 @@ msgstr "Trade Errors"
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+#~ msgid "Simulate TXs"
+#~ msgstr "Simulate TXs"
+
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
