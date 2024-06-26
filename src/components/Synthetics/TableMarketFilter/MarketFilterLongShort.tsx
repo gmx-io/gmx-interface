@@ -58,29 +58,32 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       };
     });
 
-    const anyMarketDirected: Item<MarketFilterLongShortItemData>[] = [
-      {
-        text: t`Longs`,
-        data: {
-          marketAddress: "any",
-          direction: "long",
+    const anyMarketDirectedGroup: Group<MarketFilterLongShortItemData> = {
+      groupName: t`Direction`,
+      items: [
+        {
+          text: t`Longs`,
+          data: {
+            marketAddress: "any",
+            direction: "long",
+          },
         },
-      },
-      {
-        text: t`Shorts`,
-        data: {
-          marketAddress: "any",
-          direction: "short",
+        {
+          text: t`Shorts`,
+          data: {
+            marketAddress: "any",
+            direction: "short",
+          },
         },
-      },
-      {
-        text: t`Swaps`,
-        data: {
-          marketAddress: "any",
-          direction: "swap",
+        {
+          text: t`Swaps`,
+          data: {
+            marketAddress: "any",
+            direction: "swap",
+          },
         },
-      },
-    ];
+      ],
+    };
 
     if (withPositions) {
       return [
@@ -88,14 +91,21 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
           groupName: t`Open Positions`,
           items: strippedOpenPositions!,
         },
+        anyMarketDirectedGroup,
         {
           groupName: t`Markets`,
-          items: anyMarketDirected.concat(strippedMarkets),
+          items: strippedMarkets,
         },
       ];
     }
 
-    return anyMarketDirected.concat(strippedMarkets);
+    return [
+      anyMarketDirectedGroup,
+      {
+        groupName: t`Markets`,
+        items: strippedMarkets,
+      },
+    ];
   }, [allMarkets, positions, withPositions]);
 
   const ItemComponent = useCallback(

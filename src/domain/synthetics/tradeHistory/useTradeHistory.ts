@@ -287,22 +287,26 @@ export async function fetchTradeActions({
   const skip = pageIndex * pageSize;
   const first = pageSize;
 
-  const nonSwapRelevantFilterLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
-    .filter((filter) => filter.direction !== "swap")
+  const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
     .map((filter) => ({
-      marketAddress: filter.marketAddress.toLowerCase() as Address | "any",
+      marketAddress: filter.marketAddress.toLowerCase() as Address,
       direction: filter.direction,
     }));
 
-  const hasNonSwapRelevantMarkets = nonSwapRelevantFilterLowercased.length > 0;
+  const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
+
+  const pureDirectionFilters = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
+    .map((filter) => ({
+      marketAddress: filter.marketAddress.toLowerCase() as "any",
+      direction: filter.direction,
+    }));
+  const hasPureDirectionFilters = pureDirectionFilters.length > 0;
 
   const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
     .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
     .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
-
-  let hasAllSwapsFilter = marketsDirectionsFilter.some(
-    (filter) => filter.direction === "swap" && filter.marketAddress === "any"
-  );
 
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
@@ -316,17 +320,31 @@ export async function fetchTradeActions({
         },
       },
       {
+        or: !hasPureDirectionFilters
+          ? undefined
+          : pureDirectionFilters.map((filter) =>
+              filter.direction === "swap"
+                ? {
+                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  }
+                : {
+                    isLong: filter.direction === "long",
+                    orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  }
+            ),
+      },
+      {
         or: [
           // For non-swap orders
           {
-            and: !hasNonSwapRelevantMarkets
+            and: !hasNonSwapRelevantDefinedMarkets
               ? undefined
               : [
                   {
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    or: nonSwapRelevantFilterLowercased.map((filter) => ({
+                    or: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
                       marketAddress: filter.marketAddress === "any" ? undefined : filter.marketAddress,
                       isLong: filter.direction === "any" ? undefined : filter.direction === "long",
                     })),
@@ -356,15 +374,15 @@ export async function fetchTradeActions({
                 ],
           },
           // For "all swaps" filter
-          {
-            and: !hasAllSwapsFilter
-              ? undefined
-              : [
-                  {
-                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
-                  },
-                ],
-          },
+          // {
+          //   and: !hasAllSwapsFilter
+          //     ? undefined
+          //     : [
+          //         {
+          //           orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+          //         },
+          //       ],
+          // },
         ],
       },
       {

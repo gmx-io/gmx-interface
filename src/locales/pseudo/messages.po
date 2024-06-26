@@ -1009,6 +1009,7 @@ msgid "FUNDING FEE"
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
 msgstr ""
 
@@ -2876,6 +2877,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take-Profit Order"
+msgstr ""
+
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Direction"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx

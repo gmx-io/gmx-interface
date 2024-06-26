@@ -1009,6 +1009,7 @@ msgid "FUNDING FEE"
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
 msgstr ""
 
@@ -2877,6 +2878,10 @@ msgstr "Sprache auswählen"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take-Profit Order"
 msgstr "Take-Profit Order erstellen"
+
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Direction"
+msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
