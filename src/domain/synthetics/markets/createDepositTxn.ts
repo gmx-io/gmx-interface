@@ -98,7 +98,6 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",

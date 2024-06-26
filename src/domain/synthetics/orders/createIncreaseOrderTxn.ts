@@ -197,7 +197,6 @@ export async function createIncreaseOrderTxn({
       []
     ) ?? [];
 
-  const secondaryPriceOverrides: PriceOverrides = {};
   const primaryPriceOverrides: PriceOverrides = {};
 
   if (p.triggerPrice != undefined) {
@@ -212,7 +211,6 @@ export async function createIncreaseOrderTxn({
       account: p.account,
       tokensData: p.tokensData,
       primaryPriceOverrides,
-      secondaryPriceOverrides,
       createOrderMulticallPayload: simulationEncodedPayload,
       value: totalWntAmount,
       errorTitle: t`Order error.`,
@@ -309,6 +307,7 @@ function createOrderParams({
 }) {
   return {
     addresses: {
+      cancellationReceiver: ethers.ZeroAddress,
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
@@ -329,6 +328,7 @@ function createOrderParams({
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
+    autoCancel: false,
     referralCode: p.referralCode || ethers.ZeroHash,
   };
 }

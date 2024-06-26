@@ -543,6 +543,7 @@ export function getGmSwapError(p: {
   fees: GmSwapFees | undefined;
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
+  priceImpactUsd: bigint | undefined;
 }) {
   const {
     isDeposit,
@@ -561,6 +562,7 @@ export function getGmSwapError(p: {
     fees,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
+    priceImpactUsd,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -572,6 +574,19 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
+    if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
+      const { impactAmount } = applySwapImpactWithCap(marketInfo, priceImpactUsd);
+      const newPoolAmount = applyDeltaToPoolAmount(marketInfo, impactAmount);
+
+      if (!getIsValidPoolAmount(marketInfo, newPoolAmount)) {
+        return [t`Max pool amount exceeded`];
+      }
+    }
+
+    if (!getIsValidPoolUsdForDeposit(marketInfo)) {
+      return [t`Max pool USD exceeded`];
+    }
+
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
     const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
@@ -634,4 +649,96 @@ export function getGmSwapError(p: {
   }
 
   return [undefined];
+}
+
+function getIsValidPoolUsdForDeposit(marketInfo: MarketInfo) {
+  const tokenIn = getTokenIn(marketInfo);
+  const poolAmount =
+    tokenIn.address === marketInfo.longToken.address ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const poolUsd = bigMath.mulDiv(tokenIn.prices.maxPrice, poolAmount, expandDecimals(1, tokenIn.decimals));
+  const maxPoolUsd =
+    tokenIn.address === marketInfo.longToken.address
+      ? marketInfo.maxLongPoolUsdForDeposit
+      : marketInfo.maxShortPoolUsdForDeposit;
+
+  return poolUsd <= maxPoolUsd;
+}
+
+function applySwapImpactWithCap(marketInfo: MarketInfo, priceImpactUsd: bigint) {
+  const impactAmount = getSwapImpactAmountWithCap(marketInfo, priceImpactUsd);
+  const newSwapImpactPoolAmount = applyDeltaToSwapImpactPool(marketInfo, -impactAmount);
+
+  return { impactAmount, newSwapImpactPoolAmount };
+}
+
+function getSwapImpactAmountWithCap(marketInfo: MarketInfo, priceImpactUsd: bigint) {
+  const token = getTokenOut(marketInfo);
+  let impactAmount = 0n;
+
+  if (priceImpactUsd > 0) {
+    // positive impact: minimize impactAmount, use tokenPrice.max
+    // round positive impactAmount down, this will be deducted from the swap impact pool for the user
+    impactAmount = priceImpactUsd / token.prices.maxPrice;
+
+    const maxImpactAmount = getSwapImpactPoolAmount(marketInfo);
+    if (impactAmount > maxImpactAmount) {
+      impactAmount = maxImpactAmount;
+    }
+  } else {
+    // negative impact: maximize impactAmount, use tokenPrice.min
+    // round negative impactAmount up, this will be deducted from the user
+    impactAmount = roundUpMagnitudeDivision(priceImpactUsd, token.prices.minPrice);
+  }
+
+  return impactAmount;
+}
+
+function roundUpMagnitudeDivision(a: bigint, b: bigint): bigint {
+  if (a < 0) {
+    return (a - b + 1n) / b;
+  }
+
+  return (a + b - 1n) / b;
+}
+
+function applyDeltaToSwapImpactPool(marketInfo: MarketInfo, delta: bigint) {
+  const maxImpactAmount = getSwapImpactPoolAmount(marketInfo);
+
+  if (delta < 0 && -delta > maxImpactAmount) {
+    return 0n;
+  }
+
+  return maxImpactAmount + delta;
+}
+
+function applyDeltaToPoolAmount(marketInfo: MarketInfo, delta: bigint) {
+  const poolAmount =
+    getTokenOut(marketInfo).address === marketInfo.longToken.address
+      ? marketInfo.longPoolAmount
+      : marketInfo.shortPoolAmount;
+
+  return poolAmount + delta;
+}
+
+function getTokenOut(marketInfo: MarketInfo) {
+  return marketInfo.longToken;
+}
+
+function getTokenIn(marketInfo: MarketInfo) {
+  return marketInfo.shortToken;
+}
+
+function getSwapImpactPoolAmount(marketInfo: MarketInfo) {
+  return getTokenOut(marketInfo).address === marketInfo.longToken.address
+    ? marketInfo.swapImpactPoolAmountLong
+    : marketInfo.swapImpactPoolAmountShort;
+}
+
+function getIsValidPoolAmount(marketInfo: MarketInfo, poolAmount: bigint) {
+  const maxPoolAmount =
+    getTokenOut(marketInfo).address === marketInfo.longToken.address
+      ? marketInfo.maxLongPoolAmount
+      : marketInfo.maxShortPoolAmount;
+
+  return poolAmount <= maxPoolAmount;
 }

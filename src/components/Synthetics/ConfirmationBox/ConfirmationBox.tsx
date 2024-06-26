@@ -135,6 +135,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
 import { bigMath } from "lib/bigmath";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export type Props = {
   isVisible: boolean;
@@ -258,12 +259,17 @@ export function ConfirmationBox(p: Props) {
   const subaccountRequiredActions = 1 + cancelSltpEntries.length + createSltpEntries.length + updateSltpEntries.length;
 
   const getOrderExecutionFee = useCallback(
-    (swapsCount?: number) => {
+    (swapsCount: number, decreasePositionSwapType: DecreasePositionSwapType | undefined) => {
       if (!gasLimits || !tokensData || gasPrice === undefined) return;
 
-      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, { swapsCount });
+      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        decreaseSwapType: decreasePositionSwapType,
+        swapsCount: swapsCount ?? 0,
+      });
 
-      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+      const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
+
+      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
     },
     [gasLimits, tokensData, gasPrice, chainId]
   );
@@ -275,14 +281,7 @@ export function ConfirmationBox(p: Props) {
 
       let swapsCount = 0;
 
-      if (entry.decreaseAmounts) {
-        swapsCount = entry.decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
-      }
-      if (entry.increaseAmounts) {
-        swapsCount = entry.increaseAmounts?.swapPathStats?.swapPath.length ?? 0;
-      }
-
-      const executionFee = getOrderExecutionFee(swapsCount);
+      const executionFee = getOrderExecutionFee(swapsCount, entry.decreaseAmounts?.decreaseSwapType);
 
       if (!executionFee || securedExecutionFee >= executionFee.feeTokenAmount) return undefined;
 

@@ -317,6 +317,10 @@ msgstr "Максимальное {0} превышение шорта"
 msgid "Cancel Stop-Loss Order"
 msgstr "Отмена стоп-лосс ордера"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool USD exceeded"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
@@ -863,6 +867,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
 msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "Max pool amount exceeded LOL"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
@@ -7176,6 +7184,10 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new size or price"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool amount exceeded"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

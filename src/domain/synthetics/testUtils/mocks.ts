@@ -154,8 +154,8 @@ export function mockMarketsInfoData(
 
       maxLongPoolAmount: usdToToken(10000, longToken),
       maxShortPoolAmount: usdToToken(10000, shortToken),
-      maxLongPoolAmountForDeposit: usdToToken(10000, longToken),
-      maxShortPoolAmountForDeposit: usdToToken(10000, shortToken),
+      maxLongPoolUsdForDeposit: usdToToken(10000, longToken),
+      maxShortPoolUsdForDeposit: usdToToken(10000, shortToken),
 
       poolValueMax: expandDecimals(2000, USD_DECIMALS),
       poolValueMin: expandDecimals(2000, USD_DECIMALS),
