@@ -128,17 +128,33 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                 />
               )}
               {fees?.priceImpactDiff !== undefined && bigMath.abs(fees.priceImpactDiff.deltaUsd) > 0 && (
-                <StatsTooltipRow
-                  textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
-                  label={
+                <>
+                  <StatsTooltipRow
+                    textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
+                    label={
+                      <>
+                        <div className="text-white">{t`Price Impact Rebates`}:</div>
+                        <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
+                      </>
+                    }
+                    value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
+                    showDollar={false}
+                  />
+                  {!isIncrease && (
                     <>
-                      <div className="text-white">{t`Price Impact Rebates`}:</div>
-                      <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
+                      <br />
+                      <Trans>
+                        Price impact rebates for closing trades are claimable under the claims tab.{" "}
+                        <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+                          Read more
+                        </ExternalLink>
+                        .
+                      </Trans>
+                      <br />
+                      <br />
                     </>
-                  }
-                  value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
-                  showDollar={false}
-                />
+                  )}
+                </>
               )}
               {acceptablePriceFormated !== undefined ? (
                 <>
@@ -154,13 +170,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                     showDollar={false}
                   />
                   <br />
-                  {acceptablePriceClarification && (
-                    <>
-                      {acceptablePriceClarification}
-                      <br />
-                      <br />
-                    </>
-                  )}
+                  {acceptablePriceClarification && <>{acceptablePriceClarification} </>}
                 </>
               ) : (
                 <br />

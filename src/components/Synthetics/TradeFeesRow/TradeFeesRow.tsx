@@ -57,23 +57,6 @@ export function TradeFeesRow(p: Props) {
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
 
-  const hasRebates =
-    p.feesType !== "decrease" || !p.positionPriceImpact || !p.priceImpactDiff || p.priceImpactDiff.deltaUsd <= 0;
-
-  const rebatesMessage = useMemo(
-    () =>
-      hasRebates ? (
-        <Trans>
-          Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-            Read more
-          </ExternalLink>
-          .
-        </Trans>
-      ) : undefined,
-    [hasRebates]
-  );
-
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
       p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
@@ -365,7 +348,7 @@ export function TradeFeesRow(p: Props) {
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
-    } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
+    } else if (!feeRows.length && !incentivesBottomText) {
       return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;
     } else {
       return (
@@ -384,12 +367,6 @@ export function TradeFeesRow(p: Props) {
                   showDollar={false}
                 />
               ))}
-              {hasRebates && (
-                <>
-                  <br />
-                  {rebatesMessage}
-                </>
-              )}
               {incentivesBottomText && <br />}
               {incentivesBottomText}
               {swapRouteMsg}
@@ -398,7 +375,7 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd, swapRouteMsg]);
+  }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
 }

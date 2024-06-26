@@ -1569,8 +1569,8 @@ msgid "Accrued Negative Funding Fee"
 msgstr "Accrued Negative Funding Fee"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-msgstr "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
+#~ msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
+#~ msgstr "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
@@ -6023,6 +6023,10 @@ msgstr "Insufficient {0} balance"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr "limit price"
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
+msgstr "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
