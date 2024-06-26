@@ -272,7 +272,13 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Max Bonus Rebate`}:</div>
+                <div className="text-white">
+                  <span className="relative">
+                    <Trans>Max Bonus Rebate</Trans>
+                    <img className="absolute -right-12 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                  </span>
+                  :
+                </div>
                 <div>
                   <Trans>
                     (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
