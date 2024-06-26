@@ -286,12 +286,24 @@ export function getSwapStats(p: {
   let cappedImpactDeltaUsd: bigint;
 
   if (priceImpactDeltaUsd > 0) {
-    const { impactDeltaAmount: positiveImpactAmount } = applySwapImpactWithCap(
+    const { impactDeltaAmount: positiveImpactAmountTokenOut, cappedDiffUsd } = applySwapImpactWithCap(
       marketInfo,
       tokenOut,
       priceImpactDeltaUsd
     );
-    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
+    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmountTokenOut, tokenOut.decimals, priceOut)!;
+
+    // https://github.com/gmx-io/gmx-synthetics/blob/3df10f1eab2734cf1b5f0a5dff12b79cbb19907d/contracts/swap/SwapUtils.sol#L290-L291
+    if (cappedDiffUsd > 0) {
+      const { impactDeltaAmount: positiveImpactAmountTokenIn } = applySwapImpactWithCap(
+        marketInfo,
+        tokenIn,
+        cappedDiffUsd
+      );
+      if (positiveImpactAmountTokenIn > 0) {
+        cappedImpactDeltaUsd += convertToUsd(positiveImpactAmountTokenIn, tokenIn.decimals, priceIn)!;
+      }
+    }
   } else {
     const { impactDeltaAmount: negativeImpactAmount } = applySwapImpactWithCap(
       marketInfo,
