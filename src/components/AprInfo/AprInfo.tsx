@@ -8,22 +8,22 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
 import { useCallback, useMemo } from "react";
+import sparkleIcon from "img/sparkle.svg";
 
 export function AprInfo({
   apy,
   incentiveApr,
-  isIncentiveActive,
   showTooltip = true,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
-  isIncentiveActive?: boolean;
   showTooltip?: boolean;
 }) {
   const { chainId } = useChainId();
   const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
-  const aprNode = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
-  const airdropTokenAddress = useLiquidityProvidersIncentives(chainId)?.token;
+  const incentivesData = useLiquidityProvidersIncentives(chainId);
+  const isIncentiveActive = !!incentivesData;
+  const airdropTokenAddress = incentivesData?.token;
   // TODO use context instead
   const { tokensData } = useTokensDataRequest(chainId);
   const airdropTokenSymbol = useMemo(
@@ -48,6 +48,21 @@ export function AprInfo({
       </>
     );
   }, [airdropTokenSymbol, apy, incentiveApr, isIncentiveActive]);
+
+  const aprNode = useMemo(() => {
+    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+
+    if (incentiveApr !== undefined && incentiveApr > 0) {
+      return (
+        <>
+          {node}
+          <img className="relative -top-3 h-10" src={sparkleIcon} alt="sparkle" />
+        </>
+      );
+    } else {
+      return node;
+    }
+  }, [apy, incentiveApr, totalApr]);
 
   return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
