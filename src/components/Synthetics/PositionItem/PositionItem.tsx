@@ -424,7 +424,7 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {formatUsd(p.position.sizeInUsd)}
-          <PositionItemOrders positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </td>
         <td>
           {/* collateral */}
@@ -595,12 +595,12 @@ export function PositionItem(p: Props) {
               </div>
             </div>
             <div className="App-card-divider" />
-            <div className="App-card-row">
+            <div className="flex flex-wrap gap-15">
               <div className="label">
                 <Trans>Orders</Trans>
               </div>
-              <div>
-                <PositionItemOrders isSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+              <div className="flex-grow">
+                <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
               </div>
             </div>
           </div>
@@ -648,9 +648,28 @@ export function PositionItem(p: Props) {
   return p.isLarge ? renderLarge() : renderSmall();
 }
 
-function PositionItemOrders({
+function PositionItemOrdersSmall({
   positionKey,
-  isSmall,
+  onOrdersClick,
+}: {
+  positionKey: string;
+  onOrdersClick?: (key?: string) => void;
+}) {
+  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
+
+  if (ordersWithErrors.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-8">
+      {ordersWithErrors.map((params) => (
+        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
+      ))}
+    </div>
+  );
+}
+
+function PositionItemOrdersLarge({
+  positionKey,
   onOrdersClick,
 }: {
   isSmall?: boolean;
@@ -664,48 +683,11 @@ function PositionItemOrders({
 
   if (ordersWithErrors.length === 0) return null;
 
-  if (isSmall) {
-    return ordersWithErrors.map(({ order, orderErrors }) => {
-      const { errors, level } = orderErrors;
-      if (level) {
-        return (
-          <div key={order.key} className="Position-list-order">
-            <Tooltip
-              handle={<PositionItemOrderText order={order} />}
-              position="bottom-end"
-              handleClassName={cx("position-order-error", {
-                "level-warning": level === "warning",
-                "level-error": level === "error",
-              })}
-              renderContent={() =>
-                errors.map((error) => (
-                  <span
-                    key={error.key}
-                    className={cx("mb-5", "position-order-error", {
-                      "level-warning": level === "warning",
-                      "level-error": level === "error",
-                    })}
-                  >
-                    {error.msg}
-                  </span>
-                ))
-              }
-            />
-          </div>
-        );
-      }
-      return (
-        <div key={order.key} className="Position-list-order">
-          <PositionItemOrderText order={order} />
-        </div>
-      );
-    });
-  }
-
   return (
     <div>
       <Tooltip
         className="Position-list-active-orders"
+        maxAllowedWidth={370}
         handle={
           <Trans>
             Orders{" "}
@@ -762,14 +744,16 @@ function PositionItemOrder({
 
   return (
     <div key={order.key}>
-      <div className="flex items-stretch justify-between gap-6">
+      <div className="flex items-start justify-between gap-6">
         <Button
           variant="secondary"
-          className="flex w-full items-center !justify-between !bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
           onClick={handleOrdersClick}
         >
-          <PositionItemOrderText order={order} />
-          <FaAngleRight fontSize={14} className="ml-5" />
+          <div className="flex items-center justify-between">
+            <PositionItemOrderText order={order} />
+            <FaAngleRight fontSize={16} className="ml-5" />
+          </div>
         </Button>
         <Button
           variant="secondary"
@@ -790,19 +774,21 @@ function PositionItemOrder({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-10">
-        {errors.map((err) => (
-          <div
-            key={err.key}
-            className={cx("break-all", {
-              "text-red-500": err.level === "error",
-              "text-yellow-500": err.level === "warning",
-            })}
-          >
-            {err.msg}
-          </div>
-        ))}
-      </div>
+      {errors.length !== 0 && (
+        <div className="mt-8 flex flex-col gap-8 text-start">
+          {errors.map((err) => (
+            <div
+              key={err.key}
+              className={cx("hyphens-auto [overflow-wrap:anywhere]", {
+                "text-red-500": err.level === "error",
+                "text-yellow-500": err.level === "warning",
+              })}
+            >
+              {err.msg}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -812,7 +798,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
   const isIncrease = isIncreaseOrderType(order.orderType);
 
   return (
-    <div key={order.key}>
+    <div key={order.key} className="text-start">
       {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
       {triggerThresholdType}{" "}
       {formatUsd(order.triggerPrice, {

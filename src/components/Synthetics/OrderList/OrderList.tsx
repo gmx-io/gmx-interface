@@ -226,7 +226,7 @@ export function OrderList({
                 <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
               </ExchangeTh>
               <ExchangeTh>
-                <Trans>Order</Trans>
+                <Trans>Size</Trans>
               </ExchangeTh>
               <ExchangeTh>
                 <Trans>Trigger Price</Trans>

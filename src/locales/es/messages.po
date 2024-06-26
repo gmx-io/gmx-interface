@@ -1763,6 +1763,8 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -3918,8 +3920,6 @@ msgid "Execute Stop-Loss Order"
 msgstr "Ejecutar Orden de Stop-Loss"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Orden"
