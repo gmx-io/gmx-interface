@@ -2,9 +2,9 @@ import { sample, random } from "lodash";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const ORACLE_KEEPER_URLS = {
-  [ARBITRUM]: ["https://arbitrum-v2-1-api.gmxinfra.io", "https://arbitrum-api.gmxinfra2.io"],
+  [ARBITRUM]: ["https://arbitrum-v2-1-api.gmxinfra.io"],
 
-  [AVALANCHE]: ["https://avalanche-v2-1-api.gmxinfra.io", "https://avalanche-api.gmxinfra2.io"],
+  [AVALANCHE]: ["https://avalanche-v2-1-api.gmxinfra.io"],
 
   [ARBITRUM_GOERLI]: ["https://gmx-synthetics-api-arb-goerli-4vgxk.ondigitalocean.app"],
 
