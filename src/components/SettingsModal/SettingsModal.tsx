@@ -263,9 +263,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
       <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
       <div className="">
         <Checkbox isChecked={tenderlySimulationEnabled} setIsChecked={setTenderlySimulationEnabled}>
-          <span className="text-12">
-            <Trans>Simulate TXs</Trans>
-          </span>
+          <span className="text-12">Simulate TXs</span>
         </Checkbox>
       </div>
       <br />
