@@ -220,9 +220,11 @@ function matchByMarket({
     return true;
   }
 
+  const isSwapOrder = isSwapOrderType(order.orderType);
+
   const matchesPureDirectionFilter =
     hasPureDirectionFilters &&
-    (isSwapOrderType(order.orderType)
+    (isSwapOrder
       ? pureDirectionFilters.includes("swap")
       : pureDirectionFilters.includes(order.isLong ? "long" : "short"));
 
@@ -230,11 +232,11 @@ function matchByMarket({
     return false;
   }
 
-  if (isSwapOrderType(order.orderType)) {
-    if (!hasSwapRelevantDefinedMarkets) {
-      return true;
-    }
+  if (!hasNonSwapRelevantDefinedMarkets && !hasSwapRelevantDefinedMarkets) {
+    return true;
+  }
 
+  if (isSwapOrder) {
     const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
       order.swapPath.at(0)!.toLowerCase() as Address
     );
@@ -244,17 +246,15 @@ function matchByMarket({
     );
 
     return sourceMarketInSwapPath || destinationMarketInSwapPath;
-  } else {
-    if (!hasNonSwapRelevantDefinedMarkets) {
-      return true;
-    }
+  } else if (!isSwapOrder) {
+    return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
+      const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
+      const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
+      const collateralMatch =
+        !filter.collateralAddress || filter.collateralAddress === order.initialCollateralTokenAddress.toLowerCase();
 
-    return nonSwapRelevantDefinedFiltersLowercased.some(
-      (filter) =>
-        filter.marketAddress === order.marketAddress.toLowerCase() &&
-        (filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short")) &&
-        (!filter.collateralAddress || filter.collateralAddress === order.initialCollateralTokenAddress.toLowerCase())
-    );
+      return marketMatch && directionMath && collateralMatch;
+    });
   }
 
   return false;

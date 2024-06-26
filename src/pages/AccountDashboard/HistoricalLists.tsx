@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { noop } from "lodash";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { getAccountDashboardTabKey } from "config/localStorage";
@@ -10,15 +10,16 @@ import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderH
 import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import type { OrderType } from "domain/synthetics/orders/types";
 import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { EMPTY_ARRAY } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
 import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import {
@@ -134,6 +135,15 @@ export function HistoricalLists({ chainId, account }: Props) {
 
   const tabOptions = useMemo(() => Object.keys(TabKey), []);
 
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+
+  const handleOrdersClick = useCallback(() => {
+    setTabKey(TabKey.Orders);
+    setMarketsDirectionsFilter([]);
+    setOrderTypesFilter([]);
+  }, [setTabKey]);
+
   return (
     <div>
       <div className="py-10">
@@ -142,7 +152,7 @@ export function HistoricalLists({ chainId, account }: Props) {
 
       {tabKey === TabKey.Positions && (
         <PositionList
-          onOrdersClick={noop}
+          onOrdersClick={handleOrdersClick}
           onSelectPositionClick={noop}
           onClosePositionClick={noop}
           openSettings={noop}
@@ -158,10 +168,10 @@ export function HistoricalLists({ chainId, account }: Props) {
           selectedPositionOrderKey={undefined}
           setSelectedPositionOrderKey={noop}
           hideActions
-          marketsDirectionsFilter={EMPTY_ARRAY}
-          orderTypesFilter={EMPTY_ARRAY}
-          setMarketsDirectionsFilter={noop}
-          setOrderTypesFilter={noop}
+          marketsDirectionsFilter={marketsDirectionsFilter}
+          setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+          orderTypesFilter={orderTypesFilter}
+          setOrderTypesFilter={setOrderTypesFilter}
         />
       )}
       {tabKey === TabKey.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}

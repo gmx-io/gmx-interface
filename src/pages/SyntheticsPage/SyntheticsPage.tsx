@@ -117,9 +117,11 @@ export function SyntheticsPage(p: Props) {
 
       if (orderKey) {
         setSelectedOrderKeys([orderKey]);
+        setMarketsDirectionsFilter([]);
+        setOrderTypesFilter([]);
       }
     },
-    [setListSection, setSelectedOrderKeys]
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
   useEffect(() => {
