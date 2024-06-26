@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -220,7 +220,7 @@ export function SettingsModal({
         </div>
       )}
 
-      {isDevelopment() && <TenderlySettings />}
+      {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
 
       <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
@@ -229,22 +229,82 @@ export function SettingsModal({
   );
 }
 
-function TenderlySettings() {
+function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
+  const {
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    tenderlyAccessKey,
+    tenderlySimulationEnabled,
+    setTenderlyAccessKey,
+    setTenderlyAccountSlug,
+    setTenderlyProjectSlug,
+    setTenderlySimulationEnabled,
+  } = useSettings();
+
+  const [accountSlug, setAccountSlug] = useState(tenderlyAccountSlug ?? "");
+  const [projectSlug, setProjectSlug] = useState(tenderlyProjectSlug ?? "");
+  const [accessKey, setAccessKey] = useState(tenderlyAccessKey ?? "");
+
+  useEffect(() => {
+    if (isSettingsVisible) {
+      setAccountSlug(tenderlyAccountSlug ?? "");
+      setProjectSlug(tenderlyProjectSlug ?? "");
+      setAccessKey(tenderlyAccessKey ?? "");
+    }
+  }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
+
   return (
     <div className="w-full text-12">
       <br />
       <h1 className="text-14">Tenderly Settings</h1>
       <br />
-      <p className="mb-12 flex items-center gap-6 ">
-        <span>Account</span> <TenderlyInput />
-      </p>
-
+      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
+      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
+      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
+      <div className="">
+        <Checkbox isChecked={tenderlySimulationEnabled} setIsChecked={setTenderlySimulationEnabled}>
+          <span className="text-12">
+            <Trans>Simulate TXs</Trans>
+          </span>
+        </Checkbox>
+      </div>
       <br />
-      <TenderlyInput />
+      See{" "}
+      <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
+        Tenderly Docs
+      </ExternalLink>
+      .
     </div>
   );
 }
 
-function TenderlyInput() {
-  return <input placeholder="myaccount" className="w-full border border-gray-800 text-12" />;
+function TenderlyInput({
+  value,
+  name,
+  placeholder,
+  onChange,
+}: {
+  value: string;
+  placeholder: string;
+  name: string;
+  onChange: (value: string) => void;
+}) {
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      onChange(e.target.value);
+    },
+    [onChange]
+  );
+
+  return (
+    <p className="mb-12 flex items-center justify-between gap-6">
+      <span>{name}</span>
+      <input
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="w-[280px] border border-gray-800 px-5 py-4 text-12"
+      />
+    </p>
+  );
 }

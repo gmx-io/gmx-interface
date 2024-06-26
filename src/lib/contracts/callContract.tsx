@@ -7,6 +7,7 @@ import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
+import { getTenderlyConfig, sendToTenderly } from "lib/tenderly";
 
 export async function callContract(
   chainId: number,
@@ -37,6 +38,13 @@ export async function callContract(
 
     if (!opts) {
       opts = {};
+    }
+
+    const tenderlyConfig = getTenderlyConfig();
+
+    if (tenderlyConfig) {
+      await sendToTenderly(chainId, contract, wallet, method, params, opts);
+      return;
     }
 
     const txnOpts: Overrides = {};
