@@ -128,53 +128,52 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                 />
               )}
               {fees?.priceImpactDiff !== undefined && bigMath.abs(fees.priceImpactDiff.deltaUsd) > 0 && (
-                <>
-                  <StatsTooltipRow
-                    textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
-                    label={
-                      <>
-                        <div className="text-white">{t`Price Impact Rebates`}:</div>
-                        <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
-                      </>
-                    }
-                    value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
-                    showDollar={false}
-                  />
-                  {!isIncrease && (
+                <StatsTooltipRow
+                  textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
+                  label={
                     <>
-                      <br />
-                      <Trans>
-                        Price impact rebates for closing trades are claimable under the claims tab.{" "}
-                        <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-                          Read more
-                        </ExternalLink>
-                        .
-                      </Trans>
-                      <br />
-                      <br />
+                      <div className="text-white">{t`Price Impact Rebates`}:</div>
+                      <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
                     </>
-                  )}
+                  }
+                  value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
+                  showDollar={false}
+                />
+              )}
+              {acceptablePriceFormated !== undefined && (
+                <StatsTooltipRow
+                  labelClassName="text-white"
+                  label={t`Order Acceptable Price`}
+                  value={
+                    <>
+                      {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
+                      {acceptablePriceFormated}
+                    </>
+                  }
+                  showDollar={false}
+                />
+              )}
+              {fees?.priceImpactDiff !== undefined && bigMath.abs(fees.priceImpactDiff.deltaUsd) > 0 && !isIncrease && (
+                <>
+                  <br />
+                  <Trans>
+                    Price impact rebates for closing trades are claimable under the claims tab.{" "}
+                    <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+                      Read more
+                    </ExternalLink>
+                    .
+                  </Trans>
+                  <br />
                 </>
               )}
-              {acceptablePriceFormated !== undefined ? (
+              {acceptablePriceFormated !== undefined && (
                 <>
-                  <StatsTooltipRow
-                    labelClassName="text-white"
-                    label={t`Order Acceptable Price`}
-                    value={
-                      <>
-                        {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
-                        {acceptablePriceFormated}
-                      </>
-                    }
-                    showDollar={false}
-                  />
                   <br />
                   {acceptablePriceClarification && <>{acceptablePriceClarification} </>}
+                  <br />
                 </>
-              ) : (
-                <br />
               )}
+              <br />
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#order-execution">{t`Read more`}</ExternalLink>.
             </>
           }
