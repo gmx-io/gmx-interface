@@ -164,7 +164,12 @@ export function OrderList({
                     setIsChecked={onSelectAllOrders}
                   ></Checkbox>
                 </Button>
-                <MarketFilterLongShort asButton value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                <MarketFilterLongShort
+                  asButton
+                  withPositions
+                  value={marketsDirectionsFilter}
+                  onChange={setMarketsDirectionsFilter}
+                />
                 <OrderTypeFilter asButton value={orderTypesFilter} onChange={setOrderTypesFilter} />
               </div>
             ) : (
@@ -211,7 +216,11 @@ export function OrderList({
                 </ExchangeTh>
               )}
               <ExchangeTh>
-                <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                <MarketFilterLongShort
+                  withPositions
+                  value={marketsDirectionsFilter}
+                  onChange={setMarketsDirectionsFilter}
+                />
               </ExchangeTh>
               <ExchangeTh>
                 <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />

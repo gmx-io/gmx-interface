@@ -1,4 +1,3 @@
-import identity from "lodash/identity";
 import { useMemo } from "react";
 import { Address } from "viem";
 
@@ -48,6 +47,7 @@ export function useOrders(
       .map((filter) => ({
         marketAddress: filter.marketAddress.toLowerCase() as Address,
         direction: filter.direction,
+        collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
       }));
 
     const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
@@ -74,21 +74,7 @@ export function useOrders(
   }, [marketsDirectionsFilter]);
 
   const key = useMemo(
-    () =>
-      !account
-        ? null
-        : [
-            account,
-            marketsDirectionsFilter
-              .map((f) => f.marketAddress + f.direction)
-              .sort()
-              .join(","),
-            orderTypesFilter
-              // in order not to mutate default EMPTY_ARRAY
-              .map(identity)
-              .sort()
-              .join(","),
-          ],
+    () => (!account ? null : ([account, marketsDirectionsFilter, orderTypesFilter] as const)),
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
@@ -145,7 +131,7 @@ export function useOrders(
 }
 
 function buildUseOrdersMulticall(chainId: number, key: CacheKey) {
-  const account = key[0] as string;
+  const account = key![0] as string;
 
   return {
     dataStore: {
@@ -266,7 +252,8 @@ function matchByMarket({
     return nonSwapRelevantDefinedFiltersLowercased.some(
       (filter) =>
         filter.marketAddress === order.marketAddress.toLowerCase() &&
-        (filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short"))
+        (filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short")) &&
+        (!filter.collateralAddress || filter.collateralAddress === order.initialCollateralTokenAddress.toLowerCase())
     );
   }
 

@@ -3,7 +3,7 @@ import { values } from "lodash";
 import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol, getToken } from "config/tokens";
 import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -15,11 +15,13 @@ import { mustNeverExist } from "lib/types";
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
   marketAddress: Address | "any";
   direction: MarketFilterLongShortDirection;
+  collateralAddress?: Address;
 };
 
 export type MarketFilterLongShortProps = {
@@ -36,14 +38,15 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
-  const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[] | Item<MarketFilterLongShortItemData>[]>(() => {
+  const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
     if (withPositions) {
       strippedOpenPositions = values(positions).map((position) => ({
-        text: (position.isLong ? "long " : "short ") + position.marketInfo.name,
+        text: (position.isLong ? "long" : "short") + " " + position.marketInfo.name,
         data: {
           marketAddress: position.marketInfo.marketTokenAddress as Address,
           direction: position.isLong ? "long" : "short",
+          collateralAddress: position.collateralTokenAddress as Address,
         },
       }));
     }
@@ -140,6 +143,26 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
+      const collateralToken = props.item.collateralAddress && getToken(chainId, props.item.collateralAddress);
+      const collateralSymbol = collateralToken?.symbol;
+
+      if (props.item.direction === "long" || props.item.direction === "short") {
+        return (
+          <>
+            <MarketWithDirectionLabel
+              isLong={props.item.direction === "long"}
+              indexName={indexName}
+              tokenSymbol={iconName}
+              iconImportSize={40}
+            />
+            <div className="inline-flex items-center">
+              <span className="subtext">[{poolName}]</span>
+            </div>
+            {collateralSymbol && <span className="text-gray-300"> ({collateralSymbol})</span>}
+          </>
+        );
+      }
+
       return (
         <>
           <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-5" />
@@ -151,7 +174,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         </>
       );
     },
-    [marketsInfoData]
+    [chainId, marketsInfoData]
   );
 
   return (

@@ -65,14 +65,11 @@ export function useTradeHistory(
         forAllAccounts,
         fromTxTimestamp,
         toTxTimestamp,
-        JSON.stringify(orderEventCombinations),
-        marketsDirectionsFilter
-          ?.map((f) => f.marketAddress + f.direction)
-          ?.sort()
-          .join(","),
+        orderEventCombinations,
+        marketsDirectionsFilter,
         index,
         pageSize,
-      ];
+      ] as const;
     }
     return null;
   };
@@ -292,6 +289,7 @@ export async function fetchTradeActions({
     .map((filter) => ({
       marketAddress: filter.marketAddress.toLowerCase() as Address,
       direction: filter.direction,
+      collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
     }));
 
   const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
@@ -347,6 +345,7 @@ export async function fetchTradeActions({
                     or: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
                       marketAddress: filter.marketAddress === "any" ? undefined : filter.marketAddress,
                       isLong: filter.direction === "any" ? undefined : filter.direction === "long",
+                      initialCollateralTokenAddress: filter.collateralAddress?.toLowerCase(),
                     })),
                   },
                 ],
@@ -373,16 +372,6 @@ export async function fetchTradeActions({
                   },
                 ],
           },
-          // For "all swaps" filter
-          // {
-          //   and: !hasAllSwapsFilter
-          //     ? undefined
-          //     : [
-          //         {
-          //           orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
-          //         },
-          //       ],
-          // },
         ],
       },
       {
