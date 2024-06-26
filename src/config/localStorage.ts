@@ -103,6 +103,11 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
   return [chainId, account, "one-click-trading-config"];
 }
 
-export function getSyntheticsReceiveMoneyTokenKey(chainId: number, marketName: string | undefined, direction: string) {
-  return [chainId, CLOSE_POSITION_RECEIVE_TOKEN_KEY, marketName, direction];
+export function getSyntheticsReceiveMoneyTokenKey(
+  chainId: number,
+  marketName: string | undefined,
+  direction: string,
+  collateralToken: string | undefined
+) {
+  return [chainId, CLOSE_POSITION_RECEIVE_TOKEN_KEY, marketName, direction, collateralToken];
 }
