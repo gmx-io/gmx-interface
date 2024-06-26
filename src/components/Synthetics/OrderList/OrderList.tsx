@@ -80,7 +80,6 @@ export function OrderList({
 
   const orders = useFilteredOrders({
     chainId,
-    subaccount,
     account,
     marketsDirectionsFilter: marketsDirectionsFilter,
     orderTypesFilter: orderTypesFilter,
@@ -260,19 +259,17 @@ export function OrderList({
 
 function useFilteredOrders({
   chainId,
-  subaccount,
   account,
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
   chainId: number;
-  subaccount;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderType[];
 }) {
   const ordersResponse = useOrdersInfoRequest(chainId, {
-    account: subaccount?.address ?? account,
+    account: account,
     marketsDirectionsFilter: marketsDirectionsFilter,
     orderTypesFilter: orderTypesFilter,
     marketsInfoData: useMarketsInfoData(),
