@@ -54,10 +54,10 @@ export function AprInfo({
 
     if (incentiveApr !== undefined && incentiveApr > 0) {
       return (
-        <>
+        <div className="flex flex-nowrap">
           {node}
           <img className="relative -top-3 h-10" src={sparkleIcon} alt="sparkle" />
-        </>
+        </div>
       );
     } else {
       return node;
