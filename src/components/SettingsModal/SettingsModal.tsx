@@ -220,9 +220,31 @@ export function SettingsModal({
         </div>
       )}
 
+      {isDevelopment() && <TenderlySettings />}
+
       <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
     </Modal>
   );
+}
+
+function TenderlySettings() {
+  return (
+    <div className="w-full text-12">
+      <br />
+      <h1 className="text-14">Tenderly Settings</h1>
+      <br />
+      <p className="mb-12 flex items-center gap-6 ">
+        <span>Account</span> <TenderlyInput />
+      </p>
+
+      <br />
+      <TenderlyInput />
+    </div>
+  );
+}
+
+function TenderlyInput() {
+  return <input placeholder="myaccount" className="w-full border border-gray-800 text-12" />;
 }
