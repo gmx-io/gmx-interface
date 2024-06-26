@@ -526,7 +526,7 @@ export default function SwapBox(props) {
             toTokenAddress,
             infoTokens,
             undefined,
-            !isMarketOrder && triggerRatio !== undefined,
+            !isMarketOrder && triggerRatio !== undefined ? triggerRatio : undefined,
             usdgSupply,
             totalTokenWeights,
             isSwap
