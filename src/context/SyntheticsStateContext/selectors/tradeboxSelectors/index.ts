@@ -357,11 +357,11 @@ const selectTradeboxSwapCount = createSelector(function selectTradeboxSwapCount(
   if (isSwap) {
     const swapAmounts = q(selectTradeboxSwapAmounts);
     if (!swapAmounts) return undefined;
-    return swapAmounts?.swapPathStats?.swapPath.length ?? 0;
+    return swapAmounts.swapPathStats?.swapPath.length ?? 0;
   } else if (isIncrease) {
     const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
     if (!increaseAmounts) return undefined;
-    return increaseAmounts?.swapPathStats?.swapPath.length ?? 0;
+    return increaseAmounts.swapPathStats?.swapPath.length ?? 0;
   } else {
     const decreaseSwapType = q(selectTradeboxDecreasePositionAmounts)?.decreaseSwapType;
     if (decreaseSwapType === undefined) return undefined;
