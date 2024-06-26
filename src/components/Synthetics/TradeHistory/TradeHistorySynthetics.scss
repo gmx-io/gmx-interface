@@ -35,19 +35,6 @@
     padding: 1em 1.5rem;
   }
 
-  &-controls {
-    padding: 1em 1.05rem;
-    border-bottom: 1px solid var(--color-slate-700);
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .button {
-      padding: 6px 10px !important;
-    }
-  }
-
   &-controls-right {
     display: flex;
     gap: 0.5em;
