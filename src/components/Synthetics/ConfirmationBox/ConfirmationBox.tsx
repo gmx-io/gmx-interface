@@ -665,7 +665,7 @@ export function ConfirmationBox(p: Props) {
           executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
           tokensData,
           txnType: entry.txnType!,
-          skipSimulation: isLimit || shouldDisableValidationForTesting,
+          skipSimulation: true,
         };
       }),
       cancelOrderParams: cancelSltpEntries.map((entry) => ({
