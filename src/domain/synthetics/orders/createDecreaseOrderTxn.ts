@@ -205,7 +205,7 @@ export function createDecreaseEncodedPayload({
         isLong: p.isLong,
         shouldUnwrapNativeToken: isNativeReceive,
         autoCancel: false,
-        referralCode: p.referralCode || ethers.ZeroHash,
+        referralCode: ethers.ZeroHash,
       };
 
       return [
