@@ -104,11 +104,11 @@ export function OrderList({
           orderElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }
-    }
 
-    return () => {
-      setSelectedPositionOrderKey?.(undefined);
-    };
+      return () => {
+        setSelectedPositionOrderKey?.(undefined);
+      };
+    }
   }, [selectedPositionOrderKey, setSelectedPositionOrderKey]);
 
   function onToggleOrder(key: string) {

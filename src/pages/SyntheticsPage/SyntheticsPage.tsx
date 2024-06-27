@@ -1,7 +1,7 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { uniq } from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
@@ -113,13 +113,15 @@ export function SyntheticsPage(p: Props) {
   const handlePositionListOrdersClick = useCallback(
     (positionKey: string, orderKey: string | undefined) => {
       setListSection(ListSection.Orders);
-      setSelectedPositionOrderKey(orderKey);
+      startTransition(() => {
+        setSelectedPositionOrderKey(orderKey);
 
-      if (orderKey) {
-        setSelectedOrderKeys([orderKey]);
-        setMarketsDirectionsFilter([]);
-        setOrderTypesFilter([]);
-      }
+        if (orderKey) {
+          setSelectedOrderKeys([orderKey]);
+          setMarketsDirectionsFilter([]);
+          setOrderTypesFilter([]);
+        }
+      });
     },
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
@@ -209,7 +211,18 @@ export function SyntheticsPage(p: Props) {
     );
   }
 
-  const handleTabChange = useCallback((section) => setListSection(section), [setListSection]);
+  const handleTabChange = useCallback(
+    (section: ListSection) => {
+      setListSection(section);
+      startTransition(() => {
+        setOrderTypesFilter([]);
+        setMarketsDirectionsFilter([]);
+        setSelectedOrderKeys([]);
+        setSelectedPositionOrderKey(undefined);
+      });
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
 
   return (
     <div className="Exchange page-layout">
