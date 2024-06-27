@@ -2,6 +2,7 @@ import { Contract, Wallet } from "ethers";
 import { helperToast } from "./helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
+import { getGasLimit, setGasPrice } from "./contracts";
 
 export const sendToTenderly = async (
   chainId: number,
@@ -17,26 +18,36 @@ export const sendToTenderly = async (
     return;
   }
 
+  if (!contract.runner?.provider) {
+    throw new Error("No provider found");
+  }
+
   const blockNumber = await contract.runner?.provider?.getBlockNumber();
 
   if (!blockNumber) {
     throw new Error("No block number found");
   }
 
+  const gasPriceData: any = {};
+  await setGasPrice({}, contract.runner.provider, chainId);
+
   const simulationParams = buildSimpleSimulationRequest(
     chainId,
     {
       from: wallet.address,
       to: typeof contract.target === "string" ? contract.target : await contract.target.getAddress(),
-      gas: 0, // FIXME
+      gas: opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value),
       input: await contract.interface.encodeFunctionData(method, params),
-      gas_price: "0", // FIXME
       value: opts.value ? Number(opts.value) : 0,
+      ...gasPriceData,
     },
     blockNumber
   );
 
   helperToast.info("Sending transaction to Tenderly...");
+  // eslint-disable-next-line no-console
+  console.log("tenderly simulation params", simulationParams);
+
   const response = await fetch(
     `https://api.tenderly.co/api/v1/account/${config.accountSlug}/project/${config.projectSlug}/simulate`,
     {
@@ -70,31 +81,37 @@ export const sendToTenderly = async (
   }
 };
 
-// similar to https://github.com/Tenderly/tenderly-sdk/blob/67e9a6c1e8116f3d9ae52958046e26c1f0ad55f1/lib/executors/Simulator.ts#L148
+// https://docs.tenderly.co/reference/api#/operations/simulateTransaction
 function buildSimpleSimulationRequest(
   chainId,
-  transaction: {
+  params: {
     from: string;
     to: string;
     value: number;
     input: string;
-    gas?: number;
-    gas_price?: string;
-    max_fee_per_gas?: string;
-    max_priority_fee_per_gas?: string;
+    gas?: bigint;
+    gasPrice?: bigint;
+    /*
+    api doesn't support these yet
+    maxFeePerGas?: bigint;
+    maxPriorityFeePerGas?: bigint;
+    */
   },
   blockNumber: number
 ) {
   return {
     network_id: chainId.toString(),
-    from: transaction.from,
-    to: transaction.to,
-    gas: transaction.gas,
-    gas_price: transaction.gas_price,
-    max_fee_per_gas: transaction.max_fee_per_gas,
-    max_priority_fee_per_gas: transaction.max_priority_fee_per_gas,
-    value: transaction.value,
-    input: transaction.input,
+    from: params.from,
+    to: params.to,
+    gas: params.gas !== undefined ? Number(params.gas) : undefined,
+    gas_price: params.gasPrice !== undefined ? String(params.gasPrice) : undefined,
+    /* api doesn't support these yet
+    max_fee_per_gas: params.maxFeePerGas !== undefined ? String(params.maxFeePerGas) : undefined,
+    max_priority_fee_per_gas:
+      params.maxPriorityFeePerGas !== undefined ? String(params.maxPriorityFeePerGas) : undefined,
+    */
+    value: params.value,
+    input: params.input,
     save: true,
     save_if_fails: true,
     block_number: blockNumber,
