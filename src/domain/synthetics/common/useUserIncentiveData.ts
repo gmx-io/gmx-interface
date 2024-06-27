@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
+import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "./incentivesAirdropMessages";
 
 export type UserIncentiveData = {
   id: string;
@@ -12,12 +13,17 @@ export type UserIncentiveData = {
   transactionHash: string;
 };
 
+const typeIds = Object.keys({
+  ...INCENTIVE_TYPE_MAP,
+  ...INCENTIVE_TOOLTIP_MAP,
+}).join(", ");
+
 const USER_INCENTIVE_QUERY = gql`
   query userIncentiveData($account: String!) {
     distributions(
       orderBy: timestamp
       orderDirection: desc
-      where: { receiver: $account, typeId_in: [1001, 1002, 1003, 2001, 2002] }
+      where: { receiver: $account, typeId_in: [${typeIds}] }
       first: 1000
     ) {
       typeId

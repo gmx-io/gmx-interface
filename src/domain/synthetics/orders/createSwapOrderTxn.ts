@@ -72,7 +72,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       createOrderMulticallPayload: simulationEncodedPayload,
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
@@ -119,6 +118,7 @@ async function getParams(
   const createOrderParams = {
     addresses: {
       receiver: p.account,
+      cancellationReceiver: ethers.ZeroAddress,
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
       market: ZeroAddress,
@@ -134,6 +134,7 @@ async function getParams(
       callbackGasLimit: 0n,
       minOutputAmount,
     },
+    autoCancel: false,
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,

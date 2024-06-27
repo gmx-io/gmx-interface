@@ -87,7 +87,6 @@ export async function createDecreaseOrderTxn(
 
       if (!p.skipSimulation) {
         const primaryPriceOverrides: PriceOverrides = {};
-        const secondaryPriceOverrides: PriceOverrides = {};
         if (p.triggerPrice != undefined) {
           primaryPriceOverrides[p.indexToken.address] = {
             minPrice: p.triggerPrice,
@@ -97,7 +96,6 @@ export async function createDecreaseOrderTxn(
         await simulateExecuteOrderTxn(chainId, {
           account,
           primaryPriceOverrides,
-          secondaryPriceOverrides,
           createOrderMulticallPayload: simulationEncodedPayload,
           value: totalWntAmount,
           tokensData: p.tokensData,
@@ -185,6 +183,7 @@ export function createDecreaseEncodedPayload({
         : p.minOutputUsd;
       const orderParams = {
         addresses: {
+          cancellationReceiver: ethers.ZeroAddress,
           receiver: p.account,
           initialCollateralToken: initialCollateralTokenAddress,
           callbackContract: ZeroAddress,
@@ -205,6 +204,7 @@ export function createDecreaseEncodedPayload({
         decreasePositionSwapType: p.decreasePositionSwapType,
         isLong: p.isLong,
         shouldUnwrapNativeToken: isNativeReceive,
+        autoCancel: false,
         referralCode: p.referralCode || ethers.ZeroHash,
       };
 

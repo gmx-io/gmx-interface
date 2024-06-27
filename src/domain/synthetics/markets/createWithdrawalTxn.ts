@@ -10,6 +10,7 @@ import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { SwapPricingType } from "../orders";
 
 type Params = {
   account: string;
@@ -77,12 +78,12 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
+      extraArgs: [SwapPricingType.TwoStep],
     });
   }
 

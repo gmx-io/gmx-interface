@@ -55,6 +55,7 @@ import {
   getFeeItem,
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -409,13 +410,16 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
 
   if (isDecreaseOrderType(order.orderType)) {
     estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+      decreaseSwapType: order.decreasePositionSwapType,
       swapsCount: order.swapPath.length,
     });
   }
 
   if (estimatedGas === undefined) return undefined;
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+  const oraclePriceCount = estimateOrderOraclePriceCount(order.swapPath.length);
+
+  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
 
 export const selectOrderEditorIncreaseAmounts = createSelector((q) => {

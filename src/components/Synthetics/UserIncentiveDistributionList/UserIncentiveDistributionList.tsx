@@ -1,5 +1,4 @@
-import { MessageDescriptor } from "@lingui/core";
-import { msg, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
@@ -12,6 +11,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
+import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
 import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -21,19 +21,6 @@ import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-
-const INCENTIVE_TYPE_MAP = {
-  1001: msg`GM Airdrop`,
-  1002: msg`GLP to GM Airdrop`,
-  1003: msg`TRADING Airdrop`,
-};
-
-const INCENTIVE_TOOLTIP_MAP: {
-  [typeId: number]: { link: string; text: MessageDescriptor };
-} = {
-  2001: { link: "/competitions/march_13-20_2024", text: msg`EIP-4844, 13-20 Mar` },
-  2002: { link: "/competitions/march_20-27_2024", text: msg`EIP-4844, 20-27 Mar` },
-};
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 

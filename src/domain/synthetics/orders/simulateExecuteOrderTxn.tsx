@@ -21,12 +21,12 @@ export type PriceOverrides = {
 type SimulateExecuteOrderParams = {
   account: string;
   createOrderMulticallPayload: string[];
-  secondaryPriceOverrides: PriceOverrides;
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: bigint;
   method?: string;
   errorTitle?: string;
+  extraArgs?: any[];
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
@@ -40,12 +40,8 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
-  const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
-    chainId,
-    p.tokensData,
-    p.primaryPriceOverrides,
-    p.secondaryPriceOverrides
-  );
+  const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
+  const priceTimestamp = Math.ceil(Date.now() / 1000);
 
   const simulationPayload = [
     ...p.createOrderMulticallPayload,
@@ -54,9 +50,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
       {
         primaryTokens: primaryTokens,
         primaryPrices: primaryPrices,
-        secondaryTokens: secondaryTokens,
-        secondaryPrices: secondaryPrices,
+        minTimestamp: priceTimestamp,
+        maxTimestamp: priceTimestamp,
       },
+      ...(p.extraArgs ?? []),
     ]),
   ];
 
@@ -140,17 +137,11 @@ export function extractDataFromError(errorMessage: unknown) {
   return null;
 }
 
-function getSimulationPrices(
-  chainId: number,
-  tokensData: TokensData,
-  primaryPricesMap: PriceOverrides,
-  secondaryPricesMap: PriceOverrides
-) {
+function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];
   const primaryPrices: { min: bigint; max: bigint }[] = [];
-  const secondaryPrices: { min: bigint; max: bigint }[] = [];
 
   for (const address of tokenAddresses) {
     const token = getTokenData(tokensData, address);
@@ -177,23 +168,10 @@ function getSimulationPrices(
     } else {
       primaryPrices.push(currentPrice);
     }
-
-    const secondaryOverridedPrice = secondaryPricesMap[address];
-
-    if (secondaryOverridedPrice) {
-      secondaryPrices.push({
-        min: convertToContractPrice(secondaryOverridedPrice.minPrice, token.decimals),
-        max: convertToContractPrice(secondaryOverridedPrice.maxPrice, token.decimals),
-      });
-    } else {
-      secondaryPrices.push(currentPrice);
-    }
   }
 
   return {
     primaryTokens,
-    secondaryTokens: primaryTokens,
     primaryPrices,
-    secondaryPrices,
   };
 }
