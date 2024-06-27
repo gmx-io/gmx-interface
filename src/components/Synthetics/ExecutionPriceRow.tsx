@@ -47,12 +47,12 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
 
   const fullPositionPriceImpactBps =
     fees?.positionPriceImpact?.bps !== undefined && fees?.priceImpactDiff?.bps !== undefined
-      ? fees?.positionPriceImpact?.bps - fees?.priceImpactDiff?.bps
+      ? fees.positionPriceImpact.bps - fees.priceImpactDiff.bps
       : undefined;
 
   const positionPriceImpactDeltaUsd =
     fees?.positionPriceImpact?.deltaUsd !== undefined && fees?.priceImpactDiff?.deltaUsd !== undefined
-      ? fees?.positionPriceImpact?.deltaUsd - fees?.priceImpactDiff?.deltaUsd
+      ? fees.positionPriceImpact.deltaUsd - fees.priceImpactDiff.deltaUsd
       : undefined;
 
   const acceptablePriceClarification = useMemo(() => {
