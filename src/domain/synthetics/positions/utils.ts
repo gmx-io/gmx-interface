@@ -29,7 +29,7 @@ export function getEntryPrice(p: { sizeInUsd: bigint; sizeInTokens: bigint; inde
     return undefined;
   }
 
-  return (sizeInUsd / sizeInTokens) * expandDecimals(1, indexToken.decimals);
+  return bigMath.mulDiv(sizeInUsd, expandDecimals(1, indexToken.decimals), sizeInTokens);
 }
 
 export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: bigint; markPrice: bigint }) {

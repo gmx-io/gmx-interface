@@ -49,9 +49,14 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
     undefined
   );
 
+  const handleSetOrderOption = useCallback((option: OrderOption) => {
+    setOrderOption(option);
+    setTriggerPriceInputValue("");
+  }, []);
+
   return {
     orderOption,
-    setOrderOption,
+    handleSetOrderOption,
     triggerPriceInputValue,
     setTriggerPriceInputValue,
     keepLeverage,

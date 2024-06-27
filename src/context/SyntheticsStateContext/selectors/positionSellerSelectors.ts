@@ -9,6 +9,9 @@ import {
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
+  selectGasLimits,
+  selectGasPrice,
+  selectChainId,
 } from "./globalSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -21,10 +24,17 @@ import {
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
 import { selectIsPnlInLeverage } from "./settingsSelectors";
-import { applySlippageToPrice, getSwapAmountsByFromValue } from "domain/synthetics/trade";
+import {
+  applySlippageToPrice,
+  getSwapAmountsByFromValue,
+  getNextPositionExecutionPrice,
+} from "domain/synthetics/trade";
 import { mustNeverExist } from "lib/types";
 import { getByKey } from "lib/objects";
 import { getIsEquivalentTokens } from "domain/tokens";
+import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
+import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
@@ -176,6 +186,80 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
   } else {
     mustNeverExist(orderOption);
   }
+});
+
+export const selectPositionSellerMarkPrice = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+
+  return position
+    ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
+    : undefined;
+});
+
+export const selectPositionSellerFees = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const gasLimits = q(selectGasLimits);
+  const tokensData = q(selectTokensData);
+  const gasPrice = q(selectGasPrice);
+  const chainId = q(selectChainId);
+  const swapAmounts = q(selectPositionSellerSwapAmounts);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
+    return {};
+  }
+
+  const swapPathLength = swapAmounts?.swapPathStats?.swapPath?.length || 0;
+
+  const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+    swapsCount: swapPathLength,
+    decreaseSwapType: decreaseAmounts.decreaseSwapType,
+  });
+
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+
+  return {
+    fees: getTradeFees({
+      initialCollateralUsd: position.collateralUsd,
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
+      positionFeeUsd: decreaseAmounts.positionFeeUsd,
+      swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
+      positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+      priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+      borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+      fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
+      feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+      swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+      uiFeeFactor,
+    }),
+    executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount),
+  };
+});
+
+export const selectPositionSellerExecutionPrice = createSelector(function selectPositionSellerExecutionPrice(q) {
+  const position = q(selectPositionSellerPosition);
+  const markPrice = q(selectPositionSellerMarkPrice);
+  const orderOption = q(selectPositionSellerOrderOption);
+  const { fees } = q(selectPositionSellerFees);
+
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+
+  if (!position || fees?.positionPriceImpact?.deltaUsd === undefined) return null;
+
+  const nextTriggerPrice = orderOption === OrderOption.Market ? markPrice : decreaseAmounts?.triggerPrice;
+  const sizeDeltaUsd = decreaseAmounts?.sizeDeltaUsd;
+
+  if (nextTriggerPrice === undefined || sizeDeltaUsd === undefined) return null;
+
+  return getNextPositionExecutionPrice({
+    triggerPrice: nextTriggerPrice,
+    priceImpactUsd: fees.positionPriceImpact.deltaUsd,
+    sizeDeltaUsd,
+    isLong: position.isLong,
+    isIncrease: false,
+  });
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {
