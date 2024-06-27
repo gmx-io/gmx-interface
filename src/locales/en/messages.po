@@ -3296,8 +3296,8 @@ msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees {rebatedTextWithSparkle} and Price Impact"
-msgstr "Fees {rebatedTextWithSparkle} and Price Impact"
+#~ msgid "Fees {rebatedTextWithSparkle} and Price Impact"
+#~ msgstr "Fees {rebatedTextWithSparkle} and Price Impact"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
