@@ -207,6 +207,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       ItemComponent={ItemComponent}
       value={value}
       asButton={asButton}
+      popupPlacement="bottom-start"
     />
   );
 }
