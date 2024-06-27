@@ -20,6 +20,7 @@ import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { INCENTIVES_V2_URL } from "config/ui";
+import sparkleIcon from "img/sparkle.svg";
 
 type Props = {
   totalFees?: FeeItem;
@@ -271,7 +272,13 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Max Bonus Rebate`}:</div>
+                <div className="text-white">
+                  <span className="relative">
+                    <Trans>Max Bonus Rebate</Trans>
+                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                  </span>
+                  :
+                </div>
                 <div>
                   <Trans>
                     (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
@@ -348,7 +355,18 @@ export function TradeFeesRow(p: Props) {
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
-      return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
+      const rebatedTextWithSparkle = (
+        <span className="relative">
+          <Trans>(Rebated)</Trans>
+          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+        </span>
+      );
+
+      return p.feesType === "edit" ? (
+        <Trans>Fees {rebatedTextWithSparkle}</Trans>
+      ) : (
+        <Trans>Fees {rebatedTextWithSparkle} and Price Impact</Trans>
+      );
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
     }

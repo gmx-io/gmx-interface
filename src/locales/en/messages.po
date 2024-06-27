@@ -1921,6 +1921,10 @@ msgstr "Collateral Spread"
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr "Fees {rebatedTextWithSparkle}"
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "Index"
@@ -2467,6 +2471,10 @@ msgstr "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
 msgstr "Leverage slider"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "(Rebated)"
+msgstr "(Rebated)"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
@@ -3250,6 +3258,10 @@ msgstr "Active Referral Code"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle} and Price Impact"
+msgstr "Fees {rebatedTextWithSparkle} and Price Impact"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -5866,7 +5878,6 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "Could not execute withdrawal from {0} {longOrShortText}"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr "Fees (Rebated)"
 
@@ -5980,8 +5991,8 @@ msgid "{positionName} Failed to settle"
 msgstr "{positionName} Failed to settle"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Rebated) and Price Impact"
-msgstr "Fees (Rebated) and Price Impact"
+#~ msgid "Fees (Rebated) and Price Impact"
+#~ msgstr "Fees (Rebated) and Price Impact"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx

@@ -1921,6 +1921,10 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "Index"
@@ -2466,6 +2470,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "(Rebated)"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -3249,6 +3257,10 @@ msgstr "Aktive Referral Codes"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle} and Price Impact"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5860,7 +5872,6 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "Konnte Abhebung von {0} {longOrShortText} nicht ausführen>>>>>>> master"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr ""
 
@@ -5974,8 +5985,8 @@ msgid "{positionName} Failed to settle"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Rebated) and Price Impact"
-msgstr ""
+#~ msgid "Fees (Rebated) and Price Impact"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
