@@ -9,7 +9,13 @@ import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarket
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
-import { OrderType, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import {
+  OrderType,
+  isIncreaseOrderType,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
 import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
 import { Token } from "domain/tokens";
@@ -240,6 +246,7 @@ function createRawTradeActionTransformer(
         reasonBytes: rawAction.reasonBytes,
 
         transaction: rawAction.transaction,
+        shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
       };
 
       return tradeAction;
@@ -345,7 +352,7 @@ export async function fetchTradeActions({
                     or: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
                       marketAddress: filter.marketAddress === "any" ? undefined : filter.marketAddress,
                       isLong: filter.direction === "any" ? undefined : filter.direction === "long",
-                      initialCollateralTokenAddress: filter.collateralAddress?.toLowerCase(),
+                      // Collateral filtering is done outside of graphql on the client
                     })),
                   },
                 ],
@@ -473,5 +480,78 @@ export async function fetchTradeActions({
 
   const transformer = createRawTradeActionTransformer(marketsInfoData, wrappedToken, tokensData);
 
-  return rawTradeActions.map(transformer).filter(Boolean) as TradeAction[];
+  let tradeActions = rawTradeActions.map(transformer).filter(Boolean) as TradeAction[];
+
+  const collateralFilterTree: {
+    [direction in "long" | "short"]: {
+      [marketAddress: string]: {
+        [collateralAddress: string]: boolean;
+      };
+    };
+  } = {
+    long: {},
+    short: {},
+  };
+  let hasCollateralFilter = false;
+
+  marketsDirectionsFilter.forEach((filter) => {
+    if (filter.direction === "any" || filter.direction === "swap" || !filter.collateralAddress) {
+      return;
+    }
+
+    if (!collateralFilterTree[filter.direction]) {
+      collateralFilterTree[filter.direction] = {};
+    }
+
+    if (!collateralFilterTree[filter.direction][filter.marketAddress]) {
+      collateralFilterTree[filter.direction][filter.marketAddress] = {};
+    }
+
+    hasCollateralFilter = true;
+    collateralFilterTree[filter.direction][filter.marketAddress][filter.collateralAddress] = true;
+  });
+
+  // Filter out trade actions that do not match the collateral filter
+  // We do this on the client side because the collateral filtering is too complex to be done in the graphql query
+  if (hasCollateralFilter) {
+    tradeActions = tradeActions.filter((tradeAction) => {
+      // All necessary filters for swaps are already applied in the graphql query
+      if (isSwapOrderType(tradeAction.orderType)) {
+        return true;
+      }
+
+      const positionTradeAction = tradeAction as PositionTradeAction;
+
+      let collateralMatch = true;
+
+      const desiredCollateralAddresses =
+        collateralFilterTree[positionTradeAction.isLong ? "long" : "short"]?.[positionTradeAction.marketAddress];
+
+      if (isLimitOrderType(tradeAction.orderType)) {
+        const wrappedToken = getWrappedToken(chainId);
+
+        if (!marketsInfoData) {
+          collateralMatch = true;
+        } else {
+          const { outTokenAddress } = getSwapPathOutputAddresses({
+            marketsInfoData,
+            initialCollateralAddress: positionTradeAction.initialCollateralTokenAddress,
+            isIncrease: isIncreaseOrderType(tradeAction.orderType),
+            shouldUnwrapNativeToken: positionTradeAction.shouldUnwrapNativeToken,
+            swapPath: tradeAction.swapPath,
+            wrappedNativeTokenAddress: wrappedToken.address,
+          });
+
+          collateralMatch =
+            outTokenAddress !== undefined && Boolean(desiredCollateralAddresses?.[outTokenAddress as Address]);
+        }
+      } else if (isTriggerDecreaseOrderType(tradeAction.orderType)) {
+        collateralMatch = Boolean(desiredCollateralAddresses?.[positionTradeAction.initialCollateralTokenAddress]);
+      }
+
+      return collateralMatch;
+    });
+  }
+
+  return tradeActions;
 }
