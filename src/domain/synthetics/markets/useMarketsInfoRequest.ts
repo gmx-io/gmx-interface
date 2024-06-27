@@ -16,7 +16,7 @@ import {
   maxFundingFactorPerSecondKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
-  maxPoolAmountForDepositKey,
+  maxPoolUsdForDepositKey,
   maxPoolAmountKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
@@ -152,13 +152,13 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
               },
-              maxLongPoolAmountForDeposit: {
+              maxLongPoolUsdForDeposit: {
                 methodName: "getUint",
-                params: [maxPoolAmountForDepositKey(marketAddress, market.longTokenAddress)],
+                params: [maxPoolUsdForDepositKey(marketAddress, market.longTokenAddress)],
               },
-              maxShortPoolAmountForDeposit: {
+              maxShortPoolUsdForDeposit: {
                 methodName: "getUint",
-                params: [maxPoolAmountForDepositKey(marketAddress, market.shortTokenAddress)],
+                params: [maxPoolUsdForDepositKey(marketAddress, market.shortTokenAddress)],
               },
               longPoolAmountAdjustment: {
                 methodName: "getUint",
@@ -455,8 +455,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortInterestInTokens,
           longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
           shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
-          maxLongPoolAmountForDeposit: dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0],
-          maxShortPoolAmountForDeposit: dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0],
+          maxLongPoolUsdForDeposit: dataStoreValues.maxLongPoolUsdForDeposit.returnValues[0],
+          maxShortPoolUsdForDeposit: dataStoreValues.maxShortPoolUsdForDeposit.returnValues[0],
           maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
           maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
           longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],

@@ -75,20 +75,21 @@ import {
   selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
+  selectPositionSellerReceiveToken,
+  selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerSetDefaultReceiveToken,
-  selectPositionSellerReceiveToken,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { bigMath } from "lib/bigmath";
-import "./PositionSeller.scss";
-import { useLocalizedMap } from "lib/i18n";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
+import "./PositionSeller.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -219,13 +220,14 @@ export function PositionSeller(p: Props) {
       return {};
     }
 
-    const swapsCount =
-      (decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1) +
-      (swapAmounts?.swapPathStats?.swapPath?.length || 0);
+    const swapPathLength = swapAmounts?.swapPathStats?.swapPath?.length || 0;
 
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      swapsCount,
+      swapsCount: swapPathLength,
+      decreaseSwapType: decreaseAmounts.decreaseSwapType,
     });
+
+    const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
 
     return {
       fees: getTradeFees({
@@ -243,7 +245,7 @@ export function PositionSeller(p: Props) {
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
         uiFeeFactor,
       }),
-      executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
+      executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount),
     };
   }, [
     chainId,

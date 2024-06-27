@@ -83,6 +83,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { bigMath } from "lib/bigmath";
+import { INCENTIVES_V2_URL } from "config/ui";
 
 const { ZeroAddress } = ethers;
 
@@ -891,10 +892,7 @@ export default function GlpSwap(props) {
           <Trans>
             The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
-            <ExternalLink
-              href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-              newTab
-            >
+            <ExternalLink href={INCENTIVES_V2_URL} newTab>
               Read more
             </ExternalLink>
             .

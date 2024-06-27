@@ -4,6 +4,7 @@ import { memo, type JSX } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "./tokens";
+import { INCENTIVES_V2_URL } from "./ui";
 
 export type EventData = {
   id: string;
@@ -31,31 +32,14 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
-    id: "all-incentives-launch",
-    title: "Incentives are live",
+    id: "arbitrum-incentives-launch-2",
+    title: "Arbitrum Incentives are Live",
     isActive: true,
-    endDate: "27 Mar 2024, 00:00",
-    bodyText: [
-      `Arbitrum STIP incentives are live for:`,
-      "",
-      "• Arbitrum GM Pools Liquidity.",
-      "• Arbitrum GMX V2 Trading.",
-    ],
-    link: {
-      text: "Read more.",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
-      newTab: true,
-    },
-  },
-  {
-    id: "incentives-launch",
-    title: "Incentives are live",
-    isActive: true,
-    endDate: "31 Oct 2024, 12:00",
-    bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
+    endDate: "16 Sep 2024, 00:00",
+    bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+      href: INCENTIVES_V2_URL,
       newTab: true,
     },
   },

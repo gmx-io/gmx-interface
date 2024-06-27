@@ -18,6 +18,9 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { INCENTIVES_V2_URL } from "config/ui";
+import sparkleIcon from "img/sparkle.svg";
 
 type Props = {
   totalFees?: FeeItem;
@@ -48,7 +51,8 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tradingIncentives = useTradingIncentives();
+  const tokensData = useTokensData();
+  const tradingIncentives = useTradingIncentives(tokensData);
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
@@ -268,7 +272,13 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Max Bonus Rebate`}:</div>
+                <div className="text-white">
+                  <span className="relative">
+                    <Trans>Max Bonus Rebate</Trans>
+                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                  </span>
+                  :
+                </div>
                 <div>
                   <Trans>
                     (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
@@ -345,7 +355,18 @@ export function TradeFeesRow(p: Props) {
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
-      return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
+      const rebatedTextWithSparkle = (
+        <span className="relative">
+          <Trans>(Rebated)</Trans>
+          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+        </span>
+      );
+
+      return p.feesType === "edit" ? (
+        <Trans>Fees {rebatedTextWithSparkle}</Trans>
+      ) : (
+        <Trans>Fees {rebatedTextWithSparkle} and Price Impact</Trans>
+      );
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
     }
@@ -358,14 +379,13 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
-        <ExternalLink
-          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
-          newTab
-        >
-          Read more
-        </ExternalLink>
-        .
+        The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
+        <span className="whitespace-nowrap">
+          <ExternalLink href={INCENTIVES_V2_URL} newTab>
+            Read more
+          </ExternalLink>
+          .
+        </span>
       </Trans>
     );
   }, [rebateIsApplicable, tradingIncentives]);

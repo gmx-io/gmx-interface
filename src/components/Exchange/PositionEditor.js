@@ -597,7 +597,9 @@ export default function PositionEditor(props) {
                   onClickMax={() => setFromValue(maxAmountFormattedFree)}
                   showPercentSelector={!isDeposit}
                   onPercentChange={(percentage) => {
-                    setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, percentage, 100n), USD_DECIMALS, 2));
+                    setFromValue(
+                      formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2)
+                    );
                   }}
                 >
                   {isDeposit ? (

@@ -1,10 +1,10 @@
-import { gql } from "@apollo/client";
 import { addDays, set, startOfWeek } from "date-fns";
 import { useChainId } from "lib/chains";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getByKey } from "lib/objects";
+import { mapValues } from "lodash";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
+import { RawIncentivesStats, TokensData, useOracleKeeperFetcher } from "../tokens";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();
@@ -22,15 +22,23 @@ export default function useIncentiveStats(overrideChainId?: number) {
   );
 }
 
-type RawResponse = {
-  tradingIncentivesStat: {
-    eligibleFeesInArb: string;
-  };
+export const useLiquidityProvidersIncentives = (chainId: number) => {
+  const lpStats = useIncentiveStats(chainId)?.lp;
+
+  return useMemo(() => {
+    if (!lpStats || !lpStats.isActive) return null;
+    return {
+      totalRewards: BigInt(lpStats.totalRewards),
+      period: lpStats.period,
+      rewardsPerMarket: mapValues(lpStats.rewardsPerMarket, (x) => BigInt(x)),
+      token: lpStats.token,
+    };
+  }, [lpStats]);
 };
 
 export type TradingIncentives = ReturnType<typeof useTradingIncentives>;
 
-export const useTradingIncentives = () => {
+export const useTradingIncentives = (tokensData: TokensData | undefined) => {
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
 
@@ -47,38 +55,9 @@ export const useTradingIncentives = () => {
     );
   }, []);
 
-  const { data: burnedTokens } = useSWR<bigint>(
-    ["trading-incentives", chainId, incentiveStats?.trading.isActive ? "on" : "off"],
-    {
-      fetcher: async (): Promise<bigint> => {
-        if (!incentiveStats?.trading.isActive) return 0n;
-
-        const client = getSyntheticsGraphClient(chainId);
-        const res = (
-          await client!.query({
-            query: gql(`{
-                tradingIncentivesStat(
-                  id:"1w:${startOfPeriod}"
-                ) {
-                  eligibleFeesInArb
-                }
-            }`),
-            fetchPolicy: "no-cache",
-          })
-        ).data as RawResponse;
-
-        if (!res || !res.tradingIncentivesStat || !res.tradingIncentivesStat.eligibleFeesInArb) {
-          return 0n;
-        }
-
-        return BigInt(res.tradingIncentivesStat.eligibleFeesInArb);
-      },
-    }
-  );
-
   return useMemo(() => {
     const raw = incentiveStats?.trading;
-    if (!raw || !raw.isActive || burnedTokens === undefined) {
+    if (!raw || !raw.isActive) {
       return null;
     }
 
@@ -88,11 +67,15 @@ export const useTradingIncentives = () => {
     const allocation = BigInt(raw.allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
 
+    const tokenAddress = raw.token ?? (incentiveStats?.lp.isActive ? incentiveStats.lp.token : null);
+    const token = tokenAddress ? getByKey(tokensData, tokenAddress) : undefined;
+
     return {
       allocation,
       period: raw.period,
       nextPeriodStart,
       rebatePercent,
+      token,
     };
-  }, [burnedTokens, incentiveStats?.trading, startOfPeriod]);
+  }, [incentiveStats, startOfPeriod, tokensData]);
 };

@@ -87,6 +87,7 @@ import "./PositionEditor.scss";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export type Props = {
   allowedSlippage: number;
@@ -231,9 +232,16 @@ export function PositionEditor(p: Props) {
     };
 
     const estimatedGas = isDeposit
-      ? estimateExecuteIncreaseOrderGasLimit(gasLimits, {})
-      : estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+      ? estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+          swapsCount: 0,
+        })
+      : estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+          swapsCount: 0,
+          decreaseSwapType: DecreasePositionSwapType.NoSwap,
+        });
+
+    const oraclePriceCount = estimateOrderOraclePriceCount(0);
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 
     return {
       fees,

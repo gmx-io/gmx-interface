@@ -175,7 +175,7 @@ msgstr ""
 msgid "GMX transfers not yet enabled"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
@@ -316,6 +316,10 @@ msgstr "Максимальное {0} превышение шорта"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "Отмена стоп-лосс ордера"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool USD exceeded"
+msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -650,7 +654,7 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
-msgstr "Недопустимое значение скольжения"
+msgstr "Недопустимое значение скольжения<<<<<<< HEAD"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -659,7 +663,7 @@ msgstr "{0} цена"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell submitted!"
-msgstr "Продажа подтверждена!"
+msgstr "Продажа подтверждена!>>>>>>> master"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -864,6 +868,10 @@ msgstr ""
 msgid "Staked Tokens"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "Max pool amount exceeded LOL"
+#~ msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
 msgstr ""
@@ -918,10 +926,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Залог"
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -1016,6 +1020,7 @@ msgid "Select pool"
 msgstr "Выбрать пул"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "Ликвидность"
 
@@ -1806,6 +1811,10 @@ msgstr "Запрошено увеличение {tokenSymbol} {longOrShortText} 
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b trading incentives"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
 msgstr ""
@@ -1910,6 +1919,10 @@ msgstr ""
 
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2275,6 +2288,10 @@ msgstr "Зарабатывайте призы, участвуя в торгов�
 msgid "Couldn't find a swap route with enough liquidity"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum GM Pools are incentivized."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Long"
@@ -2321,6 +2338,10 @@ msgstr "Минимум получен"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Доступная сумма для вывода средств из GLP. Средства, не использованные текущими открытыми позициями."
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2341,6 +2362,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum and Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -2445,6 +2470,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "(Rebated)"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2704,6 +2733,10 @@ msgstr "Рынок"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3226,6 +3259,10 @@ msgstr "Действующий реферальный код"
 msgid "Pending {0} approval"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle} and Price Impact"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "Пожалуйста, переключите свою сеть на Arbitrum."
@@ -3338,7 +3375,7 @@ msgstr ""
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr ""
 
@@ -3603,6 +3640,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
@@ -3917,10 +3958,6 @@ msgstr ""
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr ""
@@ -4159,7 +4196,7 @@ msgstr "Выберите свой вариант вестинга ниже и н
 
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
-msgstr "Сэкономь на Расходах"
+msgstr "Сэкономь на Расходах======="
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
@@ -4207,7 +4244,7 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
-msgstr ""
+msgstr "GBC NFTs APR отслеживание и вознаграждения"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4829,7 +4866,7 @@ msgstr "Текущий {0} лонгшезам"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Liquidation"
@@ -4841,7 +4878,7 @@ msgstr "Получатель не размещал токены GLP ранее"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
-msgstr ""
+msgstr ">>>>>>> master"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Spreadsheet for position calculations"
@@ -5221,6 +5258,10 @@ msgstr "Запрос esGMX"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche GM Pools are incentivized."
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -5485,13 +5526,13 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
-msgstr "Утрата прибыли"
+msgstr "Утрата прибыли<<<<<<< HEAD"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Sell Fee"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GM Airdrop"
 msgstr ""
 
@@ -5653,10 +5694,6 @@ msgstr "Обновление лимитного ордера"
 msgid "Start unrealized fees"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "Реферальные Коды"
@@ -5687,6 +5724,10 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Похоже, у вас нет реферального кода, которым можно поделиться. <0/> Создайте его сейчас и начните получать возвраты!"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
@@ -5828,14 +5869,13 @@ msgstr "Данные по Бессрочным контрактам GMX"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Positions"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not execute withdrawal from {0} {longOrShortText}"
-msgstr "Не удалось выполнить вывод из {0} {longOrShortText}"
+msgstr "Не удалось выполнить вывод из {0} {longOrShortText}>>>>>>> master"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr ""
 
@@ -5949,8 +5989,8 @@ msgid "{positionName} Failed to settle"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Rebated) and Price Impact"
-msgstr ""
+#~ msgid "Fees (Rebated) and Price Impact"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -6119,6 +6159,10 @@ msgstr ""
 msgid "Staking..."
 msgstr "Размещение стакинга..."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr ""
@@ -6282,7 +6326,7 @@ msgstr "Калькулятор ставки GMX"
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr ""
 
@@ -6457,6 +6501,14 @@ msgstr ""
 msgid "Avg. Lev."
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche LP incentives"
+msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "Группа в Телеграмме (Китайский язык)"
@@ -6475,10 +6527,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
-msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -6644,7 +6692,7 @@ msgstr "NFT ID"
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
@@ -6876,6 +6924,10 @@ msgstr "Входная Цена"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b LP incentives"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -7149,6 +7201,10 @@ msgstr ""
 msgid "Enter a new size or price"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool amount exceeded"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "Комиссия за заем рассчитывается как (заемные активы) / (общая сумма активов в пуле) * 0,01% в час."
@@ -7213,7 +7269,7 @@ msgstr ""
 msgid "Enter Referral Code"
 msgstr "Введите Реферальный Код"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
@@ -7358,6 +7414,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche trading incentives"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts

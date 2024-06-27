@@ -26,6 +26,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
 import "./SettleAccruedFundingFeeModal.scss";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 type Props = {
   allowedSlippage: number;
@@ -70,8 +71,12 @@ export function SettleAccruedFundingFeeModal({
 
   const { executionFee, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
-    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
-    const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+      decreaseSwapType: DecreasePositionSwapType.NoSwap,
+      swapsCount: 0,
+    });
+    const oraclePriceCount = estimateOrderOraclePriceCount(0);
+    const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
     return {
       executionFee: fees?.feeTokenAmount,
       feeUsd: fees?.feeUsd,

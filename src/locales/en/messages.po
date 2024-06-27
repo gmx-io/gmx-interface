@@ -175,7 +175,7 @@ msgstr "V2 Arbitrum"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX transfers not yet enabled"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
@@ -316,6 +316,10 @@ msgstr "Max {0} short exceeded"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "Cancel Stop-Loss Order"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool USD exceeded"
+msgstr "Max pool USD exceeded"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -864,6 +868,10 @@ msgstr "Charts by TradingView"
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "Max pool amount exceeded LOL"
+#~ msgstr "Max pool amount exceeded LOL"
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
 msgstr "Unstake completed!"
@@ -918,10 +926,6 @@ msgstr "Avalanche Max. APY: {0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Collateral"
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -1016,6 +1020,7 @@ msgid "Select pool"
 msgstr "Select pool"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "Liquidity"
 
@@ -1806,6 +1811,10 @@ msgstr "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b trading incentives"
+msgstr "STIP.b trading incentives"
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
 msgstr "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
@@ -1911,6 +1920,10 @@ msgstr "Collateral Spread"
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr "Fees {rebatedTextWithSparkle}"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
@@ -2275,6 +2288,10 @@ msgstr "Earn prizes by participating in GMX Trading Competitions."
 msgid "Couldn't find a swap route with enough liquidity"
 msgstr "Couldn't find a swap route with enough liquidity"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum GM Pools are incentivized."
+msgstr "Arbitrum GM Pools are incentivized."
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Long"
@@ -2321,6 +2338,10 @@ msgstr "Minimum received"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading"
+msgstr "Trading"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2342,6 +2363,10 @@ msgstr "Funding Fee Rate"
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum and Avalanche GM Pools are incentivized."
+msgstr "Arbitrum and Avalanche GM Pools are incentivized."
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -2446,6 +2471,10 @@ msgstr "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
 msgstr "Leverage slider"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "(Rebated)"
+msgstr "(Rebated)"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
@@ -2705,6 +2734,10 @@ msgstr "Market"
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+msgstr "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdraw disabled, pending {0} upgrade"
@@ -3226,6 +3259,10 @@ msgstr "Active Referral Code"
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle} and Price Impact"
+msgstr "Fees {rebatedTextWithSparkle} and Price Impact"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
@@ -3338,7 +3375,7 @@ msgstr "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgid "Trading guide"
 msgstr "Trading guide"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr "TRADING Airdrop"
 
@@ -3607,6 +3644,10 @@ msgstr "Buy AVAX directly to Avalanche or transfer it there."
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr "Single"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading"
+msgstr "Liquidity and trading"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
@@ -3919,10 +3960,6 @@ msgstr "Unstake submitted!"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
@@ -5224,6 +5261,10 @@ msgstr "Claim esGMX"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "Buy or Transfer ETH to Arbitrum"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche GM Pools are incentivized."
+msgstr "Avalanche GM Pools are incentivized."
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -5494,7 +5535,7 @@ msgstr "Forfeit profit"
 msgid "Sell Fee"
 msgstr "Sell Fee"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GM Airdrop"
 msgstr "GM Airdrop"
 
@@ -5659,10 +5700,6 @@ msgstr "Update Limit Order"
 msgid "Start unrealized fees"
 msgstr "Start unrealized fees"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "Referral Codes"
@@ -5693,6 +5730,10 @@ msgstr "Open Fee"
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
+msgstr "{incentivesTargets} incentives program is live on <0>{0}</0>."
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
@@ -5841,7 +5882,6 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "Could not execute withdrawal from {0} {longOrShortText}"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr "Fees (Rebated)"
 
@@ -5955,8 +5995,8 @@ msgid "{positionName} Failed to settle"
 msgstr "{positionName} Failed to settle"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Rebated) and Price Impact"
-msgstr "Fees (Rebated) and Price Impact"
+#~ msgid "Fees (Rebated) and Price Impact"
+#~ msgstr "Fees (Rebated) and Price Impact"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -6125,6 +6165,10 @@ msgstr "Take-Profit PnL"
 msgid "Staking..."
 msgstr "Staking..."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "Buy request sent"
@@ -6288,7 +6332,7 @@ msgstr "GMX staking calculator"
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "GLP to GM Airdrop"
 
@@ -6463,6 +6507,14 @@ msgstr "Increasing"
 msgid "Avg. Lev."
 msgstr "Avg. Lev."
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche LP incentives"
+msgstr "Avalanche LP incentives"
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
+msgstr "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "Telegram Group (Chinese)"
@@ -6482,10 +6534,6 @@ msgstr "Voting Power"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
@@ -6884,6 +6932,10 @@ msgstr "Entry Price"
 msgid "Price change to Liq."
 msgstr "Price change to Liq."
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b LP incentives"
+msgstr "STIP.b LP incentives"
+
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -7155,6 +7207,10 @@ msgstr "Deposit Fee"
 msgid "Enter a new size or price"
 msgstr "Enter a new size or price"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max pool amount exceeded"
+msgstr "Max pool amount exceeded"
+
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
@@ -7219,7 +7275,7 @@ msgstr "Claim GMX Rewards"
 msgid "Enter Referral Code"
 msgstr "Enter Referral Code"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
@@ -7365,6 +7421,10 @@ msgstr "{count, plural, one {Order} other {# Orders}}"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
 msgstr "Volume on V1"
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche trading incentives"
+msgstr "Avalanche trading incentives"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
