@@ -5,17 +5,22 @@ import type { Address } from "viem";
 
 import { getNormalizedTokenSymbol, getToken } from "config/tokens";
 import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  selectChainId,
+  selectOrdersInfoData,
+  selectPositionsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { isOrderForPosition } from "domain/synthetics/orders/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
 
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
@@ -27,21 +32,35 @@ export type MarketFilterLongShortItemData = {
 export type MarketFilterLongShortProps = {
   value: MarketFilterLongShortItemData[];
   onChange: (value: MarketFilterLongShortItemData[]) => void;
-  withPositions?: boolean;
+  withPositions?: "all" | "withOrders";
   asButton?: boolean;
 };
+
+const selectPositionsWithOrders = createSelector((q) => {
+  const positionsInfoData = q(selectPositionsInfoData);
+  const ordersInfoData = q(selectOrdersInfoData);
+
+  const positions = values(positionsInfoData);
+  const orders = values(ordersInfoData);
+
+  return positions.filter((position) => {
+    return orders.some((order) => isOrderForPosition(order, position.key));
+  });
+});
 
 export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
-  const positions = usePositionsInfoData();
+  const allPositions = usePositionsInfoData();
+  const filteredPositions = useSelector(selectPositionsWithOrders);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
-    if (withPositions) {
-      strippedOpenPositions = values(positions).map((position) => ({
+    if (withPositions !== undefined) {
+      const positions = withPositions === "all" ? values(allPositions) : filteredPositions;
+      strippedOpenPositions = positions.map((position) => ({
         text:
           (position.isLong ? "long" : "short") + " " + position.marketInfo.name + " " + position.collateralToken.symbol,
         data: {
@@ -92,7 +111,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     if (withPositions) {
       return [
         {
-          groupName: t`Open Positions`,
+          groupName: withPositions === "all" ? t`Open Positions` : t`Open Positions with Orders`,
           items: strippedOpenPositions!,
         },
         anyMarketDirectedGroup,
@@ -110,7 +129,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         items: strippedMarkets,
       },
     ];
-  }, [allMarkets, positions, withPositions]);
+  }, [allMarkets, allPositions, filteredPositions, withPositions]);
 
   const ItemComponent = useCallback(
     (props: { item: MarketFilterLongShortItemData }) => {

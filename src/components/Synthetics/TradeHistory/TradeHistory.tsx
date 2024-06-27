@@ -153,7 +153,7 @@ export function TradeHistory(p: Props) {
                 </th>
                 <th>
                   <MarketFilterLongShort
-                    withPositions
+                    withPositions="all"
                     value={marketsDirectionsFilter}
                     onChange={setMarketsDirectionsFilter}
                   />

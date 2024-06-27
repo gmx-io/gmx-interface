@@ -166,7 +166,7 @@ export function OrderList({
                 </Button>
                 <MarketFilterLongShort
                   asButton
-                  withPositions
+                  withPositions="withOrders"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
@@ -218,7 +218,7 @@ export function OrderList({
               )}
               <ExchangeTh>
                 <MarketFilterLongShort
-                  withPositions
+                  withPositions="withOrders"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
