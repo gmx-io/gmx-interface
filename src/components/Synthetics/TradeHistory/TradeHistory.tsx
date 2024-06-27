@@ -38,10 +38,11 @@ type Props = {
   shouldShowPaginationButtons: boolean;
   account: Address | null | undefined;
   forAllAccounts?: boolean;
+  hideDashboardLink?: boolean;
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, forAllAccounts, account } = p;
+  const { shouldShowPaginationButtons, forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
@@ -85,7 +86,7 @@ export function TradeHistory(p: Props) {
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
   const pnlAnalysisButton = useMemo(() => {
-    if (!account) {
+    if (!account || hideDashboardLink) {
       return null;
     }
 
@@ -97,7 +98,7 @@ export function TradeHistory(p: Props) {
         <Trans>PnL Analysis</Trans>
       </Button>
     );
-  }, [account, chainId]);
+  }, [account, chainId, hideDashboardLink]);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
