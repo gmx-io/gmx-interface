@@ -90,7 +90,7 @@ export function OrderList({
   const areAllOrdersSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
-  const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
+  const orderRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   useEffect(() => {
     if (selectedPositionOrderKey) {
@@ -194,6 +194,7 @@ export function OrderList({
                   onCancelOrder={() => onCancelOrder(order.key)}
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
+                  setRef={(el) => (orderRefs.current[order.key] = el)}
                 />
               ))}
             </div>

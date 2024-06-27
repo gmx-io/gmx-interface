@@ -49,7 +49,7 @@ type Props = {
   hideActions?: boolean;
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
-  setRef?: (el: HTMLTableRowElement | null) => void;
+  setRef?: (el: HTMLElement | null) => void;
 };
 
 export function OrderItem(p: Props) {
@@ -71,6 +71,7 @@ export function OrderItem(p: Props) {
       onCancelOrder={p.onCancelOrder}
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
+      setRef={p.setRef}
     />
   ) : (
     <OrderItemSmall
@@ -81,6 +82,7 @@ export function OrderItem(p: Props) {
       setEditingOrderKey={setEditingOrderKey}
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
+      setRef={p.setRef}
     />
   );
 }
@@ -472,6 +474,7 @@ function OrderItemSmall({
   hideActions,
   isSelected,
   onToggleOrder,
+  setRef,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
@@ -480,6 +483,7 @@ function OrderItemSmall({
   onCancelOrder: undefined | (() => void);
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
+  setRef?: (el: HTMLElement | null) => void;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -515,7 +519,7 @@ function OrderItemSmall({
   ]);
 
   return (
-    <div className="App-card">
+    <div className="App-card" ref={setRef}>
       <div>
         <div className="flex cursor-pointer items-center" onClick={onToggleOrder}>
           {hideActions ? (
