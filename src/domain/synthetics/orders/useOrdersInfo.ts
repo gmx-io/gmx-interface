@@ -25,7 +25,12 @@ export function useOrdersInfoRequest(
   }
 ): AggregatedOrdersDataResult {
   const { marketsInfoData, tokensData, account, marketsDirectionsFilter, orderTypesFilter } = p;
-  const { ordersData, count } = useOrders(chainId, { account, marketsDirectionsFilter, orderTypesFilter });
+  const { ordersData, count } = useOrders(chainId, {
+    account,
+    marketsDirectionsFilter,
+    orderTypesFilter,
+    marketsInfoData,
+  });
 
   const wrappedToken = getWrappedToken(chainId);
 

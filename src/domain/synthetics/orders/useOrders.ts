@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Address } from "viem";
+import { Address, isAddressEqual } from "viem";
 
 import type {
   MarketFilterLongShortDirection,
@@ -7,10 +7,19 @@ import type {
 } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { getWrappedToken } from "config/tokens";
 import { CacheKey, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { MarketsInfoData } from "../markets/types";
+import { getSwapPathOutputAddresses } from "../trade";
 import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";
-import { isSwapOrderType, isVisibleOrder } from "./utils";
+import {
+  isIncreaseOrderType,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+  isVisibleOrder,
+} from "./utils";
 
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
@@ -28,10 +37,12 @@ export function useOrders(
     account,
     marketsDirectionsFilter = EMPTY_ARRAY,
     orderTypesFilter = EMPTY_ARRAY,
+    marketsInfoData,
   }: {
     account?: string | null;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     orderTypesFilter?: OrderType[];
+    marketsInfoData?: MarketsInfoData;
   }
 ): OrdersResult {
   const {
@@ -98,6 +109,8 @@ export function useOrders(
         hasPureDirectionFilters,
         swapRelevantDefinedMarketsLowercased,
         hasSwapRelevantDefinedMarkets,
+        chainId,
+        marketsInfoData,
       });
 
       let matchByOrderType = true;
@@ -114,10 +127,12 @@ export function useOrders(
       return acc;
     }, {} as OrdersData);
   }, [
+    chainId,
     data?.orders,
     hasNonSwapRelevantDefinedMarkets,
     hasPureDirectionFilters,
     hasSwapRelevantDefinedMarkets,
+    marketsInfoData,
     nonSwapRelevantDefinedFiltersLowercased,
     orderTypesFilter,
     pureDirectionFilters,
@@ -207,6 +222,8 @@ function matchByMarket({
   hasPureDirectionFilters,
   swapRelevantDefinedMarketsLowercased,
   hasSwapRelevantDefinedMarkets,
+  marketsInfoData,
+  chainId,
 }: {
   order: ReturnType<typeof parseResponse>["orders"][number];
   nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[];
@@ -215,6 +232,8 @@ function matchByMarket({
   hasPureDirectionFilters: boolean;
   swapRelevantDefinedMarketsLowercased: Address[];
   hasSwapRelevantDefinedMarkets: boolean;
+  marketsInfoData?: MarketsInfoData;
+  chainId: number;
 }) {
   if (!hasNonSwapRelevantDefinedMarkets && !hasSwapRelevantDefinedMarkets && !hasPureDirectionFilters) {
     return true;
@@ -250,8 +269,32 @@ function matchByMarket({
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
       const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
-      const collateralMatch =
-        !filter.collateralAddress || filter.collateralAddress === order.initialCollateralTokenAddress.toLowerCase();
+      const initialCollateralAddress = order.initialCollateralTokenAddress.toLowerCase();
+
+      let collateralMatch = true;
+      if (!filter.collateralAddress) {
+        collateralMatch = true;
+      } else if (isLimitOrderType(order.orderType)) {
+        const wrappedToken = getWrappedToken(chainId);
+
+        if (!marketsInfoData) {
+          collateralMatch = true;
+        } else {
+          const { outTokenAddress } = getSwapPathOutputAddresses({
+            marketsInfoData,
+            initialCollateralAddress,
+            isIncrease: isIncreaseOrderType(order.orderType),
+            shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+            swapPath: order.swapPath,
+            wrappedNativeTokenAddress: wrappedToken.address,
+          });
+
+          collateralMatch =
+            outTokenAddress !== undefined && isAddressEqual(outTokenAddress as Address, filter.collateralAddress);
+        }
+      } else if (isTriggerDecreaseOrderType(order.orderType)) {
+        collateralMatch = isAddressEqual(order.initialCollateralTokenAddress, filter.collateralAddress);
+      }
 
       return marketMatch && directionMath && collateralMatch;
     });
