@@ -275,7 +275,7 @@ export function TradeFeesRow(p: Props) {
                 <div className="text-white">
                   <span className="relative">
                     <Trans>Max Bonus Rebate</Trans>
-                    <img className="absolute -right-12 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
                   </span>
                   :
                 </div>
@@ -358,7 +358,7 @@ export function TradeFeesRow(p: Props) {
       const rebatedTextWithSparkle = (
         <span className="relative">
           <Trans>(Rebated)</Trans>
-          <img className="absolute -right-4 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
         </span>
       );
 
