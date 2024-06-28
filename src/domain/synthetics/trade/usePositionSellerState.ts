@@ -40,7 +40,8 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
     return getSyntheticsReceiveMoneyTokenKey(
       chainId,
       closingPosition?.marketInfo.name,
-      closingPosition?.isLong ? "long" : "short"
+      closingPosition?.isLong ? "long" : "short",
+      closingPosition?.collateralTokenAddress
     );
   }, [chainId, closingPosition]);
 
