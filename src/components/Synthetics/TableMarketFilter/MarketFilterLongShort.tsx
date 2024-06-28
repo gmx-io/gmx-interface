@@ -4,12 +4,8 @@ import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
 import { getNormalizedTokenSymbol, getToken } from "config/tokens";
-import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  selectChainId,
-  selectOrdersInfoData,
-  selectPositionsInfoData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
