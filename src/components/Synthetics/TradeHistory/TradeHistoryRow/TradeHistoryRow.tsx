@@ -5,16 +5,13 @@ import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
 import { isSwapOrderType } from "domain/synthetics/orders";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
 
 import { getExplorerUrl } from "config/chains";
-import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { formatTokenAmount } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
@@ -181,33 +178,6 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.swapFromTokenSymbol, msg.swapToTokenSymbol]
   );
 
-  const wrappedToken = getWrappedToken(chainId);
-  function getCollateralText() {
-    const collateralUsd = convertToUsd(
-      tradeAction.initialCollateralDeltaAmount,
-      tradeAction.initialCollateralToken.decimals,
-      tradeAction.initialCollateralToken.prices.minPrice
-    );
-
-    const targetCollateralAmount = convertToTokenAmount(
-      collateralUsd,
-      tradeAction.targetCollateralToken.decimals,
-      tradeAction.targetCollateralToken.prices.minPrice
-    );
-
-    const tokenAmountText = formatTokenAmount(
-      targetCollateralAmount,
-      tradeAction.targetCollateralToken?.decimals,
-      tradeAction.targetCollateralToken.isNative ? wrappedToken.symbol : tradeAction.targetCollateralToken.symbol
-    );
-
-    return `${tokenAmountText}`;
-  }
-
-  const isCollateralSwap =
-    tradeAction.shouldUnwrapNativeToken ||
-    tradeAction.initialCollateralToken.address !== tradeAction.targetCollateralToken.address;
-
   return (
     <>
       <tr
@@ -273,34 +243,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} importSize={24} />
             </Trans>
           ) : (
-            <TooltipWithPortal
-              content={
-                <>
-                  <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
-
-                  {isCollateralSwap && (
-                    <div className="OrderItem-tooltip-row">
-                      <Trans>
-                        {formatTokenAmount(
-                          tradeAction.initialCollateralDeltaAmount,
-                          tradeAction.initialCollateralToken.decimals,
-                          tradeAction.initialCollateralToken[
-                            tradeAction.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"
-                          ]
-                        )}{" "}
-                        will be swapped to{" "}
-                        {tradeAction.targetCollateralToken.isNative
-                          ? wrappedToken.symbol
-                          : tradeAction.targetCollateralToken.symbol}{" "}
-                        on order execution.
-                      </Trans>
-                    </div>
-                  )}
-                </>
-              }
-            >
-              {msg.size}
-            </TooltipWithPortal>
+            msg.size
           )}
         </td>
         <td>
