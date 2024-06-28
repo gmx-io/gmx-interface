@@ -1,21 +1,30 @@
-import { Contract, Wallet } from "ethers";
+import { Contract } from "ethers";
 import { helperToast } from "./helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import { getGasLimit, setGasPrice } from "./contracts";
 
-export const sendToTenderly = async (
+const sentReports: {
+  url: string;
+  comment: string;
+}[] = [];
+
+export const simulateTxWithTenderly = async (
   chainId: number,
   contract: Contract,
-  wallet: Wallet,
+  account: string,
   method: string,
   params: any,
-  opts: any
+  opts: {
+    gasLimit?: bigint;
+    value?: bigint;
+    comment: string;
+  }
 ) => {
   const config = getTenderlyConfig();
 
   if (!config) {
-    return;
+    throw new Error("Tenderly config not found");
   }
 
   if (!contract.runner?.provider) {
@@ -31,12 +40,22 @@ export const sendToTenderly = async (
   const gasPriceData: any = {};
   await setGasPrice({}, contract.runner.provider, chainId);
 
-  const simulationParams = buildSimpleSimulationRequest(
+  let gas: undefined | bigint = undefined;
+
+  // estimateGas might fail cos of incorrect tx params,
+  // have to simulate tx without gasLimit in that case
+  try {
+    gas = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+  } catch (e) {
+    //
+  }
+
+  const simulationParams = buildSimulationRequest(
     chainId,
     {
-      from: wallet.address,
+      from: account,
       to: typeof contract.target === "string" ? contract.target : await contract.target.getAddress(),
-      gas: opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value),
+      gas,
       input: await contract.interface.encodeFunctionData(method, params),
       value: opts.value ? Number(opts.value) : 0,
       ...gasPriceData,
@@ -60,29 +79,46 @@ export const sendToTenderly = async (
     }
   );
 
+  let success = false;
   try {
     if (!response.ok) throw new Error(`Failed to send transaction to Tenderly: ${response.statusText}`);
+
     const json = await response.json();
-    helperToast.success(
+    const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
+    sentReports.push({ url, comment: opts.comment });
+    success = json.simulation.status;
+    helperToast.info(
       <>
-        <ExternalLink
-          href={`https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`}
-        >
-          View TX
-        </ExternalLink>{" "}
-        in Tenderly.
+        {sentReports.map(({ url, comment }) => (
+          <div key={url}>
+            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+          </div>
+        ))}
       </>,
       {
-        delay: 10000,
+        autoClose: false,
       }
     );
   } catch (e) {
-    helperToast.error(`Failed to send transaction to Tenderly: ${e.message}`);
+    helperToast.error(
+      <>
+        {e.message}
+        <br />
+        <br />
+        {sentReports.map(({ url, comment }) => (
+          <div key={url}>
+            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+          </div>
+        ))}
+      </>
+    );
   }
+
+  return { success };
 };
 
 // https://docs.tenderly.co/reference/api#/operations/simulateTransaction
-function buildSimpleSimulationRequest(
+function buildSimulationRequest(
   chainId,
   params: {
     from: string;
@@ -114,6 +150,7 @@ function buildSimpleSimulationRequest(
     input: params.input,
     save: true,
     save_if_fails: true,
+    simulation_type: "quick",
     block_number: blockNumber,
   };
 }

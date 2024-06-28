@@ -7,7 +7,7 @@ import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
-import { getTenderlyConfig, sendToTenderly } from "lib/tenderly";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
 export async function callContract(
   chainId: number,
@@ -43,7 +43,11 @@ export async function callContract(
     const tenderlyConfig = getTenderlyConfig();
 
     if (tenderlyConfig) {
-      await sendToTenderly(chainId, contract, wallet, method, params, opts);
+      await simulateTxWithTenderly(chainId, contract, wallet.address, method, params, {
+        gasLimit: opts.gasLimit !== undefined ? BigInt(opts.gasLimit) : undefined,
+        value: opts.value !== undefined ? BigInt(opts.value) : undefined,
+        comment: `calling ${method}`,
+      });
       return;
     }
 
