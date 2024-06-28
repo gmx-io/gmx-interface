@@ -21,6 +21,7 @@ import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/Ma
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
@@ -37,10 +38,9 @@ export type MarketFilterLongShortProps = {
 };
 
 const selectPositionsWithOrders = createSelector((q) => {
-  const positionsInfoData = q(selectPositionsInfoData);
+  const positions = q(selectPositionsInfoDataSortedByMarket);
   const ordersInfoData = q(selectOrdersInfoData);
 
-  const positions = values(positionsInfoData);
   const orders = values(ordersInfoData);
 
   return positions.filter((position) => {
@@ -51,7 +51,7 @@ const selectPositionsWithOrders = createSelector((q) => {
 export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
-  const allPositions = usePositionsInfoData();
+  const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
@@ -59,7 +59,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
     if (withPositions !== undefined) {
-      const positions = withPositions === "all" ? values(allPositions) : filteredPositions;
+      const positions = withPositions === "all" ? allPositions : filteredPositions;
       strippedOpenPositions = positions.map((position) => ({
         text:
           (position.isLong ? "long" : "short") + " " + position.marketInfo.name + " " + position.collateralToken.symbol,
