@@ -139,7 +139,7 @@ async function getParams(
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
     shouldUnwrapNativeToken: isNativeReceive,
-    referralCode: ethers.ZeroHash,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 
   const multicall = [

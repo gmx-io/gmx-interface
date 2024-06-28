@@ -329,6 +329,6 @@ function createOrderParams({
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
     autoCancel: false,
-    referralCode: ethers.ZeroHash,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 }
