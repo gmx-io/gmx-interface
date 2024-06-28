@@ -23,7 +23,6 @@ import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMa
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
-import HorizontalScrollCard from "./HorizontalScrollCard";
 
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
@@ -124,7 +123,7 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistorySynthetics">
-      <HorizontalScrollCard>
+      <div className="App-box max-[962px]:!-mr-[--default-container-padding] max-[962px]:!rounded-r-0 max-[800px]:!-mr-[--default-container-padding-mobile]">
         <div className="flex flex-wrap items-center justify-between gap-y-8 border-b border-b-slate-700 px-10 py-16">
           <div>
             <Trans>Trade History</Trans>
@@ -206,7 +205,7 @@ export function TradeHistory(p: Props) {
             <Trans>No trades yet</Trans>
           </div>
         )}
-      </HorizontalScrollCard>
+      </div>
 
       {shouldShowPaginationButtons && (
         <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
