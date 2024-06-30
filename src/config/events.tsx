@@ -123,4 +123,18 @@ export const appEventsData: EventData[] = [
     bodyText:
       "Check the new PnL dashboard for traders under the wallet submenu or the trades history tab when connected.",
   },
+  {
+    id: "avalanche-single-side-btc-eth-avax-markets",
+    title: "New BTC/USD, ETH/USD, and AVAX/USD single token GM pools on Avalanche",
+    isActive: true,
+    bodyText: (
+      <>
+        Use only <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("BTC")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ETH")} />, or{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("AVAX")} /> to provide liquidity to BTC/USD, ETH/USD, or
+        AVAX/USD. Buy GM without being exposed to stablecoins.
+      </>
+    ),
+    endDate: "11 Jul 2024, 0:00",
+  },
 ];
