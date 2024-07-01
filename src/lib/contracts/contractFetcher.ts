@@ -53,7 +53,19 @@ export const contractFetcher =
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
-          reject(e);
+
+          const errorStack = e.stack;
+          const connectionUrl = fallbackProvider.provider._getConnection().url;
+
+          const error = new Error(
+            `Fallback fetcher error ${e} url=${connectionUrl} method=${method} chainId=${chainId}`
+          );
+
+          if (errorStack) {
+            error.stack = errorStack;
+          }
+
+          throw error;
         });
     };
 
