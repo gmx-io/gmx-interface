@@ -243,7 +243,10 @@ export const FALLBACK_PROVIDERS = {
   [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
     ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
-    : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
+    : [
+        // "https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b" doesn't work
+        "https://api.avax.network/ext/bc/C/rpc",
+      ],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
     "https://api.avax-test.network/ext/bc/C/rpc",
