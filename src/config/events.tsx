@@ -135,6 +135,6 @@ export const appEventsData: EventData[] = [
         AVAX/USD. Buy GM without being exposed to stablecoins.
       </>
     ),
-    endDate: "11 Jul 2024, 0:00",
+    endDate: "14 Jul 2024, 23:59",
   },
 ];
