@@ -42,11 +42,10 @@ import externalLinkIcon from "img/ic_new_link_20.svg";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl } from "lib/legacy";
-import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { formatUsd } from "lib/numbers";
+import { formatUsd, expandDecimals, formatTokenAmount } from "lib/numbers";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
@@ -650,7 +649,11 @@ const MainView = memo(() => {
                 handleClassName="block w-full !no-underline"
                 position="top"
                 handle={withdrawalButton}
-                content={<Trans>The amount left in the sub-account is not enough to cover network gas costs.</Trans>}
+                content={
+                  (subAccNativeTokenBalance ?? 0n) < expandDecimals(1, nativeToken.decimals - 4)
+                    ? t`The subaccount has no funds.`
+                    : t`The amount left in the subaccount is not enough to cover network gas costs.`
+                }
               />
             ) : (
               withdrawalButton
