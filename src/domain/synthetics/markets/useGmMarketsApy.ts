@@ -72,19 +72,15 @@ function useExcludedLiquidityMarketMap(
     request[marketAddress] = {
       abi: TokenAbi.abi,
       contractAddress: marketAddress,
-      calls: Object.fromEntries(
-        excludeHolders.map(
-          (holder) =>
-            [
-              holder,
-              {
-                methodName: "balanceOf",
-                params: [holder],
-              },
-            ] as const
-        )
-      ),
+      calls: {},
     };
+
+    for (const holder of excludeHolders) {
+      request[marketAddress].calls[holder] = {
+        methodName: "balanceOf",
+        params: [holder],
+      };
+    }
   }
 
   const excludedBalancesMulticall = useMulticall(chainId, "useExcludedLiquidity", {
