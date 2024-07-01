@@ -30,7 +30,7 @@ import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
-import useWallet from "lib/wallets/useWallet";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
@@ -49,7 +49,7 @@ const SWRConfigProp = {
 };
 
 function App() {
-  const { signer } = useWallet();
+  const signer = useEthersSigner();
   const { chainId } = useChainId();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
