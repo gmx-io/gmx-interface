@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
 import { bigMath } from "lib/bigmath";
-import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { CHART_PERIODS, GM_DECIMALS, PRECISION } from "lib/legacy";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
@@ -48,7 +48,44 @@ function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
-  const token = liquidityProvidersIncentives ? tokensData?.[liquidityProvidersIncentives.token] : undefined;
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const tokenAddress = liquidityProvidersIncentives?.token;
+
+  const regularToken = useMemo(() => {
+    if (!tokenAddress || !tokensData) return undefined;
+
+    const lowerCased = tokenAddress.toLowerCase();
+    const key = Object.keys(tokensData).find((key) => key.toLowerCase() === lowerCased);
+    return key ? tokensData[key] : undefined;
+  }, [tokenAddress, tokensData]);
+
+  const marketToken = useMemo(() => {
+    if (!tokenAddress || !marketTokensData) return undefined;
+
+    const lowerCased = tokenAddress.toLowerCase();
+    const key = Object.keys(marketTokensData).find((key) => key.toLowerCase() === lowerCased);
+    return key ? marketTokensData[key] : undefined;
+  }, [marketTokensData, tokenAddress]);
+
+  const token = useMemo(() => {
+    if (regularToken) {
+      return {
+        price: regularToken.prices.minPrice,
+        decimals: regularToken.decimals,
+        symbol: regularToken.symbol,
+      };
+    }
+
+    if (marketToken) {
+      return {
+        price: marketToken.prices.minPrice,
+        decimals: GM_DECIMALS,
+        symbol: marketToken.name,
+      };
+    }
+
+    return undefined;
+  }, [marketToken, regularToken]);
 
   return useMemo(() => {
     if (!liquidityProvidersIncentives || !token) return {};
@@ -61,7 +98,7 @@ function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData
       const yearMultiplier = BigInt(Math.floor((365 * 24 * 60 * 60) / liquidityProvidersIncentives.period));
       const apr =
         bigMath.mulDiv(
-          bigMath.mulDiv(tokensAmount, token.prices.minPrice, expandDecimals(1, token.decimals)),
+          bigMath.mulDiv(tokensAmount, token.price, expandDecimals(1, token.decimals)),
           PRECISION,
           poolValue
         ) * yearMultiplier;
