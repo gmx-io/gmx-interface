@@ -4,7 +4,7 @@
   }
 
   &-table {
-    width: max(100%, 900px);
+    width: max(100%, 900px) !important;
 
     // Table causes global layout issues on mobile
     margin-right: -10px;
@@ -33,19 +33,6 @@
 
   &-padded-cell {
     padding: 1em 1.5rem;
-  }
-
-  &-controls {
-    padding: 1em 1.05rem;
-    border-bottom: 1px solid var(--color-slate-700);
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .button {
-      padding: 6px 10px !important;
-    }
   }
 
   &-controls-right {

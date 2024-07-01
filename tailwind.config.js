@@ -3,6 +3,7 @@
 const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
+const defaultConfig = require("tailwindcss/defaultConfig");
 
 const colors = {
   blue: {
@@ -107,6 +108,10 @@ module.exports = {
     placeholderColor: {
       gray: "rgb(117, 117, 117)",
     },
+    // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
+    // "these features will only be available if your project uses a simple screens configuration."
+    // So we just copy the default screens config
+    screens: defaultConfig.theme.screens,
     extend: {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
