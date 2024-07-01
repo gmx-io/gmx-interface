@@ -55,8 +55,11 @@ export const contractFetcher =
           console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
 
           const errorStack = e.stack;
+          const connectionUrl = fallbackProvider.provider._getConnection().url;
 
-          const error = new Error(`Fallback fetcher error ${e}`);
+          const error = new Error(
+            `Fallback fetcher error ${e} url=${connectionUrl} method=${method} chainId=${chainId}`
+          );
 
           if (errorStack) {
             error.stack = errorStack;
