@@ -3,45 +3,69 @@ import { values } from "lodash";
 import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
-import { useMarketsInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getNormalizedTokenSymbol, getToken } from "config/tokens";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { isOrderForPosition } from "domain/synthetics/orders/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
 
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
   marketAddress: Address | "any";
   direction: MarketFilterLongShortDirection;
+  collateralAddress?: Address;
 };
 
 export type MarketFilterLongShortProps = {
   value: MarketFilterLongShortItemData[];
   onChange: (value: MarketFilterLongShortItemData[]) => void;
+  withPositions?: "all" | "withOrders";
+  asButton?: boolean;
 };
 
-export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShortProps) {
+const selectPositionsWithOrders = createSelector((q) => {
+  const positions = q(selectPositionsInfoDataSortedByMarket);
+  const ordersInfoData = q(selectOrdersInfoData);
+
+  const orders = values(ordersInfoData);
+
+  return positions.filter((position) => {
+    return orders.some((order) => isOrderForPosition(order, position.key));
+  });
+});
+
+export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
-  const positions = usePositionsInfoData();
+  const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const filteredPositions = useSelector(selectPositionsWithOrders);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
-    const strippedOpenPositions: Item<MarketFilterLongShortItemData>[] = values(positions).map((position) => ({
-      text: (position.isLong ? "long " : "short ") + position.marketInfo.name,
-      data: {
-        marketAddress: position.marketInfo.marketTokenAddress as Address,
-        direction: position.isLong ? "long" : "short",
-      },
-    }));
+    let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
+    if (withPositions !== undefined) {
+      const positions = withPositions === "all" ? allPositions : filteredPositions;
+      strippedOpenPositions = positions.map((position) => ({
+        text:
+          (position.isLong ? "long" : "short") + " " + position.marketInfo.name + " " + position.collateralToken.symbol,
+        data: {
+          marketAddress: position.marketInfo.marketTokenAddress as Address,
+          direction: position.isLong ? "long" : "short",
+          collateralAddress: position.collateralTokenAddress as Address,
+        },
+      }));
+    }
 
     const strippedMarkets: Item<MarketFilterLongShortItemData>[] = allMarkets.map((market) => {
       return {
@@ -53,41 +77,55 @@ export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShort
       };
     });
 
-    const anyMarketDirected: Item<MarketFilterLongShortItemData>[] = [
-      {
-        text: t`Longs`,
-        data: {
-          marketAddress: "any",
-          direction: "long",
+    const anyMarketDirectedGroup: Group<MarketFilterLongShortItemData> = {
+      groupName: t`Direction`,
+      items: [
+        {
+          text: t`Longs`,
+          data: {
+            marketAddress: "any",
+            direction: "long",
+          },
         },
-      },
-      {
-        text: t`Shorts`,
-        data: {
-          marketAddress: "any",
-          direction: "short",
+        {
+          text: t`Shorts`,
+          data: {
+            marketAddress: "any",
+            direction: "short",
+          },
         },
-      },
-      {
-        text: t`Swaps`,
-        data: {
-          marketAddress: "any",
-          direction: "swap",
+        {
+          text: t`Swaps`,
+          data: {
+            marketAddress: "any",
+            direction: "swap",
+          },
         },
-      },
-    ];
+      ],
+    };
+
+    if (withPositions) {
+      return [
+        {
+          groupName: withPositions === "all" ? t`Open Positions` : t`Open Positions with Orders`,
+          items: strippedOpenPositions!,
+        },
+        anyMarketDirectedGroup,
+        {
+          groupName: t`Markets`,
+          items: strippedMarkets,
+        },
+      ];
+    }
 
     return [
-      {
-        groupName: t`Open Positions`,
-        items: strippedOpenPositions,
-      },
+      anyMarketDirectedGroup,
       {
         groupName: t`Markets`,
-        items: anyMarketDirected.concat(strippedMarkets),
+        items: strippedMarkets,
       },
     ];
-  }, [allMarkets, positions]);
+  }, [allMarkets, allPositions, filteredPositions, withPositions]);
 
   const ItemComponent = useCallback(
     (props: { item: MarketFilterLongShortItemData }) => {
@@ -121,6 +159,26 @@ export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShort
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
+      const collateralToken = props.item.collateralAddress && getToken(chainId, props.item.collateralAddress);
+      const collateralSymbol = collateralToken?.symbol;
+
+      if (props.item.direction === "long" || props.item.direction === "short") {
+        return (
+          <>
+            <MarketWithDirectionLabel
+              isLong={props.item.direction === "long"}
+              indexName={indexName}
+              tokenSymbol={iconName}
+              iconImportSize={40}
+            />
+            <div className="inline-flex items-center">
+              <span className="subtext">[{poolName}]</span>
+            </div>
+            {collateralSymbol && <span className="text-gray-300"> ({collateralSymbol})</span>}
+          </>
+        );
+      }
+
       return (
         <>
           <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-5" />
@@ -132,18 +190,20 @@ export function MarketFilterLongShort({ value, onChange }: MarketFilterLongShort
         </>
       );
     },
-    [marketsInfoData]
+    [chainId, marketsInfoData]
   );
 
   return (
     <TableOptionsFilter<MarketFilterLongShortItemData>
       multiple
       label={t`Market`}
-      placeholder={t`Search market`}
+      placeholder={t`Search Market`}
       onChange={onChange}
       options={marketsOptions}
       ItemComponent={ItemComponent}
       value={value}
+      asButton={asButton}
+      popupPlacement="bottom-start"
     />
   );
 }

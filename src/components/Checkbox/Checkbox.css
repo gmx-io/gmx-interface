@@ -22,6 +22,7 @@
   margin-bottom: 0;
 }
 
+.Checkbox.noLabel .Checkbox-icon,
 .Checkbox.fullRow .Checkbox-icon {
   margin-right: 0;
 }

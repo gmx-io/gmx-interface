@@ -426,12 +426,15 @@ Object {
   "fullMarket": "...",
   "fullMarketNames": undefined,
   "market": "...",
-  "pathTokenSymbols": undefined,
   "price": ">  3,327.54 USDC / WETH",
   "priceComment": Array [
     "Acceptable price for the order.",
   ],
   "size": "0.0119 WETH to 39.8800 USDC",
+  "swapFromTokenAmount": "0.0119",
+  "swapFromTokenSymbol": "WETH",
+  "swapToTokenAmount": "39.8800",
+  "swapToTokenSymbol": "USDC",
   "timestamp": "02 Oct 2023, 18:35",
   "timestampISO": "2023-10-02T18:35:16+04:00",
 }
@@ -444,7 +447,6 @@ Object {
   "fullMarket": "...",
   "fullMarketNames": undefined,
   "market": "...",
-  "pathTokenSymbols": undefined,
   "price": "965.18 USDC / ETH",
   "priceComment": Array [
     "Execution price for the order.",
@@ -455,6 +457,10 @@ Object {
     },
   ],
   "size": "1,080.6325 USDC to 1.1196 ETH",
+  "swapFromTokenAmount": "1,080.6325",
+  "swapFromTokenSymbol": "USDC",
+  "swapToTokenAmount": "1.1196",
+  "swapToTokenSymbol": "ETH",
   "timestamp": "02 Oct 2023, 06:08",
   "timestampISO": "2023-10-02T06:08:40+04:00",
 }
@@ -468,7 +474,6 @@ Object {
   "fullMarket": "...",
   "fullMarketNames": undefined,
   "market": "...",
-  "pathTokenSymbols": undefined,
   "price": "0.8110 WETH / BTC",
   "priceComment": Array [
     "Execution price for the order.",
@@ -479,6 +484,10 @@ Object {
     },
   ],
   "size": "0.3000 WETH to 0.3698 BTC",
+  "swapFromTokenAmount": "0.3000",
+  "swapFromTokenSymbol": "WETH",
+  "swapToTokenAmount": "0.3698",
+  "swapToTokenSymbol": "BTC",
   "timestamp": "29 Sep 2023, 10:46",
   "timestampISO": "2023-09-29T10:46:39+04:00",
 }
@@ -498,7 +507,6 @@ Object {
   "fullMarketNames": undefined,
   "isActionError": true,
   "market": "...",
-  "pathTokenSymbols": undefined,
   "price": "2,056.13 USDC / ETH",
   "priceComment": Array [
     "Execution price for the order.",
@@ -509,6 +517,10 @@ Object {
     },
   ],
   "size": "1.0000 USDC to 0.0004 ETH",
+  "swapFromTokenAmount": "1.0000",
+  "swapFromTokenSymbol": "USDC",
+  "swapToTokenAmount": "0.0004",
+  "swapToTokenSymbol": "ETH",
   "timestamp": "14 Feb 2024, 13:33",
   "timestampISO": "2024-02-14T13:33:19+04:00",
 }
