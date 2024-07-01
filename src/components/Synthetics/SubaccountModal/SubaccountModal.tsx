@@ -7,6 +7,7 @@ import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
@@ -527,10 +528,21 @@ const MainView = memo(() => {
     try {
       helperToast.success(
         <StatusNotification title={t`Withdrawing from Subaccount`}>
-          {t`Withdrawing ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
-          })} to Main Account`}
-        </StatusNotification>
+          <TransactionStatus
+            status="loading"
+            text={t`Withdrawing ${formatTokenAmount(
+              subAccNativeTokenBalance,
+              nativeToken.decimals,
+              nativeToken.symbol,
+              {
+                displayDecimals: 4,
+              }
+            )} to Main Account`}
+          />
+        </StatusNotification>,
+        {
+          className: "SubaccountNotification",
+        }
       );
 
       await withdrawFromSubaccount({
