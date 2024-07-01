@@ -5,7 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
-  getAlchemyWsUrl,
+  getAlchemyArbitrumWsUrl,
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
@@ -34,7 +34,7 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   const network = Network.from(chainId);
 
   if (chainId === ARBITRUM) {
-    return new ethers.WebSocketProvider(getAlchemyWsUrl(), network, { staticNetwork: network });
+    return new ethers.WebSocketProvider(getAlchemyArbitrumWsUrl(), network, { staticNetwork: network });
   }
 
   if (chainId === AVALANCHE) {
