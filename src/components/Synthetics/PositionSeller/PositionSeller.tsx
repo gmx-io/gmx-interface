@@ -343,7 +343,7 @@ export function PositionSeller(p: Props) {
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: shouldDisableValidationForTesting,
+        skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
       },
       {
         setPendingOrder,
