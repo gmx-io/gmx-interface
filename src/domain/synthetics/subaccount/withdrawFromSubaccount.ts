@@ -1,5 +1,4 @@
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 
 export async function withdrawFromSubaccount({
@@ -13,8 +12,13 @@ export async function withdrawFromSubaccount({
 
   const subaccountAddress = subaccount.address;
   const wallet = subaccount.signer;
-  const provider = ethers.getDefaultProvider();
-  const [value, feeData] = await Promise.all([provider.getBalance(subaccountAddress), provider.getFeeData()]);
+
+  if (!wallet.provider) throw new Error("No provider available.");
+
+  const [value, feeData] = await Promise.all([
+    wallet.provider.getBalance(subaccountAddress),
+    wallet.provider.getFeeData(),
+  ]);
   const gasPrice = feeData.gasPrice ?? 0n;
   const gasLimit = 21000n;
   const approxAmountToSend = value - gasPrice * gasLimit;
