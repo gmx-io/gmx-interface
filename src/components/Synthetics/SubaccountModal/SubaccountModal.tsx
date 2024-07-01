@@ -385,7 +385,6 @@ const MainView = memo(() => {
           (await getCurrentMaxActionsCount({
             accountAddress: account!,
             chainId,
-            signer,
             subaccountAddress: address,
           })) ?? 0n;
       }
