@@ -19,6 +19,7 @@ import {
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { tenderlyLsKeys } from "lib/tenderly";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -40,6 +41,15 @@ export type SettingsContextType = {
   setShouldDisableValidationForTesting: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+
+  tenderlyAccountSlug: string | undefined;
+  setTenderlyAccountSlug: (val: string | undefined) => void;
+  tenderlyProjectSlug: string | undefined;
+  setTenderlyProjectSlug: (val: string | undefined) => void;
+  tenderlyAccessKey: string | undefined;
+  setTenderlyAccessKey: (val: string | undefined) => void;
+  tenderlySimulationEnabled: boolean | undefined;
+  setTenderlySimulationEnabled: (val: boolean | undefined) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -88,6 +98,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
+
+  const [tenderlyAccountSlug, setTenderlyAccountSlug] = useLocalStorageSerializeKey(tenderlyLsKeys.accountSlug, "");
+  const [tenderlyProjectSlug, setTenderlyProjectSlug] = useLocalStorageSerializeKey(tenderlyLsKeys.projectSlug, "");
+  const [tenderlyAccessKey, setTenderlyAccessKey] = useLocalStorageSerializeKey(tenderlyLsKeys.accessKey, "");
+  const [tenderlySimulationEnabled, setTenderlySimulationEnabled] = useLocalStorageSerializeKey(
+    tenderlyLsKeys.enabled,
     false
   );
 
@@ -149,6 +167,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+
+      setTenderlyAccessKey,
+      setTenderlyAccountSlug,
+      setTenderlyProjectSlug,
+      setTenderlySimulationEnabled,
+      tenderlyAccessKey,
+      tenderlyAccountSlug,
+      tenderlyProjectSlug,
+      tenderlySimulationEnabled,
     };
   }, [
     showDebugValues,
@@ -170,6 +197,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableValidationForTesting,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    setTenderlyAccessKey,
+    setTenderlyAccountSlug,
+    setTenderlyProjectSlug,
+    setTenderlySimulationEnabled,
+    tenderlyAccessKey,
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    tenderlySimulationEnabled,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;
