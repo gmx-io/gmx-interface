@@ -20,6 +20,7 @@ import {
   useSubaccountNotificationState,
   useSubaccountPendingTx,
   useSubaccountState,
+  useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
@@ -511,6 +512,9 @@ const MainView = memo(() => {
 
   const subaccount = useSubaccount(null, 1);
 
+  const defaultExecutionFee = useSubaccountDefaultExecutionFee();
+  const isInsufficientFunds = useSubaccountInsufficientFunds(defaultExecutionFee);
+
   const handleWithdrawClick = useCallback(async () => {
     if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
@@ -591,6 +595,16 @@ const MainView = memo(() => {
     convertInputRef.current?.focus();
   }, []);
 
+  const withdrawalButton = (
+    <button
+      disabled={disabled || !subaccount}
+      onClick={handleWithdrawClick}
+      className="SubaccountModal-mini-button w-full flex-1"
+    >
+      {withdrawalLoading ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
+    </button>
+  );
+
   return (
     <div className="SubaccountModal-content">
       {
@@ -617,11 +631,23 @@ const MainView = memo(() => {
               </ExternalLink>
             </div>
           </div>
-          <div className="SubaccountModal-buttons">
-            <button disabled={disabled} onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
-              {withdrawalLoading ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
-            </button>
-            <button disabled={disabled} onClick={handleDeactivateClick} className="SubaccountModal-mini-button warning">
+          <div className="SubaccountModal-buttons gap-4">
+            {isInsufficientFunds ? (
+              <TooltipWithPortal
+                className="block flex-1"
+                handleClassName="block w-full !no-underline"
+                position="top"
+                handle={withdrawalButton}
+                content={<Trans>The amount left in the sub-account is not enough to cover network gas costs.</Trans>}
+              />
+            ) : (
+              withdrawalButton
+            )}
+            <button
+              disabled={disabled}
+              onClick={handleDeactivateClick}
+              className="SubaccountModal-mini-button warning flex-1"
+            >
               {notificationState === "deactivating" ? <Trans>Deactivating...</Trans> : <Trans>Deactivate</Trans>}
             </button>
           </div>
