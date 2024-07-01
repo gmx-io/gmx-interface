@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
@@ -678,8 +678,11 @@ function PositionItemOrdersLarge({
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
-  const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
-  const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
+  const [ordersErrorList, ordersWarningsList] = useMemo(() => {
+    const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
+    const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
+    return [ordersErrorList, ordersWarningsList];
+  }, [ordersWithErrors]);
 
   if (ordersWithErrors.length === 0) return null;
 
@@ -742,6 +745,10 @@ function PositionItemOrder({
 
   const errors = orderErrors.errors;
 
+  const handleEditClick = useCallback(() => {
+    setEditingOrderKey(order.key);
+  }, [order.key, setEditingOrderKey]);
+
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
@@ -758,9 +765,7 @@ function PositionItemOrder({
         <Button
           variant="secondary"
           className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-          onClick={() => {
-            setEditingOrderKey(order.key);
-          }}
+          onClick={handleEditClick}
         >
           <AiOutlineEdit fontSize={16} />
         </Button>

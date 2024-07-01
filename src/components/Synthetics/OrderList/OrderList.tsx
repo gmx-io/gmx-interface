@@ -1,5 +1,5 @@
 import { Plural, Trans, t } from "@lingui/macro";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
@@ -85,9 +85,12 @@ export function OrderList({
     orderTypesFilter: orderTypesFilter,
   });
 
-  const onlySomeOrdersSelected =
-    selectedOrdersKeys && selectedOrdersKeys.length > 0 && selectedOrdersKeys.length < orders.length;
-  const areAllOrdersSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
+  const [onlySomeOrdersSelected, areAllOrdersSelected] = useMemo(() => {
+    const onlySomeSelected =
+      selectedOrdersKeys && selectedOrdersKeys.length > 0 && selectedOrdersKeys.length < orders.length;
+    const allSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
+    return [onlySomeSelected, allSelected];
+  }, [selectedOrdersKeys, orders]);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   const orderRefs = useRef<{ [key: string]: HTMLElement | null }>({});
@@ -146,6 +149,14 @@ export function OrderList({
     });
   }
 
+  const handleSetRef = useCallback((el: HTMLElement | null, orderKey: string) => {
+    if (el === null) {
+      delete orderRefs.current[orderKey];
+    } else {
+      orderRefs.current[orderKey] = el;
+    }
+  }, []);
+
   return (
     <div ref={ref}>
       {isContainerSmall && orders.length === 0 && (
@@ -194,7 +205,7 @@ export function OrderList({
                   onCancelOrder={() => onCancelOrder(order.key)}
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
-                  setRef={(el) => (orderRefs.current[order.key] = el)}
+                  setRef={handleSetRef}
                 />
               ))}
             </div>

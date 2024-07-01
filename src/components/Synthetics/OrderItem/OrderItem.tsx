@@ -49,7 +49,7 @@ type Props = {
   hideActions?: boolean;
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
-  setRef?: (el: HTMLElement | null) => void;
+  setRef?: (el: HTMLElement | null, orderKey: string) => void;
 };
 
 export function OrderItem(p: Props) {
@@ -342,7 +342,7 @@ function OrderItemLarge({
   isSelected,
 }: {
   order: OrderInfo;
-  setRef?: (el: HTMLTableRowElement | null) => void;
+  setRef?: (el: HTMLElement | null, orderKey: string) => void;
   hideActions: boolean | undefined;
   showDebugValues: boolean | undefined;
   onToggleOrder: undefined | (() => void);
@@ -375,8 +375,15 @@ function OrderItemLarge({
     return { swapPathTokenSymbols, swapPathMarketFullNames };
   }, [isSwap, marketInfoData, order.initialCollateralToken, order.swapPath]);
 
+  const handleSetRef = useCallback(
+    (el: HTMLElement | null) => {
+      setRef && setRef(el, order.key);
+    },
+    [order.key, setRef]
+  );
+
   return (
-    <ExchangeTr ref={setRef}>
+    <ExchangeTr ref={handleSetRef}>
       {!hideActions && onToggleOrder && (
         <ExchangeTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
@@ -483,7 +490,7 @@ function OrderItemSmall({
   onCancelOrder: undefined | (() => void);
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
-  setRef?: (el: HTMLElement | null) => void;
+  setRef?: (el: HTMLElement | null, orderKey: string) => void;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -518,8 +525,15 @@ function OrderItemSmall({
     order.swapPath,
   ]);
 
+  const handleSetRef = useCallback(
+    (el: HTMLElement | null) => {
+      setRef && setRef(el, order.key);
+    },
+    [order.key, setRef]
+  );
+
   return (
-    <div className="App-card" ref={setRef}>
+    <div className="App-card" ref={handleSetRef}>
       <div>
         <div className="flex cursor-pointer items-center" onClick={onToggleOrder}>
           {hideActions ? (
