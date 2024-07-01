@@ -83,7 +83,7 @@ function useExcludedLiquidityMarketMap(
     }
   }
 
-  const excludedBalancesMulticall = useMulticall(chainId, "useExcludedLiquidity", {
+  const excludedBalancesMulticall = useMulticall(chainId, "useExcludedLiquidityMarketMap", {
     key: excludeHolders ? [excludeHolders.join(","), marketAddresses.join(",")] : null,
     request,
     parseResponse: (res) => {
