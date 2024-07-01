@@ -245,7 +245,9 @@ export const FALLBACK_PROVIDERS = {
     ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
     : [
         // "https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b" doesn't work
-        "https://api.avax.network/ext/bc/C/rpc",
+        "https://rpc.ankr.com/avalanche",
+        "https://avalanche-evm.publicnode.com",
+        "https://avalanche.blockpi.network/v1/rpc/public",
       ],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
