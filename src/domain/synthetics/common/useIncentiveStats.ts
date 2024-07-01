@@ -32,6 +32,7 @@ export const useLiquidityProvidersIncentives = (chainId: number) => {
       period: lpStats.period,
       rewardsPerMarket: mapValues(lpStats.rewardsPerMarket, (x) => BigInt(x)),
       token: lpStats.token,
+      excludeHolders: lpStats.excludeHolders,
     };
   }, [lpStats]);
 };
