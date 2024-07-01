@@ -1,7 +1,13 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { NavigationButton } from "components/NavigationButton/NavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import {
+  ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
+  ONE_CLICK_TRADING_OFFER_HIDDEN,
+  ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
+} from "config/localStorage";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
@@ -10,17 +16,13 @@ import {
   useSubaccountModalOpen,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
+import { TradeFlags } from "domain/synthetics/trade";
+import { isTouchDevice } from "lib/browser";
 import { useChainId } from "lib/chains";
-import cx from "classnames";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
+
 import "./SubaccountNavigationButton.scss";
-import {
-  ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
-  ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
-  ONE_CLICK_TRADING_OFFER_HIDDEN,
-} from "config/localStorage";
-import { TradeFlags } from "domain/synthetics/trade";
 
 export const SubaccountNavigationButton = memo(
   ({
@@ -157,7 +159,3 @@ export const SubaccountNavigationButton = memo(
     );
   }
 );
-
-function isTouchDevice() {
-  return "ontouchstart" in window;
-}

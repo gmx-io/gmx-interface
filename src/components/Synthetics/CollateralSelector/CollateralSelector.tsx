@@ -17,6 +17,8 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
+import { useTradeboxMarketInfo, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { getCollateralInHintText } from "../TradeBox/TradeBoxRows/useCollateralInTooltipContent";
 import "./CollateralSelector.scss";
 
 type Props = {
@@ -126,19 +128,28 @@ function CollateralListItemDesktop({
 
 function CollateralSelectorMobile(props: Props) {
   const close = useSelectorClose();
+  const marketInfo = useTradeboxMarketInfo();
+  const tradeType = useTradeboxTradeType();
 
   return (
     <SelectorBaseMobileList>
-      {props.options?.map((option) => (
-        <CollateralListItemMobile
-          key={option.address}
-          onSelect={() => {
-            props.onSelect(option.address);
-            close();
-          }}
-          tokenData={option}
-        />
-      ))}
+      {props.options?.map((option) => {
+        const description = marketInfo ? getCollateralInHintText(tradeType, option, marketInfo) : "";
+
+        return (
+          <>
+            <CollateralListItemMobile
+              key={option.address}
+              onSelect={() => {
+                props.onSelect(option.address);
+                close();
+              }}
+              tokenData={option}
+            />
+            <p className="mb-8 opacity-50 last:mb-0">{description}</p>
+          </>
+        );
+      })}
       {props.disabledOptions?.map((option) => (
         <CollateralListItemMobile key={option.address} onSelect={noop} tokenData={option} disabled />
       ))}

@@ -421,6 +421,10 @@ button.App-connect-wallet:hover {
   }
 }
 
+.App-card-divider + .App-card-divider {
+  display: none
+}
+
 .line-divider {
   height: 1px;
   background: var(--color-slate-700);

@@ -334,6 +334,10 @@ msgstr ""
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRowsControls.tsx
+msgid "Limit / Take-Profit / Stop-Loss"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
@@ -569,10 +573,6 @@ msgstr ""
 #: src/components/SearchInput/SearchInput.tsx
 msgid "Search Token"
 msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "There are not enough funds in your subaccount to cover withdrawing gas costs.<0/><1/>Approximate additional funds to<2/>top-up: {0}"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -881,10 +881,6 @@ msgstr ""
 msgid "Staked Tokens"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Max pool amount exceeded LOL"
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
 msgstr ""
@@ -944,10 +940,6 @@ msgstr ""
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr ""
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition, and there must be sufficient liquidity for the order to be executed."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1301,6 +1293,10 @@ msgstr ""
 msgid "Select Positions"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -1585,10 +1581,6 @@ msgstr ""
 msgid "Accrued Negative Funding Fee"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
 msgstr ""
@@ -1730,6 +1722,7 @@ msgid "GM Pools"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
 
@@ -1915,6 +1908,10 @@ msgstr ""
 msgid "{0} Approved!"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRowsControls.tsx
+msgid "Advanced display"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr ""
@@ -1939,6 +1936,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Collateral Spread"
 msgstr ""
 
@@ -2075,6 +2073,7 @@ msgid "{existingTriggerOrderLength, plural, one {You have an active trigger orde
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
 msgstr ""
 
@@ -2372,6 +2371,10 @@ msgstr ""
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Invalid price, see warning"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be short {indexSymbol} only from your short position."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3054,10 +3057,6 @@ msgstr ""
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact, once the limit price is hit."
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -3068,6 +3067,7 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -3247,10 +3247,6 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Exit Price (Exit)"
-#~ msgstr ""
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
 msgstr ""
@@ -3311,16 +3307,16 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees {rebatedTextWithSparkle} and Price Impact"
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+msgid "Enable"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3376,6 +3372,7 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
@@ -3411,7 +3408,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr ""
 
@@ -3429,6 +3426,10 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3501,10 +3502,6 @@ msgstr ""
 msgid "Net Rate / 1h"
 msgstr ""
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be higher than the limit price."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
@@ -3523,7 +3520,7 @@ msgstr ""
 msgid "NA"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
@@ -4144,11 +4141,15 @@ msgstr ""
 msgid "GMX Weekly Updates"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be long {indexSymbol} only from your long position."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
 
@@ -4184,6 +4185,7 @@ msgid "Yield simulator for GMX"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
 msgstr ""
 
@@ -4231,6 +4233,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Available Liquidity"
 msgstr ""
 
@@ -4334,6 +4337,14 @@ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order updated!"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
 msgstr ""
 
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
@@ -4446,6 +4457,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+msgid "There are insufficient funds in your subaccount for One-Click Trading"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -4636,6 +4651,7 @@ msgid "Top PnL (%)"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
@@ -4827,6 +4843,7 @@ msgid "Begin Transfer"
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
@@ -5028,10 +5045,6 @@ msgstr ""
 msgid "Protocol Tokens"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Position Price Impact"
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr ""
@@ -5094,7 +5107,7 @@ msgstr ""
 msgid "Stablecoin Percentage"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 msgstr ""
 
@@ -5324,6 +5337,10 @@ msgstr ""
 msgid "Claim esGMX"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+msgid "Re-authorize"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
@@ -5509,6 +5526,7 @@ msgid "Max Out"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
 msgstr ""
 
@@ -5736,6 +5754,7 @@ msgid "{0} and {1} can be used to buy GM for this market up to the specified buy
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
@@ -6070,10 +6089,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees (Rebated) and Price Impact"
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7006,6 +7021,7 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading"
 msgstr ""
 
@@ -7137,6 +7153,10 @@ msgstr ""
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+msgid "Top-Up"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Ask Price (Exit)"
 msgstr ""
@@ -7147,6 +7167,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -7526,6 +7550,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr ""
 
@@ -7700,10 +7725,6 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr ""
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be lower than the limit price."
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim Rewards"

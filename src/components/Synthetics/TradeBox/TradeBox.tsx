@@ -102,23 +102,28 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
+import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
 import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
+import { bigMath } from "lib/bigmath";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
-import { useLocalizedMap } from "lib/i18n";
 import "./TradeBox.scss";
-import { bigMath } from "lib/bigmath";
+import { AdvancedDisplayRows } from "./TradeBoxRows/AdvancedDisplayRows";
+import { TradeBoxAdvancedRowsControls } from "./TradeBoxRows/AdvancedRowsControls";
+import { LimitAndTPSLRows } from "./TradeBoxRows/LimitAndTPSLRows";
+import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 
 export type Props = {
   allowedSlippage: number;
@@ -1375,6 +1380,18 @@ export function TradeBox(p: Props) {
 
             <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
               <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
+              <ExchangeInfo.Group key="1ct">
+                <TradeBoxOneClickTrading />
+              </ExchangeInfo.Group>
+              <ExchangeInfo.Group key="advanced">
+                <TradeBoxAdvancedRowsControls />
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
+                <AdvancedDisplayRows />
+              </ExchangeInfo.Group>
+
+              <LimitAndTPSLRows />
 
               <ExchangeInfo.Group>{renderLeverageInfo()}</ExchangeInfo.Group>
 

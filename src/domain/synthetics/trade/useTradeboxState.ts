@@ -36,6 +36,11 @@ type TradeOptions = {
 
 export type TradeboxState = ReturnType<typeof useTradeboxState>;
 
+export interface TradeboxAdvancedOptions {
+  advancedDisplay: boolean;
+  limitOrTPSL: boolean;
+}
+
 type StoredTradeOptions = {
   tradeType: TradeType;
   tradeMode: TradeMode;
@@ -56,6 +61,7 @@ type StoredTradeOptions = {
       short?: string;
     };
   };
+  advanced?: TradeboxAdvancedOptions;
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -64,6 +70,10 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
   tokens: {},
   markets: {},
   collaterals: {},
+  advanced: {
+    advancedDisplay: false,
+    limitOrTPSL: false,
+  },
 };
 
 export function useTradeboxState(
@@ -206,6 +216,10 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+
+  const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
+    storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
+  );
 
   const { swapTokens } = availableTokensOptions;
 
@@ -530,6 +544,15 @@ export function useTradeboxState(
     [fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
   );
 
+  useEffect(() => {
+    setStoredOptionsOnChain((oldState) => {
+      return {
+        ...oldState,
+        advanced: advancedOptions,
+      };
+    });
+  }, [advancedOptions, setStoredOptionsOnChain]);
+
   return {
     tradeType,
     tradeMode,
@@ -579,6 +602,8 @@ export function useTradeboxState(
     setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
+    advancedOptions,
+    setAdvancedOptions,
   };
 }
 

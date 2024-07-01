@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import React, { useMemo } from "react";
 
 import {
@@ -16,7 +16,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { CollateralSelector } from "../CollateralSelector/CollateralSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
+import { useCollateralInTooltipContent } from "./useCollateralInTooltipContent";
 
 export type Props = {
   selectedMarketAddress?: string;
@@ -31,11 +33,16 @@ export function CollateralSelectorRow(p: Props) {
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
   const warnings = useCollateralWarnings();
+  const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
     <>
       <ExchangeInfoRow
-        label={t`Collateral In`}
+        label={
+          <TooltipWithPortal position="top-start" renderContent={() => <div>{collateralInTooltipContent}</div>}>
+            <Trans>Collateral In</Trans>
+          </TooltipWithPortal>
+        }
         className="SwapBox-info-row"
         value={
           <CollateralSelector
