@@ -21,6 +21,7 @@ import "./TradeFeesRow.scss";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { getIncentivesV2Url } from "config/links";
 import sparkleIcon from "img/sparkle.svg";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
 type Props = {
   totalFees?: FeeItem;
@@ -53,6 +54,7 @@ export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
   const tradingIncentives = useTradingIncentives(tokensData);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
@@ -309,22 +311,20 @@ export function TradeFeesRow(p: Props) {
         </span>
       );
 
-      return (
-        <Trans>Fees {rebatedTextWithSparkle}</Trans>
-      );
+      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
     } else {
       return t`Fees`;
     }
   }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives || !rebateIsApplicable) {
+    if (!incentivesTokenTitle || !rebateIsApplicable) {
       return null;
     }
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
+        The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -333,7 +333,7 @@ export function TradeFeesRow(p: Props) {
         </span>
       </Trans>
     );
-  }, [chainId, rebateIsApplicable, tradingIncentives]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;

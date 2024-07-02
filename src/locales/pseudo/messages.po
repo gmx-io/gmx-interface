@@ -620,6 +620,10 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr ""
@@ -2298,10 +2302,6 @@ msgstr ""
 msgid "Couldn't find a swap route with enough liquidity"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum GM Pools are incentivized."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Long"
@@ -2372,10 +2372,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum and Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -4022,6 +4018,10 @@ msgstr ""
 msgid "Switch to:"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "<0>Arbitrum</0> and <1>Avalanche</1> GM Pools are incentivized."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} limit order for"
 msgstr ""
@@ -5296,10 +5296,6 @@ msgstr ""
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche GM Pools are incentivized."
-msgstr ""
-
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
@@ -5986,6 +5982,10 @@ msgstr ""
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "<0>Arbitrum</0> GM Pools are incentivized."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr ""
@@ -6201,10 +6201,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staking..."
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -6539,10 +6535,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr ""
@@ -6708,6 +6700,10 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
+msgstr ""
+
+#: src/config/events.tsx
+msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6897,6 +6893,10 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
+msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -7119,6 +7119,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 30 days"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "<0>Avalanche</0> GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx

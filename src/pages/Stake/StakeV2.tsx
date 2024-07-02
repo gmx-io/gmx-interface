@@ -88,6 +88,7 @@ import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 import { getIncentivesV2Url } from "config/links";
+import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
 const { ZeroAddress } = ethers;
 
@@ -1287,15 +1288,7 @@ export default function StakeV2() {
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
 
-  const incentivesToken = useMemo(() => {
-    if (incentiveStats?.lp?.isActive) {
-      return tokensData?.[incentiveStats.lp.token]?.symbol;
-    } else if (incentiveStats?.trading?.isActive) {
-      return tokensData?.[incentiveStats.trading.token ?? ""]?.symbol;
-    }
-
-    return "";
-  }, [incentiveStats?.lp, incentiveStats?.trading, tokensData]);
+  const incentivesToken = useAnyAirdroppedTokenTitle();
 
   const [, setPendingTxns] = usePendingTxns();
 

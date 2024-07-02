@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,8 @@ import { mergeWith } from "lodash";
 import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { ARBITRUM_INCENTIVES_V2_URL, getIncentivesV2Url } from "config/links";
+import { ARBITRUM_INCENTIVES_V2_URL, AVALANCHE_INCENTIVES_V2_URL } from "config/links";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -101,11 +102,24 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
   const poolsIncentivizedLabel = useMemo(() => {
     if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
-      return t`Arbitrum and Avalanche GM Pools are incentivized.`;
+      return (
+        <Trans>
+          <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink> and{" "}
+          <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink> GM Pools are incentivized.
+        </Trans>
+      );
     } else if (arbitrumIncentiveState?.lp?.isActive) {
-      return t`Arbitrum GM Pools are incentivized.`;
+      return (
+        <Trans>
+          <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink> GM Pools are incentivized.
+        </Trans>
+      );
     } else if (avalancheIncentiveState?.lp?.isActive) {
-      return t`Avalanche GM Pools are incentivized.`;
+      return (
+        <Trans>
+          <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink> GM Pools are incentivized.
+        </Trans>
+      );
     } else {
       return null;
     }
@@ -162,9 +176,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
           </div>
-          {poolsIncentivizedLabel && (
-            <BannerButton className="mt-15" label={poolsIncentivizedLabel} link={getIncentivesV2Url(chainId)} />
-          )}
+          {poolsIncentivizedLabel && <div className="mt-15">{poolsIncentivizedLabel}</div>}
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
             <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
