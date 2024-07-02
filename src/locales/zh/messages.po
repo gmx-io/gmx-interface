@@ -133,11 +133,15 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "种类"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Close order"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -486,7 +490,6 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "退出价格"
 
@@ -527,10 +530,6 @@ msgstr "点击[创建钱包]开始使用您的Web3钱包"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel submitted"
 msgstr "送出取消"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
-msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
@@ -598,6 +597,10 @@ msgstr ""
 msgid "Average position size."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
@@ -611,6 +614,10 @@ msgstr "市场"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Exit)"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -740,6 +747,7 @@ msgid "Decentralized Money Market"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr ""
@@ -851,6 +859,7 @@ msgstr "质押的资产总额"
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "推荐代码不能超过{MAX_REFERRAL_CODE_LENGTH}符号"
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Trigger Orders"
 msgstr "触发订单"
@@ -936,6 +945,10 @@ msgstr "抵押品"
 msgid "Base APY"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition, and there must be sufficient liquidity for the order to be executed."
+#~ msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
@@ -999,6 +1012,7 @@ msgstr "要求将存款存入 {0} {longOrShortText}"
 msgid "FUNDING FEE"
 msgstr ""
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
 msgstr ""
@@ -1319,7 +1333,6 @@ msgid "GMX Proposals Voting page"
 msgstr "GMX提案投票页面"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and Price Impact"
 msgstr ""
 
@@ -1366,7 +1379,17 @@ msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -1563,8 +1586,8 @@ msgid "Accrued Negative Funding Fee"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-msgstr ""
+#~ msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
@@ -1587,11 +1610,6 @@ msgstr "esGMX（IOU）代币的地址是{esGmxIouAddress}"
 msgid "GMX Alerts"
 msgstr ""
 
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "搜索操作"
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
@@ -1608,6 +1626,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "为了减少费用，请选择不同的资产来支付"
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
@@ -1638,6 +1660,7 @@ msgstr ""
 msgid "Vault Capacity for your Account:"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
@@ -1748,6 +1771,8 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -1796,10 +1821,6 @@ msgstr "在Avalanche上授权GLP"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
 msgstr "没有esGMX可供索取"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
@@ -1912,10 +1933,6 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
-msgstr ""
-
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "总交易量"
@@ -1990,6 +2007,7 @@ msgstr ""
 msgid "LIQUIDITY"
 msgstr "流动性"
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -2007,10 +2025,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "您有一个现有仓位，抵押品为{0}。此操作不适用于该仓位"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "None"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -2260,6 +2274,10 @@ msgstr "{fromText} 到 {toMinText}"
 msgid "Price above Liq. Price"
 msgstr "价格高于流动资金价格"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0}池超量，请尝试不同的代币"
@@ -2456,6 +2474,10 @@ msgstr ""
 msgid "Create Stop-Loss Order"
 msgstr "创建止损订单"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Select Market"
 msgstr "选择市场"
@@ -2495,6 +2517,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:"
+
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Open Positions with Orders"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
@@ -2690,6 +2716,10 @@ msgstr "质押总额"
 msgid "Network Fee"
 msgstr "网络费"
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2849,6 +2879,11 @@ msgstr ""
 msgid "Liquidated"
 msgstr "清偿完毕"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The ask price is used for opening longs and closing shorts."
+msgstr ""
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -2858,6 +2893,10 @@ msgstr "选择语言"
 msgid "Create Take-Profit Order"
 msgstr "创建止盈订单"
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Direction"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
@@ -2866,6 +2905,7 @@ msgstr ""
 msgid "Collateral value may differ due to different Price Impact at the time of execution."
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2903,10 +2943,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3017,6 +3053,10 @@ msgstr ""
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+#~ msgid "Expected execution price for the order, including the current price impact, once the limit price is hit."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -3207,6 +3247,10 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX目前没有积极寻找新员工。但是，如果你认为你能为项目做出贡献，请发电子邮件到<0>jobs@gmx.io</0>"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Exit Price (Exit)"
+#~ msgstr ""
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
 msgstr ""
@@ -3268,8 +3312,8 @@ msgid "Pending {0} approval"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees {rebatedTextWithSparkle} and Price Impact"
-msgstr ""
+#~ msgid "Fees {rebatedTextWithSparkle} and Price Impact"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -3396,6 +3440,7 @@ msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3456,6 +3501,10 @@ msgstr ""
 msgid "Net Rate / 1h"
 msgstr "净率 / 1小时"
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be higher than the limit price."
+#~ msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
@@ -3466,7 +3515,6 @@ msgid "Structured Products"
 msgstr "结构化产品"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -3518,7 +3566,6 @@ msgstr "订单的触发价格"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3726,6 +3773,7 @@ msgid "Capital Used"
 msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3884,7 +3932,6 @@ msgid "Execute Stop-Loss Order"
 msgstr "执行止损订单"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "订单"
@@ -4063,7 +4110,6 @@ msgstr "已减少"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -4242,6 +4288,10 @@ msgstr ""
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "交易送出!"
@@ -4418,6 +4468,11 @@ msgstr "交易"
 msgid "Telegram Groups"
 msgstr "电报群"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr ""
@@ -4458,8 +4513,8 @@ msgstr "你的订单中任何{0}/USD市场池的流动性不足"
 msgid "You have not traded during the selected period."
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -4581,6 +4636,7 @@ msgid "Top PnL (%)"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
@@ -4814,7 +4870,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
@@ -4822,6 +4877,10 @@ msgstr "取消"
 
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Entry)"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -4941,7 +5000,6 @@ msgstr "做多净率 / 1小时"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "編輯"
 
@@ -4971,8 +5029,8 @@ msgid "Protocol Tokens"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Price Impact"
-msgstr ""
+#~ msgid "Position Price Impact"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5196,6 +5254,10 @@ msgstr ""
 msgid "Buy order executed"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "最小订单:10美元"
@@ -5271,8 +5333,8 @@ msgid "Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
-#~ msgstr ""
+msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
+msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -5349,6 +5411,10 @@ msgstr "高 USDG 滑点，继续做多"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet total"
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Acceptable price does not apply to stop-loss orders, as they will be executed regardless of any price impact."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -5632,6 +5698,10 @@ msgstr "公司"
 msgid "Fees exceed amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}购买GLP</2>，并<3>用{2}交换</3>其他代币"
@@ -5790,11 +5860,8 @@ msgstr "无法执行存入 {0} {longOrShortText}"
 msgid "Deposit"
 msgstr "存取"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "可接受价格"
@@ -5811,6 +5878,10 @@ msgstr ""
 msgid "Enabling Leverage..."
 msgstr "启用杠杆功能中..."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+msgstr ""
+
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
 msgstr ""
@@ -5819,8 +5890,8 @@ msgstr ""
 msgid "Trade Errors"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -5972,6 +6043,10 @@ msgstr " {0}余额不足"
 msgid "limit price"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
 msgstr ""
@@ -6023,6 +6098,7 @@ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit order"
 msgstr "编辑订单"
 
@@ -6244,11 +6320,6 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "搜索市场"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "送出领取！<0>查看状态</0>"
@@ -6276,10 +6347,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "要求结算资金费用"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
-msgstr "此订单的触发价格是基于交易费用和价格影响，以确保您在订单执行时至少收到{formattedMinReceive}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -6419,7 +6486,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6577,7 +6643,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -6684,10 +6749,6 @@ msgstr "订单规模大于头寸，只有在头寸增加的情况下才会执行
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "购买"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
-msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
@@ -6804,7 +6865,7 @@ msgid "Image generation error, please refresh and try again."
 msgstr "图片生成错误，请刷新并重试"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price Impact Rebates"
 msgstr ""
 
@@ -6919,12 +6980,9 @@ msgstr "归属的GLP未被撤回"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
@@ -6963,6 +7021,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "你有{0}个esGMX (IOU) 代币"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There is currently a high swap price impact for the order swap path."
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below highest Limit Price."
@@ -7075,6 +7137,10 @@ msgstr ""
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Exit)"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -7095,8 +7161,7 @@ msgstr ""
 msgid "Last 30 days"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
 msgstr "执行价格"
@@ -7146,6 +7211,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -7225,6 +7291,10 @@ msgstr ""
 msgid "No open positions at GMX currently"
 msgstr "目前在GMX没有未结头寸"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Entry)"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr ""
@@ -7257,10 +7327,6 @@ msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}"
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -7303,14 +7369,11 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -7336,6 +7399,10 @@ msgstr "24小时数量"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "总统计表"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit sent."
@@ -7516,15 +7583,24 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Limit"
 msgstr "限制"
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The bid price is used for opening shorts and closing longs."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -7583,6 +7659,7 @@ msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""
@@ -7623,6 +7700,10 @@ msgstr "止损订单失败"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr "完成账户转移"
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be lower than the limit price."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim Rewards"

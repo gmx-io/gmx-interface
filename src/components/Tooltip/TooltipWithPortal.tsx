@@ -28,6 +28,7 @@ type Props = PropsWithChildren<{
   trigger?: string;
   className?: string;
   portalClassName?: string;
+  popupClassName?: string;
   disableHandleStyle?: boolean;
   handleClassName?: string;
   isHandlerDisabled?: boolean;
@@ -55,6 +56,7 @@ export default function TooltipWithPortal({
   trigger = "hover",
   className,
   portalClassName,
+  popupClassName,
   disableHandleStyle,
   handleClassName,
   isHandlerDisabled,
@@ -206,7 +208,11 @@ export default function TooltipWithPortal({
       {visible && coords.left && !disabled && (
         <Portal>
           <div style={portalStyle} className={portalClassName}>
-            <div ref={popupRef} className={cx(["Tooltip-popup z-index-1001", computedPlacement])} style={popupStyle}>
+            <div
+              ref={popupRef}
+              className={cx(["Tooltip-popup z-index-1001", computedPlacement, popupClassName])}
+              style={popupStyle}
+            >
               {content ?? renderContent?.()}
             </div>
           </div>

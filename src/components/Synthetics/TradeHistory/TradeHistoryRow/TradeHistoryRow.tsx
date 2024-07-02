@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -20,7 +20,8 @@ import { formatSwapMessage } from "./utils/swap";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
@@ -162,15 +163,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
 
   const marketTooltipHandle = useMemo(
     () =>
-      msg.pathTokenSymbols ? (
-        <div className="cursor-help leading-2">
-          {msg.pathTokenSymbols!.map((symbol, index, arr) => (
-            <div key={symbol} className="inline-block border-b border-dashed border-b-gray-400 leading-base">
-              <TokenWithIcon symbol={symbol} displaySize={20} />
-              {index < arr.length - 1 && <span className="mx-5">→</span>}
-            </div>
-          ))}
-        </div>
+      msg.swapFromTokenSymbol ? (
+        <SwapMarketLabel bordered fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} />
       ) : (
         <div className="cursor-help">
           <MarketWithDirectionLabel
@@ -181,7 +175,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </div>
       ),
-    [msg.indexName, msg.indexTokenSymbol, msg.pathTokenSymbols, msg.isLong]
+    [msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.swapFromTokenSymbol, msg.swapToTokenSymbol]
   );
 
   return (
@@ -241,7 +235,17 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderMarketContent}
           />
         </td>
-        <td>{msg.size}</td>
+        <td>
+          {msg.swapFromTokenSymbol ? (
+            <Trans>
+              {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} importSize={24} />
+              <span> to </span>
+              {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} importSize={24} />
+            </Trans>
+          ) : (
+            msg.size
+          )}
+        </td>
         <td>
           <TooltipWithPortal
             portalClassName="TradeHistoryRow-price-tooltip-portal"

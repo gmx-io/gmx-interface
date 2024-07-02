@@ -46,10 +46,10 @@ export const formatSwapMessage = (
   const fromText = formatTokenAmount(amountIn, tokenIn.decimals, tokenIn.symbol, {
     useCommas: true,
   });
-
-  const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+  const fromAmountText = formatTokenAmount(amountIn, tokenIn.decimals, undefined, {
     useCommas: true,
   });
+
   const toMinText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, tokenOut?.symbol, {
     useCommas: true,
   });
@@ -89,33 +89,9 @@ export const formatSwapMessage = (
     adapt(tokensMinRatio?.largestToken)
   );
 
-  let pathTokenSymbolsLoading = false;
-  const pathTokenSymbols: string[] | undefined =
-    marketsInfoData &&
-    tradeAction.swapPath
-      ?.map((marketAddress) => marketsInfoData?.[marketAddress])
-      .reduce(
-        (acc: TokenData[], marketInfo: MarketInfo | undefined) => {
-          if (!marketInfo || pathTokenSymbolsLoading) {
-            pathTokenSymbolsLoading = true;
-            return [];
-          }
+  const pathTokenSymbols = getSwapPathTokenSymbols(marketsInfoData, tokenIn, tradeAction.swapPath!);
 
-          const last = acc[acc.length - 1];
-
-          if (last.address === marketInfo.longToken.address) {
-            acc.push(marketInfo.shortToken);
-          } else if (last.address === marketInfo.shortToken.address) {
-            acc.push(marketInfo.longToken);
-          }
-
-          return acc;
-        },
-        [tradeAction.initialCollateralToken] as TokenData[]
-      )
-      .map((token: TokenData) => token?.symbol);
-
-  const market = !pathTokenSymbols || pathTokenSymbolsLoading ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
+  const market = !pathTokenSymbols ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
 
   const fullMarket = !marketsInfoData
     ? ELLIPSIS
@@ -124,32 +100,10 @@ export const formatSwapMessage = (
         .map((marketAddress) => marketsInfoData?.[marketAddress]?.name ?? ELLIPSIS)
         .join(ARROW_SEPARATOR);
 
-  const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
-    ? undefined
-    : tradeAction.swapPath?.map((marketAddress) => {
-        const marketInfo = marketsInfoData[marketAddress];
-
-        if (!marketInfo) {
-          return {
-            indexName: ELLIPSIS,
-            poolName: ELLIPSIS,
-          };
-        }
-
-        const indexName = getMarketIndexName({
-          indexToken: marketInfo.indexToken,
-          isSpotOnly: marketInfo.isSpotOnly,
-        });
-        const poolName = getMarketPoolName({
-          longToken: marketInfo.longToken,
-          shortToken: marketInfo.shortToken,
-        });
-
-        return {
-          indexName: indexName,
-          poolName: poolName,
-        };
-      });
+  const fullMarketNames: RowDetails["fullMarketNames"] = getSwapPathMarketFullNames(
+    marketsInfoData,
+    tradeAction.swapPath
+  );
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
@@ -163,20 +117,26 @@ export const formatSwapMessage = (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)
   ) {
-    const formattedMinReceive = formatTokenAmount(tradeAction.minOutputAmount!, tokenOut?.decimals, tokenOut?.symbol, {
+    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
       useCommas: true,
     });
-
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(
         t`Acceptable price for the order.`,
         "",
-        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${formattedMinReceive} on order execution.`
+        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${toMinText} on order execution.`
       ),
       size: t`${fromText} to ${toMinText}`,
+      swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted) {
+    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
     result = {
       price: executionRate,
       priceComment: lines(
@@ -185,6 +145,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -202,6 +163,9 @@ export const formatSwapMessage = (
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
+    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
 
     result = {
       actionComment:
@@ -217,18 +181,30 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
       isActionError: true,
     };
   } else if (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
   ) {
+    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(t`Acceptable price for the order.`),
       size: t`${fromText} to ${toMinText}`,
+      swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted) {
+    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
+
     result = {
       price: executionRate,
       priceComment: lines(
@@ -237,6 +213,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -254,6 +231,9 @@ export const formatSwapMessage = (
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
+    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
+      useCommas: true,
+    });
 
     result = {
       actionComment:
@@ -269,6 +249,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: toExecutionAmountText,
       isActionError: true,
     };
   }
@@ -282,7 +263,84 @@ export const formatSwapMessage = (
     acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,
-    pathTokenSymbols,
+    swapFromTokenSymbol: tokenIn.symbol,
+    swapToTokenSymbol: tokenOut.symbol,
+    swapFromTokenAmount: fromAmountText,
     ...result!,
   };
 };
+
+export function getSwapPathMarketFullNames(
+  marketsInfoData: MarketsInfoData | undefined,
+  swapPath: string[]
+): { indexName: string; poolName: string }[] | undefined {
+  if (!marketsInfoData) {
+    return undefined;
+  }
+
+  return swapPath.map((marketAddress) => {
+    const marketInfo = marketsInfoData[marketAddress];
+
+    if (!marketInfo) {
+      return {
+        indexName: ELLIPSIS,
+        poolName: ELLIPSIS,
+      };
+    }
+
+    const indexName = getMarketIndexName({
+      indexToken: marketInfo.indexToken,
+      isSpotOnly: marketInfo.isSpotOnly,
+    });
+    const poolName = getMarketPoolName({
+      longToken: marketInfo.longToken,
+      shortToken: marketInfo.shortToken,
+    });
+
+    return {
+      indexName: indexName,
+      poolName: poolName,
+    };
+  });
+}
+
+export function getSwapPathTokenSymbols(
+  marketsInfoData: MarketsInfoData | undefined,
+  initialCollateralToken: TokenData,
+  swapPath: string[]
+): string[] | undefined {
+  if (!marketsInfoData || !swapPath) {
+    return undefined;
+  }
+
+  let pathTokenSymbolsLoading = false;
+
+  const pathTokenSymbols: string[] = swapPath
+    .map((marketAddress) => marketsInfoData[marketAddress])
+    .reduce(
+      (acc: TokenData[], marketInfo: MarketInfo | undefined) => {
+        if (!marketInfo || pathTokenSymbolsLoading) {
+          pathTokenSymbolsLoading = true;
+          return [];
+        }
+
+        const last = acc[acc.length - 1];
+
+        if (last.address === marketInfo.longToken.address) {
+          acc.push(marketInfo.shortToken);
+        } else if (last.address === marketInfo.shortToken.address) {
+          acc.push(marketInfo.longToken);
+        }
+
+        return acc;
+      },
+      [initialCollateralToken] as TokenData[]
+    )
+    .map((token: TokenData) => token?.symbol);
+
+  if (pathTokenSymbolsLoading) {
+    return undefined;
+  }
+
+  return pathTokenSymbols;
+}

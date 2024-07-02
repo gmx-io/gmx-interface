@@ -3,12 +3,12 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
-import { ClaimType } from "domain/synthetics/claimHistory/types";
+import { OrderType } from "domain/synthetics/orders/types";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 
 type Item = {
-  data: string;
+  data: number;
   text: MessageDescriptor;
 };
 
@@ -21,44 +21,40 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Funding Fees`,
+    groupName: msg`Trigger Orders`,
     items: [
       {
-        data: ClaimType.SettleFundingFeeExecuted,
-        text: msg`Settled Funding Fees`,
+        data: OrderType.LimitIncrease,
+        text: msg`Limit`,
       },
       {
-        data: ClaimType.ClaimFunding,
-        text: msg`Claim Funding Fees`,
+        data: OrderType.LimitDecrease,
+        text: msg`Take-Profit`,
       },
       {
-        data: ClaimType.SettleFundingFeeCancelled,
-        text: msg`Failed Settlement of Funding Fees`,
-      },
-      {
-        data: ClaimType.SettleFundingFeeCreated,
-        text: msg`Request Settlement of Funding Fees`,
+        data: OrderType.StopLossDecrease,
+        text: msg`Stop-Loss`,
       },
     ],
   },
-
   {
-    groupName: msg`Price Impact`,
+    groupName: msg`Swaps`,
     items: [
       {
-        data: ClaimType.ClaimPriceImpact,
-        text: msg`Claim Price Impact Rebates`,
+        data: OrderType.LimitSwap,
+        text: msg`Swap`,
       },
     ],
   },
 ];
 
 type Props = {
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: OrderType[];
+  onChange: (value: OrderType[]) => void;
+  asButton?: boolean;
 };
 
-export function ActionFilter({ value, onChange }: Props) {
+export function OrderTypeFilter({ value, onChange, asButton }: Props) {
   const { i18n } = useLingui();
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
@@ -75,14 +71,15 @@ export function ActionFilter({ value, onChange }: Props) {
   }, [i18n]);
 
   return (
-    <TableOptionsFilter<string>
+    <TableOptionsFilter<OrderType>
       multiple
-      label={t`Action`}
-      placeholder={t`Search Action`}
+      label={t`Type`}
+      placeholder={t`Search Type`}
       value={value}
       options={localizedGroups}
       onChange={onChange}
       popupPlacement="bottom-start"
+      asButton={asButton}
     />
   );
 }

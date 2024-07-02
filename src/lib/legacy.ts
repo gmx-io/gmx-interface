@@ -357,7 +357,7 @@ export function getNextFromAmount(
   toTokenAddress,
   infoTokens,
   toTokenPriceUsd,
-  ratio: bigint,
+  ratio: bigint | undefined,
   usdgSupply,
   totalTokenWeights,
   forSwap
@@ -498,7 +498,7 @@ export function getNextToAmount(
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
   let toAmountBasedOnRatio = 0n;
-  if (ratio !== undefined && ratio !== 0n) {
+  if (typeof ratio === "bigint" && ratio !== 0n) {
     toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
 

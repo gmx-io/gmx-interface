@@ -29,6 +29,7 @@ export function useRealChainIdWarning() {
         toastId: INVALID_NETWORK_TOAST_ID,
         autoClose: false,
         closeButton: false,
+        delay: 2000,
       });
     } else if ((isConnectedToChainId || !isConnected) && isActive) {
       toast.dismiss(INVALID_NETWORK_TOAST_ID);

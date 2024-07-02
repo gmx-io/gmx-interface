@@ -649,21 +649,6 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   };
 }
 
-export function getExecutionPriceForDecrease(
-  triggerPrice: bigint,
-  priceImpactUsd: bigint,
-  sizeDeltaUsd: bigint,
-  isLong: boolean
-) {
-  if (sizeDeltaUsd == 0n) {
-    return null;
-  }
-
-  const adjustedPriceImpactUsd = isLong ? priceImpactUsd : -priceImpactUsd;
-  const adjustment = bigMath.mulDiv(triggerPrice, adjustedPriceImpactUsd, sizeDeltaUsd);
-  return triggerPrice + adjustment;
-}
-
 function getDecreaseSwapType(pnlToken: TokenData, collateralToken: TokenData, receiveToken: TokenData) {
   if (getIsEquivalentTokens(pnlToken, collateralToken)) {
     return DecreasePositionSwapType.NoSwap;

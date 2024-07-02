@@ -89,6 +89,7 @@ export type PositionTradeAction = {
   isLong: boolean;
   reason?: string;
   reasonBytes?: BytesLike;
+  shouldUnwrapNativeToken: boolean;
 
   transaction: {
     timestamp: number;
