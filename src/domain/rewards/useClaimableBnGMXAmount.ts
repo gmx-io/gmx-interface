@@ -5,6 +5,7 @@ import { contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
 import RewardTracker from "abis/RewardTracker.json";
 import { getContract } from "config/contracts";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 export function useClaimableBnGMXAmount() {
   const { signer, active, account } = useWallet();
@@ -12,7 +13,7 @@ export function useClaimableBnGMXAmount() {
   const feeGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
 
   const { data: claimableBnGMXAmount } = useSWR(
-    [`claimableBnGMXAmount:${active}`, chainId, feeGmxTrackerAddress, "claimable", account],
+    [`claimableBnGMXAmount:${active}`, chainId, feeGmxTrackerAddress, "claimable", account ?? PLACEHOLDER_ACCOUNT],
     {
       fetcher: contractFetcher(signer, RewardTracker),
     }
