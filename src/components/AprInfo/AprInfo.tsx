@@ -1,14 +1,47 @@
 import { Trans, t } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
+import { getIncentivesV2Url } from "config/links";
+import { getTokens } from "config/tokens";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
+import { useChainId } from "lib/chains";
+import { formatAmount } from "lib/numbers";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getIncentivesV2Url } from "config/links";
-import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { formatAmount } from "lib/numbers";
-import { useCallback, useMemo } from "react";
+
 import sparkleIcon from "img/sparkle.svg";
+
+function useAirdroppedTokenTitle() {
+  const chainId = useSelector(selectChainId);
+  const incentivesData = useLiquidityProvidersIncentives(chainId);
+  const marketsData = useSelector((s) => s.globals.markets.marketsData);
+
+  if (!incentivesData) {
+    return undefined;
+  }
+
+  const airdropTokenAddress = incentivesData.token;
+
+  const market = marketsData?.[airdropTokenAddress];
+
+  if (market) {
+    const title = `GM: ${market.name}`;
+    return title;
+  }
+
+  const tokens = getTokens(chainId);
+  const tokenInfo = tokens.find((token) => token.address === airdropTokenAddress);
+
+  if (tokenInfo) {
+    return tokenInfo.symbol;
+  }
+
+  return undefined;
+}
 
 export function AprInfo({
   apy,
@@ -23,13 +56,7 @@ export function AprInfo({
   const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData;
-  const airdropTokenAddress = incentivesData?.token;
-  // TODO use context instead
-  const { tokensData } = useTokensDataRequest(chainId);
-  const airdropTokenSymbol = useMemo(
-    () => (airdropTokenAddress ? tokensData?.[airdropTokenAddress]?.symbol : undefined),
-    [airdropTokenAddress, tokensData]
-  );
+  const airdropTokenTitle = useAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
@@ -42,12 +69,12 @@ export function AprInfo({
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
         <Trans>
-          The Bonus APR will be airdropped as {airdropTokenSymbol} tokens.{" "}
+          The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
           <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
         </Trans>
       </>
     );
-  }, [airdropTokenSymbol, apy, chainId, incentiveApr, isIncentiveActive]);
+  }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive]);
 
   const aprNode = useMemo(() => {
     const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
