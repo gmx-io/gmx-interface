@@ -1278,13 +1278,35 @@ export default function StakeV2() {
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
-  const incentivesTargets = useMemo(() => {
+  const incentivesMessage = useMemo(() => {
+    const arbitrumLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
+        {getChainName(ARBITRUM)}
+      </ExternalLink>
+    );
+    const avalancheLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
+        {getChainName(AVALANCHE)}
+      </ExternalLink>
+    );
     if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
-      return t`Liquidity and trading`;
+      return (
+        <Trans>
+          Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
+        </Trans>
+      );
     } else if (incentiveStats?.lp?.isActive) {
-      return t`Liquidity`;
+      return (
+        <Trans>
+          Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
+        </Trans>
+      );
     } else if (incentiveStats?.trading?.isActive) {
-      return t`Trading`;
+      return (
+        <Trans>
+          Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
+        </Trans>
+      );
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
 
@@ -1973,21 +1995,7 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {incentivesTargets && (
-              <div>
-                <Trans>
-                  {incentivesTargets} incentives program is live on{" "}
-                  <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
-                    {getChainName(ARBITRUM)}
-                  </ExternalLink>{" "}
-                  and{" "}
-                  <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
-                    {getChainName(AVALANCHE)}
-                  </ExternalLink>
-                  .
-                </Trans>
-              </div>
-            )}
+            {incentivesMessage}
           </div>
         }
       />

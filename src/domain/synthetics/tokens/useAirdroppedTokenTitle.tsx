@@ -3,6 +3,8 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
+import find from "lodash/find";
+import { Address, isAddressEqual } from "viem";
 import { getMarketIndexName, getMarketPoolName } from "../markets";
 
 export function useLpAirdroppedTokenTitle() {
@@ -10,13 +12,15 @@ export function useLpAirdroppedTokenTitle() {
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const marketsInfoData = useMarketsInfoData();
 
-  if (!incentivesData) {
+  if (!marketsInfoData || !incentivesData) {
     return undefined;
   }
 
-  const airdropTokenAddress = incentivesData.token;
+  const airDropTokenAddress = incentivesData.token as Address;
 
-  const market = marketsInfoData?.[airdropTokenAddress];
+  const market = find(marketsInfoData, (market) =>
+    isAddressEqual(market.marketTokenAddress as Address, airDropTokenAddress)
+  );
 
   if (market) {
     const indexName = getMarketIndexName(market);
@@ -32,7 +36,7 @@ export function useLpAirdroppedTokenTitle() {
   }
 
   const tokens = getTokens(chainId);
-  const tokenInfo = tokens.find((token) => token.address === airdropTokenAddress);
+  const tokenInfo = tokens.find((token) => isAddressEqual(token.address as Address, airDropTokenAddress));
 
   if (tokenInfo) {
     return tokenInfo.symbol;
@@ -46,7 +50,7 @@ export function useTradingAirdroppedTokenTitle() {
   const tradingIncentives = useTradingIncentives(tokensData);
   const marketsData = useSelector((s) => s.globals.markets.marketsData);
 
-  if (!tradingIncentives) {
+  if (!marketsData || !tradingIncentives) {
     return undefined;
   }
 
@@ -56,7 +60,7 @@ export function useTradingAirdroppedTokenTitle() {
     return undefined;
   }
 
-  const market = marketsData?.[airdropToken.address];
+  const market = marketsData[airdropToken.address];
 
   if (market) {
     const title = `GM: ${market.name}`;

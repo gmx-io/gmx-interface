@@ -1030,7 +1030,6 @@ msgid "Select pool"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr ""
 
@@ -1192,6 +1191,10 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2346,10 +2349,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3661,10 +3660,6 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr ""
@@ -4651,10 +4646,6 @@ msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Swap Price Impact"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on <0>{0}</0> and <1>{1}</1>."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -6829,6 +6820,10 @@ msgstr ""
 msgid "Failed to update order"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -7310,6 +7305,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx

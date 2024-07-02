@@ -1030,7 +1030,6 @@ msgid "Select pool"
 msgstr "Select pool"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "Liquidity"
 
@@ -1193,6 +1192,10 @@ msgstr "account"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
+msgstr "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
 
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
@@ -2347,10 +2350,6 @@ msgstr "Minimum received"
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading"
-msgstr "Trading"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
@@ -3664,10 +3663,6 @@ msgstr "Buy AVAX directly to Avalanche or transfer it there."
 msgid "Single"
 msgstr "Single"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading"
-msgstr "Liquidity and trading"
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Funding fees"
@@ -4655,10 +4650,6 @@ msgstr "Order size is 0"
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Swap Price Impact"
 msgstr "Acknowledge high Swap Price Impact"
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on <0>{0}</0> and <1>{1}</1>."
-msgstr "{incentivesTargets} incentives program is live on <0>{0}</0> and <1>{1}</1>."
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
@@ -6835,6 +6826,10 @@ msgstr "Price Impact Rebates"
 msgid "Failed to update order"
 msgstr "Failed to update order"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
+msgstr "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -7317,6 +7312,10 @@ msgstr "Enter Referral Code"
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
+msgstr "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js

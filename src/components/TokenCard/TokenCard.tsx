@@ -20,6 +20,7 @@ import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { ARBITRUM_INCENTIVES_V2_URL, AVALANCHE_INCENTIVES_V2_URL } from "config/links";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import sparkleIcon from "img/sparkle.svg";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -101,23 +102,26 @@ export default function TokenCard({ showRedirectModal }: Props) {
   };
 
   const poolsIncentivizedLabel = useMemo(() => {
+    const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
+    const arbitrumLink = <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink>;
+    const avalancheLink = <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink>;
     if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
       return (
         <Trans>
-          <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink> and{" "}
-          <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink> GM Pools are incentivized.
+          {arbitrumLink} and {avalancheLink} GM Pools are{" "}
+          <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else if (arbitrumIncentiveState?.lp?.isActive) {
       return (
         <Trans>
-          <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink> GM Pools are incentivized.
+          {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else if (avalancheIncentiveState?.lp?.isActive) {
       return (
         <Trans>
-          <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink> GM Pools are incentivized.
+          {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else {
@@ -176,7 +180,9 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
           </div>
-          {poolsIncentivizedLabel && <div className="mt-15">{poolsIncentivizedLabel}</div>}
+          {poolsIncentivizedLabel && (
+            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{poolsIncentivizedLabel}</div>
+          )}
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
             <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
