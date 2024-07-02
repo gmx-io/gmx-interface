@@ -18,7 +18,7 @@ import { mergeWith } from "lodash";
 import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { ARBITRUM_INCENTIVES_V2_URL, AVALANCHE_INCENTIVES_V2_URL } from "config/links";
+import { getIncentivesV2Url } from "config/links";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import sparkleIcon from "img/sparkle.svg";
 
@@ -103,8 +103,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
   const poolsIncentivizedLabel = useMemo(() => {
     const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
-    const arbitrumLink = <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink>;
-    const avalancheLink = <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink>;
+    const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
+    const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
     if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
       return (
         <Trans>
@@ -223,7 +223,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
                 <BannerButton
                   className="mt-15"
                   label="Migrating from GLP to GM is incentivized in Arbitrum."
-                  link={ARBITRUM_INCENTIVES_V2_URL}
+                  link={getIncentivesV2Url(ARBITRUM)}
                 />
               )}
             </div>

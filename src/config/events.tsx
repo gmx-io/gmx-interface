@@ -3,7 +3,8 @@
 import { Trans } from "@lingui/macro";
 import { memo, type JSX } from "react";
 
-import { ARBITRUM_INCENTIVES_V2_URL, AVALANCHE_INCENTIVES_V2_URL } from "./links";
+import { ARBITRUM, AVALANCHE } from "./chains";
+import { getIncentivesV2Url } from "./links";
 import { getNormalizedTokenSymbol } from "./tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -42,8 +43,8 @@ export const appEventsData: EventData[] = [
     startDate: "03 Jul 2024, 00:00",
     bodyText: (
       <Trans>
-        Incentives are live for <ExternalLink href={ARBITRUM_INCENTIVES_V2_URL}>Arbitrum</ExternalLink> and{" "}
-        <ExternalLink href={AVALANCHE_INCENTIVES_V2_URL}>Avalanche</ExternalLink> GM pools and V2 trading.
+        Incentives are live for <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink> and{" "}
+        <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink> GM pools and V2 trading.
       </Trans>
     ),
   },
@@ -55,7 +56,7 @@ export const appEventsData: EventData[] = [
     bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
-      href: ARBITRUM_INCENTIVES_V2_URL,
+      href: getIncentivesV2Url(ARBITRUM),
       newTab: true,
     },
   },
