@@ -4,10 +4,10 @@ import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, GM_DECIMALS, PRECISION } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import mapValues from "lodash/mapValues";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
@@ -54,34 +54,49 @@ function useExcludedLiquidityMarketMap(
   [marketAddress: string]: bigint;
 } {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
-  const excludeHolders = liquidityProvidersIncentives?.excludeHolders ?? [];
+  const excludeHolders = liquidityProvidersIncentives?.excludeHolders ?? EMPTY_ARRAY;
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
-  const request: MulticallRequestConfig<{
-    [marketAddress: string]: {
-      calls: {
-        [holder: string]: {
-          methodName: string;
-          params: any[];
+  const request = useCallback<
+    () => MulticallRequestConfig<{
+      [marketAddress: string]: {
+        calls: {
+          [holder: string]: {
+            methodName: string;
+            params: any[];
+          };
         };
       };
-    };
-  }> = {};
-
-  for (const marketAddress of marketAddresses) {
-    request[marketAddress] = {
-      abi: TokenAbi.abi,
-      contractAddress: marketAddress,
-      calls: {},
-    };
-
-    for (const holder of excludeHolders) {
-      request[marketAddress].calls[holder] = {
-        methodName: "balanceOf",
-        params: [holder],
+    }>
+  >(() => {
+    const req: MulticallRequestConfig<{
+      [marketAddress: string]: {
+        calls: {
+          [holder: string]: {
+            methodName: string;
+            params: any[];
+          };
+        };
       };
+    }> = {};
+
+    for (const marketAddress of marketAddresses) {
+      req[marketAddress] = {
+        abi: TokenAbi.abi,
+        contractAddress: marketAddress,
+        calls: {},
+      };
+
+      for (const holder of excludeHolders) {
+        req[marketAddress].calls[holder] = {
+          methodName: "balanceOf",
+          params: [holder],
+        };
+      }
     }
-  }
+
+    return req;
+  }, [excludeHolders, marketAddresses]);
 
   const excludedBalancesMulticall = useMulticall(chainId, "useExcludedLiquidityMarketMap", {
     key: excludeHolders ? [excludeHolders.join(","), marketAddresses.join(",")] : null,
