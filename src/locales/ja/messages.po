@@ -4013,10 +4013,6 @@ msgstr "紹介コード編集"
 msgid "Switch to:"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Arbitrum</0> and <1>Avalanche</1> GM Pools are incentivized."
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} limit order for"
 msgstr ""
@@ -4359,6 +4355,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -4765,6 +4765,10 @@ msgstr "最低必要担保"
 
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -5973,10 +5977,6 @@ msgstr ""
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Arbitrum</0> GM Pools are incentivized."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr ""
@@ -6680,6 +6680,10 @@ msgstr "右上の設定メニューにある\"最大スリッページ\"を増�
 msgid "GMX ecosystem pages."
 msgstr "GMXエコシステムのページ"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
@@ -7114,10 +7118,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 30 days"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Avalanche</0> GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx

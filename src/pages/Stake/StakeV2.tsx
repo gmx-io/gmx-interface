@@ -1291,21 +1291,27 @@ export default function StakeV2() {
     );
     if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
       return (
-        <Trans>
-          Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
-        </Trans>
+        <div>
+          <Trans>
+            Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
       );
     } else if (incentiveStats?.lp?.isActive) {
       return (
-        <Trans>
-          Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
-        </Trans>
+        <div>
+          <Trans>
+            Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
       );
     } else if (incentiveStats?.trading?.isActive) {
       return (
-        <Trans>
-          Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
-        </Trans>
+        <div>
+          <Trans>
+            Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
       );
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);

@@ -4016,10 +4016,6 @@ msgstr "Edit Referral Code"
 msgid "Switch to:"
 msgstr "Switch to:"
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Arbitrum</0> and <1>Avalanche</1> GM Pools are incentivized."
-msgstr "<0>Arbitrum</0> and <1>Avalanche</1> GM Pools are incentivized."
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} limit order for"
 msgstr "{txnTypeText} limit order for"
@@ -4363,6 +4359,10 @@ msgstr "Decrease size"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Sell order executed"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound submitted!"
@@ -4769,6 +4769,10 @@ msgstr "Min. required Collateral"
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr "Search Pool"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
@@ -5979,10 +5983,6 @@ msgstr "Copy error"
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Arbitrum</0> GM Pools are incentivized."
-msgstr "<0>Arbitrum</0> GM Pools are incentivized."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr "Select a collateral"
@@ -6686,6 +6686,10 @@ msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the 
 msgid "GMX ecosystem pages."
 msgstr "GMX ecosystem pages."
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+
 #: src/components/Exchange/PositionsList.js
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
@@ -7121,10 +7125,6 @@ msgstr "Sell order cancelled"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 30 days"
 msgstr "Last 30 days"
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "<0>Avalanche</0> GM Pools are incentivized."
-msgstr "<0>Avalanche</0> GM Pools are incentivized."
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx

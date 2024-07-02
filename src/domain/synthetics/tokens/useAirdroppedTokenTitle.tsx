@@ -13,7 +13,7 @@ export function useLpAirdroppedTokenTitle() {
   const marketsInfoData = useMarketsInfoData();
 
   if (!marketsInfoData || !incentivesData) {
-    return undefined;
+    return "";
   }
 
   const airDropTokenAddress = incentivesData.token as Address;
@@ -42,7 +42,7 @@ export function useLpAirdroppedTokenTitle() {
     return tokenInfo.symbol;
   }
 
-  return undefined;
+  return "";
 }
 
 export function useTradingAirdroppedTokenTitle() {
