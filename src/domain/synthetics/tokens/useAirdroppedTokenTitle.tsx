@@ -7,7 +7,7 @@ import find from "lodash/find";
 import { Address, isAddressEqual } from "viem";
 import { getMarketIndexName, getMarketPoolName } from "../markets";
 
-export function useLpAirdroppedTokenTitle() {
+export function useLpAirdroppedTokenTitle(): string | JSX.Element {
   const chainId = useSelector(selectChainId);
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const marketsInfoData = useMarketsInfoData();
@@ -45,19 +45,19 @@ export function useLpAirdroppedTokenTitle() {
   return "";
 }
 
-export function useTradingAirdroppedTokenTitle() {
+export function useTradingAirdroppedTokenTitle(): string {
   const tokensData = useTokensData();
   const tradingIncentives = useTradingIncentives(tokensData);
   const marketsData = useSelector((s) => s.globals.markets.marketsData);
 
   if (!marketsData || !tradingIncentives) {
-    return undefined;
+    return "";
   }
 
   const airdropToken = tradingIncentives.token;
 
   if (!airdropToken) {
-    return undefined;
+    return "";
   }
 
   const market = marketsData[airdropToken.address];
@@ -71,10 +71,10 @@ export function useTradingAirdroppedTokenTitle() {
     return airdropToken.symbol;
   }
 
-  return undefined;
+  return "";
 }
 
-export function useAnyAirdroppedTokenTitle() {
+export function useAnyAirdroppedTokenTitle(): string | JSX.Element {
   const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle();
   const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle();
 

@@ -219,8 +219,6 @@ class OracleKeeperFetcher implements OracleFetcher {
     return fetch(
       buildUrl(this.url!, "/incentives", {
         ignoreStartDate: this.forceIncentivesActive ? "1" : undefined,
-        // TODO: REMOVE ME. DO NOT MERGE IN MASTER. WARNING. REMOVE ME. FIXME.
-        timestamp: 1720018985,
       })
     )
       .then((res) => res.json())
