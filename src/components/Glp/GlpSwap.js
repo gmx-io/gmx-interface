@@ -83,7 +83,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { bigMath } from "lib/bigmath";
-import { INCENTIVES_V2_URL } from "config/ui";
+import { getIncentivesV2Url } from "config/links";
 
 const { ZeroAddress } = ethers;
 
@@ -892,7 +892,7 @@ export default function GlpSwap(props) {
           <Trans>
             The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
-            <ExternalLink href={INCENTIVES_V2_URL} newTab>
+            <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
               Read more
             </ExternalLink>
             .

@@ -1,10 +1,14 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
+import { Trans } from "@lingui/macro";
 import { memo, type JSX } from "react";
+
+import { ARBITRUM, AVALANCHE } from "./chains";
+import { getIncentivesV2Url } from "./links";
+import { getNormalizedTokenSymbol } from "./tokens";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getNormalizedTokenSymbol } from "./tokens";
-import { INCENTIVES_V2_URL } from "./ui";
 
 export type EventData = {
   id: string;
@@ -32,14 +36,27 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
+    id: "arbitrum-and-avalanche-incentives-launch-3",
+    title: "Arbitrum and Avalanche Incentives are Live",
+    isActive: true,
+    endDate: "16 Sep 2024, 00:00",
+    startDate: "03 Jul 2024, 00:00",
+    bodyText: (
+      <Trans>
+        Incentives are live for <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink> and{" "}
+        <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink> GM pools and V2 trading.
+      </Trans>
+    ),
+  },
+  {
     id: "arbitrum-incentives-launch-2",
     title: "Arbitrum Incentives are Live",
     isActive: true,
-    endDate: "16 Sep 2024, 00:00",
+    endDate: "03 Jul 2024, 00:00",
     bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
-      href: INCENTIVES_V2_URL,
+      href: getIncentivesV2Url(ARBITRUM),
       newTab: true,
     },
   },
