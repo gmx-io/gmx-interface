@@ -570,10 +570,6 @@ msgstr ""
 msgid "Search Token"
 msgstr "토큰 찾기"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "There are not enough funds in your subaccount to cover withdrawing gas costs.<0/><1/>Approximate additional funds to<2/>top-up: {0}"
-#~ msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
@@ -881,10 +877,6 @@ msgstr ""
 msgid "Staked Tokens"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Max pool amount exceeded LOL"
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
 msgstr ""
@@ -944,10 +936,6 @@ msgstr "담보"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr ""
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition, and there must be sufficient liquidity for the order to be executed."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1584,10 +1572,6 @@ msgstr "소개 보수 분배 내역"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
@@ -3054,10 +3038,6 @@ msgstr ""
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact, once the limit price is hit."
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -3247,10 +3227,6 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Exit Price (Exit)"
-#~ msgstr ""
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX V2 Account"
 msgstr ""
@@ -3310,10 +3286,6 @@ msgstr "활성화된 추천 코드"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees {rebatedTextWithSparkle} and Price Impact"
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -3500,10 +3472,6 @@ msgstr ""
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Net Rate / 1h"
 msgstr "1시간 당 순 수수료율"
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be higher than the limit price."
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4685,6 +4653,10 @@ msgstr "주문의 사이즈가 0입니다"
 msgid "Acknowledge high Swap Price Impact"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{incentivesTargets} incentives program is live on <0>{0}</0> and <1>{1}</1>."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
 msgstr ""
@@ -5027,10 +4999,6 @@ msgstr ""
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Position Price Impact"
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5807,10 +5775,6 @@ msgstr ""
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> 코드를 바로 생성해서 소개 보수를 획득하세요!"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
-msgstr ""
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
 msgstr "NFT ID 입력"
@@ -6070,10 +6034,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees (Rebated) and Price Impact"
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7700,10 +7660,6 @@ msgstr "손절 주문 실패"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr "계정 전송 완료"
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the limit price hits the mark price, the order will attempt to execute, guaranteeing the acceptable price. In the case of negative price impact, the mark price may need to be lower than the limit price."
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim Rewards"

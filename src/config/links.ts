@@ -40,3 +40,20 @@ export const DOCS_LINKS = {
   adaptiveFunding: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
   borrowingFees: "https://docs.gmx.io/docs/trading/v2/#borrowing-fees",
 };
+
+export const ARBITRUM_INCENTIVES_V2_URL =
+  "https://www.notion.so/gmxio/GMX-STIP-Bridge-Incentives-6967a56615b644eabc10f9a1a81b83ab";
+export const AVALANCHE_INCENTIVES_V2_URL =
+  "https://www.notion.so/gmxio/GMX-STIP-Bridge-Incentives-6967a56615b644eabc10f9a1a81b83ab";
+
+export function getIncentivesV2Url(chainId: number): string {
+  if (chainId === ARBITRUM) {
+    return ARBITRUM_INCENTIVES_V2_URL;
+  }
+
+  if (chainId === AVALANCHE) {
+    return AVALANCHE_INCENTIVES_V2_URL;
+  }
+
+  return ARBITRUM_INCENTIVES_V2_URL;
+}

@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { INCENTIVES_V2_URL as INCENTIVES_V2_URL } from "config/ui";
+import { getIncentivesV2Url } from "config/links";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -43,11 +43,11 @@ export function AprInfo({
         <br />
         <Trans>
           The Bonus APR will be airdropped as {airdropTokenSymbol} tokens.{" "}
-          <ExternalLink href={INCENTIVES_V2_URL}>Read more</ExternalLink>.
+          <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
         </Trans>
       </>
     );
-  }, [airdropTokenSymbol, apy, incentiveApr, isIncentiveActive]);
+  }, [airdropTokenSymbol, apy, chainId, incentiveApr, isIncentiveActive]);
 
   const aprNode = useMemo(() => {
     const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;

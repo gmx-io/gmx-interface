@@ -55,7 +55,7 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { INCENTIVES_V2_URL, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -87,6 +87,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import { getIncentivesV2Url } from "config/links";
 
 const { ZeroAddress } = ethers;
 
@@ -1983,8 +1984,12 @@ export default function StakeV2() {
               <div>
                 <Trans>
                   {incentivesTargets} incentives program is live on{" "}
-                  <ExternalLink newTab href={INCENTIVES_V2_URL}>
-                    {getChainName(chainId)}
+                  <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
+                    {getChainName(ARBITRUM)}
+                  </ExternalLink>{" "}
+                  and{" "}
+                  <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
+                    {getChainName(AVALANCHE)}
                   </ExternalLink>
                   .
                 </Trans>

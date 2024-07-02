@@ -4,7 +4,7 @@ import { memo, type JSX } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "./tokens";
-import { INCENTIVES_V2_URL } from "./ui";
+import { ARBITRUM_INCENTIVES_V2_URL } from "./links";
 
 export type EventData = {
   id: string;
@@ -39,7 +39,7 @@ export const appEventsData: EventData[] = [
     bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
-      href: INCENTIVES_V2_URL,
+      href: ARBITRUM_INCENTIVES_V2_URL,
       newTab: true,
     },
   },

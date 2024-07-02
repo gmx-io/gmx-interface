@@ -19,7 +19,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { INCENTIVES_V2_URL } from "config/ui";
+import { getIncentivesV2Url } from "config/links";
 import sparkleIcon from "img/sparkle.svg";
 
 type Props = {
@@ -326,14 +326,14 @@ export function TradeFeesRow(p: Props) {
       <Trans>
         The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
-          <ExternalLink href={INCENTIVES_V2_URL} newTab>
+          <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
           </ExternalLink>
           .
         </span>
       </Trans>
     );
-  }, [rebateIsApplicable, tradingIncentives]);
+  }, [chainId, rebateIsApplicable, tradingIncentives]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
