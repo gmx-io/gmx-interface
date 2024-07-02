@@ -191,7 +191,11 @@ function getMarketTokenAmountByCollateral(p: {
   let mintAmount = 0n;
 
   if (priceImpactDeltaUsd > 0) {
-    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
+    const { impactDeltaAmount: positiveImpactAmount } = applySwapImpactWithCap(
+      marketInfo,
+      tokenOut,
+      priceImpactDeltaUsd
+    );
 
     const usdValue = convertToUsd(positiveImpactAmount, tokenOut.decimals, tokenOut.prices.maxPrice)!;
 
@@ -200,7 +204,11 @@ function getMarketTokenAmountByCollateral(p: {
       // TODO: poolValue for deposit
       usdToMarketTokenAmount(marketInfo, marketToken, usdValue);
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
+    const { impactDeltaAmount: negativeImpactAmount } = applySwapImpactWithCap(
+      marketInfo,
+      tokenIn,
+      priceImpactDeltaUsd
+    );
     amountInAfterFees = amountInAfterFees + negativeImpactAmount;
   }
 
