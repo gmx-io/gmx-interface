@@ -23,10 +23,10 @@ export function useLpAirdroppedTokenTitle() {
     const poolName = getMarketPoolName(market);
 
     const title = (
-      <div className="flex items-center">
+      <span className="inline-flex items-center">
         <span>GM: {indexName}</span>
         <span className="ml-2 text-12 leading-1 text-gray-300">[{poolName}]</span>
-      </div>
+      </span>
     );
     return title;
   }
