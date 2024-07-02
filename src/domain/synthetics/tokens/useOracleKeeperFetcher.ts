@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import type { Address } from "viem";
+
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -5,7 +8,6 @@ import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMemo } from "react";
 
 export type TickersResponse = {
   minPrice: string;
@@ -38,6 +40,7 @@ export type RawIncentivesStats = {
     period: number;
     rewardsPerMarket: Record<string, string>;
     token: string;
+    excludeHolders: Address[];
   }>;
   migration: OnlyWhenActive<{
     maxRebateBps: number;

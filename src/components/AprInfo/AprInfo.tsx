@@ -1,13 +1,16 @@
 import { Trans, t } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
+import { getIncentivesV2Url } from "config/links";
+import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
+import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import { useChainId } from "lib/chains";
+import { formatAmount } from "lib/numbers";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { INCENTIVES_V2_URL as INCENTIVES_V2_URL } from "config/ui";
-import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { formatAmount } from "lib/numbers";
-import { useCallback, useMemo } from "react";
+
 import sparkleIcon from "img/sparkle.svg";
 
 export function AprInfo({
@@ -23,13 +26,7 @@ export function AprInfo({
   const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData;
-  const airdropTokenAddress = incentivesData?.token;
-  // TODO use context instead
-  const { tokensData } = useTokensDataRequest(chainId);
-  const airdropTokenSymbol = useMemo(
-    () => (airdropTokenAddress ? tokensData?.[airdropTokenAddress]?.symbol : undefined),
-    [airdropTokenAddress, tokensData]
-  );
+  const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
@@ -42,12 +39,12 @@ export function AprInfo({
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
         <Trans>
-          The Bonus APR will be airdropped as {airdropTokenSymbol} tokens.{" "}
-          <ExternalLink href={INCENTIVES_V2_URL}>Read more</ExternalLink>.
+          The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+          <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
         </Trans>
       </>
     );
-  }, [airdropTokenSymbol, apy, incentiveApr, isIncentiveActive]);
+  }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive]);
 
   const aprNode = useMemo(() => {
     const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
