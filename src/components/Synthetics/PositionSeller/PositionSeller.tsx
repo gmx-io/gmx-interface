@@ -10,7 +10,6 @@ import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -19,7 +18,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { applySlippageToPrice } from "domain/synthetics/trade";
 import {
   useClosingPositionKeyState,
   usePositionsConstants,
@@ -34,6 +32,7 @@ import {
 import { useHasOutdatedUi } from "domain/legacy";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { applySlippageToPrice } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -60,20 +59,19 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerExecutionPrice,
+  selectPositionSellerFees,
+  selectPositionSellerMarkPrice,
   selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
+  selectPositionSellerReceiveToken,
+  selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerSetDefaultReceiveToken,
-  selectPositionSellerReceiveToken,
-  selectPositionSellerMarkPrice,
-  selectPositionSellerFees,
-  selectPositionSellerExecutionPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
@@ -83,6 +81,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import "./PositionSeller.scss";
 
 import "./PositionSeller.scss";
@@ -641,11 +640,6 @@ export function PositionSeller(p: Props) {
           option={orderOption}
           optionLabels={localizedOrderOptionLabels}
           onChange={handleSetOrderOption}
-        />
-        <SubaccountNavigationButton
-          executionFee={executionFee?.feeTokenAmount}
-          closeConfirmationBox={onClose}
-          tradeFlags={tradeFlags}
         />
 
         {position && (

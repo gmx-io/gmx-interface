@@ -38,10 +38,10 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
+  convertToUsd,
   formatTokensRatio,
   getNeedTokenApprove,
   useTokensAllowanceData,
-  convertToUsd,
 } from "domain/synthetics/tokens";
 import { TriggerThresholdType, applySlippageToMinOut, applySlippageToPrice } from "domain/synthetics/trade";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -55,13 +55,14 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useSidecarOrders,
-  SidecarOrderEntryGroup,
-  SidecarSlTpOrderEntryValid,
-  SidecarLimitOrderEntryValid,
   SidecarLimitOrderEntry,
+  SidecarLimitOrderEntryValid,
+  SidecarOrderEntryGroup,
   SidecarSlTpOrderEntry,
+  SidecarSlTpOrderEntryValid,
+  useSidecarOrders,
 } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -86,10 +87,9 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { SideOrderEntries } from "./SideOrderEntries";
-import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
-import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { SideOrderEntries } from "./SideOrderEntries";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
@@ -99,6 +99,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
+  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxFixedTriggerOrderType,
   selectTradeboxFixedTriggerThresholdType,
@@ -109,8 +110,10 @@ import {
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
+  selectTradeboxMaxLiquidityPath,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
+  selectTradeboxSelectedPositionKey,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
@@ -119,15 +122,12 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
-  selectTradeboxSelectedPositionKey,
-  selectTradeboxMaxLiquidityPath,
-  selectTradeboxExecutionPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import "./ConfirmationBox.scss";
-import { bigMath } from "lib/bigmath";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { bigMath } from "lib/bigmath";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
+import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;

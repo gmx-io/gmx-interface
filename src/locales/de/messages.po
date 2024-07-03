@@ -334,7 +334,7 @@ msgstr "Positionen"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRowsControls.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRows.tsx
 msgid "Limit / Take-Profit / Stop-Loss"
 msgstr ""
 
@@ -511,6 +511,7 @@ msgstr ""
 msgid "Incentives are airdropped weekly."
 msgstr ""
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr ""
@@ -748,6 +749,7 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr ""
@@ -888,6 +890,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/hooks/useMinReceiveRow.tsx
 msgid "Min. Receive"
 msgstr "Min. Empfangen"
 
@@ -1293,7 +1296,7 @@ msgstr ""
 msgid "Select Positions"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
 
@@ -1908,7 +1911,7 @@ msgstr ""
 msgid "{0} Approved!"
 msgstr "{0} Genehmigt!"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRowsControls.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRows.tsx
 msgid "Advanced display"
 msgstr ""
 
@@ -2373,7 +2376,7 @@ msgstr ""
 msgid "Invalid price, see warning"
 msgstr "Ungültiger Preis, siehe Warnung"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr ""
 
@@ -3428,7 +3431,7 @@ msgstr "Handelsleitfaden"
 msgid "TRADING Airdrop"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr ""
 
@@ -3845,6 +3848,7 @@ msgstr "Dokumente"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Creating Order..."
 msgstr "Erstellen der Order..."
 
@@ -4141,7 +4145,7 @@ msgstr "Dezentr."
 msgid "GMX Weekly Updates"
 msgstr "GMX Wöchentliche Updates"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} only from your long position."
 msgstr ""
 
@@ -4339,7 +4343,7 @@ msgstr ""
 msgid "Order updated!"
 msgstr "Orderupdate übermittelt!"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
 
@@ -4424,6 +4428,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Spread"
 msgstr "Spread"
 
@@ -4893,6 +4898,7 @@ msgid "Cancel"
 msgstr "Abbruch"
 
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
+#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 msgid "Remove Row"
 msgstr ""
 
@@ -4973,6 +4979,7 @@ msgid "Enter new amount or price"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop-Loss PnL"
 msgstr ""
 
@@ -5842,6 +5849,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Limit Price"
 msgstr "Limit Preis"
 
@@ -6000,6 +6008,9 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Error submitting order"
 msgstr ""
 
@@ -6250,6 +6261,7 @@ msgid "Keep leverage at {0}x"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take-Profit PnL"
 msgstr ""
 
@@ -7169,7 +7181,7 @@ msgstr ""
 msgid "Orders ({ordersCount})"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/useCollateralInTooltipContent.tsx
+#: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr ""
 
@@ -7555,6 +7567,7 @@ msgid "Slippage is too high"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
+#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 msgid "Add Row"
 msgstr ""
 
@@ -7611,6 +7624,7 @@ msgstr ""
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Limit"
 msgstr "Limit"
@@ -7685,6 +7699,7 @@ msgstr "06 Sep 2021"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""

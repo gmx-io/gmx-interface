@@ -1,33 +1,33 @@
-import { useCallback, useMemo } from "react";
-import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
-import { convertToTokenAmount } from "../tokens";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxMarketInfo,
-  selectTradeboxTradeFlags,
   selectTradeboxCollateralToken,
-  selectTradeboxIncreasePositionAmounts,
-  selectTradeboxTriggerPrice,
-  selectTradeboxMarkPrice,
-  selectTradeboxSelectedPosition,
-  selectTradeboxNextPositionValues,
   selectTradeboxFindSwapPath,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarkPrice,
+  selectTradeboxMarketInfo,
+  selectTradeboxNextPositionValues,
+  selectTradeboxSelectedPosition,
+  selectTradeboxTradeFlags,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
-  selectConfirmationBoxSidecarOrdersExistingSlEntries,
-  selectConfirmationBoxSidecarOrdersExistingTpEntries,
-  selectConfirmationBoxSidecarOrdersExistingLimitEntries,
-} from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
-import { selectConfirmationBoxMockPosition } from "context/SyntheticsStateContext/selectors/confirmationBoxSelectors";
-import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
-import { handleEntryError, getCommonError } from "./utils";
+  selectTradeboxMockPosition,
+  selectTradeboxSidecarOrdersExistingLimitEntries,
+  selectTradeboxSidecarOrdersExistingSlEntries,
+  selectTradeboxSidecarOrdersExistingTpEntries,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
-import { SidecarOrderEntry, SidecarSlTpOrderEntryValid, SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "./types";
+import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
+import { useCallback, useMemo } from "react";
+import { convertToTokenAmount } from "../tokens";
+import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
+import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
+import { getCommonError, handleEntryError } from "./utils";
 
 export * from "./types";
 
@@ -46,9 +46,9 @@ export function useSidecarOrders() {
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
 
-  const existingLimitOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingLimitEntries);
-  const existingSlOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingSlEntries);
-  const existingTpOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingTpEntries);
+  const existingLimitOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingLimitEntries);
+  const existingSlOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
+  const existingTpOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
 
   const handleLimitErrors = useCallback(
     (entry: SidecarLimitOrderEntry) =>
@@ -152,7 +152,7 @@ export function useSidecarOrders() {
     enablePercentage: true,
   });
 
-  const mockPositionInfo = useSelector(selectConfirmationBoxMockPosition);
+  const mockPositionInfo = useSelector(selectTradeboxMockPosition);
 
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {

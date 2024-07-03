@@ -22,8 +22,9 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
-type TradeStage = "trade" | "confirmation" | "processing";
+type TradeStage = "trade" | "processing";
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -499,6 +500,8 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const sidecarOrders = useSidecarOrdersState();
+
   useEffect(
     function fallbackStoredOptions() {
       if (availableSwapTokenAddresses.length === 0 && values(marketAddressIndexTokenMap).length === 0) {
@@ -565,6 +568,7 @@ export function useTradeboxState(
     collateralToken,
     availableTokensOptions,
     avaialbleTradeModes,
+    sidecarOrders,
     setActivePosition,
     setFromTokenAddress,
     setToTokenAddress,

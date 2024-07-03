@@ -18,7 +18,7 @@ import {
 } from "../SelectorBase/SelectorBase";
 
 import { useTradeboxMarketInfo, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { getCollateralInHintText } from "../TradeBox/TradeBoxRows/useCollateralInTooltipContent";
+import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 import "./CollateralSelector.scss";
 
 type Props = {

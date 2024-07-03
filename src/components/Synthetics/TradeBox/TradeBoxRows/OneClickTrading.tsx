@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback } from "react";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
@@ -26,14 +26,13 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "domain/synthetics/sidecarOrders/types";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import CloseIcon from "img/navbutton-close.svg";
 import { isTouchDevice } from "lib/browser";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { useRequiredActions } from "../hooks/useRequiredActions";
 
 export function TradeBoxOneClickTrading() {
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -42,32 +41,7 @@ export function TradeBoxOneClickTrading() {
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { stopLoss, takeProfit, limit } = useSidecarOrders();
-  const sidecarEntries = useMemo(
-    () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
-    [stopLoss, takeProfit, limit]
-  );
-
-  const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useMemo(() => {
-    const [cancelSltpEntries, createSltpEntries, updateSltpEntries] = sidecarEntries.reduce(
-      ([cancel, create, update], e) => {
-        if (e.txnType === "cancel") cancel.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
-        if (e.txnType === "create" && !!e.decreaseAmounts) create.push(e as SidecarSlTpOrderEntryValid);
-        if (e.txnType === "update" && (!!e.decreaseAmounts || !!e.increaseAmounts))
-          update.push(e as SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid);
-        return [cancel, create, update];
-      },
-      [[], [], []] as [
-        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
-        SidecarSlTpOrderEntryValid[],
-        (SidecarSlTpOrderEntryValid | SidecarLimitOrderEntryValid)[],
-      ]
-    );
-
-    return { cancelSltpEntries, createSltpEntries, updateSltpEntries };
-  }, [sidecarEntries]);
-
-  const requiredActions = 1 + cancelSltpEntries.length + createSltpEntries.length + updateSltpEntries.length;
+  const { requiredActions } = useRequiredActions();
 
   const isSubaccountActive = useIsSubaccountActive();
   const [, setModalOpen] = useSubaccountModalOpen();
@@ -136,7 +110,9 @@ export function TradeBoxOneClickTrading() {
     clickable = false;
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     content = (
-      <Trans>One-Click Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
+      <AlertInfo type="info" className="TradeBox-one-click-label">
+        <Trans>One-Click Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
+      </AlertInfo>
     );
   } else if (shouldShowNativeTokenWarning) {
     const wrappedToken = getWrappedToken(chainId);
@@ -144,18 +120,26 @@ export function TradeBoxOneClickTrading() {
     clickable = false;
     onCloseClick = handleCloseNativeTokenWarningClick;
     content = (
-      <Trans>
-        One-Click Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
-        {wrappedToken.symbol} instead.
-      </Trans>
+      <AlertInfo type="info" className="TradeBox-one-click-label">
+        <Trans>
+          One-Click Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
+          {wrappedToken.symbol} instead.
+        </Trans>
+      </AlertInfo>
     );
   } else if (shouldShowAllowedActionsWarning) {
     content = (
-      <Trans>The previously authorized maximum number of actions has been reached for One-Click Trading.</Trans>
+      <AlertInfo type="info" className="TradeBox-one-click-label">
+        <Trans>The previously authorized maximum number of actions has been reached for One-Click Trading.</Trans>
+      </AlertInfo>
     );
     buttonText = <Trans>Re-authorize</Trans>;
   } else if (shouldShowInsufficientFundsButton) {
-    content = <Trans>There are insufficient funds in your subaccount for One-Click Trading</Trans>;
+    content = (
+      <AlertInfo type="info" className="TradeBox-one-click-label">
+        <Trans>There are insufficient funds in your subaccount for One-Click Trading</Trans>
+      </AlertInfo>
+    );
     buttonText = <Trans>Top-Up</Trans>;
   } else if (shouldShowOfferButton) {
     onCloseClick = handleCloseOfferClick;

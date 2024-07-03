@@ -11,7 +11,6 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
@@ -114,16 +113,20 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { bigMath } from "lib/bigmath";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
-import { AdvancedDisplayRows } from "./TradeBoxRows/AdvancedDisplayRows";
-import { TradeBoxAdvancedRowsControls } from "./TradeBoxRows/AdvancedRowsControls";
-import { LimitAndTPSLRows } from "./TradeBoxRows/LimitAndTPSLRows";
+import { TradeBoxAdvancedRows } from "./TradeBoxRows/AdvancedRows";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
+import { useMinReceiveRow } from "./hooks/useMinReceiveRow";
+import { useRequiredActions } from "./hooks/useRequiredActions";
+import { useSummaryExecutionFee } from "./hooks/useSummaryExecutionFee";
+import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
+import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 
 export type Props = {
   allowedSlippage: number;
@@ -283,6 +286,7 @@ export function TradeBox(p: Props) {
 
   const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const minReceiveRow = useMinReceiveRow(allowedSlippage);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
@@ -475,7 +479,7 @@ export function TradeBox(p: Props) {
         minCollateralUsd,
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
-        fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
+        fixedTriggerThresholdType: stage !== "trade" ? fixedTriggerThresholdType : undefined,
       });
     }
 
@@ -568,6 +572,10 @@ export function TradeBox(p: Props) {
       return buttonErrorText;
     }
 
+    if (stage === "processing") {
+      return t`Creating Order...`;
+    }
+
     if (isMarket) {
       if (isSwap) {
         return t`Swap ${fromToken?.symbol}`;
@@ -589,14 +597,16 @@ export function TradeBox(p: Props) {
     tradeType,
     toToken?.symbol,
     decreaseAmounts?.triggerOrderType,
+    stage,
   ]);
 
-  const onSubmit = useCallback(() => {
-    if (!account) {
-      openConnectModal?.();
-      return;
-    }
+  const { summaryExecutionFee } = useSummaryExecutionFee();
+  const { requiredActions } = useRequiredActions();
+  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
+  const [tradeboxWarningRows, warningsConfirmed] = useTradeboxWarningsRows();
+
+  useEffect(() => {
     if (
       isTrigger &&
       decreaseAmounts?.triggerThresholdType &&
@@ -613,8 +623,6 @@ export function TradeBox(p: Props) {
       setSelectedAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
       setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
     }
-
-    setStage("confirmation");
   }, [
     account,
     decreaseAmounts?.acceptablePrice,
@@ -630,7 +638,6 @@ export function TradeBox(p: Props) {
     setFixedTriggerOrderType,
     setFixedTriggerThresholdType,
     setSelectedAcceptablePriceImpactBps,
-    setStage,
   ]);
 
   const prevIsISwap = usePrevious(isSwap);
@@ -732,7 +739,20 @@ export function TradeBox(p: Props) {
     }
   }
 
-  const onConfirmationClose = useCallback(() => {
+  const tradeboxTransactions = useTradeboxTransactions({
+    allowedSlippage,
+    setPendingTxns,
+  });
+
+  const onConfirmed = useCallback(() => {
+    if (isMarket) {
+      setStage("processing");
+      return;
+    }
+    setStage("trade");
+  }, [isMarket, setStage]);
+
+  const onFinished = useCallback(() => {
     setSelectedAcceptablePriceImpactBps(undefined);
     setDefaultTriggerAcceptablePriceImpactBps(undefined);
     setFixedTriggerOrderType(undefined);
@@ -746,13 +766,50 @@ export function TradeBox(p: Props) {
     setStage,
   ]);
 
-  const onConfirmed = useCallback(() => {
-    if (isMarket) {
-      setStage("processing");
+  const onSubmit = useCallback(() => {
+    setStage("processing");
+
+    let txnPromise: Promise<any>;
+
+    if (!account) {
+      openConnectModal?.();
+      return;
+    } else if (isWrapOrUnwrap) {
+      txnPromise = tradeboxTransactions.onSubmitWrapOrUnwrap();
+    } else if (isSwap) {
+      txnPromise = tradeboxTransactions.onSubmitSwap();
+    } else if (isIncrease) {
+      txnPromise = tradeboxTransactions.onSubmitIncreaseOrder();
+    } else {
+      txnPromise = tradeboxTransactions.onSubmitDecreaseOrder();
+    }
+
+    if (subaccount) {
+      onConfirmed();
+      setStage("trade");
+
       return;
     }
-    setStage("trade");
-  }, [isMarket, setStage]);
+
+    txnPromise
+      .then(() => {
+        onConfirmed();
+      })
+      .finally(() => {
+        onFinished();
+      });
+  }, [
+    account,
+    isIncrease,
+    isSwap,
+    isWrapOrUnwrap,
+    onConfirmed,
+    openConnectModal,
+    setStage,
+    tradeboxTransactions,
+    subaccount,
+    onFinished,
+  ]);
 
   const onSelectToTokenAddress = useTradeboxChooseSuitableMarket();
 
@@ -1151,8 +1208,21 @@ export function TradeBox(p: Props) {
   }
 
   function renderIncreaseOrderInfo() {
+    const toTokenPriceDecimals = toToken?.priceDecimals;
+
     return (
       <>
+        {isLimit && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Limit Price`}
+            value={
+              formatUsd(triggerPrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
+          />
+        )}
         <ExecutionPriceRow
           tradeFlags={tradeFlags}
           displayDecimals={toToken?.priceDecimals}
@@ -1331,9 +1401,11 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="w-full"
       onClick={onSubmit}
-      disabled={isSubmitButtonDisabled && !shouldDisableValidationForTesting}
+      disabled={
+        (isSubmitButtonDisabled && !shouldDisableValidationForTesting) || stage === "processing" || !warningsConfirmed
+      }
     >
-      {buttonErrorText || submitButtonText}
+      {submitButtonText}
     </Button>
   );
   const button = tooltipContent ? (
@@ -1380,20 +1452,10 @@ export function TradeBox(p: Props) {
 
             <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
               <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
-              <ExchangeInfo.Group key="1ct">
+              <ExchangeInfo.Group>
                 <TradeBoxOneClickTrading />
               </ExchangeInfo.Group>
-              <ExchangeInfo.Group key="advanced">
-                <TradeBoxAdvancedRowsControls />
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <AdvancedDisplayRows />
-              </ExchangeInfo.Group>
-
-              <LimitAndTPSLRows />
-
-              <ExchangeInfo.Group>{renderLeverageInfo()}</ExchangeInfo.Group>
+              <TradeBoxAdvancedRows />
 
               <ExchangeInfo.Group>
                 {isIncrease && renderIncreaseOrderInfo()}
@@ -1401,15 +1463,15 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
+                {renderLeverageInfo()}
                 {selectedPosition && !isSwap && renderExistingPositionInfo()}
-                {feesType && (
-                  <>
-                    <TradeFeesRow {...fees} feesType={feesType} />
-                    <NetworkFeeRow executionFee={executionFee} />
-                  </>
-                )}
               </ExchangeInfo.Group>
-
+              {feesType && (
+                <ExchangeInfo.Group>
+                  <TradeFeesRow {...fees} feesType={feesType} />
+                  <NetworkFeeRow executionFee={executionFee} />
+                </ExchangeInfo.Group>
+              )}
               <ExchangeInfo.Group>
                 {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                   <ExchangeInfoRow
@@ -1424,6 +1486,7 @@ export function TradeBox(p: Props) {
                   />
                 )) ||
                   null}
+                {minReceiveRow}
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
@@ -1434,6 +1497,7 @@ export function TradeBox(p: Props) {
                   />
                 )}
               </ExchangeInfo.Group>
+              <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>
             </ExchangeInfo>
             <div className="Exchange-swap-button-container">{button}</div>
           </form>
@@ -1444,14 +1508,6 @@ export function TradeBox(p: Props) {
       <div className="Exchange-swap-info-group">
         {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       </div>
-
-      <ConfirmationBox
-        isVisible={stage === "confirmation"}
-        error={buttonErrorText}
-        onClose={onConfirmationClose}
-        onSubmitted={onConfirmed}
-        setPendingTxns={setPendingTxns}
-      />
     </>
   );
 }

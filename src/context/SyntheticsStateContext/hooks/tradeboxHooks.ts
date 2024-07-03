@@ -6,11 +6,13 @@ import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
+  selectTradeboxExecutionFee,
   selectTradeboxExistingOrder,
   selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsWrapOrUnwrap,
   selectTradeboxLeverage,
   selectTradeboxLiquidity,
   selectTradeboxMarketAddress,
@@ -70,7 +72,9 @@ export const useTradeboxNextLeverageWithoutPnl = () => useSelector(selectTradebo
 export const useTradeboxChooseSuitableMarket = () => useSelector(selectTradeboxChooseSuitableMarket);
 export const useTradeboxGetMaxLongShortLiquidityPool = () => useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
-export const useTradeboxAdvancedOptions = () => useSelector(selectTradeboxAdvancedOptions);
 export const useTradeboxSetAdvancedOptions = () => useSelector(selectTradeboxSetAdvancedOptions);
-export const useTradeboxLiquidity = () => useSelector(selectTradeboxLiquidity);
 export const useTradeboxMaxLiquidityPath = () => useSelector(selectTradeboxMaxLiquidityPath);
+export const useTradeboxLiquidity = () => useSelector(selectTradeboxLiquidity);
+export const useTradeboxIsWrapOrUnwrap = () => useSelector(selectTradeboxIsWrapOrUnwrap);
+export const useTradeboxExecutionFee = () => useSelector(selectTradeboxExecutionFee);
+export const useTradeboxAdvancedOptions = () => useSelector(selectTradeboxAdvancedOptions);

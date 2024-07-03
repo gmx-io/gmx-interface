@@ -13,8 +13,10 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   useTradeboxAdvancedOptions,
   useTradeboxCollateralToken,
+  useTradeboxDecreasePositionAmounts,
   useTradeboxDefaultTriggerAcceptablePriceImpactBps,
   useTradeboxFees,
+  useTradeboxFromTokenAddress,
   useTradeboxIncreasePositionAmounts,
   useTradeboxLiquidity,
   useTradeboxMarketInfo,
@@ -25,26 +27,23 @@ import {
   useTradeboxToTokenAddress,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { OrderType } from "domain/synthetics/orders";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 
-// import Arrow from "img/ic_arrowright16.svg";
-
 export const RISK_THRESHOLD_BPS = 5000n;
 
-export function AdvancedDisplayRows() {
+export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible?: boolean }) {
   const { advancedDisplay: isVisible } = useTradeboxAdvancedOptions();
   const tradeFlags = useTradeboxTradeFlags();
-  const marketInfo = useTradeboxMarketInfo();
-  const collateralToken = useTradeboxCollateralToken();
-
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
+  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
 
   const setSelectedTriggerAcceptablePriceImpactBps = useTradeboxSetSelectedAcceptablePriceImpactBps();
   const selectedTriggerAcceptablePriceImpactBps = useTradeboxSelectedTriggerAcceptablePriceImpactBps();
@@ -54,7 +53,65 @@ export function AdvancedDisplayRows() {
   const { savedAllowedSlippage } = useSettings();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
 
-  const { isMarket, isLimit } = tradeFlags;
+  const { isMarket, isLimit, isTrigger } = tradeFlags;
+
+  const availableLiquidityRow = useAvailableLiquidityRow();
+  const collateralSpreadRow = useCollateralSpreadRow();
+  const swapSpreadRow = useSwapSpreadRow();
+
+  useEffect(() => {
+    setAllowedSlippage(savedAllowedSlippage);
+  }, [savedAllowedSlippage, isVisible]);
+
+  const enableAcceptableImpactInput =
+    (isLimit && increaseAmounts) ||
+    (isTrigger && decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease);
+
+  const acceptablePriceImpactBps = useMemo(() => {
+    return selectedTriggerAcceptablePriceImpactBps ?? 0n;
+  }, [selectedTriggerAcceptablePriceImpactBps]);
+
+  const recommendedAcceptablePriceImpactBps = useMemo(() => {
+    return defaultTriggerAcceptablePriceImpactBps ?? 0n;
+  }, [defaultTriggerAcceptablePriceImpactBps]);
+
+  const isZeroPrices = acceptablePriceImpactBps === 0n && recommendedAcceptablePriceImpactBps === 0n;
+
+  if (!isVisible && !enforceVisible) {
+    return null;
+  }
+
+  return (
+    <>
+      {swapSpreadRow}
+      {availableLiquidityRow}
+      {collateralSpreadRow}
+      {isMarket && (
+        <AllowedSlippageRow
+          defaultSlippage={savedAllowedSlippage}
+          allowedSlippage={allowedSlippage}
+          setSlippage={setAllowedSlippage}
+        />
+      )}
+      {(isLimit || isTrigger) && (
+        <AcceptablePriceImpactInputRow
+          notAvailable={!enableAcceptableImpactInput || isZeroPrices}
+          acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps ?? 0n}
+          recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps ?? 0n}
+          priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+          setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+        />
+      )}
+    </>
+  );
+}
+
+function useCollateralSpreadRow() {
+  const tradeFlags = useTradeboxTradeFlags();
+  const marketInfo = useTradeboxMarketInfo();
+  const collateralToken = useTradeboxCollateralToken();
+
+  const { isMarket, isSwap } = tradeFlags;
 
   const { indexToken } = marketInfo ?? {};
 
@@ -90,9 +147,7 @@ export function AdvancedDisplayRows() {
     initialCollateralSpread === 0n &&
     (collateralSpreadPercent ?? 0) < COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD;
 
-  const showCollateralSpread = isMarket && !isNearZeroFromStart;
-
-  const availableLiquidityRow = useAvailableLiquidityRow();
+  const showCollateralSpread = !isSwap && isMarket && !isNearZeroFromStart;
 
   useEffect(() => {
     if (collateralSpreadPercent !== undefined && initialCollateralSpread === undefined) {
@@ -100,38 +155,66 @@ export function AdvancedDisplayRows() {
     }
   }, [collateralSpreadPercent, initialCollateralSpread]);
 
-  useEffect(() => {
-    setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage, isVisible]);
-
-  if (!isVisible) {
+  if (!showCollateralSpread) {
     return null;
   }
 
   return (
-    <>
-      {availableLiquidityRow}
-      {showCollateralSpread && (
-        <ExchangeInfo.Row label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
-          {formatPercentage(collateralSpreadPercent)}
-        </ExchangeInfo.Row>
-      )}
-      {isMarket && (
-        <AllowedSlippageRow
-          defaultSlippage={savedAllowedSlippage}
-          allowedSlippage={allowedSlippage}
-          setSlippage={setAllowedSlippage}
-        />
-      )}
-      {isLimit && increaseAmounts && (
-        <AcceptablePriceImpactInputRow
-          acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
-          recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-          priceImpactFeeBps={fees?.positionPriceImpact?.bps}
-          setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
-        />
-      )}
-    </>
+    <ExchangeInfo.Row label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
+      {formatPercentage(collateralSpreadPercent)}
+    </ExchangeInfo.Row>
+  );
+}
+
+function useSwapSpreadRow() {
+  const tradeFlags = useTradeboxTradeFlags();
+  const tokenData = useTokensData();
+  const fromTokenAddress = useTradeboxFromTokenAddress();
+  const fromToken = getByKey(tokenData, fromTokenAddress);
+  const toTokenAddress = useTradeboxToTokenAddress();
+  const toToken = getByKey(tokenData, toTokenAddress);
+  const marketInfo = useTradeboxMarketInfo();
+  const indexToken = marketInfo?.indexToken;
+
+  const { isMarket, isSwap, isLong, isIncrease } = tradeFlags;
+
+  const swapSpreadInfo = useMemo(() => {
+    let spread = BigInt(0);
+
+    if (isSwap && fromToken && toToken) {
+      const fromSpread = getSpread(fromToken.prices);
+      const toSpread = getSpread(toToken.prices);
+
+      spread = fromSpread + toSpread;
+    } else if (isIncrease && fromToken && indexToken) {
+      const fromSpread = getSpread(fromToken.prices);
+      const toSpread = getSpread(indexToken.prices);
+
+      spread = fromSpread + toSpread;
+
+      if (isLong) {
+        spread = fromSpread;
+      }
+    }
+
+    const isHigh = spread > HIGH_SPREAD_THRESHOLD;
+
+    const showSpread = isMarket;
+
+    return { spread, showSpread, isHigh };
+  }, [isSwap, fromToken, toToken, isIncrease, indexToken, isMarket, isLong]);
+
+  if (!isSwap) {
+    return null;
+  }
+
+  return (
+    swapSpreadInfo.showSpread &&
+    swapSpreadInfo.spread !== undefined && (
+      <ExchangeInfo.Row label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
+        {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
+      </ExchangeInfo.Row>
+    )
   );
 }
 

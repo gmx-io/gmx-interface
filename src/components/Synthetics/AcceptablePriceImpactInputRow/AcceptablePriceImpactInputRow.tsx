@@ -7,8 +7,8 @@ import { formatPercentage } from "lib/numbers";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
-import "./AcceptablePriceImpactInputRow.scss";
 import { bigMath } from "lib/bigmath";
+import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
   acceptablePriceImpactBps?: bigint;
@@ -59,6 +59,14 @@ function AcceptablePriceImpactInputRowImpl({
     setValue(recommendedValue);
   }, [recommendedValue, setValue]);
 
+  if (notAvailable) {
+    return (
+      <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+        <span className="AcceptablePriceImpactInputRow-na">{t`NA`}</span>
+      </ExchangeInfoRow>
+    );
+  }
+
   if (recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return null;
   }
@@ -107,25 +115,23 @@ function AcceptablePriceImpactInputRowImpl({
     </p>
   );
 
-  const content = notAvailable ? (
-    t`NA`
-  ) : (
-    <PercentageInput
-      onChange={setValue}
-      defaultValue={initialValue}
-      value={value}
-      highValue={highValue}
-      highValueCheckStrategy="gt"
-      lowValue={recommendedValue}
-      suggestions={EMPTY_SUGGESTIONS}
-      highValueWarningText={highValueWarningText}
-      lowValueWarningText={lowValueWarningText}
-      negativeSign
-      tooltipPosition="bottom-end"
-    />
+  return (
+    <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+      <PercentageInput
+        onChange={setValue}
+        defaultValue={initialValue}
+        value={value}
+        highValue={highValue}
+        highValueCheckStrategy="gt"
+        lowValue={recommendedValue}
+        suggestions={EMPTY_SUGGESTIONS}
+        highValueWarningText={highValueWarningText}
+        lowValueWarningText={lowValueWarningText}
+        negativeSign
+        tooltipPosition="bottom-end"
+      />
+    </ExchangeInfoRow>
   );
-
-  return <ExchangeInfoRow label={t`Acceptable Price Impact`}>{content}</ExchangeInfoRow>;
 }
 
 export const AcceptablePriceImpactInputRow = memo(

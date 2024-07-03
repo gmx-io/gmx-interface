@@ -18,7 +18,7 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
-import { useCollateralInTooltipContent } from "./useCollateralInTooltipContent";
+import { useCollateralInTooltipContent } from "../hooks/useCollateralInTooltipContent";
 
 export type Props = {
   selectedMarketAddress?: string;

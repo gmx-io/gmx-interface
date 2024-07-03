@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useMemo, SetStateAction, Dispatch } from "react";
+import {
+  makeSelectTradeboxSidecarOrdersEntriesPristine,
+  makeSelectTradeboxSidecarOrdersState,
+  makeSelectTradeboxSidecarOrdersTotalPercentage,
+  selectTradeboxSidecarEntriesSetPristine,
+  selectTradeboxSidecarOrdersTotalSizeUsd,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePrevious } from "lib/usePrevious";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  makeSelectConfirmationBoxSidecarOrdersState,
-  makeSelectConfirmationBoxSidecarOrdersTotalPercentage,
-} from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
-import { selectConfirmationBoxSidecarOrdersTotalSizeUsd } from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
-import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntryField, getDefaultEntry } from "./utils";
-import { SidecarOrderEntryBase, EntryField, SidecarOrderEntryGroupBase, GroupPrefix } from "./types";
-import useEffectOnce from "lib/useEffectOnce";
-import { bigMath } from "lib/bigmath";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from "react";
+import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
+import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -25,7 +26,9 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   canAddEntry?: boolean;
   enablePercentage?: boolean;
 }): SidecarOrderEntryGroupBase<T> {
-  const totalPositionSizeUsd = useSelector(selectConfirmationBoxSidecarOrdersTotalSizeUsd);
+  const pristine = useSelector(makeSelectTradeboxSidecarOrdersEntriesPristine(prefix));
+  const setPristine = useSelector(selectTradeboxSidecarEntriesSetPristine);
+  const totalPositionSizeUsd = useSelector(selectTradeboxSidecarOrdersTotalSizeUsd);
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: bigint | null) => {
@@ -105,19 +108,21 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     return [];
   }, [initialEntries, prefix, canAddEntry, enablePercentage, errorHandler, recalculateEntryByField]);
 
-  const ordersState = useSelector(makeSelectConfirmationBoxSidecarOrdersState(prefix));
+  const ordersState = useSelector(makeSelectTradeboxSidecarOrdersState(prefix));
 
   const [entries, setEntries] = ordersState as any as [T[], Dispatch<SetStateAction<T[]>>];
 
-  useEffectOnce(() => {
-    setEntries(initialState);
-  });
+  useEffect(() => {
+    if (pristine) {
+      setEntries(initialState);
+    }
+  }, [initialState, setEntries, pristine]);
 
   useEffect(() => {
     setEntries((prevEntries) => prevEntries.map((entry) => errorHandler(entry)));
   }, [errorHandler, setEntries]);
 
-  const totalPercentage = useSelector(makeSelectConfirmationBoxSidecarOrdersTotalPercentage(prefix));
+  const totalPercentage = useSelector(makeSelectTradeboxSidecarOrdersTotalPercentage(prefix));
 
   const clampEntryPercentage = useCallback(
     (entries: SidecarOrderEntryBase[], entry: T) => {
@@ -139,6 +144,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     const leftPercentage = MAX_PERCENTAGE - totalPercentage;
 
     if (leftPercentage > 0) {
+      setPristine(prefix, false);
       setEntries((prevEntries) => [
         ...prevEntries,
         recalculateEntryByField(
@@ -150,10 +156,11 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         ),
       ]);
     }
-  }, [totalPercentage, enablePercentage, prefix, setEntries, recalculateEntryByField]);
+  }, [totalPercentage, enablePercentage, prefix, setEntries, recalculateEntryByField, setPristine]);
 
   const updateEntry = useCallback(
     (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => {
+      setPristine(prefix, false);
       setEntries((prevEntries) => {
         return prevEntries.map((entry) => {
           if (entry.id !== id) {
@@ -180,13 +187,14 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         });
       });
     },
-    [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler]
+    [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler, prefix, setPristine]
   );
 
   const reset = useCallback(() => setEntries(initialState), [initialState, setEntries]);
 
   const deleteEntry = useCallback(
     (id: string) => {
+      setPristine(prefix, false);
       setEntries((prevEntries) => {
         const isLastEntry = prevEntries.filter((entry) => entry.txnType !== "cancel").length <= 1;
 
@@ -211,7 +219,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         }, []);
       });
     },
-    [prefix, canAddEntry, enablePercentage, setEntries]
+    [prefix, canAddEntry, enablePercentage, setEntries, setPristine]
   );
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);

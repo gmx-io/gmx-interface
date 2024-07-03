@@ -1,16 +1,16 @@
+import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import {
-  selectTradeboxTradeFlags,
-  selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedPosition,
-} from "./tradeboxSelectors";
-import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
-import {
+  selectConfirmationBoxExistingLimitOrders,
   selectConfirmationBoxExistingSlOrders,
   selectConfirmationBoxExistingTpOrders,
-  selectConfirmationBoxExistingLimitOrders,
 } from "./confirmationBoxSelectors";
+import {
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxSelectedPosition,
+  selectTradeboxTradeFlags,
+} from "./tradeboxSelectors";
 
 export const selectConfirmationBoxSidecarOrdersSlEntries = (state: SyntheticsState) =>
   state.confirmationBox.sidecarOrders.slEntries;
