@@ -1316,7 +1316,7 @@ export default function StakeV2() {
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
 
-  const incentivesToken = useAnyAirdroppedTokenTitle();
+  const incentivesToken = useAnyAirdroppedTokenTitle(chainId);
 
   const [, setPendingTxns] = usePendingTxns();
 

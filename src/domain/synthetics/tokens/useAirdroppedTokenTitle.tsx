@@ -1,14 +1,12 @@
 import { getTokens } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import find from "lodash/find";
 import { Address, isAddressEqual } from "viem";
 import { getMarketIndexName, getMarketPoolName } from "../markets";
 
-export function useLpAirdroppedTokenTitle(): string | JSX.Element {
-  const chainId = useSelector(selectChainId);
+export function useLpAirdroppedTokenTitle(chainId: number): string | JSX.Element {
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const marketsInfoData = useMarketsInfoData();
 
@@ -45,38 +43,40 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
   return "";
 }
 
-export function useTradingAirdroppedTokenTitle(): string {
-  const tokensData = useTokensData();
-  const tradingIncentives = useTradingIncentives(tokensData);
+export function useTradingAirdroppedTokenTitle(chainId: number): string {
+  const tradingIncentives = useTradingIncentives(chainId);
   const marketsData = useSelector((s) => s.globals.markets.marketsData);
+  const tokensData = useTokensData();
 
   if (!marketsData || !tradingIncentives) {
     return "";
   }
 
-  const airdropToken = tradingIncentives.token;
+  const airdropTokenAddress = tradingIncentives.token;
 
-  if (!airdropToken) {
+  if (!airdropTokenAddress) {
     return "";
   }
 
-  const market = marketsData[airdropToken.address];
+  const market = marketsData[airdropTokenAddress];
 
   if (market) {
     const title = `GM: ${market.name}`;
     return title;
   }
 
-  if (airdropToken) {
-    return airdropToken.symbol;
+  const token = tokensData?.[airdropTokenAddress];
+
+  if (token) {
+    return token.symbol;
   }
 
   return "";
 }
 
-export function useAnyAirdroppedTokenTitle(): string | JSX.Element {
-  const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle();
-  const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle();
+export function useAnyAirdroppedTokenTitle(chainId: number): string | JSX.Element {
+  const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle(chainId);
+  const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle(chainId);
 
   return lpAirdroppedTokenTitle ?? tradingAirdroppedTokenTitle;
 }

@@ -16,12 +16,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getIncentivesV2Url } from "config/links";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import sparkleIcon from "img/sparkle.svg";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { getIncentivesV2Url } from "config/links";
-import sparkleIcon from "img/sparkle.svg";
-import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
 type Props = {
   totalFees?: FeeItem;
@@ -52,12 +51,12 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tokensData = useTokensData();
-  const tradingIncentives = useTradingIncentives(tokensData);
-  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
+  const tradingIncentives = useTradingIncentives(chainId);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle(chainId);
   const shouldShowRebate = p.shouldShowRebate ?? true;
+
   const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
+    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
