@@ -58,8 +58,8 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
       : marketInfo.swapImpactPoolAmountShort;
 
     if (impactDeltaAmount > maxImpactAmount) {
+      cappedDiffUsd = bigMath.mulDiv(impactDeltaAmount - maxImpactAmount, price, expandDecimals(1, token.decimals));
       impactDeltaAmount = maxImpactAmount;
-      cappedDiffUsd = (impactDeltaAmount - maxImpactAmount) * price;
     }
   } else {
     // round negative impactAmount up, this will be deducted from the user
