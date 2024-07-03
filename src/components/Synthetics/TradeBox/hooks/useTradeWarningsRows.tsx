@@ -89,7 +89,7 @@ export function useTradeboxWarningsRows() {
   const element = (
     <>
       {priceImpactWarningState.shouldShowWarning && (
-        <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
+        <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
       )}
       {highExecutionFeeAcknowledgement}
       {(needPayTokenApproval && fromToken && (

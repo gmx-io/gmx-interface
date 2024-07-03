@@ -1174,7 +1174,7 @@ export function ConfirmationBox(p: Props) {
 
   function renderHighPriceImpactWarning() {
     if (!priceImpactWarningState.shouldShowWarning) return null;
-    return <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />;
+    return <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />;
   }
 
   const [initialCollateralSpread, setInitialCollateralSpread] = useState<bigint | undefined>();

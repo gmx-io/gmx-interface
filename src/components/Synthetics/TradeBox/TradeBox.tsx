@@ -1492,7 +1492,7 @@ export function TradeBox(p: Props) {
               <ExchangeInfo.Group>
                 {priceImpactWarningState.shouldShowWarning && (
                   <HighPriceImpactWarning
-                    priceImpactWarinigState={priceImpactWarningState}
+                    priceImpactWarningState={priceImpactWarningState}
                     className="PositionEditor-allow-higher-slippage"
                   />
                 )}

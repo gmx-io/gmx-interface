@@ -746,7 +746,7 @@ export function PositionSeller(p: Props) {
                 <ExchangeInfo.Group>
                   <div className="PositionSeller-price-impact-warning">
                     {priceImpactWarningState.shouldShowWarning && (
-                      <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
+                      <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
                     )}
 
                     {highExecutionFeeAcknowledgement}
