@@ -24,6 +24,7 @@ import {
 } from "react";
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
+import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 
 import "./Tooltip.scss";
 
@@ -63,12 +64,11 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
 }: Props<T>) {
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
-  const { refs, floatingStyles, context } = useFloating({
+  const { refs, floatingStyles, context, middlewareData } = useFloating({
     middleware: [
       offset(10),
       flip(),
       shift(),
-      arrow({ element: arrowRef }),
       size({
         apply: (state) => {
           Object.assign(state.elements.floating.style, {
@@ -76,6 +76,8 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
           });
         },
       }),
+      arrow({ element: arrowRef }),
+      arrowColor(),
     ],
     placement: position,
     whileElementsMounted: autoUpdate,
@@ -96,16 +98,7 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
     event.preventDefault();
   }, []);
 
-  const arrowWidth = 14;
-  const popupWidth = refs.floating.current?.clientWidth ?? 1;
-  const popupLeftOffset = refs.floating.current?.getBoundingClientRect().left;
-  const arrowLeftOffsetRaw = arrowRef.current?.getBoundingClientRect().left;
-  let color = "rgb(49, 54, 85)";
-  if (popupLeftOffset !== undefined && arrowLeftOffsetRaw !== undefined) {
-    const arrowLeftOffset = arrowLeftOffsetRaw - popupLeftOffset + arrowWidth / 2;
-    const arrowLeftOffsetPercent = (arrowLeftOffset / popupWidth) * 100;
-    color = `color-mix(in srgb, rgba(49, 54, 85) ${arrowLeftOffsetPercent}%, rgba(37, 40, 65))`;
-  }
+  const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
 
   if (as) {
     const Container = as as any;

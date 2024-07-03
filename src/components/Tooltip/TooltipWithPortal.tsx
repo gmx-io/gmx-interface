@@ -1,7 +1,6 @@
 import {
   FloatingArrow,
   FloatingPortal,
-  Middleware,
   arrow,
   autoUpdate,
   flip,
@@ -14,10 +13,11 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import cx from "classnames";
+import React, { PropsWithChildren, useMemo, useRef, useState } from "react";
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
-import React, { PropsWithChildren, useMemo, useRef, useState } from "react";
 import { TooltipPosition } from "./Tooltip";
+import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 
 import "./Tooltip.scss";
 
@@ -44,27 +44,6 @@ type Props = PropsWithChildren<{
   maxAllowedWidth?: number;
   disabled?: boolean;
 }>;
-
-function arrowColor(): Middleware {
-  return {
-    name: "color",
-    fn: ({ rects, middlewareData }) => {
-      const arrowWidth = 14;
-      const popupWidth = rects.floating.width;
-      const arrowLeftOffset = middlewareData.arrow?.x;
-
-      let color = "rgb(49, 54, 85)";
-      if (popupWidth !== undefined && arrowLeftOffset !== undefined) {
-        const arrowLeftOffsetPercent = ((arrowLeftOffset + arrowWidth / 2) / popupWidth) * 100;
-        color = `color-mix(in srgb, rgba(49, 54, 85, 0.9) ${arrowLeftOffsetPercent}%, rgba(37, 40, 65, 0.9))`;
-      }
-
-      return {
-        data: { color },
-      };
-    },
-  };
-}
 
 export default function TooltipWithPortal({
   handle,
@@ -118,7 +97,7 @@ export default function TooltipWithPortal({
     onOpenChange: setVisible,
   });
 
-  const color = middlewareData?.color?.color ?? "rgb(49, 54, 85)";
+  const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
 
   const hover = useHover(context, {
     enabled: !disabled,
