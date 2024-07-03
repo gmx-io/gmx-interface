@@ -1,12 +1,14 @@
 import { getTokens } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import find from "lodash/find";
 import { Address, isAddressEqual } from "viem";
 import { getMarketIndexName, getMarketPoolName } from "../markets";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
-export function useLpAirdroppedTokenTitle(chainId: number): string | JSX.Element {
+export function useLpAirdroppedTokenTitle(): string | JSX.Element {
+  const chainId = useSelector(selectChainId);
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const marketsInfoData = useMarketsInfoData();
 
@@ -43,12 +45,13 @@ export function useLpAirdroppedTokenTitle(chainId: number): string | JSX.Element
   return "";
 }
 
-export function useTradingAirdroppedTokenTitle(chainId: number): string {
+export function useTradingAirdroppedTokenTitle(): string | JSX.Element {
+  const chainId = useSelector(selectChainId);
   const tradingIncentives = useTradingIncentives(chainId);
-  const marketsData = useSelector((s) => s.globals.markets.marketsData);
+  const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
-  if (!marketsData || !tradingIncentives) {
+  if (!marketsInfoData || !tradingIncentives) {
     return "";
   }
 
@@ -58,10 +61,19 @@ export function useTradingAirdroppedTokenTitle(chainId: number): string {
     return "";
   }
 
-  const market = marketsData[airdropTokenAddress];
+  const marketInfo = marketsInfoData[airdropTokenAddress];
 
-  if (market) {
-    const title = `GM: ${market.name}`;
+  if (marketInfo) {
+    const indexName = getMarketIndexName(marketInfo);
+    const poolName = getMarketPoolName(marketInfo);
+
+    const title = (
+      <span className="inline-flex items-center">
+        <span>GM: {indexName}</span>
+        <span className="ml-2 text-12 leading-1 text-gray-300">[{poolName}]</span>
+      </span>
+    );
+
     return title;
   }
 
@@ -74,9 +86,9 @@ export function useTradingAirdroppedTokenTitle(chainId: number): string {
   return "";
 }
 
-export function useAnyAirdroppedTokenTitle(chainId: number): string | JSX.Element {
-  const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle(chainId);
-  const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle(chainId);
+export function useAnyAirdroppedTokenTitle(): string | JSX.Element {
+  const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle();
+  const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle();
 
   return lpAirdroppedTokenTitle ?? tradingAirdroppedTokenTitle;
 }

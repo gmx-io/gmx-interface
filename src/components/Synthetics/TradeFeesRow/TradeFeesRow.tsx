@@ -52,7 +52,7 @@ type FeeRow = {
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
   const tradingIncentives = useTradingIncentives(chainId);
-  const incentivesTokenTitle = useTradingAirdroppedTokenTitle(chainId);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
 
   const rebateIsApplicable =

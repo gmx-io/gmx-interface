@@ -26,7 +26,7 @@ export function AprInfo({
   const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData;
-  const airdropTokenTitle = useLpAirdroppedTokenTitle(chainId);
+  const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
