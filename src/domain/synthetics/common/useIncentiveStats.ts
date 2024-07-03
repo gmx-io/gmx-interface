@@ -1,10 +1,9 @@
 import { addDays, set, startOfWeek } from "date-fns";
 import { useChainId } from "lib/chains";
-import { getByKey } from "lib/objects";
 import { mapValues } from "lodash";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { RawIncentivesStats, TokensData, useOracleKeeperFetcher } from "../tokens";
+import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();
@@ -39,8 +38,7 @@ export const useLiquidityProvidersIncentives = (chainId: number) => {
 
 export type TradingIncentives = ReturnType<typeof useTradingIncentives>;
 
-export const useTradingIncentives = (tokensData: TokensData | undefined) => {
-  const { chainId } = useChainId();
+export const useTradingIncentives = (chainId: number) => {
   const incentiveStats = useIncentiveStats(chainId);
 
   const startOfPeriod = useMemo(() => {
@@ -69,14 +67,13 @@ export const useTradingIncentives = (tokensData: TokensData | undefined) => {
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
 
     const tokenAddress = raw.token ?? (incentiveStats?.lp.isActive ? incentiveStats.lp.token : null);
-    const token = tokenAddress ? getByKey(tokensData, tokenAddress) : undefined;
 
     return {
       allocation,
       period: raw.period,
       nextPeriodStart,
       rebatePercent,
-      token,
+      token: tokenAddress,
     };
-  }, [incentiveStats, startOfPeriod, tokensData]);
+  }, [incentiveStats, startOfPeriod]);
 };
