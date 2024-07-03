@@ -5,6 +5,7 @@ import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticallWorker } from "./executeMulticallWorker";
+import { executeMulticall } from "./utils";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -26,6 +27,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
+    inWorker?: boolean;
   }
 ) {
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
@@ -56,7 +58,12 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           throw new Error(`Multicall request is empty`);
         }
 
-        const responseOrFailure: any = await executeMulticallWorker(chainId, request);
+        let responseOrFailure: any;
+        if (params.inWorker) {
+          responseOrFailure = await executeMulticallWorker(chainId, request);
+        } else {
+          responseOrFailure = await executeMulticall(chainId, request);
+        }
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;

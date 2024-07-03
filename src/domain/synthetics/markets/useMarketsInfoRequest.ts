@@ -68,6 +68,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const isDepencenciesLoading = !marketsAddresses || !tokensData;
 
   const { data } = useMulticall(chainId, "useMarketsInfo", {
+    inWorker: true,
     key: !isDepencenciesLoading &&
       marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account, pricesUpdatedAt],
 
