@@ -855,6 +855,15 @@ input.Exchange-swap-input.small {
   opacity: 1;
 }
 
+.Exchange-swap-ball[disabled] {
+  background: var(--primary-btn-hover);
+  cursor: not-allowed;
+}
+
+.Exchange-swap-ball[disabled] .Exchange-swap-ball-icon {
+  opacity: 0.8;
+}
+
 table.Exchange-list-small {
   width: 100%;
   background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);
