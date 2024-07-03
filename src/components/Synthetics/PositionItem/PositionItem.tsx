@@ -78,7 +78,6 @@ export function PositionItem(p: Props) {
       <Tooltip
         handle={formatUsd(p.position.netValue)}
         position={p.isLarge ? "bottom-start" : "bottom-end"}
-        handleClassName="plain"
         renderContent={() => (
           <div>
             {p.position.uiFeeUsd > 0
@@ -148,7 +147,7 @@ export function PositionItem(p: Props) {
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
-            handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
+            handleClassName={cx({ negative: p.position.hasLowCollateral })}
             renderContent={() => {
               const fundingFeeRateUsd = getFundingFeeRateUsd(
                 p.position.marketInfo,
@@ -315,7 +314,7 @@ export function PositionItem(p: Props) {
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position="bottom-end"
-          handleClassName={cx("plain", {
+          handleClassName={cx({
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
           })}
@@ -352,7 +351,6 @@ export function PositionItem(p: Props) {
                 </>
               }
               position="bottom-start"
-              handleClassName="plain"
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
@@ -708,7 +706,6 @@ function PositionItemOrdersLarge({
         handleClassName={cx([
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
-          "plain",
           "clickable",
           "text-gray-300",
         ])}

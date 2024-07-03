@@ -1,21 +1,25 @@
-import React, {
-  CSSProperties,
-  MouseEvent,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import {
+  FloatingArrow,
+  FloatingPortal,
+  Middleware,
+  arrow,
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  size,
+  useClick,
+  useFloating,
+  useHover,
+  useInteractions,
+} from "@floating-ui/react";
 import cx from "classnames";
 
-import "./Tooltip.scss";
-import { IS_TOUCH } from "config/env";
-import Portal from "../Common/Portal";
-import { TooltipPosition } from "./Tooltip";
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
-import { computePosition, flip, size } from "@floating-ui/dom";
+import React, { PropsWithChildren, useMemo, useRef, useState } from "react";
+import { TooltipPosition } from "./Tooltip";
+
+import "./Tooltip.scss";
 
 type Props = PropsWithChildren<{
   /**
@@ -41,19 +45,32 @@ type Props = PropsWithChildren<{
   disabled?: boolean;
 }>;
 
-type Coords = {
-  height?: number;
-  width?: number;
-  left?: number;
-  top?: number;
-};
+function arrowColor(): Middleware {
+  return {
+    name: "color",
+    fn: ({ rects, middlewareData }) => {
+      const arrowWidth = 14;
+      const popupWidth = rects.floating.width;
+      const arrowLeftOffset = middlewareData.arrow?.x;
+
+      let color = "rgb(49, 54, 85)";
+      if (popupWidth !== undefined && arrowLeftOffset !== undefined) {
+        const arrowLeftOffsetPercent = ((arrowLeftOffset + arrowWidth / 2) / popupWidth) * 100;
+        color = `color-mix(in srgb, rgba(49, 54, 85, 0.9) ${arrowLeftOffsetPercent}%, rgba(37, 40, 65, 0.9))`;
+      }
+
+      return {
+        data: { color },
+      };
+    },
+  };
+}
 
 export default function TooltipWithPortal({
   handle,
   renderContent,
   content,
   position = DEFAULT_TOOLTIP_POSITION,
-  trigger = "hover",
   className,
   portalClassName,
   popupClassName,
@@ -65,138 +82,77 @@ export default function TooltipWithPortal({
   openDelay = TOOLTIP_OPEN_DELAY,
   closeDelay = TOOLTIP_CLOSE_DELAY,
   shouldStopPropagation,
-  maxAllowedWidth,
+  maxAllowedWidth = 350,
   disabled,
   children,
 }: Props) {
   const [visible, setVisible] = useState(false);
-  const [coords, setCoords] = useState<Coords>({});
-  const [tooltipWidth, setTooltipWidth] = useState<string>();
-  const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
-  const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const arrowRef = useRef<SVGSVGElement>(null);
+  const { refs, floatingStyles, context, middlewareData } = useFloating({
+    middleware: [
+      offset(10),
+      flip(),
+      shift(),
+      size({
+        apply: (state) => {
+          if (maxAllowedWidth) {
+            Object.assign(state.elements.floating.style, {
+              maxWidth: `${maxAllowedWidth}px`,
+            });
+          }
 
-  const handlerRef = useRef<HTMLSpanElement>(null);
-  const popupRef = useRef<HTMLDivElement>(null);
+          if (fitHandleWidth) {
+            Object.assign(state.elements.floating.style, {
+              maxWidth: `${state.rects.reference.width}px`,
+              minWidth: `${state.rects.reference.width}px`,
+            });
+          }
+        },
+      }),
+      arrow({ element: arrowRef }),
+      arrowColor(),
+    ],
+    placement: position,
+    whileElementsMounted: autoUpdate,
+    open: visible,
+    onOpenChange: setVisible,
+  });
 
-  const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
+  const color = middlewareData?.color?.color ?? "rgb(49, 54, 85)";
 
-  useEffect(() => {
-    async function computeTooltipPlacement() {
-      if (!handlerRef.current || !popupRef.current) return;
-
-      const { placement } = await computePosition(handlerRef.current, popupRef.current, {
-        middleware: [
-          flip({ fallbackStrategy: "initialPlacement" }),
-          size({
-            padding: 10,
-            apply({ availableWidth, elements }) {
-              const { floating } = elements;
-              if (!floating) return;
-              const maxWidth = maxAllowedWidth ?? floating.offsetWidth;
-              const minWidth = Math.min(availableWidth, maxWidth);
-              Object.assign(floating.style, {
-                minWidth: `${minWidth}px`,
-                maxWidth: `${maxWidth}px`,
-              });
-            },
-          }),
-        ].filter(Boolean),
-        placement: position,
-      });
-      setComputedPlacement(placement);
-    }
-
-    computeTooltipPlacement();
-  }, [visible, position, maxAllowedWidth]);
-
-  const updateTooltipCoords = useCallback(() => {
-    const rect = handlerRef?.current?.getBoundingClientRect();
-
-    if (rect) {
-      setCoords({
-        height: rect.height,
-        width: rect.width,
-        left: rect.x,
-        top: rect.y + window.scrollY,
-      });
-      if (fitHandleWidth) {
-        setTooltipWidth(`${rect.width}px`);
-      }
-    }
-  }, [handlerRef, fitHandleWidth]);
-
-  const onMouseEnter = useCallback(() => {
-    if (trigger !== "hover" || IS_TOUCH) return;
-
-    if (intervalCloseRef.current) {
-      clearInterval(intervalCloseRef.current);
-      intervalCloseRef.current = null;
-    }
-    if (!intervalOpenRef.current) {
-      intervalOpenRef.current = setTimeout(() => {
-        setVisible(true);
-        intervalOpenRef.current = null;
-      }, openDelay);
-    }
-    updateTooltipCoords();
-  }, [setVisible, trigger, updateTooltipCoords, openDelay]);
-
-  const onMouseClick = useCallback(
-    (event: MouseEvent) => {
-      if (shouldStopPropagation) {
-        event.stopPropagation();
-      }
-      if (trigger !== "click" && !IS_TOUCH) return;
-      if (intervalCloseRef.current) {
-        clearInterval(intervalCloseRef.current);
-        intervalCloseRef.current = null;
-      }
-      if (intervalOpenRef.current) {
-        clearInterval(intervalOpenRef.current);
-        intervalOpenRef.current = null;
-      }
-      updateTooltipCoords();
-
-      if (closeOnDoubleClick) {
-        setVisible((old) => !old);
-      } else {
-        setVisible(true);
-      }
+  const hover = useHover(context, {
+    enabled: !disabled,
+    delay: {
+      open: openDelay,
+      close: closeDelay,
     },
-    [closeOnDoubleClick, shouldStopPropagation, trigger, updateTooltipCoords]
+  });
+  const click = useClick(context, {
+    enabled: !disabled && closeOnDoubleClick,
+    toggle: closeOnDoubleClick,
+  });
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click]);
+
+  const referenceProps = useMemo(
+    () =>
+      getReferenceProps({
+        onClick: (e) => {
+          if (shouldStopPropagation) {
+            e.stopPropagation();
+          }
+        },
+      }),
+    [getReferenceProps, shouldStopPropagation]
   );
-
-  const onMouseLeave = useCallback(() => {
-    intervalCloseRef.current = setTimeout(() => {
-      setVisible(false);
-      intervalCloseRef.current = null;
-    }, closeDelay);
-
-    if (intervalOpenRef.current) {
-      clearInterval(intervalOpenRef.current);
-      intervalOpenRef.current = null;
-    }
-    updateTooltipCoords();
-  }, [setVisible, updateTooltipCoords, closeDelay]);
-
-  const onHandleClick = useCallback((event: MouseEvent) => {
-    event.preventDefault();
-  }, []);
-
-  const portalStyle = useMemo<CSSProperties>(() => ({ ...coords, position: "absolute" }), [coords]);
-  const popupStyle = useMemo(() => ({ width: tooltipWidth }), [tooltipWidth]);
+  const floatingProps = useMemo(() => getFloatingProps({ onClick: (e) => e.stopPropagation() }), [getFloatingProps]);
 
   return (
-    <span
-      className={cx("Tooltip", className)}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={onMouseClick}
-    >
+    <span className={cx("Tooltip", className)}>
       <span
-        className={cx({ "Tooltip-handle": !disableHandleStyle }, [handleClassName], { active: visible })}
-        onClick={onHandleClick}
-        ref={handlerRef}
+        className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
+        ref={refs.setReference}
+        {...referenceProps}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (
@@ -205,18 +161,19 @@ export default function TooltipWithPortal({
           <>{handle || children}</>
         )}
       </span>
-      {visible && coords.left && !disabled && (
-        <Portal>
-          <div style={portalStyle} className={portalClassName}>
-            <div
-              ref={popupRef}
-              className={cx(["Tooltip-popup z-index-1001", computedPlacement, popupClassName])}
-              style={popupStyle}
-            >
-              {content ?? renderContent?.()}
-            </div>
+
+      {visible && (
+        <FloatingPortal>
+          <div
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className={cx("Tooltip-popup z-[1001]", portalClassName, popupClassName)}
+            {...floatingProps}
+          >
+            <FloatingArrow ref={arrowRef} context={context} fill={color} />
+            {content ?? renderContent?.()}
           </div>
-        </Portal>
+        </FloatingPortal>
       )}
     </span>
   );

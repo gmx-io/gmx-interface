@@ -283,7 +283,6 @@ export default function OrdersList(props) {
               className="order-error"
               handle={orderTitle}
               position="bottom-end"
-              handleClassName="plain"
               renderContent={() => <span className="negative">{error}</span>}
             />
           ) : (
@@ -489,7 +488,6 @@ export default function OrdersList(props) {
                   className="order-error"
                   handle={orderTitle}
                   position="bottom-start"
-                  handleClassName="plain"
                   renderContent={() => <span className="negative">{error}</span>}
                 />
               ) : (
