@@ -688,7 +688,6 @@ function PositionItemOrdersLarge({
     <div>
       <Tooltip
         className="Position-list-active-orders"
-        maxAllowedWidth={370}
         handle={
           <Trans>
             Orders{" "}
@@ -709,7 +708,8 @@ function PositionItemOrdersLarge({
           "clickable",
           "text-gray-300",
         ])}
-        tooltipClassName="!z-10"
+        maxAllowedWidth={370}
+        tooltipClassName="!z-10 w-[370px]"
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
             <div className="font-bold">
