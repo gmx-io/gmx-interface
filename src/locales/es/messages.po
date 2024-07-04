@@ -3332,8 +3332,8 @@ msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for 
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
-msgid "The execution price for the limit order updates in real-time on the orders tab after order creation to guarantee that you receive the minimum receive amount."
-msgstr ""
+#~ msgid "The execution price for the limit order updates in real-time on the orders tab after order creation to guarantee that you receive the minimum receive amount."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap amount exceeds Available Liquidity."
@@ -3417,9 +3417,9 @@ msgstr ""
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created."
-#~ msgstr ""
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
+msgid "Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created."
+msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -5807,7 +5807,6 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
 msgid "Limit Price"
 msgstr "Precio límite"
@@ -6954,7 +6953,6 @@ msgstr "GLP adquirido no retirado"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/EntryPriceRow.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "Precio de Entrada"
