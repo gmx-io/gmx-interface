@@ -492,9 +492,7 @@ function MintableAmount({
           </p>
           <br />
           <StatsTooltipRow label={`Max ${longToken.symbol}`} value={longTokenMaxValue} />
-          {!market?.isSameCollaterals && (
-            <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
-          )}
+          <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
         </>
       )}
     />

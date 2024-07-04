@@ -239,17 +239,12 @@ export function MarketStats(p: Props) {
                       value={maxLongTokenValue}
                       showDollar={false}
                     />
-
-                    {!marketInfo?.isSameCollaterals && (
-                      <>
-                        <br />
-                        <StatsTooltipRow
-                          label={t`Max ${marketInfo?.shortToken.symbol}`}
-                          value={maxShortTokenValue}
-                          showDollar={false}
-                        />
-                      </>
-                    )}
+                    <br />
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.shortToken.symbol}`}
+                      value={maxShortTokenValue}
+                      showDollar={false}
+                    />
                   </div>
                 }
               />
