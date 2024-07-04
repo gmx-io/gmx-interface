@@ -1713,7 +1713,7 @@ msgstr "Comprobando código..."
 msgid "GM Pools"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
 
@@ -1924,7 +1924,7 @@ msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral Spread"
 msgstr ""
 
@@ -2424,6 +2424,10 @@ msgstr "Cantidad Actual en la Reserva"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "Cancelación fallida."
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3327,6 +3331,10 @@ msgstr ""
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
+msgid "The execution price for the limit order updates in real-time on the orders tab after order creation to guarantee that you receive the minimum receive amount."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap amount exceeds Available Liquidity."
 msgstr ""
@@ -4153,7 +4161,7 @@ msgstr ""
 msgid "Yield simulator for GMX"
 msgstr "Simulador de rendimientos para GMX"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
 msgstr ""
 
@@ -4200,7 +4208,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Available Liquidity"
 msgstr "Liquidez Disponible"
 
@@ -4386,7 +4394,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/SwapSpreadRow.tsx
 msgid "Spread"
 msgstr "Deslizamiento"
 
@@ -4613,7 +4621,7 @@ msgstr ""
 msgid "Top PnL (%)"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
@@ -5487,8 +5495,8 @@ msgid "Max Out"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
-msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
-msgstr ""
+#~ msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -5800,6 +5808,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
 msgid "Limit Price"
 msgstr "Precio límite"
 
@@ -6942,10 +6951,10 @@ msgstr "GLP adquirido no retirado"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/EntryPriceRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "Precio de Entrada"
@@ -7339,7 +7348,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx

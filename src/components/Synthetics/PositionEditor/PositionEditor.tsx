@@ -694,14 +694,6 @@ export function PositionEditor(p: Props) {
 
               <ExchangeInfo.Group>
                 <ExchangeInfoRow
-                  label={t`Entry Price`}
-                  value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
-                />
-                <ExchangeInfoRow
-                  label={t`Mark Price`}
-                  value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
-                />
-                <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={
                     <ValueTransition

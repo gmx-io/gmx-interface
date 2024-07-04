@@ -59,16 +59,12 @@ function AcceptablePriceImpactInputRowImpl({
     setValue(recommendedValue);
   }, [recommendedValue, setValue]);
 
-  if (notAvailable) {
+  if (notAvailable || recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return (
       <ExchangeInfoRow label={t`Acceptable Price Impact`}>
         <span className="AcceptablePriceImpactInputRow-na">{t`NA`}</span>
       </ExchangeInfoRow>
     );
-  }
-
-  if (recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
-    return null;
   }
 
   const recommendedHandle = (

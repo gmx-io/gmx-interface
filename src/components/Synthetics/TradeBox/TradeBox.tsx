@@ -121,6 +121,8 @@ import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
 import { TradeBoxAdvancedRows } from "./TradeBoxRows/AdvancedRows";
+import { EntryPriceRow } from "./TradeBoxRows/EntryPriceRow";
+import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 import { useRequiredActions } from "./hooks/useRequiredActions";
@@ -1207,21 +1209,8 @@ export function TradeBox(p: Props) {
   }
 
   function renderIncreaseOrderInfo() {
-    const toTokenPriceDecimals = toToken?.priceDecimals;
-
     return (
       <>
-        {isLimit && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Limit Price`}
-            value={
-              formatUsd(triggerPrice, {
-                displayDecimals: toTokenPriceDecimals,
-              }) || "-"
-            }
-          />
-        )}
         <ExecutionPriceRow
           tradeFlags={tradeFlags}
           displayDecimals={toToken?.priceDecimals}
@@ -1229,30 +1218,7 @@ export function TradeBox(p: Props) {
           executionPrice={executionPrice ?? undefined}
           triggerOrderType={fixedTriggerOrderType}
         />
-
-        {selectedPosition && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Entry Price`}
-            value={
-              nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
-                <ValueTransition
-                  from={formatUsd(selectedPosition?.entryPrice, {
-                    displayDecimals: toToken?.priceDecimals,
-                  })}
-                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                    displayDecimals: toToken?.priceDecimals,
-                  })}
-                />
-              ) : (
-                formatUsd(markPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              )
-            }
-          />
-        )}
-
+        <EntryPriceRow />
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
@@ -1457,6 +1423,7 @@ export function TradeBox(p: Props) {
               <TradeBoxAdvancedRows />
 
               <ExchangeInfo.Group>
+                <LimitPriceRow />
                 {isIncrease && renderIncreaseOrderInfo()}
                 {isTrigger && renderTriggerOrderInfo()}
               </ExchangeInfo.Group>

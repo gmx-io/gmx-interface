@@ -1,3 +1,4 @@
+import { getByKey } from "lib/objects";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAvailableTokensOptions,
@@ -15,6 +16,7 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxLeverage,
   selectTradeboxLiquidity,
+  selectTradeboxMarkPrice,
   selectTradeboxMarketAddress,
   selectTradeboxMarketInfo,
   selectTradeboxMaxLiquidityPath,
@@ -35,8 +37,10 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTradeType,
+  selectTradeboxTriggerPrice,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
+import { useTokensData } from "./globalsHooks";
 
 export const useTradeboxTradeFlags = () => useSelector(selectTradeboxTradeFlags);
 export const useTradeboxState = () => useSelector(selectTradeboxState);
@@ -78,3 +82,19 @@ export const useTradeboxLiquidity = () => useSelector(selectTradeboxLiquidity);
 export const useTradeboxIsWrapOrUnwrap = () => useSelector(selectTradeboxIsWrapOrUnwrap);
 export const useTradeboxExecutionFee = () => useSelector(selectTradeboxExecutionFee);
 export const useTradeboxAdvancedOptions = () => useSelector(selectTradeboxAdvancedOptions);
+export const useTradeboxMarkPrice = () => useSelector(selectTradeboxMarkPrice);
+export const useTradeboxTriggerPrice = () => useSelector(selectTradeboxTriggerPrice);
+
+export const useToToken = () => {
+  const toToken = useTradeboxToTokenAddress();
+  const tokenData = useTokensData();
+
+  return getByKey(tokenData, toToken);
+};
+
+export const useFromToken = () => {
+  const fromToken = useTradeboxFromTokenAddress();
+  const tokenData = useTokensData();
+
+  return getByKey(tokenData, fromToken);
+};

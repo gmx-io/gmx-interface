@@ -453,13 +453,9 @@ export function PositionSeller(p: Props) {
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
   const acceptablePriceImpactInputRow = (() => {
-    if (!decreaseAmounts) {
-      return;
-    }
-
     return (
       <AcceptablePriceImpactInputRow
-        notAvailable={!triggerPriceInputValue || isStopLoss}
+        notAvailable={!triggerPriceInputValue || isStopLoss || !decreaseAmounts}
         acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         priceImpactFeeBps={fees?.positionPriceImpact?.bps}
@@ -683,22 +679,7 @@ export function PositionSeller(p: Props) {
 
             <ExchangeInfo className="PositionEditor-info-box">
               <ExchangeInfo.Group>
-                <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
-
-                <div className="PositionEditor-keep-leverage-settings">
-                  <ToggleSwitch
-                    textClassName="Exchange-info-label"
-                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                    setIsChecked={setKeepLeverage}
-                    disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
-                  >
-                    {keepLeverageTextElem}
-                  </ToggleSwitch>
-                </div>
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                {isTrigger && !isStopLoss && acceptablePriceImpactInputRow}
+                {isTrigger && acceptablePriceImpactInputRow}
                 {!isTrigger && (
                   <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />
                 )}
@@ -711,6 +692,18 @@ export function PositionSeller(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
+                <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
+
+                <div className="PositionEditor-keep-leverage-settings">
+                  <ToggleSwitch
+                    textClassName="Exchange-info-label"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
+                  >
+                    {keepLeverageTextElem}
+                  </ToggleSwitch>
+                </div>
                 {sizeRow}
                 {pnlRow}
 
