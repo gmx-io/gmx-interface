@@ -376,32 +376,13 @@ export function useTradeboxState(
     });
   }, [setStoredOptions]);
 
-  const swappedStoredOptions = useMemo(() => {
-    if (storedOptions.tradeType === TradeType.Swap) {
-      return {
-        ...storedOptions,
-        tokens: {
-          ...storedOptions.tokens,
-          fromTokenAddress: storedOptions.tokens.swapToTokenAddress,
-          swapToTokenAddress: storedOptions.tokens.fromTokenAddress,
-        },
-      };
-    }
-
-    return {
-      ...storedOptions,
-      tokens: {
-        ...storedOptions.tokens,
-        fromTokenAddress: storedOptions.tokens.indexTokenAddress,
-        indexTokenAddress: storedOptions.tokens.fromTokenAddress,
-      },
-    };
-  }, [storedOptions]);
-
   const isSwitchTokensAllowed = useMemo(() => {
     if (storedOptions.tradeType === TradeType.Swap) {
       return true;
     }
+
+    const desirablePayAddress = storedOptions.tokens.indexTokenAddress;
+    const desirableToAddress = storedOptions.tokens.fromTokenAddress;
 
     const swappedOptionsWithFallback = fallbackPositionTokens(
       chainId,
@@ -410,36 +391,26 @@ export function useTradeboxState(
         ...storedOptions,
         tokens: {
           ...storedOptions.tokens,
-          fromTokenAddress: storedOptions.tokens.indexTokenAddress,
-          indexTokenAddress: storedOptions.tokens.fromTokenAddress,
+          fromTokenAddress: desirablePayAddress,
+          indexTokenAddress: desirableToAddress,
         },
       },
       availableSwapTokenAddresses,
       availableTokensOptions.sortedAllMarkets
     );
 
-    const targetPayAddress = swappedStoredOptions.tokens.fromTokenAddress;
     const nextPayAddress = swappedOptionsWithFallback.tokens.fromTokenAddress;
-
-    const targetToAddress = swappedStoredOptions.tokens.indexTokenAddress;
     const nextToAddress = swappedOptionsWithFallback.tokens.indexTokenAddress;
 
-    if (!targetPayAddress || !nextPayAddress || !targetToAddress || !nextToAddress) {
+    if (!desirablePayAddress || !nextPayAddress || !desirableToAddress || !nextToAddress) {
       return false;
     }
 
     return (
-      isSimilarToken(getToken(chainId, targetPayAddress), getToken(chainId, nextPayAddress)) ||
-      isSimilarToken(getToken(chainId, targetToAddress), getToken(chainId, nextToAddress))
+      isSimilarToken(getToken(chainId, desirablePayAddress), getToken(chainId, nextPayAddress)) ||
+      isSimilarToken(getToken(chainId, desirableToAddress), getToken(chainId, nextToAddress))
     );
-  }, [
-    chainId,
-    storedOptions,
-    availableSwapTokenAddresses,
-    availableTokensOptions.sortedAllMarkets,
-    swappedStoredOptions.tokens.fromTokenAddress,
-    swappedStoredOptions.tokens.indexTokenAddress,
-  ]);
+  }, [chainId, storedOptions, availableSwapTokenAddresses, availableTokensOptions.sortedAllMarkets]);
 
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
