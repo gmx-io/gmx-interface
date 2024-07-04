@@ -21,6 +21,7 @@ async function run(event) {
       return;
     }
   } else if (type === "map") {
+    performance.mark("hashData-worker-map-start");
     const { map, id } = event.data;
 
     const result = {};
@@ -43,6 +44,8 @@ async function run(event) {
       id,
       result,
     });
+    performance.mark("hashData-worker-map-end");
+    performance.measure("hashData-worker-map", "hashData-worker-map-start", "hashData-worker-map-end");
     return;
   }
 }

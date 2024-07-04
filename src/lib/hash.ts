@@ -5,6 +5,7 @@ const dataCache = new Map<string, string>();
 export function hashData(dataTypes, dataValues) {
   const key = JSON.stringify({ dataTypes, dataValues });
   if (dataCache.has(key)) {
+    performance.mark("hashData-cache-hit");
     return dataCache.get(key)!;
   }
 

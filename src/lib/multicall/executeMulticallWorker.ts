@@ -27,6 +27,7 @@ const promises = new Map<string, { resolve: any; reject: any }>();
 
 export async function executeMulticallWorker(chainId: number, request: any) {
   const id = uniqueId("multicall-");
+
   executorWorker.postMessage({
     id,
     chainId,
