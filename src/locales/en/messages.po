@@ -193,6 +193,7 @@ msgstr "Enable leverage sent."
 msgid "Show error"
 msgstr "Show error"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
@@ -4175,8 +4176,8 @@ msgid "Reserve Amount"
 msgstr "Reserve Amount"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-msgstr "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
+#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
+#~ msgstr "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
@@ -5696,6 +5697,7 @@ msgstr "Buy / Sell GLP"
 msgid "Open {0} in Explorer"
 msgstr "Open {0} in Explorer"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."

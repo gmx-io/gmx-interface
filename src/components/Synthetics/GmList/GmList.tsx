@@ -6,13 +6,14 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxPoolUsdForDeposit,
+  getMaxPoolUsd,
   getMintableMarketTokens,
+  getPoolUsdWithoutPnl,
   getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMedia } from "react-use";
 import "./GmList.scss";
@@ -432,17 +433,31 @@ function MintableAmount({
 }) {
   const longTokenMaxValue = useMemo(
     () => [
-      formatUsd(mintableInfo?.longDepositCapacityUsd),
-      `(${formatUsd(convertToUsd(market.longPoolAmount, longToken.decimals, longToken.prices?.minPrice))} / ${formatUsd(getMaxPoolUsdForDeposit(market, true))})`,
+      mintableInfo
+        ? formatTokenAmountWithUsd(
+            mintableInfo.longDepositCapacityAmount,
+            mintableInfo.longDepositCapacityUsd,
+            longToken.symbol,
+            longToken.decimals
+          )
+        : "-",
+      `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
     ],
-    [longToken.decimals, longToken.prices?.minPrice, market, mintableInfo?.longDepositCapacityUsd]
+    [longToken.decimals, longToken.symbol, market, mintableInfo]
   );
   const shortTokenMaxValue = useMemo(
     () => [
-      formatUsd(mintableInfo?.shortDepositCapacityUsd),
-      `(${formatUsd(convertToUsd(market.shortPoolAmount, shortToken.decimals, shortToken.prices?.minPrice))} / ${formatUsd(getMaxPoolUsdForDeposit(market, false))})`,
+      mintableInfo
+        ? formatTokenAmountWithUsd(
+            mintableInfo.shortDepositCapacityAmount,
+            mintableInfo.shortDepositCapacityUsd,
+            shortToken.symbol,
+            shortToken.decimals
+          )
+        : "-",
+      `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
     ],
-    [market, mintableInfo?.shortDepositCapacityUsd, shortToken.decimals, shortToken.prices?.minPrice]
+    [market, mintableInfo, shortToken.decimals, shortToken.symbol]
   );
 
   return (
@@ -466,14 +481,20 @@ function MintableAmount({
       renderContent={() => (
         <>
           <p className="text-white">
-            <Trans>
-              {longToken.symbol} and {shortToken.symbol} can be used to buy GM tokens for this market up to the
-              specified buying caps.
-            </Trans>
+            {market?.isSameCollaterals ? (
+              <Trans>{longToken.symbol} can be used to buy GM for this market up to the specified buying caps.</Trans>
+            ) : (
+              <Trans>
+                {longToken.symbol} and {shortToken.symbol} can be used to buy GM for this market up to the specified
+                buying caps.
+              </Trans>
+            )}
           </p>
           <br />
           <StatsTooltipRow label={`Max ${longToken.symbol}`} value={longTokenMaxValue} />
-          <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
+          {!market?.isSameCollaterals && (
+            <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
+          )}
         </>
       )}
     />
