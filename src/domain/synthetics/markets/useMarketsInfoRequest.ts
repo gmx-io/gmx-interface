@@ -1,5 +1,5 @@
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import { useAccount } from "wagmi";
+
 import { getContract } from "config/contracts";
 import {
   BORROWING_EXPONENT_FACTOR_KEY,
@@ -47,11 +47,13 @@ import { useMulticall } from "lib/multicall";
 import { hashDataMapAsync } from "lib/multicall/hashDataAsync";
 import { BN_ONE } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 import { TokensData, useTokensDataRequest } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+
+import DataStore from "abis/DataStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -60,7 +62,7 @@ export type MarketsInfoResult = {
 };
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
-  const { account } = useWallet();
+  const { address: account } = useAccount();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
@@ -78,8 +80,10 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     keepPreviousData: true,
 
     request: async () => {
+      performance.mark("useMarketsInfo-request-build-start");
       const request = {};
       for (const marketAddress of marketsAddresses!) {
+        performance.mark("useMarketsInfo-request-build-market-start");
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
@@ -131,6 +135,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           },
         };
 
+        performance.mark("useMarketsInfo-request-build-market-hash-start");
         const hashedKeys = await hashDataMapAsync({
           isDisabled: [
             ["bytes32", "address"],
@@ -389,6 +394,12 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
             [VIRTUAL_TOKEN_ID_KEY, market.shortTokenAddress],
           ],
         });
+        performance.mark("useMarketsInfo-request-build-market-hash-end");
+        performance.measure(
+          "useMarketsInfo-request-build-market-hash",
+          "useMarketsInfo-request-build-market-hash-start",
+          "useMarketsInfo-request-build-market-hash-end"
+        );
 
         request[`${marketAddress}-dataStore`] = {
           contractAddress: dataStoreAddress,
@@ -652,12 +663,25 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
             },
           },
         };
+        performance.mark("useMarketsInfo-request-build-market-end");
+        performance.measure(
+          "useMarketsInfo-request-build-market",
+          "useMarketsInfo-request-build-market-start",
+          "useMarketsInfo-request-build-market-end"
+        );
       }
 
+      performance.mark("useMarketsInfo-request-build-end");
+      performance.measure(
+        "useMarketsInfo-request-build",
+        "useMarketsInfo-request-build-start",
+        "useMarketsInfo-request-build-end"
+      );
       return request;
     },
     parseResponse: (res) => {
-      return marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
+      performance.mark("useMarketsInfo-parseResponse-start");
+      const result = marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
         const readerErrors = res.errors[`${marketAddress}-reader`];
         const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
 
@@ -809,6 +833,14 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
 
         return acc;
       }, {} as MarketsInfoData);
+
+      performance.mark("useMarketsInfo-parseResponse-end");
+      performance.measure(
+        "useMarketsInfo-parseResponse",
+        "useMarketsInfo-parseResponse-start",
+        "useMarketsInfo-parseResponse-end"
+      );
+      return result;
     },
   });
 
