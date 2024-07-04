@@ -4770,6 +4770,12 @@ msgstr "Min. required Collateral"
 msgid "Search Pool"
 msgstr "Search Pool"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Auto Cancel"
+msgstr "Auto Cancel"
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"

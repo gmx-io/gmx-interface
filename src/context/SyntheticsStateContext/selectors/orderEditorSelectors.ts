@@ -485,3 +485,10 @@ export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
   return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 });
+
+export const selectOrderEditorAutoCancel = createSelector((q) => {
+  return {
+    autoCancel: q((state) => state.orderEditor.autoCancel),
+    setAutoCancel: q((state) => state.orderEditor.setAutoCancel),
+  };
+});

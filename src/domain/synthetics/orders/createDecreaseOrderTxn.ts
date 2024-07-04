@@ -39,6 +39,7 @@ export type DecreaseOrderParams = {
   referralCode?: string;
   indexToken: Token;
   tokensData: TokensData;
+  autoCancel: boolean;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -204,7 +205,7 @@ export function createDecreaseEncodedPayload({
         decreasePositionSwapType: p.decreasePositionSwapType,
         isLong: p.isLong,
         shouldUnwrapNativeToken: isNativeReceive,
-        autoCancel: false,
+        autoCancel: p.autoCancel,
         referralCode: p.referralCode || ethers.ZeroHash,
       };
 

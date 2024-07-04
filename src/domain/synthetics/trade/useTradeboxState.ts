@@ -206,6 +206,7 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [autoCancel, setAutoCancel] = useState(false);
 
   const { swapTokens } = availableTokensOptions;
 
@@ -216,7 +217,7 @@ export function useTradeboxState(
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  const avaialbleTradeModes = useMemo(() => {
+  const availableTradeModes = useMemo(() => {
     if (!tradeType) {
       return [];
     }
@@ -502,11 +503,11 @@ export function useTradeboxState(
 
   useEffect(
     function updateTradeMode() {
-      if (tradeType && tradeMode && !avaialbleTradeModes.includes(tradeMode)) {
-        setTradeMode(avaialbleTradeModes[0]);
+      if (tradeType && tradeMode && !availableTradeModes.includes(tradeMode)) {
+        setTradeMode(availableTradeModes[0]);
       }
     },
-    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode]
+    [tradeType, tradeMode, availableTradeModes, setTradeMode]
   );
 
   useEffect(
@@ -541,7 +542,7 @@ export function useTradeboxState(
     collateralAddress,
     collateralToken,
     availableTokensOptions,
-    avaialbleTradeModes,
+    availableTradeModes,
     setActivePosition,
     setFromTokenAddress,
     setToTokenAddress,
@@ -579,6 +580,8 @@ export function useTradeboxState(
     setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
+    autoCancel,
+    setAutoCancel,
   };
 }
 

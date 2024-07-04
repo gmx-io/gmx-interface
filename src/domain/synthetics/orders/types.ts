@@ -63,6 +63,7 @@ export type Order = {
   isLong: boolean;
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
+  autoCancel: boolean;
   data: string;
 };
 
@@ -89,6 +90,7 @@ export type PositionOrderInfo = Order & {
   acceptablePrice: bigint;
   triggerPrice: bigint;
   triggerThresholdType: TriggerThresholdType;
+  autoCancel: boolean;
 };
 
 export type OrderInfo = SwapOrderInfo | PositionOrderInfo;

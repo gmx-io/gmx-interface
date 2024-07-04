@@ -41,6 +41,7 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
+  autoCancel: boolean;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
@@ -191,6 +192,7 @@ export async function createIncreaseOrderTxn({
             acceptablePrice,
             triggerPrice,
             minOutputAmount,
+            autoCancel: false,
           }),
         ];
       },
@@ -328,7 +330,7 @@ function createOrderParams({
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
-    autoCancel: false,
+    autoCancel: p.autoCancel,
     referralCode: p.referralCode || ethers.ZeroHash,
   };
 }

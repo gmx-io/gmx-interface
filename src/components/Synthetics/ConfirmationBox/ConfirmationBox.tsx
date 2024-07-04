@@ -122,6 +122,7 @@ import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxMaxLiquidityPath,
   selectTradeboxExecutionPrice,
+  selectTradeboxAutoCancel,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
@@ -169,6 +170,7 @@ export function ConfirmationBox(p: Props) {
   const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
   const fixedTriggerOrderType = useSelector(selectTradeboxFixedTriggerOrderType);
   const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
+  const { autoCancel, setAutoCancel } = useSelector(selectTradeboxAutoCancel);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
@@ -620,6 +622,7 @@ export function ConfirmationBox(p: Props) {
       receiveTokenAddress: collateralToken.address,
       isLong,
       indexToken: marketInfo.indexToken,
+      autoCancel: false,
     };
 
     return createIncreaseOrderTxn({
@@ -649,6 +652,7 @@ export function ConfirmationBox(p: Props) {
         setPendingTxns: p.setPendingTxns,
         setPendingOrder,
         setPendingPosition,
+        autoCancel: isLimit ? autoCancel : false,
       },
       createDecreaseOrderParams: createSltpEntries.map((entry) => {
         return {
@@ -737,6 +741,7 @@ export function ConfirmationBox(p: Props) {
         skipSimulation: true,
         indexToken: marketInfo.indexToken,
         tokensData,
+        autoCancel,
       },
       {
         setPendingTxns,
@@ -1251,6 +1256,11 @@ export function ConfirmationBox(p: Props) {
             />
           )}
           {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
+          {(isLimit || isTrigger) && (
+            <ToggleSwitch isChecked={autoCancel} setIsChecked={setAutoCancel} textClassName="text-14 text-gray-300">
+              <Trans>Auto Cancel</Trans>
+            </ToggleSwitch>
+          )}
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
@@ -1540,7 +1550,14 @@ export function ConfirmationBox(p: Props) {
           null}
 
         {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
-          <ExchangeInfo.Group>{renderAcceptablePriceImpactInput()}</ExchangeInfo.Group>
+          <ExchangeInfo.Group>
+            {renderAcceptablePriceImpactInput()}
+            {(isLimit || isTrigger) && (
+              <ToggleSwitch isChecked={autoCancel} setIsChecked={setAutoCancel} textClassName="text-14 text-gray-300">
+                <Trans>Auto Cancel</Trans>
+              </ToggleSwitch>
+            )}
+          </ExchangeInfo.Group>
         )}
 
         <ExchangeInfo.Group>

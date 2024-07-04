@@ -15,6 +15,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [autoCancel, setAutoCancel] = useState(false);
 
   useEffect(
     function resetOrderEditorState() {
@@ -22,6 +23,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
         setSizeInputValue("");
         setTriggerPriceInputValue("");
         setTriggerRatioInputValue("");
+        setAutoCancel(false);
       };
 
       if (!editingOrderKey) {
@@ -53,10 +55,15 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       acceptablePriceImpactBps,
       initialAcceptablePriceImpactBps,
       setAcceptablePriceImpactBps,
+
+      autoCancel,
+      setAutoCancel,
     }),
     [
       acceptablePrice,
       acceptablePriceImpactBps,
+      autoCancel,
+      setAutoCancel,
       cancellingOrdersKeys,
       editingOrderKey,
       initialAcceptablePriceImpactBps,
