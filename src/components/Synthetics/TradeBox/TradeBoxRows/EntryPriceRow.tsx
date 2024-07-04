@@ -3,11 +3,11 @@ import { t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
-  useToToken,
   useTradeboxAdvancedOptions,
   useTradeboxMarkPrice,
   useTradeboxNextPositionValues,
   useTradeboxSelectedPosition,
+  useTradeboxToToken,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { formatUsd } from "lib/numbers";
 
@@ -17,7 +17,7 @@ export function EntryPriceRow() {
   const nextPositionValues = useTradeboxNextPositionValues();
   const markPrice = useTradeboxMarkPrice();
 
-  const toToken = useToToken();
+  const toToken = useTradeboxToToken();
 
   if (!advancedDisplay || !selectedPosition) {
     return null;

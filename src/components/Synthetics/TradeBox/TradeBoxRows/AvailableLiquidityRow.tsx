@@ -3,30 +3,26 @@ import { t } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   useTradeboxIncreasePositionAmounts,
   useTradeboxLiquidity,
   useTradeboxMaxLiquidityPath,
   useTradeboxSwapAmounts,
-  useTradeboxToTokenAddress,
+  useTradeboxToToken,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
 
 const RISK_THRESHOLD_BPS = 5000n;
 
 export function AvailableLiquidityRow() {
-  const tokensData = useTokensData();
   const tradeFlags = useTradeboxTradeFlags();
   const swapAmounts = useTradeboxSwapAmounts();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const toTokenAddress = useTradeboxToTokenAddress();
   const { longLiquidity, shortLiquidity } = useTradeboxLiquidity();
-  const toToken = getByKey(tokensData, toTokenAddress);
+  const toToken = useTradeboxToToken();
   const { maxLiquidity: swapLiquidityUsd } = useTradeboxMaxLiquidityPath();
   const { isLong, isLimit, isSwap, isIncrease } = tradeFlags;
 

@@ -2,26 +2,21 @@ import { t } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxFromTokenAddress,
+  useTradeboxFromToken,
   useTradeboxMarketInfo,
-  useTradeboxToTokenAddress,
+  useTradeboxToToken,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getSpread } from "domain/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 
 export function SwapSpreadRow() {
   const tradeFlags = useTradeboxTradeFlags();
-  const tokenData = useTokensData();
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const fromToken = getByKey(tokenData, fromTokenAddress);
-  const toTokenAddress = useTradeboxToTokenAddress();
-  const toToken = getByKey(tokenData, toTokenAddress);
+  const fromToken = useTradeboxFromToken();
+  const toToken = useTradeboxToToken();
   const marketInfo = useTradeboxMarketInfo();
   const indexToken = marketInfo?.indexToken;
 

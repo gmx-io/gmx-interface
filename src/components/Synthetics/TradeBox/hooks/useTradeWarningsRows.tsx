@@ -64,7 +64,6 @@ export function useTradeboxWarningsRows() {
   );
 
   const consent = useMemo(() => {
-    /** User should give consent for high execution price */
     if (highExecutionFeeAcknowledgement && isHighFeeConsentError) {
       return false;
     }

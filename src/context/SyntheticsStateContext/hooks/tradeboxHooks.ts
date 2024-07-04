@@ -85,14 +85,14 @@ export const useTradeboxAdvancedOptions = () => useSelector(selectTradeboxAdvanc
 export const useTradeboxMarkPrice = () => useSelector(selectTradeboxMarkPrice);
 export const useTradeboxTriggerPrice = () => useSelector(selectTradeboxTriggerPrice);
 
-export const useToToken = () => {
+export const useTradeboxToToken = () => {
   const toToken = useTradeboxToTokenAddress();
   const tokenData = useTokensData();
 
   return getByKey(tokenData, toToken);
 };
 
-export const useFromToken = () => {
+export const useTradeboxFromToken = () => {
   const fromToken = useTradeboxFromTokenAddress();
   const tokenData = useTokensData();
 
