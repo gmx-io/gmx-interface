@@ -2060,7 +2060,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響する可能性のあるアクティブなトリガー注文があります。} other {このポジションに影響する可能性のあるアクティブなトリガー注文が#あります。}}"
 
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
 msgstr "ワンクリック取引でウォレット署名のポップアップを減らします。このオプションは右上のウォレットメニューからも利用できます。 <0>詳細について読む</0>"
@@ -2473,8 +2472,8 @@ msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "オープンのポジション: {0}<0/>リスクあり: {1}"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
-msgstr ""
+#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
+#~ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
@@ -2545,8 +2544,8 @@ msgid "Adding referral code failed."
 msgstr "紹介コードが追加できませんでした"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
-msgstr ""
+#~ msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Max leverage without PnL: {0}x"
@@ -4805,7 +4804,6 @@ msgstr ""
 msgid "Begin Transfer"
 msgstr "移転開始"
 
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
@@ -5715,7 +5713,6 @@ msgstr ""
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
@@ -5863,8 +5860,8 @@ msgid "There may not be sufficient liquidity to execute the swap to the receive 
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Enable One-Click Trading"
-msgstr ""
+#~ msgid "Enable One-Click Trading"
+#~ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"

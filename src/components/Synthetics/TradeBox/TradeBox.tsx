@@ -121,8 +121,8 @@ import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
 import { TradeBoxAdvancedRows } from "./TradeBoxRows/AdvancedRows";
+import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
-import { useMinReceiveRow } from "./hooks/useMinReceiveRow";
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useSummaryExecutionFee } from "./hooks/useSummaryExecutionFee";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
@@ -286,7 +286,6 @@ export function TradeBox(p: Props) {
 
   const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
-  const minReceiveRow = useMinReceiveRow(allowedSlippage);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
@@ -1486,7 +1485,7 @@ export function TradeBox(p: Props) {
                   />
                 )) ||
                   null}
-                {minReceiveRow}
+                <MinReceiveRow allowedSlippage={allowedSlippage} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

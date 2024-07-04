@@ -35,7 +35,6 @@ import Button from "components/Button/Button";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -66,6 +65,7 @@ import {
   selectOrderEditorDecreaseAmounts,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
+  selectOrderEditorFindSwapPath,
   selectOrderEditorFromToken,
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
@@ -78,19 +78,18 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorFindSwapPath,
   selectOrderEditorToToken,
-  selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { bigMath } from "lib/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
+
 import "./OrderEditor.scss";
-import { bigMath } from "lib/bigmath";
 
 type Props = {
   order: OrderInfo;
@@ -501,8 +500,6 @@ export function OrderEditor(p: Props) {
     ]
   );
 
-  const tradeFlags = useSelector(selectOrderEditorTradeFlags);
-
   const buttonContent = (
     <Button
       className="w-full"
@@ -535,12 +532,6 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
       >
-        <SubaccountNavigationButton
-          className="PositionEditor-subaccount-button"
-          executionFee={executionFee?.feeTokenAmount}
-          closeConfirmationBox={p.onClose}
-          tradeFlags={tradeFlags}
-        />
         {!isSwapOrderType(p.order.orderType) && (
           <>
             <BuyInputSection

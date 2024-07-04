@@ -8,7 +8,6 @@ import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -75,6 +74,7 @@ import useSWR from "swr";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
@@ -82,12 +82,11 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useKey } from "react-use";
-import "./PositionEditor.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { useKey } from "react-use";
+import "./PositionEditor.scss";
 
 export type Props = {
   allowedSlippage: number;
@@ -606,13 +605,6 @@ export function PositionEditor(p: Props) {
               optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
-            <SubaccountNavigationButton
-              executionFee={executionFee?.feeTokenAmount}
-              closeConfirmationBox={onClose}
-              isNativeToken={isDeposit && collateralToken?.isNative}
-              tradeFlags={undefined}
-            />
-
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
