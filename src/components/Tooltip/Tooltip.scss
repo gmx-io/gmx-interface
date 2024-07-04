@@ -166,12 +166,6 @@ $left-arrow-bg: var(--color-slate-600);
   flex-direction: column;
 }
 
-.Tooltip-disabled-wrapper {
-  pointer-events: none;
-  display: flex;
-  flex: 0 0 100%;
-}
-
 @media (max-width: 700px) {
   .Tooltip-row {
     display: block;

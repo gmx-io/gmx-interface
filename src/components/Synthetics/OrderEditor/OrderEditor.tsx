@@ -518,7 +518,7 @@ export function OrderEditor(p: Props) {
     <TooltipWithPortal
       position="top"
       handleClassName="w-full"
-      portalClassName="PositionEditor-tooltip"
+      tooltipClassName="PositionEditor-tooltip"
       handle={buttonContent}
       isHandlerDisabled
       renderContent={() => submitButtonState.tooltip}
@@ -640,7 +640,7 @@ export function OrderEditor(p: Props) {
                 value={
                   <TooltipWithPortal
                     position="top-end"
-                    portalClassName="PositionEditor-fees-tooltip"
+                    tooltipClassName="PositionEditor-fees-tooltip"
                     handle={formatDeltaUsd(
                       additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
                     )}

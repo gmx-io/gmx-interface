@@ -50,7 +50,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               </th>
               <th className="px-5 py-13 opacity-70">
                 <TooltipWithPortal
-                  portalClassName="cursor-help *:cursor-auto"
+                  tooltipClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
                 >
                   <Trans>PnL ($)</Trans>
@@ -58,7 +58,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               </th>
               <th className="px-5 py-13 opacity-70">
                 <TooltipWithPortal
-                  portalClassName="cursor-help *:cursor-auto"
+                  tooltipClassName="cursor-help *:cursor-auto"
                   content={
                     <Trans>
                       The PnL ($) compared to the capital used.
@@ -103,7 +103,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <td className="px-5 py-13">
         <TooltipWithPortal
           disableHandleStyle
-          portalClassName="cursor-help *:cursor-auto"
+          tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
             "text-red-500 decoration-red-500/50": row.pnlUsd < 0,
@@ -142,7 +142,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <td className="px-5 py-13">
         <TooltipWithPortal
           disableHandleStyle
-          portalClassName="cursor-help *:cursor-auto"
+          tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
             "text-red-500 decoration-red-500/50": row.pnlBps < 0n,

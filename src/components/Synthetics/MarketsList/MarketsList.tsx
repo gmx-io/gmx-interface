@@ -173,7 +173,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                   </div>
                   <div>
                     <TooltipWithPortal
-                      portalClassName="MarketList-netfee-tooltip"
+                      tooltipClassName="MarketList-netfee-tooltip"
                       handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                         netFeePerHourShort
                       )}`}
@@ -276,7 +276,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       </td>
       <td>
         <TooltipWithPortal
-          portalClassName="MarketList-netfee-tooltip"
+          tooltipClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
           maxAllowedWidth={510}
           position="bottom-end"

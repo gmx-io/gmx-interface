@@ -385,7 +385,7 @@ const TableRow = memo(
             handle={formatUsd(position.sizeInUsd)}
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
-            portalClassName="Table-SizeTooltip"
+            tooltipClassName="Table-SizeTooltip"
           />
         </TableCell>
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>

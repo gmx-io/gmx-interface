@@ -66,7 +66,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
 
     return (
       <TooltipWithPortal
-        portalClassName="ClaimHistoryRow-size-tooltip-portal"
+        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         renderContent={() => <SizeTooltip claimAction={claimAction} />}
         handle={formattedTotalUsd}
       />
@@ -88,7 +88,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <TooltipWithPortal
           disableHandleStyle
           handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
-          portalClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
+          tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
           renderContent={renderIsoTimestamp}
         />
       </td>
@@ -108,7 +108,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
           return (
             <Fragment key={market.indexTokenAddress}>
               <StatsTooltipRow
-                textClassName="whitespace-nowrap mb-5"
+                textClassName="mb-5 whitespace-nowrap"
                 key={market.marketTokenAddress}
                 label={
                   <div className="flex items-start text-white">
