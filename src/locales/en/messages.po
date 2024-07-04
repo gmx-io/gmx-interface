@@ -882,7 +882,7 @@ msgstr "Unstake completed!"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/hooks/useMinReceiveRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/MinReceiveRow.tsx
 msgid "Min. Receive"
 msgstr "Min. Receive"
 
