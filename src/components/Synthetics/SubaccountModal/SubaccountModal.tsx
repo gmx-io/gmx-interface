@@ -69,6 +69,8 @@ export function SubaccountModal() {
   );
 }
 
+const BALANCE_DISPLAY_DECIMALS = 4;
+
 const MainView = memo(() => {
   const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
@@ -156,14 +158,14 @@ const MainView = memo(() => {
         <StatsTooltipRow
           label={wrappedToken.symbol}
           value={formatTokenAmount(mainAccWrappedTokenBalance, wrappedToken.decimals, wrappedToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })}
           showDollar={false}
         />
         <StatsTooltipRow
           label={nativeToken.symbol}
           value={formatTokenAmount(mainAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })}
           showDollar={false}
         />
@@ -186,19 +188,19 @@ const MainView = memo(() => {
     setDisplayValue: setTopUpString,
     setValue: setTopUp,
     value: topUp,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: maxAutoTopUpAmountString,
     setDisplayValue: setMaxAutoTopUpAmountString,
     setValue: setMaxAutoTopUpAmount,
     value: maxAutoTopUpAmount,
-  } = useBigNumberInput(null, wrappedToken.decimals, 4);
+  } = useBigNumberInput(null, wrappedToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: wntForAutoTopUpsString,
     setDisplayValue: setWntForAutoTopUpsString,
     setValue: setWntForAutoTopUps,
     value: wntForAutoTopUps,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: maxAllowedActionsString,
     setDisplayValue: setMaxAllowedActionsString,
@@ -534,7 +536,7 @@ const MainView = memo(() => {
               nativeToken.decimals,
               nativeToken.symbol,
               {
-                displayDecimals: 4,
+                displayDecimals: BALANCE_DISPLAY_DECIMALS,
               }
             )} to Main Account`}
           />
@@ -552,7 +554,7 @@ const MainView = memo(() => {
       helperToast.success(
         <StatusNotification title={t`Withdrawing from Subaccount`}>
           {t`Withdrawn ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })} to Main Account`}
         </StatusNotification>
       );
@@ -589,7 +591,7 @@ const MainView = memo(() => {
   const subAccNativeTokenBalanceFormatted = useMemo(
     () =>
       formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-        displayDecimals: 4,
+        displayDecimals: BALANCE_DISPLAY_DECIMALS,
       }),
     [nativeToken.decimals, nativeToken.symbol, subAccNativeTokenBalance]
   );
@@ -650,7 +652,7 @@ const MainView = memo(() => {
                 position="top"
                 handle={withdrawalButton}
                 content={
-                  (subAccNativeTokenBalance ?? 0n) < expandDecimals(1, nativeToken.decimals - 4)
+                  (subAccNativeTokenBalance ?? 0n) < expandDecimals(1, nativeToken.decimals - BALANCE_DISPLAY_DECIMALS)
                     ? t`The subaccount has no funds.`
                     : t`The amount left in the subaccount is not enough to cover network gas costs.`
                 }
@@ -696,7 +698,7 @@ const MainView = memo(() => {
             value={
               <TooltipWithPortal
                 handle={formatTokenAmount(mainAccWrappedTokenBalance, wrappedToken.decimals, wrappedToken.symbol, {
-                  displayDecimals: 4,
+                  displayDecimals: BALANCE_DISPLAY_DECIMALS,
                 })}
                 renderContent={renderMainAccountBalanceTooltipContent}
                 position="top-end"
