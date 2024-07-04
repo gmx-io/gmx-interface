@@ -240,10 +240,8 @@ export const RPC_PROVIDERS = {
 };
 
 export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
-  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
-    ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
-    : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
+  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
     "https://api.avax-test.network/ext/bc/C/rpc",
@@ -345,18 +343,23 @@ export function getFallbackRpcUrl(chainId: number): string | undefined {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
-export function getAlchemyHttpUrl() {
+function getAlchemyKey() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+    return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
   }
-  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
 }
 
-export function getAlchemyWsUrl() {
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
-  }
-  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+export function getAlchemyArbitrumHttpUrl() {
+  return `https://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyAvalancheHttpUrl() {
+  return `https://avax-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyArbitrumWsUrl() {
+  return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
 export function getExplorerUrl(chainId) {

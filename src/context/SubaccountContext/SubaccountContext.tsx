@@ -294,7 +294,7 @@ export function useSubaccountDefaultExecutionFee() {
   return useSubaccountSelector((s) => s.defaultExecutionFee) ?? 0n;
 }
 
-function useSubaccountDefaultNetworkFee() {
+export function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? 0n;
 }
 
@@ -367,7 +367,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   ]);
 }
 
-export function useSubaccountInsufficientFunds(requiredBalance: bigint | undefined | null) {
+export function useSubaccountInsufficientFunds(requiredBalance?: bigint | null) {
   const { chainId } = useChainId();
   const subaccountAddress = useSubaccountAddress();
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);

@@ -1,6 +1,8 @@
-import "./BannerButton.scss";
-import { FiChevronRight } from "react-icons/fi";
 import cx from "classnames";
+
+import { FiChevronRight } from "react-icons/fi";
+
+import "./BannerButton.scss";
 
 type Props = {
   label: string;

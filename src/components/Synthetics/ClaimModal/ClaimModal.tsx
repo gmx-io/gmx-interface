@@ -97,15 +97,23 @@ export function ClaimModal(p: Props) {
     const fundingMarketAddresses: string[] = [];
     const fundingTokenAddresses: string[] = [];
 
+    const pairs = new Set<string>();
+
+    function pushPair(marketAddress: string, tokenAddress: string) {
+      const key = `${marketAddress}-${tokenAddress}`;
+      if (pairs.has(key)) return;
+      pairs.add(key);
+      fundingMarketAddresses.push(marketAddress);
+      fundingTokenAddresses.push(tokenAddress);
+    }
+
     for (const market of markets) {
-      if (market.claimableFundingAmountLong !== undefined) {
-        fundingMarketAddresses.push(market.marketTokenAddress);
-        fundingTokenAddresses.push(market.longTokenAddress);
+      if (market.claimableFundingAmountLong !== undefined && market.claimableFundingAmountLong !== 0n) {
+        pushPair(market.marketTokenAddress, market.longTokenAddress);
       }
 
-      if (market.claimableFundingAmountShort !== undefined) {
-        fundingMarketAddresses.push(market.marketTokenAddress);
-        fundingTokenAddresses.push(market.shortTokenAddress);
+      if (market.claimableFundingAmountShort !== undefined && market.claimableFundingAmountShort !== 0n) {
+        pushPair(market.marketTokenAddress, market.shortTokenAddress);
       }
     }
 

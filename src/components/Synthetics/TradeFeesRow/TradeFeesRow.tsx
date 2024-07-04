@@ -16,11 +16,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getIncentivesV2Url } from "config/links";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import sparkleIcon from "img/sparkle.svg";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { INCENTIVES_V2_URL } from "config/ui";
-import sparkleIcon from "img/sparkle.svg";
 
 type Props = {
   totalFees?: FeeItem;
@@ -51,63 +51,14 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tokensData = useTokensData();
-  const tradingIncentives = useTradingIncentives(tokensData);
+  const tradingIncentives = useTradingIncentives(chainId);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
-  const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
 
-  const [fullPositionPriceImpact, hasRebates] = mergePositionPriceImpactWithPriceImpactDiff(
-    p.feesType,
-    p.positionPriceImpact,
-    p.priceImpactDiff
-  );
-  const rebatesMessage = useMemo(
-    () =>
-      hasRebates ? (
-        <Trans>
-          Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-            Read more
-          </ExternalLink>
-          .
-        </Trans>
-      ) : undefined,
-    [hasRebates]
-  );
+  const rebateIsApplicable =
+    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
-    const positionPriceImpactRow =
-      fullPositionPriceImpact === undefined
-        ? undefined
-        : bigMath.abs(fullPositionPriceImpact.deltaUsd) > 0
-          ? {
-              id: "positionPriceImpact",
-              label: (
-                <>
-                  <div className="text-white">{t`Position Price Impact`}:</div>
-                  <div>({formatPercentage(bigMath.abs(fullPositionPriceImpact.bps))} of position size)</div>
-                </>
-              ),
-              value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
-              className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green-500"),
-            }
-          : undefined;
-
-    const priceImpactDiffUsd = (p.priceImpactDiff ? bigMath.abs(p.priceImpactDiff.deltaUsd) > 0 : false)
-      ? {
-          id: "priceImpactDiff",
-          label: (
-            <>
-              <div className="text-white">{t`Price Impact Rebates`}:</div>
-              <div>({formatPercentage(bigMath.abs(p.priceImpactDiff!.bps))} of position size)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.priceImpactDiff!.deltaUsd),
-          className: getPositiveOrNegativeClass(p.priceImpactDiff!.deltaUsd, "text-green-500"),
-        }
-      : undefined;
-
     const swapPriceImpactRow = (
       p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
     )
@@ -302,7 +253,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "increase") {
       return [
-        positionPriceImpactRow,
         swapPriceImpactRow,
         ...swapFeeRows,
         positionFeeRow,
@@ -319,8 +269,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
-        positionPriceImpactRow,
-        priceImpactDiffUsd,
         swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,
@@ -339,7 +287,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [fullPositionPriceImpact, p, tradingIncentives, rebateIsApplicable, chainId]);
+  }, [p, tradingIncentives, rebateIsApplicable, chainId]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
@@ -362,33 +310,29 @@ export function TradeFeesRow(p: Props) {
         </span>
       );
 
-      return p.feesType === "edit" ? (
-        <Trans>Fees {rebatedTextWithSparkle}</Trans>
-      ) : (
-        <Trans>Fees {rebatedTextWithSparkle} and Price Impact</Trans>
-      );
+      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
     } else {
-      return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+      return t`Fees`;
     }
   }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives || !rebateIsApplicable) {
+    if (!incentivesTokenTitle || !rebateIsApplicable) {
       return null;
     }
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
+        The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
-          <ExternalLink href={INCENTIVES_V2_URL} newTab>
+          <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
           </ExternalLink>
           .
         </span>
       </Trans>
     );
-  }, [rebateIsApplicable, tradingIncentives]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
@@ -403,7 +347,7 @@ export function TradeFeesRow(p: Props) {
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
-    } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
+    } else if (!feeRows.length && !incentivesBottomText) {
       return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;
     } else {
       return (
@@ -422,12 +366,6 @@ export function TradeFeesRow(p: Props) {
                   showDollar={false}
                 />
               ))}
-              {hasRebates && (
-                <>
-                  <br />
-                  {rebatesMessage}
-                </>
-              )}
               {incentivesBottomText && <br />}
               {incentivesBottomText}
               {swapRouteMsg}
@@ -436,25 +374,7 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd, swapRouteMsg]);
+  }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
-}
-
-function mergePositionPriceImpactWithPriceImpactDiff(
-  feesType: TradeFeesType,
-  positionPriceImpact: FeeItem | undefined,
-  priceImpactDiff: FeeItem | undefined
-): [fullPositionPriceImpact: FeeItem | undefined, hasRebates: boolean] {
-  if (feesType !== "decrease" || !positionPriceImpact || !priceImpactDiff || priceImpactDiff.deltaUsd <= 0) {
-    return [positionPriceImpact, false];
-  }
-
-  return [
-    {
-      bps: positionPriceImpact.bps + priceImpactDiff.bps * -1n,
-      deltaUsd: positionPriceImpact.deltaUsd + priceImpactDiff.deltaUsd * -1n,
-    },
-    true,
-  ];
 }

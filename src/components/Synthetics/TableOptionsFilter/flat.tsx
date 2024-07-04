@@ -68,7 +68,7 @@ function FlatItem<T>({ flatItem: pair, getIsSelected, onTogglePair, ItemComponen
   const isSelected = useMemo(() => getIsSelected(pair.data), [getIsSelected, pair.data]);
 
   return (
-    <div className="TableOptionsFilter-option" onClick={handleTogglePair}>
+    <div className="TableOptionsFilter-option last-of-type:pb-10" onClick={handleTogglePair}>
       <Checkbox isChecked={isSelected} setIsChecked={handleTogglePair}>
         {ItemComponent ? <ItemComponent item={pair.data} /> : pair.text}
       </Checkbox>

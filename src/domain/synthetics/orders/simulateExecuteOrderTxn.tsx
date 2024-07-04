@@ -36,13 +36,17 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
-  const blockNumber = await provider.getBlockNumber();
+  const block = await provider.getBlock("latest");
+  if (!block) {
+    throw new Error("block can't be fetched");
+  }
+  const blockNumber = block.number;
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
-  const priceTimestamp = Math.ceil(Date.now() / 1000);
+  const priceTimestamp = block.timestamp + 5;
   const method = p.method || "simulateExecuteOrder";
 
   const simulationPayload = [

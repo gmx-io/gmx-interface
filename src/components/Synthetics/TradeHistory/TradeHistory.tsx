@@ -38,10 +38,11 @@ type Props = {
   shouldShowPaginationButtons: boolean;
   account: Address | null | undefined;
   forAllAccounts?: boolean;
+  hideDashboardLink?: boolean;
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, forAllAccounts, account } = p;
+  const { shouldShowPaginationButtons, forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
@@ -85,19 +86,19 @@ export function TradeHistory(p: Props) {
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
   const pnlAnalysisButton = useMemo(() => {
-    if (!account) {
+    if (!account || hideDashboardLink) {
       return null;
     }
 
     const url = buildAccountDashboardUrl(account, chainId, 2);
 
     return (
-      <Button variant="secondary" to={url}>
+      <Button variant="secondary" slim to={url}>
         <PnlAnalysisIcon className="mr-8 h-16 text-white" />
         <Trans>PnL Analysis</Trans>
       </Button>
     );
-  }, [account, chainId]);
+  }, [account, chainId, hideDashboardLink]);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -122,8 +123,8 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistorySynthetics">
-      <div className="App-box">
-        <div className="TradeHistorySynthetics-controls">
+      <div className="App-box max-[962px]:!-mr-[--default-container-padding] max-[962px]:!rounded-r-0 max-[800px]:!-mr-[--default-container-padding-mobile]">
+        <div className="flex flex-wrap items-center justify-between gap-y-8 border-b border-b-slate-700 px-10 py-16">
           <div>
             <Trans>Trade History</Trans>
           </div>
@@ -132,7 +133,13 @@ export function TradeHistory(p: Props) {
             <div className="TradeHistorySynthetics-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
-            <Button variant="secondary" disabled={isCsvDownloading} imgSrc={downloadIcon} onClick={handleCsvDownload}>
+            <Button
+              variant="secondary"
+              slim
+              disabled={isCsvDownloading}
+              imgSrc={downloadIcon}
+              onClick={handleCsvDownload}
+            >
               CSV
             </Button>
           </div>
@@ -152,7 +159,11 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilterLongShort value={marketsDirectionsFilter} onChange={setMarketsDirectionsFilter} />
+                  <MarketFilterLongShort
+                    withPositions="all"
+                    value={marketsDirectionsFilter}
+                    onChange={setMarketsDirectionsFilter}
+                  />
                 </th>
                 <th>
                   <Trans>Size</Trans>

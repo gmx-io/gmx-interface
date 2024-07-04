@@ -3,5 +3,15 @@
   "singleQuote": false,
   "printWidth": 120,
   "trailingComma": "es5",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindAttributes": [
+    "className",
+    "handleClassName",
+    "textClassName",
+    "wrapperClassName",
+    "portalClassName",
+    "tooltipClassName"
+  ],
+  "tailwindFunctions": ["cx"],
+  "tailwindPreserveWhitespace": true
 }

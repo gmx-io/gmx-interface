@@ -1,20 +1,23 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
 import { bigMath } from "lib/bigmath";
-import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { CHART_PERIODS, GM_DECIMALS, PRECISION } from "lib/legacy";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import mapValues from "lodash/mapValues";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
-import { useMarketsInfoRequest } from ".";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
 import { MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+
+import TokenAbi from "abis/Token.json";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -44,34 +47,152 @@ function useMarketAddresses(marketsInfoData: MarketsInfoData | undefined) {
   );
 }
 
+function useExcludedLiquidityMarketMap(
+  chainId: number,
+  marketsInfoData: MarketsInfoData | undefined
+): {
+  [marketAddress: string]: bigint;
+} {
+  const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
+  const excludeHolders = liquidityProvidersIncentives?.excludeHolders ?? EMPTY_ARRAY;
+  const marketAddresses = useMarketAddresses(marketsInfoData);
+
+  const request = useCallback<
+    () => MulticallRequestConfig<{
+      [marketAddress: string]: {
+        calls: {
+          [holder: string]: {
+            methodName: string;
+            params: any[];
+          };
+        };
+      };
+    }>
+  >(() => {
+    const req: MulticallRequestConfig<{
+      [marketAddress: string]: {
+        calls: {
+          [holder: string]: {
+            methodName: string;
+            params: any[];
+          };
+        };
+      };
+    }> = {};
+
+    for (const marketAddress of marketAddresses) {
+      req[marketAddress] = {
+        abi: TokenAbi.abi,
+        contractAddress: marketAddress,
+        calls: {},
+      };
+
+      for (const holder of excludeHolders) {
+        req[marketAddress].calls[holder] = {
+          methodName: "balanceOf",
+          params: [holder],
+        };
+      }
+    }
+
+    return req;
+  }, [excludeHolders, marketAddresses]);
+
+  const excludedBalancesMulticall = useMulticall(chainId, "useExcludedLiquidityMarketMap", {
+    key: excludeHolders ? [excludeHolders.join(","), marketAddresses.join(",")] : null,
+    request,
+    parseResponse: (res) => {
+      const result: { [marketAddress: string]: bigint } = {};
+
+      for (const marketAddress of marketAddresses) {
+        const marketData = res.data[marketAddress];
+        let totalExcludedBalance = 0n;
+
+        for (const excludedHolder of excludeHolders) {
+          const excludedBalance = BigInt(marketData[excludedHolder]?.returnValues[0] ?? 0);
+          totalExcludedBalance += excludedBalance;
+        }
+
+        result[marketAddress] = totalExcludedBalance;
+      }
+
+      return result;
+    },
+  });
+
+  return excludedBalancesMulticall.data ?? {};
+}
+
 function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData | undefined): MarketTokensAPRData {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
-  const token = liquidityProvidersIncentives ? tokensData?.[liquidityProvidersIncentives.token] : undefined;
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const tokenAddress = liquidityProvidersIncentives?.token;
+  const excludedLiquidityMarketMap = useExcludedLiquidityMarketMap(chainId, marketsInfoData);
 
-  return useMemo(() => {
+  const regularToken = useMemo(() => {
+    if (!tokenAddress || !tokensData) return undefined;
+
+    const lowerCased = tokenAddress.toLowerCase();
+    const key = Object.keys(tokensData).find((key) => key.toLowerCase() === lowerCased);
+    return key ? tokensData[key] : undefined;
+  }, [tokenAddress, tokensData]);
+
+  const marketToken = useMemo(() => {
+    if (!tokenAddress || !marketTokensData) return undefined;
+
+    const lowerCased = tokenAddress.toLowerCase();
+    const key = Object.keys(marketTokensData).find((key) => key.toLowerCase() === lowerCased);
+    return key ? marketTokensData[key] : undefined;
+  }, [marketTokensData, tokenAddress]);
+
+  const token = useMemo(() => {
+    if (regularToken) {
+      return {
+        price: regularToken.prices.minPrice,
+        decimals: regularToken.decimals,
+        symbol: regularToken.symbol,
+      };
+    }
+
+    if (marketToken) {
+      return {
+        price: marketToken.prices.minPrice,
+        decimals: GM_DECIMALS,
+        symbol: marketToken.name,
+      };
+    }
+
+    return undefined;
+  }, [marketToken, regularToken]);
+
+  const marketTokensAPRData = useMemo<MarketTokensAPRData>(() => {
     if (!liquidityProvidersIncentives || !token) return {};
 
-    return marketAddresses.reduce((acc, marketAddress) => {
+    const marketTokensAPRData: MarketTokensAPRData = {};
+    for (const marketAddress of marketAddresses) {
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
-      if (poolValue === undefined || poolValue === 0n) return acc;
+      if (poolValue === undefined || poolValue === 0n) continue;
+      const excludedLiquidity = excludedLiquidityMarketMap[marketAddress] ?? 0n;
+      const poolValueWithoutExcludedLPs = poolValue - excludedLiquidity;
 
       const tokensAmount = liquidityProvidersIncentives.rewardsPerMarket[marketAddress] ?? BN_ZERO;
       const yearMultiplier = BigInt(Math.floor((365 * 24 * 60 * 60) / liquidityProvidersIncentives.period));
       const apr =
         bigMath.mulDiv(
-          bigMath.mulDiv(tokensAmount, token.prices.minPrice, expandDecimals(1, token.decimals)),
+          bigMath.mulDiv(tokensAmount, token.price, expandDecimals(1, token.decimals)),
           PRECISION,
-          poolValue
+          poolValueWithoutExcludedLPs
         ) * yearMultiplier;
 
-      return {
-        ...acc,
-        [marketAddress]: apr,
-      };
-    }, {} as MarketTokensAPRData);
-  }, [liquidityProvidersIncentives, marketAddresses, marketsInfoData, token]);
+      marketTokensAPRData[marketAddress] = apr;
+    }
+
+    return marketTokensAPRData;
+  }, [excludedLiquidityMarketMap, liquidityProvidersIncentives, marketAddresses, marketsInfoData, token]);
+
+  return marketTokensAPRData;
 }
 
 export function useGmMarketsApy(chainId: number): GmTokensAPRResult {

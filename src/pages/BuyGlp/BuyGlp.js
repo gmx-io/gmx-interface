@@ -11,7 +11,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { INCENTIVES_V2_URL } from "config/ui";
+import { getIncentivesV2Url } from "config/links";
 
 export default function BuyGlp() {
   const { chainId } = useChainId();
@@ -37,7 +37,7 @@ export default function BuyGlp() {
               <div>
                 <Trans>
                   GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                  <ExternalLink href={INCENTIVES_V2_URL}>Read more</ExternalLink>.
+                  <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
                 </Trans>
               </div>
             )}

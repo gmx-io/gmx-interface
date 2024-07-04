@@ -251,7 +251,7 @@ export default function PositionSeller(props) {
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
-    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position.indexToken.symbol}-${position?.isLong ? "long" : "short"}`
+    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position.indexToken.symbol}-${position?.isLong ? "long" : "short"}-${position?.collateralToken.address}`
   );
 
   const [swapToToken, setSwapToToken] = useState(() =>
@@ -877,6 +877,7 @@ export default function PositionSeller(props) {
       )
         .then(() => {
           setFromValue("");
+          setSavedRecieveTokenAddress(swapToToken.address);
           setIsVisible(false);
         })
         .finally(() => {
@@ -946,6 +947,7 @@ export default function PositionSeller(props) {
     })
       .then(async () => {
         setFromValue("");
+        setSavedRecieveTokenAddress(swapToToken.address);
         setIsVisible(false);
 
         let nextSize = position.size - sizeDelta;
@@ -1358,7 +1360,6 @@ export default function PositionSeller(props) {
                     tokenAddress={receiveToken.address}
                     onSelectToken={(token) => {
                       setSwapToToken(token);
-                      setSavedRecieveTokenAddress(token.address);
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {

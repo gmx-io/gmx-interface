@@ -39,6 +39,7 @@ export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
 export const GLP_DECIMALS = 18;
 export const GMX_DECIMALS = 18;
+export const GM_DECIMALS = 18;
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 
 export const TAX_BASIS_POINTS = 60;
@@ -357,7 +358,7 @@ export function getNextFromAmount(
   toTokenAddress,
   infoTokens,
   toTokenPriceUsd,
-  ratio: bigint,
+  ratio: bigint | undefined,
   usdgSupply,
   totalTokenWeights,
   forSwap
@@ -498,7 +499,7 @@ export function getNextToAmount(
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
   let toAmountBasedOnRatio = 0n;
-  if (ratio !== undefined && ratio !== 0n) {
+  if (typeof ratio === "bigint" && ratio !== 0n) {
     toAmountBasedOnRatio = (fromAmount * PRECISION) / ratio;
   }
 

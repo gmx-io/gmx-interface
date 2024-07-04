@@ -35,12 +35,7 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
-  getTriggerNameByOrderType,
-} from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
   formatTokensRatio,
@@ -48,12 +43,7 @@ import {
   useTokensAllowanceData,
   convertToUsd,
 } from "domain/synthetics/tokens";
-import {
-  TriggerThresholdType,
-  applySlippageToMinOut,
-  applySlippageToPrice,
-  getExecutionPriceForDecrease,
-} from "domain/synthetics/trade";
+import { TriggerThresholdType, applySlippageToMinOut, applySlippageToPrice } from "domain/synthetics/trade";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
@@ -131,11 +121,13 @@ import {
   selectTradeboxTriggerPrice,
   selectTradeboxSelectedPositionKey,
   selectTradeboxMaxLiquidityPath,
+  selectTradeboxExecutionPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./ConfirmationBox.scss";
 import { bigMath } from "lib/bigmath";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 
 export type Props = {
   isVisible: boolean;
@@ -171,6 +163,7 @@ export function ConfirmationBox(p: Props) {
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const executionPrice = useSelector(selectTradeboxExecutionPrice);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
   const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
@@ -672,7 +665,7 @@ export function ConfirmationBox(p: Props) {
           executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
           tokensData,
           txnType: entry.txnType!,
-          skipSimulation: isLimit || shouldDisableValidationForTesting,
+          skipSimulation: true,
         };
       }),
       cancelOrderParams: cancelSltpEntries.map((entry) => ({
@@ -951,20 +944,6 @@ export function ConfirmationBox(p: Props) {
     marketsOptions?.collateralWithPosition &&
     collateralToken &&
     !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
-
-  const executionPriceUsd = useMemo(() => {
-    if (!marketInfo) return null;
-    if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
-    if (!decreaseAmounts) return null;
-    if (triggerPrice === undefined) return null;
-
-    return getExecutionPriceForDecrease(
-      triggerPrice,
-      fees.positionPriceImpact.deltaUsd,
-      decreaseAmounts.sizeDeltaUsd,
-      isLong
-    );
-  }, [decreaseAmounts, fees?.positionPriceImpact?.deltaUsd, isLong, marketInfo, triggerPrice]);
 
   function renderDifferentCollateralWarning() {
     if (!isOrphanOrder) {
@@ -1287,40 +1266,31 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Entry Price`}
-            value={
-              <ValueTransition
-                from={formatUsd(existingPosition?.entryPrice, {
-                  displayDecimals: existingPriceDecimals,
-                })}
-                to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                  displayDecimals: toTokenPriceDecimals,
-                })}
-              />
-            }
+          <ExecutionPriceRow
+            tradeFlags={tradeFlags}
+            displayDecimals={toTokenPriceDecimals}
+            fees={fees}
+            executionPrice={executionPrice ?? undefined}
+            acceptablePrice={acceptablePrice}
+            triggerOrderType={fixedTriggerOrderType}
           />
 
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price`}
-            value={
-              formatAcceptablePrice(acceptablePrice, {
-                displayDecimals: toTokenPriceDecimals,
-              }) || "-"
-            }
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Mark Price`}
-            value={
-              formatUsd(markPrice, {
-                displayDecimals: toTokenPriceDecimals,
-              }) || "-"
-            }
-          />
+          {existingPosition && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Entry Price`}
+              value={
+                <ValueTransition
+                  from={formatUsd(existingPosition.entryPrice, {
+                    displayDecimals: existingPriceDecimals,
+                  })}
+                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}
+                />
+              }
+            />
+          )}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1585,51 +1555,13 @@ export function ConfirmationBox(p: Props) {
             }
           />
 
-          {existingPosition && (
-            <ExchangeInfoRow
-              label={t`Entry Price`}
-              value={
-                formatUsd(existingPosition?.entryPrice, {
-                  displayDecimals: indexToken?.priceDecimals,
-                }) || "-"
-              }
-            />
-          )}
-
-          <ExchangeInfoRow
-            label={t`Execution Price`}
-            value={
-              executionPriceUsd
-                ? formatUsd(executionPriceUsd, {
-                    displayDecimals: indexToken?.priceDecimals,
-                  })
-                : "-"
-            }
-          />
-
-          {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
-            <>
-              <ExchangeInfoRow
-                className="SwapBox-info-row"
-                label={t`Acceptable Price`}
-                value={
-                  formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  }) || "-"
-                }
-              />
-            </>
-          )}
-
-          <ExchangeInfoRow
-            label={t`Mark Price`}
-            value={
-              markPrice
-                ? formatUsd(markPrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  })
-                : "..."
-            }
+          <ExecutionPriceRow
+            tradeFlags={tradeFlags}
+            displayDecimals={toTokenPriceDecimals}
+            fees={fees}
+            executionPrice={executionPrice ?? undefined}
+            acceptablePrice={decreaseAmounts?.acceptablePrice}
+            triggerOrderType={fixedTriggerOrderType}
           />
 
           {existingPosition && (

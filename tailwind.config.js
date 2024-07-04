@@ -3,6 +3,57 @@
 const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
+const defaultConfig = require("tailwindcss/defaultConfig");
+
+const colors = {
+  blue: {
+    300: "#7885ff",
+    400: "#4d5ffa",
+    500: "#3d51ff",
+    600: "#2d42fc",
+    700: "#2e3dcd",
+  },
+  "cold-blue": {
+    500: "#3a3f79",
+    700: "#3a3f798f",
+    900: "#1e203e",
+  },
+  slate: {
+    100: "#a0a3c4",
+    500: "#3e4361",
+    600: "#373c58",
+    700: "#23263b",
+    800: "#16182e",
+    900: "#101124",
+    950: "#08091b",
+  },
+  gray: {
+    50: "rgba(255, 255, 255, 0.95)",
+    100: "rgba(255, 255, 255, 0.9)",
+    200: "rgba(255, 255, 255, 0.8)",
+    300: "rgba(255, 255, 255, 0.7)",
+    400: "rgba(255, 255, 255, 0.6)",
+    500: "rgba(255, 255, 255, 0.5)",
+    600: "rgba(255, 255, 255, 0.4)",
+    700: "rgba(255, 255, 255, 0.3)",
+    800: "rgba(255, 255, 255, 0.2)",
+    900: "rgba(255, 255, 255, 0.1)",
+    950: "rgba(255, 255, 255, 0.05)",
+  },
+  yellow: {
+    500: "#f3b50c",
+  },
+  red: {
+    400: "#ff637a",
+    500: "#ff506a",
+  },
+  green: {
+    300: "#56dba8",
+    500: "#0ecc83",
+  },
+  white: "#ffffff",
+  black: "#000000",
+};
 
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
@@ -52,62 +103,19 @@ module.exports = {
       base: "normal",
     },
     // @see https://tailwindcss.com/docs/customizing-colors
-    colors: {
-      blue: {
-        300: "#7885ff",
-        400: "#4d5ffa",
-        500: "#3d51ff",
-        600: "#2d42fc",
-        700: "#2e3dcd",
-      },
-      "cold-blue": {
-        500: "#3a3f79",
-        700: "#3a3f798f",
-        900: "#1e203e",
-      },
-      slate: {
-        100: "#a0a3c4",
-        500: "#3e4361",
-        600: "#373c58",
-        700: "#23263b",
-        800: "#16182e",
-        900: "#101124",
-        950: "#08091b",
-      },
-      gray: {
-        50: "rgba(255, 255, 255, 0.95)",
-        100: "rgba(255, 255, 255, 0.9)",
-        200: "rgba(255, 255, 255, 0.8)",
-        300: "rgba(255, 255, 255, 0.7)",
-        400: "rgba(255, 255, 255, 0.6)",
-        500: "rgba(255, 255, 255, 0.5)",
-        600: "rgba(255, 255, 255, 0.4)",
-        700: "rgba(255, 255, 255, 0.3)",
-        800: "rgba(255, 255, 255, 0.2)",
-        900: "rgba(255, 255, 255, 0.1)",
-        950: "rgba(255, 255, 255, 0.05)",
-      },
-      yellow: {
-        500: "#f3b50c",
-      },
-      red: {
-        400: "#ff637a",
-        500: "#ff506a",
-      },
-      green: {
-        300: "#56dba8",
-        500: "#0ecc83",
-      },
-      white: "#ffffff",
-      black: "#000000",
-    },
-    textDecorationColor: {
-      "gray-400": "rgba(255, 255, 255, 0.6)",
-      green: "#56dba880",
-      red: "#ff637a80",
-    },
+    colors: colors,
+    textDecorationColor: colors,
     placeholderColor: {
       gray: "rgb(117, 117, 117)",
+    },
+    // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
+    // "these features will only be available if your project uses a simple screens configuration."
+    // So we just copy the default screens config
+    screens: defaultConfig.theme.screens,
+    extend: {
+      gridTemplateColumns: fromPairs(
+        range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
+      ),
     },
   },
   plugins: [injectColorsPlugin],

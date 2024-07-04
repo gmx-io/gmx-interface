@@ -1,5 +1,40 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { uniq } from "lodash";
+import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
+import Helmet from "react-helmet";
+
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { getSyntheticsListSectionKey } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import type { OrderType } from "domain/synthetics/orders/types";
+import { TradeMode } from "domain/synthetics/trade";
+import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
+import { getMidPrice } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { getPageTitle } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatUsd } from "lib/numbers";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { usePendingTxns } from "lib/usePendingTxns";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import useWallet from "lib/wallets/useWallet";
+
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { Claims } from "components/Synthetics/Claims/Claims";
@@ -11,37 +46,6 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
-import { getSyntheticsListSectionKey } from "config/localStorage";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionInfo } from "domain/synthetics/positions";
-import { useChainId } from "lib/chains";
-import { getPageTitle } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import Helmet from "react-helmet";
-
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
-import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { TradeMode } from "domain/synthetics/trade";
-import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
-import { getMidPrice } from "domain/tokens";
-import { helperToast } from "lib/helperToast";
-import { usePendingTxns } from "lib/usePendingTxns";
-import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   openSettings: () => void;
@@ -57,7 +61,7 @@ enum ListSection {
 export function SyntheticsPage(p: Props) {
   const { openSettings } = p;
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
+  const { account } = useWallet();
   const calcSelector = useCalcSelector();
   const [, setPendingTxns] = usePendingTxns();
 
@@ -79,18 +83,10 @@ export function SyntheticsPage(p: Props) {
 
   const chartToken = useSelector(selectChartToken);
 
-  const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
-
-  const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
-  const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
-  const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
   const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
   const ordersCount = useSelector(selectOrdersCount);
   const positionsCount = useSelector((s) => Object.keys(selectPositionsInfoData(s) || {}).length);
   const totalClaimables = useSelector(selectClaimablesCount);
-
-  const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
 
   const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
@@ -100,36 +96,34 @@ export function SyntheticsPage(p: Props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const onCancelOrdersClick = useCallback(() => {
-    if (!signer) return;
-    setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: selectedOrdersKeysArr,
-      setPendingTxns: setPendingTxns,
-      detailsMsg: cancelOrdersDetailsMessage,
-    })
-      .then(async (tx) => {
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          setSelectedOrdersKeys({});
-        }
-      })
-      .finally(() => {
-        setIsCancelOrdersProcessig(false);
-      });
-  }, [cancelOrdersDetailsMessage, chainId, selectedOrdersKeysArr, setPendingTxns, signer, subaccount]);
+  const {
+    isCancelOrdersProcessing,
+    selectedOrderKeys,
+    setSelectedOrderKeys,
+    onCancelSelectedOrders,
+    onCancelOrder,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
+  } = useOrdersControl();
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
   const handlePositionListOrdersClick = useCallback(
-    (key?: string) => {
+    (positionKey: string, orderKey: string | undefined) => {
       setListSection(ListSection.Orders);
-      setSelectedPositionOrderKey(key);
-      if (key) {
-        setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
-      }
+      startTransition(() => {
+        setSelectedPositionOrderKey(orderKey);
+
+        if (orderKey) {
+          setSelectedOrderKeys([orderKey]);
+          setMarketsDirectionsFilter([]);
+          setOrderTypesFilter([]);
+        }
+      });
     },
-    [setListSection]
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
   useEffect(() => {
@@ -173,11 +167,6 @@ export function SyntheticsPage(p: Props) {
     [calcSelector, setActivePosition]
   );
 
-  const handleSettlePositionFeesClick = useCallback((positionKey: PositionInfo["key"]) => {
-    setGettingPendingFeePositionKeys((keys) => keys.concat(positionKey).filter((x, i, self) => self.indexOf(x) === i));
-    setIsSettling(true);
-  }, []);
-
   const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
       return (
@@ -216,15 +205,24 @@ export function SyntheticsPage(p: Props) {
         shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
-        gettingPendingFeePositionKeys={gettingPendingFeePositionKeys}
-        setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         allowedSlippage={allowedSlippage}
       />
     );
   }
 
-  const handleTabChange = useCallback((section) => setListSection(section), [setListSection]);
+  const handleTabChange = useCallback(
+    (section: ListSection) => {
+      setListSection(section);
+      startTransition(() => {
+        setOrderTypesFilter([]);
+        setMarketsDirectionsFilter([]);
+        setSelectedOrderKeys([]);
+        setSelectedPositionOrderKey(undefined);
+      });
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
 
   return (
     <div className="Exchange page-layout">
@@ -252,14 +250,14 @@ export function SyntheticsPage(p: Props) {
                 className="Exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
-                {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
+                {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
                   <button
                     className="muted cancel-order-btn text-15"
-                    disabled={isCancelOrdersProcessig}
+                    disabled={isCancelOrdersProcessing}
                     type="button"
-                    onClick={onCancelOrdersClick}
+                    onClick={onCancelSelectedOrders}
                   >
-                    <Plural value={selectedOrdersKeysArr.length} one="Cancel order" other="Cancel # orders" />
+                    <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
                   </button>
                 )}
                 <Checkbox
@@ -277,19 +275,24 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <PositionList
                 onOrdersClick={handlePositionListOrdersClick}
-                onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 openSettings={openSettings}
+                onCancelOrder={onCancelOrder}
               />
             )}
             {listSection === ListSection.Orders && (
               <OrderList
-                selectedOrdersKeys={selectedOrdersKeys}
-                setSelectedOrdersKeys={setSelectedOrdersKeys}
+                selectedOrdersKeys={selectedOrderKeys}
+                setSelectedOrderKeys={setSelectedOrderKeys}
                 setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                marketsDirectionsFilter={marketsDirectionsFilter}
+                setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                orderTypesFilter={orderTypesFilter}
+                setOrderTypesFilter={setOrderTypesFilter}
+                onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -324,17 +327,22 @@ export function SyntheticsPage(p: Props) {
               onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
-              onSettlePositionFeesClick={handleSettlePositionFeesClick}
               openSettings={openSettings}
+              onCancelOrder={onCancelOrder}
             />
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              selectedOrdersKeys={selectedOrdersKeys}
-              setSelectedOrdersKeys={setSelectedOrdersKeys}
+              selectedOrdersKeys={selectedOrderKeys}
+              setSelectedOrderKeys={setSelectedOrderKeys}
               setPendingTxns={setPendingTxns}
               selectedPositionOrderKey={selectedPositionOrderKey}
               setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+              marketsDirectionsFilter={marketsDirectionsFilter}
+              setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+              orderTypesFilter={orderTypesFilter}
+              setOrderTypesFilter={setOrderTypesFilter}
+              onCancelSelectedOrders={onCancelSelectedOrders}
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -353,4 +361,70 @@ export function SyntheticsPage(p: Props) {
       <Footer />
     </div>
   );
+}
+
+function useOrdersControl() {
+  const chainId = useSelector(selectChainId);
+  const signer = useEthersSigner();
+  const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
+  const [, setPendingTxns] = usePendingTxns();
+  const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
+  const subaccount = useSubaccount(null, selectedOrderKeys.length);
+  const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
+
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+
+  const onCancelSelectedOrders = useCallback(
+    function cancelSelectedOrders() {
+      if (!signer) return;
+      const keys = selectedOrderKeys;
+      setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+      cancelOrdersTxn(chainId, signer, subaccount, {
+        orderKeys: keys,
+        setPendingTxns: setPendingTxns,
+        detailsMsg: cancelOrdersDetailsMessage,
+      })
+        .then(async (tx) => {
+          const receipt = await tx.wait();
+          if (receipt.status === 1) {
+            setSelectedOrderKeys(EMPTY_ARRAY);
+          }
+        })
+        .finally(() => {
+          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+        });
+    },
+    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+  );
+
+  const onCancelOrder = useCallback(
+    function cancelOrder(key: string) {
+      if (!signer) return;
+
+      setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+      cancelOrdersTxn(chainId, signer, subaccount, {
+        orderKeys: [key],
+        setPendingTxns: setPendingTxns,
+        detailsMsg: cancelOrdersDetailsMessage,
+      }).finally(() => {
+        setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+        setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
+      });
+    },
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+  );
+
+  return {
+    isCancelOrdersProcessing,
+    onCancelSelectedOrders,
+    onCancelOrder,
+    selectedOrderKeys,
+    setSelectedOrderKeys,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
+  };
 }

@@ -39,6 +39,7 @@ type Props<T extends PropsWithChildren> = {
   className?: string;
   disableHandleStyle?: boolean;
   handleClassName?: string;
+  tooltipClassName?: string;
   isHandlerDisabled?: boolean;
   openDelay?: number;
   closeDelay?: number;
@@ -55,6 +56,7 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
   className,
   disableHandleStyle,
   handleClassName,
+  tooltipClassName,
   isHandlerDisabled,
   openDelay = TOOLTIP_OPEN_DELAY,
   closeDelay = TOOLTIP_CLOSE_DELAY,
@@ -192,7 +194,7 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
         {isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{handle}</div> : <>{handle}</>}
       </span>
       {visible && (
-        <div ref={popupRef} className={cx(["Tooltip-popup", computedPlacement])}>
+        <div ref={popupRef} className={cx(["Tooltip-popup", computedPlacement, tooltipClassName])}>
           {content ?? renderContent?.()}
         </div>
       )}

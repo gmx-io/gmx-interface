@@ -103,7 +103,10 @@ export type RowDetails = {
   pnlState?: TooltipState;
   isLong?: boolean;
   indexTokenSymbol?: string;
-  pathTokenSymbols?: string[];
+  swapFromTokenSymbol?: string;
+  swapFromTokenAmount?: string;
+  swapToTokenSymbol?: string;
+  swapToTokenAmount?: string;
   //#region CSV fields
   marketPrice?: string;
   executionPrice?: string;

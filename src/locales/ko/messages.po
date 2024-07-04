@@ -133,11 +133,15 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "타입"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Close order"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -486,7 +490,6 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "매도 가격"
 
@@ -527,10 +530,6 @@ msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel submitted"
 msgstr "취소 제출 완료"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
-msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
@@ -594,6 +593,10 @@ msgstr ""
 msgid "Average position size."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
@@ -609,9 +612,17 @@ msgstr "마켓"
 msgid "Claimable Rebates"
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Exit)"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "시장 주문"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
@@ -736,6 +747,7 @@ msgid "Decentralized Money Market"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr ""
@@ -847,6 +859,7 @@ msgstr "총 스테이킹된 자산"
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "추천인 코드의 길이는 {MAX_REFERRAL_CODE_LENGTH}글자를 넘을 수 없습니다."
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Trigger Orders"
 msgstr "트리거 주문"
@@ -867,10 +880,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Max pool amount exceeded LOL"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake completed!"
@@ -996,6 +1005,7 @@ msgid "FUNDING FEE"
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
 msgstr ""
 
@@ -1020,7 +1030,6 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "유동성"
 
@@ -1184,6 +1193,10 @@ msgstr "게정"
 msgid "Keep leverage at {0}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종료될 것입니다.<0/><1/>이 종료 가격은 자산의 가격 변화에 따라 변경됩니다.<2/><3/><4>더 읽기</4>."
@@ -1315,7 +1328,6 @@ msgid "GMX Proposals Voting page"
 msgstr "GMX 프로포절 투표 페이지"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and Price Impact"
 msgstr ""
 
@@ -1362,7 +1374,17 @@ msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -1518,6 +1540,10 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "최대 {0} out"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The amount left in the sub-account is not enough to cover network gas costs."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr ""
@@ -1554,10 +1580,6 @@ msgstr "소개 보수 분배 내역"
 msgid "Accrued Negative Funding Fee"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."
@@ -1579,11 +1601,6 @@ msgstr "esGMX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
 msgid "GMX Alerts"
 msgstr ""
 
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "Search action"
-msgstr "액션 찾기"
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
@@ -1600,6 +1617,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세요."
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
@@ -1630,6 +1651,7 @@ msgstr ""
 msgid "Vault Capacity for your Account:"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
@@ -1740,6 +1762,8 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -1788,10 +1812,6 @@ msgstr "Avalanche에서 GMX로 베스팅하기"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
 msgstr "수령할 수 있는 esGMX가 없습니다"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
@@ -1904,10 +1924,6 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "유동성 데이터를 불러오지 못하였습니다."
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
-msgstr ""
-
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
@@ -1982,6 +1998,7 @@ msgstr ""
 msgid "LIQUIDITY"
 msgstr "유동성"
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -1999,10 +2016,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "{0}을 담보로 사용한 기존 포지션이 있습니다. 이 액션은 해당 포지션에 적용되지 않습니다."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "None"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -2252,6 +2265,10 @@ msgstr "{fromText}에서 {toMinText}로"
 msgid "Price above Liq. Price"
 msgstr "청산가 초과 가격"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} 풀이 초과되었습니다. 다른 자산으로 시도해보세요"
@@ -2286,10 +2303,6 @@ msgstr "GMX 거래 대회에 참여하여 상금을 획득하세요."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap route with enough liquidity"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2338,10 +2351,6 @@ msgstr "최소량 수치 완료"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용되고 있지 않은 유휴 수량"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2362,10 +2371,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum and Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -2448,6 +2453,10 @@ msgstr ""
 msgid "Create Stop-Loss Order"
 msgstr "손절 주문 생성"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Select Market"
 msgstr "마켓 선택"
@@ -2487,6 +2496,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 같은 상황에 일어날 수 있습니다:"
+
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Open Positions with Orders"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
@@ -2682,6 +2695,10 @@ msgstr "총 스테이킹"
 msgid "Network Fee"
 msgstr "네트워크 수수료"
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2841,6 +2858,11 @@ msgstr ""
 msgid "Liquidated"
 msgstr "청산"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The ask price is used for opening longs and closing shorts."
+msgstr ""
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -2850,6 +2872,10 @@ msgstr "언어 선택"
 msgid "Create Take-Profit Order"
 msgstr "이익 실현 주문 생성"
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Direction"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
@@ -2858,6 +2884,7 @@ msgstr ""
 msgid "Collateral value may differ due to different Price Impact at the time of execution."
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2895,10 +2922,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3259,10 +3282,6 @@ msgstr "활성화된 추천 코드"
 msgid "Pending {0} approval"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees {rebatedTextWithSparkle} and Price Impact"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
@@ -3388,6 +3407,7 @@ msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3459,7 +3479,6 @@ msgstr "구조화금융 프로덕트"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3510,7 +3529,6 @@ msgstr "주문의 트리거 가격입니다."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3642,10 +3660,6 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr ""
@@ -3718,6 +3732,7 @@ msgid "Capital Used"
 msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3876,7 +3891,6 @@ msgid "Execute Stop-Loss Order"
 msgstr "손절 주문 실행"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "주문"
@@ -4055,7 +4069,6 @@ msgstr "감소 완료"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -4234,6 +4247,10 @@ msgstr ""
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "스왑 제출완료"
@@ -4340,6 +4357,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound submitted!"
 msgstr ""
@@ -4410,6 +4431,11 @@ msgstr "트레이드"
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search Action"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
 msgstr ""
@@ -4450,8 +4476,8 @@ msgstr "당신의 주문에 대한 {0}/USD 시장 풀의 유동성이 부족합�
 msgid "You have not traded during the selected period."
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -4573,6 +4599,7 @@ msgid "Top PnL (%)"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
@@ -4740,6 +4767,10 @@ msgstr "최소 필요 담보"
 msgid "Search Pool"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "유용한 링크"
@@ -4806,7 +4837,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
@@ -4814,6 +4844,10 @@ msgstr "취소"
 
 #: src/components/Synthetics/ConfirmationBox/SideOrderEntries.tsx
 msgid "Remove Row"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Bid Price (Entry)"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -4933,7 +4967,6 @@ msgstr "롱 포지션 순 수수료율 / 1시간"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "수정"
 
@@ -4960,10 +4993,6 @@ msgstr ""
 
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Price Impact"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5188,6 +5217,10 @@ msgstr ""
 msgid "Buy order executed"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "최소 주문: 10 USD"
@@ -5258,8 +5291,8 @@ msgstr "esGMX 수령하기"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche GM Pools are incentivized."
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -5337,6 +5370,10 @@ msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet total"
+msgstr ""
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Acceptable price does not apply to stop-loss orders, as they will be executed regardless of any price impact."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -5620,6 +5657,10 @@ msgstr "Inc."
 msgid "Fees exceed amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+msgid "Search Type"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr "{0}은 목표 가중치를 미달합니다.<0/><1/>{1}로 <2>GLP 구매</2>를 하거나 {2}에서 다른 토큰으로 <3>스왑</3>하는 수수료가 감소합니다."
@@ -5725,10 +5766,6 @@ msgstr ""
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> 코드를 바로 생성해서 소개 보수를 획득하세요!"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
-msgstr ""
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
 msgstr "NFT ID 입력"
@@ -5778,11 +5815,8 @@ msgstr "{0} {longOrShortText}의 입글을 실행시키지 못했습니다"
 msgid "Deposit"
 msgstr "예치"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "허용 가능한 가격"
@@ -5799,6 +5833,10 @@ msgstr ""
 msgid "Enabling Leverage..."
 msgstr "레버리지 유효화중"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+msgstr ""
+
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
 msgstr ""
@@ -5807,8 +5845,8 @@ msgstr ""
 msgid "Trade Errors"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5964,6 +6002,10 @@ msgstr "{0} 잔고 부족"
 msgid "limit price"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
 msgstr ""
@@ -5988,10 +6030,6 @@ msgstr ""
 msgid "{positionName} Failed to settle"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees (Rebated) and Price Impact"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -6015,6 +6053,7 @@ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit order"
 msgstr "주문 수정"
 
@@ -6159,10 +6198,6 @@ msgstr ""
 msgid "Staking..."
 msgstr "스테이킹중..."
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr ""
@@ -6236,11 +6271,6 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Search market"
-msgstr "마켓 찾기"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "수령 제출완료! <0>상태 보기.</0>"
@@ -6268,10 +6298,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "자금 수수료 결제 요청"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
-msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 기반으로 하여 주문 실행시 최소 {formattedMinReceive}를 보장합니다."
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -6411,7 +6437,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6505,10 +6530,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "텔레그램 그룹 (중국어)"
@@ -6569,7 +6590,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -6664,6 +6684,10 @@ msgstr "우측 상단의 세팅을 이용해 \"허용 가능한 슬리피지\"�
 msgid "GMX ecosystem pages."
 msgstr "GMX 이코시스템 페이지"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
@@ -6677,8 +6701,8 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 msgid "Buy"
 msgstr "구매"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
+#: src/config/events.tsx
+msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6796,12 +6820,16 @@ msgid "Image generation error, please refresh and try again."
 msgstr "이미지 생성 에러. 새로고침 후 다시 시도해주세요."
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price Impact Rebates"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
@@ -6870,6 +6898,10 @@ msgstr "최초 담보"
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 msgstr ""
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -6911,12 +6943,9 @@ msgstr "베스트팅된 GLP에서 인출되지 않은 양"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
@@ -6955,6 +6984,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There is currently a high swap price impact for the order swap path."
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below highest Limit Price."
@@ -7067,6 +7100,10 @@ msgstr ""
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Exit)"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -7087,8 +7124,7 @@ msgstr ""
 msgid "Last 30 days"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
 msgstr "실행 가격"
@@ -7138,6 +7174,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -7217,6 +7254,10 @@ msgstr ""
 msgid "No open positions at GMX currently"
 msgstr "현재 GMX에서 열려있는 포지션이 없습니다."
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Ask Price (Entry)"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr ""
@@ -7251,10 +7292,6 @@ msgstr ""
 msgid "Close {0} {1}"
 msgstr ""
 
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
-msgstr ""
-
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
@@ -7272,6 +7309,10 @@ msgstr "추천 코드 입력"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -7295,14 +7336,11 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -7328,6 +7366,10 @@ msgstr "24시간 거래량"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "전체 통계"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit sent."
@@ -7508,15 +7550,24 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Limit"
 msgstr "지정가"
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The bid price is used for opening shorts and closing longs."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -7575,6 +7626,7 @@ msgid "01 Sep 2021"
 msgstr "2021년 9월 1일"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""
