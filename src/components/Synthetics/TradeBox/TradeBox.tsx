@@ -617,6 +617,7 @@ export function TradeBox(p: Props) {
     consentError,
     text: submitButtonText,
     isTriggerWarningAccepted: triggerConsent,
+    error: buttonErrorText,
   });
 
   const { summaryExecutionFee } = useSummaryExecutionFee();

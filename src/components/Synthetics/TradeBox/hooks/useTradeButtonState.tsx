@@ -15,11 +15,13 @@ export function useTradeboxButtonState({
   consentError,
   isTriggerWarningAccepted,
   text,
+  error,
 }: {
   stage: TradeStage;
   consentError: string | null;
   isTriggerWarningAccepted: boolean;
   text: string;
+  error: string | undefined;
 }) {
   const tradeFlags = useTradeboxTradeFlags();
   const markPrice = useTradeboxMarkPrice();
@@ -74,6 +76,13 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
+
     if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
       return {
         text: t`Accept confirmation of trigger orders`,
@@ -112,5 +121,6 @@ export function useTradeboxButtonState({
     stage,
     text,
     isTriggerWarningAccepted,
+    error,
   ]);
 }
