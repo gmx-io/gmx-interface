@@ -75,8 +75,9 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     clearUnusedKeys: true,
     keepPreviousData: true,
 
-    request: () =>
-      marketsAddresses!.reduce((request, marketAddress) => {
+    request: () => {
+      let time = 0;
+      const result = marketsAddresses!.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
@@ -93,7 +94,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
           shortToken: market.shortTokenAddress,
         };
 
-        return Object.assign(request, {
+        const start = Date.now();
+        const result = Object.assign(request, {
           [`${marketAddress}-reader`]: {
             contractAddress: getContract(chainId, "SyntheticsReader"),
             abi: SyntheticsReader.abi,
@@ -391,7 +393,16 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
             },
           },
         });
-      }, {}),
+        const end = Date.now();
+        time += end - start;
+
+        return result;
+      }, {});
+
+      console.log("markets hashing time", time);
+
+      return result;
+    },
     parseResponse: (res) => {
       return marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
         const readerErrors = res.errors[`${marketAddress}-reader`];
