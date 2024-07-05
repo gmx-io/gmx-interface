@@ -8,13 +8,14 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
+  getMaxPoolUsd,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { BN_ZERO, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -84,59 +85,42 @@ export function MarketStats(p: Props) {
 
   const maxLongTokenValue = useMemo(
     () => [
-      formatTokenAmount(
+      formatTokenAmountWithUsd(
         mintableInfo?.longDepositCapacityAmount,
-        marketInfo?.longToken.decimals,
-        marketInfo?.longToken.symbol,
-        {
-          useCommas: true,
-        }
+        mintableInfo?.longDepositCapacityUsd,
+        longToken?.symbol,
+        longToken?.decimals
       ),
-      `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
-        displayDecimals: 0,
-        useCommas: true,
-      })} / ${formatTokenAmount(
-        marketInfo?.maxLongPoolAmount,
-        marketInfo?.longToken.decimals,
-        marketInfo?.longToken.symbol,
-        { displayDecimals: 0, useCommas: true }
-      )})`,
+      marketInfo
+        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
+        : "",
     ],
     [
-      marketInfo?.longPoolAmount,
-      marketInfo?.longToken.decimals,
-      marketInfo?.longToken.symbol,
-      marketInfo?.maxLongPoolAmount,
+      longToken?.decimals,
+      longToken?.symbol,
+      marketInfo,
       mintableInfo?.longDepositCapacityAmount,
+      mintableInfo?.longDepositCapacityUsd,
     ]
   );
-
   const maxShortTokenValue = useMemo(
     () => [
-      formatTokenAmount(
+      formatTokenAmountWithUsd(
         mintableInfo?.shortDepositCapacityAmount,
-        marketInfo?.shortToken.decimals,
-        marketInfo?.shortToken.symbol,
-        {
-          useCommas: true,
-        }
+        mintableInfo?.shortDepositCapacityUsd,
+        shortToken?.symbol,
+        shortToken?.decimals
       ),
-      `(${formatTokenAmount(marketInfo?.shortPoolAmount, marketInfo?.shortToken.decimals, undefined, {
-        displayDecimals: 0,
-        useCommas: true,
-      })} / ${formatTokenAmount(
-        marketInfo?.maxShortPoolAmount,
-        marketInfo?.shortToken.decimals,
-        marketInfo?.shortToken.symbol,
-        { displayDecimals: 0, useCommas: true }
-      )})`,
+      marketInfo
+        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
+        : "",
     ],
     [
-      marketInfo?.maxShortPoolAmount,
-      marketInfo?.shortPoolAmount,
-      marketInfo?.shortToken.decimals,
-      marketInfo?.shortToken.symbol,
+      marketInfo,
       mintableInfo?.shortDepositCapacityAmount,
+      mintableInfo?.shortDepositCapacityUsd,
+      shortToken?.decimals,
+      shortToken?.symbol,
     ]
   );
 
@@ -255,17 +239,12 @@ export function MarketStats(p: Props) {
                       value={maxLongTokenValue}
                       showDollar={false}
                     />
-
-                    {!marketInfo?.isSameCollaterals && (
-                      <>
-                        <br />
-                        <StatsTooltipRow
-                          label={t`Max ${marketInfo?.shortToken.symbol}`}
-                          value={maxShortTokenValue}
-                          showDollar={false}
-                        />
-                      </>
-                    )}
+                    <br />
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.shortToken.symbol}`}
+                      value={maxShortTokenValue}
+                      showDollar={false}
+                    />
                   </div>
                 }
               />

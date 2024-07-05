@@ -1,15 +1,15 @@
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { PRECISION, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
+import { PositionInfo } from "../positions";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
-import { PositionInfo } from "../positions";
-import { bigMath } from "lib/bigmath";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -303,44 +303,47 @@ export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
   }, 0n);
 }
 
-export function getMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
-  return isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
-}
-
-function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
+function getDepositCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
-  const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
+  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
   const capacityAmount = maxPoolAmount - poolAmount;
 
-  return capacityAmount > 0 ? capacityAmount : 0n;
+  return bigMath.max(0n, capacityAmount);
 }
 
-export function getMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
-  const maxPoolUsdForDeposit = getMaxPoolUsdForDeposit(marketInfo, isLong);
+export function getMaxPoolAmount(marketInfo: MarketInfo, isLong: boolean) {
+  const maxPoolUsdForDeposit = isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
   const maxPoolAmountForDeposit = convertToTokenAmount(maxPoolUsdForDeposit, token.decimals, getMidPrice(token.prices));
-  const maxAmountForSwap = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
 
-  if (maxPoolAmountForDeposit === undefined) return maxAmountForSwap;
+  if (maxPoolAmountForDeposit === undefined) return maxPoolAmount;
 
-  return bigMath.min(maxAmountForSwap, maxPoolAmountForDeposit);
+  return bigMath.min(maxPoolAmount, maxPoolAmountForDeposit);
 }
 
-export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
+
+  return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
+}
+
+export function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
-  const maxPoolUsd = getMaxPoolUsdForDeposit(marketInfo, isLong);
+  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
 
   const capacityUsd = maxPoolUsd - poolUsd;
 
-  return capacityUsd > 0 ? capacityUsd : 0n;
+  return bigMath.max(0n, capacityUsd);
 }
 
 export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: TokenData) {
-  const longDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, true);
-  const shortDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, false);
+  const longDepositCapacityAmount = getDepositCapacityAmount(marketInfo, true);
+  const shortDepositCapacityAmount = getDepositCapacityAmount(marketInfo, false);
 
-  const longDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, true);
-  const shortDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, false);
+  const longDepositCapacityUsd = getDepositCapacityUsd(marketInfo, true);
+  const shortDepositCapacityUsd = getDepositCapacityUsd(marketInfo, false);
 
   const mintableUsd = longDepositCapacityUsd + shortDepositCapacityUsd;
   const mintableAmount = usdToMarketTokenAmount(marketInfo, marketToken, mintableUsd);
