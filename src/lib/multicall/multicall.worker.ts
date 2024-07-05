@@ -11,6 +11,7 @@ self.addEventListener("message", run);
 
 async function run(event) {
   performance.mark("multicall-worker-start");
+  const start = Date.now();
   const { PRODUCTION_PREVIEW_KEY, chainId, request, id } = event.data;
   // @ts-ignore
   self.PRODUCTION_PREVIEW_KEY = PRODUCTION_PREVIEW_KEY;
@@ -26,6 +27,8 @@ async function run(event) {
     postMessage({ id, error: error });
   }
 
+  const end = Date.now();
+  console.log("multicall-worker", end - start, "ms");
   performance.mark("multicall-worker-end");
   performance.measure("multicall-worker", "multicall-worker-start", "multicall-worker-end");
 }
