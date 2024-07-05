@@ -114,6 +114,7 @@ import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { bigMath } from "lib/bigmath";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -127,8 +128,10 @@ import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useSummaryExecutionFee } from "./hooks/useSummaryExecutionFee";
+import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
+import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
 export type Props = {
   allowedSlippage: number;
@@ -568,6 +571,14 @@ export function TradeBox(p: Props) {
 
   const isSubmitButtonDisabled = account ? Boolean(buttonErrorText) : false;
 
+  const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows();
+  const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
+  const { stopLoss, takeProfit, limit } = useSidecarOrders();
+
+  const previousFromTokenAddress = usePrevious(fromTokenAddress);
+  const previousToTokenAddress = usePrevious(toTokenAddress);
+  const previousIsLong = usePrevious(isLong);
+
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
       return buttonErrorText;
@@ -601,11 +612,16 @@ export function TradeBox(p: Props) {
     stage,
   ]);
 
+  const submitButtonState = useTradeboxButtonState({
+    stage,
+    consentError,
+    text: submitButtonText,
+    isTriggerWarningAccepted: triggerConsent,
+  });
+
   const { summaryExecutionFee } = useSummaryExecutionFee();
   const { requiredActions } = useRequiredActions();
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
-
-  const [tradeboxWarningRows, warningsConfirmed] = useTradeboxWarningsRows();
 
   useEffect(() => {
     if (
@@ -717,6 +733,34 @@ export function TradeBox(p: Props) {
       }
     },
     [leverageOption, maxAllowedLeverage, setLeverageOption]
+  );
+
+  useEffect(
+    function reset() {
+      if (
+        fromTokenAddress !== previousFromTokenAddress ||
+        toTokenAddress !== previousToTokenAddress ||
+        isLong !== previousIsLong
+      ) {
+        setTriggerConsent(false);
+        stopLoss?.reset();
+        takeProfit?.reset();
+        limit?.reset();
+      }
+    },
+    [
+      takeProfit,
+      stopLoss,
+      limit,
+      fromTokenAddress,
+      previousFromTokenAddress,
+      toTokenAddress,
+      previousToTokenAddress,
+      triggerConsent,
+      setTriggerConsent,
+      isLong,
+      previousIsLong,
+    ]
   );
 
   const onSwitchTokens = useCallback(() => {
@@ -1366,11 +1410,9 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="w-full"
       onClick={onSubmit}
-      disabled={
-        (isSubmitButtonDisabled && !shouldDisableValidationForTesting) || stage === "processing" || !warningsConfirmed
-      }
+      disabled={(isSubmitButtonDisabled && !shouldDisableValidationForTesting) || submitButtonState.disabled}
     >
-      {submitButtonText}
+      {submitButtonState.text}
     </Button>
   );
   const button = tooltipContent ? (
@@ -1464,6 +1506,7 @@ export function TradeBox(p: Props) {
                 )}
               </ExchangeInfo.Group>
               <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>
+              <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>
             </ExchangeInfo>
             <div className="Exchange-swap-button-container">{button}</div>
           </form>

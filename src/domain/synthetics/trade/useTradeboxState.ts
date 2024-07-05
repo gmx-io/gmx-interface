@@ -24,7 +24,7 @@ import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
-type TradeStage = "trade" | "processing";
+export type TradeStage = "trade" | "processing";
 
 type TradeOptions = {
   tradeType?: TradeType;

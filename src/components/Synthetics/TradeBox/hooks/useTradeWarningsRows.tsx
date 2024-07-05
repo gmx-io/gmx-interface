@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import { HighPriceImpactWarning } from "components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning";
 import { getContract } from "config/contracts";
@@ -63,20 +64,20 @@ export function useTradeboxWarningsRows() {
     executionFee?.feeUsd
   );
 
-  const consent = useMemo(() => {
+  const consentError: string | null = useMemo(() => {
     if (highExecutionFeeAcknowledgement && isHighFeeConsentError) {
-      return false;
+      return t`High Network Fee not yet acknowledged`;
     }
 
     if (priceImpactWarningState.shouldShowWarning) {
-      return priceImpactWarningState.isHighPositionImpactAccepted;
+      return priceImpactWarningState.isHighPositionImpactAccepted ? t`Price Impact not yet acknowledged` : null;
     }
 
     if (needPayTokenApproval && fromToken) {
-      return false;
+      return t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`;
     }
 
-    return true;
+    return null;
   }, [
     fromToken,
     needPayTokenApproval,
@@ -102,5 +103,5 @@ export function useTradeboxWarningsRows() {
     </>
   );
 
-  return [element, consent] as const;
+  return [element, consentError] as const;
 }
