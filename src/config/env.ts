@@ -4,7 +4,7 @@ export const UI_VERSION = "1.4";
 
 export const IS_TOUCH = "ontouchstart" in self;
 
-const isWebWorker = Boolean(self.WorkerGlobalScope);
+export const isWebWorker = Boolean(self.WorkerGlobalScope);
 
 export function isDevelopment() {
   const isProductionPreview = isWebWorker

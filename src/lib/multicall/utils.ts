@@ -3,6 +3,7 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { sleep } from "lib/sleep";
+import { isWebWorker } from "config/env";
 
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -99,7 +100,7 @@ export class Multicall {
 
   static getViemClient(chainId: number, rpcUrl: string) {
     return createPublicClient({
-      transport: http(rpcUrl, {
+      transport: http(rpcUrl + (isWebWorker ? "?isWebWorker=1" : ""), {
         // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
