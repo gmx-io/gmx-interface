@@ -90,15 +90,14 @@
     "lint": "node node_modules/.bin/eslint src",
     "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install && yarn lingui:prepare",
+    "prepare": "husky install && yarn lingui:prepare && yarn typechain",
     "extract": "NODE_ENV=development lingui extract --clean",
-    "compile": "lingui compile",
+    "compile": "lingui compile && yarn typechain",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
-    "prepack": "yarn typechain",
     "postinstall": "yarn typechain"
   },
   "eslintConfig": {
