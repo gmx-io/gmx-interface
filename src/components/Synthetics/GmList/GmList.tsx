@@ -1,17 +1,17 @@
 import { Trans, t } from "@lingui/macro";
-import { AprInfo } from "components/AprInfo/AprInfo";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
-import PageTitle from "components/PageTitle/PageTitle";
-import { GMListSkeleton } from "components/Skeleton/Skeleton";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
+import { entries, values } from "lodash";
+import { useMemo } from "react";
+import { useMedia } from "react-use";
+import type { Address } from "viem";
+import { useAccount } from "wagmi";
+
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
   MarketsInfoData,
@@ -21,50 +21,161 @@ import {
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
   getTotalGmInfo,
+  useMarketTokensData,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useChainId } from "lib/chains";
+import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
-import { useMedia } from "react-use";
+
+import { AprInfo } from "components/AprInfo/AprInfo";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
+import PageTitle from "components/PageTitle/PageTitle";
+import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "components/Tooltip/Tooltip";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+
 import "./GmList.scss";
 
 type Props = {
   hideTitle?: boolean;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
-  marketTokensData?: TokensData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
+  isDeposit: boolean;
 };
 
 const tokenAddressStyle = { fontSize: 5 };
 
+/**
+ * Sorts GM tokens by:
+ * 1. Non-zero / zero balance
+ * 2. If non-zero balance, by balance descending
+ * 3. If zero balance, by total supply USD descending
+ */
+function sortGmTokens(marketsInfoData: MarketsInfoData, marketTokensData: TokensData) {
+  if (marketsInfoData === undefined || marketTokensData === undefined) {
+    return [];
+  }
+
+  const groupedTokens: {
+    [group in Address | "nonZero"]: {
+      tokens: { tokenData: TokenData; totalSupplyUsd: bigint }[];
+      totalSupplyUsd: bigint;
+    };
+  } = {} as any;
+
+  for (const market of values(marketsInfoData)) {
+    if (market.isDisabled) {
+      continue;
+    }
+
+    const marketTokenData = marketTokensData[market.marketTokenAddress];
+
+    if (!marketTokenData) {
+      continue;
+    }
+
+    const totalSupplyUsd = convertToUsd(
+      marketTokenData.totalSupply,
+      marketTokenData.decimals,
+      marketTokenData.prices.minPrice
+    )!;
+
+    let groupKey: Address | "nonZero";
+    if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
+      groupKey = "nonZero";
+    } else if (market.isSpotOnly) {
+      groupKey = market.marketTokenAddress as Address;
+    } else {
+      groupKey = market.indexTokenAddress as Address;
+    }
+
+    if (market.isSpotOnly) {
+      groupedTokens[groupKey] = {
+        tokens: [
+          {
+            tokenData: marketTokenData,
+            totalSupplyUsd: totalSupplyUsd,
+          },
+        ],
+        totalSupplyUsd: totalSupplyUsd,
+      };
+      continue;
+    }
+
+    if (!groupedTokens[groupKey]) {
+      groupedTokens[groupKey] = {
+        tokens: [],
+        totalSupplyUsd: 0n,
+      };
+    }
+
+    groupedTokens[groupKey].tokens.push({
+      tokenData: marketTokenData,
+      totalSupplyUsd: totalSupplyUsd,
+    });
+    groupedTokens[groupKey].totalSupplyUsd += totalSupplyUsd;
+  }
+
+  // sort withing each group
+
+  for (const [groupKey, indexTokenGroup] of entries(groupedTokens)) {
+    if (groupKey === "nonZero") {
+      // by balance descending
+      indexTokenGroup.tokens.sort((a, b) => {
+        return a.tokenData.balance! > b.tokenData.balance! ? -1 : 1;
+      });
+      continue;
+    }
+
+    // by total supply descending
+
+    indexTokenGroup.tokens.sort((a, b) => {
+      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
+    });
+  }
+
+  // sort and unwrap groups
+
+  const sortedTokens = values(groupedTokens)
+    .sort((a, b) => {
+      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
+    })
+    .flatMap((group) => group.tokens)
+    .map((token) => token.tokenData);
+
+  return sortedTokens;
+}
+
 export function GmList({
   hideTitle,
-  marketTokensData,
-  marketsInfoData,
-  tokensData,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
+  isDeposit,
 }: Props) {
-  const { chainId } = useChainId();
-  const { active } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
+  const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId);
   const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
-  const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
+
+  const sortedMarketsByIndexToken = useMemo(
+    () => (marketsInfoData && marketTokensData ? sortGmTokens(marketsInfoData, marketTokensData) : []),
+    [marketTokensData, marketsInfoData]
+  );
   const { showDebugValues } = useSettings();
 
   const userTotalGmInfo = useMemo(() => {

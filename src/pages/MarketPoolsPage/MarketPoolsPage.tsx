@@ -108,11 +108,9 @@ export function MarketPoolsPage() {
         <GmList
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-          marketTokensData={depositMarketTokensData}
-          marketsInfoData={marketsInfoData}
-          tokensData={tokensData}
           buySellActionHandler={buySellActionHandler}
           shouldScrollToTop={true}
+          isDeposit
         />
       </div>
       <Footer />
