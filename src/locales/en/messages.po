@@ -3286,6 +3286,7 @@ msgid "Active Referral Code"
 msgstr "Active Referral Code"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
@@ -3734,6 +3735,7 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 msgid "High Network Fee not yet acknowledged"
 msgstr "High Network Fee not yet acknowledged"
 
@@ -3825,6 +3827,7 @@ msgstr "Docs"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Creating Order..."
 msgstr "Creating Order..."
@@ -4587,9 +4590,9 @@ msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards s
 msgid "GLP autocompounding vaults"
 msgstr "GLP autocompounding vaults"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "TP/SL orders exceed the position"
-#~ msgstr "TP/SL orders exceed the position"
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TP/SL orders exceed the position"
+msgstr "TP/SL orders exceed the position"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -6102,6 +6105,7 @@ msgstr "Claims"
 msgid "Date"
 msgstr "Date"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6670,9 +6674,9 @@ msgstr "Traders"
 msgid "{ordersText} cancelled"
 msgstr "{ordersText} cancelled"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit price below Mark Price"
-#~ msgstr "Limit price below Mark Price"
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Limit price below Mark Price"
+msgstr "Limit price below Mark Price"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
@@ -6695,6 +6699,7 @@ msgid "Transaction was cancelled."
 msgstr "Transaction was cancelled."
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Accept confirmation of trigger orders"
 msgstr "Accept confirmation of trigger orders"
 
@@ -7177,9 +7182,9 @@ msgstr "Total accrued Fees"
 msgid "Fee values do not include incentives."
 msgstr "Fee values do not include incentives."
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit price above Mark Price"
-#~ msgstr "Limit price above Mark Price"
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Limit price above Mark Price"
+msgstr "Limit price above Mark Price"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
@@ -7459,6 +7464,7 @@ msgid "short"
 msgstr "short"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/TradeBox/hooks/useTriggerOrdersConsent.tsx
 msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
 

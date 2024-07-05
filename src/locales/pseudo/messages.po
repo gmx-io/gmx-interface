@@ -3286,6 +3286,7 @@ msgid "Active Referral Code"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 msgid "Pending {0} approval"
 msgstr ""
 
@@ -3731,6 +3732,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 msgid "High Network Fee not yet acknowledged"
 msgstr ""
 
@@ -3822,6 +3824,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Creating Order..."
 msgstr ""
@@ -4584,9 +4587,9 @@ msgstr ""
 msgid "GLP autocompounding vaults"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "TP/SL orders exceed the position"
-#~ msgstr ""
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TP/SL orders exceed the position"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -6096,6 +6099,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6664,9 +6668,9 @@ msgstr ""
 msgid "{ordersText} cancelled"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit price below Mark Price"
-#~ msgstr ""
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Limit price below Mark Price"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
@@ -6689,6 +6693,7 @@ msgid "Transaction was cancelled."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Accept confirmation of trigger orders"
 msgstr ""
 
@@ -7171,9 +7176,9 @@ msgstr ""
 msgid "Fee values do not include incentives."
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit price above Mark Price"
-#~ msgstr ""
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Limit price above Mark Price"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
@@ -7453,6 +7458,7 @@ msgid "short"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/TradeBox/hooks/useTriggerOrdersConsent.tsx
 msgid "I am aware of the trigger orders"
 msgstr ""
 
