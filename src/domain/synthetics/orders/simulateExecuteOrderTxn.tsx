@@ -1,7 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
-import DataStore from "abis/DataStore.json";
-import ExchangeRouter from "abis/ExchangeRouter.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getContract } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
@@ -12,6 +10,7 @@ import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import { Multicall__factory, DataStore__factory, ExchangeRouter__factory } from "typechain-types";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -31,22 +30,34 @@ type SimulateExecuteOrderParams = {
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
-  const dataStoreAddress = getContract(chainId, "DataStore");
   const provider = getProvider(undefined, chainId);
-  const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
-  const block = await provider.getBlock("latest");
-  if (!block) {
-    throw new Error("block can't be fetched");
-  }
-  const blockNumber = block.number;
-  const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
+  const dataStoreAddress = getContract(chainId, "DataStore");
+  const multicallAddress = getContract(chainId, "Multicall");
+  const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
+
+  const dataStore = DataStore__factory.connect(dataStoreAddress, provider);
+  const multicall = Multicall__factory.connect(multicallAddress, provider);
+  const exchangeRouter = ExchangeRouter__factory.connect(exchangeRouterAddress, provider);
+
+  const result = await multicall.blockAndAggregate.staticCall([
+    { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },
+    { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
+  ]);
+
+  const blockNumber = result.blockNumber;
+
+  const [nonce] = dataStore.interface.decodeFunctionResult("getUint", result.returnData[0].returnData);
+  const [blockTimestamp] = multicall.interface.decodeFunctionResult(
+    "getCurrentBlockTimestamp",
+    result.returnData[1].returnData
+  );
+
   const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
-  const priceTimestamp = block.timestamp + 5;
+  const priceTimestamp = blockTimestamp + 5n;
   const method = p.method || "simulateExecuteOrder";
 
   const simulationPayload = [
@@ -60,7 +71,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
         maxTimestamp: priceTimestamp,
       },
       ...(p.extraArgs ?? []),
-    ]),
+    ] as any),
   ];
 
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
