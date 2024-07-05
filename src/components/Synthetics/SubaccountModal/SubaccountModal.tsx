@@ -649,12 +649,17 @@ const MainView = memo(() => {
               <TooltipWithPortal
                 className="block flex-1"
                 handleClassName="block w-full !no-underline"
+                // minAllowedWidth={0}
+                fitHandleWidth
                 position="top"
                 handle={withdrawalButton}
                 content={
-                  (subAccNativeTokenBalance ?? 0n) < expandDecimals(1, nativeToken.decimals - BALANCE_DISPLAY_DECIMALS)
-                    ? t`The subaccount has no funds.`
-                    : t`The amount left in the subaccount is not enough to cover network gas costs.`
+                  (subAccNativeTokenBalance ?? 0n) <
+                  expandDecimals(1, nativeToken.decimals - BALANCE_DISPLAY_DECIMALS) ? (
+                    <div className="whitespace-nowrap">{t`The subaccount has no funds.`}</div>
+                  ) : (
+                    <div className="min-w-[280px]">{t`The amount left in the subaccount is not enough to cover network gas costs.`}</div>
+                  )
                 }
               />
             ) : (
