@@ -43,7 +43,8 @@ export async function hashDataAsync(dataTypes, dataValues): Promise<string> {
 export function hashDataMapAsync<
   R extends Record<string, [dataTypes: string[], dataValues: (string | number | bigint | boolean)[]] | undefined>,
 >(
-  map: R
+  map: R,
+  key: string
 ): Promise<{
   [K in keyof R]: string;
 }> {
@@ -52,6 +53,7 @@ export function hashDataMapAsync<
     type: "map",
     id,
     map,
+    key,
   });
 
   const promise = new Promise((resolve, reject) => {

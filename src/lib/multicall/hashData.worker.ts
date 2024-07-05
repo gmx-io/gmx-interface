@@ -2,6 +2,8 @@ import { hashData } from "lib/hash";
 
 self.addEventListener("message", run);
 
+const keytime = {};
+
 async function run(event) {
   const { type } = event.data;
 
@@ -23,7 +25,7 @@ async function run(event) {
   } else if (type === "map") {
     performance.mark("hashData-worker-map-start");
     const start = Date.now();
-    const { map, id } = event.data;
+    const { map, id, key } = event.data;
 
     const result = {};
     for (const key of Object.keys(map)) {
@@ -46,7 +48,9 @@ async function run(event) {
       result,
     });
     const end = Date.now();
-    console.log("hashData-worker-map", end - start, "ms");
+    keytime[key] ||= 0;
+    keytime[key] += end - start;
+    console.log(`hashData-worker-map-${key}-`, keytime[key], "ms");
     performance.mark("hashData-worker-map-end");
     performance.measure("hashData-worker-map", "hashData-worker-map-start", "hashData-worker-map-end");
 
