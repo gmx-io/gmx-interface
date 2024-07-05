@@ -16,6 +16,7 @@ import {
 import cx from "classnames";
 import {
   ComponentType,
+  HTMLProps,
   MouseEvent,
   PropsWithChildren,
   ReactHTML,
@@ -31,13 +32,7 @@ import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
-// onClick: function key()​
-// onKeyDown: function key()​
-// onKeyUp: function key()​
-// onMouseDown: function key()​
-// onMouseMove: function key()​
-// onPointerDown: function key()​
-// onPointerEnter: function key()
+
 export type TooltipProps<T extends PropsWithChildren = PropsWithChildren> = {
   /**
    * Takes precedence over `children`
@@ -64,14 +59,7 @@ export type TooltipProps<T extends PropsWithChildren = PropsWithChildren> = {
   /**
    * The element to render the tooltip as. Defaults to `span`.
    *
-   * This component must implement
-   * onClick
-   * onKeyDown
-   * onKeyUp
-   * onMouseDown
-   * onMouseMove
-   * onPointerDown
-   * onPointerEnter
+   * This element should extend `HTMLProps<HTMLElement>`.
    */
   as?: ComponentType<T> | keyof ReactHTML;
   withPortal?: boolean;
