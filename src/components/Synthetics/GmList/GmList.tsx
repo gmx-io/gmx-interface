@@ -1,8 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { entries, values } from "lodash";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useMedia } from "react-use";
-import type { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { getIcons } from "config/icons";
@@ -14,7 +12,6 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
-  MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
@@ -25,9 +22,11 @@ import {
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { sortGmTokensByField } from "./sortGmTokensByField";
+import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
@@ -39,6 +38,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+import { SortDirection, Sorter } from "./Sorter";
 
 import "./GmList.scss";
 
@@ -53,106 +53,7 @@ type Props = {
 
 const tokenAddressStyle = { fontSize: 5 };
 
-/**
- * Sorts GM tokens by:
- * 1. Non-zero / zero balance
- * 2. If non-zero balance, by balance descending
- * 3. If zero balance, by total supply USD descending
- */
-function sortGmTokens(marketsInfoData: MarketsInfoData, marketTokensData: TokensData) {
-  if (marketsInfoData === undefined || marketTokensData === undefined) {
-    return [];
-  }
-
-  const groupedTokens: {
-    [group in Address | "nonZero"]: {
-      tokens: { tokenData: TokenData; totalSupplyUsd: bigint }[];
-      totalSupplyUsd: bigint;
-    };
-  } = {} as any;
-
-  for (const market of values(marketsInfoData)) {
-    if (market.isDisabled) {
-      continue;
-    }
-
-    const marketTokenData = marketTokensData[market.marketTokenAddress];
-
-    if (!marketTokenData) {
-      continue;
-    }
-
-    const totalSupplyUsd = convertToUsd(
-      marketTokenData.totalSupply,
-      marketTokenData.decimals,
-      marketTokenData.prices.minPrice
-    )!;
-
-    let groupKey: Address | "nonZero";
-    if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
-      groupKey = "nonZero";
-    } else if (market.isSpotOnly) {
-      groupKey = market.marketTokenAddress as Address;
-    } else {
-      groupKey = market.indexTokenAddress as Address;
-    }
-
-    if (market.isSpotOnly) {
-      groupedTokens[groupKey] = {
-        tokens: [
-          {
-            tokenData: marketTokenData,
-            totalSupplyUsd: totalSupplyUsd,
-          },
-        ],
-        totalSupplyUsd: totalSupplyUsd,
-      };
-      continue;
-    }
-
-    if (!groupedTokens[groupKey]) {
-      groupedTokens[groupKey] = {
-        tokens: [],
-        totalSupplyUsd: 0n,
-      };
-    }
-
-    groupedTokens[groupKey].tokens.push({
-      tokenData: marketTokenData,
-      totalSupplyUsd: totalSupplyUsd,
-    });
-    groupedTokens[groupKey].totalSupplyUsd += totalSupplyUsd;
-  }
-
-  // sort withing each group
-
-  for (const [groupKey, indexTokenGroup] of entries(groupedTokens)) {
-    if (groupKey === "nonZero") {
-      // by balance descending
-      indexTokenGroup.tokens.sort((a, b) => {
-        return a.tokenData.balance! > b.tokenData.balance! ? -1 : 1;
-      });
-      continue;
-    }
-
-    // by total supply descending
-
-    indexTokenGroup.tokens.sort((a, b) => {
-      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
-    });
-  }
-
-  // sort and unwrap groups
-
-  const sortedTokens = values(groupedTokens)
-    .sort((a, b) => {
-      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
-    })
-    .flatMap((group) => group.tokens)
-    .map((token) => token.tokenData);
-
-  return sortedTokens;
-}
+export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified";
 
 export function GmList({
   hideTitle,
@@ -171,11 +72,26 @@ export function GmList({
   const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
+  const [orderBy, setOrderBy] = useState<SortField>("unspecified");
+  const [direction, setDirection] = useState<SortDirection>("unspecified");
 
-  const sortedMarketsByIndexToken = useMemo(
-    () => (marketsInfoData && marketTokensData ? sortGmTokens(marketsInfoData, marketTokensData) : []),
-    [marketTokensData, marketsInfoData]
-  );
+  const sortedGmTokens = useMemo(() => {
+    if (!marketsInfoData || !marketTokensData) {
+      return [];
+    }
+
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return sortGmTokensDefault(marketsInfoData, marketTokensData);
+    }
+
+    return sortGmTokensByField({
+      marketsInfoData,
+      marketTokensData,
+      orderBy,
+      direction,
+      marketsTokensApyData: marketsTokensApyData!,
+    });
+  }, [direction, marketTokensData, marketsInfoData, marketsTokensApyData, orderBy]);
   const { showDebugValues } = useSettings();
 
   const userTotalGmInfo = useMemo(() => {
@@ -204,46 +120,86 @@ export function GmList({
                   <Trans>MARKET</Trans>
                 </th>
                 <th>
-                  <Trans>PRICE</Trans>
+                  <Sorter
+                    direction={orderBy === "price" ? direction : "unspecified"}
+                    onChange={(d) => {
+                      setOrderBy("price");
+                      setDirection(d);
+                    }}
+                  >
+                    <Trans>PRICE</Trans>
+                  </Sorter>
                 </th>
                 <th>
-                  <Trans>TOTAL SUPPLY</Trans>
+                  <Sorter
+                    direction={orderBy === "totalSupply" ? direction : "unspecified"}
+                    onChange={(d) => {
+                      setOrderBy("totalSupply");
+                      setDirection(d);
+                    }}
+                  >
+                    <Trans>TOTAL SUPPLY</Trans>
+                  </Sorter>
                 </th>
                 <th>
-                  <Tooltip
-                    handle={<Trans>BUYABLE</Trans>}
-                    className="normal-case"
-                    position="bottom-end"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                      </p>
-                    )}
-                  />
+                  <Sorter
+                    direction={orderBy === "buyable" ? direction : "unspecified"}
+                    onChange={(d) => {
+                      setOrderBy("buyable");
+                      setDirection(d);
+                    }}
+                  >
+                    <Tooltip
+                      handle={<Trans>BUYABLE</Trans>}
+                      className="normal-case"
+                      position="bottom-end"
+                      renderContent={() => (
+                        <p className="text-white">
+                          <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                        </p>
+                      )}
+                    />
+                  </Sorter>
                 </th>
                 <th>
-                  <GmTokensTotalBalanceInfo
-                    balance={userTotalGmInfo?.balance}
-                    balanceUsd={userTotalGmInfo?.balanceUsd}
-                    userEarnings={userEarnings}
-                    label={t`WALLET`}
-                  />
+                  <Sorter
+                    direction={orderBy === "wallet" ? direction : "unspecified"}
+                    onChange={(d) => {
+                      setOrderBy("wallet");
+                      setDirection(d);
+                    }}
+                  >
+                    <GmTokensTotalBalanceInfo
+                      balance={userTotalGmInfo?.balance}
+                      balanceUsd={userTotalGmInfo?.balanceUsd}
+                      userEarnings={userEarnings}
+                      label={t`WALLET`}
+                    />
+                  </Sorter>
                 </th>
                 <th>
-                  <Tooltip
-                    handle={t`APY`}
-                    className="normal-case"
-                    position="bottom-end"
-                    renderContent={ApyTooltipContent}
-                  />
+                  <Sorter
+                    direction={orderBy === "apy" ? direction : "unspecified"}
+                    onChange={(d) => {
+                      setOrderBy("apy");
+                      setDirection(d);
+                    }}
+                  >
+                    <Tooltip
+                      handle={t`APY`}
+                      className="normal-case"
+                      position="bottom-end"
+                      renderContent={ApyTooltipContent}
+                    />
+                  </Sorter>
                 </th>
 
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {sortedMarketsByIndexToken.length ? (
-                sortedMarketsByIndexToken.map((token) => {
+              {sortedGmTokens.length ? (
+                sortedGmTokens.map((token) => {
                   const market = getByKey(marketsInfoData, token?.address)!;
 
                   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -370,7 +326,7 @@ export function GmList({
           {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
-            {sortedMarketsByIndexToken.map((token, index) => {
+            {sortedGmTokens.map((token, index) => {
               const apr = marketsTokensApyData?.[token.address];
               const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);

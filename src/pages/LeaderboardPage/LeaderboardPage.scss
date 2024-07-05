@@ -554,18 +554,21 @@ table.Table.Exchange-list th {
 }
 
 .TableHeader.sortable .TableHeaderTitle::after {
-  background-position: center 0.25rem;
-  background-image: url(../../img/ic_sortable.svg);
+  background-color: var(--color-gray-300);
+  mask-image: url(../../img/ic_sortable.svg);
+  mask-position: center 0.2rem;
 }
 
 .TableHeader.sorted-asc .TableHeaderTitle::after {
-  background-image: url(../../img/ic_sorted_asc.svg);
-  background-position: center 0.5rem;
+  background-color: var(--color-gray-300);
+  mask-image: url(../../img/ic_sorted_asc.svg);
+  mask-position: center 0.2rem;
 }
 
 .TableHeader.sorted-desc .TableHeaderTitle::after {
-  background-image: url(../../img/ic_sorted_desc.svg);
-  background-position: center 0.4rem;
+  background-color: var(--color-gray-300);
+  mask-image: url(../../img/ic_sorted_desc.svg);
+  mask-position: center 0.2rem;
 }
 
 .Table_tr {
