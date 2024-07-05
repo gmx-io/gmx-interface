@@ -103,7 +103,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
         <TooltipWithPortal
           maxAllowedWidth={350}
           position="bottom-end"
-          handleClassName={(positionPriceImpactDeltaUsd ?? 0n) > 0n ? "text-green-500 !decoration-green" : ""}
+          handleClassName={(positionPriceImpactDeltaUsd ?? 0n) > 0n ? "!decoration-green text-green-500" : ""}
           handle={formatUsd(executionPrice, {
             displayDecimals,
           })}
