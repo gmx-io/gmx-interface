@@ -1,9 +1,13 @@
 import { uniqueId } from "lodash";
+
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 
-import MyWorker from "./multicall.worker";
+import MulticallWorker from "./multicall.worker";
+import type { MulticallRequestConfig } from "./types";
 
-export const executorWorker: Worker = new MyWorker();
+const executorWorker: Worker = new MulticallWorker();
+
+const promises = new Map<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }>();
 
 executorWorker.onmessage = (event) => {
   const { id, result, error } = event.data;
@@ -23,9 +27,7 @@ executorWorker.onmessage = (event) => {
   promises.delete(id);
 };
 
-const promises = new Map<string, { resolve: any; reject: any }>();
-
-export async function executeMulticallWorker(chainId: number, request: any) {
+export async function executeMulticallWorker(chainId: number, request: MulticallRequestConfig<any>) {
   const id = uniqueId("multicall-");
 
   executorWorker.postMessage({
@@ -35,9 +37,8 @@ export async function executeMulticallWorker(chainId: number, request: any) {
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 
-  const promise = new Promise((resolve, reject) => {
-    promises.set(id, { resolve, reject });
-  });
+  const { promise, resolve, reject } = Promise.withResolvers();
+  promises.set(id, { resolve, reject });
 
   return promise;
 }

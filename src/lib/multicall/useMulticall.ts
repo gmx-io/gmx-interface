@@ -59,9 +59,16 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         let responseOrFailure: any;
+        let failedWorker = false;
         if (params.inWorker) {
-          responseOrFailure = await executeMulticallWorker(chainId, request);
-        } else {
+          try {
+            responseOrFailure = await executeMulticallWorker(chainId, request);
+          } catch {
+            failedWorker = true;
+          }
+        }
+
+        if (!params.inWorker || failedWorker) {
           responseOrFailure = await executeMulticall(chainId, request);
         }
 

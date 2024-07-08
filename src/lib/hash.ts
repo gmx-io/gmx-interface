@@ -1,11 +1,12 @@
 import { AbiCoder, ethers } from "ethers";
 
-const dataCache = new Map<string, string>();
+import { LRUCache } from "lib/LruCache";
+
+const dataCache = new LRUCache<string>(10_000);
 
 export function hashData(dataTypes, dataValues) {
   const key = JSON.stringify({ dataTypes, dataValues });
   if (dataCache.has(key)) {
-    performance.mark("hashData-cache-hit");
     return dataCache.get(key)!;
   }
 
@@ -17,7 +18,7 @@ export function hashData(dataTypes, dataValues) {
   return hash;
 }
 
-const stringCache = new Map<string, string>();
+const stringCache = new LRUCache<string>(10_000);
 
 export function hashString(string: string) {
   if (stringCache.has(string)) {

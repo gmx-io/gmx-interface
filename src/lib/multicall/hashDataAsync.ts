@@ -24,36 +24,17 @@ hashDataWorker.onmessage = (event) => {
 
 const promises = new Map<string, { resolve: any; reject: any }>();
 
-export async function hashDataAsync(dataTypes, dataValues): Promise<string> {
-  const id = uniqueId("hash-data-worker-");
-  hashDataWorker.postMessage({
-    type: "single",
-    id,
-    dataTypes,
-    dataValues,
-  });
-
-  const promise = new Promise((resolve, reject) => {
-    promises.set(id, { resolve, reject });
-  });
-
-  return promise as Promise<string>;
-}
-
 export function hashDataMapAsync<
   R extends Record<string, [dataTypes: string[], dataValues: (string | number | bigint | boolean)[]] | undefined>,
 >(
-  map: R,
-  key: string
+  map: R
 ): Promise<{
   [K in keyof R]: string;
 }> {
   const id = uniqueId("hash-data-worker-");
   hashDataWorker.postMessage({
-    type: "map",
     id,
     map,
-    key,
   });
 
   const promise = new Promise((resolve, reject) => {
