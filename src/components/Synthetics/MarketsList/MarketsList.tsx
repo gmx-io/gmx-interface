@@ -216,7 +216,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                 width="40"
               />
             </div>
-            <div className="App-card-title-info-text">
+            <div>
               <div className="App-card-info-title">{marketIndexName}</div>
             </div>
             <div>

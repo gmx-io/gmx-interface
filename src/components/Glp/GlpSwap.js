@@ -1408,7 +1408,7 @@ export default function GlpSwap(props) {
                       <div className="App-card-title-info-icon">
                         <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                       </div>
-                      <div className="App-card-title-info-text">
+                      <div>
                         <div className="App-card-info-title">{token.name}</div>
                         <div className="App-card-info-subtitle">{token.symbol}</div>
                       </div>

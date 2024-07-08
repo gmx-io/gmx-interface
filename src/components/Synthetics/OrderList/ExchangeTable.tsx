@@ -15,19 +15,24 @@ export function ExchangeTh(props: PropsWithChildren & React.HTMLProps<HTMLTableC
 export function ExchangeTheadTr(props: PropsWithChildren & React.HTMLProps<HTMLTableRowElement>) {
   return <tr {...props} className="border-b border-slate-700" />;
 }
-export const ExchangeTr = forwardRef<HTMLTableRowElement, PropsWithChildren & React.HTMLProps<HTMLTableRowElement>>(
-  function ExchangeTrInternal(props, ref) {
-    return (
-      <tr
-        {...props}
-        ref={ref}
-        className="border-b border-slate-700
-                 last:border-b-0
-                 hover:bg-cold-blue-900"
-      />
-    );
-  }
-);
+export const ExchangeTr = forwardRef<
+  HTMLTableRowElement,
+  PropsWithChildren<{ hoverable?: boolean }> & React.HTMLProps<HTMLTableRowElement>
+>(function ExchangeTrInternal({ hoverable = true, ...props }, ref) {
+  return (
+    <tr
+      {...props}
+      ref={ref}
+      className={cx(
+        `border-b border-slate-700
+         last:border-b-0`,
+        {
+          "hover:bg-cold-blue-900": hoverable,
+        }
+      )}
+    />
+  );
+});
 export function ExchangeTd(props: PropsWithChildren & React.HTMLProps<HTMLTableCellElement>) {
   return <td {...props} className={cx("px-10 py-14 first:pl-14", props.className)} />;
 }
