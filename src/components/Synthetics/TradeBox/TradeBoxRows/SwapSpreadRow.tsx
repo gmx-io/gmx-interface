@@ -3,21 +3,23 @@ import { t } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import {
-  useTradeboxFromToken,
-  useTradeboxMarketInfo,
-  useTradeboxToToken,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxFromToken,
+  selectTradeboxMarketInfo,
+  selectTradeboxToToken,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSpread } from "domain/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { useMemo } from "react";
 
 export function SwapSpreadRow() {
-  const tradeFlags = useTradeboxTradeFlags();
-  const fromToken = useTradeboxFromToken();
-  const toToken = useTradeboxToToken();
-  const marketInfo = useTradeboxMarketInfo();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const fromToken = useSelector(selectTradeboxFromToken);
+  const toToken = useSelector(selectTradeboxToToken);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+
   const indexToken = marketInfo?.indexToken;
 
   const { isMarket, isSwap, isLong, isIncrease } = tradeFlags;

@@ -7,10 +7,11 @@ import {
   HIGH_SPREAD_THRESHOLD,
 } from "config/factors";
 import {
-  useTradeboxCollateralToken,
-  useTradeboxMarketInfo,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxCollateralToken,
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "lib/legacy";
@@ -18,9 +19,9 @@ import { expandDecimals, formatPercentage } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 export function CollateralSpreadRow() {
-  const tradeFlags = useTradeboxTradeFlags();
-  const marketInfo = useTradeboxMarketInfo();
-  const collateralToken = useTradeboxCollateralToken();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
 
   const { isMarket, isSwap } = tradeFlags;
 

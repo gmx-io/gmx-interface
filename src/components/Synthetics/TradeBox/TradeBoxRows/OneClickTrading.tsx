@@ -6,6 +6,7 @@ import Button from "components/Button/Button";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { IS_TOUCH } from "config/env";
 import {
   ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
   ONE_CLICK_TRADING_OFFER_HIDDEN,
@@ -28,7 +29,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import CloseIcon from "img/navbutton-close.svg";
-import { isTouchDevice } from "lib/browser";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
@@ -58,6 +58,7 @@ export function TradeBoxOneClickTrading() {
     ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
     false
   );
+
   const [wrapOrUnwrapWarningHidden, setWrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(
     ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
     false
@@ -110,9 +111,9 @@ export function TradeBoxOneClickTrading() {
     clickable = false;
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     content = (
-      <AlertInfo type="info" className="TradeBox-one-click-label">
+      <OneClickAlertInfo>
         <Trans>One-Click Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
-      </AlertInfo>
+      </OneClickAlertInfo>
     );
   } else if (shouldShowNativeTokenWarning) {
     const wrappedToken = getWrappedToken(chainId);
@@ -120,39 +121,35 @@ export function TradeBoxOneClickTrading() {
     clickable = false;
     onCloseClick = handleCloseNativeTokenWarningClick;
     content = (
-      <AlertInfo type="info" className="TradeBox-one-click-label">
+      <OneClickAlertInfo>
         <Trans>
           One-Click Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
           {wrappedToken.symbol} instead.
         </Trans>
-      </AlertInfo>
+      </OneClickAlertInfo>
     );
   } else if (shouldShowAllowedActionsWarning) {
     content = (
-      <AlertInfo type="info" className="TradeBox-one-click-label">
+      <OneClickAlertInfo>
         <Trans>The previously authorized maximum number of actions has been reached for One-Click Trading.</Trans>
-      </AlertInfo>
+      </OneClickAlertInfo>
     );
     buttonText = <Trans>Re-authorize</Trans>;
   } else if (shouldShowInsufficientFundsButton) {
     content = (
-      <AlertInfo type="info" className="TradeBox-one-click-label">
+      <OneClickAlertInfo>
         <Trans>There are insufficient funds in your subaccount for One-Click Trading</Trans>
-      </AlertInfo>
+      </OneClickAlertInfo>
     );
     buttonText = <Trans>Top-Up</Trans>;
   } else if (shouldShowOfferButton) {
     onCloseClick = handleCloseOfferClick;
     content = (
-      <AlertInfo type="info" className="TradeBox-one-click-label">
-        <TooltipWithPortal
-          shouldStopPropagation={isTouchDevice()}
-          position="top-start"
-          renderContent={renderTooltipContent}
-        >
+      <OneClickAlertInfo>
+        <TooltipWithPortal shouldStopPropagation={IS_TOUCH} position="top-start" renderContent={renderTooltipContent}>
           <Trans>One-Click Trading</Trans>
         </TooltipWithPortal>
-      </AlertInfo>
+      </OneClickAlertInfo>
     );
     buttonText = <Trans>Enable</Trans>;
   } else {
@@ -184,4 +181,12 @@ export function TradeBoxOneClickTrading() {
   }
 
   return content ? <ExchangeInfo.Row label={content} className="SwapBox-info-row" value={null} /> : null;
+}
+
+function OneClickAlertInfo({ children }: { children: ReactNode }) {
+  return (
+    <AlertInfo type="info" className="!mb-0 text-[1.2rem]">
+      {children}
+    </AlertInfo>
+  );
 }

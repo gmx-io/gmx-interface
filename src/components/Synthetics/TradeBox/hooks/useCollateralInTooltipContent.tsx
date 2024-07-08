@@ -2,18 +2,19 @@ import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import {
-  useTradeboxCollateralToken,
-  useTradeboxMarketInfo,
-  useTradeboxTradeType,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxCollateralToken,
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
 import { TradeType } from "../../../../domain/synthetics/trade/types";
 
 export function useCollateralInTooltipContent() {
-  const collateralToken = useTradeboxCollateralToken();
-  const marketInfo = useTradeboxMarketInfo();
-  const tradeType = useTradeboxTradeType();
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const tradeType = useSelector(selectTradeboxTradeType);
 
   return useMemo(() => {
     if (!collateralToken || !marketInfo) {

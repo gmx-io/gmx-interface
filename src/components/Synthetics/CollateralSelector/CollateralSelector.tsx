@@ -17,7 +17,11 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
-import { useTradeboxMarketInfo, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 import "./CollateralSelector.scss";
 
@@ -128,8 +132,8 @@ function CollateralListItemDesktop({
 
 function CollateralSelectorMobile(props: Props) {
   const close = useSelectorClose();
-  const marketInfo = useTradeboxMarketInfo();
-  const tradeType = useTradeboxTradeType();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const tradeType = useSelector(selectTradeboxTradeType);
 
   return (
     <SelectorBaseMobileList>

@@ -1,6 +1,9 @@
-import { useTradeboxMarkPrice, useTradeboxSelectedPosition } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
-import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxMarkPrice,
+  selectTradeboxSelectedPosition,
+  selectTradeboxSelectedPositionKey,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TriggerThresholdType } from "domain/synthetics/trade";
@@ -8,8 +11,8 @@ import { TriggerThresholdType } from "domain/synthetics/trade";
 import { useMemo } from "react";
 
 export function useDecreaseOrdersThatWillBeExecuted() {
-  const markPrice = useTradeboxMarkPrice();
-  const existingPosition = useTradeboxSelectedPosition();
+  const markPrice = useSelector(selectTradeboxMarkPrice);
+  const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const positionKey = useSelector(selectTradeboxSelectedPositionKey);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
 

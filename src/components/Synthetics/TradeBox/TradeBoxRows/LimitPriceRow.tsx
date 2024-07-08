@@ -3,22 +3,22 @@ import { t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
-  useTradeboxFromToken,
-  useTradeboxToToken,
-  useTradeboxTradeFlags,
-  useTradeboxTriggerPrice,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxTradeRatios } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+  selectTradeboxFromToken,
+  selectTradeboxToToken,
+  selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
+  selectTradeboxTriggerPrice,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatTokensRatio } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 export function LimitPriceRow() {
-  const { isLimit, isSwap, isIncrease } = useTradeboxTradeFlags();
-  const triggerPrice = useTradeboxTriggerPrice();
-  const toToken = useTradeboxToToken();
-  const fromToken = useTradeboxFromToken();
+  const { isLimit, isSwap, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const toToken = useSelector(selectTradeboxToToken);
+  const fromToken = useSelector(selectTradeboxFromToken);
   const { triggerRatio } = useSelector(selectTradeboxTradeRatios);
 
   const value = useMemo(() => {

@@ -89,7 +89,10 @@ function SubaccountStatusImpl({
   } else if (!isSubaccountActive) {
     return (
       <AlertInfo type="info" compact={!subaccountAddress}>
-        {SUBACCOUNT_GENERATION_INFO}
+        <Trans>
+          Generate and activate a Subaccount for{" "}
+          <ExternalLink href={SUBACCOUNT_DOCS_URL}>One-Click Trading</ExternalLink> to reduce signing popups.
+        </Trans>
       </AlertInfo>
     );
   } else {
@@ -98,12 +101,5 @@ function SubaccountStatusImpl({
 
   return <div className={`SubaccountStatus ${hasBorder ? "SubaccountStatus-border" : ""}`}>{content}</div>;
 }
-
-export const SUBACCOUNT_GENERATION_INFO = (
-  <Trans>
-    Generate and activate a Subaccount for <ExternalLink href={SUBACCOUNT_DOCS_URL}>One-Click Trading</ExternalLink> to
-    reduce signing popups.
-  </Trans>
-);
 
 export const SubaccountStatus = memo(SubaccountStatusImpl) as typeof SubaccountStatusImpl;

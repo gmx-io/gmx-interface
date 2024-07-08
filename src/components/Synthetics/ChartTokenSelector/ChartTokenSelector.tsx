@@ -5,10 +5,10 @@ import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxChooseSuitableMarket,
-  useTradeboxGetMaxLongShortLiquidityPool,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+  selectTradeboxChooseSuitableMarket,
+  selectTradeboxGetMaxLongShortLiquidityPool,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -41,7 +41,7 @@ export default function ChartTokenSelector(props: Props) {
     );
   });
 
-  const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
+  const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const marketsInfoData = useMarketsInfoData();
 
   const handleMarketSelect = useCallback(
@@ -71,7 +71,7 @@ export default function ChartTokenSelector(props: Props) {
     [chooseSuitableMarket, marketsInfoData, tradeType]
   );
 
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   return (
     <Popover className="Synths-ChartTokenSelector">

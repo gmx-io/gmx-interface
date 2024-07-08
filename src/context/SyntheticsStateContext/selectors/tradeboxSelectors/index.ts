@@ -68,7 +68,7 @@ export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
-export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox.marketInfo;
+export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.marketInfo;
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
@@ -816,4 +816,18 @@ export const selectTradeboxMarketsSortMap = createSelector((q) => {
     acc[market.indexTokenAddress] = idx;
     return acc;
   }, {});
+});
+
+export const selectTradeboxToToken = createSelector((q) => {
+  const toToken = q(selectTradeboxToTokenAddress);
+  const tokenData = q(selectTokensData);
+
+  return getByKey(tokenData, toToken);
+});
+
+export const selectTradeboxFromToken = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromTokenAddress);
+  const tokenData = q(selectTokensData);
+
+  return getByKey(tokenData, fromToken);
 });

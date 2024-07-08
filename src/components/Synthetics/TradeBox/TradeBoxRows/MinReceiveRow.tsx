@@ -1,21 +1,19 @@
 import { Trans } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxToTokenAddress, useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxSwapAmounts } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxSwapAmounts,
+  selectTradeboxToToken,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { applySlippageToMinOut } from "domain/synthetics/trade";
 import { formatTokenAmount } from "lib/numbers";
-import { getByKey } from "lib/objects";
 
 export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) {
-  const { isMarket } = useTradeboxTradeFlags();
+  const { isMarket } = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
 
-  const tokenData = useTokensData();
-
-  const toTokenAddress = useTradeboxToTokenAddress();
-  const toToken = getByKey(tokenData, toTokenAddress);
+  const toToken = useSelector(selectTradeboxToToken);
 
   return (
     <ExchangeInfo.Row label={<Trans>Min. Receive</Trans>}>

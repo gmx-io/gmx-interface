@@ -31,6 +31,7 @@ import {
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
+  selectTradeboxChooseSuitableMarket,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
@@ -110,7 +111,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
-import { useTradeboxChooseSuitableMarket } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -127,7 +127,7 @@ import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 import { useRequiredActions } from "./hooks/useRequiredActions";
-import { useSummaryExecutionFee } from "./hooks/useSummaryExecutionFee";
+import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
@@ -620,7 +620,7 @@ export function TradeBox(p: Props) {
     error: buttonErrorText,
   });
 
-  const { summaryExecutionFee } = useSummaryExecutionFee();
+  const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
   const { requiredActions } = useRequiredActions();
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
@@ -857,7 +857,7 @@ export function TradeBox(p: Props) {
     onFinished,
   ]);
 
-  const onSelectToTokenAddress = useTradeboxChooseSuitableMarket();
+  const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
 
   if (showDebugValues) {
     const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;

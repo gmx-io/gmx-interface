@@ -4,13 +4,14 @@ import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import {
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxLiquidity,
-  useTradeboxMaxLiquidityPath,
-  useTradeboxSwapAmounts,
-  useTradeboxToToken,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxLiquidity,
+  selectTradeboxMaxLiquidityPath,
+  selectTradeboxSwapAmounts,
+  selectTradeboxToToken,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -18,12 +19,12 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 const RISK_THRESHOLD_BPS = 5000n;
 
 export function AvailableLiquidityRow() {
-  const tradeFlags = useTradeboxTradeFlags();
-  const swapAmounts = useTradeboxSwapAmounts();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const { longLiquidity, shortLiquidity } = useTradeboxLiquidity();
-  const toToken = useTradeboxToToken();
-  const { maxLiquidity: swapLiquidityUsd } = useTradeboxMaxLiquidityPath();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
+  const toToken = useSelector(selectTradeboxToToken);
+  const { maxLiquidity: swapLiquidityUsd } = useSelector(selectTradeboxMaxLiquidityPath);
   const { isLong, isLimit, isSwap, isIncrease } = tradeFlags;
 
   if (!isLimit) {

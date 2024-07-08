@@ -1,5 +1,6 @@
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxExecutionFee } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectTradeboxExecutionFee } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
@@ -15,8 +16,8 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useCallback, useMemo } from "react";
 
-export const useSummaryExecutionFee = () => {
-  const executionFee = useTradeboxExecutionFee();
+export const useTPSLSummaryExecutionFee = () => {
+  const executionFee = useSelector(selectTradeboxExecutionFee);
   const sidecarEntries = useSidecarEntries();
   const tokensData = useTokensData();
 

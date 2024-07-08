@@ -4,14 +4,15 @@ import { HighPriceImpactWarning } from "components/Synthetics/HighPriceImpactWar
 import { getContract } from "config/contracts";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxExecutionFee,
-  useTradeboxFees,
-  useTradeboxFromTokenAddress,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxIsWrapOrUnwrap,
-  useTradeboxSwapAmounts,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxExecutionFee,
+  selectTradeboxFees,
+  selectTradeboxFromTokenAddress,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsWrapOrUnwrap,
+  selectTradeboxSwapAmounts,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -22,13 +23,14 @@ import { useMemo } from "react";
 export function useTradeboxWarningsRows() {
   const tokenData = useTokensData();
   const { chainId } = useChainId();
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const tradeFlags = useTradeboxTradeFlags();
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const fromToken = getByKey(tokenData, fromTokenAddress);
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const isWrapOrUnwrap = useTradeboxIsWrapOrUnwrap();
-  const swapAmounts = useTradeboxSwapAmounts();
-  const fees = useTradeboxFees();
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const fees = useSelector(selectTradeboxFees);
+  const executionFee = useSelector(selectTradeboxExecutionFee);
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
@@ -59,7 +61,6 @@ export function useTradeboxWarningsRows() {
     tradeFlags,
   });
 
-  const executionFee = useTradeboxExecutionFee();
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
   );

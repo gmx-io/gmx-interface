@@ -4,16 +4,17 @@ import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxFromTokenAddress,
-  useTradeboxMarketInfo,
-  useTradeboxSwapAmounts,
-  useTradeboxToTokenAddress,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import {
+  selectTradeboxCollateralToken,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxExecutionFee,
   selectTradeboxFixedTriggerOrderType,
   selectTradeboxFixedTriggerThresholdType,
+  selectTradeboxFromTokenAddress,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarketInfo,
+  selectTradeboxSwapAmounts,
+  selectTradeboxToTokenAddress,
+  selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -30,13 +31,8 @@ import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
-import {
-  useTradeboxCollateralToken,
-  useTradeboxExecutionFee,
-  useTradeboxIncreasePositionAmounts,
-} from "../../../../context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useRequiredActions } from "./useRequiredActions";
-import { useSummaryExecutionFee } from "./useSummaryExecutionFee";
+import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 
 interface TradeboxTransactionsProps {
   allowedSlippage: number | undefined;
@@ -46,21 +42,21 @@ interface TradeboxTransactionsProps {
 export function useTradeboxTransactions({ allowedSlippage, setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
-  const marketInfo = useTradeboxMarketInfo();
-  const collateralToken = useTradeboxCollateralToken();
-  const tradeFlags = useTradeboxTradeFlags();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
 
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const toTokenAddress = useTradeboxToTokenAddress();
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
 
-  const swapAmounts = useTradeboxSwapAmounts();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
   const { shouldDisableValidationForTesting } = useSettings();
 
-  const executionFee = useTradeboxExecutionFee();
+  const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
   const fixedTriggerOrderType = useSelector(selectTradeboxFixedTriggerOrderType);
@@ -73,7 +69,7 @@ export function useTradeboxTransactions({ allowedSlippage, setPendingTxns }: Tra
   const { requiredActions, createSltpEntries, cancelSltpEntries, updateSltpEntries } = useRequiredActions();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
-  const { summaryExecutionFee, getExecutionFeeAmountForEntry } = useSummaryExecutionFee();
+  const { summaryExecutionFee, getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 

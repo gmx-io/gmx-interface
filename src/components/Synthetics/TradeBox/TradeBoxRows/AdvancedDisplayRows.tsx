@@ -1,32 +1,33 @@
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  useTradeboxAdvancedOptions,
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  useTradeboxFees,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxSelectedTriggerAcceptablePriceImpactBps,
-  useTradeboxSetSelectedAcceptablePriceImpactBps,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxAdvancedOptions,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
+  selectTradeboxFees,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
+  selectTradeboxSetSelectedAcceptablePriceImpactBps,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 
 export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible?: boolean }) {
-  const { advancedDisplay: isVisible } = useTradeboxAdvancedOptions();
-  const tradeFlags = useTradeboxTradeFlags();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
+  const { advancedDisplay: isVisible } = useSelector(selectTradeboxAdvancedOptions);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
-  const setSelectedTriggerAcceptablePriceImpactBps = useTradeboxSetSelectedAcceptablePriceImpactBps();
-  const selectedTriggerAcceptablePriceImpactBps = useTradeboxSelectedTriggerAcceptablePriceImpactBps();
-  const defaultTriggerAcceptablePriceImpactBps = useTradeboxDefaultTriggerAcceptablePriceImpactBps();
-  const fees = useTradeboxFees();
+  const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
+  const fees = useSelector(selectTradeboxFees);
 
   const { savedAllowedSlippage } = useSettings();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
@@ -41,14 +42,8 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
     (isLimit && increaseAmounts) ||
     (isTrigger && decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease);
 
-  const acceptablePriceImpactBps = useMemo(() => {
-    return selectedTriggerAcceptablePriceImpactBps ?? 0n;
-  }, [selectedTriggerAcceptablePriceImpactBps]);
-
-  const recommendedAcceptablePriceImpactBps = useMemo(() => {
-    return defaultTriggerAcceptablePriceImpactBps ?? 0n;
-  }, [defaultTriggerAcceptablePriceImpactBps]);
-
+  const acceptablePriceImpactBps = selectedTriggerAcceptablePriceImpactBps ?? 0n;
+  const recommendedAcceptablePriceImpactBps = defaultTriggerAcceptablePriceImpactBps ?? 0n;
   const isZeroPrices = acceptablePriceImpactBps === 0n && recommendedAcceptablePriceImpactBps === 0n;
 
   if (!isVisible && !enforceVisible) {

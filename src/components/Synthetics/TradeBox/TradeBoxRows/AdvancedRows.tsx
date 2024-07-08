@@ -2,20 +2,21 @@ import { Trans } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import {
-  useTradeboxAdvancedOptions,
-  useTradeboxSetAdvancedOptions,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
-import { useCallback, useMemo } from "react";
+import {
+  selectTradeboxAdvancedOptions,
+  selectTradeboxSetAdvancedOptions,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCallback } from "react";
 import { AdvancedDisplayRows } from "./AdvancedDisplayRows";
 import { LimitAndTPSLRows } from "./LimitAndTPSLRows";
 
 export function TradeBoxAdvancedRows() {
-  const options = useTradeboxAdvancedOptions();
-  const setOptions = useTradeboxSetAdvancedOptions();
-  const { isTrigger, isSwap } = useTradeboxTradeFlags();
+  const options = useSelector(selectTradeboxAdvancedOptions);
+  const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
+  const { isTrigger, isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const setAdvancedDisplay = useCallback(
     (val: boolean) => {
@@ -37,9 +38,7 @@ export function TradeBoxAdvancedRows() {
     [setOptions]
   );
 
-  const showTPSL = useMemo(() => {
-    return !isTrigger && !isSwap;
-  }, [isSwap, isTrigger]);
+  const showTPSL = !isTrigger && !isSwap;
 
   return (
     <>

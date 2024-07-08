@@ -3,21 +3,22 @@ import { t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
-  useTradeboxAdvancedOptions,
-  useTradeboxMarkPrice,
-  useTradeboxNextPositionValues,
-  useTradeboxSelectedPosition,
-  useTradeboxToToken,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxAdvancedOptions,
+  selectTradeboxMarkPrice,
+  selectTradeboxNextPositionValues,
+  selectTradeboxSelectedPosition,
+  selectTradeboxToToken,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatUsd } from "lib/numbers";
 
 export function EntryPriceRow() {
-  const { advancedDisplay } = useTradeboxAdvancedOptions();
-  const selectedPosition = useTradeboxSelectedPosition();
-  const nextPositionValues = useTradeboxNextPositionValues();
-  const markPrice = useTradeboxMarkPrice();
+  const { advancedDisplay } = useSelector(selectTradeboxAdvancedOptions);
+  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
 
-  const toToken = useTradeboxToToken();
+  const toToken = useSelector(selectTradeboxToToken);
 
   if (!advancedDisplay || !selectedPosition) {
     return null;

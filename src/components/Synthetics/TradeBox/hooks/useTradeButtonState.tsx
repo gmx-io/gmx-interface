@@ -1,12 +1,13 @@
 import { t } from "@lingui/macro";
-import {
-  useTradeboxMarkPrice,
-  useTradeboxTradeFlags,
-  useTradeboxTriggerPrice,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import type { TradeStage } from "domain/synthetics/trade/useTradeboxState";
 
+import {
+  selectTradeboxMarkPrice,
+  selectTradeboxTradeFlags,
+  selectTradeboxTriggerPrice,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMemo } from "react";
 import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWillBeExecuted";
 
@@ -23,9 +24,9 @@ export function useTradeboxButtonState({
   text: string;
   error: string | undefined;
 }) {
-  const tradeFlags = useTradeboxTradeFlags();
-  const markPrice = useTradeboxMarkPrice();
-  const triggerPrice = useTradeboxTriggerPrice();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
   const { isIncrease, isLimit, isLong } = tradeFlags;
 
