@@ -11,6 +11,7 @@ import { ethers } from "ethers";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -46,10 +47,11 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = block.timestamp + 5;
+  const method = p.method || "simulateExecuteOrder";
 
   const simulationPayload = [
     ...p.createOrderMulticallPayload,
-    exchangeRouter.interface.encodeFunctionData(p.method || "simulateExecuteOrder", [
+    exchangeRouter.interface.encodeFunctionData(method, [
       nextKey,
       {
         primaryTokens: primaryTokens,
@@ -62,6 +64,15 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   ];
 
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+
+  const tenderlyConfig = getTenderlyConfig();
+
+  if (tenderlyConfig) {
+    await simulateTxWithTenderly(chainId, exchangeRouter, p.account, "multicall", [simulationPayload], {
+      value: p.value,
+      comment: `calling ${method}`,
+    });
+  }
 
   try {
     await exchangeRouter.multicall.staticCall(simulationPayload, {

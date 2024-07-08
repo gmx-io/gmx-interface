@@ -16,11 +16,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getIncentivesV2Url } from "config/links";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import sparkleIcon from "img/sparkle.svg";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { INCENTIVES_V2_URL } from "config/ui";
-import sparkleIcon from "img/sparkle.svg";
 
 type Props = {
   totalFees?: FeeItem;
@@ -51,11 +51,12 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tokensData = useTokensData();
-  const tradingIncentives = useTradingIncentives(tokensData);
+  const tradingIncentives = useTradingIncentives(chainId);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
+
   const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd && p.positionFee.deltaUsd < 0 && p.feesType !== "swap";
+    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
@@ -309,31 +310,29 @@ export function TradeFeesRow(p: Props) {
         </span>
       );
 
-      return (
-        <Trans>Fees {rebatedTextWithSparkle}</Trans>
-      );
+      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
     } else {
       return t`Fees`;
     }
   }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives || !rebateIsApplicable) {
+    if (!incentivesTokenTitle || !rebateIsApplicable) {
       return null;
     }
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as {tradingIncentives.token?.symbol ?? ""} tokens on a pro-rata basis.{" "}
+        The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
-          <ExternalLink href={INCENTIVES_V2_URL} newTab>
+          <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
           </ExternalLink>
           .
         </span>
       </Trans>
     );
-  }, [rebateIsApplicable, tradingIncentives]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
@@ -353,7 +352,7 @@ export function TradeFeesRow(p: Props) {
     } else {
       return (
         <TooltipWithPortal
-          portalClassName="TradeFeesRow-tooltip"
+          tooltipClassName="TradeFeesRow-tooltip"
           handle={<span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>}
           position="top-end"
           renderContent={() => (

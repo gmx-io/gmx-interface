@@ -621,6 +621,10 @@ msgstr ""
 msgid "Market Orders"
 msgstr "市場注文"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "<0>こちら</0>で請求履歴を確認できます。"
@@ -1023,7 +1027,6 @@ msgid "Select pool"
 msgstr "プールを選択"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Liquidity"
 msgstr "流動性"
 
@@ -1184,6 +1187,10 @@ msgstr "アカウント"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2297,10 +2304,6 @@ msgstr "GMX取引コンペティションに参加して賞品を獲得"
 msgid "Couldn't find a swap route with enough liquidity"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum GM Pools are incentivized."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
 msgstr "ロングを確認する"
@@ -2346,10 +2349,6 @@ msgstr "最低受け取り済"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLPから引き出し可能な金額。現在オープンなポジションで利用されていない資金。"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2374,10 +2373,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum and Avalanche GM Pools are incentivized."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3674,10 +3669,6 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "ファンディング手数料"
@@ -4383,6 +4374,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound submitted!"
 msgstr ""
@@ -4791,6 +4786,10 @@ msgstr "最低必要担保"
 
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -5317,10 +5316,6 @@ msgstr ""
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche GM Pools are incentivized."
-msgstr ""
-
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
@@ -5796,10 +5791,6 @@ msgstr ""
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "シェアできる紹介コードがないようです。<0/> コードをいま作成して紹介報酬を稼ぎましょう!"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "{incentivesTargets} incentives program is live on <0>{0}</0>."
-msgstr ""
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
 msgstr "NFT IDを入力"
@@ -6224,10 +6215,6 @@ msgstr ""
 msgid "Staking..."
 msgstr "ステーク中..."
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as {0} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr ""
@@ -6556,10 +6543,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as {airdropTokenSymbol} tokens. <0>Read more</0>."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group (Chinese)"
 msgstr "Telegramグループ (中国語)"
@@ -6713,6 +6696,10 @@ msgstr "右上の設定メニューにある\"最大スリッページ\"を増�
 msgid "GMX ecosystem pages."
 msgstr "GMXエコシステムのページ"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
@@ -6725,6 +6712,10 @@ msgstr "注文サイズがポジションより大きいため、ポジション
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "購入"
+
+#: src/config/events.tsx
+msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
@@ -6849,6 +6840,10 @@ msgstr ""
 msgid "Failed to update order"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -6913,6 +6908,10 @@ msgstr "最初の担保"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
+msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -7327,6 +7326,10 @@ msgstr "紹介コードを入力"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx

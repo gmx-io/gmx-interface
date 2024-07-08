@@ -55,7 +55,7 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { INCENTIVES_V2_URL, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -87,6 +87,8 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import { getIncentivesV2Url } from "config/links";
+import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
 const { ZeroAddress } = ethers;
 
@@ -1276,25 +1278,45 @@ export default function StakeV2() {
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
-  const incentivesTargets = useMemo(() => {
+  const incentivesMessage = useMemo(() => {
+    const arbitrumLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
+        {getChainName(ARBITRUM)}
+      </ExternalLink>
+    );
+    const avalancheLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
+        {getChainName(AVALANCHE)}
+      </ExternalLink>
+    );
     if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
-      return t`Liquidity and trading`;
+      return (
+        <div>
+          <Trans>
+            Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
     } else if (incentiveStats?.lp?.isActive) {
-      return t`Liquidity`;
+      return (
+        <div>
+          <Trans>
+            Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
     } else if (incentiveStats?.trading?.isActive) {
-      return t`Trading`;
+      return (
+        <div>
+          <Trans>
+            Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
 
-  const incentivesToken = useMemo(() => {
-    if (incentiveStats?.lp?.isActive) {
-      return tokensData?.[incentiveStats.lp.token]?.symbol;
-    } else if (incentiveStats?.trading?.isActive) {
-      return tokensData?.[incentiveStats.trading.token ?? ""]?.symbol;
-    }
-
-    return "";
-  }, [incentiveStats?.lp, incentiveStats?.trading, tokensData]);
+  const incentivesToken = useAnyAirdroppedTokenTitle();
 
   const [, setPendingTxns] = usePendingTxns();
 
@@ -1979,17 +2001,7 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {incentivesTargets && (
-              <div>
-                <Trans>
-                  {incentivesTargets} incentives program is live on{" "}
-                  <ExternalLink newTab href={INCENTIVES_V2_URL}>
-                    {getChainName(chainId)}
-                  </ExternalLink>
-                  .
-                </Trans>
-              </div>
-            )}
+            {incentivesMessage}
           </div>
         }
       />

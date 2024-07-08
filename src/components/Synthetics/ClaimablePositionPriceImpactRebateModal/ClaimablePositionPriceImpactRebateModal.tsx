@@ -179,7 +179,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       <div className="ClaimSettleModal-info-label-usd">
         <TooltipWithPortal
           position="top-end"
-          portalClassName="ClaimModal-row-tooltip"
+          tooltipClassName="ClaimModal-row-tooltip"
           handle={usd}
           renderContent={renderContent}
         />
