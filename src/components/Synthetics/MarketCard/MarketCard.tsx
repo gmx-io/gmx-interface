@@ -190,7 +190,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
           value={
             <TooltipWithPortal
-              portalClassName="MarketCard-net-fee"
+              tooltipClassName="MarketCard-net-fee"
               handle={netRateHourly !== undefined ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
               position="top-end"
               renderContent={renderFundingFeeTooltipContent}

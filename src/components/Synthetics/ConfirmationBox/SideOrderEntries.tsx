@@ -179,8 +179,8 @@ function SideOrderEntry({
                 <FaPlus color="#5EC989" />
               </EntryButton>
             }
-            portalClassName="min-w-min whitespace-nowrap"
-            handleClassName="leading-1 mr-5"
+            tooltipClassName="min-w-min whitespace-nowrap"
+            handleClassName="mr-5 leading-1"
             position="right"
             content={addRowTooltip}
             openDelay={1500}
@@ -196,7 +196,7 @@ function SideOrderEntry({
               <FaPlus color="#E74E5D" className="rotate-45" />
             </EntryButton>
           }
-          portalClassName="min-w-min whitespace-nowrap"
+          tooltipClassName="min-w-min whitespace-nowrap"
           handleClassName="leading-1"
           position="right"
           content={removeRowTooltip}
