@@ -62,7 +62,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const { refs, floatingStyles } = useFloating({
     middleware: [flip(), shift()],
     strategy: "fixed",
-    placement: breakpoint === "S" ? "bottom" : position ?? "bottom-end",
+    placement: breakpoint === "S" ? "bottom" : position ?? "bottom-start",
     whileElementsMounted: autoUpdate,
   });
 
