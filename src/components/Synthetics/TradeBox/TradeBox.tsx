@@ -67,6 +67,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import {
   TradeMode,
   TradeType,
+  applySlippageToPrice,
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade";
@@ -1254,12 +1255,18 @@ export function TradeBox(p: Props) {
   }
 
   function renderIncreaseOrderInfo() {
+    const acceptablePrice =
+      isMarket && increaseAmounts?.acceptablePrice
+        ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
+        : increaseAmounts?.acceptablePrice;
+
     return (
       <>
         <ExecutionPriceRow
           tradeFlags={tradeFlags}
           displayDecimals={toToken?.priceDecimals}
           fees={fees}
+          acceptablePrice={acceptablePrice}
           executionPrice={executionPrice ?? undefined}
           triggerOrderType={fixedTriggerOrderType}
         />
@@ -1311,6 +1318,7 @@ export function TradeBox(p: Props) {
           fees={fees}
           executionPrice={executionPrice ?? undefined}
           triggerOrderType={fixedTriggerOrderType}
+          acceptablePrice={decreaseAmounts?.acceptablePrice}
         />
 
         {selectedPosition && (
