@@ -5849,10 +5849,6 @@ msgstr ""
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Simulate TXs"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr ""
