@@ -4,10 +4,12 @@ import HashDataWorker from "./hashData.worker";
 
 export const hashDataWorker: Worker = new HashDataWorker();
 
+const promises: Record<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }> = {};
+
 hashDataWorker.onmessage = (event) => {
   const { id, result, error } = event.data;
 
-  const promise = promises.get(id);
+  const promise = promises[id];
 
   if (!promise) {
     return;
@@ -19,10 +21,8 @@ hashDataWorker.onmessage = (event) => {
     promise.resolve(result);
   }
 
-  promises.delete(id);
+  delete promises[id];
 };
-
-const promises = new Map<string, { resolve: any; reject: any }>();
 
 export function hashDataMapAsync<
   R extends Record<string, [dataTypes: string[], dataValues: (string | number | bigint | boolean)[]] | undefined>,
@@ -37,9 +37,8 @@ export function hashDataMapAsync<
     map,
   });
 
-  const promise = new Promise((resolve, reject) => {
-    promises.set(id, { resolve, reject });
-  });
+  const { promise, resolve, reject } = Promise.withResolvers();
+  promises[id] = { resolve, reject };
 
   return promise as Promise<{
     [K in keyof R]: string;

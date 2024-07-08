@@ -7,12 +7,12 @@ import type { MulticallRequestConfig } from "./types";
 
 const executorWorker: Worker = new MulticallWorker();
 
-const promises = new Map<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }>();
+const promises: Record<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }> = {};
 
 executorWorker.onmessage = (event) => {
   const { id, result, error } = event.data;
 
-  const promise = promises.get(id);
+  const promise = promises[id];
 
   if (!promise) {
     return;
@@ -24,7 +24,7 @@ executorWorker.onmessage = (event) => {
     promise.resolve(result);
   }
 
-  promises.delete(id);
+  delete promises[id];
 };
 
 export async function executeMulticallWorker(chainId: number, request: MulticallRequestConfig<any>) {
@@ -38,7 +38,7 @@ export async function executeMulticallWorker(chainId: number, request: Multicall
   });
 
   const { promise, resolve, reject } = Promise.withResolvers();
-  promises.set(id, { resolve, reject });
+  promises[id] = { resolve, reject };
 
   return promise;
 }
