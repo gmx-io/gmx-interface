@@ -6,8 +6,8 @@ import cx from "classnames";
 
 type Props = {
   value: string;
-  setValue: (e: any) => void;
-  onKeyDown: (e: any) => void;
+  setValue: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   placeholder?: string;
   size?: "s" | "m";
