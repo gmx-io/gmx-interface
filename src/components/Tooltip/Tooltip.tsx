@@ -16,7 +16,6 @@ import {
 import cx from "classnames";
 import {
   ComponentType,
-  HTMLProps,
   MouseEvent,
   PropsWithChildren,
   ReactHTML,
@@ -146,6 +145,20 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
 
   const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
 
+  const finalContent = content ?? renderContent?.();
+
+  const tooltipContent = (
+    <div
+      ref={refs.setFloating}
+      style={floatingStyles}
+      {...getFloatingProps()}
+      className={cx("Tooltip-popup", tooltipClassName)}
+    >
+      <FloatingArrow ref={arrowRef} context={context} fill={color} />
+      {finalContent}
+    </div>
+  );
+
   if (as) {
     const Container = as as any;
     return (
@@ -156,20 +169,8 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
         {...getReferenceProps()}
       >
         {children}
-        {visible && withPortal && (
-          <FloatingPortal>
-            <div ref={refs.setFloating} {...getFloatingProps()} className={cx("Tooltip-popup", tooltipClassName)}>
-              <FloatingArrow ref={arrowRef} context={context} fill={color} />
-              {content ?? renderContent?.()}
-            </div>
-          </FloatingPortal>
-        )}
-        {visible && !withPortal && (
-          <div ref={refs.setFloating} {...getFloatingProps()} className={cx("Tooltip-popup", tooltipClassName)}>
-            <FloatingArrow ref={arrowRef} context={context} fill={color} />
-            {content ?? renderContent?.()}
-          </div>
-        )}
+        {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
+        {visible && !withPortal && tooltipContent}
       </Container>
     );
   }
@@ -189,30 +190,8 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
           <>{handle ?? children}</>
         )}
       </span>
-      {visible && withPortal && (
-        <FloatingPortal>
-          <div
-            ref={refs.setFloating}
-            style={floatingStyles}
-            {...getFloatingProps()}
-            className={cx("Tooltip-popup", tooltipClassName)}
-          >
-            <FloatingArrow ref={arrowRef} context={context} fill={color}></FloatingArrow>
-            {content ?? renderContent?.()}
-          </div>
-        </FloatingPortal>
-      )}
-      {visible && !withPortal && (
-        <div
-          ref={refs.setFloating}
-          style={floatingStyles}
-          {...getFloatingProps()}
-          className={cx("Tooltip-popup", tooltipClassName)}
-        >
-          <FloatingArrow ref={arrowRef} context={context} fill={color}></FloatingArrow>
-          {content ?? renderContent?.()}
-        </div>
-      )}
+      {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
+      {visible && !withPortal && tooltipContent}
     </span>
   );
 }
