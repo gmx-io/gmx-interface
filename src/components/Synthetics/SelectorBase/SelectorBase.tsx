@@ -15,6 +15,8 @@ type Props = PropsWithChildren<{
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
+  popoverXOffset?: number;
+  popoverYOffset?: number;
 }>;
 
 type SelectorContextType = () => void;
@@ -102,7 +104,14 @@ export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
 
 function SelectorBaseDesktop(props: Props) {
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset(), flip(), shift()],
+    middleware: [
+      offset({
+        mainAxis: props.popoverYOffset ?? 0,
+        crossAxis: props.popoverXOffset ?? 0,
+      }),
+      flip(),
+      shift(),
+    ],
     placement: "bottom-end",
     whileElementsMounted: autoUpdate,
   });
