@@ -1,6 +1,6 @@
 import { Trans, msg, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useMedia } from "react-use";
 
@@ -117,24 +117,24 @@ export default function ChartTokenSelector(props: Props) {
   );
   const tdClassName = cx("cursor-pointer rounded-4 hover:bg-cold-blue-900", rowVerticalPadding, rowHorizontalPadding);
 
-  const SearchInputMemoized = useCallback(
-    (props: { className?: string }) => (
-      <SearchInput
-        className={props.className}
-        value={searchKeyword}
-        setValue={({ target }) => setSearchKeyword(target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
-            const token = filteredTokens[0];
-            handleMarketSelect(token.address);
-          }
-        }}
-      />
-    ),
-    [filteredTokens, handleMarketSelect, searchKeyword]
+  const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
+
+  const handleSetValue = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchKeyword(event.target.value);
+    },
+    [setSearchKeyword]
   );
 
-  const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
+        const token = filteredTokens[0];
+        handleMarketSelect(token.address);
+      }
+    },
+    [filteredTokens, handleMarketSelect]
+  );
 
   return (
     <SelectorBase
@@ -152,7 +152,11 @@ export default function ChartTokenSelector(props: Props) {
         )
       }
       modalLabel={t`Market`}
-      mobileModalHeaderContent={isMobile ? <SearchInputMemoized className="mt-15" /> : null}
+      mobileModalHeaderContent={
+        isMobile ? (
+          <SearchInput className="mt-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+        ) : null
+      }
       mobileModalContentPadding={false}
     >
       <div
@@ -162,7 +166,7 @@ export default function ChartTokenSelector(props: Props) {
       >
         {!isMobile && (
           <>
-            <SearchInputMemoized className="m-15" />
+            <SearchInput className="m-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
             <div className="divider" />
           </>
         )}
