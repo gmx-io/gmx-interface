@@ -114,11 +114,11 @@ function SelectorBaseDesktop(props: Props) {
   }, []);
 
   if (props.disabled) {
-    return <div className="SwapBox-info-dropdown SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+    return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
   }
 
   return (
-    <Popover className="SwapBox-info-dropdown">
+    <Popover>
       {(popoverProps) => (
         <>
           <Popover.Button as="div" className="SelectorBase-button" ref={refs.setReference}>
@@ -153,12 +153,12 @@ function SelectorBaseMobile(props: Props) {
   }, []);
 
   if (props.disabled) {
-    return <div className="SwapBox-info-dropdown SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+    return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
   }
 
   return (
     <>
-      <div className="SwapBox-info-dropdown SelectorBase-button" onClick={toggleVisibility}>
+      <div className="SelectorBase-button" onClick={toggleVisibility}>
         {props.label}
         {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
       </div>

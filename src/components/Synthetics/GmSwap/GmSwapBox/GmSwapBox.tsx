@@ -1032,7 +1032,7 @@ export function GmSwapBox(p: Props) {
           >
             <PoolSelector
               label={t`Pool`}
-              className="SwapBox-info-dropdown"
+              className="-mr-4"
               selectedIndexName={indexName}
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
@@ -1058,7 +1058,7 @@ export function GmSwapBox(p: Props) {
               value={
                 <PoolSelector
                   label={t`Pool`}
-                  className="SwapBox-info-dropdown"
+                  className="-mr-4"
                   selectedIndexName={indexName}
                   selectedMarketAddress={marketAddress}
                   markets={markets}
