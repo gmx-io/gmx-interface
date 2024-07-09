@@ -12,8 +12,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import "./SelectorBase.scss";
 
 type Props = PropsWithChildren<{
-  label: string | undefined;
-  // eslint-disable-next-line react/no-unused-prop-types
+  label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
 }>;
