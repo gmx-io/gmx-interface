@@ -64,6 +64,11 @@
   padding-right: 0.5rem;
 }
 
+.Modal-body.no-content-padding {
+  margin: 0;
+  padding-right: 0.5rem;
+}
+
 .Modal-title {
   text-align: left;
   font-size: var(--font-md);
