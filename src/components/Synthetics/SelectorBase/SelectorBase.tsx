@@ -17,6 +17,8 @@ type Props = PropsWithChildren<{
   disabled?: boolean;
   popoverXOffset?: number;
   popoverYOffset?: number;
+  mobileModalHeaderContent?: ReactNode;
+  mobileModalContentPadding?: boolean;
 }>;
 
 type SelectorContextType = () => void;
@@ -175,6 +177,8 @@ function SelectorBaseMobile(props: Props) {
         isVisible={isVisible}
         label={props.modalLabel}
         className="SelectorBase-mobile-modal"
+        headerContent={props.mobileModalHeaderContent}
+        contentPadding={props.mobileModalContentPadding}
       >
         <SelectorContextProvider close={toggleVisibility}>{props.children}</SelectorContextProvider>
       </Modal>
