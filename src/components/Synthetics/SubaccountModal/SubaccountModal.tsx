@@ -649,9 +649,9 @@ const MainView = memo(() => {
               <TooltipWithPortal
                 className="block flex-1"
                 handleClassName="block w-full !no-underline"
-                // minAllowedWidth={0}
-                fitHandleWidth
                 position="top"
+                maxAllowedWidth={300}
+                tooltipClassName="!min-w-0"
                 handle={withdrawalButton}
                 content={
                   (subAccNativeTokenBalance ?? 0n) <
