@@ -88,8 +88,6 @@ import "./PositionSeller.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
-  isHigherSlippageAllowed: boolean;
-  setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
 };
 
 const ORDER_OPTION_LABELS = {

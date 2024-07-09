@@ -99,6 +99,8 @@ export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
+export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
+export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

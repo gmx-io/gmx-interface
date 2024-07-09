@@ -10,10 +10,14 @@ import { applySlippageToMinOut } from "domain/synthetics/trade";
 import { formatTokenAmount } from "lib/numbers";
 
 export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) {
-  const { isMarket } = useSelector(selectTradeboxTradeFlags);
+  const { isMarket, isSwap } = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
 
   const toToken = useSelector(selectTradeboxToToken);
+
+  if (isSwap) {
+    return null;
+  }
 
   return (
     <ExchangeInfo.Row label={<Trans>Min. Receive</Trans>}>

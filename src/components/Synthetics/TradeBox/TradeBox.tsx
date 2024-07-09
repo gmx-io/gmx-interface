@@ -30,6 +30,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
   selectTradeboxChooseSuitableMarket,
   selectTradeboxDecreasePositionAmounts,
@@ -135,9 +136,6 @@ import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
 export type Props = {
-  allowedSlippage: number;
-  isHigherSlippageAllowed: boolean;
-  setIsHigherSlippageAllowed: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
 };
 
@@ -167,7 +165,8 @@ export function TradeBox(p: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
-  const { allowedSlippage, setPendingTxns } = p;
+  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
+  const { setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
@@ -615,10 +614,9 @@ export function TradeBox(p: Props) {
 
   const submitButtonState = useTradeboxButtonState({
     stage,
-    consentError,
     text: submitButtonText,
     isTriggerWarningAccepted: triggerConsent,
-    error: buttonErrorText,
+    error: buttonErrorText || consentError,
   });
 
   const { summaryExecutionFee } = useTPSLSummaryExecutionFee();

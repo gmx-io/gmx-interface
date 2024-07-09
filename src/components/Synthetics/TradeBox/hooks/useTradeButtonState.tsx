@@ -13,13 +13,11 @@ import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWill
 
 export function useTradeboxButtonState({
   stage,
-  consentError,
   isTriggerWarningAccepted,
   text,
   error,
 }: {
   stage: TradeStage;
-  consentError: string | null;
   isTriggerWarningAccepted: boolean;
   text: string;
   error: string | undefined;
@@ -38,9 +36,9 @@ export function useTradeboxButtonState({
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   return useMemo(() => {
-    if (consentError) {
+    if (error) {
       return {
-        text: consentError,
+        text: error,
         disabled: true,
       };
     }
@@ -73,13 +71,6 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         text: t`Creating Order...`,
-        disabled: true,
-      };
-    }
-
-    if (error) {
-      return {
-        text: error,
         disabled: true,
       };
     }
@@ -118,7 +109,6 @@ export function useTradeboxButtonState({
     takeProfit,
     markPrice,
     triggerPrice,
-    consentError,
     stage,
     text,
     isTriggerWarningAccepted,

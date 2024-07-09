@@ -8,6 +8,7 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
@@ -135,7 +136,10 @@ export function useTradeboxState(
     [chainId]
   );
 
+  const { savedAllowedSlippage } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
+  const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
+
   useEffect(
     function handleChainChange() {
       if (syncedChainId === chainId) {
@@ -608,6 +612,8 @@ export function useTradeboxState(
     setKeepLeverage,
     advancedOptions,
     setAdvancedOptions,
+    allowedSlippage,
+    setAllowedSlippage,
   };
 }
 

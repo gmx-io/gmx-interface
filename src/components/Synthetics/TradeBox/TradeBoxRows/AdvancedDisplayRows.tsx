@@ -1,7 +1,9 @@
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  selectSetTradeboxAllowedSlippage,
   selectTradeboxAdvancedOptions,
+  selectTradeboxAllowedSlippage,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
@@ -12,7 +14,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
-import { useEffect, useState } from "react";
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
@@ -30,13 +31,10 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
   const fees = useSelector(selectTradeboxFees);
 
   const { savedAllowedSlippage } = useSettings();
-  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
+  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
+  const setAllowedSlippage = useSelector(selectSetTradeboxAllowedSlippage);
 
   const { isMarket, isLimit, isTrigger } = tradeFlags;
-
-  useEffect(() => {
-    setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage, isVisible]);
 
   const enableAcceptableImpactInput =
     (isLimit && increaseAmounts) ||

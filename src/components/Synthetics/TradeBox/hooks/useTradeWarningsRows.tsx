@@ -65,20 +65,20 @@ export function useTradeboxWarningsRows() {
     executionFee?.feeUsd
   );
 
-  const consentError: string | null = useMemo(() => {
+  const consentError: string | undefined = useMemo(() => {
     if (highExecutionFeeAcknowledgement && isHighFeeConsentError) {
       return t`High Network Fee not yet acknowledged`;
     }
 
     if (priceImpactWarningState.shouldShowWarning) {
-      return priceImpactWarningState.isHighPositionImpactAccepted ? t`Price Impact not yet acknowledged` : null;
+      return priceImpactWarningState.isHighPositionImpactAccepted ? undefined : t`Price Impact not yet acknowledged`;
     }
 
     if (needPayTokenApproval && fromToken) {
       return t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`;
     }
 
-    return null;
+    return undefined;
   }, [
     fromToken,
     needPayTokenApproval,
