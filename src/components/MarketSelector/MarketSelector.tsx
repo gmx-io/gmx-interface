@@ -116,7 +116,7 @@ export function MarketSelector({
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
-        headerContent={() => (
+        headerContent={
           <SearchInput
             className="mt-15"
             value={searchKeyword}
@@ -124,7 +124,7 @@ export function MarketSelector({
             placeholder={t`Search Market`}
             onKeyDown={_handleKeyDown}
           />
-        )}
+        }
       >
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {

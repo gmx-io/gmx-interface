@@ -29,7 +29,7 @@ export type ModalProps = PropsWithChildren<{
   setIsVisible: (isVisible: boolean) => void;
   zIndex?: number;
   label?: React.ReactNode;
-  headerContent?: () => React.ReactNode;
+  headerContent?: React.ReactNode;
   onAfterOpen?: () => void;
 }>;
 
@@ -82,7 +82,7 @@ export default function Modal({
             className="Modal-backdrop"
             style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
-          ></div>
+          />
           <div className="Modal-content" onClick={stopPropagation}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
@@ -91,7 +91,7 @@ export default function Modal({
                   <MdClose fontSize={20} className="Modal-close-icon" />
                 </div>
               </div>
-              {headerContent?.()}
+              {headerContent}
             </div>
             <div className="divider" />
             <RemoveScroll>
