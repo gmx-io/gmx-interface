@@ -15,7 +15,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
