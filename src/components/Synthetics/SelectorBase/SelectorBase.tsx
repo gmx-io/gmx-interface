@@ -149,7 +149,7 @@ function SelectorBaseDesktop(props: Props) {
         <>
           <Popover.Button as="div" className="SelectorBase-button" ref={refs.setReference}>
             {props.label}
-            {<BiChevronDown className="TokenSelector-caret" />}
+            <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />
           </Popover.Button>
 
           {popoverProps.open && (
@@ -189,7 +189,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className="SelectorBase-button" onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <BiChevronDown className="TokenSelector-caret" />}
+        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />}
       </div>
       <Modal
         setIsVisible={setIsVisible}

@@ -2,6 +2,9 @@
 
 .SelectorBase {
   &-button {
+    display: flex;
+    align-items: center;
+
     cursor: pointer;
 
     &:hover:not(&-disabled) {
