@@ -121,7 +121,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
       <div className="overflow-x-auto">
         <table className="w-[max(100%,1100px)]">
           <thead>
-            <ExchangeTheadTr>
+            <ExchangeTheadTr bordered={false}>
               <ExchangeTh>
                 <Trans>MARKET</Trans>
               </ExchangeTh>
@@ -228,7 +228,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                   : getNormalizedTokenSymbol(indexToken.symbol);
 
                 return (
-                  <ExchangeTr key={token.address} hoverable={false}>
+                  <ExchangeTr key={token.address} hoverable={false} bordered={false}>
                     <ExchangeTd>
                       <div className="flex">
                         <div className="mr-8 flex shrink-0 items-center">
