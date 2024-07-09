@@ -94,7 +94,7 @@ export default function Modal({
               {headerContent}
             </div>
             <div className="divider" />
-            <RemoveScroll>
+            <RemoveScroll className="overflow-auto">
               <div className={cx("Modal-body")} ref={modalRef}>
                 {children}
               </div>
