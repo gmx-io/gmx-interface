@@ -22,10 +22,6 @@ msgstr "Unrealized Base PnL"
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting pover. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
-
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
@@ -188,10 +184,6 @@ msgstr "GMX transfers not yet enabled"
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
-#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage sent."
@@ -291,10 +283,6 @@ msgstr "Enter NFT Address"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Price below lowes Limit Price."
-#~ msgstr "Price below lowes Limit Price."
-
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
 msgstr "Confirm Settle"
@@ -333,11 +321,6 @@ msgstr "Max {0} short exceeded"
 msgid "Cancel Stop-Loss Order"
 msgstr "Cancel Stop-Loss Order"
 
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
-#~ msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before compounding.</1>"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool USD exceeded"
 msgstr "Max pool USD exceeded"
@@ -350,10 +333,6 @@ msgstr "Positions"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Price above Entry Price."
-#~ msgstr "Price above Entry Price."
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
@@ -436,10 +415,6 @@ msgstr "Open Fees"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "Realized PnL"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-#~ msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -556,17 +531,9 @@ msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
 msgid "Cancel submitted"
 msgstr "Cancel submitted"
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
-#~ msgstr "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#~ msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
-#~ msgstr "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
 
 #: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
@@ -670,10 +637,6 @@ msgstr "Maximum allowed actions is required"
 msgid "Acceptable price for the order."
 msgstr "Acceptable price for the order."
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>{1}<1>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</1>"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -696,10 +659,6 @@ msgstr "Activating Subaccount"
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
 
-#: src/pages/Actions/Actions.js
-#~ msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
-#~ msgstr "GMX V1 Arbitrum information for account: {checkSummedAccount}"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
@@ -716,10 +675,6 @@ msgstr "Closing..."
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
 msgstr "Code already taken"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
-#~ msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -977,10 +932,6 @@ msgstr "Avalanche Max. APY: {0}"
 msgid "Collateral"
 msgstr "Collateral"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-#~ msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
-
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -1126,18 +1077,9 @@ msgstr "Approve {stakingTokenSymbol}"
 msgid "Failed Limit Swap"
 msgstr "Failed Limit Swap"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-#~ msgstr "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"
 msgstr "Overall protocol analytics"
-
-#: src/pages/Actions/Actions.js
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-#~ msgid "Actions"
-#~ msgstr "Actions"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
@@ -1206,18 +1148,10 @@ msgstr "Leverage disabled, pending {0} upgrade"
 msgid "NFT Address"
 msgstr "NFT Address"
 
-#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-#~ msgid "{0} {1} {2} by {3} at ${4}."
-#~ msgstr "{0} {1} {2} by {3} at ${4}."
-
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Set Max Leverage"
 msgstr "Set Max Leverage"
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Arbitrum Avg. APR:"
-#~ msgstr "Arbitrum Avg. APR:"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
@@ -1289,10 +1223,6 @@ msgstr "Tier {0} ({currentRebatePercentage}% rebate)"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
 msgstr "Discover GMX Alerts"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Unstaking will burn {0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
-#~ msgstr "Unstaking will burn {0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -1366,10 +1296,6 @@ msgstr "Select Positions"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "Base {nativeTokenSymbol} APR"
-#~ msgstr "Base {nativeTokenSymbol} APR"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short Open Interest"
@@ -1511,10 +1437,6 @@ msgstr "Max {0}"
 msgid "Price above Mark Price."
 msgstr "Price above Mark Price."
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
-#~ msgstr "<0>You will earn {0}% less {nativeTokenSymbol} rewards with this action.</0>"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "Withdrew {0} from {positionText}"
@@ -1644,10 +1566,6 @@ msgstr "Rebates Distribution History"
 msgid "Accrued Negative Funding Fee"
 msgstr "Accrued Negative Funding Fee"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-#~ msgstr "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
@@ -1665,22 +1583,9 @@ msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#~ msgid "{0} order for"
-#~ msgstr "{0} order for"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr "GMX Alerts"
-
-#: src/pages/Home/Home.js
-#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-#~ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-#~ msgid "Search action"
-#~ msgstr "Search action"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
@@ -1715,10 +1620,6 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Total Fees"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Max Bonus Rebate"
-#~ msgstr "Max Bonus Rebate"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -1893,10 +1794,6 @@ msgstr "Vest with GLP on Avalanche"
 msgid "No esGMX to claim"
 msgstr "No esGMX to claim"
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
-#~ msgstr "Currently, There is a high Swap Price Impact for the Order Swap path."
-
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
@@ -1970,10 +1867,6 @@ msgstr "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgid "Claim Funding Fees"
 msgstr "Claim Funding Fees"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "Max. {nativeTokenSymbol} APR"
-#~ msgstr "Max. {nativeTokenSymbol} APR"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "Rebates are airdropped weekly."
@@ -2008,10 +1901,6 @@ msgstr "Winner:"
 msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
-#~ msgstr "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
-
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -2024,10 +1913,6 @@ msgstr "Collateral Spread"
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#~ msgid "Max Execution Fee"
-#~ msgstr "Max Execution Fee"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees {rebatedTextWithSparkle}"
@@ -2108,10 +1993,6 @@ msgstr "Allow {0} to be spent"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "You have an existing position with {0} as collateral. This action will not apply for that position."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "None"
-#~ msgstr "None"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -2434,10 +2315,6 @@ msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.
 msgid "Creating..."
 msgstr "Creating..."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#~ msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-#~ msgstr "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing from Subaccount"
@@ -2458,10 +2335,6 @@ msgstr "Available amount to withdraw from GLP. Funds not utilized by current ope
 msgid "Invalid price, see warning"
 msgstr "Invalid price, see warning"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
-#~ msgstr "Boost your rewards with Multiplier Points. <0>Read more</0>."
-
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr "GMX V1 {networkName} actions for all accounts."
@@ -2477,10 +2350,6 @@ msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
-
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "{nativeTokenSymbol} Boosted APR"
-#~ msgstr "{nativeTokenSymbol} Boosted APR"
 
 #: src/components/Glp/GlpSwap.js
 msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
@@ -2675,10 +2544,6 @@ msgstr "SL"
 msgid "Stake"
 msgstr "Stake"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Staked Multiplier Points"
-#~ msgstr "Staked Multiplier Points"
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Invalid Liquidation Price"
@@ -2699,10 +2564,6 @@ msgstr "Liq. {longOrShortText} {tokenSymbol}"
 #: src/components/Exchange/OrderEditor.js
 msgid "Update Order"
 msgstr "Update Order"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Max execution fee buffer precision is 0.01%"
-#~ msgstr "Max execution fee buffer precision is 0.01%"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
@@ -2839,6 +2700,7 @@ msgstr "No claims match the selected filters"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -3033,10 +2895,6 @@ msgstr "Avg. Size"
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
-#~ msgstr "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable withdraw sent."
 msgstr "Enable withdraw sent."
@@ -3072,10 +2930,10 @@ msgstr "Order cannot be executed as the remaining position would be smaller than
 msgid "Claiming..."
 msgstr "Claiming..."
 
-#. Filter option for all markets
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-#~ msgid "All"
-#~ msgstr "All"
+#. Chart token selector all markets filter
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "All"
+msgstr "All"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3129,10 +2987,6 @@ msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read mor
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
 msgstr "<0>Set Recommended Impact: {0}</0>."
-
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#~ msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
-#~ msgstr "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
@@ -3239,10 +3093,6 @@ msgstr "Swap {0} on 1inch"
 msgid "{0} GLP bought with {1} {2}!"
 msgstr "{0} GLP bought with {1} {2}!"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
-#~ msgstr "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3296,10 +3146,6 @@ msgstr "Swap submitted."
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
-
-#: src/pages/Actions/Actions.js
-#~ msgid "GMX V1 Account"
-#~ msgstr "GMX V1 Account"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3419,10 +3265,6 @@ msgstr "The position would be immediately liquidated upon order execution. Try r
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr "BUYABLE"
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Arbitrum Max. APR:"
-#~ msgstr "Arbitrum Max. APR:"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Order"
@@ -3772,15 +3614,6 @@ msgstr "Buy GLP"
 msgid "Cancel failed"
 msgstr "Cancel failed"
 
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Your APR"
-#~ msgstr "Your APR"
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
-#~ msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
@@ -3915,10 +3748,6 @@ msgstr "GLP Index Composition"
 msgid "TP"
 msgstr "TP"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Max Execution Fee Buffer"
-#~ msgstr "Max Execution Fee Buffer"
-
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Claimable Funding Fee.</0>"
@@ -4005,22 +3834,10 @@ msgstr "Reserve considers the PnL of Open Positions, while Open Interest does no
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
-#~ msgstr "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Withdraw submitted."
 msgstr "Withdraw submitted."
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
-#~ msgstr "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
-
-#: src/components/Synthetics/ConfirmationBox/SidecarEntries.tsx
-#~ msgid "{0} {1} {2} by {3} at {4}."
-#~ msgstr "{0} {1} {2} by {3} at {4}."
 
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AddAffiliateCode.js
@@ -4108,10 +3925,6 @@ msgstr "Short Collateral"
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Stake Multiplier Points"
-#~ msgstr "Stake Multiplier Points"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
@@ -4127,10 +3940,6 @@ msgstr "Unstake submitted!"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
-#~ msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
@@ -4234,10 +4043,6 @@ msgstr "Decreased"
 msgid "Decrease"
 msgstr "Decrease"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
-#~ msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power.</1>"
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "Leftover collateral below 5 USD"
@@ -4323,6 +4128,10 @@ msgstr "Stake GMX"
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Favorites"
+msgstr "Favorites"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
 msgstr "Max {0} short capacity"
@@ -4334,10 +4143,6 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-#~ msgstr "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
@@ -4395,10 +4200,6 @@ msgstr "Delegate"
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Price below Entry Price."
-#~ msgstr "Price below Entry Price."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP and GMX autocompounding vaults"
@@ -4410,10 +4211,6 @@ msgstr "esGMX OTC Market"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leverage Trading Terminal"
 msgstr "Leverage Trading Terminal"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
-#~ msgstr "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
@@ -4493,10 +4290,6 @@ msgstr "UTILIZATION"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Announcements"
 msgstr "GMX Announcements"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Invalid execution fee buffer value"
-#~ msgstr "Invalid execution fee buffer value"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -4656,10 +4449,6 @@ msgstr "You have not traded during the selected period."
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
-#~ msgstr "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
 msgstr "Referral code updated failed."
@@ -4699,10 +4488,6 @@ msgstr "Price"
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche Avg. APR:"
-#~ msgstr "Avalanche Avg. APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Stake/StakeV1.js
@@ -4764,14 +4549,6 @@ msgstr "Winners:"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Multiplier Points"
-#~ msgstr "Multiplier Points"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "(up to {0}% of {feesTypeName})"
-#~ msgstr "(up to {0}% of {feesTypeName})"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -5138,10 +4915,6 @@ msgstr "Current {0} shorts"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Boost Percentage"
-#~ msgstr "Boost Percentage"
-
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr "Longs Net Rate / 1h"
@@ -5177,10 +4950,6 @@ msgstr "{0} {1} not supported"
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
 msgstr "Protocol Tokens"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Position Price Impact"
-#~ msgstr "Position Price Impact"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -5396,10 +5165,6 @@ msgstr "Win/Loss"
 msgid "Buy GMX from decentralized exchanges"
 msgstr "Buy GMX from decentralized exchanges"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Use the \"Compound\" button to stake your Multiplier Points."
-#~ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
 msgstr "Powered by"
@@ -5449,10 +5214,6 @@ msgstr "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these G
 #: src/pages/Stake/StakeV2.tsx
 msgid "No delegate found"
 msgstr "No delegate found"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "{nativeTokenSymbol} Base APR"
-#~ msgstr "{nativeTokenSymbol} Base APR"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound failed."
@@ -5530,10 +5291,6 @@ msgstr "Create Limit order"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
 msgstr "Execute Limit Swap"
-
-#: src/lib/contracts/transactionErrors.tsx
-#~ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
-#~ msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
@@ -5716,10 +5473,6 @@ msgstr "V1 Avalanche Fuji"
 msgid "1st Place"
 msgstr "1st Place"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Delegated to:"
-#~ msgstr "Delegated to:"
-
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
 msgstr "Starts in"
@@ -5747,10 +5500,6 @@ msgstr "Not enough Available Liquidity to fill the Order."
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
 msgstr "Order size exceeds position"
-
-#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-#~ msgid "Decrease {0} Long by {1} at ${2}."
-#~ msgstr "Decrease {0} Long by {1} at ${2}."
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update submitted!"
@@ -5926,10 +5675,6 @@ msgstr "Volume traded by this account with an active referral code."
 msgid "Update Take-Profit Order"
 msgstr "Update Take-Profit Order"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "{nativeTokenSymbol} Total APR"
-#~ msgstr "{nativeTokenSymbol} Total APR"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
 msgstr "Unstake failed"
@@ -5941,10 +5686,6 @@ msgstr "Update Limit Order"
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
 msgstr "Start unrealized fees"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
-#~ msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
@@ -5977,14 +5718,6 @@ msgstr "Open Fee"
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-#~ msgstr "<0>APR is based on the fees collected for the past {daysConsidered} days while extrapolating the current borrowing fee. <1>Read more about GM token pricing</1>.</0><2>The APR is an estimate as actual fees are auto-compounded into the pool in real time.</2><3>Check GM pools' performance against other LP Positions in the <4>GMX Dune Dashboard</4>.</3>"
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT ID"
 msgstr "Enter NFT ID"
@@ -6007,11 +5740,6 @@ msgstr "You"
 #: src/components/Migration/Migration.js
 msgid "Migration submitted! <0>View status.</0>"
 msgstr "Migration submitted! <0>View status.</0>"
-
-#: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Avg. APR"
-#~ msgstr "Avg. APR"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6064,10 +5792,6 @@ msgstr "There may not be sufficient liquidity to execute the swap to the receive
 msgid "Enable One-Click Trading"
 msgstr "Enable One-Click Trading"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before staking.</1>"
-#~ msgstr "<0>Delegate your {0} GMX DAO undelegated</0><1> voting power before staking.</1>"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr "Trade Errors"
@@ -6075,10 +5799,6 @@ msgstr "Trade Errors"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
-#~ msgstr "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
@@ -6116,11 +5836,6 @@ msgstr "Receive"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Returns calculator for GMX and GLP"
 msgstr "Returns calculator for GMX and GLP"
-
-#: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "Execution Fee"
-#~ msgstr "Execution Fee"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
@@ -6209,11 +5924,6 @@ msgstr "Max {0} Capacity"
 msgid "Copy error"
 msgstr "Copy error"
 
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "Base APR"
-#~ msgstr "Base APR"
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -6266,10 +5976,6 @@ msgstr "Max Network Fee includes fees for additional orders. It will be sent bac
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"
 msgstr "{positionName} Failed to settle"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees (Rebated) and Price Impact"
-#~ msgstr "Fees (Rebated) and Price Impact"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -6478,10 +6184,6 @@ msgstr "Swap failed."
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Price above lowes Limit Price."
-#~ msgstr "Price above lowes Limit Price."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Vest with GLP on Arbitrum"
@@ -6493,10 +6195,6 @@ msgstr "SOON"
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
 msgstr "Liquidation price would cross mark price."
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
-#~ msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2."
@@ -6520,10 +6218,6 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 msgid "Freeze"
 msgstr "Freeze"
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
-#~ msgid "Search market"
-#~ msgstr "Search market"
-
 #: src/pages/Stake/StakeV1.js
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "Claim submitted! <0>View status.</0>"
@@ -6538,11 +6232,6 @@ msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}
 msgid "Claim completed!"
 msgstr "Claim completed!"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
-#~ msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
-
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
@@ -6551,10 +6240,6 @@ msgstr "You can change this in the settings menu on the top right of the page.<0
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Request Settlement of Funding Fees"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-#~ msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
-#~ msgstr "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -6587,10 +6272,6 @@ msgstr "Select a Pay token"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Multiplier Points APR"
-#~ msgstr "Multiplier Points APR"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral Code does not exist"
@@ -6791,10 +6472,6 @@ msgstr "Avg. Lev."
 msgid "Avalanche LP incentives"
 msgstr "Avalanche LP incentives"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "As network fees have increased, an additional execution fee is needed."
-#~ msgstr "As network fees have increased, an additional execution fee is needed."
-
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -6819,10 +6496,6 @@ msgstr "Voting Power"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-#~ msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
@@ -6868,14 +6541,6 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Increase"
-
-#: src/components/Common/SEO.js
-#~ msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-#~ msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche Max. APR: {0}"
-#~ msgstr "Avalanche Max. APR: {0}"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -6985,10 +6650,6 @@ msgstr "Buy"
 msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
-#~ msgstr "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
 msgstr "Total Rewards"
@@ -7027,9 +6688,9 @@ msgstr "GLP Vault"
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#~ msgid "Limit order for"
-#~ msgstr "Limit order for"
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No markets matched."
+msgstr "No markets matched."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
@@ -7105,10 +6766,6 @@ msgstr "Withdraw from GLP Vault"
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Max Execution Fee buffer below {0}% may result in failed orders."
-#~ msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -7318,10 +6975,6 @@ msgstr "{prefix} <0>{text}</0>"
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#~ msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-#~ msgstr "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
@@ -7342,10 +6995,6 @@ msgstr "Save"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Profit"
 msgstr "Daily Profit"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Approving GMX..."
-#~ msgstr "Approving GMX..."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX tokens can be staked or vested at any time."
@@ -7374,10 +7023,6 @@ msgstr "Transaction failed"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Depositing..."
 msgstr "Depositing..."
-
-#: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
-#~ msgstr "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Expected Available Actions"
@@ -7414,13 +7059,6 @@ msgstr "Orders ({ordersCount})"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "GMX explorer for stats and traders"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "High Execution Fee not yet acknowledged"
-#~ msgstr "High Execution Fee not yet acknowledged"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -7598,10 +7236,6 @@ msgstr "Leftover collateral below {0} USD"
 msgid "Close {0} {1}"
 msgstr "Close {0} {1}"
 
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#~ msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
-#~ msgstr "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
-
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
@@ -7620,10 +7254,6 @@ msgstr "Enter Referral Code"
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0><1> and {1} voting power. </1><2>You will earn {2}% less {nativeTokenSymbol} rewards with this action.</2>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
@@ -7700,10 +7330,6 @@ msgstr "Withdrawing {0} from {positionText}"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "Community Projects"
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-#~ msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
-#~ msgstr "GMX V2 {networkName} information for account: {checkSummedAccount}"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx

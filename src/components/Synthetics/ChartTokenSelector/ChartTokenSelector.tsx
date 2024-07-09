@@ -1,6 +1,7 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import { useMedia } from "react-use";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -8,6 +9,7 @@ import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
@@ -15,12 +17,16 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { USD_DECIMALS } from "lib/legacy";
+import { useLocalStorageByChainId } from "lib/localStorage";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import SearchInput from "components/SearchInput/SearchInput";
+import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, FAVORITE_TOKENS_KEY } from "config/localStorage";
 import { SelectorBase, useSelectorBaseStateManager } from "../SelectorBase/SelectorBase";
 
 type Props = {
@@ -28,8 +34,22 @@ type Props = {
   options: Token[] | undefined;
 };
 
+type TabOption = "all" | "favorites";
+const tabOptions = ["all", "favorites"];
+const tabOptionLabels = {
+  all: msg({
+    message: "All",
+    comment: "Chart token selector all markets filter",
+  }),
+  favorites: msg`Favorites`,
+};
+
 export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken } = props;
+  const chainId = useSelector(selectChainId);
+
+  const [tab, setTab] = useLocalStorageByChainId<TabOption>(chainId, CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, "all");
+  const [favoriteTokens, setFavoriteTokens] = useLocalStorageByChainId<string[]>(chainId, FAVORITE_TOKENS_KEY, []);
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isSmallMobile = useMedia("(max-width: 400px)");
@@ -42,12 +62,16 @@ export default function ChartTokenSelector(props: Props) {
 
   const filteredTokens: Token[] | undefined = useMemo(
     () =>
-      options?.filter(
-        (item) =>
+      options?.filter((item) => {
+        const textSearchMatch =
           item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-          item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
-      ),
-    [options, searchKeyword]
+          item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
+
+        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(item.address) : true;
+
+        return textSearchMatch && favoriteMatch;
+      }),
+    [favoriteTokens, options, searchKeyword, tab]
   );
 
   const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
@@ -110,6 +134,8 @@ export default function ChartTokenSelector(props: Props) {
     [filteredTokens, handleMarketSelect, searchKeyword]
   );
 
+  const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
+
   return (
     <SelectorBase
       manager={selectorStateManager}
@@ -125,7 +151,7 @@ export default function ChartTokenSelector(props: Props) {
           "..."
         )
       }
-      modalLabel={t`Token`}
+      modalLabel={t`Market`}
       mobileModalHeaderContent={isMobile ? <SearchInputMemoized className="mt-15" /> : null}
       mobileModalContentPadding={false}
     >
@@ -140,6 +166,14 @@ export default function ChartTokenSelector(props: Props) {
             <div className="divider" />
           </>
         )}
+        <Tab
+          className="px-15 py-4"
+          options={tabOptions}
+          optionLabels={localizedTabOptionLabels}
+          type="inline"
+          option={tab}
+          setOption={setTab}
+        />
 
         <div
           className={cx({
@@ -147,61 +181,66 @@ export default function ChartTokenSelector(props: Props) {
           })}
         >
           <table className={cx("text-sm w-full")}>
-            {filteredTokens && filteredTokens.length > 0 && (
-              <thead className="bg-slate-800">
-                <tr>
-                  <th className={thClassName}>
-                    <Trans>Market</Trans>
-                  </th>
-                  {!isSwap && (
-                    <>
-                      <th className={thClassName}>
-                        <Trans>LONG LIQ.</Trans>
-                      </th>
-                      <th className={thClassName}>
-                        <Trans>SHORT LIQ.</Trans>
-                      </th>
-                    </>
-                  )}
-                </tr>
-              </thead>
-            )}
+            <thead className="bg-slate-800">
+              <tr>
+                <th className={thClassName} colSpan={2}>
+                  <Trans>Market</Trans>
+                </th>
+                {!isSwap && (
+                  <>
+                    <th className={thClassName}>
+                      <Trans>LONG LIQ.</Trans>
+                    </th>
+                    <th className={thClassName}>
+                      <Trans>SHORT LIQ.</Trans>
+                    </th>
+                  </>
+                )}
+              </tr>
+            </thead>
+
             <tbody>
               {filteredTokens?.map((token) => {
                 const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
-                let formattedMaxLongLiquidity = "";
-                if (!isSwap && maxLongLiquidityPool) {
-                  if (isSmallMobile) {
-                    formattedMaxLongLiquidity = formatAmountHuman(
-                      maxLongLiquidityPool.maxLongLiquidity,
-                      USD_DECIMALS,
-                      true
-                    );
-                  } else {
-                    formattedMaxLongLiquidity = formatUsd(maxLongLiquidityPool.maxLongLiquidity)!;
-                  }
-                }
+                let formattedMaxLongLiquidity = formatUsdWithMobile(
+                  !isSwap && maxLongLiquidityPool?.maxLongLiquidity,
+                  isSmallMobile
+                );
 
-                let maxShortLiquidityPoolFormatted = "";
-                if (!isSwap && maxShortLiquidityPool) {
-                  if (isSmallMobile) {
-                    maxShortLiquidityPoolFormatted = formatAmountHuman(
-                      maxShortLiquidityPool.maxShortLiquidity,
-                      USD_DECIMALS,
-                      true
-                    );
+                let maxShortLiquidityPoolFormatted = formatUsdWithMobile(
+                  !isSwap && maxShortLiquidityPool?.maxShortLiquidity,
+                  isSmallMobile
+                );
+
+                const isFavorite = favoriteTokens?.includes(token.address);
+                const handleFavoriteClick = () => {
+                  if (isFavorite) {
+                    setFavoriteTokens((favoriteTokens || []).filter((item) => item !== token.address));
                   } else {
-                    maxShortLiquidityPoolFormatted = formatUsd(maxShortLiquidityPool.maxShortLiquidity)!;
+                    setFavoriteTokens([...(favoriteTokens || []), token.address]);
                   }
-                }
+                };
 
                 return (
                   <tr key={token.symbol} className="group/row">
-                    <td className={tdClassName} onClick={() => handleMarketSelect(token.address, "largestPosition")}>
+                    <td
+                      className={cx("cursor-pointer rounded-4 pl-15 pr-4 hover:bg-cold-blue-900", rowVerticalPadding)}
+                      onClick={handleFavoriteClick}
+                    >
+                      {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+                    </td>
+                    <td
+                      className={cx(
+                        "cursor-pointer rounded-4 pl-6 hover:bg-cold-blue-900",
+                        rowVerticalPadding,
+                        isSmallMobile ? "pr-6" : "pr-15"
+                      )}
+                      onClick={() => handleMarketSelect(token.address, "largestPosition")}
+                    >
                       <span className="inline-flex items-center text-slate-100">
                         <TokenIcon
-                          className="ChartToken-list-icon mr-8"
+                          className="ChartToken-list-icon -my-5 mr-8"
                           symbol={token.symbol}
                           displaySize={16}
                           importSize={24}
@@ -235,8 +274,25 @@ export default function ChartTokenSelector(props: Props) {
               })}
             </tbody>
           </table>
+          {options && options.length > 0 && !filteredTokens?.length && (
+            <div className="py-15 text-center text-gray-400">
+              <Trans>No markets matched.</Trans>
+            </div>
+          )}
         </div>
       </div>
     </SelectorBase>
   );
+}
+
+function formatUsdWithMobile(amount: bigint | undefined | false, isSmallMobile: boolean) {
+  if (amount === undefined || amount === false) {
+    return "";
+  }
+
+  if (isSmallMobile) {
+    return formatAmountHuman(amount, USD_DECIMALS, true);
+  }
+
+  return formatUsd(amount)!;
 }
