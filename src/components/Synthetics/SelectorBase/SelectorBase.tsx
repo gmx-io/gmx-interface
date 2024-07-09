@@ -34,7 +34,7 @@ const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>
   return <selectorContext.Provider value={props.close}>{props.children}</selectorContext.Provider>;
 };
 
-export const useSelectorStateManager = () => {
+export const useSelectorBaseStateManager = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const stableObject = useMemo(
