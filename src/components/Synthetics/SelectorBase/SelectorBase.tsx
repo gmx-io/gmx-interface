@@ -1,8 +1,9 @@
+/* eslint-disable react/no-unused-prop-types */
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import { noop } from "lodash";
-import React, { PropsWithChildren, ReactNode, useCallback, useState } from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
@@ -19,6 +20,10 @@ type Props = PropsWithChildren<{
   popoverYOffset?: number;
   mobileModalHeaderContent?: ReactNode;
   mobileModalContentPadding?: boolean;
+  manager?: {
+    isVisible: boolean;
+    setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }>;
 
 type SelectorContextType = () => void;
@@ -27,6 +32,17 @@ const selectorContext = React.createContext<SelectorContextType>(noop);
 export const useSelectorClose = () => React.useContext(selectorContext);
 const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
   return <selectorContext.Provider value={props.close}>{props.children}</selectorContext.Provider>;
+};
+
+export const useSelectorStateManager = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const stableObject = useMemo(
+    () => ({ isVisible, setIsVisible, close: () => setIsVisible(false) }),
+    [isVisible, setIsVisible]
+  );
+
+  return stableObject;
 };
 
 export function SelectorBase(props: Props) {
@@ -156,11 +172,14 @@ function SelectorBaseDesktop(props: Props) {
 }
 
 function SelectorBaseMobile(props: Props) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisibleInternal, setIsVisibleInternal] = useState(false);
+
+  const isVisible = props.manager?.isVisible ?? isVisibleInternal;
+  const setIsVisible = props.manager?.setIsVisible ?? setIsVisibleInternal;
 
   const toggleVisibility = useCallback(() => {
     setIsVisible((prev) => !prev);
-  }, []);
+  }, [setIsVisible]);
 
   if (props.disabled) {
     return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
