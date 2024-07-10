@@ -1541,8 +1541,8 @@ msgid "Max {0} out"
 msgstr "최대 {0} out"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The amount left in the sub-account is not enough to cover network gas costs."
-msgstr ""
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
@@ -2717,6 +2717,10 @@ msgstr "레버리지"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
 msgstr "주문 유효화 제출 완료"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The subaccount has no funds."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -6183,6 +6187,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The amount left in the subaccount is not enough to cover network gas costs."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
