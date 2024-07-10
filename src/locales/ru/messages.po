@@ -1542,8 +1542,8 @@ msgid "Max {0} out"
 msgstr "Максимальный {0} выход"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The amount left in the sub-account is not enough to cover network gas costs."
-msgstr ""
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
@@ -2718,6 +2718,10 @@ msgstr "Плечо"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
 msgstr "Активировать отправку ордера."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The subaccount has no funds."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -6185,6 +6189,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The amount left in the subaccount is not enough to cover network gas costs."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

@@ -352,7 +352,7 @@ export function TradeFeesRow(p: Props) {
     } else {
       return (
         <TooltipWithPortal
-          portalClassName="TradeFeesRow-tooltip"
+          tooltipClassName="TradeFeesRow-tooltip"
           handle={<span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>}
           position="top-end"
           renderContent={() => (

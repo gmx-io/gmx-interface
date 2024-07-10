@@ -21,7 +21,6 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
     <Tooltip
       handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
       position={isMobile ? "bottom-end" : "bottom-start"}
-      handleClassName="plain"
       renderContent={() => {
         return (
           <>

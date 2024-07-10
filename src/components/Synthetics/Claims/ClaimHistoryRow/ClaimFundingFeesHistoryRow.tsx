@@ -152,7 +152,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
         return (
           <StatsTooltipRow
-            textClassName="whitespace-nowrap mb-5"
+            textClassName="mb-5 whitespace-nowrap"
             key={market.marketTokenAddress}
             label={
               <div className="flex items-start text-white">
@@ -195,7 +195,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
     return (
       <TooltipWithPortal
-        portalClassName="ClaimHistoryRow-size-tooltip-portal"
+        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         renderContent={() => <>{amounts}</>}
         handle={formattedTotalUsd}
       />
@@ -217,7 +217,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <TooltipWithPortal
           disableHandleStyle
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
-          portalClassName="ClaimHistoryRow-tooltip-portal"
+          tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
       </td>

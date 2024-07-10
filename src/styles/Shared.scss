@@ -117,7 +117,6 @@ input {
   color: var(--color-white);
   outline: none;
   background: none;
-  border: none;
   padding: 1.25rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -415,10 +414,6 @@ a:hover .text-red {
 
 .gap-right-xs > *:not(:last-child) {
   margin-right: 0.5rem;
-}
-
-.whitespace-nowrap {
-  white-space: nowrap;
 }
 
 .checkbox-inline {

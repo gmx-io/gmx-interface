@@ -216,7 +216,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     restCount > 0 ? (
       <TooltipWithPortal
         className="CompetitionPrizes__prize-winner-tooltip"
-        portalClassName="CompetitionPrizes__prize-winner-tooltip"
+        tooltipClassName="CompetitionPrizes__prize-winner-tooltip"
         position="bottom"
         handle={manyWinnersContent}
         renderContent={renderTooltipContent}

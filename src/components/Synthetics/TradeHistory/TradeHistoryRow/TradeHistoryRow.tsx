@@ -189,10 +189,10 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <div className="flex">
             {msg.actionComment ? (
               <TooltipWithPortal
-                className={cx("TradeHistoryRow-action-handle", {
-                  "Tooltip-error": msg.isActionError,
+                className={cx("TradeHistoryRow-action-handle")}
+                handleClassName={cx("TradeHistoryRow-action-handle", {
+                  "text-red-500 !decoration-red-500/50": msg.isActionError,
                 })}
-                handleClassName="TradeHistoryRow-action-handle"
                 handle={msg.action}
                 renderContent={renderActionTooltipContent}
               />
@@ -215,7 +215,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <TooltipWithPortal
             disableHandleStyle
             handle={<span className="TradeHistoryRow-time muted cursor-help">{msg.timestamp}</span>}
-            portalClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
+            tooltipClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
@@ -230,7 +230,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <td>
           <TooltipWithPortal
             disableHandleStyle
-            portalClassName="cursor-help *:cursor-auto"
+            tooltipClassName="cursor-help *:cursor-auto"
             handle={marketTooltipHandle}
             renderContent={renderMarketContent}
           />
@@ -248,7 +248,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </td>
         <td>
           <TooltipWithPortal
-            portalClassName="TradeHistoryRow-price-tooltip-portal"
+            tooltipClassName="TradeHistoryRow-price-tooltip-portal"
             handle={msg.price}
             position="bottom-end"
             renderContent={renderPriceContent}

@@ -229,7 +229,7 @@ export function SyntheticsStats() {
                   <div className="cell">
                     <div>
                       <TooltipWithPortal
-                        portalClassName="SyntheticsStats-tooltip"
+                        tooltipClassName="SyntheticsStats-tooltip"
                         handle={getMarketIndexName(market)}
                         renderContent={() => (
                           <>
@@ -911,7 +911,7 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         position="bottom-end"
                         handle="..."
-                        portalClassName="MarketCard-config-tooltip"
+                        tooltipClassName="MarketCard-config-tooltip"
                         renderContent={() => (
                           <>
                             <div>Position Impact</div>

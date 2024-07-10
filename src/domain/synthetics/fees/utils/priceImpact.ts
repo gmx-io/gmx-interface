@@ -47,6 +47,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
   const price = priceImpactDeltaUsd > 0 ? token.prices.maxPrice : token.prices.minPrice;
 
   let impactDeltaAmount: bigint;
+  let cappedDiffUsd = 0n;
 
   if (priceImpactDeltaUsd > 0) {
     // round positive impactAmount down, this will be deducted from the swap impact pool for the user
@@ -57,6 +58,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
       : marketInfo.swapImpactPoolAmountShort;
 
     if (impactDeltaAmount > maxImpactAmount) {
+      cappedDiffUsd = bigMath.mulDiv(impactDeltaAmount - maxImpactAmount, price, expandDecimals(1, token.decimals));
       impactDeltaAmount = maxImpactAmount;
     }
   } else {
@@ -64,7 +66,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
     impactDeltaAmount = roundUpMagnitudeDivision(priceImpactDeltaUsd * expandDecimals(1, token.decimals), price);
   }
 
-  return impactDeltaAmount;
+  return { impactDeltaAmount, cappedDiffUsd };
 }
 
 export function getCappedPositionImpactUsd(

@@ -97,7 +97,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
 
     return (
       <TooltipWithPortal
-        portalClassName="NetworkFeeRow-tooltip"
+        tooltipClassName="NetworkFeeRow-tooltip"
         position="top-end"
         renderContent={() => (
           <>

@@ -1542,8 +1542,8 @@ msgid "Max {0} out"
 msgstr "Max {0} out"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The amount left in the sub-account is not enough to cover network gas costs."
-msgstr "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr "The amount left in the sub-account is not enough to cover network gas costs."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
@@ -2718,6 +2718,10 @@ msgstr "Leverage"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
 msgstr "Enable orders sent."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The subaccount has no funds."
+msgstr "The subaccount has no funds."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -6192,6 +6196,10 @@ msgstr "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
 msgstr "Keep leverage at {0}x"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The amount left in the subaccount is not enough to cover network gas costs."
+msgstr "The amount left in the subaccount is not enough to cover network gas costs."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Take-Profit PnL"
