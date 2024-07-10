@@ -93,9 +93,14 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const filteredTokens: Token[] | undefined = useMemo(
     () =>
       options?.filter((item) => {
-        const textSearchMatch =
-          item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-          item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
+        let textSearchMatch = false;
+        if (!searchKeyword.trim()) {
+          textSearchMatch = true;
+        } else {
+          textSearchMatch =
+            item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
+        }
 
         const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(item.address) : true;
 
