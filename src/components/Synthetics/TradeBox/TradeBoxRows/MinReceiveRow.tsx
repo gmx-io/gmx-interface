@@ -15,7 +15,7 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
 
   const toToken = useSelector(selectTradeboxToToken);
 
-  if (isSwap) {
+  if (!isSwap) {
     return null;
   }
 

@@ -11,9 +11,11 @@ import {
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFlags,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
+import { useMemo } from "react";
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
@@ -24,6 +26,7 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const limitPrice = useSelector(selectTradeboxTriggerPrice);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -36,13 +39,13 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
 
   const { isMarket, isLimit, isTrigger } = tradeFlags;
 
-  const enableAcceptableImpactInput =
-    (isLimit && increaseAmounts) ||
-    (isTrigger && decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease);
+  const isInputDisabled = useMemo(() => {
+    if (isLimit && increaseAmounts) {
+      return limitPrice === undefined || limitPrice === 0n;
+    }
 
-  const acceptablePriceImpactBps = selectedTriggerAcceptablePriceImpactBps ?? 0n;
-  const recommendedAcceptablePriceImpactBps = defaultTriggerAcceptablePriceImpactBps ?? 0n;
-  const isZeroPrices = acceptablePriceImpactBps === 0n && recommendedAcceptablePriceImpactBps === 0n;
+    return decreaseAmounts && decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease;
+  }, [decreaseAmounts, increaseAmounts, isLimit, limitPrice]);
 
   if (!isVisible && !enforceVisible) {
     return null;
@@ -62,9 +65,9 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
       )}
       {(isLimit || isTrigger) && (
         <AcceptablePriceImpactInputRow
-          notAvailable={!enableAcceptableImpactInput || isZeroPrices}
+          notAvailable={isInputDisabled || defaultTriggerAcceptablePriceImpactBps === undefined}
           acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps ?? 0n}
-          recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps ?? 0n}
+          recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
           priceImpactFeeBps={fees?.positionPriceImpact?.bps}
           setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
         />

@@ -9,6 +9,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useCallback } from "react";
 import { AdvancedDisplayRows } from "./AdvancedDisplayRows";
 import { LimitAndTPSLRows } from "./LimitAndTPSLRows";
@@ -40,8 +41,32 @@ export function TradeBoxAdvancedRows() {
 
   const showTPSL = !isTrigger && !isSwap;
 
+  const { limit } = useSidecarOrders();
+
   return (
     <>
+      {showTPSL && (
+        <>
+          <ExchangeInfo.Group>
+            <ExchangeInfo.Row
+              label={
+                <span className="flex flex-row justify-between align-middle">
+                  {limit.entries?.length ? (
+                    <Trans>Limit / Take-Profit / Stop-Loss</Trans>
+                  ) : (
+                    <Trans>Take-Profit / Stop-Loss</Trans>
+                  )}
+                </span>
+              }
+              className="SwapBox-info-row"
+              value={<ToggleSwitch className="!mb-0" isChecked={options.limitOrTPSL} setIsChecked={setLimitOrTPSL} />}
+            />
+          </ExchangeInfo.Group>
+          <LimitAndTPSLRows />
+          <div className="App-card-divider" />
+        </>
+      )}
+      <div className="App-card-divider" />
       <ExchangeInfo.Group>
         {!isSwap && (
           <ExchangeInfo.Row
@@ -61,25 +86,6 @@ export function TradeBoxAdvancedRows() {
       <ExchangeInfo.Group>
         <AdvancedDisplayRows enforceVisible={isSwap} />
       </ExchangeInfo.Group>
-      <div className="App-card-divider" />
-      {showTPSL && (
-        <>
-          <ExchangeInfo.Group>
-            <ExchangeInfo.Row
-              label={
-                <span className="flex flex-row justify-between align-middle">
-                  <Trans>Limit / Take-Profit / Stop-Loss</Trans>
-                  {/* <img src={Arrow} className="rotate-90 cursor-pointer" alt="arrow" /> */}
-                </span>
-              }
-              className="SwapBox-info-row"
-              value={<ToggleSwitch className="!mb-0" isChecked={options.limitOrTPSL} setIsChecked={setLimitOrTPSL} />}
-            />
-          </ExchangeInfo.Group>
-          <LimitAndTPSLRows />
-          <div className="App-card-divider" />
-        </>
-      )}
     </>
   );
 }

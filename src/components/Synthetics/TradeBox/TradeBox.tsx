@@ -117,7 +117,6 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { bigMath } from "lib/bigmath";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
@@ -132,6 +131,7 @@ import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
+import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
@@ -211,9 +211,7 @@ export function TradeBox(p: Props) {
     fixedTriggerThresholdType,
     setFixedTriggerThresholdType,
     setFixedTriggerOrderType,
-    setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
@@ -623,39 +621,7 @@ export function TradeBox(p: Props) {
   const { requiredActions } = useRequiredActions();
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
-  useEffect(() => {
-    if (
-      isTrigger &&
-      decreaseAmounts?.triggerThresholdType &&
-      decreaseAmounts?.triggerOrderType &&
-      decreaseAmounts.acceptablePrice !== undefined
-    ) {
-      setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
-      setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-    }
-
-    if (isLimit && increaseAmounts?.acceptablePrice) {
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-    }
-  }, [
-    account,
-    decreaseAmounts?.acceptablePrice,
-    decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
-    decreaseAmounts?.triggerOrderType,
-    decreaseAmounts?.triggerThresholdType,
-    increaseAmounts?.acceptablePrice,
-    increaseAmounts?.acceptablePriceDeltaBps,
-    isLimit,
-    isTrigger,
-    openConnectModal,
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setFixedTriggerOrderType,
-    setFixedTriggerThresholdType,
-    setSelectedAcceptablePriceImpactBps,
-  ]);
+  useTradeboxAvailablePriceImpactValues();
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -798,18 +764,10 @@ export function TradeBox(p: Props) {
   }, [isMarket, setStage]);
 
   const onFinished = useCallback(() => {
-    setSelectedAcceptablePriceImpactBps(undefined);
-    setDefaultTriggerAcceptablePriceImpactBps(undefined);
     setFixedTriggerOrderType(undefined);
     setFixedTriggerThresholdType(undefined);
     setStage("trade");
-  }, [
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setFixedTriggerOrderType,
-    setFixedTriggerThresholdType,
-    setSelectedAcceptablePriceImpactBps,
-    setStage,
-  ]);
+  }, [setFixedTriggerOrderType, setFixedTriggerThresholdType, setStage]);
 
   const onSubmit = useCallback(() => {
     setStage("processing");
