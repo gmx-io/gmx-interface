@@ -142,8 +142,6 @@ export function useTradeboxAvailablePriceImpactValues() {
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
       setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
       setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-
-      // console.log("-----------> decreaseAmounts ", decreaseAmounts);
     }
   }, [
     decreaseAmounts?.acceptablePrice,

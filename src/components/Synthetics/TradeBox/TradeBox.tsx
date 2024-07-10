@@ -209,8 +209,6 @@ export function TradeBox(p: Props) {
     setFocusedInput,
     fixedTriggerOrderType,
     fixedTriggerThresholdType,
-    setFixedTriggerThresholdType,
-    setFixedTriggerOrderType,
     selectedTriggerAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -763,12 +761,6 @@ export function TradeBox(p: Props) {
     setStage("trade");
   }, [isMarket, setStage]);
 
-  const onFinished = useCallback(() => {
-    setFixedTriggerOrderType(undefined);
-    setFixedTriggerThresholdType(undefined);
-    setStage("trade");
-  }, [setFixedTriggerOrderType, setFixedTriggerThresholdType, setStage]);
-
   const onSubmit = useCallback(() => {
     setStage("processing");
 
@@ -799,7 +791,7 @@ export function TradeBox(p: Props) {
         onConfirmed();
       })
       .finally(() => {
-        onFinished();
+        setStage("trade");
       });
   }, [
     account,
@@ -811,7 +803,6 @@ export function TradeBox(p: Props) {
     setStage,
     tradeboxTransactions,
     subaccount,
-    onFinished,
   ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);

@@ -10,7 +10,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { useCallback } from "react";
+import { usePrevious } from "lib/usePrevious";
+import { useCallback, useEffect, useMemo } from "react";
 import { AdvancedDisplayRows } from "./AdvancedDisplayRows";
 import { LimitAndTPSLRows } from "./LimitAndTPSLRows";
 
@@ -41,7 +42,22 @@ export function TradeBoxAdvancedRows() {
 
   const showTPSL = !isTrigger && !isSwap;
 
-  const { limit } = useSidecarOrders();
+  const { limit, stopLoss, takeProfit } = useSidecarOrders();
+
+  const hasErrorInTPSL = useMemo(
+    () => stopLoss.error?.percentage || takeProfit.error?.percentage,
+    [stopLoss.error, takeProfit.error]
+  );
+
+  const previousHasErrorInTPSL = usePrevious(hasErrorInTPSL);
+
+  useEffect(() => {
+    if (hasErrorInTPSL && !previousHasErrorInTPSL) {
+      setLimitOrTPSL(true);
+    }
+  }, [hasErrorInTPSL, previousHasErrorInTPSL, setLimitOrTPSL]);
+
+  const isTpSlVisible = hasErrorInTPSL ? true : options.limitOrTPSL;
 
   return (
     <>
@@ -59,10 +75,17 @@ export function TradeBoxAdvancedRows() {
                 </span>
               }
               className="SwapBox-info-row"
-              value={<ToggleSwitch className="!mb-0" isChecked={options.limitOrTPSL} setIsChecked={setLimitOrTPSL} />}
+              value={
+                <ToggleSwitch
+                  className="!mb-0"
+                  disabled={Boolean(hasErrorInTPSL)}
+                  isChecked={isTpSlVisible}
+                  setIsChecked={setLimitOrTPSL}
+                />
+              }
             />
           </ExchangeInfo.Group>
-          <LimitAndTPSLRows />
+          <LimitAndTPSLRows isVisible={isTpSlVisible} />
           <div className="App-card-divider" />
         </>
       )}

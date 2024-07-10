@@ -1,8 +1,6 @@
 import { t } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Tooltip from "components/Tooltip/Tooltip";
-import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
@@ -10,8 +8,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { SideOrderEntries } from "../components/SideOrderEntries";
 
-export function LimitAndTPSLRows() {
-  const { limitOrTPSL: isVisible } = useSelector(selectTradeboxAdvancedOptions);
+export function LimitAndTPSLRows({ isVisible }: { isVisible: boolean }) {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
 
   function renderSideOrders(type: "stopLoss" | "takeProfit" | "limit") {
