@@ -192,11 +192,11 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
   const thClassName = cx(
-    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400",
+    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
-  const tdClassName = cx(rowVerticalPadding, rowHorizontalPadding);
+  const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
   const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
 

@@ -115,6 +115,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
           className="*:!text-16"
           placeholder="Search Market"
           onKeyDown={noop}
+          autoFocus={false}
         />
       </div>
       <div className="h-1 bg-slate-700"></div>

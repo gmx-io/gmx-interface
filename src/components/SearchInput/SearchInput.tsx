@@ -11,13 +11,25 @@ type Props = {
   className?: string;
   placeholder?: string;
   size?: "s" | "m";
+  /**
+   * If not provided, will be set to true on small screens
+   */
+  autoFocus?: boolean;
 };
 
 const STYLE = {
   backgroundImage: `url(${searchIcon})`,
 };
 
-export default function SearchInput({ value, setValue, onKeyDown, className, placeholder, size = "m" }: Props) {
+export default function SearchInput({
+  value,
+  setValue,
+  onKeyDown,
+  className,
+  placeholder,
+  autoFocus,
+  size = "m",
+}: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const classNames = cx("Search-input", `Search-input_size_${size}`, className);
   return (
@@ -28,7 +40,7 @@ export default function SearchInput({ value, setValue, onKeyDown, className, pla
         value={value}
         onChange={setValue}
         onKeyDown={onKeyDown}
-        autoFocus={!isSmallerScreen}
+        autoFocus={autoFocus ?? !isSmallerScreen}
         className="Tokenselector-search-input"
         style={STYLE}
       />
