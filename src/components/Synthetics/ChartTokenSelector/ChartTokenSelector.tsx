@@ -26,7 +26,7 @@ import { getByKey } from "lib/objects";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, FAVORITE_TOKENS_KEY } from "config/localStorage";
+import { CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY } from "config/localStorage";
 import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
@@ -74,7 +74,11 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const chainId = useSelector(selectChainId);
 
   const [tab, setTab] = useLocalStorageByChainId<TabOption>(chainId, CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, "all");
-  const [favoriteTokens, setFavoriteTokens] = useLocalStorageByChainId<string[]>(chainId, FAVORITE_TOKENS_KEY, []);
+  const [favoriteTokens, setFavoriteTokens] = useLocalStorageByChainId<string[]>(
+    chainId,
+    CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
+    []
+  );
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isSmallMobile = useMedia("(max-width: 400px)");
