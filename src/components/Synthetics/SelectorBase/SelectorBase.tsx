@@ -2,8 +2,18 @@
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
+import { createPortal } from "react-dom";
 import { noop } from "lodash";
-import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from "react";
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  createRef,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
@@ -18,31 +28,25 @@ type Props = PropsWithChildren<{
   disabled?: boolean;
   popoverXOffset?: number;
   popoverYOffset?: number;
-  mobileModalHeaderContent?: ReactNode;
   mobileModalContentPadding?: boolean;
-  manager?: {
-    isVisible: boolean;
-    setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  };
 }>;
 
-type SelectorContextType = () => void;
+type SelectorContextType = { close: () => void; mobileHeaderContentRef?: React.RefObject<HTMLDivElement> };
 
-const selectorContext = React.createContext<SelectorContextType>(noop);
-export const useSelectorClose = () => React.useContext(selectorContext);
-const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>) => {
-  return <selectorContext.Provider value={props.close}>{props.children}</selectorContext.Provider>;
-};
-
-export const useSelectorBaseStateManager = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const stableObject = useMemo(
-    () => ({ isVisible, setIsVisible, close: () => setIsVisible(false) }),
-    [isVisible, setIsVisible]
+const selectorContext = React.createContext<SelectorContextType>({
+  close: noop,
+  mobileHeaderContentRef: createRef(),
+});
+export const useSelectorClose = () => React.useContext(selectorContext).close;
+const SelectorContextProvider = (
+  props: PropsWithChildren<{ close: () => void; mobileHeaderContentRef?: React.RefObject<HTMLDivElement> }>
+) => {
+  const stableValue = useMemo(
+    () => ({ close: props.close, mobileHeaderContentRef: props.mobileHeaderContentRef }),
+    [props.close, props.mobileHeaderContentRef]
   );
 
-  return stableObject;
+  return <selectorContext.Provider value={stableValue}>{props.children}</selectorContext.Provider>;
 };
 
 export function SelectorBase(props: Props) {
@@ -118,6 +122,16 @@ export function SelectorBaseDesktopRow(
 export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
   return <tr className="SelectorBaseUtils-table-head-row">{props.children}</tr>;
 }
+
+export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {
+  const ref = useContext(selectorContext).mobileHeaderContentRef;
+
+  if (!ref?.current) {
+    return null;
+  }
+
+  return createPortal(props.children, ref.current);
+}
 //#endregion
 
 function SelectorBaseDesktop(props: Props) {
@@ -151,7 +165,6 @@ function SelectorBaseDesktop(props: Props) {
             {props.label}
             <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />
           </Popover.Button>
-
           {popoverProps.open && (
             <FloatingPortal>
               <Popover.Panel
@@ -172,10 +185,8 @@ function SelectorBaseDesktop(props: Props) {
 }
 
 function SelectorBaseMobile(props: Props) {
-  const [isVisibleInternal, setIsVisibleInternal] = useState(false);
-
-  const isVisible = props.manager?.isVisible ?? isVisibleInternal;
-  const setIsVisible = props.manager?.setIsVisible ?? setIsVisibleInternal;
+  const [isVisible, setIsVisible] = useState(false);
+  const headerContentRed = useRef<HTMLDivElement>(null);
 
   const toggleVisibility = useCallback(() => {
     setIsVisible((prev) => !prev);
@@ -196,10 +207,12 @@ function SelectorBaseMobile(props: Props) {
         isVisible={isVisible}
         label={props.modalLabel}
         className="SelectorBase-mobile-modal"
-        headerContent={props.mobileModalHeaderContent}
+        headerContent={<div ref={headerContentRed} />}
         contentPadding={props.mobileModalContentPadding}
       >
-        <SelectorContextProvider close={toggleVisibility}>{props.children}</SelectorContextProvider>
+        <SelectorContextProvider close={toggleVisibility} mobileHeaderContentRef={headerContentRed}>
+          {props.children}
+        </SelectorContextProvider>
       </Modal>
     </>
   );

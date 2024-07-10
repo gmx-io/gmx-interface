@@ -27,7 +27,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, FAVORITE_TOKENS_KEY } from "config/localStorage";
-import { SelectorBase, useSelectorBaseStateManager } from "../SelectorBase/SelectorBase";
+import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -46,6 +46,31 @@ const tabOptionLabels = {
 
 export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken } = props;
+
+  return (
+    <SelectorBase
+      popoverYOffset={16}
+      popoverXOffset={-12}
+      label={
+        selectedToken ? (
+          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold">
+            <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            {selectedToken.symbol} {"/ USD"}
+          </span>
+        ) : (
+          "..."
+        )
+      }
+      modalLabel={t`Market`}
+      mobileModalContentPadding={false}
+    >
+      <MarketsList options={options} />
+    </SelectorBase>
+  );
+}
+
+function MarketsList(props: { options: Token[] | undefined }) {
+  const { options } = props;
   const chainId = useSelector(selectChainId);
 
   const [tab, setTab] = useLocalStorageByChainId<TabOption>(chainId, CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, "all");
@@ -54,7 +79,7 @@ export default function ChartTokenSelector(props: Props) {
   const isMobile = useMedia("(max-width: 1100px)");
   const isSmallMobile = useMedia("(max-width: 400px)");
 
-  const selectorStateManager = useSelectorBaseStateManager();
+  const close = useSelectorClose();
 
   const tradeType = useSelector(selectTradeboxTradeType);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -80,7 +105,7 @@ export default function ChartTokenSelector(props: Props) {
   const handleMarketSelect = useCallback(
     (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
       setSearchKeyword("");
-      selectorStateManager.close();
+      close();
 
       const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
 
@@ -103,7 +128,7 @@ export default function ChartTokenSelector(props: Props) {
         }
       }
     },
-    [chooseSuitableMarket, marketsInfoData, selectorStateManager, tradeType]
+    [chooseSuitableMarket, close, marketsInfoData, tradeType]
   );
 
   const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
@@ -137,28 +162,10 @@ export default function ChartTokenSelector(props: Props) {
   );
 
   return (
-    <SelectorBase
-      manager={selectorStateManager}
-      popoverYOffset={16}
-      popoverXOffset={-12}
-      label={
-        selectedToken ? (
-          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold">
-            <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
-            {selectedToken.symbol} {"/ USD"}
-          </span>
-        ) : (
-          "..."
-        )
-      }
-      modalLabel={t`Market`}
-      mobileModalHeaderContent={
-        isMobile ? (
-          <SearchInput className="mt-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
-        ) : null
-      }
-      mobileModalContentPadding={false}
-    >
+    <>
+      <SelectorBaseMobileHeaderContent>
+        <SearchInput className="mt-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+      </SelectorBaseMobileHeaderContent>
       <div
         className={cx("Synths-ChartTokenSelector", {
           "w-[448px]": !isMobile && !isSwap,
@@ -285,7 +292,7 @@ export default function ChartTokenSelector(props: Props) {
           )}
         </div>
       </div>
-    </SelectorBase>
+    </>
   );
 }
 
