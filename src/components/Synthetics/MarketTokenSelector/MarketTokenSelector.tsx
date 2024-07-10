@@ -46,7 +46,7 @@ const tabOptions = ["all", "favorites"];
 const tabOptionLabels = {
   all: msg({
     message: "All",
-    comment: "Chart token selector all markets filter",
+    comment: "GM market token selector all markets filter",
   }),
   favorites: msg`Favorites`,
 };

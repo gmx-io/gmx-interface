@@ -2931,7 +2931,9 @@ msgid "Claiming..."
 msgstr "Claiming..."
 
 #. Chart token selector all markets filter
+#. GM market token selector all markets filter
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "All"
 msgstr "All"
 
@@ -3538,6 +3540,10 @@ msgstr "Short"
 msgid "PnL ($)"
 msgstr "PnL ($)"
 
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "GMX Market Tokens"
+msgstr "GMX Market Tokens"
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Affiliate Vault"
@@ -4129,6 +4135,7 @@ msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Favorites"
 msgstr "Favorites"
 
@@ -6689,6 +6696,7 @@ msgid "Referral Terms"
 msgstr "Referral Terms"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr "No markets matched."
 

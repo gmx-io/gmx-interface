@@ -2931,7 +2931,9 @@ msgid "Claiming..."
 msgstr "수령중..."
 
 #. Chart token selector all markets filter
+#. GM market token selector all markets filter
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "All"
 msgstr "모두"
 
@@ -3535,6 +3537,10 @@ msgstr "숏"
 msgid "PnL ($)"
 msgstr ""
 
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "GMX Market Tokens"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Affiliate Vault"
@@ -4126,6 +4132,7 @@ msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Favorites"
 msgstr ""
 
@@ -6683,6 +6690,7 @@ msgid "Referral Terms"
 msgstr "추천 약관"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""
 
