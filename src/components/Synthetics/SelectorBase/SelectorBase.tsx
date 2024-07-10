@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import { createPortal } from "react-dom";
@@ -29,6 +29,7 @@ type Props = PropsWithChildren<{
   popoverXOffset?: number;
   popoverYOffset?: number;
   mobileModalContentPadding?: boolean;
+  popoverPlacement?: Placement;
 }>;
 
 type SelectorContextType = { close: () => void; mobileHeaderContentRef?: React.RefObject<HTMLDivElement> };
@@ -144,7 +145,7 @@ function SelectorBaseDesktop(props: Props) {
       flip(),
       shift(),
     ],
-    placement: "bottom-end",
+    placement: props.popoverPlacement ?? "bottom-end",
     whileElementsMounted: autoUpdate,
   });
 

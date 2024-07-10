@@ -49,6 +49,7 @@ export default function ChartTokenSelector(props: Props) {
 
   return (
     <SelectorBase
+      popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-12}
       label={
