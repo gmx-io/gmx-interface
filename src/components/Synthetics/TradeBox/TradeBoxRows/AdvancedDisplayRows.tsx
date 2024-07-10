@@ -65,8 +65,12 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
       )}
       {(isLimit || isTrigger) && (
         <AcceptablePriceImpactInputRow
-          notAvailable={isInputDisabled || defaultTriggerAcceptablePriceImpactBps === undefined}
-          acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps ?? 0n}
+          notAvailable={
+            isInputDisabled ||
+            defaultTriggerAcceptablePriceImpactBps === undefined ||
+            selectedTriggerAcceptablePriceImpactBps === undefined
+          }
+          acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
           recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
           priceImpactFeeBps={fees?.positionPriceImpact?.bps}
           setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
