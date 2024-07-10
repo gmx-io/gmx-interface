@@ -91,7 +91,7 @@ export function useTradeParamsProcessor() {
 
     if (toToken && markets.length > 0) {
       const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
-        isSynthetic: tradeOptions.tradeType === TradeType.Swap ? undefined : true,
+        isSynthetic: tradeOptions.tradeType !== TradeType.Swap,
         version: "v2",
       });
 
