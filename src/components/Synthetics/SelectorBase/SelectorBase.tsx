@@ -23,6 +23,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import "./SelectorBase.scss";
 
 type Props = PropsWithChildren<{
+  handleClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -162,7 +163,11 @@ function SelectorBaseDesktop(props: Props) {
     <Popover>
       {(popoverProps) => (
         <>
-          <Popover.Button as="div" className="SelectorBase-button" ref={refs.setReference}>
+          <Popover.Button
+            as="div"
+            className={cx("SelectorBase-button group/selector-base", props.handleClassName)}
+            ref={refs.setReference}
+          >
             {props.label}
             <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />
           </Popover.Button>
@@ -199,7 +204,7 @@ function SelectorBaseMobile(props: Props) {
 
   return (
     <>
-      <div className="SelectorBase-button" onClick={toggleVisibility}>
+      <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
         {!props.disabled && <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />}
       </div>
