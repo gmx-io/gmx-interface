@@ -51,8 +51,10 @@ const SelectorContextProvider = (
   return <selectorContext.Provider value={stableValue}>{props.children}</selectorContext.Provider>;
 };
 
+export const SELECTOR_BASE_MOBILE_THRESHOLD = 700;
+
 export function SelectorBase(props: Props) {
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   if (isMobile) {
     return <SelectorBaseMobile {...props} />;

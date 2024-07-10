@@ -30,7 +30,12 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
+import {
+  SELECTOR_BASE_MOBILE_THRESHOLD,
+  SelectorBase,
+  SelectorBaseMobileHeaderContent,
+  useSelectorClose,
+} from "../SelectorBase/SelectorBase";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -181,7 +186,7 @@ function MarketTokenSelectorInternal(props: Props) {
     });
   }
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 400px)");
 
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
