@@ -81,14 +81,14 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
 
     request: async () => {
       const request = {};
-      for (const marketAddress of marketsAddresses!) {
+      const promises = (marketsAddresses || []).map(async (marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
         if (!marketPrices) {
           // eslint-disable-next-line no-console
           console.warn("missed market prices", market);
-          continue;
+          return;
         }
 
         const marketProps = {
@@ -654,7 +654,9 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
             },
           },
         };
-      }
+      });
+
+      await Promise.all(promises);
 
       return request;
     },
