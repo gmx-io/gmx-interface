@@ -1960,8 +1960,8 @@ msgid "Migrating..."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedRows.tsx
-msgid "Take-Profit / Stop-Loss"
-msgstr ""
+#~ msgid "Take-Profit / Stop-Loss"
+#~ msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
