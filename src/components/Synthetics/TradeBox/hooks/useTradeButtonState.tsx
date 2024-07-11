@@ -8,6 +8,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useMemo } from "react";
 import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWillBeExecuted";
 
@@ -25,13 +26,10 @@ export function useTradeboxButtonState({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const { stopLoss, takeProfit, limit } = useSidecarOrders();
-  const { isIncrease, isLimit, isLong } = tradeFlags;
+  const { stopLoss, takeProfit } = useSidecarOrders();
+  const sidecarEntries = useSidecarEntries();
 
-  const sidecarEntries = useMemo(
-    () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
-    [stopLoss, takeProfit, limit]
-  );
+  const { isIncrease, isLimit, isLong } = tradeFlags;
 
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 

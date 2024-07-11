@@ -9,7 +9,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { usePrevious } from "lib/usePrevious";
 import { useCallback, useEffect, useMemo } from "react";
 import { AdvancedDisplayRows } from "./AdvancedDisplayRows";
@@ -42,12 +42,15 @@ export function TradeBoxAdvancedRows() {
 
   const showTPSL = !isTrigger && !isSwap;
 
-  const { limit, stopLoss, takeProfit } = useSidecarOrders();
+  const entries = useSidecarEntries();
 
-  const hasErrorInTPSL = useMemo(
-    () => stopLoss.error?.percentage || takeProfit.error?.percentage,
-    [stopLoss.error, takeProfit.error]
-  );
+  const hasErrorInTPSL = useMemo(() => {
+    return entries.some((e) => {
+      if (e.txnType === "cancel") return false;
+
+      return e.sizeUsd?.error || e.percentage?.error || e.price?.error;
+    });
+  }, [entries]);
 
   const previousHasErrorInTPSL = usePrevious(hasErrorInTPSL);
 
@@ -67,11 +70,7 @@ export function TradeBoxAdvancedRows() {
             <ExchangeInfo.Row
               label={
                 <span className="flex flex-row justify-between align-middle">
-                  {limit.entries?.length ? (
-                    <Trans>Limit / Take-Profit / Stop-Loss</Trans>
-                  ) : (
-                    <Trans>Take-Profit / Stop-Loss</Trans>
-                  )}
+                  <Trans>Limit / Take-Profit / Stop-Loss</Trans>
                 </span>
               }
               className="SwapBox-info-row"
