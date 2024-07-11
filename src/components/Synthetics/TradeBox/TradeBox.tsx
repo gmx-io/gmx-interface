@@ -116,7 +116,6 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
@@ -132,6 +131,7 @@ import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
 import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
+import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
@@ -569,11 +569,6 @@ export function TradeBox(p: Props) {
 
   const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows();
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
-  const { stopLoss, takeProfit, limit } = useSidecarOrders();
-
-  const previousFromTokenAddress = usePrevious(fromTokenAddress);
-  const previousToTokenAddress = usePrevious(toTokenAddress);
-  const previousIsLong = usePrevious(isLong);
 
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
@@ -620,6 +615,7 @@ export function TradeBox(p: Props) {
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
   useTradeboxAvailablePriceImpactValues();
+  useTradeboxTPSLReset(setTriggerConsent);
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -697,34 +693,6 @@ export function TradeBox(p: Props) {
       }
     },
     [leverageOption, maxAllowedLeverage, setLeverageOption]
-  );
-
-  useEffect(
-    function reset() {
-      if (
-        fromTokenAddress !== previousFromTokenAddress ||
-        toTokenAddress !== previousToTokenAddress ||
-        isLong !== previousIsLong
-      ) {
-        setTriggerConsent(false);
-        stopLoss?.reset();
-        takeProfit?.reset();
-        limit?.reset();
-      }
-    },
-    [
-      takeProfit,
-      stopLoss,
-      limit,
-      fromTokenAddress,
-      previousFromTokenAddress,
-      toTokenAddress,
-      previousToTokenAddress,
-      triggerConsent,
-      setTriggerConsent,
-      isLong,
-      previousIsLong,
-    ]
   );
 
   const onSwitchTokens = useCallback(() => {
