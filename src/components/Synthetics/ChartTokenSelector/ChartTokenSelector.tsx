@@ -92,11 +92,11 @@ function MarketsList(props: { options: Token[] | undefined }) {
             item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
-        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(item.address) : true;
+        const favoriteMatch = tab === "favorites" && !isSwap ? favoriteTokens?.includes(item.address) : true;
 
         return textSearchMatch && favoriteMatch;
       }),
-    [favoriteTokens, options, searchKeyword, tab]
+    [favoriteTokens, isSwap, options, searchKeyword, tab]
   );
 
   const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
