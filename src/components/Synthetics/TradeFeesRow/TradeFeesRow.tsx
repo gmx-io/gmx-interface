@@ -22,6 +22,8 @@ import sparkleIcon from "img/sparkle.svg";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
 
+const HARDCODED_REBATE_PERCENT = 2500n;
+
 type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
@@ -232,15 +234,14 @@ export function TradeFeesRow(p: Props) {
                 </div>
                 <div>
                   <Trans>
-                    (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
+                    ({formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
             ),
             value: formatDeltaUsd(
               p.positionFee &&
-                bigMath.mulDiv(p.positionFee.deltaUsd, tradingIncentives.rebatePercent, BASIS_POINTS_DIVISOR_BIGINT) *
-                  -1n
+                bigMath.mulDiv(p.positionFee.deltaUsd, HARDCODED_REBATE_PERCENT, BASIS_POINTS_DIVISOR_BIGINT) * -1n
             ),
             className: "text-green-500",
             id: "rebate",
@@ -323,7 +324,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        The bonus rebate is an estimate and can be up to {formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of the open
+        fee. It will be airdropped as ARB tokens on a pro-rata basis.
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
