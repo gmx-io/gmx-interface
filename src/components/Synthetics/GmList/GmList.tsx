@@ -322,11 +322,13 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                 );
               })}
             {!currentData.length && !isLoading && (
-              <tr>
-                <td colSpan={7}>
-                  <Trans>No GM pools found.</Trans>
-                </td>
-              </tr>
+              <ExchangeTr hoverable={false} bordered={false}>
+                <ExchangeTd colSpan={7}>
+                  <div className="text-center text-gray-400">
+                    <Trans>No GM pools found.</Trans>
+                  </div>
+                </ExchangeTd>
+              </ExchangeTr>
             )}
             {isLoading && <GMListSkeleton />}
           </tbody>
