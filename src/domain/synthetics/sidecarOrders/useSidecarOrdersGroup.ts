@@ -1,8 +1,8 @@
 import {
-  makeSelectTradeboxSidecarOrdersEntriesPristine,
+  makeSelectTradeboxSidecarOrdersEntriesIsUntouched,
   makeSelectTradeboxSidecarOrdersState,
   makeSelectTradeboxSidecarOrdersTotalPercentage,
-  selectTradeboxSidecarEntriesSetPristine,
+  selectTradeboxSidecarEntriesSetIsUntouched,
   selectTradeboxSidecarOrdersTotalSizeUsd,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -26,8 +26,8 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   canAddEntry?: boolean;
   enablePercentage?: boolean;
 }): SidecarOrderEntryGroupBase<T> {
-  const pristine = useSelector(makeSelectTradeboxSidecarOrdersEntriesPristine(prefix));
-  const setPristine = useSelector(selectTradeboxSidecarEntriesSetPristine);
+  const isUntouched = useSelector(makeSelectTradeboxSidecarOrdersEntriesIsUntouched(prefix));
+  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const totalPositionSizeUsd = useSelector(selectTradeboxSidecarOrdersTotalSizeUsd);
 
   const getPercentageBySizeUsd = useCallback(
@@ -113,10 +113,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const [entries, setEntries] = ordersState as any as [T[], Dispatch<SetStateAction<T[]>>];
 
   useEffect(() => {
-    if (pristine) {
+    if (isUntouched) {
       setEntries(initialState);
     }
-  }, [initialState, setEntries, pristine]);
+  }, [initialState, setEntries, isUntouched]);
 
   useEffect(() => {
     setEntries((prevEntries) => prevEntries.map((entry) => errorHandler(entry)));
@@ -144,7 +144,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     const leftPercentage = MAX_PERCENTAGE - totalPercentage;
 
     if (leftPercentage > 0) {
-      setPristine(prefix, false);
+      setIsUntouched(prefix, false);
       setEntries((prevEntries) => [
         ...prevEntries,
         recalculateEntryByField(
@@ -156,11 +156,11 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         ),
       ]);
     }
-  }, [totalPercentage, enablePercentage, prefix, setEntries, recalculateEntryByField, setPristine]);
+  }, [totalPercentage, enablePercentage, prefix, setEntries, recalculateEntryByField, setIsUntouched]);
 
   const updateEntry = useCallback(
     (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => {
-      setPristine(prefix, false);
+      setIsUntouched(prefix, false);
       setEntries((prevEntries) => {
         return prevEntries.map((entry) => {
           if (entry.id !== id) {
@@ -187,14 +187,14 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         });
       });
     },
-    [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler, prefix, setPristine]
+    [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler, prefix, setIsUntouched]
   );
 
   const reset = useCallback(() => setEntries(initialState), [initialState, setEntries]);
 
   const deleteEntry = useCallback(
     (id: string) => {
-      setPristine(prefix, false);
+      setIsUntouched(prefix, false);
       setEntries((prevEntries) => {
         const isLastEntry = prevEntries.filter((entry) => entry.txnType !== "cancel").length <= 1;
 
@@ -219,7 +219,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         }, []);
       });
     },
-    [prefix, canAddEntry, enablePercentage, setEntries, setPristine]
+    [prefix, canAddEntry, enablePercentage, setEntries, setIsUntouched]
   );
 
   const prevTotalPositionSizeUsd = usePrevious(totalPositionSizeUsd);

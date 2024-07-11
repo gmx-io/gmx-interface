@@ -9,21 +9,21 @@ export function useSidecarOrdersState() {
   const [tpEntries, setTpEntries] = useState<SidecarOrderEntry[]>([]);
   const [limitEntries, setLimitEntries] = useState<SidecarOrderEntry[]>([]);
 
-  const [slEntriesPristine, setSlEntriesPristine] = useState<boolean>(true);
-  const [tpEntriesPristine, setTpEntriesPristine] = useState<boolean>(true);
-  const [limitEntriesPristine, setLimitEntriesPristine] = useState<boolean>(true);
+  const [slEntriesIsUntouched, setSlEntriesIsUntouched] = useState<boolean>(true);
+  const [tpEntriesIsUntouched, setTpEntriesIsUntouched] = useState<boolean>(true);
+  const [limitEntriesIsUntouched, setLimitEntriesIsUntouched] = useState<boolean>(true);
 
-  const setPristine = useCallback(
+  const setIsUntouched = useCallback(
     (group: "tp" | "sl" | "limit", value: boolean) => {
       if (group === "tp") {
-        setTpEntriesPristine(value);
+        setTpEntriesIsUntouched(value);
       } else if (group === "sl") {
-        setSlEntriesPristine(value);
+        setSlEntriesIsUntouched(value);
       } else {
-        setLimitEntriesPristine(value);
+        setLimitEntriesIsUntouched(value);
       }
     },
-    [setTpEntriesPristine, setSlEntriesPristine, setLimitEntriesPristine]
+    [setTpEntriesIsUntouched, setSlEntriesIsUntouched, setLimitEntriesIsUntouched]
   );
 
   return useMemo(
@@ -34,10 +34,10 @@ export function useSidecarOrdersState() {
       setTpEntries,
       limitEntries,
       setLimitEntries,
-      slEntriesPristine,
-      tpEntriesPristine,
-      limitEntriesPristine,
-      setPristine,
+      slEntriesIsUntouched,
+      tpEntriesIsUntouched,
+      limitEntriesIsUntouched,
+      setIsUntouched,
     }),
     [
       slEntries,
@@ -46,10 +46,10 @@ export function useSidecarOrdersState() {
       setSlEntries,
       setTpEntries,
       setLimitEntries,
-      slEntriesPristine,
-      tpEntriesPristine,
-      limitEntriesPristine,
-      setPristine,
+      slEntriesIsUntouched,
+      tpEntriesIsUntouched,
+      limitEntriesIsUntouched,
+      setIsUntouched,
     ]
   );
 }

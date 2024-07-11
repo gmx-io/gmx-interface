@@ -49,15 +49,15 @@ export const selectTradeboxSidecarOrdersLimitEntries = (state: SyntheticsState) 
   state.tradebox.sidecarOrders.limitEntries;
 export const selectTradeboxSidecarOrdersSetLimitEntries = (state: SyntheticsState) =>
   state.tradebox.sidecarOrders.setLimitEntries;
-export const selectTradeboxSidecarEntriesSetPristine = (state: SyntheticsState) =>
-  state.tradebox.sidecarOrders.setPristine;
+export const selectTradeboxSidecarEntriesSetIsUntouched = (state: SyntheticsState) =>
+  state.tradebox.sidecarOrders.setIsUntouched;
 
-export const makeSelectTradeboxSidecarOrdersEntriesPristine = createSelectorFactory((group: "tp" | "sl" | "limit") =>
-  createSelector(function selectSidecarOrdersEntriesPristineByGroup(q) {
+export const makeSelectTradeboxSidecarOrdersEntriesIsUntouched = createSelectorFactory((group: "tp" | "sl" | "limit") =>
+  createSelector(function selectSidecarOrdersEntriesIsUntouchedByGroup(q) {
     return {
-      tp: () => q((state) => state.tradebox.sidecarOrders.tpEntriesPristine),
-      sl: () => q((state) => state.tradebox.sidecarOrders.slEntriesPristine),
-      limit: () => q((state) => state.tradebox.sidecarOrders.limitEntriesPristine),
+      tp: () => q((state) => state.tradebox.sidecarOrders.tpEntriesIsUntouched),
+      sl: () => q((state) => state.tradebox.sidecarOrders.slEntriesIsUntouched),
+      limit: () => q((state) => state.tradebox.sidecarOrders.limitEntriesIsUntouched),
     }[group]();
   })
 );
