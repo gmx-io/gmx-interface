@@ -18,10 +18,11 @@ import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/commo
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useMemo } from "react";
@@ -43,8 +44,11 @@ function getNormalizedIncentive(
     const tokenInfo = marketToken ? undefined : tokens.find((token) => token.address.toLowerCase() === tokenAddress);
     const amountInUsd =
       marketTokensData && marketToken
-        ? (marketTokensData[marketToken.marketTokenAddress].prices.maxPrice / 10n ** 18n) *
-          BigInt(incentive.amounts[index])
+        ? bigMath.mulDiv(
+            BigInt(incentive.amounts[index]),
+            marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
+            expandDecimals(1, GM_DECIMALS)
+          )
         : BigInt(incentive.amountsInUsd[index]);
 
     return {
