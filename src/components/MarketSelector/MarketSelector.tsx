@@ -1,16 +1,27 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import { ReactNode, useMemo, useState } from "react";
+import { BiChevronDown } from "react-icons/bi";
+import { FaRegStar, FaStar } from "react-icons/fa";
+
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
+import {
+  indexTokensFavoritesTabOptionLabels,
+  indexTokensFavoritesTabOptions,
+  useIndexTokensFavorites,
+} from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useLocalizedMap } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { ReactNode, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+
+import SearchInput from "components/SearchInput/SearchInput";
+import Tab from "components/Tab/Tab";
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+
 import "./MarketSelector.scss";
-import SearchInput from "components/SearchInput/SearchInput";
 
 type Props = {
   label?: string;
@@ -52,6 +63,8 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
+  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -88,11 +101,14 @@ export function MarketSelector({
   const marketInfo = marketsOptions.find((option) => option.indexName === selectedIndexName)?.marketInfo;
 
   const filteredOptions = marketsOptions.filter((option) => {
-    return (
+    const textSearchMatch =
       option.indexName.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
       (!option.marketInfo.isSpotOnly &&
-        option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1)
-    );
+        option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
+
+    const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.indexTokenAddress) : true;
+
+    return textSearchMatch && favoriteMatch;
   });
 
   function onSelectOption(option: MarketOption) {
@@ -126,6 +142,14 @@ export function MarketSelector({
           />
         }
       >
+        <Tab
+          options={indexTokensFavoritesTabOptions}
+          optionLabels={localizedTabOptionLabels}
+          type="inline"
+          option={tab}
+          setOption={setTab}
+        />
+
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, indexName, state = {} } = option;
@@ -134,6 +158,17 @@ export function MarketSelector({
             );
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+
+            const isFavorite = favoriteTokens?.includes(marketInfo.indexTokenAddress);
+            const handleFavoriteClick = (event: React.MouseEvent) => {
+              event.stopPropagation();
+
+              if (isFavorite) {
+                setFavoriteTokens((favoriteTokens || []).filter((item) => item !== marketInfo.indexTokenAddress));
+              } else {
+                setFavoriteTokens([...(favoriteTokens || []), marketInfo.indexTokenAddress]);
+              }
+            };
 
             return (
               <div
@@ -174,6 +209,12 @@ export function MarketSelector({
                     )) ||
                       null}
                   </span>
+                </div>
+                <div
+                  className="flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700"
+                  onClick={handleFavoriteClick}
+                >
+                  {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
                 </div>
               </div>
             );

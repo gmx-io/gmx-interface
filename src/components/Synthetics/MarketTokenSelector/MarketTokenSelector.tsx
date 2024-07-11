@@ -1,14 +1,11 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import { GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY, GM_TOKEN_SELECTOR_FILTER_TAB_KEY } from "config/localStorage";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -19,10 +16,10 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
 import { USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageByChainId } from "lib/localStorage";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -30,6 +27,10 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import {
+  indexTokensFavoritesTabOptionLabels,
+  indexTokensFavoritesTabOptions,
+} from "domain/synthetics/tokens/useIndexTokensFavorites";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -44,16 +45,6 @@ type Props = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   // eslint-disable-next-line react/no-unused-prop-types
   currentMarketInfo?: MarketInfo;
-};
-
-type TabOption = "all" | "favorites";
-const tabOptions = ["all", "favorites"];
-const tabOptionLabels = {
-  all: msg({
-    message: "All",
-    comment: "GM market token selector all markets filter",
-  }),
-  favorites: msg`Favorites`,
 };
 
 export default function MarketTokenSelector(props: Props) {
@@ -110,18 +101,12 @@ export default function MarketTokenSelector(props: Props) {
 }
 
 function MarketTokenSelectorInternal(props: Props) {
-  const chainId = useSelector(selectChainId);
   const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
-  const [tab, setTab] = useLocalStorageByChainId<TabOption>(chainId, GM_TOKEN_SELECTOR_FILTER_TAB_KEY, "all");
-  const [favoriteTokens, setFavoriteTokens] = useLocalStorageByChainId<string[]>(
-    chainId,
-    GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-    []
-  );
+  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useGmTokensFavorites();
 
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
@@ -198,7 +183,7 @@ function MarketTokenSelectorInternal(props: Props) {
   );
   const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
-  const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
+  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
 
   return (
     <div>
@@ -234,7 +219,7 @@ function MarketTokenSelectorInternal(props: Props) {
 
       <Tab
         className="px-15 py-4"
-        options={tabOptions}
+        options={indexTokensFavoritesTabOptions}
         optionLabels={localizedTabOptionLabels}
         type="inline"
         option={tab}

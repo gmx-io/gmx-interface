@@ -10,6 +10,7 @@ import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { getSyntheticsDepositIndexTokenKey, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { convertTokenAddress, getTokenBySymbolSafe, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDepositGasLimit,
@@ -21,6 +22,10 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import {
+  estimateDepositOraclePriceCount,
+  estimateWithdrawalOraclePriceCount,
+} from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
@@ -31,12 +36,14 @@ import {
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { convertToUsd, getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
+import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { getMinResidualAmount, Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -47,6 +54,7 @@ import { useSafeState } from "lib/useSafeState";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
+import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -60,16 +68,9 @@ import Tab from "components/Tab/Tab";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
-import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 
 import "./GmSwapBox.scss";
-import { bigMath } from "lib/bigmath";
-import {
-  estimateDepositOraclePriceCount,
-  estimateWithdrawalOraclePriceCount,
-} from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 type SearchParams = {
   market?: string;
@@ -123,6 +124,8 @@ export function GmSwapBox(p: Props) {
 
   const { chainId } = useChainId();
   const { account } = useWallet();
+
+  const gmTokenFavoritesContext = useGmTokensFavorites();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
@@ -1046,6 +1049,7 @@ export function GmSwapBox(p: Props) {
                 onMarketChange(marketInfo.marketTokenAddress);
                 showMarketToast(marketInfo);
               }}
+              {...gmTokenFavoritesContext}
             />
           </BuyInputSection>
         </div>
@@ -1069,6 +1073,7 @@ export function GmSwapBox(p: Props) {
                     onMarketChange(marketInfo.marketTokenAddress);
                     showMarketToast(marketInfo);
                   }}
+                  {...gmTokenFavoritesContext}
                 />
               }
             />

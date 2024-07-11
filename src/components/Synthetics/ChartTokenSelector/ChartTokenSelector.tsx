@@ -1,4 +1,4 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useCallback, useMemo, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
@@ -9,39 +9,31 @@ import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import {
+  indexTokensFavoritesTabOptionLabels,
+  indexTokensFavoritesTabOptions,
+  useIndexTokensFavorites,
+} from "domain/synthetics/tokens/useIndexTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageByChainId } from "lib/localStorage";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY } from "config/localStorage";
 import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
   options: Token[] | undefined;
-};
-
-type TabOption = "all" | "favorites";
-const tabOptions = ["all", "favorites"];
-const tabOptionLabels = {
-  all: msg({
-    message: "All",
-    comment: "Chart token selector all markets filter",
-  }),
-  favorites: msg`Favorites`,
 };
 
 export default function ChartTokenSelector(props: Props) {
@@ -72,14 +64,7 @@ export default function ChartTokenSelector(props: Props) {
 
 function MarketsList(props: { options: Token[] | undefined }) {
   const { options } = props;
-  const chainId = useSelector(selectChainId);
-
-  const [tab, setTab] = useLocalStorageByChainId<TabOption>(chainId, CHART_TOKEN_SELECTOR_FILTER_TAB_KEY, "all");
-  const [favoriteTokens, setFavoriteTokens] = useLocalStorageByChainId<string[]>(
-    chainId,
-    CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-    []
-  );
+  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isSmallMobile = useMedia("(max-width: 400px)");
@@ -102,7 +87,8 @@ function MarketsList(props: { options: Token[] | undefined }) {
             item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
-        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(item.address) : true;
+        const favoriteMatch =
+          tab === "favorites" ? favoriteTokens?.includes(item.isNative ? item.wrappedAddress! : item.address) : true;
 
         return textSearchMatch && favoriteMatch;
       }),
@@ -156,7 +142,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
     rowHorizontalPadding
   );
 
-  const localizedTabOptionLabels = useLocalizedMap(tabOptionLabels);
+  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
 
   const handleSetValue = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,7 +179,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
         )}
         <Tab
           className="px-15 py-4"
-          options={tabOptions}
+          options={indexTokensFavoritesTabOptions}
           optionLabels={localizedTabOptionLabels}
           type="inline"
           option={tab}
@@ -238,12 +224,13 @@ function MarketsList(props: { options: Token[] | undefined }) {
                   isSmallMobile
                 );
 
-                const isFavorite = favoriteTokens?.includes(token.address);
+                const isFavorite = favoriteTokens?.includes(token.isNative ? token.wrappedAddress! : token.address);
                 const handleFavoriteClick = () => {
                   if (isFavorite) {
                     setFavoriteTokens((favoriteTokens || []).filter((item) => item !== token.address));
                   } else {
-                    setFavoriteTokens([...(favoriteTokens || []), token.address]);
+                    const tokenErc20Address = token.isNative ? token.wrappedAddress! : token.address;
+                    setFavoriteTokens([...(favoriteTokens || []), tokenErc20Address]);
                   }
                 };
 

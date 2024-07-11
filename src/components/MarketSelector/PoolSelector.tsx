@@ -1,16 +1,27 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import SearchInput from "components/SearchInput/SearchInput";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { useMemo, useState } from "react";
+import { BiChevronDown } from "react-icons/bi";
+import { FaRegStar, FaStar } from "react-icons/fa";
+
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
+import {
+  GmTokensFavoritesContextType,
+  gmTokensFavoritesTabOptionLabels,
+  gmTokensFavoritesTabOptions,
+} from "domain/synthetics/tokens/useGmTokensFavorites";
+import { useLocalizedMap } from "lib/i18n";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+
+import SearchInput from "components/SearchInput/SearchInput";
+import Tab from "components/Tab/Tab";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+
 import "./MarketSelector.scss";
 
 type Props = {
@@ -26,7 +37,7 @@ type Props = {
   onSelectMarket: (market: MarketInfo) => void;
   showAllPools?: boolean;
   showIndexIcon?: boolean;
-};
+} & GmTokensFavoritesContextType;
 
 type MarketState = {
   disabled?: boolean;
@@ -56,9 +67,15 @@ export function PoolSelector({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
+  favoriteTokens,
+  setFavoriteTokens,
+  tab,
+  setTab,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+
+  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -108,9 +125,13 @@ export function PoolSelector({
     const lowercaseSearchKeyword = searchKeyword.toLowerCase();
     return marketsOptions.filter((option) => {
       const name = option.name.toLowerCase();
-      return name.includes(lowercaseSearchKeyword);
+      const textSearchMatch = name.includes(lowercaseSearchKeyword);
+
+      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
+
+      return textSearchMatch && favoriteMatch;
     });
-  }, [marketsOptions, searchKeyword]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -159,6 +180,15 @@ export function PoolSelector({
           />
         }
       >
+        <Tab
+          className="mb-10"
+          options={gmTokensFavoritesTabOptions}
+          optionLabels={localizedTabOptionLabels}
+          type="inline"
+          option={tab}
+          setOption={setTab}
+        />
+
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, indexName, poolName, name, state = {} } = option;
@@ -169,6 +199,17 @@ export function PoolSelector({
               : getNormalizedTokenSymbol(indexToken.symbol);
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+
+            const isFavorite = favoriteTokens?.includes(marketInfo.marketTokenAddress);
+            const handleFavoriteClick = (event: React.MouseEvent) => {
+              event.stopPropagation();
+
+              if (isFavorite) {
+                setFavoriteTokens((favoriteTokens || []).filter((item) => item !== marketInfo.marketTokenAddress));
+              } else {
+                setFavoriteTokens([...(favoriteTokens || []), marketInfo.marketTokenAddress]);
+              }
+            };
 
             return (
               <div
@@ -223,23 +264,31 @@ export function PoolSelector({
                     </div>
                   </div>
                 </div>
-                <div className="Token-balance">
-                  {(showBalances && balance !== undefined && (
-                    <div className="Token-text">
-                      {balance > 0 &&
-                        formatTokenAmount(balance, marketToken?.decimals, "GM", {
-                          useCommas: true,
-                        })}
-                      {balance == 0n && "-"}
-                    </div>
-                  )) ||
-                    null}
-                  <span className="text-accent">
-                    {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                      <div>{formatUsd(balanceUsd)}</div>
+                <div className="flex items-center gap-4">
+                  <div className="Token-balance">
+                    {(showBalances && balance !== undefined && (
+                      <div className="Token-text">
+                        {balance > 0 &&
+                          formatTokenAmount(balance, marketToken?.decimals, "GM", {
+                            useCommas: true,
+                          })}
+                        {balance == 0n && "-"}
+                      </div>
                     )) ||
                       null}
-                  </span>
+                    <span className="text-accent">
+                      {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                        <div>{formatUsd(balanceUsd)}</div>
+                      )) ||
+                        null}
+                    </span>
+                  </div>
+                  <div
+                    className="flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700"
+                    onClick={handleFavoriteClick}
+                  >
+                    {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+                  </div>
                 </div>
               </div>
             );
