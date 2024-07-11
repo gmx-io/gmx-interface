@@ -29,7 +29,12 @@ import { getByKey } from "lib/objects";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
+import {
+  SELECTOR_BASE_MOBILE_THRESHOLD,
+  SelectorBase,
+  SelectorBaseMobileHeaderContent,
+  useSelectorClose,
+} from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -66,8 +71,8 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const { options } = props;
   const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
 
-  const isMobile = useMedia("(max-width: 1100px)");
-  const isSmallMobile = useMedia("(max-width: 400px)");
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
+  const isSmallMobile = useMedia("(max-width: 450px)");
 
   const close = useSelectorClose();
 
