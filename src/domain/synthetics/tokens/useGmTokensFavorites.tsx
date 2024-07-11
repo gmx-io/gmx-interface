@@ -70,7 +70,7 @@ export const gmTokensFavoritesTabOptions = ["all", "favorites"];
 export const gmTokensFavoritesTabOptionLabels = {
   all: msg({
     message: "All",
-    comment: "Chart token selector all markets filter",
+    comment: "GM market token selector all markets filter",
   }),
   favorites: msg`Favorites`,
 };

@@ -2930,10 +2930,10 @@ msgstr "ポジション金額が$5未満になるため注文を執行できま�
 msgid "Claiming..."
 msgstr "請求中..."
 
-#. Chart token selector all markets filter
 #. GM market token selector all markets filter
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
 msgstr "すべて"
 
@@ -4131,8 +4131,8 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
 

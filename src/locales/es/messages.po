@@ -2930,10 +2930,10 @@ msgstr "La orden no se puede ejecutar pues la posición restante sería menor de
 msgid "Claiming..."
 msgstr "Reclamando..."
 
-#. Chart token selector all markets filter
 #. GM market token selector all markets filter
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
 msgstr "Todo"
 
@@ -4131,8 +4131,8 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
 

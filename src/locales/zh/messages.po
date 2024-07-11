@@ -2930,10 +2930,10 @@ msgstr "订单无法执行，剩余头寸小于5美元"
 msgid "Claiming..."
 msgstr "领取中"
 
-#. Chart token selector all markets filter
 #. GM market token selector all markets filter
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
 msgstr "全部"
 
@@ -4131,8 +4131,8 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "推荐代码已更新"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
 

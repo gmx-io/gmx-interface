@@ -2930,10 +2930,10 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 msgid "Claiming..."
 msgstr "수령중..."
 
-#. Chart token selector all markets filter
 #. GM market token selector all markets filter
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
 msgstr "모두"
 
@@ -4131,8 +4131,8 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
 
