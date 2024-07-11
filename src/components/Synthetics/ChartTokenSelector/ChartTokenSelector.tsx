@@ -51,7 +51,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverXOffset={-12}
       label={
         selectedToken ? (
-          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold">
+          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold max-[380px]:text-16">
             <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             {selectedToken.symbol} {"/ USD"}
           </span>
