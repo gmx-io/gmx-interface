@@ -746,8 +746,12 @@ export function SyntheticsStats() {
                           <StatsTooltipRow
                             label="Distribution Rate per Day, USD"
                             value={formatAmount(
-                              market.positionImpactPoolDistributionRate * 86400n * market.indexToken.prices.minPrice,
-                              market.indexToken.decimals + 60,
+                              bigMath.mulDiv(
+                                market.positionImpactPoolDistributionRate * 86400n,
+                                market.indexToken.prices.minPrice,
+                                expandDecimals(1, 60)
+                              ),
+                              market.indexToken.decimals,
                               2,
                               true
                             )}
