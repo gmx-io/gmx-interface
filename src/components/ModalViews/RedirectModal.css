@@ -4,6 +4,14 @@
   line-height: 1.9rem;
 }
 
+.RedirectModal .Modal-body .Checkbox {
+  align-items: flex-start;
+}
+
+.RedirectModal .Modal-body .Checkbox-icon-wrapper {
+  margin-top: 4px;
+}
+
 .RedirectModal .Modal-body .Checkbox-icon-wrapper {
   display: block;
 }
