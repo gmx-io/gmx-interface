@@ -100,7 +100,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
   return (
     <div
       className="rounded-4 bg-slate-800
-                   max-[1100px]:!-mr-[--default-container-padding] max-[1100px]:!rounded-r-0
+                   max-[1164px]:!-mr-[--default-container-padding] max-[1164px]:!rounded-r-0
                    max-[600px]:!-mr-[--default-container-padding-mobile]"
     >
       <div className="flex items-center px-14 py-10">
