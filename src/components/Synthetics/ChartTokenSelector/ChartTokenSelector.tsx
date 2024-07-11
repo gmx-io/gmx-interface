@@ -92,8 +92,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
             item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
-        const favoriteMatch =
-          tab === "favorites" ? favoriteTokens?.includes(item.isNative ? item.wrappedAddress! : item.address) : true;
+        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(item.address) : true;
 
         return textSearchMatch && favoriteMatch;
       }),
@@ -137,7 +136,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
   const thClassName = cx(
-    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -182,14 +181,16 @@ function MarketsList(props: { options: Token[] | undefined }) {
             <div className="divider" />
           </>
         )}
-        <Tab
-          className="px-15 py-4"
-          options={indexTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
+        {!isSwap && (
+          <Tab
+            className="px-15 py-4"
+            options={indexTokensFavoritesTabOptions}
+            optionLabels={localizedTabOptionLabels}
+            type="inline"
+            option={tab}
+            setOption={setTab}
+          />
+        )}
 
         <div
           className={cx({
@@ -199,7 +200,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
           <table className={cx("text-sm w-full")}>
             <thead className="bg-slate-800">
               <tr>
-                <th className={thClassName} colSpan={2}>
+                <th className={thClassName} colSpan={isSwap ? 1 : 2}>
                   <Trans>Market</Trans>
                 </th>
                 {!isSwap && (
@@ -229,20 +230,47 @@ function MarketsList(props: { options: Token[] | undefined }) {
                   isSmallMobile
                 );
 
-                const isFavorite = favoriteTokens?.includes(token.isNative ? token.wrappedAddress! : token.address);
+                const isFavorite = favoriteTokens?.includes(token.address);
                 const handleFavoriteClick = () => {
                   if (isFavorite) {
                     setFavoriteTokens((favoriteTokens || []).filter((item) => item !== token.address));
                   } else {
-                    const tokenErc20Address = token.isNative ? token.wrappedAddress! : token.address;
-                    setFavoriteTokens([...(favoriteTokens || []), tokenErc20Address]);
+                    setFavoriteTokens([...(favoriteTokens || []), token.address]);
                   }
                 };
+
+                if (isSwap) {
+                  return (
+                    <tr key={token.symbol} className="group/row">
+                      <td
+                        className={cx(
+                          "w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
+                          rowVerticalPadding,
+                          rowHorizontalPadding
+                        )}
+                        onClick={() => handleMarketSelect(token.address, "largestPosition")}
+                      >
+                        <span className="inline-flex items-center text-slate-100">
+                          <TokenIcon
+                            className="ChartToken-list-icon -my-5 mr-8"
+                            symbol={token.symbol}
+                            displaySize={16}
+                            importSize={24}
+                          />
+                          {token.symbol}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                }
 
                 return (
                   <tr key={token.symbol} className="group/row">
                     <td
-                      className={cx("cursor-pointer rounded-4 pl-15 pr-4 hover:bg-cold-blue-900", rowVerticalPadding)}
+                      className={cx(
+                        "cursor-pointer rounded-4 pl-15 pr-4 text-center hover:bg-cold-blue-900",
+                        rowVerticalPadding
+                      )}
                       onClick={handleFavoriteClick}
                     >
                       {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
@@ -266,26 +294,22 @@ function MarketsList(props: { options: Token[] | undefined }) {
                       </span>
                     </td>
 
-                    {!isSwap && (
-                      <>
-                        <td
-                          className={tdClassName}
-                          onClick={() => {
-                            handleMarketSelect(token.address, TradeType.Long);
-                          }}
-                        >
-                          {formattedMaxLongLiquidity}
-                        </td>
-                        <td
-                          className={tdClassName}
-                          onClick={() => {
-                            handleMarketSelect(token.address, TradeType.Short);
-                          }}
-                        >
-                          {maxShortLiquidityPoolFormatted}
-                        </td>
-                      </>
-                    )}
+                    <td
+                      className={tdClassName}
+                      onClick={() => {
+                        handleMarketSelect(token.address, TradeType.Long);
+                      }}
+                    >
+                      {formattedMaxLongLiquidity}
+                    </td>
+                    <td
+                      className={tdClassName}
+                      onClick={() => {
+                        handleMarketSelect(token.address, TradeType.Short);
+                      }}
+                    >
+                      {maxShortLiquidityPoolFormatted}
+                    </td>
                   </tr>
                 );
               })}

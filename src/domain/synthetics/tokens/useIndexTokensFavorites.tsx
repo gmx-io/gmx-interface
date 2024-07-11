@@ -13,15 +13,10 @@ type IndexTokensFavoritesContextType = {
   tab: IndexTokenFavoritesTabOption;
   setTab: (tab: IndexTokenFavoritesTabOption) => void;
   /**
-   * Wrapped token addresses
+   * Both native and wrapped tokens, meaning this array can contain zero address
    */
   favoriteTokens: string[];
-  setFavoriteTokens: (
-    /**
-     * Wrapped token addresses
-     */
-    favoriteTokens: string[]
-  ) => void;
+  setFavoriteTokens: (favoriteTokens: string[]) => void;
 };
 
 const context = createContext<IndexTokensFavoritesContextType>({

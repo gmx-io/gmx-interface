@@ -106,7 +106,7 @@ export function MarketSelector({
       (!option.marketInfo.isSpotOnly &&
         option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
 
-    const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.indexTokenAddress) : true;
+    const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.indexToken.address) : true;
 
     return textSearchMatch && favoriteMatch;
   });
@@ -159,14 +159,14 @@ export function MarketSelector({
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
 
-            const isFavorite = favoriteTokens?.includes(marketInfo.indexTokenAddress);
+            const isFavorite = favoriteTokens?.includes(marketInfo.indexToken.address);
             const handleFavoriteClick = (event: React.MouseEvent) => {
               event.stopPropagation();
 
               if (isFavorite) {
-                setFavoriteTokens((favoriteTokens || []).filter((item) => item !== marketInfo.indexTokenAddress));
+                setFavoriteTokens((favoriteTokens || []).filter((item) => item !== marketInfo.indexToken.address));
               } else {
-                setFavoriteTokens([...(favoriteTokens || []), marketInfo.indexTokenAddress]);
+                setFavoriteTokens([...(favoriteTokens || []), marketInfo.indexToken.address]);
               }
             };
 
