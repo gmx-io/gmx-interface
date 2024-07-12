@@ -105,7 +105,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
-import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
@@ -230,7 +229,7 @@ export function TradeBox(p: Props) {
     fromTokenAddress,
     marketInfo,
     toTokenAddress,
-    avaialbleTradeModes: availalbleTradeModes,
+    avaialbleTradeModes: availableTradeModes,
   } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -1366,7 +1365,7 @@ export function TradeBox(p: Props) {
           />
 
           <Tab
-            options={availalbleTradeModes}
+            options={availableTradeModes}
             optionLabels={localizedTradeModeLabels}
             className="SwapBox-asset-options-tabs"
             type="inline"
@@ -1421,14 +1420,6 @@ export function TradeBox(p: Props) {
                 <MinReceiveRow allowedSlippage={allowedSlippage} />
               </ExchangeInfo.Group>
 
-              <ExchangeInfo.Group>
-                {priceImpactWarningState.shouldShowWarning && (
-                  <HighPriceImpactWarning
-                    priceImpactWarningState={priceImpactWarningState}
-                    className="PositionEditor-allow-higher-slippage"
-                  />
-                )}
-              </ExchangeInfo.Group>
               <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>
               <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>
             </ExchangeInfo>

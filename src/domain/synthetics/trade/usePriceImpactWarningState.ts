@@ -1,11 +1,13 @@
 import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
+import { selectTradeboxTriggerPrice } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { bigMath } from "lib/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
 import { FeeItem } from "../fees";
 import { TradeFlags } from "./types";
-import { bigMath } from "lib/bigmath";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
@@ -17,13 +19,14 @@ export function usePriceImpactWarningState({
 }: {
   positionPriceImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
-  place: "tradeBox" | "positionSeller" | "confirmationBox";
+  place: "tradeBox" | "positionSeller";
   tradeFlags: TradeFlags;
 }) {
   const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
   const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
 
   const prevFlags = usePrevious(tradeFlags);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
 
   useEffect(() => {
     if (!shallowEqual(prevFlags, tradeFlags)) {
@@ -71,11 +74,15 @@ export function usePriceImpactWarningState({
       validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
       shouldShowWarning = isHighSwapImpact;
       shouldShowWarningForSwap = isHighSwapImpact;
-    } else if (place === "confirmationBox") {
+
       if (!tradeFlags.isSwap) {
         validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
         shouldShowWarning = isHighPositionImpact;
         shouldShowWarningForPosition = isHighPositionImpact;
+
+        if (tradeFlags.isLimit || tradeFlags.isTrigger) {
+          shouldShowWarningForPosition = shouldShowWarning && triggerPrice !== undefined;
+        }
       }
     } else if (place === "positionSeller") {
       validationError =
@@ -104,5 +111,8 @@ export function usePriceImpactWarningState({
     isHighSwapImpactAccepted,
     place,
     tradeFlags.isSwap,
+    tradeFlags.isLimit,
+    tradeFlags.isTrigger,
+    triggerPrice,
   ]);
 }

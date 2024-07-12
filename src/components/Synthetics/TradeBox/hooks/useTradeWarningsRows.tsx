@@ -57,7 +57,7 @@ export function useTradeboxWarningsRows() {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    place: "confirmationBox",
+    place: "tradeBox",
     tradeFlags,
   });
 
@@ -89,9 +89,7 @@ export function useTradeboxWarningsRows() {
 
   const element = (
     <>
-      {priceImpactWarningState.shouldShowWarning && (
-        <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-      )}
+      <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
       {highExecutionFeeAcknowledgement}
       {(needPayTokenApproval && fromToken && (
         <ApproveTokenButton
