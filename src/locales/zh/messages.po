@@ -4071,6 +4071,10 @@ msgstr "已减少"
 msgid "Decrease"
 msgstr "减少"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr ""
@@ -6503,10 +6507,6 @@ msgstr "解除质押送出!<0>查看状况</0>"
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "启用杠杆"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"

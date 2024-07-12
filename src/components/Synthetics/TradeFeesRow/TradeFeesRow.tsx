@@ -16,13 +16,15 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { ARBITRUM } from "config/chains";
 import { getIncentivesV2Url } from "config/links";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import sparkleIcon from "img/sparkle.svg";
 import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
 
-const HARDCODED_REBATE_PERCENT = 2500n;
+const HARDCODED_ESTIMATED_REBATE_PERCENT_ARB = 2500n;
+const HARDCODED_ESTIMATED_REBATE_PERCENT_AVAX = 7500n;
 
 type Props = {
   totalFees?: FeeItem;
@@ -56,6 +58,11 @@ export function TradeFeesRow(p: Props) {
   const tradingIncentives = useTradingIncentives(chainId);
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
+
+  const isArbitrum = chainId === ARBITRUM;
+  const rebatesPercentage = isArbitrum
+    ? HARDCODED_ESTIMATED_REBATE_PERCENT_ARB
+    : HARDCODED_ESTIMATED_REBATE_PERCENT_AVAX;
 
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
@@ -234,14 +241,14 @@ export function TradeFeesRow(p: Props) {
                 </div>
                 <div>
                   <Trans>
-                    ({formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
+                    ({formatAmount(rebatesPercentage, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
             ),
             value: formatDeltaUsd(
               p.positionFee &&
-                bigMath.mulDiv(p.positionFee.deltaUsd, HARDCODED_REBATE_PERCENT, BASIS_POINTS_DIVISOR_BIGINT) * -1n
+                bigMath.mulDiv(p.positionFee.deltaUsd, rebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n
             ),
             className: "text-green-500",
             id: "rebate",
@@ -288,7 +295,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [p, tradingIncentives, rebateIsApplicable, chainId]);
+  }, [p, tradingIncentives, rebateIsApplicable, chainId, rebatesPercentage]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
@@ -296,10 +303,10 @@ export function TradeFeesRow(p: Props) {
     if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
-    const rebate = bigMath.mulDiv(p.positionFee.deltaUsd, HARDCODED_REBATE_PERCENT, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
+    const rebate = bigMath.mulDiv(p.positionFee.deltaUsd, rebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
 
     return totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
-  }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
+  }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, rebatesPercentage]);
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
@@ -323,8 +330,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a
-        pro-rata basis.{" "}
+        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.rebatePercent, 2, 0)}% of the
+        open fee. It will be airdropped as ARB tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -333,7 +340,7 @@ export function TradeFeesRow(p: Props) {
         </span>
       </Trans>
     );
-  }, [chainId, incentivesTokenTitle, rebateIsApplicable]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.rebatePercent]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
