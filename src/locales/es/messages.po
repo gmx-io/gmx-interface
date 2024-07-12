@@ -621,10 +621,6 @@ msgstr ""
 msgid "Market Orders"
 msgstr "Órdenes de Mercado"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "Puede consultar su historial de reclamaciones <0>aquí</0>."
@@ -805,10 +801,6 @@ msgstr ""
 #: src/components/Migration/Migration.js
 msgid "Total Assets Migrated"
 msgstr "Activos Totales Migrados"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -1545,10 +1537,6 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "Máx. {0} fuera"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr ""
@@ -1639,10 +1627,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Comisiones Totales"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Max Bonus Rebate"
-msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -4083,6 +4067,10 @@ msgstr "Reducido"
 msgid "Decrease"
 msgstr "Reducir"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr ""
@@ -4179,10 +4167,6 @@ msgstr "El precio de ejecución no cumplió la condición de precio aceptable."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserve Amount"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
@@ -4600,8 +4584,8 @@ msgid "Multiplier Points"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "(up to {0}% of {feesTypeName})"
-#~ msgstr ""
+msgid "(up to {0}% of {feesTypeName})"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -4715,10 +4699,6 @@ msgstr "Suministros"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis.<0><1>Read more</1>.</0>"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -6508,6 +6488,10 @@ msgstr "Posición"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

@@ -227,14 +227,14 @@ export function TradeFeesRow(p: Props) {
               <>
                 <div className="text-white">
                   <span className="relative">
-                    <Trans>Max Bonus Rebate</Trans>
+                    <Trans>Bonus Rebate</Trans>
                     <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
                   </span>
                   :
                 </div>
                 <div>
                   <Trans>
-                    ({formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
+                    (up to {formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
@@ -296,8 +296,7 @@ export function TradeFeesRow(p: Props) {
     if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
-    const rebate =
-      bigMath.mulDiv(p.positionFee.deltaUsd, tradingIncentives.rebatePercent, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
+    const rebate = bigMath.mulDiv(p.positionFee.deltaUsd, HARDCODED_REBATE_PERCENT, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
 
     return totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
   }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
@@ -325,7 +324,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         The bonus rebate is an estimate and can be up to {formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of the open
-        fee. It will be airdropped as ARB tokens on a pro-rata basis.
+        fee. It will be airdropped as ARB tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more

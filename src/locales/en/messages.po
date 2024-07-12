@@ -621,10 +621,6 @@ msgstr "Bid Price (Exit)"
 msgid "Market Orders"
 msgstr "Market Orders"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-#~ msgstr "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "You can check your claim history <0>here</0>."
@@ -805,10 +801,6 @@ msgstr "Open {0} in Coingecko"
 #: src/components/Migration/Migration.js
 msgid "Total Assets Migrated"
 msgstr "Total Assets Migrated"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr "({0}% of {feesTypeName})"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -1545,10 +1537,6 @@ msgstr "Pair"
 msgid "Max {0} out"
 msgstr "Max {0} out"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
-#~ msgstr "The amount left in the sub-account is not enough to cover network gas costs."
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr "Updating Subaccount"
@@ -1639,10 +1627,6 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Total Fees"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Max Bonus Rebate"
-msgstr "Max Bonus Rebate"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -4086,6 +4070,10 @@ msgstr "Decreased"
 msgid "Decrease"
 msgstr "Decrease"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "Leftover collateral below 5 USD"
@@ -4182,10 +4170,6 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-#~ msgstr "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
@@ -4603,8 +4587,8 @@ msgid "Multiplier Points"
 msgstr "Multiplier Points"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "(up to {0}% of {feesTypeName})"
-#~ msgstr "(up to {0}% of {feesTypeName})"
+msgid "(up to {0}% of {feesTypeName})"
+msgstr "(up to {0}% of {feesTypeName})"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -4719,10 +4703,6 @@ msgstr "Supply"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
 msgstr "LONG LIQ."
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis.<0><1>Read more</1>.</0>"
-msgstr "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis.<0><1>Read more</1>.</0>"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -6515,6 +6495,10 @@ msgstr "Position"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
 msgstr "Selling GM..."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
+msgstr "Bonus Rebate"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Purchase Insurance"
