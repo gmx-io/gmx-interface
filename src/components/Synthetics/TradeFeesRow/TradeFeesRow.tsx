@@ -234,7 +234,7 @@ export function TradeFeesRow(p: Props) {
                 </div>
                 <div>
                   <Trans>
-                    (up to {formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
+                    ({formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
@@ -323,8 +323,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to {formatAmount(HARDCODED_REBATE_PERCENT, 2, 0)}% of the open
-        fee. It will be airdropped as ARB tokens on a pro-rata basis.{" "}
+        The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a
+        pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more

@@ -802,6 +802,10 @@ msgstr ""
 msgid "Total Assets Migrated"
 msgstr "迁移的资产总额"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -4067,10 +4071,6 @@ msgstr "已减少"
 msgid "Decrease"
 msgstr "减少"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr ""
@@ -4581,10 +4581,6 @@ msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Multiplier Points"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6507,6 +6503,10 @@ msgstr "解除质押送出!<0>查看状况</0>"
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "启用杠杆"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"

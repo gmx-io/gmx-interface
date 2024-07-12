@@ -802,6 +802,10 @@ msgstr "Открыть {0} в Coingecko"
 msgid "Total Assets Migrated"
 msgstr "Общая сумма Перенесенных Активов"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -4067,10 +4071,6 @@ msgstr "Уменьшено"
 msgid "Decrease"
 msgstr "Уменьшить"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr ""
@@ -4581,10 +4581,6 @@ msgstr "При закрытии позиции вы можете выбрать,
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Multiplier Points"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6507,6 +6503,10 @@ msgstr "Снятие стакинга подтверждено! <0>Посмот�
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "Активировать Леверидж"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"

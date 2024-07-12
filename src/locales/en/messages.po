@@ -802,6 +802,10 @@ msgstr "Open {0} in Coingecko"
 msgid "Total Assets Migrated"
 msgstr "Total Assets Migrated"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
+msgstr "({0}% of {feesTypeName})"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -4070,10 +4074,6 @@ msgstr "Decreased"
 msgid "Decrease"
 msgstr "Decrease"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "Leftover collateral below 5 USD"
@@ -4585,10 +4585,6 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Multiplier Points"
 msgstr "Multiplier Points"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "(up to {0}% of {feesTypeName})"
-msgstr "(up to {0}% of {feesTypeName})"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -6513,6 +6509,10 @@ msgstr "Unstake submitted! <0>View status.</0>"
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "Enable Leverage"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr "The bonus rebate is an estimate and can be up to 75% of the open fee. It will be airdropped as ARB tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
