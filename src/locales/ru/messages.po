@@ -621,10 +621,6 @@ msgstr ""
 msgid "Market Orders"
 msgstr "Рыночные Ордера"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "Вы можете проверить историю своих обращений <0>здесь</0>."
@@ -805,6 +801,10 @@ msgstr "Открыть {0} в Coingecko"
 #: src/components/Migration/Migration.js
 msgid "Total Assets Migrated"
 msgstr "Общая сумма Перенесенных Активов"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -1541,10 +1541,6 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "Максимальный {0} выход"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr ""
@@ -1635,10 +1631,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Общая сумма Комиссии"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Max Bonus Rebate"
-msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -4176,10 +4168,6 @@ msgstr "Цена исполнения не соответствует услов
 msgid "Reserve Amount"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "Причина: {0}"
@@ -4250,6 +4238,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -4593,10 +4585,6 @@ msgstr "При закрытии позиции вы можете выбрать,
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Multiplier Points"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6500,6 +6488,10 @@ msgstr "Позиция"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
