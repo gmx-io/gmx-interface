@@ -60,7 +60,7 @@ export function TradeFeesRow(p: Props) {
   const shouldShowRebate = p.shouldShowRebate ?? true;
 
   const isArbitrum = chainId === ARBITRUM;
-  const rebatesPercentage = isArbitrum
+  const estimatedRebatesPercentage = isArbitrum
     ? HARDCODED_ESTIMATED_REBATE_PERCENT_ARB
     : HARDCODED_ESTIMATED_REBATE_PERCENT_AVAX;
 
@@ -241,14 +241,14 @@ export function TradeFeesRow(p: Props) {
                 </div>
                 <div>
                   <Trans>
-                    ({formatAmount(rebatesPercentage, 2, 0)}% of {feesTypeName})
+                    ({formatAmount(estimatedRebatesPercentage, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
             ),
             value: formatDeltaUsd(
               p.positionFee &&
-                bigMath.mulDiv(p.positionFee.deltaUsd, rebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n
+                bigMath.mulDiv(p.positionFee.deltaUsd, estimatedRebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n
             ),
             className: "text-green-500",
             id: "rebate",
@@ -295,7 +295,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [p, tradingIncentives, rebateIsApplicable, chainId, rebatesPercentage]);
+  }, [p, tradingIncentives, rebateIsApplicable, chainId, estimatedRebatesPercentage]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
@@ -303,10 +303,11 @@ export function TradeFeesRow(p: Props) {
     if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
-    const rebate = bigMath.mulDiv(p.positionFee.deltaUsd, rebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
+    const rebate =
+      bigMath.mulDiv(p.positionFee.deltaUsd, estimatedRebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
 
     return totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
-  }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, rebatesPercentage]);
+  }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, estimatedRebatesPercentage]);
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
@@ -331,7 +332,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.rebatePercent, 2, 0)}% of the
-        open fee. It will be airdropped as ARB tokens on a pro-rata basis.{" "}
+        open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
