@@ -42,7 +42,13 @@ export default function OrdersOverview() {
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
+  const { infoTokens } = useInfoTokens({
+    signer,
+    chainId,
+    active,
+    tokenBalances: undefined,
+    fundingRateInfo: undefined,
+  });
 
   const orders = useAllOrders(chainId, signer);
   const stats = useAllOrdersStats(chainId);

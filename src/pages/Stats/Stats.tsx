@@ -1,22 +1,23 @@
+import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getWhitelistedV1Tokens } from "config/tokens";
+import { formatDistance } from "date-fns";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import useSWR from "swr";
-import { getServerUrl } from "config/backend";
-import { formatDistance } from "date-fns";
 
 import Reader from "abis/Reader.json";
 import VaultV2 from "abis/VaultV2.json";
 import { BigNumberish } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 
-import "./Stats.css";
+import VaultReader from "abis/VaultReader.json";
 import Tooltip from "components/Tooltip/Tooltip";
-import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "lib/bigmath";
+import { useMulticall } from "lib/multicall";
+import useWallet from "lib/wallets/useWallet";
+import "./Stats.css";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
   if (!share || !total) {
@@ -53,25 +54,79 @@ export default function Stats() {
   const { chainId } = useChainId();
 
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
-  const vaultAddress = getContract(chainId, "Vault");
-
-  const { data: totalTokenWeights } = useSWR<bigint>(
-    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
-    {
-      fetcher: contractFetcher(signer, VaultV2) as any,
-    }
-  );
-
-  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  const statsMulticallQuery = useMulticall(chainId, "Stats", {
+    key: [],
+    request: {
+      totalTokenWeights: {
+        abi: VaultV2.abi,
+        contractAddress: vaultAddress,
+        calls: {
+          totalTokenWeights: {
+            methodName: "totalTokenWeights",
+            params: [],
+          },
+        },
+      },
+      fundingRates: {
+        abi: Reader.abi,
+        contractAddress: readerAddress,
+        calls: {
+          getFundingRates: {
+            methodName: "getFundingRates",
+            params: [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses],
+          },
+        },
+      },
+      vaultTokenInfo: {
+        abi: VaultReader.abi,
+        contractAddress: vaultReaderAddress,
+        calls: {
+          getVaultTokenInfoV4: {
+            methodName: "getVaultTokenInfoV4",
+            params: [
+              vaultAddress,
+              positionRouterAddress,
+              nativeTokenAddress,
+              expandDecimals(1, 18),
+              whitelistedTokenAddresses,
+            ],
+          },
+        },
+      },
+    },
+    parseResponse: (result) => {
+      return {
+        totalTokenWeights: result.data.totalTokenWeights.totalTokenWeights.returnValues[0] as bigint,
+        fundingRates: result.data.fundingRates.getFundingRates.returnValues as bigint[],
+        vaultTokenInfo: result.data.vaultTokenInfo.getVaultTokenInfoV4.returnValues as bigint[],
+      };
+    },
+    refreshInterval: null,
   });
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, fundingRateInfo as any);
+
+  const fundingRateInfo = statsMulticallQuery.data?.fundingRates;
+  const totalTokenWeights = statsMulticallQuery.data?.totalTokenWeights;
+  const vaultTokenInfo = statsMulticallQuery.data?.vaultTokenInfo;
+
+  const { infoTokens } = useInfoTokens({
+    signer,
+    chainId,
+    active,
+    tokenBalances: undefined,
+    fundingRateInfo,
+    vaultPropsLength: undefined,
+    vaultTokenInfo: statsMulticallQuery.isLoading ? "isLoading" : vaultTokenInfo,
+  });
 
   let adjustedUsdgSupply = 0n;
 

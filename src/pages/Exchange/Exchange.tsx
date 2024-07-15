@@ -618,7 +618,7 @@ export const Exchange = forwardRef(
       }
     );
 
-    const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+    const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
     const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
       active,
       chainId,

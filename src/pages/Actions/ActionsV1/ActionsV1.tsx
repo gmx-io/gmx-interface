@@ -76,7 +76,7 @@ function ActionsV1({
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
 
   return (
     <div className="default-container page-layout">
@@ -189,7 +189,7 @@ export function usePositionsV1(
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -237,7 +237,7 @@ export function AccountPositionsV1({
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
   const { positions, positionsMap } = usePositionsV1(chainId, account, signer, active);
 
   const flagOrdersEnabled = true;
@@ -307,7 +307,7 @@ export function AccountOrdersV1({
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
   const { positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -370,7 +370,7 @@ export function AccountActionsV1({
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo });
 
   return (
     <div>

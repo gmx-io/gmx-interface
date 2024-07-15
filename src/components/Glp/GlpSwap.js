@@ -325,7 +325,7 @@ export default function GlpSwap(props) {
     maxSellAmount = glpBalance - reservedAmount;
   }
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
+  const { infoTokens } = useInfoTokens({ signer, chainId, active, tokenBalances, fundingRateInfo: undefined });
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
   const nativeTokenInfo = getTokenInfo(infoTokens, ZeroAddress);

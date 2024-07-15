@@ -12,14 +12,24 @@ import useSWR from "swr";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
 
-export function useInfoTokens(
-  signer: Signer | undefined,
-  chainId: number,
-  active: boolean,
-  tokenBalances?: bigint[],
-  fundingRateInfo?: bigint[],
-  vaultPropsLength?: number
-) {
+export function useInfoTokens({
+  signer,
+  chainId,
+  active,
+  tokenBalances,
+  fundingRateInfo,
+  vaultPropsLength,
+  vaultTokenInfo,
+}: {
+  signer: Signer | undefined;
+  chainId: number;
+  active: boolean;
+
+  tokenBalances: bigint[] | undefined;
+  fundingRateInfo: bigint[] | undefined;
+  vaultPropsLength?: number | undefined;
+  vaultTokenInfo?: bigint[] | "isLoading" | undefined;
+}) {
   const tokens = getV1Tokens(chainId);
   const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
@@ -29,8 +39,8 @@ export function useInfoTokens(
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
-  const { data: vaultTokenInfo } = useSWR<bigint[], any>(
-    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
+  const { data: fallbackVaultTokenInfo } = useSWR<bigint[], any>(
+    vaultTokenInfo === undefined && [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
       fetcher: contractFetcher(signer, VaultReader, [
         vaultAddress,
@@ -52,32 +62,57 @@ export function useInfoTokens(
   });
 
   return {
-    infoTokens: getInfoTokens(
+    infoTokens: getInfoTokens({
       tokens,
       tokenBalances,
       whitelistedTokens,
-      vaultTokenInfo,
+      vaultTokenInfo: vaultTokenInfo === "isLoading" ? undefined : vaultTokenInfo || fallbackVaultTokenInfo,
       fundingRateInfo,
       vaultPropsLength,
       indexPrices,
-      nativeTokenAddress
-    ),
+      nativeTokenAddress,
+    }),
   };
 }
 
-function getInfoTokens(
-  tokens: Token[],
-  tokenBalances: bigint[] | undefined,
-  whitelistedTokens: Token[],
-  vaultTokenInfo: bigint[] | undefined,
-  fundingRateInfo: bigint[] | undefined,
-  vaultPropsLength: number | undefined,
-  indexPrices: { [address: string]: bigint },
-  nativeTokenAddress: string
-): InfoTokens {
+export function getInfoTokens({
+  tokens,
+  tokenBalances,
+  whitelistedTokens,
+  vaultTokenInfo,
+  fundingRateInfo,
+  vaultPropsLength,
+  indexPrices,
+  nativeTokenAddress,
+}: {
+  tokens: Token[];
+  /**
+   * Will inject token balances into the token info
+   */
+  tokenBalances?: bigint[];
+  whitelistedTokens: Token[];
+  /**
+   * Will inject vault token info into the token info
+   */
+  vaultTokenInfo?: bigint[];
+  /**
+   * Will inject funding rate info into the token info
+   */
+  fundingRateInfo?: bigint[];
+  /**
+   * @default 15
+   */
+  vaultPropsLength?: number;
+  /**
+   * Will inject index prices into the token info
+   */
+  indexPrices?: { [address: string]: bigint };
+  nativeTokenAddress: string;
+}): InfoTokens {
   if (!vaultPropsLength) {
     vaultPropsLength = 15;
   }
+
   const fundingRatePropsLength = 2;
   const infoTokens: InfoTokens = {};
 
@@ -184,7 +219,7 @@ function getInfoTokens(
 
 function setTokenUsingIndexPrices(
   token: TokenInfo,
-  indexPrices: { [address: string]: bigint },
+  indexPrices: { [address: string]: bigint } | undefined,
   nativeTokenAddress: string
 ) {
   if (!indexPrices) {
