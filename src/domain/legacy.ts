@@ -644,11 +644,10 @@ function useGmxPriceFromAvalanche() {
     }
   );
 
-  const PRECISION = 10n ** 18n;
-  let gmxPrice;
-  if (avaxReserve && gmxReserve && avaxPrice) {
-    gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
-  }
+  const gmxPrice = useMemo(
+    () => getGmxPriceFromAvalanche(gmxReserve, avaxReserve, avaxPrice),
+    [avaxReserve, gmxReserve, avaxPrice]
+  );
 
   const mutate = useCallback(() => {
     updateReserves(undefined, true);
@@ -656,6 +655,25 @@ function useGmxPriceFromAvalanche() {
   }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
+}
+
+export function getGmxPriceFromAvalanche(
+  /**
+   * _reserve0
+   */
+  gmxReserve: bigint | undefined,
+  /**
+   * _reserve1
+   */
+  avaxReserve: bigint | undefined,
+  avaxPrice: bigint | undefined
+) {
+  if (avaxReserve === undefined || gmxReserve === undefined || avaxPrice === undefined) {
+    return undefined;
+  }
+
+  const PRECISION = 10n ** 18n;
+  return bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
 }
 
 function useGmxPriceFromArbitrum(signer, active) {
@@ -676,30 +694,10 @@ function useGmxPriceFromArbitrum(signer, active) {
     }
   );
 
-  const gmxPrice = useMemo(() => {
-    if (uniPoolSlot0 != undefined && ethPrice != undefined) {
-      const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
-
-      const gmxAddress = getContract(ARBITRUM, "GMX");
-      const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME");
-
-      const pool = new Pool(
-        tokenA, // tokenA
-        tokenB, // tokenB
-        10000, // fee
-        uniPoolSlot0.sqrtPriceX96.toString(), // sqrtRatioX96
-        1, // liquidity
-        Number(uniPoolSlot0.tick), // tickCurrent
-        []
-      );
-
-      const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
-      const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
-      return poolTokenPriceAmount === undefined
-        ? undefined
-        : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
-    }
-  }, [ethPrice, uniPoolSlot0, ethAddress]);
+  const gmxPrice = useMemo(
+    () => getGmxPriceFromArbtitrum(ethAddress, ethPrice, uniPoolSlot0),
+    [ethPrice, uniPoolSlot0, ethAddress]
+  );
 
   const mutate = useCallback(() => {
     updateUniPoolSlot0(undefined, true);
@@ -707,6 +705,47 @@ function useGmxPriceFromArbitrum(signer, active) {
   }, [updateEthPrice, updateUniPoolSlot0]);
 
   return { data: gmxPrice, mutate };
+}
+
+export function getGmxPriceFromArbtitrum(
+  ethAddress: string,
+  ethPrice: bigint | undefined,
+  uniPoolSlot0:
+    | {
+        sqrtPriceX96: bigint;
+        tick: bigint;
+        observationIndex: bigint;
+        observationCardinality: bigint;
+        observationCardinalityNext: bigint;
+        feeProtocol: bigint;
+        unlocked: boolean;
+      }
+    | undefined
+) {
+  if (uniPoolSlot0 === undefined || ethPrice === undefined) {
+    return undefined;
+  }
+
+  const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
+
+  const gmxAddress = getContract(ARBITRUM, "GMX");
+  const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME");
+
+  const pool = new Pool(
+    tokenA, // tokenA
+    tokenB, // tokenB
+    10000, // fee
+    uniPoolSlot0.sqrtPriceX96.toString(), // sqrtRatioX96
+    1, // liquidity
+    Number(uniPoolSlot0.tick), // tickCurrent
+    []
+  );
+
+  const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
+  const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
+  return poolTokenPriceAmount === undefined
+    ? undefined
+    : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
 }
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {

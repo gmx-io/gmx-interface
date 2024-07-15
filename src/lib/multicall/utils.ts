@@ -68,10 +68,10 @@ const BATCH_CONFIGS = {
   },
 };
 
-export async function executeMulticall(chainId: number, request: MulticallRequestConfig<any>) {
+export async function executeMulticall(chainId: number, request: MulticallRequestConfig<any>, name?: string) {
   const multicall = await Multicall.getInstance(chainId);
 
-  return multicall?.call(request, MAX_TIMEOUT);
+  return multicall?.call(request, MAX_TIMEOUT, name);
 }
 
 export class Multicall {
@@ -120,7 +120,12 @@ export class Multicall {
     this.viemClient = Multicall.getViemClient(chainId, rpcUrl);
   }
 
-  async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
+  async call(request: MulticallRequestConfig<any>, maxTimeout: number, name?: string) {
+    if (name) {
+      // TODO remove me before merge
+      this.viemClient = Multicall.getViemClient(this.chainId, this.rpcUrl + "?q=" + name);
+    }
+
     const originalKeys: {
       contractKey: string;
       callKey: string;

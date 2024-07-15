@@ -23,6 +23,7 @@ export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const CHAIN_IDS_WITH_GMX = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
   SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);

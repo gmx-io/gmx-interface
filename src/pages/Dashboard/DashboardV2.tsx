@@ -1,39 +1,18 @@
 import { Trans, t } from "@lingui/macro";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import { groupBy } from "lodash";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-import { ethers } from "ethers";
-
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
-
-import { getContract } from "config/contracts";
-
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import VaultV2 from "abis/VaultV2.json";
-import Footer from "components/Footer/Footer";
-
-import "./DashboardV2.css";
-
-import SEO from "components/Common/SEO";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
-import PageTitle from "components/PageTitle/PageTitle";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useTotalGmxSupply } from "domain/legacy";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import {
@@ -44,11 +23,12 @@ import {
 } from "domain/synthetics/markets";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { useInfoTokens } from "domain/tokens";
+import type { InfoTokens } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
+import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 import {
   BN_ZERO,
   expandDecimals,
@@ -60,14 +40,30 @@ import {
 } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import useWallet from "lib/wallets/useWallet";
-import { groupBy } from "lodash";
 import AssetDropdown from "./AssetDropdown";
-import { bigMath } from "lib/bigmath";
+import {
+  selectGmxPrice,
+  selectInfoTokensMap,
+  selectTotalGmxInLiquidity,
+  selectTotalGmxStaked,
+  useDashboardV2Context,
+  useDashboardV2ContextSelector,
+} from "./DashboardV2ContextProvider";
 
-const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+import SEO from "components/Common/SEO";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import PageTitle from "components/PageTitle/PageTitle";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
-const { ZeroAddress } = ethers;
+import "./DashboardV2.css";
+
+const ACTIVE_CHAIN_IDS = SUPPORTED_CHAIN_IDS;
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -91,7 +87,7 @@ function getPositionStats(positionStats) {
   );
 }
 
-function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
+function getCurrentFeesUsd(tokenAddresses: string[], fees: bigint[], infoTokens: InfoTokens | undefined) {
   if (!fees || !infoTokens) {
     return BN_ZERO;
   }
@@ -100,7 +96,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
-    if (!tokenInfo || !tokenInfo.contractMinPrice) {
+    if (!tokenInfo || tokenInfo.contractMinPrice === undefined) {
       continue;
     }
 
@@ -112,7 +108,6 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 }
 
 export default function DashboardV2() {
-  const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
 
@@ -155,84 +150,40 @@ export default function DashboardV2() {
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
-  const readerAddress = getContract(chainId, "Reader");
-  const vaultAddress = getContract(chainId, "Vault");
-  const glpManagerAddress = getContract(chainId, "GlpManager");
+  const { aums, feesMap, totalSupplies, totalTokenWeights } = useDashboardV2Context();
 
-  const gmxAddress = getContract(chainId, "GMX");
-  const glpAddress = getContract(chainId, "GLP");
-  const usdgAddress = getContract(chainId, "USDG");
+  const infoTokensMap = useDashboardV2ContextSelector(selectInfoTokensMap);
 
-  const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
+  // TODO move to selector
+  const currentFees = useMemo(() => {
+    if (feesMap !== undefined && infoTokensMap !== undefined) {
+      const currentFees = {
+        total: 0n,
+      };
 
-  const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(signer, GlpManager),
-  });
+      for (const [chainId, fees] of Object.entries(feesMap)) {
+        const whitelistedTokenAddresses = getWhitelistedTokenAddresses(Number(chainId));
+        const feeUSD = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokensMap[chainId]);
+        currentFees[chainId] = feeUSD;
+        currentFees.total = currentFees.total + feeUSD;
+      }
 
-  const { data: totalSupplies } = useSWR(
-    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", ZeroAddress],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [tokensForSupplyQuery]),
+      return currentFees;
     }
-  );
 
-  const { data: totalTokenWeights } = useSWR(
-    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
-    {
-      fetcher: contractFetcher(signer, VaultV2),
-    }
-  );
-
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
-
-  const { data: currentFees } = useSWR(
-    infoTokensArbitrum[ZeroAddress].contractMinPrice !== undefined &&
-      infoTokensAvax[ZeroAddress].contractMinPrice !== undefined
-      ? "Dashboard:currentFees"
-      : null,
-    {
-      fetcher: () => {
-        return Promise.all(
-          ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(undefined, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
-              `Dashboard:fees:${chainId}`,
-              chainId,
-              getContract(chainId, "Reader"),
-              "getFees",
-              getContract(chainId, "Vault"),
-            ])
-          )
-        ).then((fees) => {
-          return fees.reduce<Record<string, bigint>>(
-            (acc, cv, i) => {
-              const feeUSD = getCurrentFeesUsd(
-                getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
-                cv,
-                ACTIVE_CHAIN_IDS[i] === ARBITRUM ? infoTokensArbitrum : infoTokensAvax
-              );
-              acc[ACTIVE_CHAIN_IDS[i]] = feeUSD;
-              acc.total = acc.total + feeUSD;
-              return acc;
-            },
-            { total: BN_ZERO }
-          );
-        });
-      },
-    }
-  );
+    return undefined;
+  }, [feesMap, infoTokensMap]);
 
   const { data: feesSummaryByChain } = useFeesSummary();
   const feesSummary = feesSummaryByChain[chainId];
 
-  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
-  const shouldIncludeCurrrentFees =
+  const eth = infoTokensMap?.[chainId][getTokenBySymbol(chainId, "ETH").address];
+  const shouldIncludeCurrentFees =
     feesSummaryByChain[chainId]?.lastUpdatedAt &&
     parseInt(String(Date.now() / 1000)) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
-    if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
+    if (shouldIncludeCurrentFees && currentFees && currentFees[chainId] !== undefined) {
       return (
         Number(currentFees[chainId]) / Number(expandDecimals(1, USD_DECIMALS)) +
         Number(feesSummaryByChain[chainId]?.totalFees || 0)
@@ -251,15 +202,15 @@ export default function DashboardV2() {
       { total: 0 }
     );
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active
-  );
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useDashboardV2ContextSelector(selectGmxPrice);
 
-  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
+  let { total: totalGmxInLiquidity } = useDashboardV2ContextSelector(selectTotalGmxInLiquidity);
 
-  let { [AVALANCHE]: avaxStakedGmx, [ARBITRUM]: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
+  let {
+    [AVALANCHE]: avaxStakedGmx,
+    [ARBITRUM]: arbitrumStakedGmx,
+    total: totalStakedGmx,
+  } = useDashboardV2ContextSelector(selectTotalGmxStaked);
 
   let gmxMarketCap;
   if (gmxPrice !== undefined && totalGmxSupply !== undefined) {
@@ -271,18 +222,18 @@ export default function DashboardV2() {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
   }
 
-  let aum;
+  let aum: bigint | undefined;
   if (aums && aums.length > 0) {
     aum = (aums[0] + aums[1]) / 2n;
   }
 
   let glpPrice;
-  let glpSupply;
+  let glpSupply: bigint | undefined;
   let glpMarketCap;
-  if (aum && totalSupplies && totalSupplies[3]) {
+  if (aum !== undefined && totalSupplies && totalSupplies[3] !== 0n) {
     glpSupply = totalSupplies[3];
     glpPrice =
-      aum && aum > 0 && glpSupply > 0
+      aum > 0 && glpSupply > 0
         ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
         : expandDecimals(1, USD_DECIMALS);
     glpMarketCap = bigMath.mulDiv(glpPrice, glpSupply, expandDecimals(1, GLP_DECIMALS));
@@ -318,7 +269,7 @@ export default function DashboardV2() {
 
   for (let i = 0; i < tokenList.length; i++) {
     const token = tokenList[i];
-    const tokenInfo = infoTokens[token.address];
+    const tokenInfo = infoTokensMap?.[chainId][token.address];
     if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
       adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
     }
@@ -329,8 +280,9 @@ export default function DashboardV2() {
       !tokenInfo.weight ||
       !tokenInfo.usdgAmount ||
       adjustedUsdgSupply === undefined ||
-      adjustedUsdgSupply == 0n ||
-      !totalTokenWeights
+      adjustedUsdgSupply === 0n ||
+      totalTokenWeights === undefined ||
+      totalTokenWeights === 0n
     ) {
       return "...";
     }
@@ -454,7 +406,11 @@ export default function DashboardV2() {
     let totalGlp = 0;
     const glpPool = tokenList
       .map((token) => {
-        const tokenInfo = infoTokens[token.address];
+        const tokenInfo = infoTokensMap[chainId][token.address];
+        if (!tokenInfo) {
+          return null;
+        }
+
         if (tokenInfo.usdgAmount !== undefined && adjustedUsdgSupply !== undefined && adjustedUsdgSupply > 0) {
           const currentWeightBps = bigMath.mulDiv(
             tokenInfo.usdgAmount,
@@ -478,7 +434,7 @@ export default function DashboardV2() {
       .filter(<T extends unknown>(x: T): x is NonNullable<T> => Boolean(x));
 
     return { glpPool, stableGlp, totalGlp };
-  }, [adjustedUsdgSupply, infoTokens, tokenList]);
+  }, [adjustedUsdgSupply, chainId, infoTokensMap, tokenList]);
 
   let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
 
@@ -879,8 +835,8 @@ export default function DashboardV2() {
                         <Trans>Price</Trans>
                       </div>
                       <div>
-                        {!gmxPrice && "..."}
-                        {gmxPrice && (
+                        {gmxPrice === undefined && "..."}
+                        {gmxPrice !== undefined && (
                           <TooltipComponent
                             position="bottom-end"
                             className="whitespace-nowrap"
@@ -1024,7 +980,7 @@ export default function DashboardV2() {
                     </thead>
                     <tbody>
                       {visibleTokens.map((token) => {
-                        const tokenInfo = infoTokens[token.address];
+                        const tokenInfo = infoTokensMap![chainId][token.address];
                         let utilization = 0n;
                         if (
                           tokenInfo &&
@@ -1117,7 +1073,7 @@ export default function DashboardV2() {
 
                 <div className="token-grid">
                   {visibleTokens.map((token) => {
-                    const tokenInfo = infoTokens[token.address];
+                    const tokenInfo = infoTokensMap![chainId][token.address];
                     let utilization = 0n;
                     if (
                       tokenInfo &&
