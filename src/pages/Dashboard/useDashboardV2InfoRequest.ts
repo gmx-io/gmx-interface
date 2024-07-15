@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useMulticall } from "lib/multicall";
+import { MulticallResult, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 
 import GlpManager from "abis/GlpManager.json";
@@ -16,6 +16,60 @@ import Vault from "abis/Vault.json";
 import VaultReader from "abis/VaultReader.json";
 import Token from "abis/Token.json";
 import { getGmxPriceFromArbtitrum, getGmxPriceFromAvalanche } from "domain/legacy";
+
+export function getRawDexGmxRequest(chainId: number) {
+  if (chainId === ARBITRUM) {
+    return {
+      gmxDexRaw: {
+        abi: UniPool.abi,
+        contractAddress: getContract(ARBITRUM, "UniswapGmxEthPool"),
+        calls: {
+          uniPoolSlot0: {
+            methodName: "slot0",
+            params: [],
+          },
+        },
+      },
+    };
+  }
+
+  return {
+    gmxDexRaw: {
+      abi: UniswapV2.abi,
+      contractAddress: getContract(AVALANCHE, "UniswapGmxEthPool"),
+      calls: {
+        getReserves: {
+          methodName: "getReserves",
+          params: [],
+        },
+      },
+    },
+  };
+}
+
+export function parseGmxPriceFromRawDexData(
+  chainId: number,
+  nativePrice: bigint,
+  result: MulticallResult<ReturnType<typeof getRawDexGmxRequest>>
+): bigint {
+  if (chainId === ARBITRUM) {
+    return getGmxPriceFromArbtitrum(getTokenBySymbol(ARBITRUM, "WETH").address, nativePrice, {
+      sqrtPriceX96: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[0] as bigint,
+      tick: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[1] as bigint,
+      observationIndex: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[2] as bigint,
+      observationCardinality: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[3] as bigint,
+      observationCardinalityNext: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[4] as bigint,
+      feeProtocol: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[5] as bigint,
+      unlocked: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[6] as boolean,
+    });
+  }
+
+  return getGmxPriceFromAvalanche(
+    result.data.gmxDexRaw.getReserves!.returnValues[0] as bigint,
+    result.data.gmxDexRaw.getReserves!.returnValues[1] as bigint,
+    nativePrice
+  );
+}
 
 export function useDashboardV2InfoRequest() {
   const chainId = useSelector(selectChainId);
@@ -94,28 +148,7 @@ export function useDashboardV2InfoRequest() {
           },
         },
       },
-      gmxDexRaw:
-        chainId === ARBITRUM
-          ? {
-              abi: UniPool.abi,
-              contractAddress: getContract(ARBITRUM, "UniswapGmxEthPool"),
-              calls: {
-                uniPoolSlot0: {
-                  methodName: "slot0",
-                  params: [],
-                },
-              },
-            }
-          : {
-              abi: UniswapV2.abi,
-              contractAddress: getContract(AVALANCHE, "UniswapGmxEthPool"),
-              calls: {
-                getReserves: {
-                  methodName: "getReserves",
-                  params: [],
-                },
-              },
-            },
+      ...getRawDexGmxRequest(chainId),
       gmxBalances: {
         abi: Token.abi,
         contractAddress: gmxAddress,
@@ -140,22 +173,7 @@ export function useDashboardV2InfoRequest() {
         totalTokenWeights: result.data.vault.totalTokenWeights.returnValues[0] as bigint,
         vaultTokenInfo: result.data.vaultTokenInfo.getVaultTokenInfoV4.returnValues as bigint[],
         nativePrice,
-        gmxPrice:
-          chainId === ARBITRUM
-            ? getGmxPriceFromArbtitrum(getTokenBySymbol(ARBITRUM, "WETH").address, nativePrice, {
-                sqrtPriceX96: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[0] as bigint,
-                tick: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[1] as bigint,
-                observationIndex: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[2] as bigint,
-                observationCardinality: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[3] as bigint,
-                observationCardinalityNext: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[4] as bigint,
-                feeProtocol: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[5] as bigint,
-                unlocked: result.data.gmxDexRaw.uniPoolSlot0!.returnValues[6] as boolean,
-              })
-            : getGmxPriceFromAvalanche(
-                result.data.gmxDexRaw.getReserves!.returnValues[0] as bigint,
-                result.data.gmxDexRaw.getReserves!.returnValues[1] as bigint,
-                nativePrice
-              ),
+        gmxPrice: parseGmxPriceFromRawDexData(chainId, nativePrice, result),
         gmxLiquidity: result.data.gmxBalances.dex.returnValues[0] as bigint,
         gmxStaked: result.data.gmxBalances.staked.returnValues[0] as bigint,
       };

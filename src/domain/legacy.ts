@@ -661,17 +661,13 @@ export function getGmxPriceFromAvalanche(
   /**
    * _reserve0
    */
-  gmxReserve: bigint | undefined,
+  gmxReserve: bigint,
   /**
    * _reserve1
    */
-  avaxReserve: bigint | undefined,
-  avaxPrice: bigint | undefined
-) {
-  if (avaxReserve === undefined || gmxReserve === undefined || avaxPrice === undefined) {
-    return undefined;
-  }
-
+  avaxReserve: bigint,
+  avaxPrice: bigint
+): bigint {
   const PRECISION = 10n ** 18n;
   return bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
 }
@@ -695,7 +691,10 @@ function useGmxPriceFromArbitrum(signer, active) {
   );
 
   const gmxPrice = useMemo(
-    () => getGmxPriceFromArbtitrum(ethAddress, ethPrice, uniPoolSlot0),
+    () =>
+      ethPrice !== undefined &&
+      uniPoolSlot0 !== undefined &&
+      getGmxPriceFromArbtitrum(ethAddress, ethPrice, uniPoolSlot0),
     [ethPrice, uniPoolSlot0, ethAddress]
   );
 
@@ -709,23 +708,17 @@ function useGmxPriceFromArbitrum(signer, active) {
 
 export function getGmxPriceFromArbtitrum(
   ethAddress: string,
-  ethPrice: bigint | undefined,
-  uniPoolSlot0:
-    | {
-        sqrtPriceX96: bigint;
-        tick: bigint;
-        observationIndex: bigint;
-        observationCardinality: bigint;
-        observationCardinalityNext: bigint;
-        feeProtocol: bigint;
-        unlocked: boolean;
-      }
-    | undefined
-) {
-  if (uniPoolSlot0 === undefined || ethPrice === undefined) {
-    return undefined;
+  ethPrice: bigint,
+  uniPoolSlot0: {
+    sqrtPriceX96: bigint;
+    tick: bigint;
+    observationIndex: bigint;
+    observationCardinality: bigint;
+    observationCardinalityNext: bigint;
+    feeProtocol: bigint;
+    unlocked: boolean;
   }
-
+): bigint {
   const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
 
   const gmxAddress = getContract(ARBITRUM, "GMX");
@@ -742,10 +735,8 @@ export function getGmxPriceFromArbtitrum(
   );
 
   const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
-  const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
-  return poolTokenPriceAmount === undefined
-    ? undefined
-    : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
+  const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)!;
+  return bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
 }
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {

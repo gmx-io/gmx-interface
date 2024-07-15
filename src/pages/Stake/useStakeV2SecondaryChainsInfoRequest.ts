@@ -1,61 +1,58 @@
 import { ARBITRUM, AVALANCHE, CHAIN_IDS_WITH_GMX } from "config/chains";
 import { getContract } from "config/contracts";
-import { getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { getTokenBySymbol } from "config/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGmxPriceFromArbtitrum, getGmxPriceFromAvalanche } from "domain/legacy";
 import type { MulticallResult } from "lib/multicall/types";
 import { useMulticallMany } from "lib/multicall/useMulticallMany";
-import { expandDecimals } from "lib/numbers";
 
-import ReaderV2 from "abis/ReaderV2.json";
-import Token from "abis/Token.json";
 import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
-import VaultReader from "abis/VaultReader.json";
 
 const request = (chainId: number) => ({
-  vaultTokenInfo: {
-    abi: VaultReader.abi,
-    contractAddress: getContract(chainId, "VaultReader"),
-    calls: {
-      getVaultTokenInfoV4: {
-        methodName: "getVaultTokenInfoV4",
-        params: [
-          getContract(chainId, "Vault"),
-          getContract(chainId, "PositionRouter"),
-          getContract(chainId, "NATIVE_TOKEN"),
-          expandDecimals(1, 18),
-          getWhitelistedV1Tokens(chainId).map((token) => token.address),
-        ],
-      },
-    },
-  },
-  readerV2: {
-    abi: ReaderV2.abi,
-    contractAddress: getContract(chainId, "Reader"),
-    calls: {
-      getFees: {
-        methodName: "getFees",
-        params: [getContract(chainId, "Vault"), getWhitelistedV1Tokens(chainId).map((token) => token.address)],
-      },
-    },
-  },
-  gmxBalances: {
-    abi: Token.abi,
-    contractAddress: getContract(chainId, "GMX"),
-    calls: {
-      dex: {
-        methodName: "balanceOf",
-        params: [getContract(chainId, chainId === ARBITRUM ? "UniswapGmxEthPool" : "TraderJoeGmxAvaxPool")],
-      },
-      staked: {
-        methodName: "balanceOf",
-        params: [getContract(chainId, "StakedGmxTracker")],
-      },
-    },
-  },
+  // vaultTokenInfo: {
+  //   abi: VaultReader.abi,
+
+  //   contractAddress: getContract(chainId, "VaultReader"),
+  //   calls: {
+  //     getVaultTokenInfoV4: {
+  //       methodName: "getVaultTokenInfoV4",
+  //       params: [
+  //         getContract(chainId, "Vault"),
+  //         getContract(chainId, "PositionRouter"),
+  //         getContract(chainId, "NATIVE_TOKEN"),
+  //         expandDecimals(1, 18),
+  //         getWhitelistedV1Tokens(chainId).map((token) => token.address),
+  //       ],
+  //     },
+  //   },
+  // },
+  // readerV2: {
+  //   abi: ReaderV2.abi,
+  //   contractAddress: getContract(chainId, "Reader"),
+  //   calls: {
+  //     getFees: {
+  //       methodName: "getFees",
+  //       params: [getContract(chainId, "Vault"), getWhitelistedV1Tokens(chainId).map((token) => token.address)],
+  //     },
+  //   },
+  // },
+  // gmxBalances: {
+  //   abi: Token.abi,
+  //   contractAddress: getContract(chainId, "GMX"),
+  //   calls: {
+  //     dex: {
+  //       methodName: "balanceOf",
+  //       params: [getContract(chainId, chainId === ARBITRUM ? "UniswapGmxEthPool" : "TraderJoeGmxAvaxPool")],
+  //     },
+  //     staked: {
+  //       methodName: "balanceOf",
+  //       params: [getContract(chainId, "StakedGmxTracker")],
+  //     },
+  //   },
+  // },
   vault: {
     abi: Vault.abi,
     contractAddress: getContract(chainId, "Vault"),
@@ -94,19 +91,15 @@ const parseResponse = (
   result: MulticallResult<ReturnType<typeof request>>,
   chainId: number
 ): {
-  vaultTokenInfo: bigint[];
-  fees: bigint[];
-  gmxLiquidity: bigint;
-  gmxStaked: bigint;
   gmxPrice: bigint | undefined;
 } => {
   const nativePrice = result.data.vault.minPrice.returnValues[0] as bigint;
 
   return {
-    vaultTokenInfo: result.data.vaultTokenInfo.getVaultTokenInfoV4.returnValues as bigint[],
-    fees: result.data.readerV2.getFees.returnValues as bigint[],
-    gmxLiquidity: result.data.gmxBalances.dex.returnValues[0] as bigint,
-    gmxStaked: result.data.gmxBalances.staked.returnValues[0] as bigint,
+    // vaultTokenInfo: result.data.vaultTokenInfo.getVaultTokenInfoV4.returnValues as bigint[],
+    // fees: result.data.readerV2.getFees.returnValues as bigint[],
+    // gmxLiquidity: result.data.gmxBalances.dex.returnValues[0] as bigint,
+    // gmxStaked: result.data.gmxBalances.staked.returnValues[0] as bigint,
     gmxPrice:
       chainId === ARBITRUM
         ? getGmxPriceFromArbtitrum(getTokenBySymbol(ARBITRUM, "WETH").address, nativePrice, {
@@ -126,12 +119,12 @@ const parseResponse = (
   };
 };
 
-export function useDashboardV2SecondaryChainsInfoRequest() {
+export function useStakeV2SecondaryChainsInfoRequest() {
   const currentChainId = useSelector(selectChainId);
 
   const otherChains = CHAIN_IDS_WITH_GMX.filter((chainId) => chainId !== currentChainId);
 
-  const multicallQuery = useMulticallMany(otherChains, "useDashboardV2InfoRequest:multicall", {
+  const multicallQuery = useMulticallMany(otherChains, "useStakeV2SecondaryChainsInfoRequest:multicall", {
     key: [],
     request,
     parseResponse: parseResponse,

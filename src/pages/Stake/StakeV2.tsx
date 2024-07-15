@@ -6,25 +6,24 @@ import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import RewardReader from "abis/RewardReader.json";
 import RewardRouter from "abis/RewardRouter.json";
-import Token from "abis/Token.json";
-import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
 import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import {
+  SetPendingTransactions,
+  // useGmxPrice,
+  useTotalGmxStaked,
+  useTotalGmxSupply,
+} from "domain/legacy";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
-  PLACEHOLDER_ACCOUNT,
   USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
@@ -54,6 +53,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
@@ -63,11 +63,12 @@ import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDe
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -80,6 +81,7 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { EMPTY_OBJECT } from "lib/objects";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -87,8 +89,8 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { getIncentivesV2Url } from "config/links";
-import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import { useStakeV2InfoRequest } from "./useStakeV2InfoRequest";
+import { selectGmxPrice, useStakeV2ContextSelector } from "./StakeV2ContextProvider";
 
 const { ZeroAddress } = ethers;
 
@@ -1364,61 +1366,18 @@ export default function StakeV2() {
   const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
-  const rewardReaderAddress = getContract(chainId, "RewardReader");
-  const readerAddress = getContract(chainId, "Reader");
 
-  const vaultAddress = getContract(chainId, "Vault");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
-  const bnGmxAddress = getContract(chainId, "BN_GMX");
-  const glpAddress = getContract(chainId, "GLP");
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
-
-  const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
-  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
-
-  const glpManagerAddress = getContract(chainId, "GlpManager");
-
-  const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
-  const stakedGlpDistributorAddress = getContract(chainId, "StakedGlpDistributor");
 
   const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
-
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
-
-  const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
-  const depositTokens = [
-    gmxAddress,
-    esGmxAddress,
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    bnGmxAddress,
-    glpAddress,
-  ];
-  const rewardTrackersForDepositBalances = [
-    stakedGmxTrackerAddress,
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGlpTrackerAddress,
-  ];
-  const rewardTrackersForStakingInfo = [
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    stakedGlpTrackerAddress,
-    feeGlpTrackerAddress,
-  ];
 
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -1428,73 +1387,15 @@ export default function StakeV2() {
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
-  const { data: walletBalances } = useSWR(
-    [
-      `StakeV2:walletBalances:${active}`,
-      chainId,
-      readerAddress,
-      "getTokenBalancesWithSupplies",
-      account || PLACEHOLDER_ACCOUNT,
-    ],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
-    }
-  );
-
-  const { data: depositBalances } = useSWR(
-    [
-      `StakeV2:depositBalances:${active}`,
-      chainId,
-      rewardReaderAddress,
-      "getDepositBalances",
-      account || PLACEHOLDER_ACCOUNT,
-    ],
-    {
-      fetcher: contractFetcher(signer, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
-    }
-  );
-
-  const { data: stakingInfo } = useSWR(
-    [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
-    }
-  );
-
-  const { data: stakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
-
-  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(signer, GlpManager),
-  });
-
-  const { data: nativeTokenPrice } = useSWR(
-    [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
-    {
-      fetcher: contractFetcher(signer, Vault),
-    }
-  );
-
-  const { data: esGmxSupply } = useSWR(
-    [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
-    }
-  );
+  const stakeV2Query = useStakeV2InfoRequest();
+  const { walletBalances, depositBalances, stakingInfo, stakedGmxSupply, aums, nativeTokenPrice, esGmxSupply } =
+    (stakeV2Query.data || EMPTY_OBJECT) as Partial<Exclude<typeof stakeV2Query.data, undefined>>;
 
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active
-  );
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useStakeV2ContextSelector(selectGmxPrice);
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -1509,7 +1410,7 @@ export default function StakeV2() {
   const isGmxTransferEnabled = true;
 
   let esGmxSupplyUsd;
-  if (esGmxSupply && gmxPrice) {
+  if (esGmxSupply !== undefined && gmxPrice !== undefined) {
     esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
@@ -1564,12 +1465,12 @@ export default function StakeV2() {
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  if (totalGmxStaked !== 0n && gmxPrice) {
+  if (totalGmxStaked !== 0n && gmxPrice !== undefined && gmxPrice !== 0n) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice !== undefined && gmxPrice !== 0n) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
@@ -2021,8 +1922,8 @@ export default function StakeV2() {
                   <Trans>Price</Trans>
                 </div>
                 <div>
-                  {!gmxPrice && "..."}
-                  {gmxPrice && (
+                  {gmxPrice === undefined && "..."}
+                  {gmxPrice !== undefined && (
                     <Tooltip
                       position="bottom-end"
                       className="whitespace-nowrap"
