@@ -131,8 +131,6 @@ function MarketsList(props: { options: Token[] | undefined }) {
     [chooseSuitableMarket, close, marketsInfoData, tradeType]
   );
 
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
-
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
   const thClassName = cx(
@@ -163,6 +161,17 @@ function MarketsList(props: { options: Token[] | undefined }) {
       }
     },
     [filteredTokens, handleMarketSelect]
+  );
+
+  const handleFavoriteClick = useCallback(
+    (address: string) => {
+      if (favoriteTokens?.includes(address)) {
+        setFavoriteTokens((favoriteTokens || []).filter((item) => item !== address));
+      } else {
+        setFavoriteTokens([...(favoriteTokens || []), address]);
+      }
+    },
+    [favoriteTokens, setFavoriteTokens]
   );
 
   return (
@@ -217,102 +226,20 @@ function MarketsList(props: { options: Token[] | undefined }) {
             </thead>
 
             <tbody>
-              {filteredTokens?.map((token) => {
-                const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
-
-                let formattedMaxLongLiquidity = formatUsdWithMobile(
-                  !isSwap && maxLongLiquidityPool?.maxLongLiquidity,
-                  isSmallMobile
-                );
-
-                let maxShortLiquidityPoolFormatted = formatUsdWithMobile(
-                  !isSwap && maxShortLiquidityPool?.maxShortLiquidity,
-                  isSmallMobile
-                );
-
-                const isFavorite = favoriteTokens?.includes(token.address);
-                const handleFavoriteClick = () => {
-                  if (isFavorite) {
-                    setFavoriteTokens((favoriteTokens || []).filter((item) => item !== token.address));
-                  } else {
-                    setFavoriteTokens([...(favoriteTokens || []), token.address]);
-                  }
-                };
-
-                if (isSwap) {
-                  return (
-                    <tr key={token.symbol} className="group/row">
-                      <td
-                        className={cx(
-                          "w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
-                          rowVerticalPadding,
-                          rowHorizontalPadding
-                        )}
-                        onClick={() => handleMarketSelect(token.address, "largestPosition")}
-                      >
-                        <span className="inline-flex items-center text-slate-100">
-                          <TokenIcon
-                            className="ChartToken-list-icon -my-5 mr-8"
-                            symbol={token.symbol}
-                            displaySize={16}
-                            importSize={24}
-                          />
-                          {token.symbol}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                }
-
-                return (
-                  <tr key={token.symbol} className="group/row">
-                    <td
-                      className={cx(
-                        "cursor-pointer rounded-4 pl-15 pr-4 text-center hover:bg-cold-blue-900",
-                        rowVerticalPadding
-                      )}
-                      onClick={handleFavoriteClick}
-                    >
-                      {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
-                    </td>
-                    <td
-                      className={cx(
-                        "cursor-pointer rounded-4 pl-6 hover:bg-cold-blue-900",
-                        rowVerticalPadding,
-                        isSmallMobile ? "pr-6" : "pr-15"
-                      )}
-                      onClick={() => handleMarketSelect(token.address, "largestPosition")}
-                    >
-                      <span className="inline-flex items-center text-slate-100">
-                        <TokenIcon
-                          className="ChartToken-list-icon -my-5 mr-8"
-                          symbol={token.symbol}
-                          displaySize={16}
-                          importSize={24}
-                        />
-                        {token.symbol} {!isSwap && "/ USD"}
-                      </span>
-                    </td>
-
-                    <td
-                      className={tdClassName}
-                      onClick={() => {
-                        handleMarketSelect(token.address, TradeType.Long);
-                      }}
-                    >
-                      {formattedMaxLongLiquidity}
-                    </td>
-                    <td
-                      className={tdClassName}
-                      onClick={() => {
-                        handleMarketSelect(token.address, TradeType.Short);
-                      }}
-                    >
-                      {maxShortLiquidityPoolFormatted}
-                    </td>
-                  </tr>
-                );
-              })}
+              {filteredTokens?.map((token) => (
+                <MarketListItem
+                  key={token.address}
+                  token={token}
+                  isSwap={isSwap}
+                  isSmallMobile={isSmallMobile}
+                  isFavorite={favoriteTokens?.includes(token.address)}
+                  onFavorite={handleFavoriteClick}
+                  rowVerticalPadding={rowVerticalPadding}
+                  rowHorizontalPadding={rowHorizontalPadding}
+                  tdClassName={tdClassName}
+                  onMarketSelect={handleMarketSelect}
+                />
+              ))}
             </tbody>
           </table>
           {options && options.length > 0 && !filteredTokens?.length && (
@@ -323,6 +250,116 @@ function MarketsList(props: { options: Token[] | undefined }) {
         </div>
       </div>
     </>
+  );
+}
+
+function MarketListItem({
+  token,
+  isSwap,
+  isSmallMobile,
+  isFavorite,
+  onFavorite,
+  rowVerticalPadding,
+  rowHorizontalPadding,
+  tdClassName,
+  onMarketSelect,
+}: {
+  token: Token;
+  isSwap: boolean;
+  isSmallMobile: boolean;
+  isFavorite?: boolean;
+  onFavorite: (address: string) => void;
+  rowVerticalPadding: string;
+  rowHorizontalPadding: string;
+  tdClassName: string;
+  onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
+}) {
+  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+
+  const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
+  let formattedMaxLongLiquidity = formatUsdWithMobile(!isSwap && maxLongLiquidityPool?.maxLongLiquidity, isSmallMobile);
+
+  let maxShortLiquidityPoolFormatted = formatUsdWithMobile(
+    !isSwap && maxShortLiquidityPool?.maxShortLiquidity,
+    isSmallMobile
+  );
+
+  const handleFavoriteClick = useCallback(() => {
+    onFavorite(token.address);
+  }, [onFavorite, token.address]);
+
+  const handleSelectLargePosition = useCallback(() => {
+    onMarketSelect(token.address, "largestPosition");
+  }, [onMarketSelect, token.address]);
+
+  const handleSelectLong = useCallback(() => {
+    onMarketSelect(token.address, TradeType.Long);
+  }, [onMarketSelect, token.address]);
+
+  const handleSelectShort = useCallback(() => {
+    onMarketSelect(token.address, TradeType.Short);
+  }, [onMarketSelect, token.address]);
+
+  if (isSwap) {
+    return (
+      <tr key={token.symbol} className="group/row">
+        <td
+          className={cx(
+            "w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
+            rowVerticalPadding,
+            rowHorizontalPadding
+          )}
+          onClick={handleSelectLargePosition}
+        >
+          <span className="inline-flex items-center text-slate-100">
+            <TokenIcon
+              className="ChartToken-list-icon -my-5 mr-8"
+              symbol={token.symbol}
+              displaySize={16}
+              importSize={24}
+            />
+            {token.symbol}
+          </span>
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <tr key={token.symbol} className="group/row">
+      <td
+        className={cx("cursor-pointer rounded-4 pl-15 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
+        onClick={handleFavoriteClick}
+      >
+        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+      </td>
+      <td
+        className={cx(
+          "cursor-pointer rounded-4 pl-6 hover:bg-cold-blue-900",
+          rowVerticalPadding,
+          isSmallMobile ? "pr-6" : "pr-15"
+        )}
+        onClick={handleSelectLargePosition}
+      >
+        <span className="inline-flex items-center text-slate-100">
+          <TokenIcon
+            className="ChartToken-list-icon -my-5 mr-8"
+            symbol={token.symbol}
+            displaySize={16}
+            importSize={24}
+          />
+          {token.symbol} {!isSwap && "/ USD"}
+        </span>
+      </td>
+
+      <td className={tdClassName} onClick={handleSelectLong}>
+        {formattedMaxLongLiquidity}
+      </td>
+      <td className={tdClassName} onClick={handleSelectShort}>
+        {maxShortLiquidityPoolFormatted}
+      </td>
+    </tr>
   );
 }
 

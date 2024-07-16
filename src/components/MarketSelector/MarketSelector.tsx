@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
-import { TokensData, convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import {
   indexTokensFavoritesTabOptionLabels,
   indexTokensFavoritesTabOptions,
@@ -126,6 +126,17 @@ export function MarketSelector({
     }
   };
 
+  const handleFavoriteClick = useCallback(
+    (address: string) => {
+      if (favoriteTokens.includes(address)) {
+        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
+      } else {
+        setFavoriteTokens([...favoriteTokens, address]);
+      }
+    },
+    [favoriteTokens, setFavoriteTokens]
+  );
+
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <Modal
@@ -151,74 +162,18 @@ export function MarketSelector({
         />
 
         <div className="TokenSelector-tokens">
-          {filteredOptions.map((option, marketIndex) => {
-            const { marketInfo, balance, balanceUsd, indexName, state = {} } = option;
-            const assetImage = importImage(
-              `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
-            );
-
-            const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
-
-            const isFavorite = favoriteTokens?.includes(marketInfo.indexToken.address);
-            const handleFavoriteClick = (event: React.MouseEvent) => {
-              event.stopPropagation();
-
-              if (isFavorite) {
-                setFavoriteTokens((favoriteTokens || []).filter((item) => item !== marketInfo.indexToken.address));
-              } else {
-                setFavoriteTokens([...(favoriteTokens || []), marketInfo.indexToken.address]);
-              }
-            };
-
-            return (
-              <div
-                key={indexName}
-                className={cx("TokenSelector-token-row", { disabled: state.disabled })}
-                onClick={() => !state.disabled && onSelectOption(option)}
-              >
-                {state.disabled && state.message && (
-                  <TooltipWithPortal
-                    className="TokenSelector-tooltip"
-                    handle={<div className="TokenSelector-tooltip-backing" />}
-                    position={marketIndex < filteredOptions.length / 2 ? "bottom" : "top"}
-                    disableHandleStyle
-                    closeOnDoubleClick
-                    fitHandleWidth
-                    renderContent={() => state.message}
-                  />
-                )}
-                <div className="Token-info">
-                  <img src={assetImage} alt={indexName} className="token-logo" />
-                  <div className="Token-symbol">
-                    <div className="Token-text">{indexName}</div>
-                  </div>
-                </div>
-                <div className="Token-balance">
-                  {showBalances && balance !== undefined && (
-                    <div className="Token-text">
-                      {balance > 0 &&
-                        formatTokenAmount(balance, marketToken?.decimals, "", {
-                          useCommas: true,
-                        })}
-                      {balance == 0n && "-"}
-                    </div>
-                  )}
-                  <span className="text-accent">
-                    {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                      <div>{formatUsd(balanceUsd)}</div>
-                    )) ||
-                      null}
-                  </span>
-                </div>
-                <div
-                  className="flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700"
-                  onClick={handleFavoriteClick}
-                >
-                  {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
-                </div>
-              </div>
-            );
-          })}
+          {filteredOptions.map((option, marketIndex) => (
+            <MarketListItem
+              key={option.marketInfo.marketTokenAddress}
+              {...option}
+              showBalances={showBalances}
+              marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
+              isFavorite={favoriteTokens?.includes(option.marketInfo.indexToken.address)}
+              isInFirstHalf={marketIndex < filteredOptions.length / 2}
+              onSelectOption={onSelectOption}
+              onFavoriteClick={handleFavoriteClick}
+            />
+          ))}
         </div>
       </Modal>
       {selectedMarketLabel ? (
@@ -232,6 +187,101 @@ export function MarketSelector({
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       )}
+    </div>
+  );
+}
+
+function MarketListItem(props: {
+  marketInfo: MarketInfo;
+  marketToken?: TokenData;
+  balance: bigint;
+  balanceUsd: bigint;
+  indexName: string;
+  state?: MarketState;
+  isFavorite: boolean;
+  isInFirstHalf: boolean;
+  showBalances?: boolean;
+  onFavoriteClick: (address: string) => void;
+  onSelectOption: (option: MarketOption) => void;
+}) {
+  const {
+    marketInfo,
+    balance,
+    balanceUsd,
+    indexName,
+    state = {},
+    marketToken,
+    isFavorite,
+    isInFirstHalf,
+    showBalances,
+    onFavoriteClick,
+    onSelectOption,
+  } = props;
+  const assetImage = importImage(
+    `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
+  );
+
+  const handleFavoriteClick = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onFavoriteClick(marketInfo.indexToken.address);
+    },
+    [marketInfo.indexToken.address, onFavoriteClick]
+  );
+
+  const handleClick = useCallback(() => {
+    if (state.disabled) {
+      return;
+    }
+
+    onSelectOption({
+      marketInfo,
+      indexName,
+      balance,
+      balanceUsd,
+      state,
+    });
+  }, [balance, balanceUsd, indexName, marketInfo, onSelectOption, state]);
+
+  return (
+    <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
+      {state.disabled && state.message && (
+        <TooltipWithPortal
+          className="TokenSelector-tooltip"
+          handle={<div className="TokenSelector-tooltip-backing" />}
+          position={isInFirstHalf ? "bottom" : "top"}
+          disableHandleStyle
+          closeOnDoubleClick
+          fitHandleWidth
+          renderContent={() => state.message}
+        />
+      )}
+      <div className="Token-info">
+        <img src={assetImage} alt={indexName} className="token-logo" />
+        <div className="Token-symbol">
+          <div className="Token-text">{indexName}</div>
+        </div>
+      </div>
+      <div className="Token-balance">
+        {showBalances && balance !== undefined && (
+          <div className="Token-text">
+            {balance > 0 &&
+              formatTokenAmount(balance, marketToken?.decimals, "", {
+                useCommas: true,
+              })}
+            {balance == 0n && "-"}
+          </div>
+        )}
+        <span className="text-accent">
+          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) || null}
+        </span>
+      </div>
+      <div
+        className="flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700"
+        onClick={handleFavoriteClick}
+      >
+        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
@@ -163,13 +163,16 @@ function MarketTokenSelectorInternal(props: Props) {
 
   const close = useSelectorClose();
 
-  function handleSelectToken(marketTokenAddress: string) {
-    close();
-    history.push({
-      pathname: "/pools",
-      search: `?market=${marketTokenAddress}`,
-    });
-  }
+  const handleSelectToken = useCallback(
+    (marketTokenAddress: string) => {
+      close();
+      history.push({
+        pathname: "/pools",
+        search: `?market=${marketTokenAddress}`,
+      });
+    },
+    [close, history]
+  );
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 400px)");
@@ -185,18 +188,38 @@ function MarketTokenSelectorInternal(props: Props) {
 
   const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
 
+  const handleFavoriteClick = useCallback(
+    (address: string) => {
+      if (favoriteTokens.includes(address)) {
+        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
+      } else {
+        setFavoriteTokens([...favoriteTokens, address]);
+      }
+    },
+    [favoriteTokens, setFavoriteTokens]
+  );
+
+  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(event.target.value);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && filteredTokensInfo.length > 0) {
+        handleSelectToken(filteredTokensInfo[0].market.address);
+      }
+    },
+    [filteredTokensInfo, handleSelectToken]
+  );
+
   return (
     <div>
       <SelectorBaseMobileHeaderContent>
         <SearchInput
           className="mt-15"
           value={searchKeyword}
-          setValue={({ target }) => setSearchKeyword(target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && filteredTokensInfo.length > 0) {
-              handleSelectToken(filteredTokensInfo[0].market.address);
-            }
-          }}
+          setValue={handleSearch}
+          onKeyDown={handleKeyDown}
           placeholder="Search Market"
         />
       </SelectorBaseMobileHeaderContent>
@@ -253,75 +276,18 @@ function MarketTokenSelectorInternal(props: Props) {
             </thead>
           )}
           <tbody>
-            {filteredTokensInfo.map(
-              ({ market, mintableInfo, sellableInfo, apr, incentiveApr, marketInfo, poolName, indexName }) => {
-                const { indexToken, longToken, shortToken } = marketInfo;
-                const iconName = marketInfo.isSpotOnly
-                  ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-                  : getNormalizedTokenSymbol(indexToken.symbol);
-
-                const isFavorite = favoriteTokens?.includes(market.address);
-                const handleFavoriteClick = () => {
-                  if (isFavorite) {
-                    setFavoriteTokens((favoriteTokens || []).filter((item) => item !== market.address));
-                  } else {
-                    setFavoriteTokens([...(favoriteTokens || []), market.address]);
-                  }
-                };
-
-                const handleSelect = () => handleSelectToken(market.address);
-
-                const formattedMintableUsd = isSmallMobile
-                  ? formatAmountHuman(mintableInfo?.mintableUsd, USD_DECIMALS, true)
-                  : formatUsd(mintableInfo?.mintableUsd, {
-                      displayDecimals: 0,
-                      fallbackToZero: true,
-                    });
-
-                const formattedSellableAmount = isSmallMobile
-                  ? formatAmountHuman(sellableInfo?.totalAmount, market?.decimals, true)
-                  : formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
-                      displayDecimals: 0,
-                      useCommas: true,
-                    });
-
-                return (
-                  <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
-                    <td
-                      className={cx("rounded-4 pl-15 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
-                      onClick={handleFavoriteClick}
-                    >
-                      {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
-                    </td>
-                    <td
-                      className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")}
-                      onClick={handleSelect}
-                    >
-                      <span className="inline-flex items-center">
-                        {marketInfo && (
-                          <>
-                            <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-                            <div className="inline-flex flex-wrap items-center">
-                              <span>{indexName && indexName}</span>
-                              <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                            </div>
-                          </>
-                        )}
-                      </span>
-                    </td>
-                    <td className={tdClassName} onClick={handleSelect}>
-                      {formattedMintableUsd}
-                    </td>
-                    <td className={tdClassName} onClick={handleSelect}>
-                      {formattedSellableAmount}
-                    </td>
-                    <td className={tdClassName} onClick={handleSelect}>
-                      <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
-                    </td>
-                  </tr>
-                );
-              }
-            )}
+            {filteredTokensInfo.map((option) => (
+              <MarketTokenListItem
+                key={option.market.address}
+                {...option}
+                tdClassName={tdClassName}
+                isFavorite={favoriteTokens.includes(option.market.address)}
+                onFavorite={handleFavoriteClick}
+                handleSelectToken={handleSelectToken}
+                isSmallMobile={isSmallMobile}
+                rowVerticalPadding={rowVerticalPadding}
+              />
+            ))}
           </tbody>
         </table>
         {sortedMarketsByIndexToken.length > 0 && !filteredTokensInfo?.length && (
@@ -331,5 +297,93 @@ function MarketTokenSelectorInternal(props: Props) {
         )}
       </div>
     </div>
+  );
+}
+
+function MarketTokenListItem({
+  marketInfo,
+  market,
+  isFavorite,
+  onFavorite,
+  handleSelectToken,
+  isSmallMobile,
+  mintableInfo,
+  sellableInfo,
+  rowVerticalPadding,
+  indexName,
+  poolName,
+  tdClassName,
+  apr,
+  incentiveApr,
+}: {
+  marketInfo: MarketInfo;
+  market: TokenData;
+  isFavorite: boolean;
+  onFavorite: (address: string) => void;
+  handleSelectToken: (address: string) => void;
+  isSmallMobile: boolean;
+  mintableInfo: ReturnType<typeof getMintableMarketTokens>;
+  sellableInfo: ReturnType<typeof getSellableMarketToken>;
+  rowVerticalPadding: string;
+  indexName?: string;
+  poolName?: string;
+  tdClassName: string;
+  apr: bigint | undefined;
+  incentiveApr: bigint | undefined;
+}) {
+  const { indexToken, longToken, shortToken } = marketInfo;
+  const iconName = marketInfo.isSpotOnly
+    ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+    : getNormalizedTokenSymbol(indexToken.symbol);
+
+  const handleFavoriteClick = useCallback(() => onFavorite(market.address), [market.address, onFavorite]);
+
+  const handleSelect = useCallback(() => handleSelectToken(market.address), [handleSelectToken, market.address]);
+
+  const formattedMintableUsd = isSmallMobile
+    ? formatAmountHuman(mintableInfo?.mintableUsd, USD_DECIMALS, true)
+    : formatUsd(mintableInfo?.mintableUsd, {
+        displayDecimals: 0,
+        fallbackToZero: true,
+      });
+
+  const formattedSellableAmount = isSmallMobile
+    ? formatAmountHuman(sellableInfo?.totalAmount, market?.decimals, true)
+    : formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
+        displayDecimals: 0,
+        useCommas: true,
+      });
+
+  return (
+    <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
+      <td
+        className={cx("rounded-4 pl-15 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
+        onClick={handleFavoriteClick}
+      >
+        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+      </td>
+      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")} onClick={handleSelect}>
+        <span className="inline-flex items-center">
+          {marketInfo && (
+            <>
+              <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
+              <div className="inline-flex flex-wrap items-center">
+                <span>{indexName && indexName}</span>
+                <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+              </div>
+            </>
+          )}
+        </span>
+      </td>
+      <td className={tdClassName} onClick={handleSelect}>
+        {formattedMintableUsd}
+      </td>
+      <td className={tdClassName} onClick={handleSelect}>
+        {formattedSellableAmount}
+      </td>
+      <td className={tdClassName} onClick={handleSelect}>
+        <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
+      </td>
+    </tr>
   );
 }
