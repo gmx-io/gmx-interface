@@ -46,6 +46,11 @@ override.jest = function (config) {
   };
   config.transformIgnorePatterns = ["node_modules/(?!multiformats|wagmi)/"];
 
+  config.moduleNameMapper = {
+    "^.+\\.worker$": "<rootDir>/src/domain/synthetics/testUtils/worker.ts",
+    ...config.moduleNameMapper,
+  };
+
   return config;
 };
 
