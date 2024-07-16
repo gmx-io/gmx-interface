@@ -9,11 +9,11 @@
       background: transparent;
       border: none;
       padding: 0;
-      color: var(--text-gray);
+      color: var(--color-gray-300);
       text-decoration: underline;
 
       &:hover {
-        color: white;
+        color: var(--color-white);
       }
     }
   }

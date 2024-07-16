@@ -25,33 +25,6 @@
   }
 }
 
-.Position-list-order {
-  .order-error-text {
-    margin-top: 0.5rem;
-    white-space: normal;
-
-    &.level-error {
-      color: var(--error-red);
-    }
-
-    &.level-warning {
-      color: rgb(243, 181, 12);
-    }
-  }
-}
-
-.order-error-text-msg.level-error .Tooltip-handle,
-.position-order-error.level-error {
-  text-decoration-color: var(--error-red);
-  color: var(--error-red);
-}
-
-.order-error-text-msg.level-warning .Tooltip-handle,
-.position-order-error.level-warning {
-  text-decoration-color: var(--warning-yellow);
-  color: var(--warning-yellow);
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;

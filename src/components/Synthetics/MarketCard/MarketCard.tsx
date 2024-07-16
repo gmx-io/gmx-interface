@@ -1,10 +1,11 @@
 import "./MarketCard.scss";
-import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
 import Tooltip from "components/Tooltip/Tooltip";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
   getMarketPoolName,
@@ -12,17 +13,18 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
+  MarketInfo,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatPercentage, formatRatePercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ShareBar } from "components/ShareBar/ShareBar";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useCallback, useMemo } from "react";
-import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import MarketNetFee from "components/Synthetics/MarketNetFee/MarketNetFee";
+import { renderNetFeeHeaderTooltipContent } from "components/Synthetics/MarketsList/NetFeeHeaderTooltipContent";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DOCS_LINKS } from "config/links";
 import { formatUsdPrice } from "domain/synthetics/positions";
 
 export type Props = {
@@ -56,24 +58,24 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRateLong: getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1),
-      borrowingRateShort: getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1),
+      borrowingRateLong: -getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
+      borrowingRateShort: -getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
-      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+      totalInterestUsd: marketInfo.longInterestUsd + marketInfo.shortInterestUsd,
       priceDecimals: marketInfo.indexToken.priceDecimals,
       maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
-  const netRateHourly = fundingRate?.add(borrowingRate ?? 0);
+  const netRateHourly = (fundingRate ?? 0n) + (borrowingRate ?? 0n);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   const renderFundingFeeTooltipContent = useCallback(() => {
-    if (!fundingRateLong || !fundingRateShort) return [];
+    if (fundingRateLong === undefined || fundingRateShort === undefined) return [];
 
     const long = (
       <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
@@ -88,20 +90,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     return (
       <div>
         {currentFeeElement}
-        <div className="divider my-base" />
+        <br />
         {oppositeFeeElement}
-        <div className="divider my-base" />
-        <Trans>
-          Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
-          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
-        </Trans>
-
-        <br />
-        <br />
-        <Trans>
-          Borrowing fees help ensure available liquidity.{" "}
-          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
-        </Trans>
       </div>
     );
   }, [fundingRateLong, fundingRateShort, isLong, borrowingRateLong, borrowingRateShort]);
@@ -116,14 +106,24 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <ExchangeInfoRow
           label={t`Market`}
           value={
-            <div className="items-top">
+            <div className="flex items-start">
               <span>{indexName && indexName}</span>
               <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>
           }
         />
         <ExchangeInfoRow
-          label={t`Entry Price`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Ask Price (Entry)` : t`Bid Price (Entry)`}
+              tooltipClassName="text-white"
+              content={
+                isLong
+                  ? t`The ask price is used for opening longs and closing shorts.`
+                  : t`The bid price is used for opening shorts and closing longs.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={formatUsdPrice(entryPrice) || "..."}
@@ -147,7 +147,17 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Exit Price`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Bid Price (Exit)` : t`Ask Price (Exit)`}
+              tooltipClassName="text-white"
+              content={
+                isLong
+                  ? t`The bid price is used for opening shorts and closing longs.`
+                  : t`The ask price is used for opening longs and closing shorts.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={formatUsdPrice(exitPrice) || "..."}
@@ -169,11 +179,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={netRateHourly?.gt(0) ? t`Net Rebate` : t`Net Fee`}
+          label={
+            <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate</Trans>
+            </TooltipWithPortal>
+          }
           value={
             <TooltipWithPortal
-              portalClassName="MarketCard-net-fee"
-              handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
+              tooltipClassName="MarketCard-net-fee"
+              handle={netRateHourly !== undefined ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
               position="top-end"
               renderContent={renderFundingFeeTooltipContent}
             />
@@ -227,7 +241,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               <Tooltip
                 position="bottom-end"
                 handle={
-                  totalInterestUsd?.gt(0) ? (
+                  totalInterestUsd !== undefined && totalInterestUsd > 0 ? (
                     <ShareBar
                       showPercentage
                       className="MarketCard-pool-balance-bar"
@@ -240,14 +254,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 }
                 renderContent={() => (
                   <div>
-                    {marketInfo && totalInterestUsd && (
+                    {(marketInfo && totalInterestUsd !== undefined && (
                       <>
                         <StatsTooltipRow
                           label={t`Long Open Interest`}
                           value={
                             <span>
                               {formatUsd(marketInfo.longInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.longInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
@@ -259,14 +273,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                           value={
                             <span>
                               {formatUsd(marketInfo.shortInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.shortInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
                           showDollar={false}
                         />
                       </>
-                    )}
+                    )) ||
+                      null}
                   </div>
                 )}
               />

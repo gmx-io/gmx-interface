@@ -30,7 +30,7 @@
 }
 .position-share .info {
   list-style: none;
-  color: white;
+  color: var(--color-white);
   font-size: 1.25rem;
   display: flex;
   padding-left: 0;
@@ -72,7 +72,7 @@
 }
 .position-share .referral-code {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-gray-950);
   max-width: 18rem;
   border-radius: 5px;
   align-items: center;
@@ -130,7 +130,7 @@ a.App-button-option.tweet-link.disabled {
   bottom: 0;
   right: 0;
   background: #00000055;
-  color: #fff;
+  color: var(--color-white);
   display: inline-flex;
   justify-content: flex-end;
   align-items: center;

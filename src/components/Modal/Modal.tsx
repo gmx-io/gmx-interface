@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useMemo, PropsWithChildren } from "react";
+import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback } from "react";
 import cx from "classnames";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
 
 import "./Modal.css";
 
-const FADE_VARIANTS = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+const FADE_VARIANTS: Variants = {
+  hidden: { opacity: 0, pointerEvents: "none" },
+  visible: { opacity: 1, pointerEvents: "auto" },
 };
 
 const VISIBLE_STYLES: React.CSSProperties = {
@@ -24,18 +24,25 @@ const HIDDEN_STYLES: React.CSSProperties = {
 const TRANSITION = { duration: 0.2 };
 
 export type ModalProps = PropsWithChildren<{
+  className?: string;
   isVisible?: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  className?: string;
   zIndex?: number;
-  onAfterOpen?: () => void;
   label?: React.ReactNode;
   headerContent?: () => React.ReactNode;
+  onAfterOpen?: () => void;
 }>;
 
-export default function Modal(props: ModalProps) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
-
+export default function Modal({
+  className,
+  isVisible,
+  label,
+  zIndex,
+  children,
+  headerContent,
+  onAfterOpen,
+  setIsVisible,
+}: ModalProps) {
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -53,6 +60,10 @@ export default function Modal(props: ModalProps) {
   }, [onAfterOpen]);
 
   const style = useMemo(() => ({ zIndex }), [zIndex]);
+
+  const stopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   return (
     // @ts-ignore
@@ -72,20 +83,20 @@ export default function Modal(props: ModalProps) {
             style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
           ></div>
-          <div className="Modal-content">
+          <div className="Modal-content" onClick={stopPropagation}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
-                <div className="Modal-title">{props.label}</div>
-                <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
+                <div className="Modal-title">{label}</div>
+                <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
                   <MdClose fontSize={20} className="Modal-close-icon" />
                 </div>
               </div>
-              {props.headerContent && props.headerContent()}
+              {headerContent?.()}
             </div>
             <div className="divider" />
             <RemoveScroll>
               <div className={cx("Modal-body")} ref={modalRef}>
-                {props.children}
+                {children}
               </div>
             </RemoveScroll>
           </div>

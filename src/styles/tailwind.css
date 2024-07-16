@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Restore native webkit behavior */
+    @apply leading-base;
+  }
+
+  input,
+  textarea {
+    /* Restore native webkit behavior */
+    @apply placeholder-gray;
+  }
+}

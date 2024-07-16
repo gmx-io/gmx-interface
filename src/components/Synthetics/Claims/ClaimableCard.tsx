@@ -1,44 +1,40 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
-import { getTotalClaimableFundingUsd } from "domain/synthetics/markets";
+import {
+  selectClaimsFundingFeesClaimableTotal,
+  selectClaimsPriceImpactClaimableTotal,
+} from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CSSProperties, useMemo } from "react";
 import { ClaimableCardUI } from "./ClaimableCardUI";
-import { calcTotalRebateUsd } from "./utils";
+import { useLingui } from "@lingui/react";
 
 type Props = {
   onClaimClick: () => void;
   onClaimablePositionPriceImpactFeesClick: () => void;
   style?: CSSProperties;
-  claimablePositionPriceImpactFees: RebateInfoItem[];
 };
 
-const tooltipText = t`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
-const buttonText = t`Claim`;
-const title = t`Claimable`;
+const tooltipText = msg`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
+const buttonText = msg`Claim`;
+const title = msg`Claimable`;
 
-export function ClaimableCard({
-  onClaimClick,
-  style,
-  claimablePositionPriceImpactFees,
-  onClaimablePositionPriceImpactFeesClick,
-}: Props) {
-  const marketsInfoData = useMarketsInfoData();
-  const markets = Object.values(marketsInfoData ?? {});
-  const totalClaimableFundingUsd = useMemo(() => getTotalClaimableFundingUsd(markets), [markets]);
-  const tokensData = useTokensData();
-  const priceImpactRebateUsd = useMemo(
-    () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false),
-    [claimablePositionPriceImpactFees, tokensData]
-  );
+export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImpactFeesClick }: Props) {
+  const totalClaimableFundingUsd = useSelector(selectClaimsFundingFeesClaimableTotal);
+  const priceImpactRebateUsd = useSelector(selectClaimsPriceImpactClaimableTotal);
+  const { _ } = useLingui();
 
   const sections = useMemo(
     () =>
       [
-        { buttonText, tooltipText, onButtonClick: onClaimClick, usd: totalClaimableFundingUsd },
         {
-          buttonText,
+          buttonText: _(buttonText),
+          tooltipText: _(tooltipText),
+          onButtonClick: onClaimClick,
+          usd: totalClaimableFundingUsd,
+        },
+        {
+          buttonText: _(buttonText),
           tooltipText: (
             <Trans>
               Claimable Price Impact Rebates.
@@ -54,8 +50,8 @@ export function ClaimableCard({
           usd: priceImpactRebateUsd,
         },
       ] as const,
-    [onClaimClick, onClaimablePositionPriceImpactFeesClick, priceImpactRebateUsd, totalClaimableFundingUsd]
+    [_, onClaimClick, onClaimablePositionPriceImpactFeesClick, priceImpactRebateUsd, totalClaimableFundingUsd]
   );
 
-  return <ClaimableCardUI sections={sections} title={title} style={style} />;
+  return <ClaimableCardUI sections={sections} title={_(title)} style={style} />;
 }

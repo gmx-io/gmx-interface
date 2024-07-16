@@ -62,8 +62,6 @@ export default function ExchangeTVChart(props) {
     savedShouldShowPositionLines,
     orders,
     setToTokenAddress,
-    tradePageVersion,
-    setTradePageVersion,
     setSwapOption,
   } = props;
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
@@ -178,7 +176,7 @@ export default function ExchangeTVChart(props) {
   const ref = useRef(null);
 
   const currentAveragePrice =
-    chartToken?.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
+    chartToken?.maxPrice && chartToken.minPrice ? (chartToken.maxPrice + chartToken.minPrice) / 2n : null;
   const [priceData, updatePriceData] = useChartPrices(
     chainId,
     chartToken?.symbol,
@@ -366,7 +364,7 @@ export default function ExchangeTVChart(props) {
           </div>
         </div>
         <div className="ExchangeChart-info VersionSwitch-wrapper">
-          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
+          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
@@ -382,8 +380,6 @@ export default function ExchangeTVChart(props) {
             setPeriod={setPeriod}
             chartToken={chartToken}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

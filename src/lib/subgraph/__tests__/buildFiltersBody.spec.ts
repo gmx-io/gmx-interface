@@ -116,12 +116,12 @@ describe("buildFiltersBody", () => {
 
   it("should throw error if or is mixed with other filters", () => {
     const input: GraphQlFilters = {
-      // @ts-expect-error
       or: [
         {
           foo: "bar",
         },
       ],
+      // @ts-expect-error
       baz: "qux",
     };
 
@@ -132,12 +132,12 @@ describe("buildFiltersBody", () => {
 
   it("should throw error if and is mixed with other filters", () => {
     const input: GraphQlFilters = {
-      // @ts-expect-error
       and: [
         {
           foo: "bar",
         },
       ],
+      // @ts-expect-error
       baz: "qux",
     };
 
@@ -148,8 +148,8 @@ describe("buildFiltersBody", () => {
 
   it("should throw not error if empty or is mixed with other filters", () => {
     const input: GraphQlFilters = {
-      // @ts-expect-error
       or: [],
+      // @ts-expect-error
       baz: "qux",
     };
 
@@ -160,8 +160,8 @@ describe("buildFiltersBody", () => {
 
   it("should throw not error if empty and is mixed with other filters", () => {
     const input: GraphQlFilters = {
-      // @ts-expect-error
       and: [],
+      // @ts-expect-error
       baz: "qux",
     };
 
@@ -199,5 +199,15 @@ describe("buildFiltersBody", () => {
     const result = buildFiltersBody(input);
 
     expect(result).toEqual("{foo:true,bar:false}");
+  });
+
+  it("should format null values correctly", () => {
+    const input: GraphQlFilters = {
+      foo: null,
+    };
+
+    const result = buildFiltersBody(input);
+
+    expect(result).toEqual("{foo:null}");
   });
 });

@@ -3,8 +3,9 @@ import { NavLink, NavLinkProps } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
-import "./Header.css";
+import "./Header.scss";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 type Props = {
   isHomeLink?: boolean;
@@ -12,7 +13,6 @@ type Props = {
   exact?: boolean;
   to: string;
   showRedirectModal: (to: string) => void;
-  redirectPopupTimestamp?: number;
   onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
   isActive?: NavLinkProps["isActive"];
@@ -24,13 +24,13 @@ export function HeaderLink({
   exact,
   to,
   children,
-  redirectPopupTimestamp,
   showRedirectModal,
   onClick,
   isActive,
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
+  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   if (isHome && !(isHomeLink && !isOnHomePage)) {
     if (shouldShowRedirectModal(redirectPopupTimestamp)) {

@@ -1,5 +1,9 @@
 import { t } from "@lingui/macro";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useCallback, useMemo } from "react";
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import { Link } from "react-router-dom";
+import type { Address } from "viem";
+
 import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import {
   selectLeaderboardRankedAccountsByPnl,
@@ -7,15 +11,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
+import { shortenAddress } from "lib/legacy";
+import { mustNeverExist } from "lib/types";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import rank1Icon from "img/rank1.svg";
 import rank2Icon from "img/rank2.svg";
 import rank3Icon from "img/rank3.svg";
 import rank4Icon from "img/rank4.svg";
-import { shortenAddress } from "lib/legacy";
-import { mustNeverExist } from "lib/types";
-import { useCallback, useMemo } from "react";
-import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
-import { Link } from "react-router-dom";
 
 const iconByType = {
   gold: rank1Icon,
@@ -135,7 +140,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <div className="CompetitionPrizes default-container-mobile-one-sided">
+    <div className="CompetitionPrizes default-container">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
@@ -168,7 +173,11 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   const oneWinner =
     showCount === 1 && winner ? (
       <div className="CompetitionPrizes__prize-winners">
-        <Link target="_blank" to={`/actions/v2/${winner.account}`} className="CompetitionPrizes__prize-winner">
+        <Link
+          target="_blank"
+          to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+          className="CompetitionPrizes__prize-winner"
+        >
           <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
           <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 14)}</div>
         </Link>
@@ -180,7 +189,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
         {winners.slice(0, showCount).map((winner) => (
           <Link
             target="_blank"
-            to={`/actions/v2/${winner.account}`}
+            to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
             className="CompetitionPrizes__prize-winner CompetitionPrizes__prize-winner_many "
             key={winner.account}
           >
@@ -194,7 +203,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     return winners.map((winner) => (
       <Link
         target="_blank"
-        to={`/actions/v2/${winner.account}`}
+        to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
         className="CompetitionPrizes__tooltip-winner"
         key={winner.account}
       >
@@ -207,7 +216,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     restCount > 0 ? (
       <TooltipWithPortal
         className="CompetitionPrizes__prize-winner-tooltip"
-        portalClassName="CompetitionPrizes__prize-winner-tooltip"
+        tooltipClassName="CompetitionPrizes__prize-winner-tooltip"
         position="bottom"
         handle={manyWinnersContent}
         renderContent={renderTooltipContent}

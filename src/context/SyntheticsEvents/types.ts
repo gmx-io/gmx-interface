@@ -1,13 +1,12 @@
-import { BigNumber } from "ethers";
-import { OrderType } from "../../domain/synthetics/orders";
+import { OrderType, OrderTxnType } from "../../domain/synthetics/orders";
 
 export type SyntheticsEventsContextType = {
   orderStatuses: OrderStatuses;
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;
   pendingPositionsUpdates: PendingPositionsUpdates;
-  positionIncreaseEvents: PositionIncreaseEvent[];
-  positionDecreaseEvents: PositionDecreaseEvent[];
+  positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
+  positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   setPendingOrder: SetPendingOrder;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
   setPendingPosition: SetPendingPosition;
@@ -37,14 +36,14 @@ export type OrderCreatedEventData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  sizeDeltaUsd: BigNumber;
-  initialCollateralDeltaAmount: BigNumber;
-  contractTriggerPrice: BigNumber;
-  contractAcceptablePrice: BigNumber;
-  executionFee: BigNumber;
-  callbackGasLimit: BigNumber;
-  minOutputAmount: BigNumber;
-  updatedAtBlock: BigNumber;
+  sizeDeltaUsd: bigint;
+  initialCollateralDeltaAmount: bigint;
+  contractTriggerPrice: bigint;
+  contractAcceptablePrice: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  minOutputAmount: bigint;
+  updatedAtBlock: bigint;
   orderType: OrderType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
@@ -52,16 +51,18 @@ export type OrderCreatedEventData = {
 };
 
 export type PendingOrderData = {
+  orderKey?: string;
   account: string;
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  initialCollateralDeltaAmount: BigNumber;
-  minOutputAmount: BigNumber;
-  sizeDeltaUsd: BigNumber;
+  initialCollateralDeltaAmount: bigint;
+  minOutputAmount: bigint;
+  sizeDeltaUsd: bigint;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
+  txnType: OrderTxnType;
 };
 
 export type DepositCreatedEventData = {
@@ -74,12 +75,12 @@ export type DepositCreatedEventData = {
   initialShortTokenAddress: string;
   longTokenSwapPath: string[];
   shortTokenSwapPath: string[];
-  initialLongTokenAmount: BigNumber;
-  initialShortTokenAmount: BigNumber;
-  minMarketTokens: BigNumber;
-  updatedAtBlock: BigNumber;
-  executionFee: BigNumber;
-  callbackGasLimit: BigNumber;
+  initialLongTokenAmount: bigint;
+  initialShortTokenAmount: bigint;
+  minMarketTokens: bigint;
+  updatedAtBlock: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
   shouldUnwrapNativeToken: boolean;
 };
 
@@ -90,9 +91,9 @@ export type PendingDepositData = {
   initialShortTokenAddress: string;
   longTokenSwapPath: string[];
   shortTokenSwapPath: string[];
-  initialLongTokenAmount: BigNumber;
-  initialShortTokenAmount: BigNumber;
-  minMarketTokens: BigNumber;
+  initialLongTokenAmount: bigint;
+  initialShortTokenAmount: bigint;
+  minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
 };
 
@@ -102,29 +103,30 @@ export type WithdrawalCreatedEventData = {
   receiver: string;
   callbackContract: string;
   marketAddress: string;
-  marketTokenAmount: BigNumber;
-  minLongTokenAmount: BigNumber;
-  minShortTokenAmount: BigNumber;
-  updatedAtBlock: BigNumber;
-  executionFee: BigNumber;
-  callbackGasLimit: BigNumber;
+  marketTokenAmount: bigint;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
+  updatedAtBlock: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
   shouldUnwrapNativeToken: boolean;
 };
 
 export type PendingWithdrawalData = {
   account: string;
   marketAddress: string;
-  marketTokenAmount: BigNumber;
-  minLongTokenAmount: BigNumber;
-  minShortTokenAmount: BigNumber;
+  marketTokenAmount: bigint;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
   shouldUnwrapNativeToken: boolean;
 };
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
-  data: TEventData;
-  createdTxnHash: string;
+  data?: TEventData;
+  createdTxnHash?: string;
   cancelledTxnHash?: string;
+  updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
   isViewed?: boolean;
@@ -140,20 +142,20 @@ export type PositionIncreaseEvent = {
   account: string;
   marketAddress: string;
   collateralTokenAddress: string;
-  sizeInUsd: BigNumber;
-  sizeInTokens: BigNumber;
-  collateralAmount: BigNumber;
-  borrowingFactor: BigNumber;
-  executionPrice: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  longTokenFundingAmountPerSize: BigNumber;
-  shortTokenFundingAmountPerSize: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  collateralAmount: bigint;
+  borrowingFactor: bigint;
+  executionPrice: bigint;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  longTokenFundingAmountPerSize: bigint;
+  shortTokenFundingAmountPerSize: bigint;
+  collateralDeltaAmount: bigint;
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;
-  increasedAtBlock: BigNumber;
+  increasedAtBlock: bigint;
 };
 
 export type PositionDecreaseEvent = {
@@ -162,30 +164,30 @@ export type PositionDecreaseEvent = {
   account: string;
   marketAddress: string;
   collateralTokenAddress: string;
-  sizeInUsd: BigNumber;
-  sizeInTokens: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  collateralAmount: BigNumber;
-  collateralDeltaAmount: BigNumber;
-  borrowingFactor: BigNumber;
-  longTokenFundingAmountPerSize: BigNumber;
-  shortTokenFundingAmountPerSize: BigNumber;
-  pnlUsd: BigNumber;
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralAmount: bigint;
+  collateralDeltaAmount: bigint;
+  borrowingFactor: bigint;
+  longTokenFundingAmountPerSize: bigint;
+  shortTokenFundingAmountPerSize: bigint;
+  pnlUsd: bigint;
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;
-  decreasedAtBlock: BigNumber;
+  decreasedAtBlock: bigint;
 };
 
 export type PendingPositionUpdate = {
   isIncrease: boolean;
   positionKey: string;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralDeltaAmount: bigint;
   updatedAt: number;
-  updatedAtBlock: BigNumber;
+  updatedAtBlock: bigint;
 };
 
 export type OrderStatuses = {
@@ -219,8 +221,8 @@ export type EventLogSection<T> = {
 
 export type EventLogData = {
   addressItems: EventLogSection<string>;
-  uintItems: EventLogSection<BigNumber>;
-  intItems: EventLogSection<BigNumber>;
+  uintItems: EventLogSection<bigint>;
+  intItems: EventLogSection<bigint>;
   boolItems: EventLogSection<boolean>;
   bytes32Items: EventLogSection<string>;
   bytesItems: EventLogSection<string>;

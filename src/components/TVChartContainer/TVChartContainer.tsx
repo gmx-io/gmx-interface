@@ -1,12 +1,11 @@
 import Loader from "components/Common/Loader";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
-import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
-import { Token, getMidPrice } from "domain/tokens";
+import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -14,6 +13,8 @@ import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 export type ChartLine = {
   price: number;
@@ -23,26 +24,22 @@ export type ChartLine = {
 type Props = {
   symbol: string;
   chainId: number;
-  savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
-  chartToken: {
-    symbol: string;
-    minPrice: BigNumber;
-    maxPrice: BigNumber;
-  };
-  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
+  chartToken:
+    | ({
+        symbol: string;
+      } & TokenPrices)
+    | { symbol: string };
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
 };
 
 export default function TVChartContainer({
   symbol,
   chainId,
-  savedShouldShowPositionLines,
   chartLines,
   onSelectToken,
   dataProvider,
@@ -50,9 +47,8 @@ export default function TVChartContainer({
   setPeriod,
   chartToken,
   supportedResolutions,
-  tradePageVersion,
-  setTradePageVersion,
 }: Props) {
+  const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
@@ -63,7 +59,7 @@ export default function TVChartContainer({
   const symbolRef = useRef(symbol);
 
   useEffect(() => {
-    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
+    if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
       let priceDecimals: number;
 
       try {
@@ -107,7 +103,7 @@ export default function TVChartContainer({
   useEffect(
     function updateLines() {
       const lines: (IPositionLineAdapter | undefined)[] = [];
-      if (savedShouldShowPositionLines) {
+      if (shouldShowPositionLines) {
         chartLines.forEach((order) => {
           lines.push(drawLineOnChart(order.title, order.price));
         });
@@ -116,7 +112,7 @@ export default function TVChartContainer({
         lines.forEach((line) => line?.remove());
       };
     },
-    [chartLines, savedShouldShowPositionLines, drawLineOnChart]
+    [chartLines, shouldShowPositionLines, drawLineOnChart]
   );
 
   useEffect(() => {
@@ -126,6 +122,8 @@ export default function TVChartContainer({
       }
     }
   }, [symbol, chartReady, period, chainId]);
+
+  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   useEffect(() => {
     const widgetOptions = {

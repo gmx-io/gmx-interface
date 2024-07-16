@@ -1,35 +1,39 @@
 import { Trans, t } from "@lingui/macro";
-import { CardRow } from "components/CardRow/CardRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useMemo } from "react";
+
+import { getBridgingOptionsForToken } from "config/bridging";
 import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
+  getMaxPoolUsd,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import "./MarketStats.scss";
-import BridgingInfo from "../BridgingInfo/BridgingInfo";
-import { getBridgingOptionsForToken } from "config/bridging";
-import { BigNumber } from "ethers";
-import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
-import { useMemo } from "react";
+
+import { AprInfo } from "components/AprInfo/AprInfo";
+import { CardRow } from "components/CardRow/CardRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import BridgingInfo from "../BridgingInfo/BridgingInfo";
+
+import "./MarketStats.scss";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
   marketInfo?: MarketInfo;
   marketToken?: TokenData;
-  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
 };
 
@@ -37,7 +41,7 @@ export function MarketStats(p: Props) {
   const {
     marketInfo,
     marketToken,
-    marketsTokensAPRData,
+    marketsTokensApyData,
     marketsInfoData,
     marketTokensData,
     marketsTokensIncentiveAprData,
@@ -71,7 +75,7 @@ export function MarketStats(p: Props) {
   const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
-  const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
+  const apy = getByKey(marketsTokensApyData, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
@@ -81,59 +85,42 @@ export function MarketStats(p: Props) {
 
   const maxLongTokenValue = useMemo(
     () => [
-      formatTokenAmount(
+      formatTokenAmountWithUsd(
         mintableInfo?.longDepositCapacityAmount,
-        marketInfo?.longToken.decimals,
-        marketInfo?.longToken.symbol,
-        {
-          useCommas: true,
-        }
+        mintableInfo?.longDepositCapacityUsd,
+        longToken?.symbol,
+        longToken?.decimals
       ),
-      `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
-        displayDecimals: 0,
-        useCommas: true,
-      })} / ${formatTokenAmount(
-        marketInfo?.maxLongPoolAmount,
-        marketInfo?.longToken.decimals,
-        marketInfo?.longToken.symbol,
-        { displayDecimals: 0, useCommas: true }
-      )})`,
+      marketInfo
+        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
+        : "",
     ],
     [
-      marketInfo?.longPoolAmount,
-      marketInfo?.longToken.decimals,
-      marketInfo?.longToken.symbol,
-      marketInfo?.maxLongPoolAmount,
+      longToken?.decimals,
+      longToken?.symbol,
+      marketInfo,
       mintableInfo?.longDepositCapacityAmount,
+      mintableInfo?.longDepositCapacityUsd,
     ]
   );
-
   const maxShortTokenValue = useMemo(
     () => [
-      formatTokenAmount(
+      formatTokenAmountWithUsd(
         mintableInfo?.shortDepositCapacityAmount,
-        marketInfo?.shortToken.decimals,
-        marketInfo?.shortToken.symbol,
-        {
-          useCommas: true,
-        }
+        mintableInfo?.shortDepositCapacityUsd,
+        shortToken?.symbol,
+        shortToken?.decimals
       ),
-      `(${formatTokenAmount(marketInfo?.shortPoolAmount, marketInfo?.shortToken.decimals, undefined, {
-        displayDecimals: 0,
-        useCommas: true,
-      })} / ${formatTokenAmount(
-        marketInfo?.maxShortPoolAmount,
-        marketInfo?.shortToken.decimals,
-        marketInfo?.shortToken.symbol,
-        { displayDecimals: 0, useCommas: true }
-      )})`,
+      marketInfo
+        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
+        : "",
     ],
     [
-      marketInfo?.maxShortPoolAmount,
-      marketInfo?.shortPoolAmount,
-      marketInfo?.shortToken.decimals,
-      marketInfo?.shortToken.symbol,
+      marketInfo,
       mintableInfo?.shortDepositCapacityAmount,
+      mintableInfo?.shortDepositCapacityUsd,
+      shortToken?.decimals,
+      shortToken?.symbol,
     ]
   );
 
@@ -142,7 +129,7 @@ export function MarketStats(p: Props) {
       <MarketTokenSelector
         marketTokensData={marketTokensData}
         marketsInfoData={marketsInfoData}
-        marketsTokensAPRData={marketsTokensAPRData}
+        marketsTokensAPRData={marketsTokensApyData}
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         currentMarketInfo={marketInfo}
       />
@@ -152,7 +139,7 @@ export function MarketStats(p: Props) {
           label={t`Market`}
           value={
             indexName && poolName ? (
-              <div className="items-top">
+              <div className="flex items-start">
                 <span>{indexName}</span>
                 <span className="subtext gm-market-name">[{poolName}]</span>
               </div>
@@ -174,7 +161,16 @@ export function MarketStats(p: Props) {
               renderContent={() => {
                 return (
                   <div>
-                    <Trans>GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees.</Trans>
+                    <Trans>
+                      GM token pricing includes price impact pool amounts, the pending PnL of open positions, and
+                      borrowing fees. It excludes funding fees, which are exchanged between traders.
+                      <br />
+                      <br />
+                      <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+                        Read more about GM token pricing
+                      </ExternalLink>
+                      .
+                    </Trans>
                   </div>
                 );
               }}
@@ -185,19 +181,19 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Wallet`}
           value={formatTokenAmountWithUsd(
-            marketBalance || BigNumber.from(0),
-            marketBalanceUsd || BigNumber.from(0),
+            marketBalance ?? 0n,
+            marketBalanceUsd ?? 0n,
             "GM",
             marketToken?.decimals ?? 18
           )}
         />
 
-        <CardRow label={t`APR`} value={<AprInfo apr={apr} incentiveApr={incentiveApr} />} />
+        <CardRow label={t`APY`} value={<AprInfo apy={apy} incentiveApr={incentiveApr} />} />
 
         <CardRow
           label={t`Total Supply`}
           value={
-            marketTotalSupply && marketTotalSupplyUsd
+            marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
               ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken?.decimals, {
                   displayDecimals: 0,
                 })
@@ -208,7 +204,7 @@ export function MarketStats(p: Props) {
         <CardRow
           label={t`Buyable`}
           value={
-            mintableInfo && marketTotalSupplyUsd && marketToken ? (
+            mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
               <Tooltip
                 maxAllowedWidth={350}
                 handle={formatTokenAmountWithUsd(
@@ -221,42 +217,36 @@ export function MarketStats(p: Props) {
                   }
                 )}
                 position="bottom-end"
-                renderContent={() => {
-                  return (
-                    <div>
-                      {marketInfo?.isSameCollaterals ? (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified
-                          buying caps.
-                        </Trans>
-                      ) : (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
-                          this market up to the specified buying caps.
-                        </Trans>
-                      )}
+                content={
+                  <div>
+                    {marketInfo?.isSameCollaterals ? (
+                      <Trans>
+                        {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified buying
+                        caps.
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
+                        this market up to the specified buying caps.
+                      </Trans>
+                    )}
 
-                      <br />
-                      <br />
+                    <br />
+                    <br />
 
-                      <StatsTooltipRow
-                        label={t`Max ${marketInfo?.longToken.symbol}`}
-                        value={maxLongTokenValue}
-                        showDollar={false}
-                      />
-
-                      <br />
-
-                      {!marketInfo?.isSameCollaterals && (
-                        <StatsTooltipRow
-                          label={t`Max ${marketInfo?.shortToken.symbol}`}
-                          value={maxShortTokenValue}
-                          showDollar={false}
-                        />
-                      )}
-                    </div>
-                  );
-                }}
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.longToken.symbol}`}
+                      value={maxLongTokenValue}
+                      showDollar={false}
+                    />
+                    <br />
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.shortToken.symbol}`}
+                      value={maxShortTokenValue}
+                      showDollar={false}
+                    />
+                  </div>
+                }
               />
             ) : (
               "..."
@@ -279,12 +269,20 @@ export function MarketStats(p: Props) {
                 }
               )}
               position="bottom-end"
-              renderContent={() => (
+              content={
                 <div>
-                  <Trans>
-                    GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the specified
-                    selling caps. The remaining tokens in the pool are reserved for currently open Positions.
-                  </Trans>
+                  {marketInfo?.isSameCollaterals ? (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} for this market up to the specified selling caps. The
+                      remaining tokens in the pool are reserved for currently open positions.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the
+                      specified selling caps. The remaining tokens in the pool are reserved for currently open
+                      positions.
+                    </Trans>
+                  )}
                   <br />
                   <br />
                   <StatsTooltipRow
@@ -297,45 +295,75 @@ export function MarketStats(p: Props) {
                     )}
                     showDollar={false}
                   />
-                  <StatsTooltipRow
-                    label={t`Max ${marketInfo?.shortToken.symbol}`}
-                    value={formatTokenAmountWithUsd(
-                      maxShortSellableTokenAmount,
-                      sellableInfo?.maxShortSellableUsd,
-                      shortToken?.symbol,
-                      shortToken?.decimals
-                    )}
-                    showDollar={false}
-                  />
+                  {!marketInfo?.isSameCollaterals && (
+                    <StatsTooltipRow
+                      label={t`Max ${marketInfo?.shortToken.symbol}`}
+                      value={formatTokenAmountWithUsd(
+                        maxShortSellableTokenAmount,
+                        sellableInfo?.maxShortSellableUsd,
+                        shortToken?.symbol,
+                        shortToken?.decimals
+                      )}
+                      showDollar={false}
+                    />
+                  )}
                 </div>
-              )}
+              }
             />
           }
         />
 
         <div className="App-card-divider" />
-
-        <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
-        <CardRow
-          label={t`Pool Amount`}
-          value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
-        />
-        {shouldShowMoreInfo && (
-          <CardRow label={t`Read more`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
+        {marketInfo?.isSameCollaterals ? (
+          <>
+            <CardRow label={t`Collateral`} value={longToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                (longPoolAmount ?? BN_ZERO) + (shortPoolAmount ?? BN_ZERO),
+                (longPoolAmountUsd ?? BN_ZERO) + (shortPoolAmountUsd ?? BN_ZERO),
+                longToken?.symbol,
+                longToken?.decimals
+              )}
+            />
+            {shouldShowMoreInfo && (
+              <CardRow
+                label={t`Read more`}
+                value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                longPoolAmount,
+                longPoolAmountUsd,
+                longToken?.symbol,
+                longToken?.decimals
+              )}
+            />
+            {shouldShowMoreInfo && (
+              <CardRow
+                label={t`Read more`}
+                value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
+              />
+            )}
+            <div className="App-card-divider" />
+            <CardRow label={t`Short Collateral`} value={shortToken?.symbol || "..."} />
+            <CardRow
+              label={t`Pool Amount`}
+              value={formatTokenAmountWithUsd(
+                shortPoolAmount,
+                shortPoolAmountUsd,
+                shortToken?.symbol,
+                shortToken?.decimals
+              )}
+            />
+          </>
         )}
-
-        <div className="App-card-divider" />
-
-        <CardRow label={t`Short Collateral`} value={shortToken?.symbol || "..."} />
-        <CardRow
-          label={t`Pool Amount`}
-          value={formatTokenAmountWithUsd(
-            shortPoolAmount,
-            shortPoolAmountUsd,
-            shortToken?.symbol,
-            shortToken?.decimals
-          )}
-        />
       </div>
     </div>
   );

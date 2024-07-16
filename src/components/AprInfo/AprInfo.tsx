@@ -1,39 +1,67 @@
 import { Trans, t } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
+import { getIncentivesV2Url } from "config/links";
+import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
+import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import { useChainId } from "lib/chains";
+import { formatAmount } from "lib/numbers";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { BigNumber } from "ethers";
-import { formatAmount } from "lib/numbers";
-import { useCallback } from "react";
+
+import sparkleIcon from "img/sparkle.svg";
 
 export function AprInfo({
-  apr,
+  apy,
   incentiveApr,
   showTooltip = true,
 }: {
-  apr: BigNumber | undefined;
-  incentiveApr: BigNumber | undefined;
+  apy: bigint | undefined;
+  incentiveApr: bigint | undefined;
   showTooltip?: boolean;
 }) {
-  const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
-  const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
+  const { chainId } = useChainId();
+  const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
+  const incentivesData = useLiquidityProvidersIncentives(chainId);
+  const isIncentiveActive = !!incentivesData;
+  const airdropTokenTitle = useLpAirdroppedTokenTitle();
+
   const renderTooltipContent = useCallback(() => {
+    if (!isIncentiveActive) {
+      return <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />;
+    }
+
     return (
       <>
-        <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />
-        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 2, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
         <Trans>
-          The Bonus APR will be airdropped as ARB tokens.{" "}
-          <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#5c07d62e5676466db25f30807ef0a647">
-            Read more
-          </ExternalLink>
-          .
+          The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+          <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
         </Trans>
       </>
     );
-  }, [apr, incentiveApr]);
-  return showTooltip && incentiveApr && incentiveApr.gt(0) ? (
+  }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive]);
+
+  const aprNode = useMemo(() => {
+    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+
+    if (incentiveApr !== undefined && incentiveApr > 0) {
+      return (
+        <div className="flex flex-nowrap">
+          {node}
+          <img className="relative -top-3 h-10" src={sparkleIcon} alt="sparkle" />
+        </div>
+      );
+    } else {
+      return node;
+    }
+  }, [apy, incentiveApr, totalApr]);
+
+  return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode

@@ -14,19 +14,19 @@
     align-items: center;
     flex: 1;
 
-    background-color: rgb(52, 55, 86);
+    background-color: var(--color-slate-600);
     .clickable &:not([disabled]):hover {
-      background: rgba(80, 87, 126, 0.6);
+      background: var(--color-slate-500);
     }
 
     .clickable &:not([disabled]):active {
-      background: rgba(80, 87, 126, 0.7);
+      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
     }
   }
 
   &-button-text {
     flex: 1;
-    color: white;
+    color: var(--color-white);
     font-size: 1.3rem;
     padding: 0.8rem 1rem;
   }
@@ -45,13 +45,13 @@
     padding: 0 0.7rem;
     cursor: pointer;
 
-    background-color: rgb(52, 55, 86);
+    background-color: var(--color-slate-600);
     &:not([disabled]):hover {
-      background: rgba(80, 87, 126, 0.6);
+      background: var(--color-slate-500);
     }
 
     &:not([disabled]):active {
-      background: rgba(80, 87, 126, 0.7);
+      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
     }
   }
 }

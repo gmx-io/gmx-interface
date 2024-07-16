@@ -7,10 +7,11 @@ import { getContract } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -21,12 +22,12 @@ export type PriceOverrides = {
 type SimulateExecuteOrderParams = {
   account: string;
   createOrderMulticallPayload: string[];
-  secondaryPriceOverrides: PriceOverrides;
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
-  value: BigNumber;
+  value: bigint;
   method?: string;
   errorTitle?: string;
+  extraArgs?: any[];
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
@@ -35,58 +36,72 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
-  const blockNumber = await provider.getBlockNumber();
+  const block = await provider.getBlock("latest");
+  if (!block) {
+    throw new Error("block can't be fetched");
+  }
+  const blockNumber = block.number;
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
-  const nextNonce = nonce.add(1);
+  const nextNonce = nonce + 1n;
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
-  const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
-    chainId,
-    p.tokensData,
-    p.primaryPriceOverrides,
-    p.secondaryPriceOverrides
-  );
+  const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
+  const priceTimestamp = block.timestamp + 5;
+  const method = p.method || "simulateExecuteOrder";
 
   const simulationPayload = [
     ...p.createOrderMulticallPayload,
-    exchangeRouter.interface.encodeFunctionData(p.method || "simulateExecuteOrder", [
+    exchangeRouter.interface.encodeFunctionData(method, [
       nextKey,
       {
         primaryTokens: primaryTokens,
         primaryPrices: primaryPrices,
-        secondaryTokens: secondaryTokens,
-        secondaryPrices: secondaryPrices,
+        minTimestamp: priceTimestamp,
+        maxTimestamp: priceTimestamp,
       },
+      ...(p.extraArgs ?? []),
     ]),
   ];
 
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
+  const tenderlyConfig = getTenderlyConfig();
+
+  if (tenderlyConfig) {
+    await simulateTxWithTenderly(chainId, exchangeRouter, p.account, "multicall", [simulationPayload], {
+      value: p.value,
+      comment: `calling ${method}`,
+    });
+  }
+
   try {
-    await exchangeRouter.callStatic.multicall(simulationPayload, {
+    await exchangeRouter.multicall.staticCall(simulationPayload, {
       value: p.value,
       blockTag: blockNumber,
       from: p.account,
     });
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
     let msg: any = undefined;
 
     try {
-      const errorData = extractDataFromError(txnError.message);
+      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
+
+      if (!errorData) throw new Error("No data found in error.");
+
       const parsedError = customErrors.interface.parseError(errorData);
-      const isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
+      const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
 
       if (isSimulationPassed) {
         return;
       }
 
-      const parsedArgs = Object.keys(parsedError.args).reduce((acc, k) => {
+      const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
         if (!Number.isNaN(Number(k))) {
           return acc;
         }
-        acc[k] = parsedError.args[k].toString();
+        acc[k] = parsedError?.args[k].toString();
         return acc;
       }, {});
 
@@ -94,9 +109,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
         <div>
           {errorTitle}
           <br />
-          <ToastifyDebug>
-            {parsedError.name} {JSON.stringify(parsedArgs, null, 2)}
-          </ToastifyDebug>
+          <br />
+          <ToastifyDebug
+            error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
+          />
         </div>
       );
     } catch (parsingError) {
@@ -112,7 +128,8 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
         <div>
           <Trans>Execute order simulation failed.</Trans>
           <br />
-          <ToastifyDebug>Unknown Error</ToastifyDebug>
+          <br />
+          <ToastifyDebug error={t`Unknown Error`} />
         </div>
       );
     }
@@ -123,9 +140,11 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   }
 }
 
-function extractDataFromError(error_message) {
+export function extractDataFromError(errorMessage: unknown) {
+  if (typeof errorMessage !== "string") return null;
+
   const pattern = /data="([^"]+)"/;
-  const match = error_message.match(pattern);
+  const match = errorMessage.match(pattern);
 
   if (match && match[1]) {
     return match[1];
@@ -133,17 +152,11 @@ function extractDataFromError(error_message) {
   return null;
 }
 
-function getSimulationPrices(
-  chainId: number,
-  tokensData: TokensData,
-  primaryPricesMap: PriceOverrides,
-  secondaryPricesMap: PriceOverrides
-) {
+function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];
-  const primaryPrices: { min: BigNumber; max: BigNumber }[] = [];
-  const secondaryPrices: { min: BigNumber; max: BigNumber }[] = [];
+  const primaryPrices: { min: bigint; max: bigint }[] = [];
 
   for (const address of tokenAddresses) {
     const token = getTokenData(tokensData, address);
@@ -170,23 +183,10 @@ function getSimulationPrices(
     } else {
       primaryPrices.push(currentPrice);
     }
-
-    const secondaryOverridedPrice = secondaryPricesMap[address];
-
-    if (secondaryOverridedPrice) {
-      secondaryPrices.push({
-        min: convertToContractPrice(secondaryOverridedPrice.minPrice, token.decimals),
-        max: convertToContractPrice(secondaryOverridedPrice.maxPrice, token.decimals),
-      });
-    } else {
-      secondaryPrices.push(currentPrice);
-    }
   }
 
   return {
     primaryTokens,
-    secondaryTokens: primaryTokens,
     primaryPrices,
-    secondaryPrices,
   };
 }

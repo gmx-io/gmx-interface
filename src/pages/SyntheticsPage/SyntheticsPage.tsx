@@ -1,5 +1,40 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { uniq } from "lodash";
+import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
+import Helmet from "react-helmet";
+
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { getSyntheticsListSectionKey } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import type { OrderType } from "domain/synthetics/orders/types";
+import { TradeMode } from "domain/synthetics/trade";
+import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
+import { getMidPrice } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { getPageTitle } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatUsd } from "lib/numbers";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { usePendingTxns } from "lib/usePendingTxns";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import useWallet from "lib/wallets/useWallet";
+
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { Claims } from "components/Synthetics/Claims/Claims";
@@ -11,62 +46,8 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
-import { getSyntheticsListSectionKey } from "config/localStorage";
-import { getToken } from "config/tokens";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionInfo } from "domain/synthetics/positions";
-import { useChainId } from "lib/chains";
-import { getPageTitle } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import Helmet from "react-helmet";
-
-import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
-import {
-  useIsOrdersLoading,
-  useIsPositionsLoading,
-  useMarketsInfoData,
-  useOrdersInfoData,
-  usePositionsInfoData,
-  useSavedIsPnlInLeverage,
-  useTokensData,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxFromTokenAddress,
-  useTradeboxSetActivePosition,
-  useTradeboxSetTradeConfig,
-  useTradeboxToTokenAddress,
-  useTradeboxTradeFlags,
-  useTradeboxTradeMode,
-  useTradeboxTradeType,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
-import { TradeMode } from "domain/synthetics/trade";
-import { getMidPrice } from "domain/tokens";
-import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
-import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
-import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
-import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 
 export type Props = {
-  shouldDisableValidation: boolean;
-  savedShouldShowPositionLines: boolean;
-  showPnlAfterFees: boolean;
-  savedSlippageAmount: number;
-  setSavedShouldShowPositionLines: (value: boolean) => void;
-  setPendingTxns: (txns: any) => void;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
   openSettings: () => void;
 };
 
@@ -78,28 +59,11 @@ enum ListSection {
 }
 
 export function SyntheticsPage(p: Props) {
-  const {
-    shouldDisableValidation,
-    savedShouldShowPositionLines,
-    showPnlAfterFees,
-    tradePageVersion,
-    setSavedShouldShowPositionLines,
-    setPendingTxns,
-    setTradePageVersion,
-    savedSlippageAmount,
-    openSettings,
-  } = p;
+  const { openSettings } = p;
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
-  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
-  const marketsInfoData = useMarketsInfoData();
-  const tokensData = useTokensData();
-  const positionsInfoData = usePositionsInfoData();
-  const isPositionsLoading = useIsPositionsLoading();
-  const ordersInfoData = useOrdersInfoData();
-  const isOrdersLoading = useIsOrdersLoading();
-
-  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfo(chainId);
+  const { account } = useWallet();
+  const calcSelector = useCalcSelector();
+  const [, setPendingTxns] = usePendingTxns();
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -107,189 +71,101 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
-  const { isSwap } = useTradeboxTradeFlags();
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const toTokenAddress = useTradeboxToTokenAddress();
-  const availableTokensOptions = useTradeboxAvailableTokensOptions();
-  const setActivePosition = useTradeboxSetActivePosition();
-  const setTradeConfig = useTradeboxSetTradeConfig();
-  const tradeMode = useTradeboxTradeMode();
-  const tradeType = useTradeboxTradeType();
-
-  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
-    availableTokensOptions;
-
-  useTradeParamsProcessor({
-    setTradeConfig,
-    markets: sortedAllMarkets,
-    tradeMode,
-    tradeType,
-    availableTokensOptions,
-  });
-
-  const { chartToken, availableChartTokens } = useMemo(() => {
-    if (!fromTokenAddress || !toTokenAddress) {
-      return {};
-    }
-
-    try {
-      const fromToken = getToken(chainId, fromTokenAddress);
-      const toToken = getToken(chainId, toTokenAddress);
-
-      const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-      const availableChartTokens = isSwap ? swapTokens : indexTokens;
-      const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
-        if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
-          const currentSortReferenceList = isSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
-          return currentSortReferenceList.indexOf(a.address) - currentSortReferenceList.indexOf(b.address);
-        }
-        return 0;
-      });
-
-      return {
-        chartToken,
-        availableChartTokens: sortedAvailableChartTokens,
-      };
-    } catch (e) {
-      return {};
-    }
-  }, [
-    fromTokenAddress,
-    toTokenAddress,
-    chainId,
-    isSwap,
-    swapTokens,
-    indexTokens,
-    sortedIndexTokensWithPoolValue,
-    sortedLongAndShortTokens,
-  ]);
-
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
-  const closingPosition = getByKey(positionsInfoData, closingPositionKey);
-
-  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
-
-  const [editingPositionKey, setEditingPositionKey] = useState<string>();
-  const editingPosition = getByKey(positionsInfoData, editingPositionKey);
-
-  const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
-
-  const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
-  const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
-  const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-
-  const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
-    const positions = Object.values(positionsInfoData || {});
-    const orders = Object.values(ordersInfoData || {});
-
-    return {
-      positionsCount: positions.length,
-      ordersCount: orders.length,
-      ordersErrorsCount: orders.filter((order) => order.errorLevel === "error").length,
-      ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
-    };
-  }, [ordersInfoData, positionsInfoData]);
-  const hasClaimableFees = useMemo(() => {
-    const markets = Object.values(marketsInfoData ?? {});
-    const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
-    return totalClaimableFundingUsd.gt(0);
-  }, [marketsInfoData]);
-
-  const hasClaimableRebates = useMemo(
-    () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false).gt(0),
-    [claimablePositionPriceImpactFees, tokensData]
+  const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
+  const setClosingPositionKey = useCallback(
+    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    [setClosingPositionKeyRaw]
   );
 
-  let totalClaimables = 0;
+  const setActivePosition = useSelector(selectTradeboxSetActivePosition);
 
-  if (hasClaimableFees) totalClaimables += 1;
-  if (hasClaimableRebates) totalClaimables += 1;
+  useTradeParamsProcessor();
 
-  const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
+  const chartToken = useSelector(selectChartToken);
+
+  const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
+  const ordersCount = useSelector(selectOrdersCount);
+  const positionsCount = useSelector((s) => Object.keys(selectPositionsInfoData(s) || {}).length);
+  const totalClaimables = useSelector(selectClaimablesCount);
+
+  const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  let allowedSlippage = savedSlippageAmount!;
+  let allowedSlippage = savedAllowedSlippage!;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const onPositionSellerClose = useCallback(() => {
-    setClosingPositionKey(undefined);
-  }, []);
+  const {
+    isCancelOrdersProcessing,
+    selectedOrderKeys,
+    setSelectedOrderKeys,
+    onCancelSelectedOrders,
+    onCancelOrder,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
+  } = useOrdersControl();
 
-  const onPositionEditorClose = useCallback(() => {
-    setEditingPositionKey(undefined);
-  }, []);
+  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
-  function onCancelOrdersClick() {
-    if (!signer) return;
-    setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: selectedOrdersKeysArr,
-      setPendingTxns: setPendingTxns,
-      isLastSubaccountAction,
-      detailsMsg: cancelOrdersDetailsMessage,
-    })
-      .then(async (tx) => {
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          setSelectedOrdersKeys({});
+  const handlePositionListOrdersClick = useCallback(
+    (positionKey: string, orderKey: string | undefined) => {
+      setListSection(ListSection.Orders);
+      startTransition(() => {
+        setSelectedPositionOrderKey(orderKey);
+
+        if (orderKey) {
+          setSelectedOrderKeys([orderKey]);
+          setMarketsDirectionsFilter([]);
+          setOrderTypesFilter([]);
         }
-      })
-      .finally(() => {
-        setIsCancelOrdersProcessig(false);
       });
-  }
-
-  function handleOrderClick(key?: string) {
-    setListSection(ListSection.Orders);
-    setSelectedPositionOrderKey(key);
-    if (key) {
-      setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
-    }
-  }
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
 
   useEffect(() => {
-    const chartTokenData = getByKey(tokensData, chartToken?.address);
-    if (!chartTokenData) return;
+    if (!chartToken) return;
 
-    const averagePrice = getMidPrice(chartTokenData.prices);
+    const averagePrice = getMidPrice(chartToken.prices);
     const currentTokenPriceStr =
       formatUsd(averagePrice, {
-        displayDecimals: chartTokenData.priceDecimals,
+        displayDecimals: chartToken.priceDecimals,
       }) || "...";
 
-    const title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
-    document.title = title;
-  }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
-
-  function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
-    const position = getByKey(positionsInfoData, key);
-
-    if (!position) return;
-
-    const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
-    const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
-    setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-    const message = (
-      <Trans>
-        {position?.isLong ? "Long" : "Short"}{" "}
-        <div className="inline-flex">
-          <span>{indexName}</span>
-          <span className="subtext gm-toast">[{poolName}]</span>
-        </div>{" "}
-        <span>market selected</span>.
-      </Trans>
+    const title = getPageTitle(
+      currentTokenPriceStr +
+        ` | ${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
     );
-    helperToast.success(message);
-  }
+    document.title = title;
+  }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
 
-  function handleSettlePositionFeesClick(positionKey: PositionInfo["key"]) {
-    setGettingPendingFeePositionKeys((keys) => keys.concat(positionKey).filter((x, i, self) => self.indexOf(x) === i));
-    setIsSettling(true);
-  }
+  const onSelectPositionClick = useCallback(
+    (key: string, tradeMode?: TradeMode) => {
+      const positionsInfoData = calcSelector(selectPositionsInfoData);
+      const position = getByKey(positionsInfoData, key);
+
+      if (!position) return;
+
+      const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
+      const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
+      setActivePosition(getByKey(positionsInfoData, key), tradeMode);
+      const message = (
+        <Trans>
+          {position?.isLong ? "Long" : "Short"}{" "}
+          <div className="inline-flex">
+            <span>{indexName}</span>
+            <span className="subtext gm-toast">[{poolName}]</span>
+          </div>{" "}
+          <span>market selected</span>.
+        </Trans>
+      );
+      helperToast.success(message);
+    },
+    [calcSelector, setActivePosition]
+  );
 
   const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
@@ -326,19 +202,27 @@ export function SyntheticsPage(p: Props) {
   function renderClaims() {
     return (
       <Claims
-        positionsInfoData={positionsInfoData}
         shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
-        gettingPendingFeePositionKeys={gettingPendingFeePositionKeys}
-        setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         allowedSlippage={allowedSlippage}
-        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
-        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
     );
   }
+
+  const handleTabChange = useCallback(
+    (section: ListSection) => {
+      setListSection(section);
+      startTransition(() => {
+        setOrderTypesFilter([]);
+        setMarketsDirectionsFilter([]);
+        setSelectedOrderKeys([]);
+        setSelectedPositionOrderKey(undefined);
+      });
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
 
   return (
     <div className="Exchange page-layout">
@@ -346,51 +230,40 @@ export function SyntheticsPage(p: Props) {
         <style type="text/css">
           {`
             :root {
-              --main-bg-color: #08091b;                   
+              --main-bg-color: #08091b;
              {
          `}
         </style>
       </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
-          <TVChart
-            tokensData={tokensData}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
-            ordersInfo={ordersInfoData}
-            positionsInfo={positionsInfoData}
-            chartTokenAddress={chartToken?.address}
-            availableTokens={availableChartTokens}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
-            avaialbleTokenOptions={availableTokensOptions}
-            marketsInfoData={marketsInfoData}
-          />
+          <TVChart />
 
           <div className="Exchange-lists large">
             <div className="Exchange-list-tab-container">
               <Tab
-                options={Object.keys(ListSection)}
+                options={tabOptions}
                 optionLabels={tabLabels}
                 option={listSection}
-                onChange={(section) => setListSection(section)}
+                onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
-                {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
+                {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
                   <button
-                    className="muted font-base cancel-order-btn"
-                    disabled={isCancelOrdersProcessig}
+                    className="muted cancel-order-btn text-15"
+                    disabled={isCancelOrdersProcessing}
                     type="button"
-                    onClick={onCancelOrdersClick}
+                    onClick={onCancelSelectedOrders}
                   >
-                    <Plural value={selectedOrdersKeysArr.length} one="Cancel order" other="Cancel # orders" />
+                    <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
                   </button>
                 )}
                 <Checkbox
-                  isChecked={savedShouldShowPositionLines}
-                  setIsChecked={setSavedShouldShowPositionLines}
-                  className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}
+                  isChecked={shouldShowPositionLines}
+                  setIsChecked={setShouldShowPositionLines}
+                  className={cx("muted chart-positions", { active: shouldShowPositionLines })}
                 >
                   <span>
                     <Trans>Chart positions</Trans>
@@ -401,25 +274,25 @@ export function SyntheticsPage(p: Props) {
 
             {listSection === ListSection.Positions && (
               <PositionList
-                isLoading={isPositionsLoading}
-                onOrdersClick={handleOrderClick}
-                onSettlePositionFeesClick={handleSettlePositionFeesClick}
+                onOrdersClick={handlePositionListOrdersClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
-                onEditCollateralClick={setEditingPositionKey}
-                showPnlAfterFees={showPnlAfterFees}
                 openSettings={openSettings}
+                onCancelOrder={onCancelOrder}
               />
             )}
             {listSection === ListSection.Orders && (
               <OrderList
-                selectedOrdersKeys={selectedOrdersKeys}
-                setSelectedOrdersKeys={setSelectedOrdersKeys}
-                isLoading={isOrdersLoading}
+                selectedOrdersKeys={selectedOrderKeys}
+                setSelectedOrderKeys={setSelectedOrderKeys}
                 setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-                availableTokensOptions={availableTokensOptions}
+                marketsDirectionsFilter={marketsDirectionsFilter}
+                setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                orderTypesFilter={orderTypesFilter}
+                setOrderTypesFilter={setOrderTypesFilter}
+                onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -430,8 +303,6 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox
-              avaialbleTokenOptions={availableTokensOptions}
-              shouldDisableValidation={shouldDisableValidation}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
@@ -440,38 +311,38 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="Exchange-lists small">
+        <div className="Exchange-lists small min-w-0">
           <div className="Exchange-list-tab-container">
             <Tab
               options={tabOptions}
               optionLabels={tabLabels}
               option={listSection}
-              onChange={(section) => setListSection(section)}
+              onChange={handleTabChange}
               type="inline"
               className="Exchange-list-tabs"
             />
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
-              isLoading={isPositionsLoading}
-              onOrdersClick={handleOrderClick}
+              onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
-              onEditCollateralClick={setEditingPositionKey}
-              onSettlePositionFeesClick={handleSettlePositionFeesClick}
-              showPnlAfterFees={showPnlAfterFees}
               openSettings={openSettings}
+              onCancelOrder={onCancelOrder}
             />
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              isLoading={isOrdersLoading}
-              selectedOrdersKeys={selectedOrdersKeys}
-              setSelectedOrdersKeys={setSelectedOrdersKeys}
+              selectedOrdersKeys={selectedOrderKeys}
+              setSelectedOrderKeys={setSelectedOrderKeys}
               setPendingTxns={setPendingTxns}
               selectedPositionOrderKey={selectedPositionOrderKey}
               setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-              availableTokensOptions={availableTokensOptions}
+              marketsDirectionsFilter={marketsDirectionsFilter}
+              setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+              orderTypesFilter={orderTypesFilter}
+              setOrderTypesFilter={setOrderTypesFilter}
+              onCancelSelectedOrders={onCancelSelectedOrders}
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -480,28 +351,80 @@ export function SyntheticsPage(p: Props) {
       </div>
 
       <PositionSeller
-        position={closingPosition!}
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
-        onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
-        availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-        shouldDisableValidation={shouldDisableValidation}
       />
 
-      <PositionEditor
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
-        position={editingPosition}
-        allowedSlippage={allowedSlippage}
-        onClose={onPositionEditorClose}
-        setPendingTxns={setPendingTxns}
-        shouldDisableValidation={shouldDisableValidation}
-      />
+      <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
 
       <Footer />
     </div>
   );
+}
+
+function useOrdersControl() {
+  const chainId = useSelector(selectChainId);
+  const signer = useEthersSigner();
+  const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
+  const [, setPendingTxns] = usePendingTxns();
+  const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
+  const subaccount = useSubaccount(null, selectedOrderKeys.length);
+  const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
+
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+
+  const onCancelSelectedOrders = useCallback(
+    function cancelSelectedOrders() {
+      if (!signer) return;
+      const keys = selectedOrderKeys;
+      setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+      cancelOrdersTxn(chainId, signer, subaccount, {
+        orderKeys: keys,
+        setPendingTxns: setPendingTxns,
+        detailsMsg: cancelOrdersDetailsMessage,
+      })
+        .then(async (tx) => {
+          const receipt = await tx.wait();
+          if (receipt.status === 1) {
+            setSelectedOrderKeys(EMPTY_ARRAY);
+          }
+        })
+        .finally(() => {
+          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+        });
+    },
+    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+  );
+
+  const onCancelOrder = useCallback(
+    function cancelOrder(key: string) {
+      if (!signer) return;
+
+      setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+      cancelOrdersTxn(chainId, signer, subaccount, {
+        orderKeys: [key],
+        setPendingTxns: setPendingTxns,
+        detailsMsg: cancelOrdersDetailsMessage,
+      }).finally(() => {
+        setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+        setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
+      });
+    },
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+  );
+
+  return {
+    isCancelOrdersProcessing,
+    onCancelSelectedOrders,
+    onCancelOrder,
+    selectedOrderKeys,
+    setSelectedOrderKeys,
+    marketsDirectionsFilter,
+    setMarketsDirectionsFilter,
+    orderTypesFilter,
+    setOrderTypesFilter,
+  };
 }

@@ -4,13 +4,13 @@ import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
-import { BigNumber, ethers } from "ethers";
+import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
 import dateEn from "date-fns/locale/en-US";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
-import { TradeActionType } from "domain/synthetics/tradeHistory";
+import { TradeActionType } from "domain/synthetics/tradeHistory/types";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -46,19 +46,19 @@ export type TooltipString =
   | undefined
   | string
   | {
-      text: string;
+      text: string | undefined;
       state?: TooltipState;
     };
 
-export function numberToState(value: BigNumber | undefined): TooltipState {
-  if (!value) {
+export function numberToState(value: bigint | undefined): TooltipState {
+  if (value === undefined) {
     return undefined;
   }
 
-  if (value.gt(0)) {
+  if (value > 0) {
     return "success";
   }
-  if (value.lt(0)) {
+  if (value < 0) {
     return "error";
   }
 
@@ -99,6 +99,14 @@ export type RowDetails = {
   size: string;
   price: string;
   priceComment: TooltipContent;
+  pnl?: string;
+  pnlState?: TooltipState;
+  isLong?: boolean;
+  indexTokenSymbol?: string;
+  swapFromTokenSymbol?: string;
+  swapFromTokenAmount?: string;
+  swapToTokenSymbol?: string;
+  swapToTokenAmount?: string;
   //#region CSV fields
   marketPrice?: string;
   executionPrice?: string;
@@ -116,9 +124,16 @@ const CUSTOM_DATE_LOCALES = Object.fromEntries(
       ...dateLocale,
       formatRelative: (...args) => {
         const token = args[0];
+        // @see docs for patterns https://date-fns.org/v3.6.0/docs/format
+
         if (token === "other" || !originalFormatRelative) {
           return "dd MMM yyyy, HH:mm";
         }
+
+        if (token === "lastWeek") {
+          return "eeee, HH:mm";
+        }
+
         return originalFormatRelative(...args);
       },
     };
@@ -152,11 +167,9 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-export function tryGetError(
-  reasonBytes: ethers.utils.Bytes
-): ReturnType<typeof customErrors.interface.parseError> | undefined {
+export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
   let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
 
   try {

@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
@@ -6,13 +7,11 @@ import {
   useMainAccountInsufficientFunds,
   useSubaccountActionCounts,
   useSubaccountAddress,
-  useSubaccountDefaultExecutionFee,
   useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import { useChainId } from "lib/chains";
 import { ReactNode, memo } from "react";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import "./SubaccountStatus.scss";
 
 function SubaccountStatusImpl({
@@ -29,10 +28,9 @@ function SubaccountStatusImpl({
   const isSubaccountActive = useIsSubaccountActive();
   const { remaining: remainingActionsCount } = useSubaccountActionCounts();
 
-  const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
-  const baseFeePerAction = useSubaccountDefaultExecutionFee();
-  const subAccountInsufficientFunds = useSubaccountInsufficientFunds(baseFeePerAction);
-  const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(baseFeePerAction);
+  const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount == 0n;
+  const subAccountInsufficientFunds = useSubaccountInsufficientFunds(null);
+  const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(null);
   const subaccountAddress = useSubaccountAddress();
   const { chainId } = useChainId();
   const shouldShowSubaccountInsufficientFundsError = isSubaccountActive && subAccountInsufficientFunds;

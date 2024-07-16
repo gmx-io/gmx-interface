@@ -4,15 +4,15 @@ import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
+// Warning: do not import through reexport, it will break jest
+import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
-import useWallet from "lib/wallets/useWallet";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -20,7 +20,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
-  const { account } = useWallet();
+  const account = useSelector((s) => s.globals.account);
   const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
@@ -114,21 +114,18 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
 
         const tokenConfig = getTokenBySymbol(chainId, "GM");
 
-        const minPrice = BigNumber.from(pricesData?.minPrice.returnValues[0]);
-        const maxPrice = BigNumber.from(pricesData?.maxPrice.returnValues[0]);
+        const minPrice = BigInt(pricesData?.minPrice.returnValues[0]);
+        const maxPrice = BigInt(pricesData?.maxPrice.returnValues[0]);
 
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
           address: marketAddress,
           prices: {
-            minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
-            maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
+            minPrice: minPrice !== undefined && minPrice > 0 ? minPrice : expandDecimals(1, USD_DECIMALS),
+            maxPrice: maxPrice !== undefined && maxPrice > 0 ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
-          totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
-          balance:
-            account && tokenData.balance?.returnValues
-              ? BigNumber.from(tokenData?.balance?.returnValues[0])
-              : undefined,
+          totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
+          balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 

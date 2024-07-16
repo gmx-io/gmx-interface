@@ -1,7 +1,7 @@
 .Switch-toggle {
   width: 30px;
   height: 18px;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--color-gray-600);
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -14,7 +14,7 @@
   .handle {
     width: 14.5px;
     height: 14.5px;
-    background-color: white;
+    background-color: var(--color-white);
     border-radius: 40px;
     transition: all 200ms ease-in-out;
     position: absolute;
@@ -41,4 +41,9 @@
   align-items: center;
   justify-content: space-between;
   font-size: var(--font-sm);
+
+  &_disabled .Switch-toggle {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

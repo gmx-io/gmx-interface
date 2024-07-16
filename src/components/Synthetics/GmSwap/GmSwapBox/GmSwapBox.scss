@@ -41,12 +41,12 @@
   direction: ltr;
 
   .Tooltip-handle {
-    color: rgb(243, 181, 12);
-    text-decoration-color: rgb(243, 181, 12);
+    color: var(--color-yellow-500);
+    text-decoration-color: var(--color-yellow-500);
   }
 
   .Tooltip-popup {
-    color: white;
+    color: var(--color-white);
   }
 }
 

@@ -3,25 +3,18 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DOCS_LINKS } from "config/links";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
-import { BigNumber } from "ethers";
+import { ProcessedData } from "lib/legacy";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
 
 type Props = {
-  processedData: {
-    gmxAprForEsGmx: BigNumber;
-    gmxAprForNativeToken: BigNumber;
-    maxGmxAprForNativeToken: BigNumber;
-    gmxAprForNativeTokenWithBoost: BigNumber;
-    gmxBoostAprForNativeToken?: BigNumber;
-    avgBoostMultiplier?: BigNumber;
-  };
+  processedData?: ProcessedData;
   nativeTokenSymbol: string;
-  isUserConnected: boolean;
-  recommendStakeGmx?: BigNumber;
+  isUserConnected?: boolean;
+  recommendStakeGmx?: bigint;
 };
 
 function renderEscrowedGMXApr(processedData) {
-  if (!processedData?.gmxAprForEsGmx?.gt(0)) return;
+  if (!processedData?.gmxAprForEsGmx || processedData.gmxAprForEsGmx <= 0) return;
   return (
     <StatsTooltipRow
       label={t`Escrowed GMX APR`}
@@ -41,9 +34,10 @@ export default function GMXAprTooltip({
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
-  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(
-    processedData.gmxAprForNativeTokenWithBoost
-  );
+  const maxGmxAprPercentageDifference =
+    processedData?.maxGmxAprForNativeToken === undefined
+      ? undefined
+      : processedData?.maxGmxAprForNativeToken - (processedData?.gmxAprForNativeTokenWithBoost ?? 0n);
 
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
@@ -94,7 +88,7 @@ export default function GMXAprTooltip({
           </>
         )}
         <br />
-        {recommendStakeGmx?.gt(0) ? (
+        {(recommendStakeGmx ?? 0) > 0 ? (
           <Trans>
             You have reached the maximum Boost Percentage. Stake an additional{" "}
             {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}

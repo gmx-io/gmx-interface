@@ -11,18 +11,18 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import "./Header.css";
+import { NotifyButton } from "../NotifyButton/NotifyButton";
+import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 type Props = {
   openSettings: () => void;
   small?: boolean;
   disconnectAccountAndCloseSettings: () => void;
-  redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
-  tradePageVersion: number;
 };
 
 const NETWORK_OPTIONS = [
@@ -55,18 +55,12 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({
-  openSettings,
-  small,
-  disconnectAccountAndCloseSettings,
-  redirectPopupTimestamp,
-  showRedirectModal,
-  tradePageVersion,
-}: Props) {
+export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSettings, showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
+  const [tradePageVersion] = useTradePageVersion();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
 
@@ -76,12 +70,7 @@ export function AppHeaderUser({
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink
-            className="default-btn"
-            to={tradeLink!}
-            redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal}
-          >
+          <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
@@ -91,6 +80,7 @@ export function AppHeaderUser({
             <ConnectWalletButton onClick={openConnectModal} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
+            {!small && <NotifyButton />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -110,12 +100,7 @@ export function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className={cx("App-header-trade-link")}>
-        <HeaderLink
-          className="default-btn"
-          to={tradeLink!}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
       </div>
@@ -129,6 +114,7 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
+          {!small && <NotifyButton />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

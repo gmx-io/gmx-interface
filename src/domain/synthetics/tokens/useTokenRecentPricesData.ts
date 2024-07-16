@@ -1,5 +1,4 @@
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { BigNumber } from "ethers";
 import useSWR from "swr";
 import { TokenPricesData } from "./types";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
@@ -12,7 +11,7 @@ type TokenPricesDataResult = {
   updatedAt?: number;
 };
 
-export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -21,7 +20,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
     return pathname.startsWith("/leaderboard") || pathname.startsWith("/competitions") ? 60_000 : 5000;
   }, [pathname]);
 
-  const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
+  const { data } = useSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
@@ -39,8 +38,8 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           }
 
           result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigNumber.from(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigNumber.from(priceItem.maxPrice), tokenConfig.decimals),
+            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
           };
         });
 

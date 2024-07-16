@@ -4,7 +4,7 @@
   }
 
   &-table {
-    width: max(100%, 750px);
+    width: max(100%, 900px) !important;
 
     // Table causes global layout issues on mobile
     margin-right: -10px;
@@ -32,21 +32,7 @@
   }
 
   &-padded-cell {
-    padding: 1em;
-    padding-left: 1.4em;
-  }
-
-  &-controls {
-    padding: 1em 1.05rem;
-    border-bottom: 1px solid #23263b;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .button {
-      padding: 6px 10px !important;
-    }
+    padding: 1em 1.5rem;
   }
 
   &-controls-right {
@@ -59,36 +45,23 @@
     gap: 0.5em;
   }
 
-  &-price-header {
+  &-pnl-fees-header {
     text-align: end !important;
   }
 
   &-action-column {
-    width: 30%;
+    width: 23%;
   }
-
   &-market-column {
-    width: 23.333%;
+    width: 22%;
   }
   &-size-column {
-    width: 28.333%;
+    width: 25%;
   }
   &-price-column {
-    width: 18.333%;
+    width: 16%;
   }
-
-  @media (max-width: 800px) {
-    &-action-column {
-      width: 33.333333%;
-    }
-    &-market-column {
-      width: 23.333%;
-    }
-    &-size-column {
-      width: 23.333%;
-    }
-    &-price-column {
-      width: 20%;
-    }
+  &-pnl-fees-column {
+    width: 14%;
   }
 }

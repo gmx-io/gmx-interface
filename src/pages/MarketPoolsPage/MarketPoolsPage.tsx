@@ -1,29 +1,27 @@
 import { Trans } from "@lingui/macro";
-import SEO from "components/Common/SEO";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
-import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
+import { useEffect, useRef, useState } from "react";
+
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
-import { MarketsInfoData, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
+import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useRef, useState } from "react";
-
-import { getTokenData } from "domain/synthetics/tokens";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
-import "./MarketPoolsPage.scss";
-import { GmList } from "components/Synthetics/GmList/GmList";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+
+import SEO from "components/Common/SEO";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+import { GmList } from "components/Synthetics/GmList/GmList";
+import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
+import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 
-type Props = {
-  setPendingTxns: (txns: any) => void;
-  shouldDisableValidation?: boolean;
-};
+import "./MarketPoolsPage.scss";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
-export function MarketPoolsPage(p: Props) {
+export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
@@ -38,18 +36,23 @@ export function MarketPoolsPage(p: Props) {
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
-  if (operation === Operation.Withdrawal) {
-    mode = Mode.Pair;
-  }
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
     undefined
   );
+
+  useEffect(() => {
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketKey));
+
+    if (!newAvailableModes.includes(mode)) {
+      setMode(newAvailableModes[0]);
+    }
+  }, [marketsInfoData, mode, operation, selectedMarketKey]);
 
   const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
 
@@ -74,7 +77,7 @@ export function MarketPoolsPage(p: Props) {
 
         <div className="MarketPoolsPage-content">
           <MarketStats
-            marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
@@ -86,11 +89,9 @@ export function MarketPoolsPage(p: Props) {
             <GmSwapBox
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
-              shouldDisableValidation={p.shouldDisableValidation}
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
-              setPendingTxns={p.setPendingTxns}
               operation={operation}
               mode={mode}
               setMode={setMode}
@@ -105,7 +106,7 @@ export function MarketPoolsPage(p: Props) {
           </div>
         </div>
         <GmList
-          marketsTokensAPRData={marketsTokensAPRData}
+          marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}

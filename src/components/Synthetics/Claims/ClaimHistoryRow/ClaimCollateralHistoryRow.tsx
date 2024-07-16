@@ -1,18 +1,25 @@
-import { t } from "@lingui/macro";
-import { Fragment, useMemo } from "react";
+import type { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
+import React, { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { formatTradeActionTimestamp } from "../../TradeHistory/TradeHistoryRow/utils/shared";
+import {
+  formatTradeActionTimestamp,
+  formatTradeActionTimestampISO,
+} from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
 
@@ -20,33 +27,46 @@ export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;
 };
 
-export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], string> = {
-  [ClaimType.ClaimFunding]: t`Claim Funding Fees`,
-  [ClaimType.ClaimPriceImpact]: t`Claim Price Impact Rebates`,
+export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], MessageDescriptor> = {
+  [ClaimType.ClaimFunding]: msg`Claim Funding Fees`,
+  [ClaimType.ClaimPriceImpact]: msg`Claim Price Impact Rebates`,
 };
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
-  const { chainId } = useChainId();
+  const { _ } = useLingui();
+  const chainId = useSelector(selectChainId);
   const { claimAction } = p;
 
-  const eventTitle = claimCollateralEventTitles[claimAction.eventName];
+  const eventTitle = useMemo(() => _(claimCollateralEventTitles[claimAction.eventName]), [_, claimAction.eventName]);
 
   const marketNamesJoined = useMemo(() => {
-    return claimAction.claimItems
-      .map(({ marketInfo }) => {
-        return getMarketIndexName(marketInfo);
-      })
-      .join(", ");
+    return (
+      <div className="leading-2">
+        {claimAction.claimItems.map(({ marketInfo }, index) => (
+          <React.Fragment key={index}>
+            {index !== 0 && ", "}
+            <div className="inline-block whitespace-nowrap leading-base">
+              <TokenIcon className="mr-5" symbol={marketInfo.indexToken.symbol} displaySize={20} />
+              {getMarketIndexName(marketInfo)}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    );
   }, [claimAction.claimItems]);
 
-  const timestamp = formatTradeActionTimestamp(claimAction.timestamp);
+  const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
+
+  const renderIsoTimestamp = useCallback(() => {
+    return formatTradeActionTimestampISO(claimAction.timestamp);
+  }, [claimAction.timestamp]);
 
   const sizeContent = useMemo(() => {
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
 
     return (
       <TooltipWithPortal
-        portalClassName="ClaimHistoryRow-size-tooltip-portal"
+        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         renderContent={() => <SizeTooltip claimAction={claimAction} />}
         handle={formattedTotalUsd}
       />
@@ -59,13 +79,18 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-xs"
+            className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
           </ExternalLink>
         </div>
-        <span className="ClaimHistoryRow-time muted">{timestamp}</span>
+        <TooltipWithPortal
+          disableHandleStyle
+          handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
+          tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
+          renderContent={renderIsoTimestamp}
+        />
       </td>
       <td>{marketNamesJoined}</td>
       <td className="ClaimHistoryRow-size">{sizeContent}</td>
@@ -83,18 +108,18 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
           return (
             <Fragment key={market.indexTokenAddress}>
               <StatsTooltipRow
-                className="ClaimHistoryRow-tooltip-row"
+                textClassName="mb-5 whitespace-nowrap"
                 key={market.marketTokenAddress}
                 label={
-                  <div className="items-top text-white">
+                  <div className="flex items-start text-white">
                     <span>{indexName}</span>
-                    <span className="subtext lh-1">[{poolName}]</span>
+                    <span className="subtext leading-1">[{poolName}]</span>
                   </div>
                 }
                 showDollar={false}
                 value={
                   <>
-                    {longTokenAmount.gt(0) && (
+                    {longTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           longTokenAmount,
@@ -105,7 +130,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                       </div>
                     )}
 
-                    {shortTokenAmount.gt(0) && (
+                    {shortTokenAmount > 0 && (
                       <div>
                         {formatTokenAmountWithUsd(
                           shortTokenAmount,

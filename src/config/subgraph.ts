@@ -8,7 +8,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    leaderboard: "https://squid.subsquid.io/gmx-synthetics-arbitrum/graphql/v11",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
   },
 
   [ARBITRUM_GOERLI]: {
@@ -22,14 +22,15 @@ const SUBGRAPH_URLS = {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
-    leaderboard: "https://squid.subsquid.io/gmx-synthetics-avalanche/graphql/v11",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche/graphql",
   },
 
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
-    leaderboard: "https://squid.subsquid.io/gmx-synthetics-fuji/graphql",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/debug-240418111033-19cbf3f/api",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji/graphql",
   },
 
   common: {
@@ -39,7 +40,7 @@ const SUBGRAPH_URLS = {
   },
 };
 
-export function getSubgraphUrl(chainId: number, subgraph: string) {
+export function getSubgraphUrl(chainId: number, subgraph: string): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getSubgraphUrlKey(chainId, subgraph);
     const url = localStorage.getItem(localStorageKey);
@@ -48,6 +49,10 @@ export function getSubgraphUrl(chainId: number, subgraph: string) {
       console.warn("%s subgraph on chain %s url is overriden: %s", subgraph, chainId, url);
       return url;
     }
+  }
+
+  if (chainId === ETH_MAINNET) {
+    return SUBGRAPH_URLS.common[ETH_MAINNET]?.[subgraph];
   }
 
   return SUBGRAPH_URLS?.[chainId]?.[subgraph];

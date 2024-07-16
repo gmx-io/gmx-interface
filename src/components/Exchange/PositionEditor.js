@@ -1,11 +1,13 @@
+import { useKey } from "react-use";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import useSWR from "swr";
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
+import { useLingui } from "@lingui/react";
 
 import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -20,7 +22,7 @@ import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
@@ -31,21 +33,23 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useKey } from "react-use";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 const EDIT_OPTIONS_LABELS = {
-  [DEPOSIT]: t`Deposit`,
-  [WITHDRAW]: t`Withdraw`,
+  [DEPOSIT]: msg`Deposit`,
+  [WITHDRAW]: msg`Withdraw`,
 };
+
 const ERROR_TOOLTIP_MSG = {
-  [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
-  [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
+  [ErrorCode.InvalidLiqPrice]: msg`Liquidation price would cross mark price.`,
+  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
 };
 
 export default function PositionEditor(props) {
@@ -87,6 +91,8 @@ export default function PositionEditor(props) {
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   const submitButtonRef = useRef(null);
+  const { _ } = useLingui();
+  const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -139,40 +145,46 @@ export default function PositionEditor(props) {
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
-      maxAmount = collateralToken ? collateralToken.balance : bigNumberify(0);
+      maxAmount = collateralToken ? collateralToken.balance : 0n;
       maxAmountFormatted = formatAmount(maxAmount, collateralToken.decimals, 4, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, collateralToken.decimals, 8);
-      if (fromAmount) {
+      if (fromAmount !== undefined) {
         convertedAmount = getUsd(fromAmount, position.collateralToken.address, false, infoTokens);
         convertedAmountFormatted = formatAmount(convertedAmount, USD_DECIMALS, 2);
       }
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
 
-      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD).gt(0)
-        ? position.collateralAfterFee.sub(MIN_ORDER_USD)
-        : bigNumberify(0);
+      maxAmount = position.collateralAfterFee - MIN_ORDER_USD > 0 ? position.collateralAfterFee - MIN_ORDER_USD : 0n;
 
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
-      if (fromAmount) {
-        convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+      if (fromAmount !== undefined) {
+        convertedAmount = bigMath.mulDiv(
+          fromAmount,
+          expandDecimals(1, collateralToken.decimals),
+          collateralToken.maxPrice
+        );
         convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
       }
     }
-    needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance);
+    needApproval = isDeposit && tokenAllowance !== undefined && fromAmount !== undefined && fromAmount > tokenAllowance;
 
-    if (fromAmount) {
+    if (fromAmount !== undefined) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
 
       if (position.isLong && isDeposit) {
-        collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
-        depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
+        collateralDelta = bigMath.mulDiv(
+          collateralDelta,
+          BASIS_POINTS_DIVISOR_BIGINT - DEPOSIT_FEE,
+          BASIS_POINTS_DIVISOR_BIGINT
+        );
+        depositFeeUSD = bigMath.mulDiv(convertedAmount, DEPOSIT_FEE, BASIS_POINTS_DIVISOR_BIGINT);
       }
 
       nextCollateral = isDeposit
-        ? position.collateralAfterFee.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
+        ? position.collateralAfterFee + collateralDelta
+        : position.collateralAfterFee - collateralDelta;
 
       nextLeverage = getLeverage({
         size: position.size,
@@ -211,37 +223,37 @@ export default function PositionEditor(props) {
       return [t`Enter an amount`];
     }
 
-    if (fromAmount.lte(0)) {
+    if (fromAmount <= 0) {
       return [t`Amount should be greater than zero`];
     }
 
     if (!isDeposit && fromAmount) {
-      if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
+      if (position.collateralAfterFee - fromAmount < MIN_ORDER_USD) {
         return [t`Min residual collateral: 10 USD`];
       }
     }
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
-      if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
+      if (position.isLong && position.markPrice < nextLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
-      if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
+      if (!position.isLong && position.markPrice > nextLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl < 1.1 * BASIS_POINTS_DIVISOR) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (nextLeverage && nextLeverage > MAX_ALLOWED_LEVERAGE) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (fromAmount && isDeposit && nextLiquidationPrice) {
       const isInvalidLiquidationPrice = position.isLong
-        ? nextLiquidationPrice.gte(position.markPrice)
-        : nextLiquidationPrice.lte(position.markPrice);
+        ? nextLiquidationPrice >= position.markPrice
+        : nextLiquidationPrice <= position.markPrice;
 
       if (isInvalidLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
@@ -249,10 +261,10 @@ export default function PositionEditor(props) {
     }
 
     if (position.hasProfit) {
-      if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
+      if (nextCollateral <= position.closingFee + LIQUIDATION_FEE) {
         return isDeposit ? [t`Deposit not enough to cover fees`] : [t`Leftover Collateral not enough to cover fees`];
       }
-      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_LEVERAGE)) {
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl > MAX_LEVERAGE) {
         return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
       }
     }
@@ -329,15 +341,15 @@ export default function PositionEditor(props) {
 
   const depositCollateral = async () => {
     setIsSwapping(true);
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
     const path = [tokenAddress0];
     const indexTokenAddress =
-      position.indexToken.address === AddressZero ? nativeTokenAddress : position.indexToken.address;
+      position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
 
     const priceBasisPoints = position.isLong ? 11000 : 9000;
-    const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
+    const priceLimit = bigMath.mulDiv(position.indexToken.maxPrice, BigInt(priceBasisPoints), 10000n);
 
-    const referralCode = ethers.constants.HashZero;
+    const referralCode = ethers.ZeroHash;
     let params = [
       path, // _path
       indexTokenAddress, // _indexToken
@@ -348,14 +360,14 @@ export default function PositionEditor(props) {
       priceLimit, // _acceptablePrice
       minExecutionFee, // _executionFee
       referralCode, // _referralCode
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     let method = "createIncreasePosition";
     let value = minExecutionFee;
-    if (collateralTokenAddress === AddressZero) {
+    if (collateralTokenAddress === ZeroAddress) {
       method = "createIncreasePositionETH";
-      value = fromAmount.add(minExecutionFee);
+      value = fromAmount + minExecutionFee;
       params = [
         path, // _path
         indexTokenAddress, // _indexToken
@@ -365,7 +377,7 @@ export default function PositionEditor(props) {
         priceLimit, // _acceptablePrice
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
-        AddressZero, // _callbackTarget
+        ZeroAddress, // _callbackTarget
       ];
     }
 
@@ -406,16 +418,16 @@ export default function PositionEditor(props) {
 
   const withdrawCollateral = async () => {
     setIsSwapping(true);
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
     const indexTokenAddress =
-      position.indexToken.address === AddressZero ? nativeTokenAddress : position.indexToken.address;
-    const priceBasisPoints = position.isLong ? 9000 : 11000;
-    const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
+      position.indexToken.address === ZeroAddress ? nativeTokenAddress : position.indexToken.address;
+    const priceBasisPoints = position.isLong ? 9000n : 11000n;
+    const priceLimit = bigMath.mulDiv(position.indexToken.maxPrice, priceBasisPoints, 10000n);
 
-    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
+    const withdrawAmount = fromAmount + (fundingFee || 0n);
 
     const withdrawETH =
-      !isContractAccount && (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress);
+      !isContractAccount && (collateralTokenAddress === ZeroAddress || collateralTokenAddress === nativeTokenAddress);
 
     const params = [
       [tokenAddress0], // _path
@@ -428,7 +440,7 @@ export default function PositionEditor(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
-      AddressZero, // _callbackTarget
+      ZeroAddress, // _callbackTarget
     ];
 
     const method = "createDecreasePosition";
@@ -524,7 +536,7 @@ export default function PositionEditor(props) {
           }
           className="Tooltip-flex"
           position="top"
-          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+          content={_(ERROR_TOOLTIP_MSG[errorCode])}
         />
       );
     }
@@ -556,7 +568,7 @@ export default function PositionEditor(props) {
           <div>
             <Tab
               options={EDIT_OPTIONS}
-              optionLabels={EDIT_OPTIONS_LABELS}
+              optionLabels={localizedEditOptionLabels}
               option={option}
               setOption={setOption}
               onChange={resetForm}
@@ -585,13 +597,15 @@ export default function PositionEditor(props) {
                   onClickMax={() => setFromValue(maxAmountFormattedFree)}
                   showPercentSelector={!isDeposit}
                   onPercentChange={(percentage) => {
-                    setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                    setFromValue(
+                      formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2)
+                    );
                   }}
                 >
                   {isDeposit ? (
                     <>
                       <TokenIcon
-                        className="mr-xs"
+                        className="mr-5"
                         symbol={position.collateralToken.symbol}
                         displaySize={20}
                         importSize={24}
@@ -611,12 +625,12 @@ export default function PositionEditor(props) {
                       <Trans>Leverage</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
-                      {nextLeverage && (
+                      {nextLeverage === undefined && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
+                      {nextLeverage !== undefined && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2, true)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2, true)}x
                         </div>
@@ -644,18 +658,18 @@ export default function PositionEditor(props) {
                       <Trans>Liq. Price</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextLiquidationPrice && (
+                      {nextLiquidationPrice === undefined && (
                         <div>
-                          {!fromAmount &&
+                          {fromAmount === undefined &&
                             `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
-                          {fromAmount && "-"}
+                          {fromAmount !== undefined && "-"}
                         </div>
                       )}
-                      {nextLiquidationPrice && (
+                      {nextLiquidationPrice !== undefined && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
@@ -678,9 +692,9 @@ export default function PositionEditor(props) {
                       )}
                       {nextCollateral && (
                         <div>
-                          <div className="inline-block muted">
+                          <div className="muted inline-block">
                             ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
@@ -688,7 +702,7 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
 
-                  {fromAmount?.gt(0) && fundingFee?.gt(0) && (
+                  {fromAmount > 0 && fundingFee > 0 && (
                     <div className="Exchange-info-row">
                       <div className="Exchange-info-label">
                         <Trans>Borrow Fee</Trans>
@@ -697,9 +711,9 @@ export default function PositionEditor(props) {
                         <Tooltip
                           handle={
                             <>
-                              <div className="inline-block muted">
+                              <div className="muted inline-block">
                                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                                <BsArrowRight className="transition-arrow" />
+                                <BsArrowRight className="transition-arrow inline-block" />
                               </div>
                               $0
                             </>

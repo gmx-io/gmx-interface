@@ -1,9 +1,8 @@
 import { getContract } from "config/contracts";
-import DataStore from "abis/DataStore.json";
-import { useMulticall } from "lib/multicall";
 import {
-  ESTIMATED_GAS_FEE_BASE_AMOUNT,
+  ESTIMATED_GAS_FEE_BASE_AMOUNT_V2_1,
   ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR,
+  ESTIMATED_GAS_FEE_PER_ORACLE_PRICE,
   decreaseOrderGasLimitKey,
   depositGasLimitKey,
   increaseOrderGasLimitKey,
@@ -11,14 +10,12 @@ import {
   swapOrderGasLimitKey,
   withdrawalGasLimitKey,
 } from "config/dataStore";
-import { GasLimitsConfig } from "./types";
-import { BigNumber } from "ethers";
+import { useMulticall } from "lib/multicall";
+import type { GasLimitsConfig } from "./types";
 
-type GasLimitsResult = {
-  gasLimits?: GasLimitsConfig;
-};
+import DataStore from "abis/DataStore.json";
 
-export function useGasLimits(chainId: number): GasLimitsResult {
+export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
 
@@ -57,9 +54,13 @@ export function useGasLimits(chainId: number): GasLimitsResult {
             methodName: "getUint",
             params: [decreaseOrderGasLimitKey()],
           },
-          estimatedFeeBaseGasLimit: {
+          estimatedGasFeeBaseAmount: {
             methodName: "getUint",
-            params: [ESTIMATED_GAS_FEE_BASE_AMOUNT],
+            params: [ESTIMATED_GAS_FEE_BASE_AMOUNT_V2_1],
+          },
+          estimatedGasFeePerOraclePrice: {
+            methodName: "getUint",
+            params: [ESTIMATED_GAS_FEE_PER_ORACLE_PRICE],
           },
           estimatedFeeMultiplierFactor: {
             methodName: "getUint",
@@ -71,21 +72,24 @@ export function useGasLimits(chainId: number): GasLimitsResult {
     parseResponse: (res) => {
       const results = res.data.dataStore;
 
+      function getBigInt(key: keyof typeof results) {
+        return BigInt(results[key].returnValues[0]);
+      }
+
       return {
-        depositSingleToken: BigNumber.from(results.depositSingleToken.returnValues[0]),
-        depositMultiToken: BigNumber.from(results.depositMultiToken.returnValues[0]),
-        withdrawalMultiToken: BigNumber.from(results.withdrawalMultiToken.returnValues[0]),
-        singleSwap: BigNumber.from(results.singleSwap.returnValues[0]),
-        swapOrder: BigNumber.from(results.swapOrder.returnValues[0]),
-        increaseOrder: BigNumber.from(results.increaseOrder.returnValues[0]),
-        decreaseOrder: BigNumber.from(results.decreaseOrder.returnValues[0]),
-        estimatedFeeBaseGasLimit: BigNumber.from(results.estimatedFeeBaseGasLimit.returnValues[0]),
-        estimatedFeeMultiplierFactor: BigNumber.from(results.estimatedFeeMultiplierFactor.returnValues[0]),
+        depositSingleToken: getBigInt("depositSingleToken"),
+        depositMultiToken: getBigInt("depositMultiToken"),
+        withdrawalMultiToken: getBigInt("withdrawalMultiToken"),
+        singleSwap: getBigInt("singleSwap"),
+        swapOrder: getBigInt("swapOrder"),
+        increaseOrder: getBigInt("increaseOrder"),
+        decreaseOrder: getBigInt("decreaseOrder"),
+        estimatedGasFeeBaseAmount: getBigInt("estimatedGasFeeBaseAmount"),
+        estimatedGasFeePerOraclePrice: getBigInt("estimatedGasFeePerOraclePrice"),
+        estimatedFeeMultiplierFactor: getBigInt("estimatedFeeMultiplierFactor"),
       };
     },
   });
 
-  return {
-    gasLimits: data,
-  };
+  return data;
 }

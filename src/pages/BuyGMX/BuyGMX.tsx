@@ -10,6 +10,7 @@ import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import uniswapArbitrumIcon from "img/ic_uni_arbitrum.svg";
 import traderjoeIcon from "img/ic_traderjoe_avax.png";
@@ -62,7 +63,7 @@ export default function BuyGMX() {
           <div className="section-title-content">
             <div className="Page-title">
               <Trans>Buy GMX on {chainName}</Trans>
-              <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+              <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
@@ -84,7 +85,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
-                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
@@ -96,7 +97,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>
-                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
+                <img className="Page-title-icon ml-5 inline-block" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
@@ -132,7 +133,8 @@ export default function BuyGMX() {
                       key={exchange.name}
                       to={link}
                       // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      imgInfo={{ src: icon, alt: exchange.name }}
+                      imgSrc={icon}
+                      imgAlt={exchange.name}
                       newTab
                     >
                       {exchange.name}
@@ -163,8 +165,8 @@ export default function BuyGMX() {
                       textAlign="left"
                       key={exchange.name}
                       to={link}
-                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      imgInfo={{ src: icon, alt: exchange.name }}
+                      imgSrc={icon}
+                      imgAlt={exchange.name}
                       newTab
                     >
                       {exchange.name}
@@ -181,10 +183,6 @@ export default function BuyGMX() {
   );
 }
 
-const UNISWAP_IMG_INFO = { src: uniswapArbitrumIcon, alt: "Uniswap" };
-const TRADERJOE_IMG_INFO = { src: traderjoeIcon, alt: "Traderjoe" };
-const BOND_PROTOCOL_IMG_INFO = { src: bondProtocolIcon, alt: "Bond Protocol" };
-
 function DecentralisedExchanges({ chainId, externalLinks }) {
   const isArbitrum = chainId === ARBITRUM;
   return (
@@ -193,17 +191,29 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
+              <Trans>Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):</Trans>
             </div>
-            <div className="buttons-group col-1">
+            <div className="buttons-group">
               <Button
                 variant="secondary"
                 textAlign="left"
-                imgInfo={UNISWAP_IMG_INFO}
+                imgSrc={uniswapArbitrumIcon}
+                imgAlt={"Uniswap"}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
               >
                 Uniswap
+              </Button>
+              <Button
+                variant="secondary"
+                textAlign="left"
+                imgSrc={gmxArbitrumIcon}
+                imgAlt="GMX"
+                to={externalLinks.buyGmx.gmx}
+                showExternalLinkArrow={false}
+                newTab
+              >
+                GMX
               </Button>
             </div>
           </div>
@@ -217,7 +227,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 variant="secondary"
                 textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
-                imgInfo={TRADERJOE_IMG_INFO}
+                imgSrc={traderjoeIcon}
+                imgAlt="Traderjoe"
                 newTab
               >
                 TraderJoe
@@ -239,8 +250,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                   textAlign="left"
                   key={exchange.name}
                   to={link}
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  imgInfo={{ src: icon, alt: exchange.name }}
+                  imgSrc={icon}
+                  imgAlt={exchange.name}
                   newTab
                 >
                   {exchange.name}
@@ -263,8 +274,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                   textAlign="left"
                   key={exchange.name}
                   to={link}
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  imgInfo={{ src: icon, alt: exchange.name }}
+                  imgSrc={icon}
+                  imgAlt={exchange.name}
                   newTab
                 >
                   {exchange.name}
@@ -283,7 +294,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 variant="secondary"
                 textAlign="left"
                 to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
-                imgInfo={BOND_PROTOCOL_IMG_INFO}
+                imgSrc={bondProtocolIcon}
+                imgAlt="Bond Protocol"
                 newTab
               >
                 Bond Protocol
@@ -314,8 +326,8 @@ function CentralisedExchanges({ chainId }) {
                   textAlign="left"
                   key={exchange.name}
                   to={link}
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  imgInfo={{ src: icon, alt: exchange.name }}
+                  imgSrc={icon}
+                  imgAlt={exchange.name}
                   newTab
                 >
                   {exchange.name}
@@ -340,8 +352,8 @@ function CentralisedExchanges({ chainId }) {
                   textAlign="left"
                   key={exchange.name}
                   to={link}
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  imgInfo={{ src: icon, alt: exchange.name }}
+                  imgSrc={icon}
+                  imgAlt={exchange.name}
                   newTab
                 >
                   {exchange.name}

@@ -1,8 +1,16 @@
 import type { Placement } from "@floating-ui/dom";
 import { Trans } from "@lingui/macro";
 import isEqual from "lodash/isEqual";
-import { ChangeEventHandler, ComponentType, KeyboardEvent as ReactKeyboardEvent, useCallback, useState } from "react";
+import {
+  ChangeEventHandler,
+  ComponentType,
+  KeyboardEvent as ReactKeyboardEvent,
+  ReactNode,
+  useCallback,
+  useState,
+} from "react";
 
+import { defined, definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import { FlatItems, useFilteredFlatItems } from "./flat";
@@ -20,6 +28,9 @@ type Props<T> = {
   ItemComponent?: ComponentType<{ item: T }>;
   options: Item<T>[] | Group<T>[];
   popupPlacement?: Placement;
+  beforeContent?: ReactNode | undefined;
+  forceIsActive?: boolean;
+  asButton?: boolean;
 } & (
   | {
       multiple?: false;
@@ -35,16 +46,6 @@ type Props<T> = {
     }
 );
 
-export function definedOrThrow<T>(value: T): asserts value is NonNullable<T> {
-  if (value === undefined || value === null) {
-    throw new Error("Item is null or undefined");
-  }
-}
-
-export function defined<T>(value: T): value is NonNullable<T> {
-  return value !== undefined && value !== null;
-}
-
 export function TableOptionsFilter<T>({
   value,
   onChange,
@@ -55,8 +56,11 @@ export function TableOptionsFilter<T>({
   label,
   ItemComponent,
   popupPlacement,
+  beforeContent,
+  forceIsActive,
+  asButton,
 }: Props<T>) {
-  const isActive = multiple ? Boolean(value?.length) : Boolean(value);
+  const isActive = (multiple ? Boolean(value?.length) : Boolean(value)) || forceIsActive;
 
   const isGrouped = options.length > 0 && "groupName" in options[0] && "items" in options[0];
 
@@ -159,7 +163,7 @@ export function TableOptionsFilter<T>({
   }, [multiple, onChange]);
 
   return (
-    <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
+    <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement} asButton={asButton}>
       <SearchInput
         className="TableOptionsFilter-search"
         placeholder={placeholder}
@@ -167,6 +171,8 @@ export function TableOptionsFilter<T>({
         setValue={handleSetValue}
         onKeyDown={handleSearchEnterKey}
       />
+
+      {beforeContent}
 
       <div className="TableOptionsFilter-options">
         <div className="TableOptionsFilter-clear" onClick={handleClear}>

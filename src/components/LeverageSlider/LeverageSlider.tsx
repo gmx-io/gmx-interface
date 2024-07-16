@@ -3,7 +3,7 @@ import Slider, { SliderTooltip, Handle } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
 import { range } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
+import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
 const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
@@ -23,10 +23,13 @@ type HandleProps = {
 };
 
 function getMarksWithLabel(marks: number[]) {
-  return marks.reduce((marks, value, index) => {
-    marks[index * 10] = `${value}x`;
-    return marks;
-  }, {} as { [key: number]: string });
+  return marks.reduce(
+    (marks, value, index) => {
+      marks[index * 10] = `${value}x`;
+      return marks;
+    },
+    {} as { [key: number]: string }
+  );
 }
 
 export function LeverageSlider(p: Props) {
@@ -39,7 +42,7 @@ export function LeverageSlider(p: Props) {
     return { marksLabel, keyValueMap, valueKeyMap };
   }, [finalMarks]);
 
-  const defaultValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
+  const sliderValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
   const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
@@ -48,12 +51,6 @@ export function LeverageSlider(p: Props) {
     },
     [onChange, keyValueMap]
   );
-
-  useEffect(() => {
-    if (value !== defaultValue) {
-      handleChange(defaultValue);
-    }
-  }, [value, defaultValue, handleChange]);
 
   const customHandle = useMemo(() => {
     return (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
@@ -73,13 +70,16 @@ export function LeverageSlider(p: Props) {
         marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
-        defaultValue={defaultValue}
+        value={sliderValue}
       />
     </div>
   );
 }
 
-function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProps }: HandleProps) {
+const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSliderHandle(
+  { value, dragging, index, keyValueMap, ...restProps },
+  ref
+) {
   const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
 
   useEffect(() => {
@@ -98,10 +98,10 @@ function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProp
       placement="top"
       key={index}
     >
-      <Handle value={value} {...restProps} />
+      <Handle value={value} {...restProps} ref={ref} />
     </SliderTooltip>
   );
-}
+});
 
 function generateEquallySpacedArray(min: number, max: number, shouldIncludeMax?: boolean): number[] {
   const step = (max - min) / 10;

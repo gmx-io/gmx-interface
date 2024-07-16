@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 
-module.exports = function override(config) {
+function override(config) {
   // https://github.com/lingui/js-lingui/issues/1195
   // Adding loader to use for .po files to webpack
   const loaders = config.module.rules.find((rule) => Array.isArray(rule.oneOf));
@@ -11,6 +11,16 @@ module.exports = function override(config) {
         loader: "@lingui/loader",
       },
     ],
+  });
+
+  config.module.rules.unshift({
+    test: /\.worker\.ts$/,
+    use: {
+      loader: "worker-loader",
+      options: {
+        filename: "[name].[contenthash].js",
+      },
+    },
   });
 
   config.resolve.fallback = {
@@ -25,5 +35,18 @@ module.exports = function override(config) {
       Buffer: ["buffer", "Buffer"],
     }),
   ]);
+
+  return config;
+}
+
+override.jest = function (config) {
+  config.transform = {
+    "node_modules/multiformats/(basics|block|cid)$": "react-app-rewired/scripts/utils/babelTransform",
+    ...config.transform,
+  };
+  config.transformIgnorePatterns = ["node_modules/(?!multiformats|wagmi)/"];
+
   return config;
 };
+
+module.exports = override;

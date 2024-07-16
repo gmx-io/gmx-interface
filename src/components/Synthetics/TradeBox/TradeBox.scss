@@ -7,11 +7,11 @@
   padding: 1.5rem;
 }
 
-.SwapBox-option-tabs.Tab.block .Tab-option {
+.SwapBox-option-tabs.Tab.Tab__block .Tab-option {
   padding: 1.05rem;
 }
 
-.SwapBox-option-tabs.Tab.block .Tab-option-icon {
+.SwapBox-option-tabs.Tab.Tab__block .Tab-option-icon {
   margin-top: -0.155rem;
   transform: scale(0.75);
   vertical-align: middle;
@@ -57,7 +57,7 @@
 
   .Exchange-info-label {
     opacity: 1;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-gray-400);
   }
 }
 
@@ -100,8 +100,8 @@
   position: relative;
 
   .Tooltip-handle {
-    color: rgb(243, 181, 12);
-    text-decoration-color: rgb(243, 181, 12);
+    color: var(--color-yellow-500);
+    text-decoration-color: var(--color-yellow-500);
   }
 
   &.error {
@@ -112,7 +112,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: white;
+    color: var(--color-white);
   }
 
   .MarketSelector-tooltip-row-action {
@@ -129,8 +129,8 @@
 }
 
 .LiqPrice-soft-warning {
-  color: rgb(243, 181, 12);
-  text-decoration-color: rgb(243, 181, 12);
+  color: var(--color-yellow-500);
+  text-decoration-color: var(--color-yellow-500);
 }
 
 .LiqPrice-hard-warning {
@@ -156,5 +156,24 @@
   .SwapBox-content .GlpSwap-box {
     margin: 0;
     max-width: 100%;
+  }
+}
+
+.Tradebox-handle {
+  z-index: 1;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--color-gray-400);
+  user-select: none;
+  color: var(--color-gray-400);
+
+  &:hover {
+    text-decoration-color: var(--color-white);
+    color: var(--color-white);
   }
 }

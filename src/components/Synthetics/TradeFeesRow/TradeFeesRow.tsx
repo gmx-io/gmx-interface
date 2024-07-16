@@ -1,9 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { BigNumber } from "ethers";
 import { ReactNode, useMemo } from "react";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getToken } from "config/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
@@ -17,6 +16,10 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getIncentivesV2Url } from "config/links";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import sparkleIcon from "img/sparkle.svg";
+import { bigMath } from "lib/bigmath";
 import "./TradeFeesRow.scss";
 
 type Props = {
@@ -32,7 +35,7 @@ type Props = {
   fundingFee?: FeeItem;
   borrowFeeRateStr?: string;
   fundingFeeRateStr?: string;
-  feeDiscountUsd?: BigNumber;
+  feeDiscountUsd?: bigint;
   isTop?: boolean;
   feesType: TradeFeesType;
   uiFee?: FeeItem;
@@ -48,69 +51,27 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-  const tradingIncentives = useTradingIncentives();
+  const tradingIncentives = useTradingIncentives(chainId);
+  const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
-  const rebateIsApplicable = shouldShowRebate && p.positionFee?.deltaUsd.lt(0) && p.feesType !== "swap";
 
-  const [fullPositionPriceImpact, hasRebates] = mergePositionPriceImpactWithPriceImpactDiff(
-    p.feesType,
-    p.positionPriceImpact,
-    p.priceImpactDiff
-  );
-  const rebatesMessage = useMemo(
-    () =>
-      hasRebates ? (
-        <Trans>
-          Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-            Read more
-          </ExternalLink>
-          .
-        </Trans>
-      ) : undefined,
-    [hasRebates]
-  );
+  const rebateIsApplicable =
+    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
-    const positionPriceImpactRow = fullPositionPriceImpact?.deltaUsd.abs().gt(0)
-      ? {
-          id: "positionPriceImpact",
-          label: (
-            <>
-              <div className="text-white">{t`Position Price Impact`}:</div>
-              <div>({formatPercentage(fullPositionPriceImpact.bps.abs())} of position size)</div>
-            </>
-          ),
-          value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
-          className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green"),
-        }
-      : undefined;
-
-    const priceImpactDiffUsd = p.priceImpactDiff?.deltaUsd.abs().gt(0)
-      ? {
-          id: "priceImpactDiff",
-          label: (
-            <>
-              <div className="text-white">{t`Price Impact Rebates`}:</div>
-              <div>({formatPercentage(p.priceImpactDiff.bps.abs())} of position size)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
-          className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green"),
-        }
-      : undefined;
-
-    const swapPriceImpactRow = p.swapPriceImpact?.deltaUsd.abs().gt(0)
+    const swapPriceImpactRow = (
+      p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
+    )
       ? {
           id: "swapPriceImpact",
           label: (
             <>
               <div className="text-white">{t`Swap Price Impact`}:</div>
-              <div>({formatPercentage(p.swapPriceImpact.bps.abs())} of swap amount)</div>
+              <div>({formatPercentage(bigMath.abs(p.swapPriceImpact!.bps))} of swap amount)</div>
             </>
           ),
-          value: formatDeltaUsd(p.swapPriceImpact.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd, "text-green"),
+          value: formatDeltaUsd(p.swapPriceImpact!.deltaUsd),
+          className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-500"),
         }
       : undefined;
 
@@ -125,73 +86,78 @@ export function TradeFeesRow(p: Props) {
               }`}
               :
             </div>
-            <div>({formatPercentage(swap.bps.abs())} of swap amount)</div>
+            <div>({formatPercentage(bigMath.abs(swap.bps))} of swap amount)</div>
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
-        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green"),
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
       })) || [];
 
-    const swapProfitFeeRow = p.swapProfitFee?.deltaUsd.abs().gt(0)
+    const swapProfitFeeRow = (p.swapProfitFee?.deltaUsd === undefined ? undefined : p.swapProfitFee?.deltaUsd !== 0n)
       ? {
           id: "swapProfitFee",
           label: (
             <>
               <div className="text-white">{t`Swap Profit Fee`}:</div>
-              <div>({formatPercentage(p.swapProfitFee.bps.abs())} of collateral)</div>
+              <div>
+                ({formatPercentage(p.swapProfitFee?.bps === undefined ? undefined : bigMath.abs(p.swapProfitFee.bps))}{" "}
+                of collateral)
+              </div>
             </>
           ),
-          value: formatDeltaUsd(p.swapProfitFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapProfitFee.deltaUsd, "text-green"),
+          value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
+          className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
         }
       : undefined;
 
     const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
-    const positionFeeRow = p.positionFee?.deltaUsd.abs().gt(0)
+    const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)
       ? {
           id: "positionFee",
           label: (
             <>
               <div className="text-white">{feesTypeName}:</div>
-              <div>({formatPercentage(p.positionFee.bps.abs())} of position size)</div>
+              <div>({formatPercentage(bigMath.abs(p.positionFee!.bps))} of position size)</div>
             </>
           ),
-          value: formatDeltaUsd(p.positionFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.positionFee.deltaUsd, "text-green"),
+          value: formatDeltaUsd(p.positionFee?.deltaUsd),
+          className: getPositiveOrNegativeClass(p.positionFee?.deltaUsd, "text-green-500"),
         }
       : undefined;
 
-    const uiFeeRow = p.uiFee?.deltaUsd?.abs().gt(0)
+    const uiFeeRow = (p.uiFee?.deltaUsd === undefined ? undefined : p.uiFee.deltaUsd !== 0n)
       ? {
           id: "uiFee",
           label: (
             <>
               <div className="text-white">{t`UI Fee`}:</div>
               <div>
-                ({formatPercentage(p.uiFee.bps.abs())} of {p.feesType === "swap" ? "swap amount" : "position size"})
+                ({formatPercentage(bigMath.abs(p!.uiFee!.bps))} of{" "}
+                {p.feesType === "swap" ? "swap amount" : "position size"})
               </div>
             </>
           ),
-          value: formatDeltaUsd(p.uiFee.deltaUsd),
-          className: "text-red",
+          value: formatDeltaUsd(p.uiFee?.deltaUsd),
+          className: "text-red-500",
         }
       : undefined;
 
-    const uiSwapFeeRow = p.uiSwapFee?.deltaUsd?.abs().gt(0)
-      ? {
-          id: "swapUiFee",
-          label: (
-            <>
-              <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
-              <div>({formatPercentage(p.uiSwapFee.bps.abs())} of swap amount)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
-          className: "text-red",
-        }
-      : undefined;
+    const uiSwapFeeRow =
+      p.uiSwapFee && (p.uiSwapFee?.deltaUsd === undefined ? undefined : p.uiSwapFee.deltaUsd !== 0n)
+        ? {
+            id: "swapUiFee",
+            label: (
+              <>
+                <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+                <div>({formatPercentage(bigMath.abs(p.uiSwapFee.bps))} of swap amount)</div>
+              </>
+            ),
+            value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
+            className: "text-red-500",
+          }
+        : undefined;
 
-    const feeDiscountRow = p.feeDiscountUsd?.gt(0)
+    const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd !== 0n)
       ? {
           id: "feeDiscount",
           label: (
@@ -200,44 +166,46 @@ export function TradeFeesRow(p: Props) {
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
-          className: "text-green",
+          className: "text-green-500",
         }
       : undefined;
 
-    const borrowFeeRow = p.borrowFee?.deltaUsd?.abs().gt(0)
-      ? {
-          id: "borrowFee",
-          label: (
-            <>
-              <div className="text-white">{t`Borrow Fee`}:</div>
-              <div>({formatPercentage(p.borrowFee.bps.abs())} of collateral)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.borrowFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green"),
-        }
-      : undefined;
+    const borrowFeeRow =
+      p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
+        ? {
+            id: "borrowFee",
+            label: (
+              <>
+                <div className="text-white">{t`Borrow Fee`}:</div>
+                <div>({formatPercentage(bigMath.abs(p.borrowFee.bps))} of collateral)</div>
+              </>
+            ),
+            value: formatDeltaUsd(p.borrowFee.deltaUsd),
+            className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
-    const fundingFeeRow = p.fundingFee?.deltaUsd?.abs().gt(0)
-      ? {
-          id: "fundingFee",
-          label: (
-            <>
-              <div className="text-white">{t`Funding Fee`}:</div>
-              <div>({formatPercentage(p.fundingFee.bps.abs())} of collateral)</div>
-            </>
-          ),
-          value: formatDeltaUsd(p.fundingFee.deltaUsd),
-          className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green"),
-        }
-      : undefined;
+    const fundingFeeRow =
+      p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
+        ? {
+            id: "fundingFee",
+            label: (
+              <>
+                <div className="text-white">{t`Funding Fee`}:</div>
+                <div>({formatPercentage(bigMath.abs(p.fundingFee.bps))} of collateral)</div>
+              </>
+            ),
+            value: formatDeltaUsd(p.fundingFee.deltaUsd),
+            className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const borrowFeeRateRow = p.borrowFeeRateStr
       ? {
           id: "borrowFeeRate",
           label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
-          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -246,7 +214,7 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFeeRate",
           label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
-          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
+          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
       : undefined;
 
@@ -255,7 +223,13 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Max Bonus Rebate`}:</div>
+                <div className="text-white">
+                  <span className="relative">
+                    <Trans>Max Bonus Rebate</Trans>
+                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                  </span>
+                  :
+                </div>
                 <div>
                   <Trans>
                     (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
@@ -264,9 +238,11 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: formatDeltaUsd(
-              p.positionFee?.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
+              p.positionFee &&
+                bigMath.mulDiv(p.positionFee.deltaUsd, tradingIncentives.rebatePercent, BASIS_POINTS_DIVISOR_BIGINT) *
+                  -1n
             ),
-            className: "text-green",
+            className: "text-green-500",
             id: "rebate",
           }
         : undefined;
@@ -277,7 +253,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "increase") {
       return [
-        positionPriceImpactRow,
         swapPriceImpactRow,
         ...swapFeeRows,
         positionFeeRow,
@@ -294,8 +269,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
-        positionPriceImpactRow,
-        priceImpactDiffUsd,
         swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,
@@ -314,25 +287,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [
-    fullPositionPriceImpact,
-    p.priceImpactDiff,
-    p.swapPriceImpact,
-    p.swapFees,
-    p.swapProfitFee,
-    p.positionFee,
-    p.fundingFee,
-    p.feesType,
-    p.feeDiscountUsd,
-    p.borrowFee,
-    p.borrowFeeRateStr,
-    p.fundingFeeRateStr,
-    p.uiFee,
-    p.uiSwapFee,
-    tradingIncentives,
-    rebateIsApplicable,
-    chainId,
-  ]);
+  }, [p, tradingIncentives, rebateIsApplicable, chainId]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
@@ -340,37 +295,44 @@ export function TradeFeesRow(p: Props) {
     if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
-    const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
+    const rebate =
+      bigMath.mulDiv(p.positionFee.deltaUsd, tradingIncentives.rebatePercent, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
 
-    return totalBeforeRebate?.add(rebate);
+    return totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
   }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
-      return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
+      const rebatedTextWithSparkle = (
+        <span className="relative">
+          <Trans>(Rebated)</Trans>
+          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+        </span>
+      );
+
+      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
     } else {
-      return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+      return t`Fees`;
     }
   }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives || !rebateIsApplicable) {
+    if (!incentivesTokenTitle || !rebateIsApplicable) {
       return null;
     }
 
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
-        <ExternalLink
-          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
-          newTab
-        >
-          Read more
-        </ExternalLink>
-        .
+        The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        <span className="whitespace-nowrap">
+          <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
+            Read more
+          </ExternalLink>
+          .
+        </span>
       </Trans>
     );
-  }, [rebateIsApplicable, tradingIncentives]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
@@ -383,33 +345,27 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees]);
 
   let value: ReactNode = useMemo(() => {
-    if (!totalFeeUsd || totalFeeUsd.eq(0)) {
+    if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
-    } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
-      return <span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>;
+    } else if (!feeRows.length && !incentivesBottomText) {
+      return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;
     } else {
       return (
         <TooltipWithPortal
-          portalClassName="TradeFeesRow-tooltip"
-          handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          tooltipClassName="TradeFeesRow-tooltip"
+          handle={<span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>}
           position="top-end"
           renderContent={() => (
             <div>
               {feeRows.map((feeRow) => (
                 <StatsTooltipRow
                   key={feeRow.id}
-                  className={feeRow.className}
+                  textClassName={feeRow.className}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}
                 />
               ))}
-              {hasRebates && (
-                <>
-                  <br />
-                  {rebatesMessage}
-                </>
-              )}
               {incentivesBottomText && <br />}
               {incentivesBottomText}
               {swapRouteMsg}
@@ -418,25 +374,7 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd, swapRouteMsg]);
+  }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
-}
-
-function mergePositionPriceImpactWithPriceImpactDiff(
-  feesType: TradeFeesType,
-  positionPriceImpact: FeeItem | undefined,
-  priceImpactDiff: FeeItem | undefined
-): [fullPositionPriceImpact: FeeItem | undefined, hasRebates: boolean] {
-  if (feesType !== "decrease" || !positionPriceImpact || !priceImpactDiff || priceImpactDiff.deltaUsd.lte(0)) {
-    return [positionPriceImpact, false];
-  }
-
-  return [
-    {
-      bps: positionPriceImpact.bps.add(priceImpactDiff.bps.mul(-1)),
-      deltaUsd: positionPriceImpact.deltaUsd.add(priceImpactDiff.deltaUsd.mul(-1)),
-    },
-    true,
-  ];
 }

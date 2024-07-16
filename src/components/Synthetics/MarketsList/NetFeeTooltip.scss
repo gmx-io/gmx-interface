@@ -1,0 +1,19 @@
+.NetFeeTooltip {
+  width: 100%;
+
+  &-head th {
+    color: var(--color-gray-300);
+    font-weight: normal;
+    text-transform: uppercase;
+    padding-bottom: 1rem;
+  }
+
+  &-cell-right {
+    text-align: right;
+  }
+
+  &-cell-center {
+    text-align: right;
+    padding-right: 1rem;
+  }
+}

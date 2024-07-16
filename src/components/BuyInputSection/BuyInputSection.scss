@@ -18,14 +18,14 @@
       display: flex;
       align-items: center;
       border-radius: 0.4rem;
-      color: #ffffff;
+      color: var(--color-white);
       min-width: 4.65rem;
       font-size: 2.1rem;
       line-height: 2.5rem;
       justify-content: flex-end;
 
       &:hover {
-        color: #7885ff;
+        color: var(--color-blue-300);
       }
 
       &-symbol {
@@ -41,7 +41,7 @@
 
     .Exchange-swap-max {
       position: unset;
-      color: white;
+      color: var(--color-white);
       font-size: var(--font-sm);
     }
 
@@ -54,6 +54,7 @@
       display: flex;
       align-items: center;
       margin-left: 1rem;
+      gap: 0.5rem;
     }
 
     &-top {
@@ -87,7 +88,7 @@
     font-size: 1.4rem;
 
     &:hover {
-      background: rgba(180, 187, 255, 0.1);
+      background: var(--color-cold-blue-900);
     }
   }
 }

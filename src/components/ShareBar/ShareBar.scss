@@ -1,5 +1,5 @@
 .ShareBar {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--color-gray-800);
   position: relative;
   height: 2px;
   width: 100%;
@@ -22,7 +22,7 @@
 
 .ShareBar-fill {
   height: 100%;
-  background: #fff;
+  background: var(--color-white);
 }
 
 .ShareBar-fill__percentage {
@@ -39,14 +39,14 @@
   }
 
   .ShareBar-fill__left {
-    background: rgba(94, 201, 137, 0.15);
+    background-color: color-mix(in srgb, var(--color-green-500) 15%, transparent);
     color: var(--green);
     border-top-left-radius: var(--border-radius-sm);
     border-bottom-left-radius: var(--border-radius-sm);
   }
 
   .ShareBar-fill__right {
-    background: rgba(231, 78, 93, 0.15);
+    background-color: color-mix(in srgb, var(--color-red-500) 15%, transparent);
     color: var(--error-red);
     border-top-right-radius: var(--border-radius-sm);
     border-bottom-right-radius: var(--border-radius-sm);
@@ -56,4 +56,14 @@
 
 .ShareBar.warning .ShareBar-fill {
   background-color: orange;
+}
+
+.ShareBar.balance {
+  background: var(--error-red);
+  width: 100%;
+  min-width: 10rem;
+
+  .ShareBar-fill {
+    background: var(--green);
+  }
 }

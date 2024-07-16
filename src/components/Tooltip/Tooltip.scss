@@ -1,4 +1,4 @@
-$left-arrow-bg: #2e3351;
+$left-arrow-bg: var(--color-slate-600);
 
 .Tooltip {
   position: relative;
@@ -12,9 +12,7 @@ $left-arrow-bg: #2e3351;
   border-radius: 4px;
   padding: 1.05rem;
   letter-spacing: 0.4px;
-  width: fit-content;
   min-width: 28rem;
-  max-width: 35rem;
   text-align: left;
   white-space: normal;
   background: rgb(49, 54, 85);
@@ -24,17 +22,8 @@ $left-arrow-bg: #2e3351;
   z-index: 10000;
 
   a {
-    color: var(--text-gray);
+    color: var(--color-gray-300);
     text-decoration: underline;
-  }
-
-  &::after {
-    content: "";
-    height: 8px;
-    width: 8px;
-    transform: rotate(45deg);
-    position: absolute;
-    display: none;
   }
 }
 
@@ -51,81 +40,43 @@ $left-arrow-bg: #2e3351;
   margin-bottom: 0;
 }
 
+// TODO: remove all usages of Tooltip-popup outside of Tooltip component
+// and remove the following styles
 .Tooltip-popup {
   &.top {
     left: 50%;
     transform: translateY(-0.8rem) translateX(-50%);
     bottom: 100%;
-
-    &::after {
-      display: block;
-      background: #292e49;
-      left: 50%;
-      bottom: -4px;
-    }
   }
 
   &.top-start {
     left: 0;
     transform: translateY(-0.8rem);
     bottom: 100%;
-
-    &::after {
-      display: block;
-      bottom: -4px;
-      background: #2a2c46;
-    }
   }
 
   &.top-end {
     right: 0;
     transform: translateY(-0.8rem);
     bottom: 100%;
-
-    &::after {
-      display: block;
-      bottom: -4px;
-      right: 8px;
-      background: #2e3351;
-    }
   }
 
   &.bottom {
     left: 50%;
     transform: translateY(0.8rem) translateX(-50%);
     top: 100%;
-
-    &::after {
-      display: block;
-      left: 50%;
-      top: -4px;
-      background: #2b304b;
-    }
   }
 
   &.bottom-start {
     left: 0;
     transform: translateY(0.8rem);
     top: 100%;
-
-    &::after {
-      display: block;
-      top: -4px;
-      background: #232740;
-    }
   }
 
   &.bottom-end {
     right: 0;
     transform: translateY(0.8rem);
     top: 100%;
-
-    &::after {
-      display: block;
-      top: -4px;
-      right: 8px;
-      background: #303553;
-    }
   }
 
   &.left,
@@ -133,12 +84,6 @@ $left-arrow-bg: #2e3351;
   &.left-end {
     right: calc(100% + 0.5rem);
     transform: translateY(50%);
-    &::after {
-      display: block;
-      right: -4px;
-      top: 50%;
-      background: #2e3351;
-    }
   }
 
   &.left {
@@ -158,12 +103,6 @@ $left-arrow-bg: #2e3351;
   &.right-end {
     left: calc(100% + 0.5rem);
     transform: translateY(50%);
-    &::after {
-      display: block;
-      left: -4px;
-      top: 50%;
-      background: #252640;
-    }
   }
 
   &.right {
@@ -188,27 +127,12 @@ $left-arrow-bg: #2e3351;
   text-decoration-style: dashed;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: rgba(255, 255, 255, 0.6);
-}
-
-.Tooltip-handle.plain:after {
-  border-bottom: none;
-}
-
-.Tooltip-error {
-  .Tooltip-handle {
-    color: var(--error-red);
-    text-decoration-color: var(--error-red);
-  }
-}
-
-.Tooltip.no-underline .Tooltip-handle::after {
-  content: unset;
+  text-decoration-color: var(--color-gray-400);
 }
 
 .Tooltip-divider {
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: var(--color-gray-500);
   margin: 0.5rem 0;
 }
 
@@ -234,22 +158,12 @@ $left-arrow-bg: #2e3351;
 }
 
 .Tooltip-number {
-  color: white;
+  color: var(--color-white);
 }
 
 .Tooltip-flex {
   display: flex;
   flex-direction: column;
-}
-
-.Tooltip-disabled-wrapper {
-  pointer-events: none;
-  display: flex;
-  flex: 0 0 100%;
-}
-
-.z-index-1001 {
-  z-index: 1001;
 }
 
 @media (max-width: 700px) {

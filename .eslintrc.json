@@ -1,5 +1,6 @@
 {
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended",  "plugin:react-hooks/recommended", "plugin:react/recommended", "plugin:react-perf/recommended"],
+    "plugins": ["eslint-plugin-local-rules"],
     "rules": {
       "no-undef": "error",
       "no-console": "warn",
@@ -9,12 +10,12 @@
       "no-extra-boolean-cast": "error",
       "no-prototype-builtins": "error",
       "no-empty": "error",
-      "@typescript-eslint/no-inferrable-types": "error", 
+      "@typescript-eslint/no-inferrable-types": "error",
       "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
       "react/no-unused-prop-types": "error",
       "react-hooks/rules-of-hooks": "warn",
       "react/hook-use-state": "warn",
-      "@typescript-eslint/no-unused-vars": "warn", 
+      "@typescript-eslint/no-unused-vars": "warn",
       "react/jsx-fragments": "warn",
       "react-perf/jsx-no-new-array-as-prop": "warn",
       "react-perf/jsx-no-new-object-as-prop": "warn",
@@ -41,7 +42,9 @@
       "react/jsx-no-useless-fragment": "off",
       "react/require-default-props": "off",
       "react/jsx-handler-names": "off",
-      "react/display-name": "off"
+      "react/display-name": "off",
+      "local-rules/no-bigint-negation": "off",
+      "local-rules/no-logical-bigint": "off"
     },
     "env": {
       "browser": true,
@@ -56,5 +59,24 @@
       "react": {
         "version": "detect"
       }
-    }
+    },
+    "overrides": [
+      {
+        // Disable no-undef for TypeScript files as it's already checked by the TypeScript compiler
+        "files": ["*.ts", "*.tsx"],
+        "rules": {
+          "no-undef": "off"
+        }
+      },
+      {
+        "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+        "rules": {
+          "local-rules/no-bigint-negation": "error",
+          "local-rules/no-logical-bigint": "error"
+        },
+        "parserOptions": {
+          "project": ["./tsconfig.json"]
+        }
+      }
+    ]
   }

@@ -1,7 +1,7 @@
 .ClaimsHistory {
   &-controls {
     padding: 1em 1.05rem;
-    border-bottom: 1px solid #23263b;
+    border-bottom: 1px solid var(--color-slate-700);
 
     display: flex;
     justify-content: space-between;
@@ -33,13 +33,13 @@
 
     // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
     tbody tr {
-      cursor: default !important;
+      cursor: auto !important;
     }
   }
 
   &-header {
     tr {
-      cursor: default !important;
+      cursor: auto !important;
       border-bottom: none !important;
 
       &:hover {

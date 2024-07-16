@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
@@ -12,12 +12,12 @@ import { callContract } from "lib/contracts";
 export type UpdateOrderParams = {
   orderKey: string;
   indexToken?: Token;
-  sizeDeltaUsd: BigNumber;
-  triggerPrice: BigNumber;
-  acceptablePrice: BigNumber;
-  minOutputAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  minOutputAmount: bigint;
   // used to top-up execution fee for frozen orders
-  executionFee?: BigNumber;
+  executionFee?: bigint;
   setPendingTxns: (txns: any) => void;
 };
 
@@ -42,12 +42,57 @@ export function updateOrderTxn(
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
+  const encodedPayload = createUpdateEncodedPayload({
+    chainId,
+    router,
+    orderKey,
+    sizeDeltaUsd,
+    executionFee,
+    indexToken,
+    acceptablePrice,
+    triggerPrice,
+    minOutputAmount,
+  });
+
+  return callContract(chainId, router, "multicall", [encodedPayload], {
+    value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
+    sentMsg: t`Updating order`,
+    successMsg: t`Update order executed`,
+    failMsg: t`Failed to update order`,
+    customSigners: subaccount?.customSigners,
+    setPendingTxns,
+    showPreliminaryMsg: Boolean(subaccount),
+  });
+}
+
+export function createUpdateEncodedPayload({
+  chainId,
+  router,
+  orderKey,
+  sizeDeltaUsd,
+  executionFee,
+  indexToken,
+  acceptablePrice,
+  triggerPrice,
+  minOutputAmount,
+}: {
+  chainId: number;
+  router: ethers.Contract;
+  orderKey: string;
+  sizeDeltaUsd: bigint;
+  executionFee?: bigint;
+  indexToken?: Token;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+}) {
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
-  if (executionFee?.gt(0)) {
+  if (executionFee != undefined && executionFee > 0) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
+
   multicall.push({
     method: "updateOrder",
     params: [
@@ -56,19 +101,9 @@ export function updateOrderTxn(
       convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
       convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
       minOutputAmount,
+      false, // autoCancel
     ],
   });
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
-
-  return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee?.gt(0) ? executionFee : undefined,
-    sentMsg: t`Updating order`,
-    successMsg: t`Update order executed`,
-    failMsg: t`Failed to update order`,
-    setPendingTxns,
-    showPreliminaryMsg: Boolean(subaccount),
-  });
+  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 }

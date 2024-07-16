@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -14,53 +13,60 @@ import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import BannerButton from "components/Banner/BannerButton";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import Button from "components/Button/Button";
 import { mergeWith } from "lodash";
-import { formatPercentage } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { getIncentivesV2Url } from "config/links";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import sparkleIcon from "img/sparkle.svg";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
-  const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
+  const totalApr = mergeWith(
+    {},
+    apr,
+    incentiveApr,
+    (aprValue, incentiveAprValue) => (aprValue ?? 0n) + (incentiveAprValue ?? 0n)
+  );
   const aprValues = Object.values(totalApr || {});
 
-  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
+  const maxApr = aprValues.reduce((max, value) => (value > max ? value : max), aprValues[0]);
 
   return maxApr;
 }
 
 type Props = {
   showRedirectModal?: (to: string) => void;
-  redirectPopupTimestamp?: number;
 };
 
-export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }: Props) {
-  const isHome = isHomeSite();
+export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
-  const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
-  const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
-    useMarketTokensAPR(AVALANCHE);
+  const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
+  const { marketsTokensApyData: arbApy, marketsTokensIncentiveAprData: arbIncentiveApr } = useGmMarketsApy(ARBITRUM);
+  const { marketsTokensApyData: avaxApy, marketsTokensIncentiveAprData: avaxIncentiveApr } = useGmMarketsApy(AVALANCHE);
 
-  const maxAprText = useMemo(() => {
-    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr)
+  const maxApyText = useMemo(() => {
+    if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
       return {
         [ARBITRUM]: "...%",
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApr = calculateMaxApr(arbApr, arbIncentiveApr);
-    const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
+    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr);
+    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr);
 
     return {
-      [ARBITRUM]: formatPercentage(maxArbApr),
-      [AVALANCHE]: formatPercentage(maxAvaxApr),
+      [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
+      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
     };
-  }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
+  }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -79,14 +85,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
   );
 
   const BuyLink = ({ className, to, children, network }) => {
+    const isHome = isHomeSite();
     if (isHome && showRedirectModal) {
       return (
-        <HeaderLink
-          to={to}
-          className={className}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to={to} className={className} showRedirectModal={showRedirectModal}>
           {children}
         </HeaderLink>
       );
@@ -98,6 +100,34 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
       </Link>
     );
   };
+
+  const poolsIncentivizedLabel = useMemo(() => {
+    const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
+    const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
+    const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
+    if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {arbitrumLink} and {avalancheLink} GM Pools are{" "}
+          <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (arbitrumIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (avalancheIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else {
+      return null;
+    }
+  }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
 
   return (
     <div className="Home-token-card-options">
@@ -128,9 +158,14 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
-          <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
+          <Button
+            className="!py-11 tracking-normal"
+            newTab
+            variant="primary"
+            to="https://docs.gmx.io/docs/category/tokenomics"
+          >
             <Trans>Read more</Trans>
-          </ExternalLink>
+          </Button>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -145,16 +180,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
               </Trans>
             </div>
           </div>
-          {arbitrumIncentiveState?.lp?.isActive && (
-            <BannerButton
-              className="mt-md"
-              label="Arbitrum GM Pools are incentivized."
-              link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
-            />
+          {poolsIncentivizedLabel && (
+            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{poolsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum Max. APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
-            <Trans>Avalanche Max. APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
+            <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
           </div>
         </div>
 
@@ -190,9 +221,9 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
               </Trans>
               {arbitrumIncentiveState?.migration?.isActive && (
                 <BannerButton
-                  className="mt-md"
+                  className="mt-15"
                   label="Migrating from GLP to GM is incentivized in Arbitrum."
-                  link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+                  link={getIncentivesV2Url(ARBITRUM)}
                 />
               )}
             </div>

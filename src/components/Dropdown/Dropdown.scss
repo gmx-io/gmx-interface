@@ -5,7 +5,7 @@
 
   div[aria-expanded="true"]:first-child {
     .Dropdown-current {
-      color: #7885ff;
+      color: var(--color-blue-300);
     }
   }
 
@@ -29,8 +29,8 @@
   border-radius: 0.4rem;
   overflow-y: auto;
   max-height: 30rem;
-  background: #16182e;
-  border: 1px solid #32344c;
+  background: var(--color-slate-800);
+  border: 1px solid var(--color-gray-800);
   text-align: left;
   list-style: none;
   cursor: pointer;
@@ -47,11 +47,11 @@
   outline: none;
   border: none;
   box-sizing: border-box;
-  color: white;
+  color: var(--color-white);
   font-size: var(--font-sm);
 
   &:hover {
-    color: #7885ff;
+    color: var(--color-blue-300);
   }
 }
 
@@ -62,15 +62,15 @@
 
 .Dropdown-option {
   padding: 1rem;
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   cursor: pointer;
 
   &:hover {
-    color: #eee;
+    color: var(--color-gray-50);
     background: #808aff14 !important;
   }
 
   &.selected {
-    color: #7885ff;
+    color: var(--color-blue-300);
   }
 }

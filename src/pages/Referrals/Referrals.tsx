@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -28,24 +28,21 @@ import { useLocalStorage } from "react-use";
 import "./Referrals.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
+import { usePendingTxns } from "lib/usePendingTxns";
+import { serializeBigIntsInObject } from "lib/numbers";
+import { useLocalizedMap } from "lib/i18n";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
-const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
+const TAB_OPTION_LABELS = { [TRADERS]: msg`Traders`, [AFFILIATES]: msg`Affiliates` };
 
-function Referrals({
-  setPendingTxns,
-  pendingTxns,
-}: {
-  setPendingTxns: (pendingTxns: string[]) => void;
-  pendingTxns: string[];
-}) {
+function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
-  if (queryAccount && ethers.utils.isAddress(queryAccount)) {
-    account = ethers.utils.getAddress(queryAccount);
+  if (queryAccount && ethers.isAddress(queryAccount)) {
+    account = ethers.getAddress(queryAccount);
   } else {
     account = walletAccount;
   }
@@ -57,7 +54,9 @@ function Referrals({
     {
       raw: false,
       deserializer: deserializeSampleStats as any,
-      serializer: (value) => JSON.stringify(value),
+      serializer: (value) => {
+        return JSON.stringify(serializeBigIntsInObject(value));
+      },
     }
   );
   const { data: referralsData, loading } = useReferralsData(account);
@@ -65,6 +64,8 @@ function Referrals({
   const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(signer, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
+  const [pendingTxns] = usePendingTxns();
+  const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -75,13 +76,13 @@ function Referrals({
   }
 
   function renderAffiliatesTab() {
-    const currentReferralsData = referralsData?.chains?.[chainId];
+    const ownsSomeChainCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
 
-    const isReferralCodeAvailable =
-      currentReferralsData?.codes?.length || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length;
+    const hasRecentCode = recentlyAddedCodes?.some(isRecentReferralCodeNotExpired);
+    const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
 
     if (loading) return <Loader />;
-    if (account && isReferralCodeAvailable) {
+    if (account && isSomeReferralCodeAvailable) {
       return (
         <AffiliatesStats
           referralsData={referralsData}
@@ -106,15 +107,13 @@ function Referrals({
   function renderTradersTab() {
     if (loading) return <Loader />;
     if (isHashZero(userReferralCode) || !account || !userReferralCode) {
-      return <JoinReferralCode active={active} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />;
+      return <JoinReferralCode active={active} />;
     }
     return (
       <TradersStats
         userReferralCodeString={userReferralCodeString}
         chainId={chainId}
         referralsData={referralsData}
-        setPendingTxns={setPendingTxns}
-        pendingTxns={pendingTxns}
         traderTier={traderTier}
         discountShare={discountShare}
       />
@@ -139,7 +138,7 @@ function Referrals({
         <div className="referral-tab-container">
           <Tab
             options={TAB_OPTIONS}
-            optionLabels={TAB_OPTION_LABELS}
+            optionLabels={localizedTabOptionLabels}
             option={activeTab}
             setOption={setActiveTab}
             onChange={setActiveTab}

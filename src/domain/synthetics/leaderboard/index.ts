@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
-import { getLeaderboardGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { expandDecimals } from "lib/numbers";
+import { LeaderboardDataType } from "./types";
 
 export * from "./types";
 
@@ -138,14 +139,20 @@ export type LeaderboardPositionBase = {
 };
 
 export type LeaderboardPosition = LeaderboardPositionBase & {
-  unrealizedPnl: bigint;
+  rank: number;
+  fees: bigint;
+  pnl: bigint;
+  qualifyingPnl: bigint;
+  leverage: bigint;
+  collateralUsd: bigint;
+  closingFeeUsd: bigint;
 };
 
 const fetchAccounts = async (
   chainId: number,
   p: { account?: string; from?: number; to?: number }
 ): Promise<LeaderboardAccountBase[] | undefined> => {
-  const client = getLeaderboardGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
     console.error("no client");
@@ -243,15 +250,24 @@ export function useLeaderboardData(
     from: number;
     to: number | undefined;
     positionsSnapshotTimestamp: number | undefined;
+    leaderboardDataType: LeaderboardDataType | undefined;
   }
 ) {
-  const { data, error } = useSWR(
+  const { data, error, isLoading } = useSWR(
     enabled
-      ? ["leaderboard/useLeaderboardAccounts", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp]
+      ? [
+          "leaderboard/useLeaderboardData",
+          chainId,
+          p.account,
+          p.from,
+          p.to,
+          p.positionsSnapshotTimestamp,
+          p.leaderboardDataType,
+        ]
       : null,
     async () => {
       const [accounts, positions] = await Promise.all([
-        fetchAccounts(chainId, p),
+        p.leaderboardDataType === "positions" ? Promise.resolve([]) : fetchAccounts(chainId, p),
         fetchPositions(chainId, p.positionsSnapshotTimestamp),
       ]);
 
@@ -265,14 +281,14 @@ export function useLeaderboardData(
     }
   );
 
-  return { data, error };
+  return { data, error, isLoading };
 }
 
 const fetchPositions = async (
   chainId: number,
   snapshotTimestamp: number | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
-  const client = getLeaderboardGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
     console.error("no endpoint");

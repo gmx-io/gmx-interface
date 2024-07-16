@@ -16,9 +16,11 @@ type Props = {
 
 function TokenIcon({ className, symbol, displaySize, importSize = 24 }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
-  const classNames = cx("Token-icon", className);
+  const classNames = cx("Token-icon inline", className);
   if (!iconPath) return <></>;
-  return <img className={classNames} src={importImage(iconPath)} alt={symbol} width={displaySize} />;
+  return (
+    <img className={classNames} src={importImage(iconPath)} alt={symbol} width={displaySize} height={displaySize} />
+  );
 }
 
 export default TokenIcon;

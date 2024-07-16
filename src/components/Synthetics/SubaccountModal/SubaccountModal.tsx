@@ -7,6 +7,7 @@ import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
@@ -20,6 +21,7 @@ import {
   useSubaccountNotificationState,
   useSubaccountPendingTx,
   useSubaccountState,
+  useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
@@ -35,17 +37,15 @@ import {
   useTokensDataRequest,
   getTokenData,
 } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl } from "lib/legacy";
-import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { formatUsd } from "lib/numbers";
+import { formatUsd, expandDecimals, formatTokenAmount } from "lib/numbers";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
@@ -53,22 +53,25 @@ import { SubaccountNotification } from "../StatusNotification/SubaccountNotifica
 import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
+import { usePendingTxns } from "lib/usePendingTxns";
 
 export type FormState = "empty" | "inactive" | "activated";
 
-export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
+export function SubaccountModal() {
   const [isVisible, setIsVisible] = useSubaccountModalOpen();
 
   return (
     <Modal label={t`One-Click Trading`} isVisible={isVisible} setIsVisible={setIsVisible}>
       <div className="SubaccountModal-content">
-        <MainView setPendingTxns={setPendingTxns} />
+        <MainView />
       </div>
     </Modal>
   );
 }
 
-const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void }) => {
+const BALANCE_DISPLAY_DECIMALS = 4;
+
+const MainView = memo(() => {
   const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
@@ -86,6 +89,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
+  const [, setPendingTxns] = usePendingTxns();
 
   const maxAllowedActionsInputRef = useRef<HTMLInputElement>(null);
   const topUpInputRef = useRef<HTMLInputElement>(null);
@@ -103,11 +107,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const approxNumberOfOperationsByBalance = useMemo(() => {
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
-    return subAccNativeTokenBalance &&
-      baseFeePerAction &&
-      currentAutoTopUpAmount &&
-      mainAccWrappedTokenBalance &&
-      mainAccNativeTokenBalance
+    return subAccNativeTokenBalance !== undefined &&
+      currentAutoTopUpAmount !== undefined &&
+      mainAccWrappedTokenBalance !== undefined &&
+      mainAccNativeTokenBalance !== undefined
       ? getApproxSubaccountActionsCountByBalance(
           mainAccWrappedTokenBalance,
           subAccNativeTokenBalance,
@@ -155,14 +158,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         <StatsTooltipRow
           label={wrappedToken.symbol}
           value={formatTokenAmount(mainAccWrappedTokenBalance, wrappedToken.decimals, wrappedToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })}
           showDollar={false}
         />
         <StatsTooltipRow
           label={nativeToken.symbol}
           value={formatTokenAmount(mainAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })}
           showDollar={false}
         />
@@ -185,19 +188,19 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setDisplayValue: setTopUpString,
     setValue: setTopUp,
     value: topUp,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: maxAutoTopUpAmountString,
     setDisplayValue: setMaxAutoTopUpAmountString,
     setValue: setMaxAutoTopUpAmount,
     value: maxAutoTopUpAmount,
-  } = useBigNumberInput(null, wrappedToken.decimals, 4);
+  } = useBigNumberInput(null, wrappedToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: wntForAutoTopUpsString,
     setDisplayValue: setWntForAutoTopUpsString,
     setValue: setWntForAutoTopUps,
     value: wntForAutoTopUps,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, BALANCE_DISPLAY_DECIMALS);
   const {
     displayValue: maxAllowedActionsString,
     setDisplayValue: setMaxAllowedActionsString,
@@ -261,7 +264,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount !== null);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -385,9 +388,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           (await getCurrentMaxActionsCount({
             accountAddress: account!,
             chainId,
-            signer,
             subaccountAddress: address,
-          })) ?? BigNumber.from(0);
+          })) ?? 0n;
       }
 
       if (!address) {
@@ -395,7 +397,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         throw new Error("address is not defined");
       }
 
-      if (!count) {
+      if (count === undefined || count === null) {
         setNotificationState("activationFailed");
         throw new Error("Action counts are not defined");
       }
@@ -460,7 +462,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const needPayTokenApproval = useMemo(
     () =>
-      tokensAllowanceData && baseFeePerAction
+      tokensAllowanceData && baseFeePerAction !== undefined
         ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
         : false,
     [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
@@ -507,26 +509,40 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     ]
   );
 
-  const { gasPrice } = useGasPrice(chainId);
+  const gasPrice = useGasPrice(chainId);
 
   const subaccount = useSubaccount(null, 1);
+
+  const defaultExecutionFee = useSubaccountDefaultExecutionFee();
+  const isInsufficientFunds = useSubaccountInsufficientFunds(defaultExecutionFee);
 
   const handleWithdrawClick = useCallback(async () => {
     if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
-    if (!subAccNativeTokenBalance) throw new Error("subEthBalance is not defined");
-    if (!gasPrice) throw new Error("gasPrice is not defined");
+    if (subAccNativeTokenBalance === undefined) throw new Error("subEthBalance is not defined");
+    if (gasPrice === undefined) throw new Error("gasPrice is not defined");
 
     setWithdrawalLoading(true);
 
     try {
       helperToast.success(
         <StatusNotification title={t`Withdrawing from Subaccount`}>
-          {t`Withdrawing ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
-          })} to Main Account`}
-        </StatusNotification>
+          <TransactionStatus
+            status="loading"
+            text={t`Withdrawing ${formatTokenAmount(
+              subAccNativeTokenBalance,
+              nativeToken.decimals,
+              nativeToken.symbol,
+              {
+                displayDecimals: BALANCE_DISPLAY_DECIMALS,
+              }
+            )} to Main Account`}
+          />
+        </StatusNotification>,
+        {
+          className: "SubaccountNotification",
+        }
       );
 
       await withdrawFromSubaccount({
@@ -537,7 +553,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       helperToast.success(
         <StatusNotification title={t`Withdrawing from Subaccount`}>
           {t`Withdrawn ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-            displayDecimals: 4,
+            displayDecimals: BALANCE_DISPLAY_DECIMALS,
           })} to Main Account`}
         </StatusNotification>
       );
@@ -574,7 +590,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const subAccNativeTokenBalanceFormatted = useMemo(
     () =>
       formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-        displayDecimals: 4,
+        displayDecimals: BALANCE_DISPLAY_DECIMALS,
       }),
     [nativeToken.decimals, nativeToken.symbol, subAccNativeTokenBalance]
   );
@@ -590,6 +606,16 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const focusConvertInput = useCallback(() => {
     convertInputRef.current?.focus();
   }, []);
+
+  const withdrawalButton = (
+    <button
+      disabled={disabled || !subaccount}
+      onClick={handleWithdrawClick}
+      className="SubaccountModal-mini-button w-full flex-1"
+    >
+      {withdrawalLoading ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
+    </button>
+  );
 
   return (
     <div className="SubaccountModal-content">
@@ -617,11 +643,32 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
               </ExternalLink>
             </div>
           </div>
-          <div className="SubaccountModal-buttons">
-            <button disabled={disabled} onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
-              {withdrawalLoading ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
-            </button>
-            <button disabled={disabled} onClick={handleDeactivateClick} className="SubaccountModal-mini-button warning">
+          <div className="SubaccountModal-buttons gap-4">
+            {isInsufficientFunds ? (
+              <TooltipWithPortal
+                className="block flex-1"
+                handleClassName="block w-full !no-underline"
+                position="top"
+                maxAllowedWidth={300}
+                tooltipClassName="!min-w-0"
+                handle={withdrawalButton}
+                content={
+                  (subAccNativeTokenBalance ?? 0n) <
+                  expandDecimals(1, nativeToken.decimals - BALANCE_DISPLAY_DECIMALS) ? (
+                    <div className="whitespace-nowrap">{t`The subaccount has no funds.`}</div>
+                  ) : (
+                    <div className="min-w-[280px]">{t`The amount left in the subaccount is not enough to cover network gas costs.`}</div>
+                  )
+                }
+              />
+            ) : (
+              withdrawalButton
+            )}
+            <button
+              disabled={disabled}
+              onClick={handleDeactivateClick}
+              className="SubaccountModal-mini-button warning flex-1"
+            >
               {notificationState === "deactivating" ? <Trans>Deactivating...</Trans> : <Trans>Deactivate</Trans>}
             </button>
           </div>
@@ -655,7 +702,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             value={
               <TooltipWithPortal
                 handle={formatTokenAmount(mainAccWrappedTokenBalance, wrappedToken.decimals, wrappedToken.symbol, {
-                  displayDecimals: 4,
+                  displayDecimals: BALANCE_DISPLAY_DECIMALS,
                 })}
                 renderContent={renderMainAccountBalanceTooltipContent}
                 position="top-end"
@@ -689,9 +736,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              topUp?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (topUp !== null &&
+                topUp > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
@@ -703,9 +752,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              wntForAutoTopUps?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              (wntForAutoTopUps !== null &&
+                wntForAutoTopUps > 0 &&
+                nativeTokenData &&
+                formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
@@ -716,9 +767,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
-              maxAutoTopUpAmount?.gt(0) &&
-              wrappedTokenData &&
-              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))
+              (maxAutoTopUpAmount !== null &&
+                maxAutoTopUpAmount > 0 &&
+                wrappedTokenData &&
+                formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||
+              null
             }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
@@ -769,7 +822,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
 
     return (
       <div>
-        <div className="SubaccountModal-input-row flex text-gray">
+        <div className="SubaccountModal-input-row flex text-gray-300">
           <div className="SubaccountModal-input-row-label">
             <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>
@@ -819,7 +872,7 @@ const InputBase = forwardRef<HTMLInputElement, InputProp>(
           </label>
         </div>
         {tooltip && (
-          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-index-1001", "top-end")}>{tooltip}</div>
+          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-[1001]", "top-end")}>{tooltip}</div>
         )}
       </div>
     );

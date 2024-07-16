@@ -2,7 +2,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
@@ -10,18 +10,19 @@ import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { SwapPricingType } from "../orders";
 
 type Params = {
   account: string;
   marketTokenAddress: string;
-  marketTokenAmount: BigNumber;
+  marketTokenAmount: bigint;
   initialLongTokenAddress: string;
-  minLongTokenAmount: BigNumber;
+  minLongTokenAmount: bigint;
   longTokenSwapPath: string[];
   initialShortTokenAddress: string;
   shortTokenSwapPath: string[];
-  minShortTokenAmount: BigNumber;
-  executionFee: BigNumber;
+  minShortTokenAmount: bigint;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
@@ -51,7 +52,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
       params: [
         {
           receiver: p.account,
-          callbackContract: ethers.constants.AddressZero,
+          callbackContract: ethers.ZeroAddress,
           market: p.marketTokenAddress,
           initialLongToken: initialLongTokenAddress,
           initialShortToken: initialShortTokenAddress,
@@ -62,8 +63,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
-          callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          callbackGasLimit: 0n,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],
     },
@@ -77,12 +78,12 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
+      extraArgs: [SwapPricingType.TwoStep],
     });
   }
 

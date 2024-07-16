@@ -3,8 +3,9 @@ import { FiX } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { HeaderLink } from "./HeaderLink";
-import "./Header.css";
+import "./Header.scss";
 import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_GMX.svg";
@@ -13,17 +14,12 @@ type Props = {
   small?: boolean;
   clickCloseIcon?: () => void;
   openSettings?: () => void;
-  redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
 
-export function AppHeaderLinks({
-  small,
-  openSettings,
-  clickCloseIcon,
-  redirectPopupTimestamp,
-  showRedirectModal,
-}: Props) {
+export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedirectModal }: Props) {
+  const { openNotifyModal } = useNotifyModalState();
+
   const isLeaderboardActive = useCallback(
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []
@@ -44,49 +40,32 @@ export function AppHeaderLinks({
         </div>
       )}
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/dashboard"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to="/dashboard" showRedirectModal={showRedirectModal}>
           <Trans>Dashboard</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+        <HeaderLink to="/earn" showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/buy" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/referrals"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to="/referrals" showRedirectModal={showRedirectModal}>
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/leaderboard"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-          isActive={isLeaderboardActive}
-        >
+        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal} isActive={isLeaderboardActive}>
           <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/ecosystem"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to="/ecosystem" showRedirectModal={showRedirectModal}>
           <Trans>Ecosystem</Trans>
         </HeaderLink>
       </div>
@@ -95,6 +74,13 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
+      {small && (
+        <div className="App-header-link-container">
+          <a href="#" onClick={openNotifyModal}>
+            <Trans>Alerts</Trans>
+          </a>
+        </div>
+      )}
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}

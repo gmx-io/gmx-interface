@@ -1,0 +1,44 @@
+.Stake-note {
+  text-align: center;
+  margin-bottom: 0.465rem;
+}
+
+.Stake-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3.1rem;
+  grid-gap: 1.5rem;
+  margin-top: 0.8rem;
+}
+
+.StakeModal .Modal-content {
+  width: 31rem;
+}
+.StakeModal .Modal-body {
+  font-size: var(--font-base);
+}
+
+.Stake-warning {
+  text-align: center;
+  margin-top: 0.465rem;
+}
+
+@media (max-width: 800px) {
+  .Stake-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.DelegateGMXAlertInfo {
+  text-wrap: wrap;
+
+  a {
+    color: var(--warning-yellow);
+    opacity: 0.7;
+
+    &:hover {
+      color: var(--warning-yellow);
+      opacity: 1;
+    }
+  }
+}

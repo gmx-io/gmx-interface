@@ -1,15 +1,13 @@
 import { gql } from "@apollo/client";
-import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
+import { BigNumberish, Signer, ethers, isAddress } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "abis/ReferralStorage.json";
 import Timelock from "abis/Timelock.json";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
-import { isAddress } from "ethers/lib/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { isAddressZero, isHashZero } from "lib/legacy";
@@ -21,39 +19,7 @@ import { UserReferralInfo } from "../types";
 import { decodeReferralCode, encodeReferralCode } from "../utils";
 
 export * from "./useReferralsData";
-
-async function getCodeOwnersData(network, account, codes = []) {
-  if (codes.length === 0 || !account || !network) {
-    return undefined;
-  }
-  const query = gql`
-    query allCodes($codes: [String!]!) {
-      referralCodes(where: { code_in: $codes }) {
-        owner
-        id
-      }
-    }
-  `;
-  return getReferralsGraphClient(network)
-    .query({ query, variables: { codes } })
-    .then(({ data }) => {
-      const { referralCodes } = data;
-      const codeOwners = referralCodes.reduce((acc, cv) => {
-        acc[cv.id] = cv.owner;
-        return acc;
-      }, {});
-      return codes.map((code) => {
-        const owner = codeOwners[code];
-        return {
-          code,
-          codeString: decodeReferralCode(code),
-          owner,
-          isTaken: Boolean(owner),
-          isTakenByCurrentUser: owner && owner.toLowerCase() === account.toLowerCase(),
-        };
-      });
-    });
-}
+export * from "./useUserCodesOnAllChain";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,
@@ -72,43 +38,55 @@ export function useUserReferralInfoRequest(
   const { affiliateTier: tierId } = useAffiliateTier(signer, chainId, codeOwner);
   const { totalRebate, discountShare } = useTiers(signer, chainId, tierId);
   const { discountShare: customDiscountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
-  const finalDiscountShare = customDiscountShare?.gt(0) ? customDiscountShare : discountShare;
-  if (
-    !userReferralCode ||
-    !userReferralCodeString ||
-    !codeOwner ||
-    !tierId ||
-    !totalRebate ||
-    !finalDiscountShare ||
-    !referralCodeForTxn
-  ) {
-    return undefined;
-  }
+  const finalDiscountShare = (customDiscountShare ?? 0n) > 0 ? customDiscountShare : discountShare;
 
-  return {
+  return useMemo(() => {
+    if (
+      !userReferralCode ||
+      !userReferralCodeString ||
+      !codeOwner ||
+      tierId === undefined ||
+      totalRebate === undefined ||
+      finalDiscountShare === undefined ||
+      !referralCodeForTxn
+    ) {
+      return undefined;
+    }
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+      referralCodeForTxn,
+      attachedOnChain,
+      affiliate: codeOwner,
+      tierId,
+      totalRebate,
+      totalRebateFactor: basisPointsToFloat(totalRebate),
+      discountShare: finalDiscountShare,
+      discountFactor: basisPointsToFloat(finalDiscountShare),
+    };
+  }, [
     userReferralCode,
     userReferralCodeString,
-    referralCodeForTxn,
-    attachedOnChain,
-    affiliate: codeOwner,
+    codeOwner,
     tierId,
     totalRebate,
-    totalRebateFactor: basisPointsToFloat(totalRebate),
-    discountShare: finalDiscountShare,
-    discountFactor: basisPointsToFloat(finalDiscountShare),
-  };
+    finalDiscountShare,
+    referralCodeForTxn,
+    attachedOnChain,
+  ]);
 }
 
 export function useAffiliateTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
+  const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<bigint>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
     }
   );
   return {
-    affiliateTier,
+    affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
     mutateReferrerTier,
   };
 }
@@ -116,8 +94,8 @@ export function useAffiliateTier(signer, chainId, account) {
 export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?: BigNumberish) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
-  const { data: [totalRebate, discountShare] = [] } = useSWR<BigNumber[]>(
-    tierLevel
+  const { data: [totalRebate, discountShare] = [] } = useSWR<bigint[]>(
+    tierLevel !== undefined
       ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
       : null,
     {
@@ -129,50 +107,6 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
     totalRebate,
     discountShare,
   };
-}
-
-export function useUserCodesOnAllChain(account) {
-  const [data, setData] = useState<any>(null);
-  const query = gql`
-    query referralCodesOnAllChain($account: String!) {
-      referralCodes(first: 1000, where: { owner: $account }) {
-        code
-      }
-    }
-  `;
-  useEffect(() => {
-    async function main() {
-      const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
-          try {
-            const client = getReferralsGraphClient(chainId);
-            const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
-            return data.referralCodes.map((c) => c.code);
-          } catch (ex) {
-            return [];
-          }
-        })
-      );
-      const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
-        getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
-        getCodeOwnersData(ARBITRUM, account, avalancheCodes),
-      ]);
-
-      setData({
-        [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
-          acc[cv.code] = cv;
-          return acc;
-        }, {} as any),
-        [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
-          acc[cv.code] = cv;
-          return acc;
-        }, {} as any),
-      });
-    }
-
-    main();
-  }, [account, query]);
-  return data;
 }
 
 export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, signer, opts) {
@@ -229,7 +163,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     let attachedOnChain = false;
     let userReferralCode: string | undefined = undefined;
     let userReferralCodeString: string | undefined = undefined;
-    let referralCodeForTxn = ethers.constants.HashZero;
+    let referralCodeForTxn = ethers.ZeroHash;
 
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
@@ -261,7 +195,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
 export function useReferrerTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<bigint>(
     validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
@@ -289,7 +223,7 @@ export function useCodeOwner(signer, chainId, account, code) {
 
 export function useReferrerDiscountShare(library, chainId, owner) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: discountShare, mutate: mutateDiscountShare } = useSWR<BigNumber | undefined>(
+  const { data: discountShare, mutate: mutateDiscountShare } = useSWR<bigint | undefined>(
     owner && [
       `ReferralStorage:referrerDiscountShares`,
       chainId,

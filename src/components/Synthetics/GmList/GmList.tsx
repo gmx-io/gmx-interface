@@ -6,13 +6,14 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxPoolAmountForDeposit,
+  getMaxPoolUsd,
   getMintableMarketTokens,
+  getPoolUsdWithoutPnl,
   getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMedia } from "react-use";
 import "./GmList.scss";
@@ -31,24 +32,27 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 type Props = {
   hideTitle?: boolean;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   marketTokensData?: TokensData;
-  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
 };
+
+const tokenAddressStyle = { fontSize: 5 };
 
 export function GmList({
   hideTitle,
   marketTokensData,
   marketsInfoData,
   tokensData,
-  marketsTokensAPRData,
+  marketsTokensApyData,
   marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
@@ -60,6 +64,7 @@ export function GmList({
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
+  const { showDebugValues } = useSettings();
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -95,7 +100,7 @@ export function GmList({
                 <th>
                   <Tooltip
                     handle={<Trans>BUYABLE</Trans>}
-                    className="text-none"
+                    className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
@@ -114,26 +119,10 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={t`APR`}
-                    className="text-none"
+                    handle={t`APY`}
+                    className="normal-case"
                     position="bottom-end"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>
-                          <p>
-                            APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as
-                            actual Fees are auto-compounded into the pool in real-time.
-                          </p>
-                          <p>
-                            Check Pools performance against other LP Positions in{" "}
-                            <ExternalLink newTab href="https://dune.com/gmx-io/gmx-analytics">
-                              GMX Dune Dashboard
-                            </ExternalLink>
-                            .
-                          </p>
-                        </Trans>
-                      </p>
-                    )}
+                    renderContent={ApyTooltipContent}
                   />
                 </th>
 
@@ -150,7 +139,7 @@ export function GmList({
                   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
                   const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                  const apr = getByKey(marketsTokensAPRData, token?.address);
+                  const apy = getByKey(marketsTokensApyData, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
                   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
@@ -169,12 +158,18 @@ export function GmList({
                       <td>
                         <div className="App-card-title-info">
                           <div className="App-card-title-info-icon">
-                            <TokenIcon symbol={tokenIconName} displaySize={40} importSize={40} />
+                            <TokenIcon
+                              symbol={tokenIconName}
+                              displaySize={40}
+                              importSize={40}
+                              className="min-h-40 min-w-40"
+                            />
                           </div>
 
                           <div className="App-card-title-info-text">
                             <div className="App-card-info-title">
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+
                               <div className="Asset-dropdown-container">
                                 <GmAssetDropdown
                                   token={token}
@@ -188,6 +183,7 @@ export function GmList({
                             </div>
                           </div>
                         </div>
+                        {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
@@ -223,21 +219,25 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apy={apy} incentiveApr={incentiveApr} />
                       </td>
 
                       <td className="GmList-actions">
                         <Button
                           className="GmList-action"
                           variant="secondary"
-                          to={`/pools/?pool=${token.address}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
+                          to={`/pools/?market=${market.marketTokenAddress}&operation=buy&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
                         >
                           <Trans>Buy</Trans>
                         </Button>
                         <Button
                           className="GmList-action GmList-last-action"
                           variant="secondary"
-                          to={`/pools/?pool=${token.address}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
+                          to={`/pools/?market=${market.marketTokenAddress}&operation=sell&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
                         >
                           <Trans>Sell</Trans>
                         </Button>
@@ -259,8 +259,8 @@ export function GmList({
 
           <div className="token-grid">
             {sortedMarketsByIndexToken.map((token, index) => {
-              const apr = marketsTokensAPRData?.[token.address];
-              const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const apr = marketsTokensApyData?.[token.address];
+              const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
@@ -286,7 +286,7 @@ export function GmList({
                     <div className="mobile-token-card">
                       <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
                       <div className="token-symbol-text">
-                        <div className="items-center">
+                        <div className="flex items-center">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
@@ -330,7 +330,7 @@ export function GmList({
                       <div className="label">
                         <Tooltip
                           handle={<Trans>Buyable</Trans>}
-                          className="text-none"
+                          className="normal-case"
                           position="bottom-start"
                           renderContent={() => (
                             <p className="text-white">
@@ -371,19 +371,30 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>APR</Trans>
+                        <Tooltip
+                          handle={t`APY`}
+                          className="normal-case"
+                          position="bottom-start"
+                          renderContent={ApyTooltipContent}
+                        />
                       </div>
                       <div>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apy={apr} incentiveApr={incentiveApr} />
                       </div>
                     </div>
 
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
-                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=buy&scroll=0`}>
+                      <Button
+                        variant="secondary"
+                        to={`/pools/?market=${market.marketTokenAddress}&operation=buy&scroll=0`}
+                      >
                         <Trans>Buy</Trans>
                       </Button>
-                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=sell&scroll=0`}>
+                      <Button
+                        variant="secondary"
+                        to={`/pools/?market=${market.marketTokenAddress}&operation=sell&scroll=0`}
+                      >
                         <Trans>Sell</Trans>
                       </Button>
                     </div>
@@ -398,37 +409,57 @@ export function GmList({
   );
 }
 
-function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+function MintableAmount({
+  mintableInfo,
+  market,
+  token,
+  longToken,
+  shortToken,
+}: {
+  mintableInfo:
+    | {
+        mintableAmount: bigint;
+        mintableUsd: bigint;
+        longDepositCapacityUsd: bigint;
+        shortDepositCapacityUsd: bigint;
+        longDepositCapacityAmount: bigint;
+        shortDepositCapacityAmount: bigint;
+      }
+    | undefined;
+  market: any;
+  token: any;
+  longToken: any;
+  shortToken: any;
+}) {
   const longTokenMaxValue = useMemo(
     () => [
-      formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
-        useCommas: true,
-      }),
-      `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
-        useCommas: true,
-        displayDecimals: 0,
-      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, true), longToken.decimals, longToken.symbol, {
-        useCommas: true,
-        displayDecimals: 0,
-      })})`,
+      mintableInfo
+        ? formatTokenAmountWithUsd(
+            mintableInfo.longDepositCapacityAmount,
+            mintableInfo.longDepositCapacityUsd,
+            longToken.symbol,
+            longToken.decimals
+          )
+        : "-",
+      `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
     ],
-    [longToken.decimals, longToken.symbol, market, mintableInfo?.longDepositCapacityAmount]
+    [longToken.decimals, longToken.symbol, market, mintableInfo]
   );
   const shortTokenMaxValue = useMemo(
     () => [
-      formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
-        useCommas: true,
-      }),
-      `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
-        useCommas: true,
-        displayDecimals: 0,
-      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, false), shortToken.decimals, shortToken.symbol, {
-        useCommas: true,
-        displayDecimals: 0,
-      })})`,
+      mintableInfo
+        ? formatTokenAmountWithUsd(
+            mintableInfo.shortDepositCapacityAmount,
+            mintableInfo.shortDepositCapacityUsd,
+            shortToken.symbol,
+            shortToken.decimals
+          )
+        : "-",
+      `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
     ],
-    [market, mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol]
+    [market, mintableInfo, shortToken.decimals, shortToken.symbol]
   );
+
   return (
     <Tooltip
       maxAllowedWidth={350}
@@ -445,15 +476,19 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
           )
         </>
       }
-      className="text-none"
+      className="normal-case"
       position="bottom-end"
       renderContent={() => (
         <>
           <p className="text-white">
-            <Trans>
-              {longToken.symbol} and {shortToken.symbol} can be used to buy GM tokens for this market up to the
-              specified buying caps.
-            </Trans>
+            {market?.isSameCollaterals ? (
+              <Trans>{longToken.symbol} can be used to buy GM for this market up to the specified buying caps.</Trans>
+            ) : (
+              <Trans>
+                {longToken.symbol} and {shortToken.symbol} can be used to buy GM for this market up to the specified
+                buying caps.
+              </Trans>
+            )}
           </p>
           <br />
           <StatsTooltipRow label={`Max ${longToken.symbol}`} value={longTokenMaxValue} />
@@ -461,5 +496,33 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
         </>
       )}
     />
+  );
+}
+
+function ApyTooltipContent() {
+  return (
+    <p className="text-white">
+      <Trans>
+        <p className="mb-12">
+          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
+          borrowing fee. It excludes:
+        </p>
+        <ul className="mb-8 list-disc">
+          <li className="p-2">price changes of the underlying token(s)</li>
+          <li className="p-2">traders' PnL, which is expected to be neutral in the long term</li>
+          <li className="p-2">funding fees, which are exchanged between traders</li>
+        </ul>
+        <p className="mb-12">
+          <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">
+            Read more about GM token pricing
+          </ExternalLink>
+          .
+        </p>
+        <p>
+          Check GM pools' performance against other LP Positions in the{" "}
+          <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">GMX Dune Dashboard</ExternalLink>.
+        </p>
+      </Trans>
+    </p>
   );
 }

@@ -33,11 +33,13 @@ export function downloadAsCsv<T>(
 ) {
   const filteredData = data.map((item) => filterFields(item, excludedFields));
   const csv = convertToCSV(filteredData, customHeaders);
-  const csvUrl = `data:application/octet-stream,${encodeURIComponent(csv)}`;
+  const blob = new Blob([csv], { type: "text/csv" });
+  const csvUrl = window.URL.createObjectURL(blob);
   const aElement = document.createElement("a");
   aElement.href = csvUrl;
   aElement.download = `${fileName}.csv`;
   document.body.appendChild(aElement);
   aElement.click();
   document.body.removeChild(aElement);
+  window.URL.revokeObjectURL(csvUrl);
 }

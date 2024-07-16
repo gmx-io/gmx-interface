@@ -5,7 +5,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo, useState } from "react";
@@ -39,8 +38,8 @@ type MarketOption = {
   poolName: string;
   name: string;
   marketInfo: MarketInfo;
-  balance: BigNumber;
-  balanceUsd: BigNumber;
+  balance: bigint;
+  balanceUsd: bigint;
   state?: MarketState;
 };
 
@@ -77,8 +76,8 @@ export function PoolSelector({
           poolName,
           name: marketInfo.name,
           marketInfo,
-          balance: gmBalance || BigNumber.from(0),
-          balanceUsd: gmBalanceUsd || BigNumber.from(0),
+          balance: gmBalance ?? 0n,
+          balanceUsd: gmBalanceUsd ?? 0n,
           state,
         };
       });
@@ -86,7 +85,7 @@ export function PoolSelector({
     const marketsWithoutBalance: MarketOption[] = [];
 
     for (const market of allMarkets) {
-      if (market.balance.gt(0)) {
+      if (market.balance > 0) {
         marketsWithBalance.push(market);
       } else {
         marketsWithoutBalance.push(market);
@@ -94,21 +93,24 @@ export function PoolSelector({
     }
 
     const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
-      return b.balanceUsd?.gt(a.balanceUsd || 0) ? 1 : -1;
+      return (b.balanceUsd ?? 0n) > (a.balanceUsd ?? 0n) ? 1 : -1;
     });
 
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
-  const marketInfo = marketsOptions.find(
-    (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
-  )?.marketInfo;
+  const marketInfo = useMemo(
+    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress)?.marketInfo,
+    [marketsOptions, selectedMarketAddress]
+  );
 
-  const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-  const filteredOptions = marketsOptions.filter((option) => {
-    const name = option.name.toLowerCase();
-    return name.includes(lowercaseSearchKeyword);
-  });
+  const filteredOptions = useMemo(() => {
+    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
+    return marketsOptions.filter((option) => {
+      const name = option.name.toLowerCase();
+      return name.includes(lowercaseSearchKeyword);
+    });
+  }, [marketsOptions, searchKeyword]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -116,8 +118,12 @@ export function PoolSelector({
   }
 
   const _handleKeyDown = (e) => {
-    if (e.key === "Enter" && filteredOptions.length > 0) {
-      onSelectOption(filteredOptions[0]);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (filteredOptions.length > 0) {
+        onSelectOption(filteredOptions[0]);
+      }
     }
   };
 
@@ -125,7 +131,7 @@ export function PoolSelector({
     if (!marketInfo) return "...";
     const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
 
-    if (filteredOptions?.length > 1) {
+    if (marketsOptions?.length > 1) {
       return (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {name ? name : "..."}
@@ -145,7 +151,7 @@ export function PoolSelector({
         label={label}
         headerContent={() => (
           <SearchInput
-            className="mt-md"
+            className="mt-15"
             value={searchKeyword}
             setValue={(e) => setSearchKeyword(e.target.value)}
             placeholder={t`Search Pool`}
@@ -207,7 +213,7 @@ export function PoolSelector({
                   <div className="Token-symbol">
                     <div className="Token-text">
                       {showAllPools ? (
-                        <div className="lh-1 items-center">
+                        <div className="flex items-center leading-1">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
@@ -218,17 +224,21 @@ export function PoolSelector({
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {showBalances && balance && (
+                  {(showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance.gt(0) &&
+                      {balance > 0 &&
                         formatTokenAmount(balance, marketToken?.decimals, "GM", {
                           useCommas: true,
                         })}
-                      {balance.eq(0) && "-"}
+                      {balance == 0n && "-"}
                     </div>
-                  )}
+                  )) ||
+                    null}
                   <span className="text-accent">
-                    {showBalances && balanceUsd && balanceUsd.gt(0) && <div>{formatUsd(balanceUsd)}</div>}
+                    {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                      <div>{formatUsd(balanceUsd)}</div>
+                    )) ||
+                      null}
                   </span>
                 </div>
               </div>
@@ -238,10 +248,10 @@ export function PoolSelector({
       </Modal>
 
       {marketInfo && (
-        <div className="inline-items-center">
+        <div className="inline-flex items-center">
           {showIndexIcon && (
             <TokenIcon
-              className="mr-xs"
+              className="mr-5"
               symbol={
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

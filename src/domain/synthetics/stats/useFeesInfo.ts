@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import { useFeesSummary } from "domain/stats";
-import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
@@ -51,32 +50,30 @@ export default function useFeesInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
 
-      const totalPositionFees = BigNumber.from(totalFeesInfo.position.totalBorrowingFeeUsd).add(
-        totalFeesInfo.position.totalPositionFeeUsd
-      );
+      const totalPositionFees =
+        BigInt(totalFeesInfo.position.totalBorrowingFeeUsd) + BigInt(totalFeesInfo.position.totalPositionFeeUsd);
 
-      const totalSwapFees = BigNumber.from(totalFeesInfo.swap.totalFeeReceiverUsd).add(
-        totalFeesInfo.swap.totalFeeUsdForPool
-      );
+      const totalSwapFees =
+        BigInt(totalFeesInfo.swap.totalFeeReceiverUsd) + BigInt(totalFeesInfo.swap.totalFeeUsdForPool);
 
       const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
-        return acc.add(fee.totalBorrowingFeeUsd).add(fee.totalPositionFeeUsd);
-      }, BigNumber.from(0));
+        return acc + BigInt(fee.totalBorrowingFeeUsd) + BigInt(fee.totalPositionFeeUsd);
+      }, 0n);
 
       const weeklySwapFees = weeklyFeesInfo.swap.reduce((acc, fee) => {
-        return acc.add(fee.totalFeeReceiverUsd).add(fee.totalFeeUsdForPool);
-      }, BigNumber.from(0));
+        return acc + BigInt(fee.totalFeeReceiverUsd) + BigInt(fee.totalFeeUsdForPool);
+      }, 0n);
 
       return {
-        weeklyFees: weeklyPositionFees.add(weeklySwapFees),
-        totalFees: totalPositionFees.add(totalSwapFees),
+        weeklyFees: weeklyPositionFees + weeklySwapFees,
+        totalFees: totalPositionFees + totalSwapFees,
       };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
       return {
-        weeklyFees: BigNumber.from(0),
-        totalFees: BigNumber.from(0),
+        weeklyFees: 0n,
+        totalFees: 0n,
       };
     }
   }

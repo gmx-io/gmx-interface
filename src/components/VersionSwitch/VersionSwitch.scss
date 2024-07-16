@@ -1,6 +1,10 @@
 .VersionSwitch {
   display: inline-flex;
-  background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-cold-blue-900) 0%,
+    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
+  );
   border-radius: 3px;
 }
 
@@ -9,7 +13,7 @@
   text-decoration: none;
   font-size: var(--font-sm);
   cursor: pointer;
-  color: var(--text-gray);
+  color: var(--color-gray-300);
   line-height: 1;
 
   &.v1 {
@@ -23,18 +27,18 @@
   }
 
   &:hover {
-    color: rgba(255, 255, 255, 1);
-    background: #3a3f798f;
+    color: var(--color-white);
+    background: var(--color-cold-blue-700);
   }
 
   &.v1.active {
-    background: #f3b50c;
-    color: #000000;
+    background: var(--color-yellow-500);
+    color: var(--color-black);
   }
 
   &.v2.active {
     background: var(--primary-btn-bg);
-    color: rgba(255, 255, 255, 1);
+    color: var(--color-white);
   }
 }
 

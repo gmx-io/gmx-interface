@@ -1,30 +1,12 @@
-import React from "react";
+import { useLingui } from "@lingui/react";
+import { darkTheme, RainbowKitProvider, type Theme, type Locale } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { connectorsForWallets, darkTheme, RainbowKitProvider, Theme, WalletList } from "@rainbow-me/rainbowkit";
-import {
-  ledgerWallet,
-  safeWallet,
-  rabbyWallet,
-  injectedWallet,
-  metaMaskWallet,
-  walletConnectWallet,
-  coinbaseWallet,
-  rainbowWallet,
-  imTokenWallet,
-  zerionWallet,
-  okxWallet,
-} from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import merge from "lodash/merge";
-import { isDevelopment } from "config/env";
-import { coreWallet } from "./connecters/core/coreWallet";
-import { bitgetWallet } from "./connecters/bitgetWallet/bitgetWallet";
-import binanceWallet from "./connecters/binanceW3W/binanceWallet";
+import { useMemo } from "react";
+import { WagmiProvider } from "wagmi";
 
-const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
-const APP_NAME = "GMX";
+import { rainbowKitConfig } from "./rainbowKitConfig";
 
 const walletTheme = merge(darkTheme(), {
   colors: {
@@ -38,55 +20,35 @@ const walletTheme = merge(darkTheme(), {
   },
 } as Theme);
 
-const { chains, provider } = configureChains(
-  [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
-  [publicProvider()]
-);
+const queryClient = new QueryClient();
 
-const recommendedWalletList: WalletList = [
-  {
-    groupName: "Recommended",
-    wallets: [
-      injectedWallet({ chains }),
-      safeWallet({ chains }),
-      rabbyWallet({ chains }),
-      metaMaskWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      walletConnectWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-    ],
-  },
-];
-
-const othersWalletList: WalletList = [
-  {
-    groupName: "Others",
-    wallets: [
-      coreWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      coinbaseWallet({ appName: APP_NAME, chains }),
-      binanceWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      okxWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      bitgetWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      zerionWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-    ],
-  },
-];
-
-const connectors = connectorsForWallets([...recommendedWalletList, ...othersWalletList]);
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-});
+const appLocale2RainbowLocaleMap: Record<string, Locale> = {
+  de: "en",
+  en: "en",
+  es: "es",
+  fr: "fr",
+  ja: "ja",
+  ko: "ko",
+  ru: "ru",
+  zh: "zh",
+  pseudo: "en",
+};
 
 export default function WalletProvider({ children }) {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider theme={walletTheme} chains={chains} modalSize="compact">
-        {children}
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={rainbowKitConfig}>{children}</WagmiProvider>
+    </QueryClientProvider>
+  );
+}
+
+export function RainbowKitProviderWrapper({ children }) {
+  const { i18n } = useLingui();
+  const locale = useMemo(() => appLocale2RainbowLocaleMap[i18n.locale] ?? "en", [i18n.locale]);
+
+  return (
+    <RainbowKitProvider theme={walletTheme} locale={locale} modalSize="compact">
+      {children}
+    </RainbowKitProvider>
   );
 }

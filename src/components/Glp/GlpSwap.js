@@ -1,22 +1,21 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { BigNumber, ethers } from "ethers";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { ethers } from "ethers";
 import {
   adjustForDecimals,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  GLP_COOLDOWN_DURATION,
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   SECONDS_PER_YEAR,
   USD_DECIMALS,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
@@ -36,20 +35,32 @@ import Token from "abis/Token.json";
 import VaultV2 from "abis/VaultV2.json";
 import Vester from "abis/Vester.json";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
 import {
   getNativeToken,
   getToken,
-  getV1Tokens,
   getTokenBySymbolSafe,
+  getV1Tokens,
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { getFeeItem } from "domain/synthetics/fees";
+import { formatUsdPrice } from "domain/synthetics/positions";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -57,7 +68,6 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import {
   applyFactor,
   basisPointsToFloat,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
@@ -66,25 +76,17 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useSearchParams from "lib/useSearchParams";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import PageTitle from "components/PageTitle/PageTitle";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import useSearchParams from "lib/useSearchParams";
-import { getFeeItem } from "domain/synthetics/fees";
-import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import Checkbox from "components/Checkbox/Checkbox";
-import { formatUsdPrice } from "domain/synthetics/positions";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 function getNextWednesdayUTC() {
   const now = new Date();
@@ -157,15 +159,17 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
   );
 }
 
-const tabOptions = [t`Buy GLP`, t`Sell GLP`];
-
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
+  const { isBuying, setIsBuying } = props;
+  const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
+  const [, setPendingTxns] = usePendingTxns();
   const history = useHistory();
   const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
+  const tabOptions = useMemo(() => [t`Buy GLP`, t`Sell GLP`], []);
+
   const { active, signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { chainId } = useChainId();
@@ -180,7 +184,7 @@ export default function GlpSwap(props) {
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
     chainId,
     `${swapLabel}-swap-token-address`,
-    AddressZero
+    ZeroAddress
   );
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
@@ -251,7 +255,7 @@ export default function GlpSwap(props) {
     }
   );
 
-  const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress;
+  const tokenAllowanceAddress = swapTokenAddress === ZeroAddress ? nativeTokenAddress : swapTokenAddress;
   const { data: tokenAllowance } = useSWR(
     [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
     {
@@ -293,62 +297,66 @@ export default function GlpSwap(props) {
 
   const stakingData = getStakingData(stakingInfo);
 
-  const redemptionTime = lastPurchaseTime ? lastPurchaseTime.add(GLP_COOLDOWN_DURATION) : undefined;
+  const redemptionTime = lastPurchaseTime;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
-  const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
-  const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
+  const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : 0n;
+  const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : 0n;
   let aum;
   if (aums && aums.length > 0) {
     aum = isBuying ? aums[0] : aums[1];
   }
   const glpPrice =
-    aum && aum.gt(0) && glpSupply.gt(0)
-      ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
+    aum && aum > 0 && glpSupply > 0
+      ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
       : expandDecimals(1, USD_DECIMALS);
   let glpBalanceUsd;
-  if (glpBalance) {
-    glpBalanceUsd = glpBalance.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  if (glpBalance !== undefined) {
+    glpBalanceUsd = bigMath.mulDiv(glpBalance, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
-  const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  const glpSupplyUsd = bigMath.mulDiv(glpSupply, glpPrice, expandDecimals(1, GLP_DECIMALS));
 
   let reserveAmountUsd;
-  if (reservedAmount) {
-    reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  if (reservedAmount !== undefined) {
+    reserveAmountUsd = bigMath.mulDiv(reservedAmount, glpPrice, expandDecimals(1, GLP_DECIMALS));
   }
 
   let maxSellAmount = glpBalance;
-  if (glpBalance && reservedAmount) {
-    maxSellAmount = glpBalance.sub(reservedAmount);
+  if (glpBalance !== undefined && reservedAmount !== undefined) {
+    maxSellAmount = glpBalance - reservedAmount;
   }
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
-  const nativeTokenInfo = getTokenInfo(infoTokens, AddressZero);
+  const nativeTokenInfo = getTokenInfo(infoTokens, ZeroAddress);
 
-  const swapTokenBalance = swapTokenInfo && swapTokenInfo.balance ? swapTokenInfo.balance : bigNumberify(0);
+  const swapTokenBalance = swapTokenInfo && swapTokenInfo.balance !== undefined ? swapTokenInfo.balance : 0n;
 
   const swapAmount = parseValue(swapValue, swapToken && swapToken.decimals);
   const glpAmount = parseValue(glpValue, GLP_DECIMALS);
 
   const needApproval =
-    isBuying && swapTokenAddress !== AddressZero && tokenAllowance && swapAmount && swapAmount.gt(tokenAllowance);
+    isBuying &&
+    swapTokenAddress !== ZeroAddress &&
+    tokenAllowance !== undefined &&
+    swapAmount !== undefined &&
+    swapAmount > tokenAllowance;
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
-  const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
+  const glpUsdMax =
+    glpAmount !== undefined ? bigMath.mulDiv(glpAmount, glpPrice, expandDecimals(1, GLP_DECIMALS)) : undefined;
 
   const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const showMaxButtonBasedOnBalance = swapTokenInfo?.isNative
-    ? minResidualAmount && swapTokenBalance.gt(minResidualAmount)
+    ? minResidualAmount !== undefined && swapTokenBalance > minResidualAmount
     : true;
 
   let isSwapTokenCapReached;
-  if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
-    isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
-      adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
-    );
+  if (swapTokenInfo && swapTokenInfo.managedUsd !== undefined && swapTokenInfo.maxUsdgAmount !== undefined) {
+    isSwapTokenCapReached =
+      swapTokenInfo.managedUsd > adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS);
   }
 
   const onSwapValueChange = (e) => {
@@ -366,9 +374,9 @@ export default function GlpSwap(props) {
     setIsWaitingForApproval(false);
   };
 
-  const nativeToken = getTokenInfo(infoTokens, AddressZero);
+  const nativeToken = getTokenInfo(infoTokens, ZeroAddress);
 
-  let totalApr = bigNumberify(0);
+  let totalApr = 0n;
 
   let feeGlpTrackerAnnualRewardsUsd;
   let feeGlpTrackerApr;
@@ -377,16 +385,17 @@ export default function GlpSwap(props) {
     stakingData.feeGlpTracker &&
     stakingData.feeGlpTracker.tokensPerInterval &&
     nativeToken &&
-    nativeToken.minPrice &&
-    glpSupplyUsd &&
-    glpSupplyUsd.gt(0)
+    nativeToken.minPrice !== undefined &&
+    glpSupplyUsd !== undefined &&
+    glpSupplyUsd > 0
   ) {
-    feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval
-      .mul(SECONDS_PER_YEAR)
-      .mul(nativeToken.minPrice)
-      .div(expandDecimals(1, 18));
-    feeGlpTrackerApr = feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(glpSupplyUsd);
-    totalApr = totalApr.add(feeGlpTrackerApr);
+    feeGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
+      stakingData.feeGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
+      nativeToken.minPrice,
+      expandDecimals(1, 18)
+    );
+    feeGlpTrackerApr = bigMath.mulDiv(feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
+    totalApr = totalApr + feeGlpTrackerApr;
   }
 
   let stakedGlpTrackerAnnualRewardsUsd;
@@ -395,23 +404,24 @@ export default function GlpSwap(props) {
   if (
     gmxPrice &&
     stakingData &&
-    stakingData.stakedGlpTracker &&
-    stakingData.stakedGlpTracker.tokensPerInterval &&
-    glpSupplyUsd &&
-    glpSupplyUsd.gt(0)
+    stakingData.stakedGlpTracker !== undefined &&
+    stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&
+    glpSupplyUsd !== undefined &&
+    glpSupplyUsd > 0
   ) {
-    stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval
-      .mul(SECONDS_PER_YEAR)
-      .mul(gmxPrice)
-      .div(expandDecimals(1, 18));
-    stakedGlpTrackerApr = stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(glpSupplyUsd);
-    totalApr = totalApr.add(stakedGlpTrackerApr);
+    stakedGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
+      stakingData.stakedGlpTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR),
+      gmxPrice,
+      expandDecimals(1, 18)
+    );
+    stakedGlpTrackerApr = bigMath.mulDiv(stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
+    totalApr = totalApr + stakedGlpTrackerApr;
   }
 
   useEffect(() => {
     const updateSwapAmounts = () => {
       if (anchorOnSwapAmount) {
-        if (!swapAmount) {
+        if (swapAmount === undefined) {
           setGlpValue("");
           setFeeBasisPoints("");
           return;
@@ -446,7 +456,7 @@ export default function GlpSwap(props) {
         return;
       }
 
-      if (!glpAmount) {
+      if (glpAmount === undefined) {
         setSwapValue("");
         setFeeBasisPoints("");
         return;
@@ -551,9 +561,9 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
-      if (maxAvailableAmount?.isNegative()) {
-        maxAvailableAmount = BigNumber.from(0);
+      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance - (minResidualAmount ?? 0n) : swapTokenBalance;
+      if (maxAvailableAmount < 0) {
+        maxAvailableAmount = 0n;
       }
 
       const formattedAmount = formatAmountFree(maxAvailableAmount, swapToken.decimals, swapToken.decimals);
@@ -589,45 +599,49 @@ export default function GlpSwap(props) {
       return [t`Redemption time not yet reached`];
     }
 
-    if (!swapAmount || swapAmount.eq(0)) {
+    if (swapAmount === undefined) {
       return [t`Enter an amount`];
     }
-    if (!glpAmount || glpAmount.eq(0)) {
+    if (glpAmount === undefined) {
       return [t`Enter an amount`];
     }
 
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (
-        !savedShouldDisableValidationForTesting &&
+        !shouldDisableValidationForTesting &&
         swapTokenInfo &&
-        swapTokenInfo.balance &&
-        swapAmount &&
-        swapAmount.gt(swapTokenInfo.balance)
+        swapTokenInfo.balance !== undefined &&
+        swapAmount !== undefined &&
+        swapAmount > swapTokenInfo.balance
       ) {
         return [t`Insufficient ${swapTokenInfo.symbol} balance`];
       }
 
-      if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
+      if (
+        swapTokenInfo.maxUsdgAmount !== undefined &&
+        swapTokenInfo.usdgAmount !== undefined &&
+        swapUsdMin !== undefined
+      ) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS);
-        const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount);
-        if (swapTokenInfo.maxUsdgAmount.gt(0) && nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
+        const nextUsdgAmount = swapTokenInfo.usdgAmount + usdgFromAmount;
+        if (swapTokenInfo.maxUsdgAmount > 0 && nextUsdgAmount > swapTokenInfo.maxUsdgAmount) {
           return [t`${swapTokenInfo.symbol} pool exceeded, try different token`, true];
         }
       }
     }
 
     if (!isBuying) {
-      if (maxSellAmount && glpAmount && glpAmount.gt(maxSellAmount)) {
+      if (maxSellAmount !== undefined && glpAmount !== undefined && glpAmount > maxSellAmount) {
         return [t`Insufficient GLP balance`];
       }
 
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (
         swapTokenInfo &&
-        swapTokenInfo.availableAmount &&
-        swapAmount &&
-        swapAmount.gt(swapTokenInfo.availableAmount)
+        swapTokenInfo.availableAmount !== undefined &&
+        swapAmount !== undefined &&
+        swapAmount > swapTokenInfo.availableAmount
       ) {
         return [t`Insufficient liquidity`];
       }
@@ -721,12 +735,16 @@ export default function GlpSwap(props) {
   const buyGlp = () => {
     setIsSubmitting(true);
 
-    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const minGlp = bigMath.mulDiv(
+      glpAmount,
+      BigInt(BASIS_POINTS_DIVISOR - savedAllowedSlippage),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
-    const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
-    const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
-    const value = swapTokenAddress === AddressZero ? swapAmount : 0;
+    const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
+    const params = swapTokenAddress === ZeroAddress ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
+    const value = swapTokenAddress === ZeroAddress ? swapAmount : 0;
 
     callContract(chainId, contract, method, params, {
       value,
@@ -747,12 +765,16 @@ export default function GlpSwap(props) {
   const sellGlp = () => {
     setIsSubmitting(true);
 
-    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const minOut = bigMath.mulDiv(
+      swapAmount,
+      BigInt(BASIS_POINTS_DIVISOR - savedAllowedSlippage),
+      BASIS_POINTS_DIVISOR_BIGINT
+    );
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
-    const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
+    const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
-      swapTokenAddress === AddressZero ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
+      swapTokenAddress === ZeroAddress ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
 
     callContract(chainId, contract, method, params, {
       sentMsg: t`Sell submitted!`,
@@ -799,17 +821,17 @@ export default function GlpSwap(props) {
   let payBalance = "$0.00";
   let receiveBalance = "$0.00";
   if (isBuying) {
-    if (swapUsdMin) {
+    if (swapUsdMin !== undefined) {
       payBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
-    if (glpUsdMax) {
+    if (glpUsdMax !== undefined) {
       receiveBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
   } else {
-    if (glpUsdMax) {
+    if (glpUsdMax !== undefined) {
       payBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
-    if (swapUsdMin) {
+    if (swapUsdMin !== undefined) {
       receiveBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
   }
@@ -839,18 +861,18 @@ export default function GlpSwap(props) {
   function renderMigrationIncentive() {
     if (!incentiveStats?.migration?.isActive) return;
 
-    const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
-    const glpUsdMaxNegative = glpUsdMax?.mul(-1);
+    const feeFactor = basisPointsToFloat(BigInt(feeBasisPoints));
+    const glpUsdMaxNegative = glpUsdMax === undefined ? undefined : -glpUsdMax;
     const feeItem =
-      glpUsdMax &&
+      glpUsdMax !== undefined &&
       getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
         shouldRoundUp: true,
       });
     const rebateBasisPoints = basisPointsToFloat(
-      BigNumber.from(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
+      BigInt(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
     );
-    const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
-    const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
+    const maxRebateUsd = glpUsdMax !== undefined && applyFactor(bigMath.abs(glpUsdMax), rebateBasisPoints);
+    const rebateFeeItem = glpUsdMax !== undefined && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
 
     return (
       <>
@@ -858,23 +880,20 @@ export default function GlpSwap(props) {
           label="Base Fee"
           value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
           showDollar={false}
-          className="text-red"
+          textClassName="text-red-500"
         />
         <StatsTooltipRow
           label="Max Bonus Rebate"
           value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
           showDollar={false}
-          className="text-green"
+          textClassName="text-green-500"
         />
         <br />
         <div className="text-white">
           <Trans>
             The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
-            <ExternalLink
-              href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-              newTab
-            >
+            <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
               Read more
             </ExternalLink>
             .
@@ -897,7 +916,7 @@ export default function GlpSwap(props) {
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
-          <span className="text-warning font-sm">
+          <span className="text-sm text-yellow-500">
             <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
           </span>
         </Checkbox>
@@ -1078,8 +1097,8 @@ export default function GlpSwap(props) {
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}
               >
-                <div className="selected-token inline-items-center">
-                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                <div className="selected-token inline-flex items-center">
+                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>
@@ -1109,8 +1128,8 @@ export default function GlpSwap(props) {
                 defaultTokenName="GLP"
                 preventFocusOnLabelClick="right"
               >
-                <div className="selected-token inline-items-center">
-                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                <div className="selected-token inline-flex items-center">
+                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>
@@ -1246,7 +1265,7 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    className="text-none"
+                    className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
@@ -1258,7 +1277,7 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    className="text-none"
+                    className="normal-case"
                     position="bottom"
                     renderContent={() => {
                       return (
@@ -1279,7 +1298,7 @@ export default function GlpSwap(props) {
                 <Tooltip
                   handle={t`FEES`}
                   tooltipIconPosition="right"
-                  className="text-none"
+                  className="normal-case"
                   position="bottom"
                   renderContent={() => {
                     return (
@@ -1319,35 +1338,38 @@ export default function GlpSwap(props) {
               }
               const tokenInfo = getTokenInfo(infoTokens, token.address);
               let managedUsd;
-              if (tokenInfo && tokenInfo.managedUsd) {
+              if (tokenInfo && tokenInfo.managedUsd !== undefined) {
                 managedUsd = tokenInfo.managedUsd;
               }
               let availableAmountUsd;
-              if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
-                availableAmountUsd = tokenInfo.availableAmount
-                  .mul(tokenInfo.minPrice)
-                  .div(expandDecimals(1, token.decimals));
+              if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.availableAmount !== undefined) {
+                availableAmountUsd = bigMath.mulDiv(
+                  tokenInfo.availableAmount,
+                  tokenInfo.minPrice,
+                  expandDecimals(1, token.decimals)
+                );
               }
               let balanceUsd;
-              if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
-                balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
+              if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.balance !== undefined) {
+                balanceUsd = bigMath.mulDiv(tokenInfo.balance, tokenInfo.minPrice, expandDecimals(1, token.decimals));
               }
-              let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
+              let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
 
-              let amountLeftToDeposit = bigNumberify(0);
-              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                amountLeftToDeposit = tokenInfo.maxUsdgAmount
-                  .sub(tokenInfo.usdgAmount)
-                  .mul(expandDecimals(1, USD_DECIMALS))
-                  .div(expandDecimals(1, USDG_DECIMALS));
+              let amountLeftToDeposit = 0n;
+              if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
+                amountLeftToDeposit = bigMath.mulDiv(
+                  tokenInfo.maxUsdgAmount - tokenInfo.usdgAmount,
+                  expandDecimals(1, USD_DECIMALS),
+                  expandDecimals(1, USDG_DECIMALS)
+                );
               }
-              if (amountLeftToDeposit.lt(0)) {
-                amountLeftToDeposit = bigNumberify(0);
+              if (amountLeftToDeposit < 0) {
+                amountLeftToDeposit = 0n;
               }
               function renderFees() {
                 const swapUrl = `https://app.1inch.io/#/${chainId}/swap/`;
                 switch (true) {
-                  case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                  case (isBuying && isCapReached) || (!isBuying && managedUsd !== undefined && managedUsd < 1):
                     return (
                       <Tooltip
                         handle="NA"
@@ -1370,7 +1392,7 @@ export default function GlpSwap(props) {
                         )}
                       />
                     );
-                  case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                  case (isBuying && !isCapReached) || (!isBuying && managedUsd > 0):
                     return `${formatAmount(tokenFeeBps, 2, 2, true, "-")}${
                       tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? "%" : ""
                     }`;
@@ -1401,11 +1423,11 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                            amountLeftToDeposit !== undefined && amountLeftToDeposit < 0
                               ? "$0.00"
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1416,11 +1438,11 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            availableAmountUsd && availableAmountUsd.lt(0)
+                            availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1473,35 +1495,38 @@ export default function GlpSwap(props) {
             }
             const tokenInfo = getTokenInfo(infoTokens, token.address);
             let managedUsd;
-            if (tokenInfo && tokenInfo.managedUsd) {
+            if (tokenInfo && tokenInfo.managedUsd !== undefined) {
               managedUsd = tokenInfo.managedUsd;
             }
             let availableAmountUsd;
-            if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
-              availableAmountUsd = tokenInfo.availableAmount
-                .mul(tokenInfo.minPrice)
-                .div(expandDecimals(1, token.decimals));
+            if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.availableAmount !== undefined) {
+              availableAmountUsd = bigMath.mulDiv(
+                tokenInfo.availableAmount,
+                tokenInfo.minPrice,
+                expandDecimals(1, token.decimals)
+              );
             }
             let balanceUsd;
-            if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
-              balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
+            if (tokenInfo && tokenInfo.minPrice !== undefined && tokenInfo.balance !== undefined) {
+              balanceUsd = bigMath.mulDiv(tokenInfo.balance, tokenInfo.minPrice, expandDecimals(1, token.decimals));
             }
 
-            let amountLeftToDeposit = bigNumberify(0);
-            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-              amountLeftToDeposit = tokenInfo.maxUsdgAmount
-                .sub(tokenInfo.usdgAmount)
-                .mul(expandDecimals(1, USD_DECIMALS))
-                .div(expandDecimals(1, USDG_DECIMALS));
+            let amountLeftToDeposit = 0n;
+            if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
+              amountLeftToDeposit = bigMath.mulDiv(
+                tokenInfo.maxUsdgAmount - tokenInfo.usdgAmount,
+                expandDecimals(1, USD_DECIMALS),
+                expandDecimals(1, USDG_DECIMALS)
+              );
             }
-            if (amountLeftToDeposit.lt(0)) {
-              amountLeftToDeposit = bigNumberify(0);
+            if (amountLeftToDeposit < 0) {
+              amountLeftToDeposit = 0n;
             }
-            let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
+            let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
 
             function renderFees() {
               switch (true) {
-                case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                case (isBuying && isCapReached) || (!isBuying && managedUsd < 1):
                   return (
                     <Tooltip
                       handle="NA"
@@ -1513,7 +1538,7 @@ export default function GlpSwap(props) {
                       )}
                     />
                   );
-                case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                case (isBuying && !isCapReached) || (!isBuying && managedUsd > 0):
                   return `${formatAmount(tokenFeeBps, 2, 2, true, "-")}${
                     tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? "%" : ""
                   }`;
@@ -1553,7 +1578,7 @@ export default function GlpSwap(props) {
                       />
                       <div>
                         <Tooltip
-                          handle={amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
+                          handle={`$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1582,7 +1607,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            availableAmountUsd && availableAmountUsd.lt(0)
+                            availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }

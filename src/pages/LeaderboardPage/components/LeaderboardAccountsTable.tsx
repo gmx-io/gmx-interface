@@ -3,7 +3,7 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { abs, formatAmount, formatUsd } from "lib/bigint";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
@@ -15,12 +15,13 @@ import {
   useLeaderboardAccountsRanks,
   useLeaderboardCurrentAccount,
   useLeaderboardIsCompetition,
-  useLeaderboardTypeState,
+  useLeaderboardTimeframeTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigMath } from "lib/bigmath";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -42,12 +43,10 @@ export function LeaderboardAccountsTable({
   accounts,
   activeCompetition,
   sortingEnabled = true,
-  skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
-  skeletonCount?: number;
 }) {
   const currentAccount = useLeaderboardCurrentAccount();
   const perPage = 20;
@@ -152,7 +151,7 @@ export function LeaderboardAccountsTable({
   );
 
   const content = isLoading ? (
-    <TopAccountsSkeleton count={skeletonCount} />
+    <TopAccountsSkeleton count={perPage} />
   ) : (
     <>
       {pinnedRowData && (
@@ -202,7 +201,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
-                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                   displayDecimals: 0,
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
@@ -336,9 +335,7 @@ const TableRow = memo(
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
   }) => {
-    const shouldRenderValue = true;
     const renderWinsLossesTooltipContent = useCallback(() => {
-      if (!shouldRenderValue) return null;
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
@@ -348,7 +345,7 @@ const TableRow = memo(
           ) : null}
         </div>
       );
-    }, [account.losses, account.wins, shouldRenderValue]);
+    }, [account.losses, account.wins]);
 
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
@@ -363,54 +360,42 @@ const TableRow = memo(
           <AddressView size={20} address={account.account} breakpoint="XL" />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
-                  {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-                </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={renderPnlTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={
+              <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
+                {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="whitespace-nowrap"
+            renderContent={renderPnlTooltipContent}
+          />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.pnlPercentage)}>
-                  {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
-                </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={() => (
-                <StatsTooltipRow
-                  label={t`Capital Used`}
-                  showDollar={false}
-                  value={<span>{formatUsd(account.maxCapital)}</span>}
-                />
-              )}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={
+              <span className={getSignedValueClassName(account.pnlPercentage)}>
+                {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="whitespace-nowrap"
+            renderContent={() => (
+              <StatsTooltipRow
+                label={t`Capital Used`}
+                showDollar={false}
+                value={<span>{formatUsd(account.maxCapital)}</span>}
+              />
+            )}
+          />
         </TableCell>
-        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "" : "-"}</TableCell>
-        <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
+        <TableCell>{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableCell>
+        <TableCell>{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={`${account.wins}/${account.losses}`}
-              renderContent={renderWinsLossesTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={`${account.wins}/${account.losses}`}
+            renderContent={renderWinsLossesTooltipContent}
+          />
         </TableCell>
       </tr>
     );
@@ -439,24 +424,23 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
     let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
-        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(),
-        { displayDecimals: 0 }
-      )} to qualify for the rankings.`;
+      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+        displayDecimals: 0,
+      })} to qualify for the rankings.`;
     else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
+    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
   const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPnlAfterFees", true);
-  const [type] = useLeaderboardTypeState();
+  const [type] = useLeaderboardTimeframeTypeState();
   const isCompetition = useLeaderboardIsCompetition();
   const shouldShowStartValues = isCompetition || type !== "all";
 
@@ -576,7 +560,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {

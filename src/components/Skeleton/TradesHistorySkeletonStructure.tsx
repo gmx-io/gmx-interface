@@ -18,8 +18,11 @@ export default function TradesHistorySkeletonStructure(props: Props) {
       <td>
         <Skeleton width={110} />
       </td>
-      <td className="TradeHistoryRow-price">
+      <td>
         <Skeleton width={90} />
+      </td>
+      <td className="TradeHistoryRow-pnl-fees">
+        <Skeleton width={60} />
       </td>
     </tr>
   );

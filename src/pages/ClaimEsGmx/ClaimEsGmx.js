@@ -23,6 +23,8 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "lib/usePendingTxns";
+import { bigMath } from "lib/bigmath";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -58,7 +60,7 @@ export function getVestingDataV2(vestingInfo) {
     data[key + "PairAmount"] = data[key].pairAmount;
     data[key + "VestedAmount"] = data[key].vestedAmount;
     data[key + "EscrowedBalance"] = data[key].escrowedBalance;
-    data[key + "ClaimSum"] = data[key].claimedAmounts.add(data[key].claimable);
+    data[key + "ClaimSum"] = data[key].claimedAmounts + data[key].claimable;
     data[key + "Claimable"] = data[key].claimable;
     data[key + "MaxVestableAmount"] = data[key].maxVestableAmount;
     data[key + "CombinedAverageStakedAmount"] = data[key].combinedAverageStakedAmount;
@@ -73,48 +75,48 @@ export function getVestingDataV2(vestingInfo) {
 }
 
 function getVestingValues({ minRatio, amount, vestingDataItem }) {
-  if (!vestingDataItem || !amount || amount.eq(0)) {
+  if (!vestingDataItem || !amount) {
     return;
   }
 
-  let currentRatio = bigNumberify(0);
+  let currentRatio = 0n;
 
   const ratioMultiplier = 10000;
   const maxVestableAmount = vestingDataItem.maxVestableAmount;
-  const nextMaxVestableEsGmx = maxVestableAmount.add(amount);
+  const nextMaxVestableEsGmx = maxVestableAmount + amount;
 
   const combinedAverageStakedAmount = vestingDataItem.combinedAverageStakedAmount;
-  if (maxVestableAmount.gt(0)) {
-    currentRatio = combinedAverageStakedAmount.mul(ratioMultiplier).div(maxVestableAmount);
+  if (maxVestableAmount > 0) {
+    currentRatio = bigMath.mulDiv(combinedAverageStakedAmount, ratioMultiplier, maxVestableAmount);
   }
 
   const transferredCumulativeReward = vestingDataItem.transferredCumulativeReward;
-  const nextTransferredCumulativeReward = transferredCumulativeReward.add(amount);
+  const nextTransferredCumulativeReward = transferredCumulativeReward + amount;
   const cumulativeReward = vestingDataItem.cumulativeReward;
-  const totalCumulativeReward = cumulativeReward.add(nextTransferredCumulativeReward);
+  const totalCumulativeReward = cumulativeReward + nextTransferredCumulativeReward;
 
   let nextCombinedAverageStakedAmount = combinedAverageStakedAmount;
 
-  if (combinedAverageStakedAmount.lt(totalCumulativeReward.mul(minRatio))) {
+  if (combinedAverageStakedAmount < totalCumulativeReward * minRatio) {
     const averageStakedAmount = vestingDataItem.averageStakedAmount;
-    let nextTransferredAverageStakedAmount = totalCumulativeReward.mul(minRatio);
-    nextTransferredAverageStakedAmount = nextTransferredAverageStakedAmount.sub(
-      averageStakedAmount.mul(cumulativeReward).div(totalCumulativeReward)
+    let nextTransferredAverageStakedAmount = totalCumulativeReward * minRatio;
+    nextTransferredAverageStakedAmount =
+      nextTransferredAverageStakedAmount - bigMath.mulDiv(averageStakedAmount, cumulativeReward, totalCumulativeReward);
+    nextTransferredAverageStakedAmount = bigMath.mulDiv(
+      nextTransferredAverageStakedAmount,
+      totalCumulativeReward,
+      nextTransferredCumulativeReward
     );
-    nextTransferredAverageStakedAmount = nextTransferredAverageStakedAmount
-      .mul(totalCumulativeReward)
-      .div(nextTransferredCumulativeReward);
 
-    nextCombinedAverageStakedAmount = averageStakedAmount
-      .mul(cumulativeReward)
-      .div(totalCumulativeReward)
-      .add(nextTransferredAverageStakedAmount.mul(nextTransferredCumulativeReward).div(totalCumulativeReward));
+    nextCombinedAverageStakedAmount =
+      bigMath.mulDiv(averageStakedAmount, cumulativeReward, totalCumulativeReward) +
+      bigMath.mulDiv(nextTransferredAverageStakedAmount, nextTransferredCumulativeReward, totalCumulativeReward);
   }
 
-  const nextRatio = nextCombinedAverageStakedAmount.mul(ratioMultiplier).div(nextMaxVestableEsGmx);
+  const nextRatio = bigMath.mulDiv(nextCombinedAverageStakedAmount, ratioMultiplier, nextMaxVestableEsGmx);
 
-  const initialStakingAmount = currentRatio.mul(maxVestableAmount);
-  const nextStakingAmount = nextRatio.mul(nextMaxVestableEsGmx);
+  const initialStakingAmount = currentRatio * maxVestableAmount;
+  const nextStakingAmount = nextRatio * nextMaxVestableEsGmx;
 
   return {
     maxVestableAmount,
@@ -126,12 +128,13 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
   };
 }
 
-export default function ClaimEsGmx({ setPendingTxns }) {
+export default function ClaimEsGmx() {
   const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);
   const [value, setValue] = useState("");
+  const [, setPendingTxns] = usePendingTxns();
 
   const isArbitrum = chainId === ARBITRUM;
 
@@ -261,11 +264,11 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       return t`Wallet not connected`;
     }
 
-    if (esGmxIouBalance && esGmxIouBalance.eq(0)) {
+    if (esGmxIouBalance && esGmxIouBalance == 0n) {
       return t`No esGMX to claim`;
     }
 
-    if (!amount || amount.eq(0)) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
 
@@ -328,7 +331,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
 
   return (
     <div className="ClaimEsGmx Page page-layout">
-      <div className="Page-title-section mt-0">
+      <div className="default-container">
         <div className="Page-title">
           <Trans>Claim esGMX</Trans>
         </div>
@@ -340,7 +343,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
         )}
         {isArbitrum && (
           <div>
-            <div className="Page-description">
+            <div className="Page-description hyphens-auto">
               <br />
               <Trans>You have {formatAmount(esGmxIouBalance, 18, 2, true)} esGMX (IOU) tokens.</Trans>
               <br />

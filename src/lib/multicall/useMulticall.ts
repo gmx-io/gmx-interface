@@ -1,8 +1,11 @@
+import { useRef } from "react";
 import useSWR, { SWRConfiguration } from "swr";
-import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+
+import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
+
+import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+import { executeMulticallWorker } from "./executeMulticallWorker";
 import { executeMulticall } from "./utils";
-import { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import useWallet from "lib/wallets/useWallet";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -22,12 +25,11 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     refreshInterval?: number | null;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
-    request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
+    request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
+    inWorker?: boolean;
   }
 ) {
-  const { signer } = useWallet();
-
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
@@ -40,20 +42,34 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     swrOpts.refreshInterval = params.refreshInterval || undefined;
   }
 
+  const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
+
   const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
+      performance.mark(`multicall-${name}-start`);
       try {
         // prettier-ignore
-        const request = typeof params.request === "function" 
-            ? params.request(chainId, params.key as CacheKey) 
+        const request = typeof params.request === "function"
+            ? await params.request(chainId, params.key as CacheKey)
             : params.request;
 
         if (Object.keys(request).length === 0) {
           throw new Error(`Multicall request is empty`);
         }
 
-        const response = await executeMulticall(chainId, signer, request);
+        let responseOrFailure: any;
+        if (params.inWorker) {
+          responseOrFailure = await executeMulticallWorker(chainId, request);
+        } else {
+          responseOrFailure = await executeMulticall(chainId, request);
+        }
+
+        if (responseOrFailure?.success) {
+          successDataByChainIdRef.current[chainId] = responseOrFailure;
+        }
+
+        const response = successDataByChainIdRef.current[chainId];
 
         if (!response) {
           throw new Error(`Multicall response is empty`);
@@ -70,6 +86,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         console.error(`Multicall request failed: ${name}`, e);
 
         throw e;
+      } finally {
+        performance.mark(`multicall-${name}-end`);
+        performance.measure(`multicall-${name}`, `multicall-${name}-start`, `multicall-${name}-end`);
       }
     },
   });

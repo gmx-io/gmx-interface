@@ -17,10 +17,10 @@ export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "synthetic
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 export const arbitrumGoerliSyntheticsStatsClient = createClient(ARBITRUM_GOERLI, "syntheticsStats");
 
-export const arbitrumLeaderboardClient = createClient(ARBITRUM, "leaderboard");
-export const avalancheLeaderboardClient = createClient(AVALANCHE, "leaderboard");
-export const avalancheFujiLeaderboardClient = createClient(AVALANCHE_FUJI, "leaderboard");
-export const arbitrumGoerliLeaderboardClient = createClient(ARBITRUM_GOERLI, "leaderboard");
+export const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
+export const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
+export const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
+export const arbitrumGoerliSubsquidClient = createClient(ARBITRUM_GOERLI, "subsquid");
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
@@ -42,21 +42,21 @@ export function getSyntheticsGraphClient(chainId: number) {
   return null;
 }
 
-export function getLeaderboardGraphClient(chainId: number) {
+export function getSubsquidGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
-    return arbitrumLeaderboardClient;
+    return arbitrumSubsquidClient;
   }
 
   if (chainId === AVALANCHE) {
-    return avalancheLeaderboardClient;
+    return avalancheSubsquidClient;
   }
 
   if (chainId === AVALANCHE_FUJI) {
-    return avalancheFujiLeaderboardClient;
+    return avalancheFujiSubsquidClient;
   }
 
   if (chainId === ARBITRUM_GOERLI) {
-    return arbitrumGoerliLeaderboardClient;
+    return arbitrumGoerliSubsquidClient;
   }
 
   return null;

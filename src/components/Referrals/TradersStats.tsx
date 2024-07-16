@@ -6,7 +6,6 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chai
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
-import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
@@ -26,23 +25,13 @@ import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   referralsData?: TotalReferralsStats;
-  traderTier?: BigNumber;
+  traderTier?: number;
   chainId: number;
   userReferralCodeString?: string;
-  setPendingTxns: (txns: string[]) => void;
-  pendingTxns: string[];
-  discountShare: BigNumber | undefined;
+  discountShare: bigint | undefined;
 };
 
-function TradersStats({
-  referralsData,
-  traderTier,
-  chainId,
-  userReferralCodeString,
-  setPendingTxns,
-  pendingTxns,
-  discountShare,
-}: Props) {
+function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, discountShare }: Props) {
   const { signer } = useWallet();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
@@ -75,12 +64,12 @@ function TradersStats({
               <span>{userReferralCodeString}</span>
               <BiEditAlt onClick={open} />
             </div>
-            {traderTier && (
+            {traderTier !== undefined ? (
               <div className="tier">
                 <Tooltip
                   handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
                   position="bottom"
-                  className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
+                  className={(discountShare ?? 0) > 0 ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
@@ -90,7 +79,7 @@ function TradersStats({
                         For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
                         discounts are applied automatically and will reduce your fees when you make a trade.
                       </Trans>
-                      {discountShare?.gt(0) && (
+                      {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
                           <br />
@@ -99,12 +88,13 @@ function TradersStats({
                             of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
-                      )}
+                      )) ||
+                        null}
                     </p>
                   )}
                 />
               </div>
-            )}
+            ) : null}
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
@@ -195,8 +185,6 @@ function TradersStats({
           <div className="edit-referral-modal">
             <ReferralCodeForm
               userReferralCodeString={userReferralCodeString}
-              setPendingTxns={setPendingTxns}
-              pendingTxns={pendingTxns}
               type="edit"
               callAfterSuccess={() => setIsEditModalOpen(false)}
             />
@@ -229,26 +217,29 @@ function TradersStats({
                 </thead>
                 <tbody>
                   {currentDiscountDistributions.map((rebate) => {
-                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] || BigNumber.from(0);
-                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
-                      return acc;
-                    }, {} as { [address: string]: BigNumber });
+                    const amountsByTokens = rebate.tokens.reduce(
+                      (acc, tokenAddress, i) => {
+                        let token;
+                        try {
+                          token = getToken(chainId, tokenAddress);
+                        } catch {
+                          token = getNativeToken(chainId);
+                        }
+                        acc[token.address] = acc[token.address] ?? 0n;
+                        acc[token.address] = acc[token.address] + rebate.amounts[i];
+                        return acc;
+                      },
+                      {} as { [address: string]: bigint }
+                    );
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
-                      if (amount.eq(0) && !rebate.amounts[i].eq(0)) {
+                      if (amount == 0n && rebate.amounts[i] != 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
-                      return acc.add(amount);
-                    }, BigNumber.from(0));
+                      return acc + amount;
+                    }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
@@ -258,7 +249,7 @@ function TradersStats({
                         <td data-label="Amount" className="Rebate-amount">
                           <Tooltip
                             position="bottom"
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

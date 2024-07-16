@@ -6,7 +6,6 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { useCallback, useMemo } from "react";
@@ -19,8 +18,8 @@ export const GmTokensBalanceInfo = ({
   oneLine = false,
 }: {
   token: TokenData;
-  earnedTotal?: BigNumber;
-  earnedRecently?: BigNumber;
+  earnedTotal?: bigint;
+  earnedRecently?: bigint;
   daysConsidered: number;
   oneLine?: boolean;
 }) => {
@@ -40,21 +39,21 @@ export const GmTokensBalanceInfo = ({
   );
 
   const renderTooltipContent = useCallback(() => {
-    if (!earnedTotal && !earnedRecently) return null;
+    if (earnedTotal === undefined && earnedRecently === undefined) return null;
     return (
       <>
-        {earnedTotal && (
+        {earnedTotal !== undefined && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
-            className={getPositiveOrNegativeClass(earnedTotal)}
+            textClassName={getPositiveOrNegativeClass(earnedTotal)}
             value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
-        {earnedRecently && (
+        {earnedRecently !== undefined && (
           <StatsTooltipRow
             showDollar={false}
-            className={getPositiveOrNegativeClass(earnedRecently)}
+            textClassName={getPositiveOrNegativeClass(earnedRecently)}
             label={t`${daysConsidered}d accrued Fees`}
             value={formatDeltaUsd(earnedRecently, undefined)}
           />
@@ -66,7 +65,7 @@ export const GmTokensBalanceInfo = ({
       </>
     );
   }, [daysConsidered, earnedRecently, earnedTotal]);
-  if (!earnedTotal && !earnedRecently) {
+  if (earnedTotal === undefined && earnedRecently === undefined) {
     return content;
   }
 
@@ -80,8 +79,8 @@ export const GmTokensTotalBalanceInfo = ({
   tooltipPosition,
   label,
 }: {
-  balance?: BigNumber;
-  balanceUsd?: BigNumber;
+  balance?: bigint;
+  balanceUsd?: bigint;
   userEarnings: UserEarningsData | null;
   tooltipPosition?: TooltipPosition;
   label: string;
@@ -107,27 +106,27 @@ export const GmTokensTotalBalanceInfo = ({
           <>
             <StatsTooltipRow
               label={t`Wallet total accrued Fees`}
-              className={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
+              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
               value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`Wallet ${daysConsidered}d accrued Fees `}
-              className={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
+              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
               value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
-            {userEarnings.allMarkets.expected365d.gt(0) && (
+            {userEarnings.allMarkets.expected365d > 0 && (
               <>
                 <StatsTooltipRow
                   label={t`Wallet 365d expected Fees`}
-                  className={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
+                  textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
                   value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                   showDollar={false}
                 />
                 <br />
                 <div className="text-white">
-                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR.</Trans>
+                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APY.</Trans>
                 </div>
                 {shouldShowIncentivesNote && (
                   <>
@@ -145,10 +144,10 @@ export const GmTokensTotalBalanceInfo = ({
     );
   }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
 
-  return balance && balanceUsd ? (
+  return balance !== undefined && balanceUsd !== undefined ? (
     <Tooltip
       handle={label}
-      className="text-none"
+      className="normal-case"
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}

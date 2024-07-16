@@ -68,7 +68,7 @@ export function GmStatusNotification({
       let longToken: TokenData | undefined;
       let shortToken: TokenData | undefined;
 
-      if (pendingDepositData.initialLongTokenAmount.gt(0)) {
+      if (pendingDepositData.initialLongTokenAmount > 0) {
         longToken = getByKey(
           tokensData,
           convertTokenAddress(
@@ -79,7 +79,7 @@ export function GmStatusNotification({
         );
       }
 
-      if (pendingDepositData.initialShortTokenAmount.gt(0)) {
+      if (pendingDepositData.initialShortTokenAmount > 0) {
         shortToken = getByKey(
           tokensData,
           convertTokenAddress(
@@ -90,14 +90,19 @@ export function GmStatusNotification({
         );
       }
 
-      const tokensText = [longToken, shortToken]
-        .filter(Boolean)
-        .map((token) => token?.symbol)
-        .join(" and ");
-
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+
+      let tokensText = "";
+      if (marketInfo?.isSameCollaterals) {
+        tokensText = longToken?.symbol ?? "";
+      } else {
+        tokensText = [longToken, shortToken]
+          .filter(Boolean)
+          .map((token) => token?.symbol)
+          .join(" and ");
+      }
 
       return (
         <Trans>
@@ -208,7 +213,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => !status.isViewed && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => !status.isViewed && status.data && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -221,7 +226,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => !status.isViewed && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => !status.isViewed && status.data && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {

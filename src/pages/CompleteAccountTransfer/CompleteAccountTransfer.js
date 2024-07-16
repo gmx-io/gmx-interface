@@ -18,12 +18,13 @@ import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "lib/usePendingTxns";
 
-export default function CompleteAccountTransfer(props) {
+export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
-  const isSenderAndReceiverValid = ethers.utils.isAddress(sender) && ethers.utils.isAddress(receiver);
-  const { setPendingTxns } = props;
+  const isSenderAndReceiverValid = ethers.isAddress(sender) && ethers.isAddress(receiver);
+  const [, setPendingTxns] = usePendingTxns();
   const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
@@ -83,7 +84,7 @@ export default function CompleteAccountTransfer(props) {
   if (!isSenderAndReceiverValid) {
     return (
       <div className="CompleteAccountTransfer Page page-layout">
-        <div className="Page-title-section">
+        <div className="default-container !m-0">
           <div className="Page-title">
             <Trans>Complete Account Transfer</Trans>
           </div>
@@ -109,7 +110,7 @@ export default function CompleteAccountTransfer(props) {
           <Trans>Continue</Trans>
         </Link>
       </Modal>
-      <div className="Page-title-section">
+      <div className="default-container !m-0 pb-16">
         <div className="Page-title">
           <Trans>Complete Account Transfer</Trans>
         </div>
@@ -135,14 +136,14 @@ export default function CompleteAccountTransfer(props) {
           </div>
         )}
         {isCorrectAccount && (
-          <div className="Page-description">
+          <div className="Page-description hyphens-auto">
             <Trans>You have a pending transfer from {sender}.</Trans>
             <br />
           </div>
         )}
       </div>
       {isCorrectAccount && (
-        <div className="Page-content">
+        <div className="default-container !m-0">
           <div className="input-form">
             <div className="input-row">
               <Button

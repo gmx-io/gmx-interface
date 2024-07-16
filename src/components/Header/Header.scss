@@ -1,0 +1,328 @@
+.App-header-backdrop {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.App-header.large {
+  height: 6.2rem;
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding-left: 3.2rem;
+  padding-right: 3.2rem;
+  background: transparent 0% 0% no-repeat padding-box;
+  border-bottom: 1px solid var(--color-gray-950);
+}
+
+.App-header.large::after {
+  height: 1.3rem;
+  width: 100%;
+  content: " ";
+  background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
+  position: absolute;
+  bottom: -1.3rem;
+  left: 0;
+}
+
+.App-header.large .App-header-links {
+  display: flex;
+  min-width: 0;
+}
+
+.App-header-link-home {
+  display: none;
+}
+
+.App-header-drawer {
+  background: #17182c88 0% 0% no-repeat padding-box;
+  box-shadow: 0.8rem 0.3rem 0.6rem #00000029;
+  opacity: 1;
+  backdrop-filter: blur(2.7rem);
+  position: fixed;
+  z-index: 801;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 30.4rem;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.App-header-drawer::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.App-header-drawer .App-header-link-container .a,
+.App-header-drawer .App-header-link-container a {
+  font-size: var(--font-sm);
+  line-height: 1.8rem;
+  font-weight: normal;
+  letter-spacing: 0.1px;
+  color: var(--color-slate-100);
+  padding: 1.5rem 1.6rem;
+  text-decoration: none;
+  display: block;
+}
+
+.App-header-drawer .App-header-link-container .a:hover,
+.App-header-drawer .App-header-link-container .a:focus,
+.App-header-drawer .App-header-link-container .a:active,
+.App-header-drawer .App-header-link-container a:hover,
+.App-header-drawer .App-header-link-container a:focus,
+.App-header-drawer .App-header-link-container a.active {
+  background: #303fd024;
+  color: var(--color-white);
+}
+
+.App-header.large .App-header-link-container {
+  min-width: 0;
+}
+
+.App-header-links-header {
+  height: 6.2rem;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+
+.App-header-container-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.App-header-top {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  /* z-index: 2; */
+}
+
+.App-header-menu-icon-block {
+  margin-right: 1.2rem;
+  margin-left: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.App-header-menu-icon {
+  color: var(--color-white);
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  margin: 0.9rem 1rem;
+}
+
+.App-header-menu-icon:hover {
+  opacity: 0.9;
+}
+
+.App-header a.App-header-link-main,
+.App-header .App-header-link-main {
+  font-size: 1.7rem;
+  padding: 1.5rem;
+  margin-left: -1.5rem;
+  display: flex;
+  margin-right: 1.2rem;
+}
+
+.App-header-link-main img {
+  display: inline-block;
+  height: 2.15rem;
+  vertical-align: middle;
+}
+
+.App-header-link-main img.small {
+  display: none;
+}
+
+.App-header .a,
+.App-header a {
+  text-decoration: none;
+  vertical-align: middle;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.App-header .a.active,
+.App-header a.active {
+  pointer-events: none;
+  opacity: 1;
+  color: var(--color-gray-50);
+}
+
+.App-header .a:hover,
+.App-header a:hover {
+  opacity: 1;
+  color: var(--color-gray-50);
+}
+
+.App-header-container-left .a,
+.App-header-container-left a {
+  padding: 1.8rem 1.7rem;
+  display: block;
+  color: var(--color-slate-100);
+  font-size: var(--font-base);
+  line-height: 1.8rem;
+  font-weight: normal;
+}
+.App-header.large .App-header-container-left a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.App-header-container-left a.active {
+  color: var(--color-white);
+}
+
+.App-header-container-right {
+  display: flex;
+  align-items: center;
+}
+
+.App-header-user {
+  display: flex;
+  align-items: center;
+}
+
+.App-header-user-settings {
+  display: inline-flex;
+  cursor: pointer;
+  border: none;
+  border-radius: 1.5rem;
+  font-size: var(--font-base);
+  background: none;
+  color: var(--color-white);
+  padding: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  align-items: center;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-header-user-link {
+  margin-right: 2.4rem;
+}
+
+.App-header-user-address {
+  border: 1px solid var(--color-gray-800);
+  height: 3.6rem;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-white);
+  position: relative;
+}
+
+@media (max-width: 1200px) {
+  .App-header-user-address {
+    padding: 0 0px;
+  }
+
+  .App-header-user-link {
+    margin-right: 1.6rem;
+  }
+
+  .App-header-link-home {
+    display: block;
+  }
+
+  .App-header-user {
+    padding-bottom: 0;
+  }
+
+  .App-header-container-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .App-header-link-desktop {
+    display: none;
+  }
+
+  .App-header {
+    grid-template-columns: 1fr auto auto auto auto;
+  }
+
+  .App-header-link-main img {
+    height: 2.1rem;
+  }
+
+  .App-header.small {
+    height: 6.2rem;
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+    background: transparent 0% 0% no-repeat padding-box;
+    border-bottom: 1px solid var(--color-gray-950);
+  }
+
+  .App-header.small::after {
+    height: 1.3rem;
+    width: 100%;
+    content: " ";
+    background: transparent linear-gradient(180deg, #00000030 0%, transparent 100%) 0% 0% no-repeat padding-box;
+    position: absolute;
+    bottom: -1.3rem;
+    left: 0;
+  }
+
+  a.App-header-user-account {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .App-header-link-main img.big {
+    display: none;
+  }
+
+  .App-header-link-main img.small {
+    display: inline-block;
+  }
+}
+
+@media (max-width: 450px) {
+  .App-header-user-link {
+    margin-right: 0.6rem;
+  }
+
+  .App-header-menu-icon-block {
+    margin-left: 0;
+    margin-right: 0.4rem;
+  }
+
+  .App-header-menu-icon {
+    margin: 0.4rem 0.5rem;
+  }
+
+  .App-header.small {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
+
+  .App-header .App-header-link-main {
+    padding: 0.155rem !important;
+    margin-left: 0rem !important;
+  }
+}
+
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .App-header-drawer {
+    background: var(--color-slate-950);
+  }
+}

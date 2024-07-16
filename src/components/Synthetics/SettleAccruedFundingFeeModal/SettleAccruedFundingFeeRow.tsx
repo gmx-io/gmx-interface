@@ -4,7 +4,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 
@@ -20,7 +19,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
     [position.marketInfo]
   );
   const label = (
-    <div key={position.key} className="items-top">
+    <div key={position.key} className="flex items-start">
       <span className="ClaimSettleModal-row-text">
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
@@ -41,9 +40,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         [
           [position.claimableLongTokenAmount, longToken],
           [position.claimableShortTokenAmount, shortToken],
-        ] as [BigNumber, TokenData][]
+        ] as [bigint, TokenData][]
       )
-        .filter(([amount, token]) => amount.gt(0) && token)
+        .filter(([amount, token]) => amount > 0 && token)
         .map(([amount, token]) => (
           <div key={token.address}>{formatTokenAmount(amount, token.decimals, token.symbol)}</div>
         )),
@@ -55,7 +54,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
       <Checkbox
         isChecked={isSelected}
         setIsChecked={handleCheckboxChange}
-        className="flex self-center ClaimSettleModal-checkbox"
+        className="ClaimSettleModal-checkbox flex self-center"
       >
         <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{label}</div>
       </Checkbox>

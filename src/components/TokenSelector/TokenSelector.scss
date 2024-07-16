@@ -1,3 +1,5 @@
+@use "src/styles/slide-up" as *;
+
 .TokenSelector .Modal .Modal-content {
   width: 42rem;
   position: absolute;
@@ -42,7 +44,7 @@
 }
 
 .TokenSelector-box:hover {
-  color: #7885ff;
+  color: var(--color-blue-300);
 }
 
 .Token-info {
@@ -79,7 +81,7 @@
 
 .TokenSelector-token-row {
   cursor: pointer;
-  border: 1px solid #ffffff29;
+  border: 1px solid var(--color-gray-800);
   position: relative;
   background: transparent;
   border-radius: var(--border-radius-sm);
@@ -119,7 +121,7 @@
 
 .TokenSelector-token-row .Token-text {
   font-size: var(--font-md);
-  color: #ffffff;
+  color: var(--color-white);
   font-weight: 500;
   letter-spacing: 0px;
 }
@@ -169,6 +171,10 @@
 @media (max-width: 700px) {
   .TokenSelector .Modal .Modal-content {
     bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    @include slide-up;
   }
 
   .TokenSelector.right .Modal {

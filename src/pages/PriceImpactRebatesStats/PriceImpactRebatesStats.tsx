@@ -1,19 +1,24 @@
 import { Trans } from "@lingui/macro";
-import Checkbox from "components/Checkbox/Checkbox";
-import SpinningLoader from "components/Common/SpinningLoader";
-import Footer from "components/Footer/Footer";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { useCopyToClipboard } from "react-use";
+import type { Address } from "viem";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { MarketInfo } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useCopyToClipboard } from "react-use";
-import "./PriceImpactRebatesStats.scss";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
+
+import Checkbox from "components/Checkbox/Checkbox";
+import SpinningLoader from "components/Common/SpinningLoader";
+import Footer from "components/Footer/Footer";
+
+import "./PriceImpactRebatesStats.scss";
 
 export const PriceImpactRebatesStatsPage = memo(() => {
   const [pageIndex, setPageIndex] = useState(0);
@@ -115,14 +120,16 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
   const [accountsShown, setAccountsShown] = useState(false);
   const handleExpandClick = useCallback(() => setAccountsShown((shown) => !shown), []);
   const total = useMemo(() => {
-    return rebateGroup.userRebates.reduce((sum, rebateItem) => sum.add(rebateItem.value), BigNumber.from(0));
+    return rebateGroup.userRebates.reduce((sum, rebateItem) => sum + rebateItem.value, 0n);
   }, [rebateGroup.userRebates]);
   const usd = useMemo(() => {
     return rebateGroup.userRebates.reduce((sum, rebateItem) => {
       const price = rebateItem.tokenData?.prices.maxPrice;
       const decimals = rebateItem.tokenData?.decimals;
-      return price && decimals ? sum.add(rebateItem.value.mul(price).div(expandDecimals(1, decimals))) : sum;
-    }, BigNumber.from(0));
+      return price !== undefined && decimals
+        ? sum + bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals))
+        : sum;
+    }, 0n);
   }, [rebateGroup.userRebates]);
 
   return (
@@ -136,7 +143,7 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
         <div className="PriceImpactRebatesStatsPage-cell-market">{formatMarket(rebateGroup.marketInfo)}</div>
         <div className="PriceImpactRebatesStatsPage-cell-token">{rebateGroup.tokenData?.symbol}</div>
         <div className="PriceImpactRebatesStatsPage-cell-approved">
-          {rebateGroup.factor.gt(0) ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
+          {rebateGroup.factor > 0 ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">
           {formatTokenAmountWithUsd(total, usd, rebateGroup.tokenData?.symbol, rebateGroup.tokenData?.decimals)}
@@ -170,17 +177,22 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
       {rebateGroup.userRebates.map((rebateItem) => {
         const price = rebateItem.tokenData?.prices.maxPrice;
         const decimals = rebateItem.tokenData?.decimals;
-        const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : undefined;
+        const usd =
+          price !== undefined && decimals
+            ? bigMath.mulDiv(rebateItem.value, price, expandDecimals(1, decimals))
+            : undefined;
         return (
           <div key={rebateItem.id} className="PriceImpactRebatesStatsPage-row">
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
             <div className="PriceImpactRebatesStatsPage-cell-time"></div>
             <div className="PriceImpactRebatesStatsPage-cell-market">
-              <Link to={`/actions/${rebateItem.account}`}>{shortenAddressOrEns(rebateItem.account, 15)}</Link>
+              <Link to={buildAccountDashboardUrl(rebateItem.account as Address, undefined, 2)}>
+                {shortenAddressOrEns(rebateItem.account, 15)}
+              </Link>
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-token"></div>
             <div className="PriceImpactRebatesStatsPage-cell-approved">
-              {rebateItem.factor.gt(0) ? `${formatAmount(rebateItem.factor, 28, 2)}%` : "-"}{" "}
+              {rebateItem.factor > 0 ? `${formatAmount(rebateItem.factor, 28, 2)}%` : "-"}{" "}
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-usd">
               {formatTokenAmountWithUsd(

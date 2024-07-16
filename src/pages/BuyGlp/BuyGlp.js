@@ -11,8 +11,9 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { getIncentivesV2Url } from "config/links";
 
-export default function BuyGlp(props) {
+export default function BuyGlp() {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
@@ -36,10 +37,7 @@ export default function BuyGlp(props) {
               <div>
                 <Trans>
                   GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                  <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3">
-                    Read more
-                  </ExternalLink>
-                  .
+                  <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
                 </Trans>
               </div>
             )}
@@ -50,7 +48,7 @@ export default function BuyGlp(props) {
           </div>
         }
       />
-      <GlpSwap {...props} isBuying={isBuying} setIsBuying={setIsBuying} />
+      <GlpSwap isBuying={isBuying} setIsBuying={setIsBuying} />
       <Footer />
     </div>
   );

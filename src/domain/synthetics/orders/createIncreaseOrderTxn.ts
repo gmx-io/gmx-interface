@@ -1,38 +1,41 @@
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
+import { SetPendingOrder, SetPendingPosition, PendingOrderData } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "./utils";
+import { DecreasePositionSwapType, OrderType, OrderTxnType } from "./types";
+import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { DecreaseOrderParams, createDecreaseEncodedPayload, getPendingOrderFromParams } from "./createDecreaseOrderTxn";
+import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
+import { createCancelEncodedPayload } from "./cancelOrdersTxn";
+import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import concat from "lodash/concat";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type IncreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
   targetCollateralAddress: string;
-  initialCollateralAmount: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  initialCollateralAmount: bigint;
+  collateralDeltaAmount: bigint;
   swapPath: string[];
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber | undefined;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint | undefined;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -43,40 +46,85 @@ type IncreaseOrderParams = {
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createIncreaseOrderTxn(
-  chainId: number,
-  signer: Signer,
-  subaccount: Subaccount,
-  p: IncreaseOrderParams,
-  decreaseOrderParams?: DecreaseOrderParams[]
-) {
+type SecondaryOrderCommonParams = {
+  account: string;
+  marketAddress: string;
+  swapPath: string[];
+  allowedSlippage: number;
+  initialCollateralAddress: string;
+  receiveTokenAddress: string;
+  isLong: boolean;
+  indexToken: TokenData;
+  txnType: OrderTxnType;
+  orderType: OrderType;
+  sizeDeltaUsd: bigint;
+  initialCollateralDeltaAmount: bigint;
+};
+
+export type SecondaryDecreaseOrderParams = BaseDecreaseOrderParams & SecondaryOrderCommonParams;
+
+export type SecondaryCancelOrderParams = SecondaryOrderCommonParams & {
+  orderKey: string | null;
+};
+
+export type SecondaryUpdateOrderParams = SecondaryOrderCommonParams & {
+  orderKey: string;
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  executionFee: bigint;
+  indexToken: TokenData;
+  minOutputAmount: bigint;
+};
+
+export async function createIncreaseOrderTxn({
+  chainId,
+  signer,
+  subaccount,
+  createIncreaseOrderParams: p,
+  createDecreaseOrderParams,
+  cancelOrderParams,
+  updateOrderParams,
+}: {
+  chainId: number;
+  signer: Signer;
+  subaccount: Subaccount;
+  createIncreaseOrderParams: IncreaseOrderParams;
+  createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
+  cancelOrderParams?: SecondaryCancelOrderParams[];
+  updateOrderParams?: SecondaryUpdateOrderParams[];
+}) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
 
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
     : p.acceptablePrice;
 
-  const wntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
-  const totalWntAmount = (decreaseOrderParams || []).reduce((acc, p) => acc.add(p.executionFee), wntAmountToIncrease);
+  const wntAmountToIncrease = wntCollateralAmount + p.executionFee;
+  const totalWntAmount = concat<undefined | SecondaryDecreaseOrderParams | SecondaryUpdateOrderParams>(
+    createDecreaseOrderParams,
+    updateOrderParams
+  ).reduce((acc, p) => (p ? acc + p.executionFee : acc), wntAmountToIncrease);
 
-  const increaseOrder = {
+  const increaseOrder: PendingOrderData = {
     account: p.account,
     marketAddress: p.marketAddress,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath: p.swapPath,
     sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: BigNumber.from(0),
+    minOutputAmount: 0n,
     isLong: p.isLong,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
+    txnType: "create",
   };
 
   const encodedPayload = await createEncodedPayload({
@@ -91,7 +139,12 @@ export async function createIncreaseOrderTxn(
     signer,
   });
 
-  const orders = decreaseOrderParams?.map((p) => getPendingOrderFromParams(chainId, p)) || [];
+  const orders =
+    concat<SecondaryDecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams>(
+      createDecreaseOrderParams ?? [],
+      cancelOrderParams ?? [],
+      updateOrderParams ?? []
+    ).map((p) => getPendingOrderFromParams(chainId, p.txnType, p)) || [];
 
   if (subaccount) {
     p.setPendingOrder([increaseOrder, ...orders]);
@@ -112,16 +165,41 @@ export async function createIncreaseOrderTxn(
   const decreaseEncodedPayload = createDecreaseEncodedPayload({
     router,
     orderVaultAddress,
-    ps: decreaseOrderParams || [],
+    ps: createDecreaseOrderParams || [],
     subaccount,
     mainAccountAddress: p.account,
     chainId,
   });
 
-  const secondaryPriceOverrides: PriceOverrides = {};
+  const cancelEncodedPayload = createCancelEncodedPayload({
+    router,
+    orderKeys: cancelOrderParams?.map(({ orderKey }) => orderKey) || [],
+  });
+
+  const updateEncodedPayload =
+    updateOrderParams?.reduce<string[]>(
+      (acc, { orderKey, sizeDeltaUsd, executionFee, indexToken, acceptablePrice, triggerPrice, minOutputAmount }) => {
+        return [
+          ...acc,
+          ...createUpdateEncodedPayload({
+            chainId,
+            router,
+            orderKey,
+            sizeDeltaUsd,
+            executionFee,
+            indexToken,
+            acceptablePrice,
+            triggerPrice,
+            minOutputAmount,
+          }),
+        ];
+      },
+      []
+    ) ?? [];
+
   const primaryPriceOverrides: PriceOverrides = {};
 
-  if (p.triggerPrice) {
+  if (p.triggerPrice != undefined) {
     primaryPriceOverrides[p.indexToken.address] = {
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
@@ -133,20 +211,20 @@ export async function createIncreaseOrderTxn(
       account: p.account,
       tokensData: p.tokensData,
       primaryPriceOverrides,
-      secondaryPriceOverrides,
       createOrderMulticallPayload: simulationEncodedPayload,
       value: totalWntAmount,
       errorTitle: t`Order error.`,
     });
   }
 
-  const finalPayload = [...encodedPayload, ...decreaseEncodedPayload];
+  const finalPayload = [...encodedPayload, ...decreaseEncodedPayload, ...cancelEncodedPayload, ...updateEncodedPayload];
   const txnCreatedAt = Date.now();
 
   await callContract(chainId, router, "multicall", [finalPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
   });
 
@@ -155,7 +233,8 @@ export async function createIncreaseOrderTxn(
   }
 
   if (isMarketOrderType(p.orderType)) {
-    const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+    if (!signer.provider) throw new Error("No provider found");
+    const txnCreatedAtBlock = await signer.provider.getBlockNumber();
     const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
 
     p.setPendingPosition({
@@ -165,7 +244,7 @@ export async function createIncreaseOrderTxn(
       sizeDeltaUsd: p.sizeDeltaUsd,
       sizeDeltaInTokens: p.sizeDeltaInTokens,
       updatedAt: txnCreatedAt,
-      updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+      updatedAtBlock: BigInt(txnCreatedAtBlock),
     });
   }
 }
@@ -183,9 +262,9 @@ async function createEncodedPayload({
 }: {
   router: ethers.Contract;
   orderVaultAddress: string;
-  totalWntAmount: BigNumber;
+  totalWntAmount: bigint;
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
@@ -221,33 +300,35 @@ function createOrderParams({
   isNativePayment,
 }: {
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
   subaccount: Subaccount | null;
   isNativePayment: boolean;
 }) {
   return {
     addresses: {
+      cancellationReceiver: ethers.ZeroAddress,
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
-      callbackContract: AddressZero,
+      callbackContract: ZeroAddress,
       market: p.marketAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigNumber.from(0),
-      triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : 0n,
+      triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, p.indexToken.decimals),
       acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
       executionFee: p.executionFee,
-      callbackGasLimit: BigNumber.from(0),
-      minOutputAmount: BigNumber.from(0),
+      callbackGasLimit: 0n,
+      minOutputAmount: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
-    referralCode: p.referralCode || ethers.constants.HashZero,
+    autoCancel: false,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 }

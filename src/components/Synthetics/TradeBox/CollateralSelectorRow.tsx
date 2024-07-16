@@ -1,168 +1,168 @@
 import { Trans, t } from "@lingui/macro";
+import React, { useMemo } from "react";
+
+import {
+  selectTradeboxAvailableAndDisabledTokensForCollateral,
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxCollateralTokenAddress,
+  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingPosition,
+  selectTradeboxMarketAddress,
+  selectTradeboxSelectedCollateralTokenSymbol,
+  selectTradeboxSetCollateralAddress,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
-import { Token } from "domain/tokens";
-import cx from "classnames";
-import { useChainId } from "lib/chains";
-import { useMemo } from "react";
+import { CollateralSelector } from "../CollateralSelector/CollateralSelector";
 
 export type Props = {
-  selectedCollateralAddress?: string;
   selectedMarketAddress?: string;
-  marketsOptions?: AvailableMarketsOptions;
-  availableCollaterals?: Token[];
-  hasExistingPosition?: boolean;
-  hasExistingOrder?: boolean;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
-  const {
-    selectedCollateralAddress,
-    selectedMarketAddress,
-    marketsOptions,
-    hasExistingOrder,
-    hasExistingPosition,
-    availableCollaterals,
-    onSelectCollateralAddress,
-    isMarket,
-  } = p;
+  const { onSelectCollateralAddress } = p;
+  const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
 
+  const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
+
+  const warnings = useCollateralWarnings();
+
+  return (
+    <>
+      <ExchangeInfoRow
+        label={t`Collateral In`}
+        className="SwapBox-info-row"
+        value={
+          <CollateralSelector
+            onSelect={onSelectCollateralAddress}
+            options={availableTokens}
+            disabledOptions={disabledTokens}
+            selectedTokenSymbol={selectedTokenName}
+          />
+        }
+      />
+      {warnings}
+    </>
+  );
+}
+
+function useCollateralWarnings() {
+  const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
+  const { isMarket } = useSelector(selectTradeboxTradeFlags);
+  const onSelectCollateralAddress = useSelector(selectTradeboxSetCollateralAddress);
+
+  const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
+
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
-  const { chainId } = useChainId();
+  const showHasExistingPositionWithDifferentCollateral =
+    !hasExistingPosition &&
+    collateralWithPosition &&
+    selectedMarketAddress === marketWithPosition?.marketTokenAddress &&
+    collateralWithPosition?.address !== selectedCollateralAddress;
 
-  const { message, level } = useMemo(() => {
-    if (
-      !hasExistingPosition &&
-      collateralWithPosition &&
-      selectedMarketAddress === marketWithPosition?.marketTokenAddress &&
-      collateralWithPosition?.address !== selectedCollateralAddress
-    ) {
+  const showHasExistingOrderWithDifferentCollateral =
+    !hasExistingPosition &&
+    !hasExistingOrder &&
+    !collateralWithPosition &&
+    marketWithOrder &&
+    selectedMarketAddress === marketWithOrder?.marketTokenAddress &&
+    collateralWithOrder &&
+    collateralWithOrder.address !== selectedCollateralAddress;
+
+  const messages = useMemo<React.ReactNode[]>(() => {
+    const messages: React.ReactNode[] = [];
+    if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
-        return {
-          message: (
-            <div className="MarketSelector-tooltip-row">
-              <Trans>
-                <span className="negative">
-                  You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
-                  apply for that position.
-                </span>
-                <div
-                  className="MarketSelector-tooltip-row-action clickable underline muted"
-                  onClick={() => {
-                    onSelectCollateralAddress(collateralWithPosition.address);
-                  }}
-                >
-                  Switch to {collateralWithPosition.symbol} collateral.
-                </div>{" "}
-              </Trans>
-            </div>
-          ),
-          level: "error",
-        };
-      }
-
-      return {
-        message: (
-          <div className="MarketSelector-tooltip-row">
+        messages.push(
+          <AlertInfo
+            key="showHasExistingPositionWithDifferentCollateral_1"
+            type="warning"
+            compact
+            textColor="text-yellow-500"
+          >
             <Trans>
-              <span className="negative">
-                You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
-                valid for that Position.
-              </span>
-              <div
-                className="MarketSelector-tooltip-row-action clickable underline muted"
+              You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
+              apply for that position.{" "}
+              <span
+                className="clickable muted underline"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
-                Switch to {collateralWithPosition.symbol} collateral.
-              </div>{" "}
+                Switch to {collateralWithPosition.symbol} collateral
+              </span>
+              .
             </Trans>
-          </div>
-        ),
-        level: "error",
-      };
-    }
-
-    if (
-      !hasExistingPosition &&
-      !hasExistingOrder &&
-      !collateralWithPosition &&
-      marketWithOrder &&
-      selectedMarketAddress === marketWithOrder?.marketTokenAddress &&
-      collateralWithOrder &&
-      collateralWithOrder.address !== selectedCollateralAddress
-    ) {
-      return {
-        message: (
-          <div className="MarketSelector-tooltip-row">
+          </AlertInfo>
+        );
+      } else {
+        messages.push(
+          <AlertInfo
+            key="showHasExistingPositionWithDifferentCollateral_2"
+            type="warning"
+            compact
+            textColor="text-yellow-500"
+          >
             <Trans>
-              You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
-              <div
-                className="MarketSelector-tooltip-row-action clickable underline muted"
+              You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
+              valid for that Position.{" "}
+              <span
+                className="clickable muted underline"
                 onClick={() => {
-                  onSelectCollateralAddress(collateralWithOrder.address);
+                  onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
-                Switch to {collateralWithOrder.symbol} collateral.
-              </div>{" "}
+                Switch to {collateralWithPosition.symbol} collateral
+              </span>
+              .
             </Trans>
-          </div>
-        ),
-        level: "warning",
-      };
+          </AlertInfo>
+        );
+      }
     }
 
-    return { message: null };
+    if (showHasExistingOrderWithDifferentCollateral) {
+      const address = collateralWithOrder.address;
+      const symbol = collateralWithOrder.symbol;
+
+      messages.push(
+        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-yellow-500" compact>
+          <Trans>
+            You have an existing order with {symbol} as collateral.{" "}
+            <span
+              className="clickable muted underline"
+              onClick={() => {
+                onSelectCollateralAddress(address);
+              }}
+            >
+              Switch to {symbol} collateral
+            </span>
+            .
+          </Trans>
+        </AlertInfo>
+      );
+    }
+
+    return messages;
   }, [
-    hasExistingPosition,
-    collateralWithPosition,
-    selectedMarketAddress,
-    marketWithPosition?.marketTokenAddress,
-    selectedCollateralAddress,
-    hasExistingOrder,
-    marketWithOrder,
-    collateralWithOrder,
-    onSelectCollateralAddress,
+    showHasExistingPositionWithDifferentCollateral,
+    showHasExistingOrderWithDifferentCollateral,
     isMarket,
+    collateralWithPosition?.symbol,
+    collateralWithPosition?.address,
+    onSelectCollateralAddress,
+    collateralWithOrder?.address,
+    collateralWithOrder?.symbol,
   ]);
 
-  return (
-    <ExchangeInfoRow
-      label={
-        message ? (
-          <Tooltip
-            handle={t`Collateral In`}
-            position="bottom-start"
-            className={cx("MarketSelector-tooltip", { error: level === "error" })}
-            renderContent={() => <div className="MarketSelector-tooltip-content">{message}</div>}
-          />
-        ) : (
-          t`Collateral In`
-        )
-      }
-      className="SwapBox-info-row"
-      value={
-        selectedCollateralAddress &&
-        availableCollaterals && (
-          <TokenSelector
-            label={t`Collateral In`}
-            className="GlpSwap-from-token SwapBox-info-dropdown"
-            chainId={chainId}
-            tokenAddress={selectedCollateralAddress}
-            onSelectToken={(token) => {
-              onSelectCollateralAddress(token.address);
-            }}
-            tokens={availableCollaterals}
-            showTokenImgInDropdown={true}
-          />
-        )
-      }
-    />
-  );
+  return messages;
 }

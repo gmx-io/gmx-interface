@@ -1,0 +1,14 @@
+diff --git a/build/index.js b/build/index.js
+index c4d926bfdfbbf5ab3efe61c7b482fd6f7e7848f7..58002dfe249d577c9c022247c04a8c51fab1c25e 100644
+--- a/build/index.js
++++ b/build/index.js
+@@ -188,7 +188,8 @@ class TestRunner {
+     const worker = new (_jestWorker().Worker)(TEST_WORKER_PATH, {
+       exposedMethods: ['worker'],
+       forkOptions: {
+-        stdio: 'pipe'
++        stdio: 'pipe',
++        serialization: 'advanced'
+       },
+       maxRetries: 3,
+       numWorkers: this._globalConfig.maxWorkers,

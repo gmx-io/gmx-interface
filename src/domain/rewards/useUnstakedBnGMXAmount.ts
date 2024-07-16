@@ -5,6 +5,7 @@ import { contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "config/contracts";
 import Token from "abis/Token.json";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 export function useUnstakedBnGMXAmount() {
   const { signer, active, account } = useWallet();
@@ -12,7 +13,7 @@ export function useUnstakedBnGMXAmount() {
   const bnGmxAddress = getContract(chainId, "BN_GMX");
 
   const { data: unstakedBnGmx } = useSWR(
-    [`unstakedBnGMXAmount:${active}`, chainId, bnGmxAddress, "balanceOf", account],
+    [`unstakedBnGMXAmount:${active}`, chainId, bnGmxAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
       fetcher: contractFetcher(signer, Token),
     }

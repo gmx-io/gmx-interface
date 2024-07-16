@@ -1,9 +1,7 @@
-import { BigNumber } from "ethers";
-
 export type AffiliateReward = {
   marketAddress: string;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
 };
 
 export type AffiliateRewardsData = {

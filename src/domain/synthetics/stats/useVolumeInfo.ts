@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
@@ -29,17 +28,18 @@ export default function useVolumeInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
       const { hourlyVolumeInfos, totalVolumeInfos } = data;
-      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc.add(volumeUsd), BigNumber.from(0));
+      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+
       return {
         dailyVolume,
-        totalVolume: totalVolumeInfos[0].volumeUsd,
+        totalVolume: BigInt(totalVolumeInfos[0].volumeUsd),
       };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching volume data for chain ${chain}:`, error);
       return {
-        dailyVolume: BigNumber.from(0),
-        totalVolume: BigNumber.from(0),
+        dailyVolume: 0n,
+        totalVolume: 0n,
       };
     }
   }

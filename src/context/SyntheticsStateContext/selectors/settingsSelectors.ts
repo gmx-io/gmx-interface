@@ -1,16 +1,17 @@
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 
-export const selectShowDebugValues = (s: SyntheticsTradeState) => s.settings.showDebugValues;
-export const selectSetShowDebugValues = (s: SyntheticsTradeState) => s.settings.setShowDebugValues;
-export const selectSavedAllowedSlippage = (s: SyntheticsTradeState) => s.settings.savedAllowedSlippage;
-export const selectExecutionFeeBufferBps = (s: SyntheticsTradeState) => s.settings.executionFeeBufferBps;
-export const selectSetExecutionFeeBufferBps = (s: SyntheticsTradeState) => s.settings.setExecutionFeeBufferBps;
-export const selectSetSavedAllowedSlippage = (s: SyntheticsTradeState) => s.settings.setSavedAllowedSlippage;
-export const selectSavedAcceptablePriceImpactBuffer = (s: SyntheticsTradeState) =>
+export const selectShowDebugValues = (s: SyntheticsState) => s.settings.showDebugValues;
+export const selectSetShowDebugValues = (s: SyntheticsState) => s.settings.setShowDebugValues;
+export const selectSavedAllowedSlippage = (s: SyntheticsState) => s.settings.savedAllowedSlippage;
+export const selectExecutionFeeBufferBps = (s: SyntheticsState) => s.settings.executionFeeBufferBps;
+export const selectSetExecutionFeeBufferBps = (s: SyntheticsState) => s.settings.setExecutionFeeBufferBps;
+export const selectSetSavedAllowedSlippage = (s: SyntheticsState) => s.settings.setSavedAllowedSlippage;
+export const selectSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) =>
   s.settings.savedAcceptablePriceImpactBuffer;
-export const selectSetSavedAcceptablePriceImpactBuffer = (s: SyntheticsTradeState) =>
+export const selectSetSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) =>
   s.settings.setSavedAcceptablePriceImpactBuffer;
-export const selectShouldUseExecutionFeeBuffer = (s: SyntheticsTradeState) => s.settings.shouldUseExecutionFeeBuffer;
-export const selectOracleKeeperInstancesConfig = (s: SyntheticsTradeState) => s.settings.oracleKeeperInstancesConfig;
-export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsTradeState) =>
-  s.settings.setOracleKeeperInstancesConfig;
+export const selectShouldUseExecutionFeeBuffer = (s: SyntheticsState) => s.settings.shouldUseExecutionFeeBuffer;
+export const selectOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.oracleKeeperInstancesConfig;
+export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.setOracleKeeperInstancesConfig;
+export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
+export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;

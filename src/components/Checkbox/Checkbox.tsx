@@ -2,8 +2,10 @@ import React, { ReactNode } from "react";
 
 import cx from "classnames";
 
-import "./Checkbox.css";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
+import { ReactComponent as PartialCheckedIcon } from "img/ic_partial_checked.svg";
+
+import "./Checkbox.css";
 
 type Props = {
   isChecked?: boolean;
@@ -12,24 +14,26 @@ type Props = {
   className?: string;
   children?: ReactNode;
   asRow?: boolean;
+  isPartialChecked?: boolean;
 };
 
 export default function Checkbox(props: Props) {
-  const { isChecked, setIsChecked, disabled, className, asRow } = props;
+  const { isChecked, setIsChecked, disabled, className, asRow, isPartialChecked } = props;
 
   return (
     <div
-      className={cx("Checkbox", { disabled, selected: isChecked, fullRow: asRow }, className)}
+      className={cx("Checkbox", { disabled, selected: isChecked, fullRow: asRow, noLabel: !props.children }, className)}
       onClick={(event) => {
         setIsChecked?.(!isChecked);
         event.stopPropagation();
       }}
     >
       <span className="Checkbox-icon-wrapper">
-        {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
-        {!isChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
+        {isPartialChecked && <PartialCheckedIcon className="App-icon Checkbox-icon" />}
+        {isChecked && !isPartialChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
+        {!isChecked && !isPartialChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
       </span>
-      <span className="Checkbox-label">{props.children}</span>
+      {props.children && <span className="Checkbox-label">{props.children}</span>}
     </div>
   );
 }

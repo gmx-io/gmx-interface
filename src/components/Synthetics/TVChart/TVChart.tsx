@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
@@ -10,9 +10,17 @@ import {
   isChartAvailabeForToken,
 } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PositionsInfoData, formatUsdPrice } from "domain/synthetics/positions";
-import { TokensData, getTokenData } from "domain/synthetics/tokens";
+import {
+  useOrdersInfoData,
+  usePositionsInfoData,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { formatUsdPrice } from "domain/synthetics/positions";
+import { getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
@@ -22,45 +30,22 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
-import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
-import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getByKey } from "lib/objects";
-import { helperToast } from "lib/helperToast";
-import { BigNumber } from "ethers";
-import { useTradeboxSetToTokenAddress, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-
-export type Props = {
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
-  savedShouldShowPositionLines: boolean;
-  ordersInfo?: OrdersInfoData;
-  positionsInfo?: PositionsInfoData;
-  tokensData?: TokensData;
-  chartTokenAddress?: string;
-  availableTokens?: Token[];
-  avaialbleTokenOptions: AvailableTokenOptions;
-  marketsInfoData?: MarketsInfoData;
-};
+import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
 
-export function TVChart({
-  ordersInfo,
-  positionsInfo,
-  tokensData,
-  savedShouldShowPositionLines,
-  chartTokenAddress,
-  availableTokens,
-  tradePageVersion,
-  setTradePageVersion,
-  avaialbleTokenOptions,
-  marketsInfoData,
-}: Props) {
+export function TVChart() {
+  const chartToken = useSelector(selectChartToken);
+  const ordersInfo = useOrdersInfoData();
+  const tokensData = useTokensData();
+  const positionsInfo = usePositionsInfoData();
+  const availableTokens = useSelector(selectAvailableChartTokens);
+
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
+  const chartTokenAddress = chartToken?.address;
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
@@ -68,16 +53,13 @@ export function TVChart({
     period = DEFAULT_PERIOD;
   }
 
-  const chartToken = getTokenData(tokensData, chartTokenAddress);
-
   const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
     isChartAvailabeForToken(chainId, token.symbol)
   );
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-  const currentTradeType = useTradeboxTradeType();
-  const setToTokenAddress = useTradeboxSetToTokenAddress();
+  const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -94,7 +76,7 @@ export function TVChart({
 
         return (
           positionOrder.marketInfo &&
-          positionOrder.triggerPrice &&
+          positionOrder.triggerPrice !== undefined &&
           convertTokenAddress(chainId, positionOrder.marketInfo.indexTokenAddress, "wrapped") ===
             convertTokenAddress(chainId, chartTokenAddress, "wrapped")
         );
@@ -142,36 +124,14 @@ export function TVChart({
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
-    setToTokenAddress(address, marketTokenAddress, tradeType);
-
-    if (marketTokenAddress) {
-      const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
-      const nextTradeType = tradeType ?? currentTradeType;
-      if (nextTradeType === TradeType.Swap) return;
-      if (marketInfo && nextTradeType) {
-        const indexName = getMarketIndexName(marketInfo);
-        const poolName = getMarketPoolName(marketInfo);
-        helperToast.success(
-          <Trans>
-            <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
-            <div className="inline-flex">
-              <span>{indexName}</span>
-              <span className="subtext gm-toast">[{poolName}]</span>
-            </div>{" "}
-            <span>market selected</span>
-          </Trans>
-        );
-      }
-    }
-  }
-
   function onSelectChartToken(token: Token) {
     setToTokenAddress(token.address);
   }
 
   useEffect(() => {
-    setDataProvider(new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleKeeperFetcher }));
+    setDataProvider(
+      new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleFetcher: oracleKeeperFetcher })
+    );
   }, [oracleKeeperFetcher]);
 
   useEffect(
@@ -192,8 +152,8 @@ export function TVChart({
           }
         : {
             symbol: "",
-            minPrice: BigNumber.from(0),
-            maxPrice: BigNumber.from(0),
+            minPrice: 0n,
+            maxPrice: 0n,
           },
     [chartToken]
   );
@@ -203,14 +163,7 @@ export function TVChart({
       <div className="ExchangeChart-header">
         <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
-            <ChartTokenSelector
-              chainId={chainId}
-              selectedToken={selectedTokenOption}
-              onSelectToken={onSelectTokenOption}
-              options={tokenOptions}
-              avaialbleTokenOptions={avaialbleTokenOptions}
-              positionsInfo={positionsInfo}
-            />
+            <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">{formatUsdPrice(chartToken?.prices?.maxPrice) || "..."}</div>
               <div className="ExchangeChart-info-label">{formatUsdPrice(chartToken?.prices?.minPrice) || "..."}</div>
@@ -246,14 +199,13 @@ export function TVChart({
           </div>
         </div>
         <div className="ExchangeChart-info VersionSwitch-wrapper">
-          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
+          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
         {chartToken && (
           <TVChartContainer
             chartLines={chartLines}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
@@ -262,8 +214,6 @@ export function TVChart({
             setPeriod={setPeriod}
             chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
           />
         )}
       </div>

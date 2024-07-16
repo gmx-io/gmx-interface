@@ -11,19 +11,17 @@ import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTier
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import { useMemo, useRef, useState } from "react";
-import { BiCopy, BiErrorCircle } from "react-icons/bi";
+import { BiCopy } from "react-icons/bi";
 import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import "./AffiliatesStats.scss";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
@@ -39,6 +37,7 @@ import {
 } from "./referralsHelper";
 import usePagination from "./usePagination";
 import useWallet from "lib/wallets/useWallet";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 
 type Props = {
   chainId: number;
@@ -110,11 +109,11 @@ function AffiliatesStats({
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(signer, chainId, tierId);
-  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
+  const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {
-      return BigNumber.from(0);
+      return 0n;
     }
 
     return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
@@ -236,11 +235,12 @@ function AffiliatesStats({
         >
           <div className="AffiliateStats-claimable-rewards-container">
             ${getUSDValue(totalClaimableRewardsUsd, 4)}
-            {totalClaimableRewardsUsd.gt(0) && (
+            {(totalClaimableRewardsUsd > 0 && (
               <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
                 Claim
               </div>
-            )}
+            )) ||
+              null}
           </div>
         </ReferralInfoCard>
       </div>
@@ -299,7 +299,6 @@ function AffiliatesStats({
               </thead>
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
-                  const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   return (
                     <tr key={index}>
                       <td data-label="Referral Code">
@@ -322,52 +321,14 @@ function AffiliatesStats({
                           >
                             <FiTwitter />
                           </a>
-                          {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
-                            <div className="info">
-                              <TooltipWithPortal
-                                position="right"
-                                handle={<IoWarningOutline color="#ffba0e" size={16} />}
-                                renderContent={() => (
-                                  <div>
-                                    <Trans>
-                                      This code is not yet registered on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                      there.
-                                      <br />
-                                      <br />
-                                      Switch your network to create this code on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
-                                    </Trans>
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          )}
-                          {ownerOnOtherChain && ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
-                            <div className="info">
-                              <TooltipWithPortal
-                                position="right"
-                                handle={<BiErrorCircle color="#e82e56" size={16} />}
-                                renderContent={() => (
-                                  <div>
-                                    <Trans>
-                                      This code has been taken by someone else on{" "}
-                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                      from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}
-                                      .
-                                    </Trans>
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          )}
+                          <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
                       </td>
                       <td data-label="Total Volume">
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
@@ -381,7 +342,7 @@ function AffiliatesStats({
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
@@ -447,27 +408,30 @@ function AffiliatesStats({
                       rebateType = t`V2 Claim`;
                     }
 
-                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] || BigNumber.from(0);
-                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
-                      return acc;
-                    }, {} as { [address: string]: BigNumber });
+                    const amountsByTokens = rebate.tokens.reduce(
+                      (acc, tokenAddress, i) => {
+                        let token;
+                        try {
+                          token = getToken(chainId, tokenAddress);
+                        } catch {
+                          token = getNativeToken(chainId);
+                        }
+                        acc[token.address] = acc[token.address] ?? 0n;
+                        acc[token.address] = acc[token.address] + rebate.amounts[i];
+                        return acc;
+                      },
+                      {} as { [address: string]: bigint }
+                    );
 
                     const tokensWithoutPrices: string[] = [];
 
                     const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
-                      if (usdAmount.eq(0) && !rebate.amounts[i].eq(0)) {
+                      if (usdAmount == 0n && rebate.amounts[i] != 0n) {
                         tokensWithoutPrices.push(rebate.tokens[i]);
                       }
 
-                      return acc.add(usdAmount);
-                    }, BigNumber.from(0));
+                      return acc + usdAmount;
+                    }, 0n);
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
@@ -476,7 +440,7 @@ function AffiliatesStats({
                         <td data-label="Type">{rebateType}</td>
                         <td data-label="Amount">
                           <Tooltip
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

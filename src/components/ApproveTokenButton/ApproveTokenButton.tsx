@@ -13,6 +13,8 @@ type Props = {
   tokenAddress: string;
   tokenSymbol: string;
   isApproved?: boolean;
+  approveAmount?: bigint;
+  customLabel?: string;
 };
 
 export function ApproveTokenButton(p: Props) {
@@ -35,6 +37,7 @@ export function ApproveTokenButton(p: Props) {
       setPendingTxns: () => null,
       infoTokens: {},
       chainId,
+      approveAmount: p.approveAmount,
       onApproveSubmitted: () => setIsApproveSubmitted(true),
     });
   }
@@ -43,9 +46,7 @@ export function ApproveTokenButton(p: Props) {
 
   return (
     <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
-      <span className="text-warning">
-        <Trans>Allow {p.tokenSymbol} to be spent</Trans>
-      </span>
+      <span className="text-yellow-500">{p.customLabel ?? <Trans>Allow {p.tokenSymbol} to be spent</Trans>}</span>
 
       <div className="ApproveTokenButton-checkbox">
         {isLoading ? (

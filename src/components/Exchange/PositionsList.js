@@ -14,7 +14,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -47,7 +47,7 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
     })
     .map((order) => {
       order.error = getOrderError(account, order, undefined, position);
-      if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
+      if (order.type === DECREASE && order.sizeDelta > position.size) {
         order.error = t`Order size is bigger than position, will only be executable if position increases`;
       }
       return order;
@@ -123,7 +123,10 @@ export default function PositionsList(props) {
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
   const positivePercentage = positionToShare?.hasProfitAfterFees;
-  const pnlAfterFeesPercentageSigned = positionToShare?.deltaPercentageAfterFees.mul(positivePercentage ? 1 : -1);
+  const pnlAfterFeesPercentageSigned =
+    positionToShare?.deltaPercentageAfterFees === undefined
+      ? undefined
+      : positionToShare.deltaPercentageAfterFees * (positivePercentage ? 1n : -1n);
 
   return (
     <div className="PositionsList">
@@ -242,14 +245,11 @@ export default function PositionsList(props) {
               const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
 
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-              const positionDelta =
-                position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+              const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
               let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
-                const borrowFeeRate = position.collateralToken.fundingRate
-                  .mul(position.size)
-                  .mul(24)
-                  .div(FUNDING_RATE_PRECISION);
+                const borrowFeeRate =
+                  (position.collateralToken.fundingRate * position.size * 24n) / BigInt(FUNDING_RATE_PRECISION);
                 borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
               }
 
@@ -293,9 +293,9 @@ export default function PositionsList(props) {
                         <div>
                           <span
                             className={cx("Exchange-list-info-label Position-pnl", {
-                              positive: hasPositionProfit && positionDelta.gt(0),
-                              negative: !hasPositionProfit && positionDelta.gt(0),
-                              muted: positionDelta.eq(0),
+                              positive: hasPositionProfit && positionDelta > 0,
+                              negative: !hasPositionProfit && positionDelta > 0,
+                              muted: positionDelta == 0n,
                             })}
                             onClick={openSettings}
                           >
@@ -317,7 +317,7 @@ export default function PositionsList(props) {
                           <Tooltip
                             handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
                             position="bottom-end"
-                            handleClassName={cx("plain", { negative: position.hasLowCollateral })}
+                            handleClassName={cx({ negative: position.hasLowCollateral })}
                             renderContent={() => {
                               return (
                                 <>
@@ -338,13 +338,13 @@ export default function PositionsList(props) {
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
                                     value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                    className="text-red"
+                                    textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
                                     value={`-$${borrowFeeUSD}`}
-                                    className="text-red"
+                                    textClassName="text-red-500"
                                   />
 
                                   {!hideActions && (
@@ -406,7 +406,6 @@ export default function PositionsList(props) {
                                   className="order-error"
                                   handle={orderText()}
                                   position="bottom-end"
-                                  handleClassName="plain"
                                   renderContent={() => <span className="negative">{order.error}</span>}
                                 />
                               </div>
@@ -428,28 +427,28 @@ export default function PositionsList(props) {
                       <div className="remove-top-margin">
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
-                          disabled={position.size.eq(0)}
+                          className="mr-15 mt-15"
+                          disabled={position.size == 0n}
                           onClick={() => sellPosition(position)}
                         >
                           <Trans>Close</Trans>
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
-                          disabled={position.size.eq(0)}
+                          className="mr-15 mt-15"
+                          disabled={position.size == 0n}
                           onClick={() => editPosition(position)}
                         >
                           <Trans>Edit Collateral</Trans>
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mt-md"
+                          className="mt-15"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);
                           }}
-                          disabled={position.size.eq(0)}
+                          disabled={position.size == 0n}
                         >
                           <Trans>Share</Trans>
                         </Button>
@@ -511,20 +510,17 @@ export default function PositionsList(props) {
                 averagePrice: position.averagePrice,
                 isLong: position.isLong,
                 fundingFee: position.fundingFee,
-              }) || bigNumberify(0);
+              }) || 0n;
 
             const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-            const positionDelta =
-              position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+            const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || 0n;
             let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
-              const borrowFeeRate = position.collateralToken.fundingRate
-                .mul(position.size)
-                .mul(24)
-                .div(FUNDING_RATE_PRECISION);
+              const borrowFeeRate =
+                (position.collateralToken.fundingRate * position.size * 24n) / BigInt(FUNDING_RATE_PRECISION);
               borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
             }
 
@@ -546,7 +542,7 @@ export default function PositionsList(props) {
                           </>
                         }
                         position="bottom-start"
-                        handleClassName="plain clickable"
+                        handleClassName="clickable"
                         renderContent={() => {
                           return (
                             <div>
@@ -589,10 +585,10 @@ export default function PositionsList(props) {
 
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
-                        positive: hasPositionProfit && positionDelta.gt(0),
-                        negative: !hasPositionProfit && positionDelta.gt(0),
-                        muted: positionDelta.eq(0),
+                      className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                        positive: hasPositionProfit && positionDelta > 0,
+                        negative: !hasPositionProfit && positionDelta > 0,
+                        muted: positionDelta == 0n,
                       })}
                       onClick={openSettings}
                     >
@@ -611,7 +607,7 @@ export default function PositionsList(props) {
                         handle={t`Orders (${positionOrders.length})`}
                         position="bottom-start"
                         handleClassName={cx(
-                          ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"],
+                          ["Exchange-list-info-label", "Exchange-position-list-orders", "clickable"],
                           { muted: !hasOrderError, negative: hasOrderError }
                         )}
                         renderContent={() => {
@@ -654,7 +650,7 @@ export default function PositionsList(props) {
                     <Tooltip
                       handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
                       position="bottom-start"
-                      handleClassName={cx("plain", { negative: position.hasLowCollateral })}
+                      handleClassName={cx({ negative: position.hasLowCollateral })}
                       renderContent={() => {
                         return (
                           <>
@@ -677,13 +673,13 @@ export default function PositionsList(props) {
                               label={t`Borrow Fee`}
                               showDollar={false}
                               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                              className="text-red"
+                              textClassName="text-red-500"
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label={t`Borrow Fee / Day`}
                               value={`-$${borrowFeeUSD}`}
-                              className="text-red"
+                              textClassName="text-red-500"
                             />
                             {!hideActions && (
                               <>
@@ -706,15 +702,17 @@ export default function PositionsList(props) {
                 <td>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
                 <td>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
 
-                <td>
-                  <button
-                    className="Exchange-list-action"
-                    onClick={() => sellPosition(position)}
-                    disabled={position.size.eq(0)}
-                  >
-                    <Trans>Close</Trans>
-                  </button>
-                </td>
+                {!hideActions && (
+                  <td>
+                    <button
+                      className="Exchange-list-action"
+                      onClick={() => sellPosition(position)}
+                      disabled={position.size == 0n}
+                    >
+                      <Trans>Close</Trans>
+                    </button>
+                  </td>
+                )}
                 {!hideActions && (
                   <td>
                     <PositionDropdown

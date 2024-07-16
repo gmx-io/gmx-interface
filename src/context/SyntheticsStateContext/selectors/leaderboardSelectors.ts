@@ -1,44 +1,38 @@
-import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
-import { createEnhancedSelector } from "../utils";
-import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector } from "../utils";
+import { selectAccount, selectMarketsInfoData, selectTokensData, selectUserReferralInfo } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
-export function selectLeaderboardAccountBases(s: SyntheticsTradeState) {
-  return s.leaderboard.accounts;
-}
-export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
-  return s.leaderboard.positions;
-}
+export const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
 
-export function selectLeaderboardType(s: SyntheticsTradeState) {
-  return s.leaderboard.leaderboardType;
-}
-export function selectLeaderboardSetType(s: SyntheticsTradeState) {
-  return s.leaderboard.setLeaderboardType;
-}
+export const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
 
-export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
-  return s.leaderboard.timeframe;
-}
-export function selectLeaderboardIsEndInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isEndInFuture;
-}
-export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isStartInFuture;
-}
+export const selectLeaderboardTimeframeType = (s: SyntheticsState) => s.leaderboard.leaderboardTimeframeType;
 
-export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
+export const selectLeaderboardSetTimeframeType = (s: SyntheticsState) => s.leaderboard.setLeaderboardTimeframeType;
+
+export const selectLeaderboardDataType = (s: SyntheticsState) => s.leaderboard.leaderboardDataType;
+
+export const selectLeaderboardSetDataType = (s: SyntheticsState) => s.leaderboard.setLeaderboardDataType;
+
+export const selectLeaderboardTimeframe = (s: SyntheticsState) => s.leaderboard.timeframe;
+
+export const selectLeaderboardIsEndInFuture = (s: SyntheticsState) => s.leaderboard.isEndInFuture;
+
+export const selectLeaderboardIsStartInFuture = (s: SyntheticsState) => s.leaderboard.isStartInFuture;
+
+export const selectLeaderboardIsLoading = (s: SyntheticsState) => s.leaderboard.isLoading;
+
+export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
   return LEADERBOARD_PAGES[pageKey].isCompetition;
 });
 
-export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(function selectLeaderboardIsCompetitionOver(
-  q
-) {
+export const selectLeaderboardIsCompetitionOver = createSelector(function selectLeaderboardIsCompetitionOver(q) {
   const isEndInFuture = q(selectLeaderboardIsEndInFuture);
   if (isEndInFuture) return false;
 
@@ -49,9 +43,9 @@ export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(functio
   return q(selectLeaderboardIsCompetition);
 });
 
-export const selectLeaderboardCurrentAccount = createEnhancedSelector(function selectLeaderboardCurrentAccount(
-  q
-): LeaderboardAccount | undefined {
+export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(q):
+  | LeaderboardAccount
+  | undefined {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);
   const leaderboardAccount = accounts?.find((a) => a.account === currentAccount);
@@ -88,21 +82,30 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector(function s
   };
 });
 
-const selectPositionBasesByAccount = createEnhancedSelector(function selectPositionBasesByAccount(q) {
+const selectPositionBasesByAccount = createSelector(function selectPositionBasesByAccount(q) {
   const positionBases = q(selectLeaderboardPositionBases);
 
   if (!positionBases) return {};
 
-  return positionBases.reduce((acc, position) => {
-    if (!acc[position.account]) {
-      acc[position.account] = [];
-    }
-    acc[position.account].push(position);
-    return acc;
-  }, {} as Record<string, LeaderboardPositionBase[]>);
+  return positionBases.reduce(
+    (acc, position) => {
+      if (!acc[position.account]) {
+        acc[position.account] = [];
+      }
+      acc[position.account].push(position);
+      return acc;
+    },
+    {} as Record<string, LeaderboardPositionBase[]>
+  );
 });
 
-const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderboardAccounts(q) {
+const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccounts(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  // top positions selected, no need to iterate accounts
+  if (pageKey === "leaderboard" && leaderboardDataType === "positions") return undefined;
+
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -152,21 +155,19 @@ const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderbo
   });
 });
 
-export const selectLeaderboardRankedAccounts = createEnhancedSelector(function selectLeaderboardRankedAccounts(q) {
+export const selectLeaderboardRankedAccounts = createSelector(function selectLeaderboardRankedAccounts(q) {
   const accounts = q(selectLeaderboardAccounts);
   if (!accounts) return undefined;
   return accounts.filter((a) => a.hasRank);
 });
 
-export const selectLeaderboardRankedAccountsByPnl = createEnhancedSelector(
-  function selectLeaderboardRankedAccountsByPnl(q) {
-    const accounts = q(selectLeaderboardRankedAccounts);
-    if (!accounts) return undefined;
-    return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
-  }
-);
+export const selectLeaderboardRankedAccountsByPnl = createSelector(function selectLeaderboardRankedAccountsByPnl(q) {
+  const accounts = q(selectLeaderboardRankedAccounts);
+  if (!accounts) return undefined;
+  return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
+});
 
-export const selectLeaderboardRankedAccountsByPnlPercentage = createEnhancedSelector(
+export const selectLeaderboardRankedAccountsByPnlPercentage = createSelector(
   function selectLeaderboardRankedAccountsByPnlPercentage(q) {
     const accounts = q(selectLeaderboardRankedAccounts);
     if (!accounts) return undefined;
@@ -174,7 +175,7 @@ export const selectLeaderboardRankedAccountsByPnlPercentage = createEnhancedSele
   }
 );
 
-export const selectLeaderboardAccountsRanks = createEnhancedSelector(function selectLeaderboardAccountsRanks(q) {
+export const selectLeaderboardAccountsRanks = createSelector(function selectLeaderboardAccountsRanks(q) {
   const accounts = q(selectLeaderboardRankedAccounts);
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
   if (!accounts) return ranks;
@@ -196,20 +197,73 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector(function se
   return ranks;
 });
 
-export const selectLeaderboardPositions = createEnhancedSelector(function selectLeaderboardPositions(q) {
+export const selectLeaderboardPositions = createSelector(function selectLeaderboardPositions(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  const shouldCalcPositions = pageKey === "leaderboard" && leaderboardDataType === "positions";
+
+  if (!shouldCalcPositions) return undefined;
+
   const positionBases = q(selectLeaderboardPositionBases);
-  const marketsInfoData = q(selectMarketsInfoData);
 
   if (!positionBases) return undefined;
 
-  return positionBases.map((position) => {
-    const market = (marketsInfoData || {})[position.market];
-    const unrealizedPnl = getPositionPnl(position, market);
-    return {
-      ...position,
-      unrealizedPnl,
-    };
+  const userReferralInfo = q(selectUserReferralInfo) ?? {
+    totalRebateFactor: 0n,
+    discountFactor: 0n,
+  };
+
+  const positions = positionBases
+    .map((position) => {
+      const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+      if (!market) return undefined;
+
+      const marketInfo = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+      if (!marketInfo) return undefined;
+
+      const unrealizedPnl = getPositionPnl(position, market);
+
+      const pnl = position.realizedPnl + unrealizedPnl;
+      const closingFeeUsd = getCloseFee(marketInfo, position.sizeInUsd, false, userReferralInfo);
+      const fees = position.realizedFees + position.unrealizedFees;
+      const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
+
+      const collateralTokenPrice = q((s) => selectTokensData(s)?.[position.collateralToken]?.prices.minPrice);
+      const collateralTokenDecimals = q((s) => selectTokensData(s)?.[position.collateralToken]?.decimals);
+
+      if (collateralTokenPrice === undefined || !collateralTokenDecimals) return undefined;
+
+      const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
+
+      const leverage = getLeverage(position.sizeInUsd, collateralUsd, unrealizedPnl, position.unrealizedFees);
+
+      const p: LeaderboardPosition = {
+        ...position,
+        unrealizedPnl,
+        rank: 1,
+        qualifyingPnl,
+        fees,
+        pnl,
+        leverage,
+        collateralUsd,
+        closingFeeUsd,
+        entryPrice: getEntryPrice(position.sizeInUsd, position.sizeInTokens, market.indexToken.decimals),
+      };
+
+      return p;
+    })
+    .filter((x: LeaderboardPosition | undefined): x is LeaderboardPosition => x !== undefined);
+
+  positions.sort((a, b) => (b.qualifyingPnl - a.qualifyingPnl > 0n ? 1 : -1));
+
+  positions.forEach((position, index) => {
+    position.rank = index + 1;
   });
+
+  return positions;
 });
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
@@ -222,7 +276,7 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   }
 
   let pnl =
-    (position.sizeInTokens * market.indexToken.prices.minPrice.toBigInt()) / 10n ** BigInt(market.indexToken.decimals) -
+    (position.sizeInTokens * market.indexToken.prices.minPrice) / 10n ** BigInt(market.indexToken.decimals) -
     position.sizeInUsd;
 
   if (!position.isLong) {
@@ -230,4 +284,52 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   }
 
   return pnl;
+}
+
+export function getEntryPrice(sizeInUsd: bigint, sizeInTokens: bigint, decimals: number) {
+  if (sizeInTokens <= 0n) {
+    return 0n;
+  }
+
+  return (sizeInUsd / sizeInTokens) * 10n ** BigInt(decimals);
+}
+
+function getCloseFee(
+  marketInfo: MarketInfo,
+  sizeDeltaUsd: bigint,
+  forPositiveImpact: boolean,
+  referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined
+) {
+  const factor = forPositiveImpact
+    ? marketInfo.positionFeeFactorForPositiveImpact
+    : marketInfo.positionFeeFactorForNegativeImpact;
+
+  let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+
+  if (!referralInfo) {
+    return positionFeeUsd;
+  }
+
+  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
+  const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
+
+  positionFeeUsd = positionFeeUsd - discountUsd;
+
+  return positionFeeUsd;
+}
+
+const PRECISION = 10n ** 30n;
+
+function applyFactor(value: bigint, factor: bigint) {
+  return (value * factor) / PRECISION;
+}
+
+function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, unrealizedPnl: bigint, unrealizedFees: bigint) {
+  const remainingCollateralUsd = collateralUsd + unrealizedPnl - unrealizedFees;
+
+  if (remainingCollateralUsd < 0n) {
+    return 0n;
+  }
+
+  return (sizeInUsd * BASIS_POINTS_DIVISOR) / remainingCollateralUsd;
 }

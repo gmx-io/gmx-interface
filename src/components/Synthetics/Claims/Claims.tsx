@@ -1,12 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
 import { useMedia } from "react-use";
+
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
@@ -26,27 +26,17 @@ export function Claims({
   shouldShowPaginationButtons,
   isSettling,
   setIsSettling,
-  positionsInfoData,
-  gettingPendingFeePositionKeys,
-  setGettingPendingFeePositionKeys,
   setPendingTxns,
   allowedSlippage,
-  accruedPositionPriceImpactFees,
-  claimablePositionPriceImpactFees,
 }: {
   shouldShowPaginationButtons: boolean;
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
-  positionsInfoData: PositionsInfoData | undefined;
-  gettingPendingFeePositionKeys: string[];
-  setGettingPendingFeePositionKeys: (keys: string[]) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
-  accruedPositionPriceImpactFees: RebateInfoItem[];
-  claimablePositionPriceImpactFees: RebateInfoItem[];
 }) {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
   const [isClaiming, setIsClaiming] = useState(false);
 
   const [isAccruedPositionPriceImpactRebateModalVisible, setIsAccruedPositionPriceImpactRebateModalVisible] =
@@ -70,9 +60,8 @@ export function Claims({
   );
 
   const handleSettleCloseClick = useCallback(() => {
-    setGettingPendingFeePositionKeys([]);
     setIsSettling(false);
-  }, [setGettingPendingFeePositionKeys, setIsSettling]);
+  }, [setIsSettling]);
 
   const handleAccruedPositionPriceImpactRebateCloseClick = useCallback(() => {
     setIsAccruedPositionPriceImpactRebateModalVisible(false);
@@ -82,29 +71,29 @@ export function Claims({
     setIsClaimablePositionPriceImpactFeesModalVisible(false);
   }, []);
 
+  const handleClaimModalClose = useCallback(() => {
+    setIsClaiming(false);
+  }, []);
+
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
     <>
-      <ClaimModal isVisible={isClaiming} onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />
+      <ClaimModal isVisible={isClaiming} onClose={handleClaimModalClose} setPendingTxns={setPendingTxns} />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
-        positionKeys={gettingPendingFeePositionKeys}
         allowedSlippage={allowedSlippage}
-        setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         onClose={handleSettleCloseClick}
       />
       <AccruedPositionPriceImpactRebateModal
         isVisible={isAccruedPositionPriceImpactRebateModalVisible}
         onClose={handleAccruedPositionPriceImpactRebateCloseClick}
-        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
       />
 
       <ClaimablePositionPriceImpactRebateModal
         isVisible={isClaimablePositionPriceImpactFeesModalVisible}
         onClose={handleClaimablePositionPriceImpactFeesCloseClick}
-        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
 
       <div>
@@ -115,13 +104,11 @@ export function Claims({
         )}
         <div
           className={cx("flex", "w-full", {
-            "flex-column": isMobile,
+            "flex-col": isMobile,
           })}
         >
           {account && !isLoading && (
             <SettleAccruedCard
-              accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
-              positionsInfoData={positionsInfoData}
               onSettleClick={handleSettleClick}
               onAccruedPositionPriceImpactRebateClick={handleAccruedPositionPriceImpactRebateClick}
               style={isMobile ? undefined : MARGIN_RIGHT}
@@ -129,7 +116,6 @@ export function Claims({
           )}
           {account && !isLoading && (
             <ClaimableCard
-              claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
               onClaimClick={handleClaimClick}
               onClaimablePositionPriceImpactFeesClick={handleClaimablePositionPriceImpactFeesClick}
               style={isMobile ? undefined : MARGIN_LEFT}
