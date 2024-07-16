@@ -9,7 +9,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, CHAIN_IDS_WITH_GMX, DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getContract } from "config/contracts";
 import { getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGmxPriceFromArbtitrum, getGmxPriceFromAvalanche } from "domain/legacy";
 import { MulticallResult } from "lib/multicall/types";
@@ -24,12 +24,20 @@ import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 import VaultReader from "abis/VaultReader.json";
+import RewardReader from "abis/RewardReader.json";
 
 export type OptInV2ContextType = {
   chainId: number;
   aums: bigint[] | undefined;
   tokenBalancesWithSupplies: bigint[] | undefined;
   totalTokenWeights: bigint | undefined;
+  gmxSupply: bigint | undefined;
+  glpSupply: bigint | undefined;
+  usdgSupply: bigint | undefined;
+  stakedGmxSupply: bigint | undefined;
+  esGmxSupply: bigint | undefined;
+  depositBalances: bigint[] | undefined;
+  stakingInfo: bigint[] | undefined;
   flags: {
     withAums: boolean;
     withTokenBalancesWithSupplies: boolean;
@@ -37,6 +45,7 @@ export type OptInV2ContextType = {
     withSecondaryFees: boolean;
     withTotalTokenWeights: boolean;
     withNativeTokenMinPrice: boolean;
+    withSecondaryNativeTokenMinPrice: boolean;
     withVaultTokenInfo: boolean;
     withSecondaryVaultTokenInfo: boolean;
     withGmxPrice: boolean;
@@ -47,25 +56,29 @@ export type OptInV2ContextType = {
     withSecondaryGmxStakedBalances: boolean;
     withPrices: boolean;
     withSecondaryPrices: boolean;
+    withEsGmxSupply: boolean;
+    withGmxSupply: boolean;
+    withGlpSupply: boolean;
+    withUsdgSupply: boolean;
+    withStakedGmxSupply: boolean;
+    withDepositBalances: boolean;
+    withStakingInfo: boolean;
   };
   gmxPriceMap:
     | {
         [chainId: number]: bigint;
       }
     | undefined;
-
   gmxLiquidityMap:
     | {
         [chainId: number]: bigint;
       }
     | undefined;
-
   gmxStakedMap:
     | {
         [chainId: number]: bigint;
       }
     | undefined;
-
   vaultTokenInfoMap:
     | {
         [chainId: number]: bigint[];
@@ -81,36 +94,57 @@ export type OptInV2ContextType = {
         [chainId: number]: Record<Address, bigint>;
       }
     | undefined;
+  nativeTokenPriceMap:
+    | {
+        [chainId: number]: bigint;
+      }
+    | undefined;
 };
 
 const context = createContext<OptInV2ContextType>({
   chainId: DEFAULT_CHAIN_ID,
   aums: undefined,
-  tokenBalancesWithSupplies: undefined,
+  depositBalances: undefined,
+  esGmxSupply: undefined,
   feesMap: undefined,
-  totalTokenWeights: undefined,
-  vaultTokenInfoMap: undefined,
-  gmxPriceMap: undefined,
+  glpSupply: undefined,
   gmxLiquidityMap: undefined,
+  gmxPriceMap: undefined,
   gmxStakedMap: undefined,
+  gmxSupply: undefined,
+  nativeTokenPriceMap: undefined,
   pricesMap: undefined,
+  stakedGmxSupply: undefined,
+  stakingInfo: undefined,
+  tokenBalancesWithSupplies: undefined,
+  totalTokenWeights: undefined,
+  usdgSupply: undefined,
+  vaultTokenInfoMap: undefined,
   flags: {
     withAums: false,
-    withTokenBalancesWithSupplies: false,
+    withDepositBalances: false,
+    withEsGmxSupply: false,
     withFees: false,
-    withSecondaryFees: false,
-    withTotalTokenWeights: false,
-    withNativeTokenMinPrice: false,
-    withVaultTokenInfo: false,
-    withSecondaryVaultTokenInfo: false,
-    withGmxPrice: false,
-    withSecondaryGmxPrices: false,
+    withGlpSupply: false,
     withGmxLiquidiyBalance: false,
-    withSecondaryGmxLiquidiyBalances: false,
+    withGmxPrice: false,
     withGmxStakedBalance: false,
-    withSecondaryGmxStakedBalances: false,
+    withGmxSupply: false,
+    withNativeTokenMinPrice: false,
     withPrices: false,
+    withSecondaryFees: false,
+    withSecondaryGmxLiquidiyBalances: false,
+    withSecondaryGmxPrices: false,
+    withSecondaryGmxStakedBalances: false,
+    withSecondaryNativeTokenMinPrice: false,
     withSecondaryPrices: false,
+    withSecondaryVaultTokenInfo: false,
+    withStakedGmxSupply: false,
+    withStakingInfo: false,
+    withTokenBalancesWithSupplies: false,
+    withTotalTokenWeights: false,
+    withUsdgSupply: false,
+    withVaultTokenInfo: false,
   },
 });
 
@@ -119,43 +153,101 @@ const Provider = context.Provider;
 export function OptInV2ContextProvider(
   props: PropsWithChildren<{
     withAums?: boolean;
-    withTokenBalancesWithSupplies?: boolean;
+    withDepositBalances?: boolean;
+    withEsGmxSupply?: boolean;
     withFees?: boolean;
-    withSecondaryFees?: boolean;
-    withTotalTokenWeights?: boolean;
-    withNativeTokenMinPrice?: boolean;
-    withVaultTokenInfo?: boolean;
-    withSecondaryVaultTokenInfo?: boolean;
-    withGmxPrice?: boolean;
-    withSecondaryGmxPrices?: boolean;
+    withGlpSupply?: boolean;
     withGmxLiquidiyBalance?: boolean;
-    withSecondaryGmxLiquidiyBalances?: boolean;
+    withGmxPrice?: boolean;
     withGmxStakedBalance?: boolean;
-    withSecondaryGmxStakedBalances?: boolean;
+    withGmxSupply?: boolean;
+    withNativeTokenMinPrice?: boolean;
     withPrices?: boolean;
+    withSecondaryFees?: boolean;
+    withSecondaryGmxLiquidiyBalances?: boolean;
+    withSecondaryGmxPrices?: boolean;
+    withSecondaryGmxStakedBalances?: boolean;
+    withSecondaryNativeTokenMinPrice?: boolean;
     withSecondaryPrices?: boolean;
+    withSecondaryVaultTokenInfo?: boolean;
+    withStakedGmxSupply?: boolean;
+    withStakingInfo?: boolean;
+    withTokenBalancesWithSupplies?: boolean;
+    withTotalTokenWeights?: boolean;
+    withUsdgSupply?: boolean;
+    withVaultTokenInfo?: boolean;
   }>
 ) {
   const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
 
   const readerAddress = getContract(chainId, "Reader");
   const vaultAddress = getContract(chainId, "Vault");
   const glpManagerAddress = getContract(chainId, "GlpManager");
   const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const rewardReaderAddress = getContract(chainId, "RewardReader");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
+  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+  const stakedGlpDistributorAddress = getContract(chainId, "StakedGlpDistributor");
+  const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
+  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const liquidGmxTracker = getContract(chainId, chainId === ARBITRUM ? "UniswapGmxEthPool" : "TraderJoeGmxAvaxPool");
 
   const gmxAddress = getContract(chainId, "GMX");
   const glpAddress = getContract(chainId, "GLP");
   const usdgAddress = getContract(chainId, "USDG");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const esGmxAddress = getContract(chainId, "ES_GMX");
+  const bnGmxAddress = getContract(chainId, "BN_GMX");
 
-  const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
+  const tokensForSupplyQuery: string[] = [];
+  if (props.withGmxSupply) {
+    tokensForSupplyQuery.push(gmxAddress);
+  }
+  if (props.withGlpSupply) {
+    tokensForSupplyQuery.push(glpAddress);
+  }
+  if (props.withUsdgSupply) {
+    tokensForSupplyQuery.push(usdgAddress);
+  }
+  if (props.withStakedGmxSupply) {
+    tokensForSupplyQuery.push(stakedGmxTrackerAddress);
+  }
+  const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
+  const depositTokens = [
+    gmxAddress,
+    esGmxAddress,
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    bnGmxAddress,
+    glpAddress,
+  ];
+  const rewardTrackersForDepositBalances = [
+    stakedGmxTrackerAddress,
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    feeGlpTrackerAddress,
+  ];
+  const rewardTrackersForStakingInfo = [
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    stakedGlpTrackerAddress,
+    feeGlpTrackerAddress,
+  ];
+
   const mainQuery = useMulticall(chainId, "OptInV2ContextProvider:main:multicall", {
     key: [
+      account,
       props.withAums,
       props.withTokenBalancesWithSupplies,
       props.withFees,
@@ -165,6 +257,13 @@ export function OptInV2ContextProvider(
       props.withGmxPrice,
       props.withGmxLiquidiyBalance,
       props.withGmxStakedBalance,
+      props.withDepositBalances,
+      props.withStakingInfo,
+      props.withEsGmxSupply,
+      props.withGlpSupply,
+      props.withGmxSupply,
+      props.withUsdgSupply,
+      props.withStakedGmxSupply,
     ],
     request: () => ({
       aums: {
@@ -185,10 +284,13 @@ export function OptInV2ContextProvider(
             methodName: "getTokenBalancesWithSupplies",
             params: [zeroAddress, tokensForSupplyQuery],
           },
-
           fees: props.withFees && {
             methodName: "getFees",
             params: [vaultAddress, whitelistedTokenAddresses],
+          },
+          esGmxSupply: props.withEsGmxSupply && {
+            methodName: "getTokenSupply",
+            params: [esGmxAddress, excludedEsGmxAccounts],
           },
         },
       },
@@ -202,7 +304,7 @@ export function OptInV2ContextProvider(
           },
           nativeTokenMinPrice: props.withNativeTokenMinPrice && {
             methodName: "getMinPrice",
-            params: [getContract(chainId, "NATIVE_TOKEN")],
+            params: [nativeTokenAddress],
           },
         },
       },
@@ -226,7 +328,7 @@ export function OptInV2ContextProvider(
         chainId === ARBITRUM
           ? {
               abi: UniPool.abi,
-              contractAddress: getContract(ARBITRUM, "UniswapGmxEthPool"),
+              contractAddress: liquidGmxTracker,
               calls: {
                 uniPoolSlot0: props.withGmxPrice && {
                   methodName: "slot0",
@@ -236,7 +338,7 @@ export function OptInV2ContextProvider(
             }
           : {
               abi: UniswapV2.abi,
-              contractAddress: getContract(AVALANCHE, "TraderJoeGmxAvaxPool"),
+              contractAddress: liquidGmxTracker,
               calls: {
                 getReserves: props.withGmxPrice && {
                   methodName: "getReserves",
@@ -250,12 +352,28 @@ export function OptInV2ContextProvider(
         calls: {
           liquidity: props.withGmxLiquidiyBalance && {
             methodName: "balanceOf",
-            params: [getContract(chainId, chainId === ARBITRUM ? "UniswapGmxEthPool" : "TraderJoeGmxAvaxPool")],
+            params: [liquidGmxTracker],
           },
           staked: props.withGmxStakedBalance && {
             methodName: "balanceOf",
-            params: [getContract(chainId, "StakedGmxTracker")],
+            params: [stakedGmxTrackerAddress],
           },
+        },
+      },
+      rewardReader: {
+        abi: RewardReader.abi,
+        contractAddress: rewardReaderAddress,
+        calls: {
+          depositBalances: account !== undefined &&
+            props.withDepositBalances && {
+              methodName: "getDepositBalances",
+              params: [account, depositTokens, rewardTrackersForDepositBalances],
+            },
+          stakingInfo: account !== undefined &&
+            props.withStakingInfo && {
+              methodName: "getStakingInfo",
+              params: [account, rewardTrackersForStakingInfo],
+            },
         },
       },
     }),
@@ -283,13 +401,23 @@ export function OptInV2ContextProvider(
 
         nativePrice,
 
-        gmxPrice: props.withGmxPrice ? parseGmxPriceFromRawDexData(chainId, nativePrice as bigint, result) : undefined,
+        gmxPrice: props.withGmxPrice ? parseGmxPriceFromRawDexData(chainId, nativePrice!, result) : undefined,
 
         gmxLiquidity: props.withGmxLiquidiyBalance
           ? (result.data.gmxBalances.liquidity.returnValues[0] as bigint)
           : undefined,
 
         gmxStaked: props.withGmxStakedBalance ? (result.data.gmxBalances.staked.returnValues[0] as bigint) : undefined,
+
+        esGmxSupply: props.withEsGmxSupply ? (result.data.readerV2.esGmxSupply.returnValues[0] as bigint) : undefined,
+
+        depositBalances: props.withDepositBalances
+          ? (result.data.rewardReader.depositBalances.returnValues as bigint[])
+          : undefined,
+
+        stakingInfo: props.withStakingInfo
+          ? (result.data.rewardReader.stakingInfo.returnValues as bigint[])
+          : undefined,
       };
     },
     refreshInterval: null,
@@ -340,7 +468,7 @@ export function OptInV2ContextProvider(
       abi: Vault.abi,
       contractAddress: getContract(chainId, "Vault"),
       calls: {
-        minPrice: props.withSecondaryGmxPrices && {
+        nativeTokenMinPrice: props.withSecondaryNativeTokenMinPrice && {
           methodName: "getMinPrice",
           params: [getContract(chainId, "NATIVE_TOKEN")],
         },
@@ -377,10 +505,13 @@ export function OptInV2ContextProvider(
     vaultTokenInfo: bigint[] | undefined;
     fees: bigint[] | undefined;
     gmxLiquidity: bigint | undefined;
-    gmxStaked: bigint;
+    gmxStaked: bigint | undefined;
     gmxPrice: bigint | undefined;
+    nativePrice: bigint | undefined;
   } => {
-    const nativePrice = result.data.vault.minPrice.returnValues[0] as bigint;
+    const nativePrice = props.withSecondaryNativeTokenMinPrice
+      ? (result.data.vault.nativeTokenMinPrice.returnValues[0] as bigint)
+      : undefined;
 
     return {
       vaultTokenInfo: props.withSecondaryVaultTokenInfo
@@ -391,7 +522,8 @@ export function OptInV2ContextProvider(
         ? (result.data.gmxBalances.dex.returnValues[0] as bigint)
         : undefined,
       gmxStaked: result.data.gmxBalances.staked.returnValues[0] as bigint,
-      gmxPrice: props.withSecondaryGmxPrices ? parseGmxPriceFromRawDexData(chainId, nativePrice, result) : undefined,
+      nativePrice,
+      gmxPrice: props.withSecondaryGmxPrices ? parseGmxPriceFromRawDexData(chainId, nativePrice!, result) : undefined,
     };
   };
 
@@ -510,12 +642,29 @@ export function OptInV2ContextProvider(
       feesMap[chainId] = mainQuery.data.fees!;
     }
 
+    // Native Token Price
+    const nativeTokenPriceMap: {
+      [chainId: number]: bigint;
+    } = {};
+    if (props.withSecondaryNativeTokenMinPrice) {
+      entries(secondaryQuery.data).reduce((acc, [chainId, data]) => {
+        acc[chainId] = data.nativePrice!;
+        return acc;
+      }, nativeTokenPriceMap);
+    }
+    if (props.withNativeTokenMinPrice && mainQuery.data) {
+      nativeTokenPriceMap[chainId] = mainQuery.data.nativePrice!;
+    }
+
     return {
       aums: props.withAums ? mainQuery.data?.aums : undefined,
       tokenBalancesWithSupplies: props.withTokenBalancesWithSupplies
         ? mainQuery.data?.tokenBalancesWithSupplies
         : undefined,
       totalTokenWeights: props.withTotalTokenWeights ? mainQuery.data?.totalTokenWeights : undefined,
+      esGmxSupply: props.withEsGmxSupply ? mainQuery.data?.esGmxSupply : undefined,
+      depositBalances: props.withDepositBalances ? mainQuery.data?.depositBalances : undefined,
+      stakingInfo: props.withStakingInfo ? mainQuery.data?.stakingInfo : undefined,
       flags: {
         withAums: props.withAums ?? false,
         withTokenBalancesWithSupplies: props.withTokenBalancesWithSupplies ?? false,
@@ -533,6 +682,10 @@ export function OptInV2ContextProvider(
         withSecondaryGmxStakedBalances: props.withSecondaryGmxStakedBalances ?? false,
         withPrices: props.withPrices ?? false,
         withSecondaryPrices: props.withSecondaryPrices ?? false,
+        withEsGmxSupply: props.withEsGmxSupply ?? false,
+        withDepositBalances: props.withDepositBalances ?? false,
+        withStakingInfo: props.withStakingInfo ?? false,
+        withSecondaryNativeTokenMinPrice: props.withSecondaryNativeTokenMinPrice ?? false,
       },
       chainId,
       gmxPriceMap,
@@ -540,10 +693,10 @@ export function OptInV2ContextProvider(
       gmxStakedMap,
       vaultTokenInfoMap,
       feesMap,
+      nativeTokenPriceMap,
       pricesMap: pricesMapQuery.data,
     } satisfies OptInV2ContextType;
   }, [
-    mainQuery.data,
     props.withSecondaryGmxPrices,
     props.withGmxPrice,
     props.withSecondaryGmxLiquidiyBalances,
@@ -557,9 +710,14 @@ export function OptInV2ContextProvider(
     props.withAums,
     props.withTokenBalancesWithSupplies,
     props.withTotalTokenWeights,
+    props.withEsGmxSupply,
+    props.withDepositBalances,
+    props.withStakingInfo,
     props.withNativeTokenMinPrice,
     props.withPrices,
     props.withSecondaryPrices,
+    props.withSecondaryNativeTokenMinPrice,
+    mainQuery.data,
     secondaryQuery.data,
     chainId,
     pricesMapQuery.data,

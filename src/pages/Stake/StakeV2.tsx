@@ -81,16 +81,24 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { EMPTY_OBJECT } from "lib/objects";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { shortenAddressOrEns } from "lib/wallets";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
+import { useOptInV2ContextSelector } from "pages/Dashboard/opt-in/OptInV2ContextProvider";
+import {
+  selectAums,
+  selectDepositBalances,
+  selectEsGmxSupply,
+  selectGmxPrices,
+  selectGmxStaked,
+  selectNativeTokenMinPrice,
+  selectStakingInfo,
+  selectTokenBalancesWithSuppliesSupplies,
+} from "pages/Dashboard/opt-in/optInSelectors";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { useStakeV2InfoRequest } from "./useStakeV2InfoRequest";
-import { selectGmxPrice, useStakeV2ContextSelector } from "./StakeV2ContextProvider";
 
 const { ZeroAddress } = ethers;
 
@@ -1387,15 +1395,19 @@ export default function StakeV2() {
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
-  const stakeV2Query = useStakeV2InfoRequest();
-  const { walletBalances, depositBalances, stakingInfo, stakedGmxSupply, aums, nativeTokenPrice, esGmxSupply } =
-    (stakeV2Query.data || EMPTY_OBJECT) as Partial<Exclude<typeof stakeV2Query.data, undefined>>;
+  const tokenBalancesWithSupplies = useOptInV2ContextSelector(selectTokenBalancesWithSuppliesSupplies);
+  const depositBalances = useOptInV2ContextSelector(selectDepositBalances);
+  const stakingInfo = useOptInV2ContextSelector(selectStakingInfo);
+  const stakedGmxSupply = useOptInV2ContextSelector(selectGmxStaked);
+  const aums = useOptInV2ContextSelector(selectAums);
+  const nativeTokenPrice = useOptInV2ContextSelector(selectNativeTokenMinPrice);
+  const esGmxSupply = useOptInV2ContextSelector(selectEsGmxSupply);
 
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useStakeV2ContextSelector(selectGmxPrice);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useOptInV2ContextSelector(selectGmxPrices);
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -1419,7 +1431,11 @@ export default function StakeV2() {
     aum = (aums[0] + aums[1]) / 2n;
   }
 
-  const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
+  const { balanceData, supplyData } = useMemo(
+    () => getBalanceAndSupplyData(tokenBalancesWithSupplies),
+    [tokenBalancesWithSupplies]
+  );
+
   const depositBalanceData = useMemo(() => getDepositBalanceData(depositBalances), [depositBalances]);
   const stakingData = useMemo(() => getStakingData(stakingInfo), [stakingInfo]);
 

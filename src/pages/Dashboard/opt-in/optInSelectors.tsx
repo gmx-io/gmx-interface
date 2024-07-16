@@ -22,6 +22,16 @@ function warn(q: QueryFunction<OptInV2ContextType>, ...keys: (keyof OptInV2Conte
   }
 }
 
+export const selectNativeTokenMinPrice = createOptInV2Selector((q) => {
+  warn(q, "withNativeTokenMinPrice");
+
+  const chainId = q((state) => state.chainId);
+
+  const nativeTokenMinPrice = q((state) => state.nativeTokenPriceMap?.[chainId]);
+
+  return nativeTokenMinPrice;
+});
+
 export const selectGmxPrices = createOptInV2Selector((q) => {
   warn(q, "withGmxPrice", "withSecondaryGmxPrices", "withNativeTokenMinPrice");
 
@@ -55,7 +65,7 @@ export const selectTotalGmxInLiquidity = createOptInV2Selector((q) => {
 });
 
 export const selectTotalGmxStaked = createOptInV2Selector((q) => {
-  warn(q, "withSecondaryGmxStakedBalances");
+  warn(q, "withGmxStakedBalance", "withSecondaryGmxStakedBalances");
 
   const gmxStakedMap = q((state) => state.gmxStakedMap) || {};
 
@@ -65,6 +75,16 @@ export const selectTotalGmxStaked = createOptInV2Selector((q) => {
     total,
     ...gmxStakedMap,
   } as Record<number | "total", bigint>;
+});
+
+export const selectGmxStaked = createOptInV2Selector((q) => {
+  warn(q, "withGmxStakedBalance");
+
+  const chainId = q((state) => state.chainId);
+
+  const staked = q((state) => state.gmxStakedMap?.[chainId]);
+
+  return staked;
 });
 
 export const selectInfoTokensMap = createOptInV2Selector((q) => {
@@ -128,4 +148,28 @@ export const selectTotalTokenWeights = createOptInV2Selector((q) => {
   const totalTokenWeights = q((state) => state.totalTokenWeights);
 
   return totalTokenWeights;
+});
+
+export const selectEsGmxSupply = createOptInV2Selector((q) => {
+  warn(q, "withEsGmxSupply");
+
+  const esGmxSupply = q((state) => state.esGmxSupply);
+
+  return esGmxSupply;
+});
+
+export const selectDepositBalances = createOptInV2Selector((q) => {
+  warn(q, "withDepositBalances");
+
+  const depositBalances = q((state) => state.depositBalances);
+
+  return depositBalances;
+});
+
+export const selectStakingInfo = createOptInV2Selector((q) => {
+  warn(q, "withStakingInfo");
+
+  const stakingInfo = q((state) => state.stakingInfo);
+
+  return stakingInfo;
 });

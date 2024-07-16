@@ -111,6 +111,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
             withSecondaryGmxLiquidiyBalances
             withSecondaryGmxStakedBalances
             withNativeTokenMinPrice
+            withSecondaryNativeTokenMinPrice
             withVaultTokenInfo
           >
             <DashboardV2 />
