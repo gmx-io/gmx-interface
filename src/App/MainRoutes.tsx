@@ -13,7 +13,7 @@ import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextP
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useChainId } from "lib/chains";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import { DashboardV2ContextProvider } from "pages/Dashboard/DashboardV2ContextProvider";
+import { OptInV2ContextProvider } from "pages/Dashboard/opt-in/OptInV2ContextProvider";
 
 import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
@@ -99,9 +99,22 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/dashboard">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="dashboard">
-          <DashboardV2ContextProvider>
+          <OptInV2ContextProvider
+            withAums
+            withTokenBalancesWithSupplies
+            withTotalTokenWeights
+            withFees
+            withSecondaryFees
+            withSecondaryVaultTokenInfo
+            withGmxPrice
+            withSecondaryGmxPrices
+            withSecondaryGmxLiquidiyBalances
+            withSecondaryGmxStakedBalances
+            withNativeTokenMinPrice
+            withVaultTokenInfo
+          >
             <DashboardV2 />
-          </DashboardV2ContextProvider>
+          </OptInV2ContextProvider>
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/stats/v1">

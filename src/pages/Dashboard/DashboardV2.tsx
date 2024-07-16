@@ -41,14 +41,6 @@ import {
 import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import AssetDropdown from "./AssetDropdown";
-import {
-  selectGmxPrice,
-  selectInfoTokensMap,
-  selectTotalGmxInLiquidity,
-  selectTotalGmxStaked,
-  useDashboardV2Context,
-  useDashboardV2ContextSelector,
-} from "./DashboardV2ContextProvider";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -62,6 +54,17 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 import "./DashboardV2.css";
+import { createOptInV2Selector, useOptInV2ContextSelector } from "./opt-in/OptInV2ContextProvider";
+import {
+  selectAums,
+  selectFeesMap,
+  selectGmxPrices,
+  selectInfoTokensMap,
+  selectTokenBalancesWithSuppliesSupplies,
+  selectTotalGmxInLiquidity,
+  selectTotalGmxStaked,
+  selectTotalTokenWeights,
+} from "./opt-in/optInSelectors";
 
 const ACTIVE_CHAIN_IDS = SUPPORTED_CHAIN_IDS;
 
@@ -141,38 +144,17 @@ export default function DashboardV2() {
 
   const positionStatsInfo = getPositionStats(positionStats);
 
-  function getWhitelistedTokenAddresses(chainId) {
-    const whitelistedTokens = getWhitelistedV1Tokens(chainId);
-    return whitelistedTokens.map((token) => token.address);
-  }
-
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
-  const { aums, feesMap, totalSupplies, totalTokenWeights } = useDashboardV2Context();
+  const aums = useOptInV2ContextSelector(selectAums);
+  const tokenBalancesWithSupplies = useOptInV2ContextSelector(selectTokenBalancesWithSuppliesSupplies);
+  const totalTokenWeights = useOptInV2ContextSelector(selectTotalTokenWeights);
 
-  const infoTokensMap = useDashboardV2ContextSelector(selectInfoTokensMap);
+  const infoTokensMap = useOptInV2ContextSelector(selectInfoTokensMap);
 
-  // TODO move to selector
-  const currentFees = useMemo(() => {
-    if (feesMap !== undefined && infoTokensMap !== undefined) {
-      const currentFees = {
-        total: 0n,
-      };
-
-      for (const [chainId, fees] of Object.entries(feesMap)) {
-        const whitelistedTokenAddresses = getWhitelistedTokenAddresses(Number(chainId));
-        const feeUSD = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokensMap[chainId]);
-        currentFees[chainId] = feeUSD;
-        currentFees.total = currentFees.total + feeUSD;
-      }
-
-      return currentFees;
-    }
-
-    return undefined;
-  }, [feesMap, infoTokensMap]);
+  const currentFees = useOptInV2ContextSelector(selectCurrentFees);
 
   const { data: feesSummaryByChain } = useFeesSummary();
   const feesSummary = feesSummaryByChain[chainId];
@@ -202,15 +184,15 @@ export default function DashboardV2() {
       { total: 0 }
     );
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useDashboardV2ContextSelector(selectGmxPrice);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useOptInV2ContextSelector(selectGmxPrices);
 
-  let { total: totalGmxInLiquidity } = useDashboardV2ContextSelector(selectTotalGmxInLiquidity);
+  let { total: totalGmxInLiquidity } = useOptInV2ContextSelector(selectTotalGmxInLiquidity);
 
   let {
     [AVALANCHE]: avaxStakedGmx,
     [ARBITRUM]: arbitrumStakedGmx,
     total: totalStakedGmx,
-  } = useDashboardV2ContextSelector(selectTotalGmxStaked);
+  } = useOptInV2ContextSelector(selectTotalGmxStaked);
 
   let gmxMarketCap;
   if (gmxPrice !== undefined && totalGmxSupply !== undefined) {
@@ -230,8 +212,8 @@ export default function DashboardV2() {
   let glpPrice;
   let glpSupply: bigint | undefined;
   let glpMarketCap;
-  if (aum !== undefined && totalSupplies && totalSupplies[3] !== 0n) {
-    glpSupply = totalSupplies[3];
+  if (aum !== undefined && tokenBalancesWithSupplies && tokenBalancesWithSupplies[3] !== 0n) {
+    glpSupply = tokenBalancesWithSupplies[3];
     glpPrice =
       aum > 0 && glpSupply > 0
         ? bigMath.mulDiv(aum, expandDecimals(1, GLP_DECIMALS), glpSupply)
@@ -240,6 +222,7 @@ export default function DashboardV2() {
   }
 
   let tvl: bigint | undefined = undefined;
+
   if (
     glpMarketCap !== undefined &&
     gmxPrice !== undefined &&
@@ -1281,3 +1264,29 @@ function GMCard() {
 function sumBigInts(...args: (bigint | number | undefined)[]) {
   return args.reduce<bigint>((acc, value) => acc + BigInt(value ?? 0n), 0n);
 }
+
+function getWhitelistedTokenAddresses(chainId) {
+  return getWhitelistedV1Tokens(chainId).map((token) => token.address);
+}
+
+const selectCurrentFees = createOptInV2Selector((q) => {
+  const feesMap = q(selectFeesMap);
+  const infoTokensMap = q(selectInfoTokensMap);
+
+  if (feesMap === undefined || infoTokensMap === undefined) {
+    return undefined;
+  }
+
+  const currentFees = {
+    total: 0n,
+  };
+
+  for (const [chainId, fees] of Object.entries(feesMap)) {
+    const whitelistedTokenAddresses = getWhitelistedTokenAddresses(Number(chainId));
+    const feeUSD = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokensMap[chainId]);
+    currentFees[chainId] = feeUSD;
+    currentFees.total = currentFees.total + feeUSD;
+  }
+
+  return currentFees;
+});
