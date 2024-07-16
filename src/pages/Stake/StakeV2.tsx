@@ -433,12 +433,11 @@ function UnstakeModal(props: {
           amount <= maxAmount && (
             <AlertInfo type="warning">
               <Trans>
-                Unstaking will burn&nbsp;
                 {chainId === ARBITRUM ? (
-                  <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
-                ) : (
-                  "."
-                )}
+                  <span>
+                    Unstaking will burn {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;
+                  </span>
+                ) : null}
                 <span>
                   You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                   this action.
