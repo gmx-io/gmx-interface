@@ -1292,8 +1292,8 @@ msgid "Discover GMX Alerts"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstaking will burn {0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
-msgstr ""
+#~ msgid "Unstaking will burn {0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -6020,8 +6020,8 @@ msgid "Deposit"
 msgstr "예치"
 
 #: src/pages/Stake/StakeV2.tsx
-#~ msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
-#~ msgstr ""
+msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
