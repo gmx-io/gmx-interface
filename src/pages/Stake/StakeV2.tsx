@@ -1495,14 +1495,14 @@ export default function StakeV2() {
   );
 
   let multiplierPointsAmount: bigint | undefined;
-  if (accumulatedBnGMXAmount !== undefined) {
-    multiplierPointsAmount = accumulatedBnGMXAmount;
+  if (accumulatedBnGMXAmount !== undefined && processedData?.bnGmxInFeeGmx !== undefined) {
+    multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
   }
 
   let totalRewardTokens;
 
-  if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
-    totalRewardTokens = processedData.bonusGmxInFeeGmx;
+  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
+    totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
   }
 
   let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
@@ -1740,7 +1740,10 @@ export default function StakeV2() {
     if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
-
+    let mpAmountStr;
+    if (processedData?.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx > 0) {
+      mpAmountStr = formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true) + " MP";
+    }
     let glpStr;
     if (processedData?.glpBalance && processedData.glpBalance > 0) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
@@ -1749,7 +1752,7 @@ export default function StakeV2() {
     if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
-    const amountStr = [gmxAmountStr, esGmxAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
+    const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
     earnMsg = (
       <div>
         <Trans>

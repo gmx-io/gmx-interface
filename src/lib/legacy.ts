@@ -1170,6 +1170,7 @@ export type ProcessedData = Partial<{
   stakedEsGmxSupplyUsd: bigint;
   esGmxInStakedGmx: bigint;
   esGmxInStakedGmxUsd: bigint;
+  bnGmxInFeeGmx: bigint;
   bonusGmxInFeeGmx: bigint;
   feeGmxSupply: bigint;
   feeGmxSupplyUsd: bigint;
@@ -1262,6 +1263,7 @@ export function getProcessedData(
   data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx;
   data.esGmxInStakedGmxUsd = mulDiv(depositBalanceData.esGmxInStakedGmx, gmxPrice, expandDecimals(1, 18));
 
+  data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx;
   data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx;
   data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply;
   data.feeGmxSupplyUsd = mulDiv(data.feeGmxSupply, gmxPrice, expandDecimals(1, 18));
