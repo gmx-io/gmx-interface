@@ -1,9 +1,8 @@
+import { getByKey } from "lib/objects";
+import groupBy from "lodash/groupBy";
 import { useMemo } from "react";
 import { MarketInfo, MarketsInfoData } from "../markets";
-import groupBy from "lodash/groupBy";
-import { getByKey } from "lib/objects";
 import { TokenData, TokensData, convertToUsd } from "../tokens";
-import { bigNumberify } from "lib/numbers";
 
 function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
   const sortedMarketsWithIndexToken = useMemo(() => {
@@ -33,17 +32,17 @@ function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketT
     const sortedGroups = allMarkets!.sort((a, b) => {
       const totalMarketSupplyA = a.reduce((acc, market) => {
         const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
+        acc = acc + (totalSupplyUsd ?? 0n);
         return acc;
-      }, bigNumberify(0)!);
+      }, 0n);
 
       const totalMarketSupplyB = b.reduce((acc, market) => {
         const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
+        acc = acc + (totalSupplyUsd ?? 0n);
         return acc;
-      }, bigNumberify(0)!);
+      }, 0n);
 
-      return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
+      return totalMarketSupplyA > totalMarketSupplyB ? -1 : 1;
     });
 
     // Sort markets within each group by total supply
@@ -51,7 +50,7 @@ function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketT
       return markets.sort((a, b) => {
         const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
         const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
-        return totalSupplyUsdA.gt(totalSupplyUsdB) ? -1 : 1;
+        return totalSupplyUsdA > totalSupplyUsdB ? -1 : 1;
       });
     });
 

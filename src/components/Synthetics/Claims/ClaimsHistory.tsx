@@ -1,16 +1,18 @@
 import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import formatDate from "date-fns/format";
 import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
@@ -29,15 +31,11 @@ import downloadIcon from "img/ic_download_simple.svg";
 
 import "./ClaimsHistory.scss";
 
-const CSV_ICON_INFO = {
-  src: downloadIcon,
-};
-
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
 export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPaginationButtons: boolean }) {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useAccount();
 
   const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
@@ -94,7 +92,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
             <div className="ClaimsHistory-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
-            <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
+            <Button variant="secondary" imgSrc={downloadIcon} onClick={handleCsvDownload}>
               CSV
             </Button>
           </div>
@@ -150,7 +148,8 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 }
 
 function useDownloadAsCsv(claimActions?: ClaimAction[]) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
+  const { _ } = useLingui();
 
   const handleCsvDownload = useCallback(() => {
     if (!claimActions) {
@@ -159,11 +158,11 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
     const fullFormattedData = claimActions.flatMap((claimAction) => {
       if (claimAction.type === "collateral") {
-        let action: string = claimCollateralEventTitles[claimAction.eventName];
+        let action: string = _(claimCollateralEventTitles[claimAction.eventName]);
 
         return claimAction.claimItems.flatMap((claimItem) => {
           return [
-            claimItem.longTokenAmount.gt(0) && {
+            claimItem.longTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
@@ -174,7 +173,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
                 claimItem.marketInfo.longToken.symbol
               ),
             },
-            claimItem.shortTokenAmount.gt(0) && {
+            claimItem.shortTokenAmount > 0 && {
               explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
@@ -189,7 +188,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
         });
       }
 
-      let action: string = claimFundingFeeEventTitles[claimAction.eventName];
+      let action: string = _(claimFundingFeeEventTitles[claimAction.eventName]);
       return claimAction.markets.map((market, index) => ({
         explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
         timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
@@ -215,7 +214,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
       size: t`Size`,
       explorerUrl: t`Transaction ID`,
     });
-  }, [chainId, claimActions]);
+  }, [chainId, claimActions, _]);
 
   return handleCsvDownload;
 }

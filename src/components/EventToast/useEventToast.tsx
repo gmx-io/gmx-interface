@@ -1,68 +1,42 @@
-import { useLocalStorage } from "react-use";
-import toast from "react-hot-toast";
-import { homeEventsData, appEventsData } from "config/events";
-import { useEffect, useMemo, useState } from "react";
-import EventToast from "./EventToast";
-import { isFuture, parse } from "date-fns";
-import { isHomeSite } from "lib/legacy";
-import { useChainId } from "lib/chains";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { ARBITRUM } from "config/chains";
-import { getProvider } from "lib/rpc";
+import { appEventsData, homeEventsData } from "config/events";
+import { isFuture, parse } from "date-fns";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { useChainId } from "lib/chains";
+import { isHomeSite } from "lib/legacy";
+import { useEffect, useMemo } from "react";
+import toast from "react-hot-toast";
+import { useLocalStorage } from "react-use";
+import EventToast from "./EventToast";
 
 function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage<string[]>("visited-announcements", []);
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
-  const incentiveStats = useIncentiveStats(ARBITRUM);
-
-  const [isArbitrumDown, setIsArbitrumDown] = useState(false);
-
-  useEffect(() => {
-    if (chainId !== ARBITRUM) {
-      return;
-    }
-
-    async function helper() {
-      const provider = getProvider(undefined, chainId);
-      const blockNumber = await provider.getBlockNumber();
-      const block = await provider.getBlock(blockNumber);
-      const now = Date.now() / 1000;
-
-      if (now - block.timestamp > 60) {
-        setIsArbitrumDown(true);
-      }
-    }
-
-    helper();
-  }, [setIsArbitrumDown, chainId]);
+  const arbIncentiveStats = useIncentiveStats(ARBITRUM);
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
     if (!marketsInfoData) return;
-    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond > 0);
   }, [marketsInfoData]);
 
   const isAdaptiveFundingActiveAllMarkets = useMemo(() => {
     if (!marketsInfoData) return;
     return Object.values(marketsInfoData)
       .filter((market) => !market.isSpotOnly)
-      .every((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+      .every((market) => market.fundingIncreaseFactorPerSecond > 0);
   }, [marketsInfoData]);
 
   useEffect(() => {
-    const allIncentivesOn = Boolean(incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive);
-    const someIncentivesOn =
-      !allIncentivesOn && Boolean(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive);
+    const someIncentivesOn = Boolean(arbIncentiveStats?.lp?.isActive || arbIncentiveStats?.trading?.isActive);
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActiveSomeMarkets,
       "v2-adaptive-funding-coming-soon":
         isAdaptiveFundingActiveSomeMarkets !== undefined && !isAdaptiveFundingActiveSomeMarkets,
       "v2-adaptive-funding-all-markets": isAdaptiveFundingActiveAllMarkets,
-      "incentives-launch": someIncentivesOn,
-      "all-incentives-launch": allIncentivesOn,
-      "arbitrum-issue": isArbitrumDown,
+      "arbitrum-incentives-launch-2": someIncentivesOn,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
@@ -84,7 +58,8 @@ function useEventToast() {
               toast={t}
               onClick={() => {
                 toast.dismiss(event.id);
-                setVisited((x) => (x ? [...x, event.id] : [event.id]));
+                const newVisited = visited ? [...visited, event.id] : [event.id];
+                setVisited(newVisited);
               }}
             />
           ),
@@ -101,8 +76,7 @@ function useEventToast() {
     chainId,
     isAdaptiveFundingActiveSomeMarkets,
     isAdaptiveFundingActiveAllMarkets,
-    incentiveStats,
-    isArbitrumDown,
+    arbIncentiveStats,
   ]);
 }
 

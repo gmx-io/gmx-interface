@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
 
 import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectTradeboxRelatedMarketsStats } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -15,7 +14,7 @@ export type Props = {
   indexToken?: Token;
   selectedMarket?: MarketInfo;
   isOutPositionLiquidity?: boolean;
-  currentPriceImpactBps?: BigNumber;
+  currentPriceImpactBps?: bigint;
   onSelectMarketAddress: (marketAddress?: string) => void;
 };
 

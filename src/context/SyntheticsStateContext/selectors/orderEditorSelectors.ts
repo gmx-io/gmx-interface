@@ -26,7 +26,6 @@ import {
   getSwapPathOutputAddresses,
   getTradeFlagsForOrder,
 } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -45,7 +44,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { makeSelectNextPositionValuesForIncrease, makeSelectSwapRoutes } from "./tradeSelectors";
+import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { getWrappedToken } from "config/tokens";
 import {
@@ -55,6 +54,8 @@ import {
   getExecutionFee,
   getFeeItem,
 } from "domain/synthetics/fees";
+import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -157,7 +158,7 @@ const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) =>
     fixedAcceptablePriceImpactBps: undefined,
     indexTokenAddress: positionIndexToken?.address,
     indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? 0n,
     initialCollateralTokenAddress: fromToken?.address,
     leverage: existingPosition?.leverage,
     marketAddress: positionOrder?.marketAddress,
@@ -204,7 +205,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
 
-  if (!market || !sizeDeltaUsd || !minCollateralUsd || !minPositionSizeUsd) {
+  if (!market || sizeDeltaUsd === undefined || minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
     return undefined;
   }
 
@@ -290,7 +291,7 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
   const tokensRatio: TokensRatio = {
-    ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
+    ratio: ratio != undefined && ratio > 0 ? ratio : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -340,7 +341,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       order.targetCollateralToken.prices.minPrice
     );
 
-    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
+    minOutputAmount = minOutputAmount + (priceImpactAmount ?? 0n) - (swapFeeAmount ?? 0n);
   }
 
   return minOutputAmount;
@@ -389,11 +390,11 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
   if (!tokensData) return undefined;
 
   const gasPrice = q(selectGasPrice);
-  if (!gasPrice) return undefined;
+  if (gasPrice === undefined) return undefined;
 
   const chainId = q(selectChainId);
 
-  let estimatedGas: BigNumber | undefined;
+  let estimatedGas: bigint | undefined;
 
   if (isSwapOrderType(order.orderType)) {
     estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
@@ -409,13 +410,16 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
 
   if (isDecreaseOrderType(order.orderType)) {
     estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+      decreaseSwapType: order.decreasePositionSwapType,
       swapsCount: order.swapPath.length,
     });
   }
 
-  if (!estimatedGas) return undefined;
+  if (estimatedGas === undefined) return undefined;
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+  const oraclePriceCount = estimateOrderOraclePriceCount(order.swapPath.length);
+
+  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
 
 export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
@@ -435,8 +439,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
   if (!market) return undefined;
 
-  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
-  const swapRoute = q(selectSwapRoutes);
+  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
+  const findSwapPath = q(selectFindSwapPath);
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const existingPosition = q(selectOrderEditorExistingPosition);
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
@@ -457,19 +461,27 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
     position: existingPosition,
-    findSwapPath: swapRoute.findSwapPath,
+    findSwapPath,
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
   });
 });
 
-export const selectOrderEditorSwapRoutes = createSelector((q) => {
+export const selectOrderEditorFindSwapPath = createSelector((q) => {
   const order = q(selectEditingOrder);
   if (!order) throw new Error("selectOrderEditorSwapRoutes: Order is not defined");
 
   const toToken = q(selectOrderEditorToToken);
-  const selectSwapRoutes = makeSelectSwapRoutes(order.initialCollateralTokenAddress, toToken?.address);
+  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
 
-  return q(selectSwapRoutes);
+  return q(selectFindSwapPath);
+});
+
+export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
+
+  const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
+  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 });

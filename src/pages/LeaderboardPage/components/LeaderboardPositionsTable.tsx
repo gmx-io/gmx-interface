@@ -3,7 +3,6 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { abs, formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -22,12 +21,12 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
+import { bigMath } from "lib/bigmath";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -136,7 +135,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
-                tooltip={t`Only positions with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                tooltip={t`Only positions with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                   displayDecimals: 0,
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
@@ -251,21 +250,21 @@ const TableRow = memo(
     const indexToken = marketInfo?.indexToken;
 
     const liquidationPrice = useMemo(() => {
-      if (!collateralToken || !marketInfo || !minCollateralUsd) return undefined;
+      if (!collateralToken || !marketInfo || minCollateralUsd === undefined) return undefined;
 
       return getLiquidationPrice({
         marketInfo,
         collateralToken,
-        sizeInUsd: BigNumber.from(position.sizeInUsd),
-        sizeInTokens: BigNumber.from(position.sizeInTokens),
-        collateralUsd: BigNumber.from(position.collateralUsd),
-        collateralAmount: BigNumber.from(position.collateralAmount),
+        sizeInUsd: position.sizeInUsd,
+        sizeInTokens: position.sizeInTokens,
+        collateralUsd: position.collateralUsd,
+        collateralAmount: position.collateralAmount,
         minCollateralUsd,
-        pendingBorrowingFeesUsd: BigNumber.from(position.unrealizedFees).sub(position.closingFeeUsd),
-        pendingFundingFeesUsd: BigNumber.from(0),
+        pendingBorrowingFeesUsd: position.unrealizedFees - position.closingFeeUsd,
+        pendingFundingFeesUsd: 0n,
         isLong: position.isLong,
         userReferralInfo,
-      })?.toBigInt();
+      });
     }, [
       collateralToken,
       marketInfo,
@@ -286,7 +285,7 @@ const TableRow = memo(
     const renderPositionTooltip = useCallback(() => {
       return (
         <>
-          <div className="items-top mr-xs lh-1">
+          <div className="mr-5 inline-flex items-start leading-1">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>
@@ -302,8 +301,8 @@ const TableRow = memo(
             label={t`Collateral`}
             showDollar={false}
             value={formatTokenAmountWithUsd(
-              BigNumber.from(position.collateralAmount),
-              BigNumber.from(position.collateralUsd),
+              BigInt(position.collateralAmount),
+              BigInt(position.collateralUsd),
               collateralToken?.symbol,
               collateralToken?.decimals
             )}
@@ -319,11 +318,12 @@ const TableRow = memo(
     );
 
     const renderLiquidationTooltip = useCallback(() => {
-      const markPrice = marketInfo?.indexToken.prices.maxPrice.toBigInt();
+      const markPrice = marketInfo?.indexToken.prices.maxPrice;
+      const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
       return (
         <>
           <StatsTooltipRow label={t`Mark Price`} value={formatUsd(markPrice)} showDollar={false} />
-          {markPrice && liquidationPrice && (
+          {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
               value={formatUsd(liquidationPrice - markPrice, { maxThreshold: "1000000" })}
@@ -385,7 +385,7 @@ const TableRow = memo(
             handle={formatUsd(position.sizeInUsd)}
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
-            portalClassName="Table-SizeTooltip"
+            tooltipClassName="Table-SizeTooltip"
           />
         </TableCell>
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
@@ -431,17 +431,16 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
     let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
-        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(),
-        { displayDecimals: 0 }
-      )} to qualify for the rankings.`;
+      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+        displayDecimals: 0,
+      })} to qualify for the rankings.`;
     else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
+    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });
@@ -537,7 +536,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {

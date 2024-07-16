@@ -13,7 +13,7 @@
   .SwapBox-leverage-toggle {
     width: 30px;
     height: 18px;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: var(--color-gray-600);
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -25,7 +25,7 @@
     .handle {
       width: 14.4px;
       height: 14.4px;
-      background-color: white;
+      background-color: var(--color-white);
       border-radius: 40px;
       transition: all 200ms ease-in-out;
       position: absolute;
@@ -34,7 +34,7 @@
   }
 
   .SwapBox-leverage-toggle[data-is-on="true"] {
-    background-color: #3d51ff;
+    background-color: var(--color-blue-500);
   }
   .SwapBox-leverage-toggle[data-is-on="true"] .handle {
     left: calc(15px - 2px);

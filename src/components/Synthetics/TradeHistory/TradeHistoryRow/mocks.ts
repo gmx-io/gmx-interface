@@ -1,25 +1,8 @@
 import { PositionTradeAction, SwapTradeAction } from "domain/synthetics/tradeHistory";
-import { BigNumber } from "ethers";
-import { bigNumberify } from "lib/numbers";
-
-const big = (hex: string) => bigNumberify(hex) as BigNumber;
-const mapValues = <T, U>(obj: Record<string, T>, fn: (value: T) => U) => {
-  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, fn(value)])) as Record<string, U>;
-};
+import { deserializeBigIntsInObject } from "lib/numbers";
 
 const prepare = (action: any): PositionTradeAction => {
-  const prepareHelper = (value: any) => {
-    if (typeof value === "object" && value && value.type === "BigNumber") {
-      return big(value.hex);
-    }
-
-    if (typeof value === "object" && value) {
-      return mapValues(value, prepareHelper);
-    } else {
-      return value;
-    }
-  };
-  return prepareHelper(action) as PositionTradeAction;
+  return deserializeBigIntsInObject(action) as PositionTradeAction;
 };
 
 const prepareSwap = (action: any): SwapTradeAction => {
@@ -53,16 +36,16 @@ export const requestIncreasePosition = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x020848ce70e679b47f64d9000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x020848ce70e679b47f64d9000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x1e9b7a9f0b6f20",
       },
     },
@@ -77,16 +60,16 @@ export const requestIncreasePosition = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0ca0b1305ce70e40af20000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x1260d05b",
       },
     },
@@ -101,298 +84,298 @@ export const requestIncreasePosition = prepare({
       wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x020848ce70e679b47f64d9000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x020848ce70e679b47f64d9000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x7ad19dcc2e798676",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3594cfa5ef4e727dd1634908c000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1e26b364eac3d5b12bf666c10000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0374e917e36ae364a1",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc84ac80825452690",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03d18d6b0bdbb860af",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8dea649b",
     },
     maxLongPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb9a13c1cd44fb107b4317ba1aff5",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb9af5a1931b19e9f389ff621aff5",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0312dc3edf3f01f94db43caa6644",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2d33d8623f8865",
     },
     minPositionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionImpactPoolDistributionRate: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x147d7ff57b9ad81a",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01a8e72a",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingIncreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingDecreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForDecreaseFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForStableFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     maxFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4c02e020d1ee78ba803cfa652840",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4c02e020d1ee78ba803cfa652840",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd1a92c3d3e1a249d4868cb5c00",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd1a92c3d3e1a249d4868cb5c00",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4cd4894d0f2c92df1d8563308440",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4cd4894d0f2c92df1d8563308440",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x13165c0e3542c3",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01d670",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0132b440c5a7c78c000c",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x012f61fb21f0403f2694",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -410,16 +393,16 @@ export const requestIncreasePosition = prepare({
     wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x020848ce70e679b47f64d9000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x020848ce70e679b47f64d9000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x7ad19dcc2e798676",
     },
   },
@@ -437,16 +420,16 @@ export const requestIncreasePosition = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x020848ce70e679b47f64d9000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x020848ce70e679b47f64d9000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1e9b7a9f0b6f20",
     },
   },
@@ -461,37 +444,37 @@ export const requestIncreasePosition = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1260d05b",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x8ac7230489e80000",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x34027e417db6da41c6bace000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x01ba7ddecf686427743628600000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 2,
@@ -533,16 +516,16 @@ export const withdraw1Usd = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x1e9b7a9f0b6f20",
       },
     },
@@ -557,16 +540,16 @@ export const withdraw1Usd = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0ca0b1305ce70e40af20000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x1260d05b",
       },
     },
@@ -581,298 +564,298 @@ export const withdraw1Usd = prepare({
       wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x7ad19dcc2e798676",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3594cfa5ef4e727dd1634908c000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1e26b364eac3d5b12bf666c10000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0374e917e36ae364a1",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc84ac80825452690",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03d18d6b0bdbb860af",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8dea649b",
     },
     maxLongPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb9ae6f030e75b41fc7ad7c5c4a59",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb9bc8cff6bd7a1b74c1bf6dc4a59",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0312e29f769647e643be40a5b828",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2d33d8623f8865",
     },
     minPositionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionImpactPoolDistributionRate: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x147d7ff57b9ad81a",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01a8e72a",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingIncreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingDecreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForDecreaseFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForStableFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     maxFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc8a43921bd0685c4a68da7bc00",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc8a43921bd0685c4a68da7bc00",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4cf35d855ce8b62d444648d44e40",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4cf35d855ce8b62d444648d44e40",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x13165c0e3542c3",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01d670",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0132b440c5a7c78c000c",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x012f61fb21f0403f2694",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -890,16 +873,16 @@ export const withdraw1Usd = prepare({
     wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0208e8c9ceb8ae36e64f41000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0208e8c9ceb8ae36e64f41000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x7ad19dcc2e798676",
     },
   },
@@ -916,16 +899,16 @@ export const withdraw1Usd = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1260d05b",
     },
   },
@@ -940,37 +923,37 @@ export const withdraw1Usd = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1260d05b",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xbc3ab0",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0221bc46098b5dbc3eb3ebc00000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x9b8b3c0e0e2dc72bdf62000000",
   },
   orderType: 4,
@@ -1013,16 +996,16 @@ export const deposit1Usd = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x8c29bef70ea3f7c069ee80000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x8c29bef70ea3f7c069ee80000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x11431e0210d745",
       },
     },
@@ -1037,16 +1020,16 @@ export const deposit1Usd = prepare({
       explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0ca0b1305ce70e40af20000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x072e",
       },
     },
@@ -1061,294 +1044,294 @@ export const deposit1Usd = prepare({
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x011b7142687318ed15d1800000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x011b7142687318ed15d1800000",
         },
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xfa55dabd2e2e76bec0e834d40000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0140631b25be0bf21fef9d4b480000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x058d5715ac9f",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0718c35873fc",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6af50383aaf91cc8",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01dc2a3c6d",
     },
     maxLongPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmountForDeposit: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05c5aff17ef19c51e3390cc886d66d",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05c5df4f63ce406fada4fc8a06d66d",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x44ffb6d9efc35b60f80a10eab6",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05f5e100",
     },
     minPositionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05f5e100",
     },
     positionImpactPoolDistributionRate: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024fa54b36a2e6a910447800000000",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x29ddf0e98e7da8d7",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x175a0e44",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingIncreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingDecreaseFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForDecreaseFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     thresholdForStableFunding: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     maxFundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0db03251a3cfee703fe0a91a8000",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0db03251a3cfee703fe0a91a8000",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x1116c903466f9180acf04eb20000",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x1116c903466f9180acf04eb20000",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x036696b1a29fa3106d0fa5978000",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x036696b1a29fa3106d0fa5978000",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xa3aa",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01139954c6584c493782",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8513d16a358eebbe3c",
     },
     longsPayShorts: false,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -1366,11 +1349,11 @@ export const deposit1Usd = prepare({
     coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x011b7142687318ed15d1800000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x011b7142687318ed15d1800000",
       },
     },
@@ -1388,16 +1371,16 @@ export const deposit1Usd = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x072e",
     },
   },
@@ -1412,37 +1395,37 @@ export const deposit1Usd = prepare({
     explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x072e",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xc350",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x011323b776d9589200e7e80000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 2,
@@ -1483,16 +1466,16 @@ export const createOrderDecreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0516893b936002a4cd3f1d10000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0516893b936002a4cd3f1d10000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x04b571c0",
       },
     },
@@ -1507,16 +1490,16 @@ export const createOrderDecreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f456d8f88b0f1c31e000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x03312adc93",
       },
     },
@@ -1531,258 +1514,258 @@ export const createOrderDecreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0516893b936002a4cd3f1d10000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0516893b936002a4cd3f1d10000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x04b571c0",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8d151dda39e2f3d6ca7318000000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xdbe32f323e0c4c6831d2dc900000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xa3ea16",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0107657e",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02b24068",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x06102f5c1c",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x075604a051118873263d1c8933c137",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x07560e7ca3e3e583ea140fe953c137",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2ae01a651ad1a71f94202c9027",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0197ea",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x49",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04b76bc737",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0129050a86888f42898acca00000",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0129050a86888f42898acca00000",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x04f4a7ccaa4afb166f9abd500000",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x04f4a7ccaa4afb166f9abd500000",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x061dacd730d38a58f92589f00000",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x061dacd730d38a58f92589f00000",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bbc20",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3a06759dd7f012b91a",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xecb26eec42fc7658e0",
     },
     longsPayShorts: false,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02b24068",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x06102f5c1c",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x3885f95a824cd6d349eb2ab00000",
     },
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
@@ -1800,16 +1783,16 @@ export const createOrderDecreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0516893b936002a4cd3f1d10000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0516893b936002a4cd3f1d10000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04b571c0",
     },
   },
@@ -1826,16 +1809,16 @@ export const createOrderDecreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f456d8f88b0f1c31e000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03312adc93",
     },
   },
@@ -1850,37 +1833,37 @@ export const createOrderDecreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f456d8f88b0f1c31e000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03312adc93",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x019632cc",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0d204b867ae0cad26c1ef0000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x05c71d3c089740a6a8ab2c00000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x05b852b3c0d32e15a1dca900000000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 5,
@@ -1921,11 +1904,11 @@ export const cancelOrderIncreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4fffe06fdbae5caf74e5d8000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4fffe06fdbae5caf74e5d8000000",
         },
       },
@@ -1941,11 +1924,11 @@ export const cancelOrderIncreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f456d8f88b0f1c31e000000",
         },
       },
@@ -1961,254 +1944,254 @@ export const cancelOrderIncreaseLong = prepare({
       wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4fffe06fdbae5caf74e5d8000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4fffe06fdbae5caf74e5d8000000",
         },
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01af50ec949321a889571b153c0000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x77a266f7371cc95bf30190200000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x44cf820531daea33",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x13a39f8e7b584ed3",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xcdf8585f19fbef21",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xa92af2a9",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x054c4c094100f0e6f4710d1d4be8fd",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x054c4d1c5f3bf1b60002522bc3e8fd",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02a1527b2029038ab8110a2a1b9b",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x25cf2e00e8141c",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xa7dac58934ecfca5",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x08f62c",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x22a70bd0cc2ed790633ce7fcae00",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x22a70bd0cc2ed790633ce7fcae00",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x066c4d4124589682210623a8ee00",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x066c4d4124589682210623a8ee00",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x1c3abe8fa7d6410e4236c453c000",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x1c3abe8fa7d6410e4236c453c000",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x7130db903ec145a31e",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x026559d766a55b1c18d8",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xdbb0e89f08c9cc6e",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x011f58e15d00a69966",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
@@ -2226,11 +2209,11 @@ export const cancelOrderIncreaseLong = prepare({
     wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4fffe06fdbae5caf74e5d8000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4fffe06fdbae5caf74e5d8000000",
       },
     },
@@ -2249,16 +2232,16 @@ export const cancelOrderIncreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4fffe06fdbae5caf74e5d8000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4fffe06fdbae5caf74e5d8000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -2273,37 +2256,37 @@ export const cancelOrderIncreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f456d8f88b0f1c31e000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03312adc93",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x2386f26fc10000",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x33ef189b49394e91a0c5600000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x5055eb5a180a0bd64ac3c0000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x5123941afeadfc986f5a30000000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 3,
@@ -2343,16 +2326,16 @@ export const createOrderIncreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x050eb9f19258bd72da095f10000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x050eb9f19258bd72da095f10000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x04b571c0",
       },
     },
@@ -2367,16 +2350,16 @@ export const createOrderIncreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f456d8f88b0f1c31e000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x03312adc93",
       },
     },
@@ -2391,258 +2374,258 @@ export const createOrderIncreaseLong = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x050eb9f19258bd72da095f10000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x050eb9f19258bd72da095f10000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x04b571c0",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8d151dda39e2f3d6ca7318000000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xdbe32f323e0c4c6831d2dc900000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xa3ea16",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0107657e",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02b24068",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x06102f5c1c",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0751fc2e8a47ee2e70f4be2b1035da",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0752060add1a4b3f34cbb18b3035da",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2b394ddfa1af6530444f10967f",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0197ea",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x49",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04b76bc737",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x01ffca092d94fa2717b7a0a00000",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x01ffca092d94fa2717b7a0a00000",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x039b8a08124928501ec8b9500000",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x039b8a08124928501ec8b9500000",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x059b54113fde2277368059f00000",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x059b54113fde2277368059f00000",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0bbc20",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3a06759dd7f012b91a",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xecb26eec42fc7658e0",
     },
     longsPayShorts: false,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02b24068",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x06102f5c1c",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x3885f95a824cd6d349eb2ab00000",
     },
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
@@ -2660,16 +2643,16 @@ export const createOrderIncreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x050eb9f19258bd72da095f10000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x050eb9f19258bd72da095f10000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04b571c0",
     },
   },
@@ -2687,16 +2670,16 @@ export const createOrderIncreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4f995515b0834ce9b4c7e8000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4f995515b0834ce9b4c7e8000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -2711,37 +2694,37 @@ export const createOrderIncreaseLong = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f456d8f88b0f1c31e000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03312adc93",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x2386f26fc10000",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x21560c7b28514e1cfcec600000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0c9f2c9cd04674edea40000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0cbf7c6b2e8499f04b50000000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 3,
@@ -2784,16 +2767,16 @@ export const executeOrderDecreaseShort = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x37fa420444a91d9f2738000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x37fa420444a91d9f2738000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -2809,16 +2792,16 @@ export const executeOrderDecreaseShort = prepare({
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9ed9e4fd69ace1175c000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -2836,258 +2819,258 @@ export const executeOrderDecreaseShort = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x37fa420444a91d9f2738000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x37fa420444a91d9f2738000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1017b29a87aef2c2dfdbd6250e8900",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x147ca563e6e0f32e0ce8450633fe00",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x041736afe154b9225b4e",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0530d46f460dd236bac5",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b88871494a7f6e0f503",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x37d03302ad",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2a5a058fc295ed000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xe8d4a51000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x5b00b68a9d61dbcca6c2e6daa5c67b",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x5b01e51b19215a1d157e88ec75c67b",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03c3d50e11d11c240f986ac62c22",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6e0193264483494926",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019e1440a0cfa14930",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03d40b91",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x685a4545982cc3893a2e417fdb00",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x685a4545982cc3893a2e417fdb00",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x7355793375f831c65e6a0b75f800",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x7355793375f831c65e6a0b75f800",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0afb33edddcb6e3d243bc9f61d00",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0afb33edddcb6e3d243bc9f61d00",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0878678326eac9000000",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0878678326eac9000000",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032d26d12e980b600000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x065a4da25d3016c00000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032d26d12e980b600000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x065a4da25d3016c00000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xe225821848d7e4b086",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x823f100ae82f0c04c2",
     },
     longsPayShorts: false,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b88871494a7f6e0f503",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x37d03302ad",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0464f2c95f32006b2d0c6ee1257500",
     },
     virtualMarketId: "0xac74a8ce840f9f11faaa15bd01a21a95ded2d6d1e2f3de883ef04c6f7e604ef4",
@@ -3108,16 +3091,16 @@ export const executeOrderDecreaseShort = prepare({
     isV1Available: true,
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x37fa420444a91d9f2738000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x37fa420444a91d9f2738000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -3135,16 +3118,16 @@ export const executeOrderDecreaseShort = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ed9e4fd69ace1175c000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -3160,49 +3143,49 @@ export const executeOrderDecreaseShort = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ed9e4fd69ace1175c000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x114bdee8",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x01ad2b2f4644d50d6f2fcc16800000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x38681e2851e2cea73e08000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x38f884dbec4e090a31da000000",
   },
   executionPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x3889a30e650b6e74c4f1780000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   indexTokenPriceMin: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x3857628d95c4c587fc90000000",
   },
   indexTokenPriceMax: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x3865679947fa383c96ba400000",
   },
   orderType: 3,
@@ -3242,16 +3225,16 @@ export const executeOrderIncreaseLong = prepare({
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0a88559fd740bfe4a081800000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0a88559fd740bfe4a081800000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -3267,16 +3250,16 @@ export const executeOrderIncreaseLong = prepare({
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -3291,258 +3274,258 @@ export const executeOrderIncreaseLong = prepare({
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0a88559fd740bfe4a081800000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0a88559fd740bfe4a081800000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4adfb06ea425e6260bbb7731161856",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x34e357263d19fb9ff443a3663cafa8",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x64ffb9f7cba391496a48",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4024f916f4c21c76b67a",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb8d3436c32a8893763ab",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x93ade4de1f",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd3c21bcecceda1000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xe8d4a51000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xfdafb5ebe27c6ab88ea4d2ead354cb",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xfdafb5ebe27c6ab88ea4d2ead354cb",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x289e543927407e0ac1af2da10586",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03c472ef2e9c9ca50188",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6cf1a9f39a2e8f3731",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x5d95ff",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01c7883325390bc260591381f5baaa",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01c7883325390bc260591381f5baaa",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0434a1bb1c825f0f96ba9d3987ebe8",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0434a1bb1c825f0f96ba9d3987ebe8",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05fc29ee41bb6ad1f713b0bb7da692",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x05fc29ee41bb6ad1f713b0bb7da692",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x021e19e0c9bab2400000",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x021e19e0c9bab2400000",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd8d726b7177a800000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b1ae4d6e2ef5000000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd8d726b7177a800000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b1ae4d6e2ef5000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x011675e3f2fc2ab3f2a8",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xba92d6d5e631f90af4",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xb8d3436c32a8893763ab",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x93ade4de1f",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x15fc5948670bea861777d3cad968ae",
     },
     virtualMarketId: "0x85248fe8b259d5a671c8ca8540127a7b9cb2534b1175b95d1df6391360841c7b",
@@ -3560,16 +3543,16 @@ export const executeOrderIncreaseLong = prepare({
     explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0a88559fd740bfe4a081800000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0a88559fd740bfe4a081800000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -3587,16 +3570,16 @@ export const executeOrderIncreaseLong = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -3612,53 +3595,53 @@ export const executeOrderIncreaseLong = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0c13bc90",
   },
   priceImpactUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0xd44fc1b1b9374c28a82ccd8f80",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x661171efc3f661f9e69990000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0a8d42fdf9e4e2c6e5a0000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0a723fc31dcb8e96d3f8000000",
   },
   executionPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0a90da455f096c14553e780000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   indexTokenPriceMin: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xc2b9bf2fd0",
   },
   indexTokenPriceMax: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xc2b9bf2fd0",
   },
   orderType: 3,
@@ -3699,16 +3682,16 @@ export const frozenOrderIncreaseShort = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x054351f8192ce28e4e687b20000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x054351f8192ce28e4e687b20000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -3724,16 +3707,16 @@ export const frozenOrderIncreaseShort = prepare({
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -3748,258 +3731,258 @@ export const frozenOrderIncreaseShort = prepare({
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x054351f8192ce28e4e687b20000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x054351f8192ce28e4e687b20000000",
         },
       },
     },
     priceImpactUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0xd44fc1b1b9374c28a82ccd8f80",
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0274ee6de80ffd23e60ec80022fd4000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b65b3690559bad99db88e709953000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02d6c4a617",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01f5707299",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x049192b278",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03e3bf919543",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0826299e00",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x09184e72a000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0738fb12f5ec0f84e24c4d140d1ba86c",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0738fb12f5ec0f84e24c4d140d1ba86c",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019dc9ef3df233d4d9fe733fb163b8",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x072e37",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1a44a2",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1f621a",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0cca4b45e60210d3ed1b31e8e2c000",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0cca4b45e60210d3ed1b31e8e2c000",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x04678730574b3b59d575ef508ad000",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x04678730574b3b59d575ef508ad000",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0862c4158eb6d57a17a5429857f000",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0862c4158eb6d57a17a5429857f000",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0ad78ebc5ac6200000",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0ad78ebc5ac6200000",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x068155a43676e00000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x068155a43676e00000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0ad78ebc5ac6200000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0ad78ebc5ac6200000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd28985d75b681ced46",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc19866e9be22c6899b",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x049192b278",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03e3bf919543",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0xbe933757ba61764c333f1919681000",
     },
     virtualMarketId: "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
@@ -4017,11 +4000,11 @@ export const frozenOrderIncreaseShort = prepare({
     coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x054351f8192ce28e4e687b20000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x054351f8192ce28e4e687b20000000",
       },
     },
@@ -4040,16 +4023,16 @@ export const frozenOrderIncreaseShort = prepare({
     isV1Available: true,
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -4065,41 +4048,41 @@ export const frozenOrderIncreaseShort = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x01ac2237",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x428098a6d7b79147095d81580000",
   },
   priceImpactUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0x1d3d7d6c5d7c5c8b9c6a7b8c00000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x053d8e7bd39160c84fc43680000000",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x053024194ee4677ea0e387e0000000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x01abe67e",
   },
   orderType: 3,
@@ -4140,16 +4123,16 @@ export const undefinedOrder = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x51b4a3fdc660c8259db5b8000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x51b4a3fdc660c8259db5b8000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -4165,16 +4148,16 @@ export const undefinedOrder = prepare({
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -4189,246 +4172,246 @@ export const undefinedOrder = prepare({
       isSynthetic: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0659c4ab6f66def68ad8800000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0659c4ab6f66def68ad8800000",
         },
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x086bbde568f90f250a07ed89db3900",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x029ad80eb02845992d0f722667b62c",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x14ffbd41ef",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x06392f706c",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03d8bf488263d07652",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0d64950b21",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1b1ae4d6e2ef500000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xe8d4a51000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2155d4f1887110678316d6b09d5304",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2155d4f1887110678316d6b09d5304",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x08d5d26dc4fe1ea68a60000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x08d5d26dc4fe1ea68a60000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04c3239be5da8c48fae025d66b39",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x2a28bab3",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3111f82c33a4a9",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3bce34",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032d26d12e980b600000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032d26d12e980b600000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x519f7d5c9b1e829892a22232c700",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x519f7d5c9b1e829892a22232c700",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03c3fb5d86a80ab621deb5cfb62c",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03c3fb5d86a80ab621deb5cfb62c",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x556378ba21c68d4eb480d8027d2c",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x556378ba21c68d4eb480d8027d2c",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6c6b935b8bbd400000",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6c6b935b8bbd400000",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd8d726b7177a800000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b1ae4d6e2ef5000000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x010f0cf064dd59200000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x010f0cf064dd59200000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0139cc9973549c6b9a30",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x023be9120a4b0820aeeb",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x03d8bf488263d07652",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0d64950b21",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x05d0e5d6b8d0c98bdcf87b637382d4",
     },
     virtualMarketId: "0x4cdf047af6bcf090983ce57032e6e50a0ce1adc3cc5c3a51621361a4591267e5",
@@ -4446,11 +4429,11 @@ export const undefinedOrder = prepare({
     isSynthetic: true,
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0659c4ab6f66def68ad8800000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0659c4ab6f66def68ad8800000",
       },
     },
@@ -4469,16 +4452,16 @@ export const undefinedOrder = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -4494,37 +4477,37 @@ export const undefinedOrder = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xf443562cc22c48e5b417d4000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 7,
@@ -4567,16 +4550,16 @@ export const liquidated = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x556090e6d276a8f758a2c00000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x556090e6d276a8f758a2c00000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -4592,16 +4575,16 @@ export const liquidated = prepare({
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9ed9e4fd69ace1175c000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -4619,258 +4602,258 @@ export const liquidated = prepare({
       isV1Available: true,
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x556090e6d276a8f758a2c00000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x556090e6d276a8f758a2c00000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x29cf834a41cb949cdf3f427c08b362",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x25baaa7ec200d5089e428f60419720",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x069f91dd048de9ca3cc9",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0688daeb985818453687",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0932f2cfbf20708d31a8",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x39f1b6b292",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x3011b1d5167467e00000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x015d3ef79800",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x68e440fd24bc8f5e140dab3feb5f03",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x68e57b1addcc183259cfcedf0b5f03",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4959b5647baa949d1f4102e6db02",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x8b1c456c98410b0fdb",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b93140efdcea00f6c",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x09dc25ce",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01fd933494aa5fe00000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x01103cee4de90a234debf87eeffdb2",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x01103cee4de90a234debf87eeffdb2",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0278dde3d87441296f0d64e75c5230",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0278dde3d87441296f0d64e75c5230",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x03891ad2265d4b4cbcf95d664c4fe2",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x03891ad2265d4b4cbcf95d664c4fe2",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x021e19e0c9bab2400000",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x021e19e0c9bab2400000",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd8d726b7177a800000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b1ae4d6e2ef5000000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xd8d726b7177a800000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x01b1ae4d6e2ef5000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x016ee53f9eddc666e9cd",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x37a240378011ba1353",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0932f2cfbf20708d31a8",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x39f1b6b292",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x0414d8cb7fcabf9440fcb31bc71c42",
     },
     virtualMarketId: "0xeed81816403077d40644cf5d67e0684a662b9e79f29112103f52bebee3ca78e2",
@@ -4891,16 +4874,16 @@ export const liquidated = prepare({
     isV1Available: true,
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x556090e6d276a8f758a2c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x556090e6d276a8f758a2c00000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -4918,16 +4901,16 @@ export const liquidated = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ed9e4fd69ace1175c000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -4943,88 +4926,88 @@ export const liquidated = prepare({
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ed9e4fd69ace1175c000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0ccd44aa",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x013d9c3584015e8cf8d0e3e0000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0de0b6b3a763fffffffffffffffffffffffffffffffffffffffffffffffffffff21f494c589c0000",
   },
   executionPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x4d12677a43b19e33de0c800000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   collateralTokenPriceMax: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0c9fb3f29425b17ab43c400000",
   },
   collateralTokenPriceMin: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0c9f2c9cd04674edea40000000",
   },
   indexTokenPriceMin: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x4ce01924c145b7bd784ec00000",
   },
   indexTokenPriceMax: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x4ce01924c145b7bd784ec00000",
   },
   orderType: 7,
   orderKey: "0x71591b0e0dd3e50a177e106c662f4fad919ae33b591fe4be30bf709aef3728c1",
   isLong: false,
   pnlUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0x063a58761b08e374686d824c44f0",
   },
   basePnlUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0x063a58761b08e374686d824c44f0",
   },
   priceImpactDiffUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   priceImpactUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0xd44fc1b1b9374c28a82ccd8f80",
   },
   positionFeeAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x44ce92",
   },
   borrowingFeeAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   fundingFeeAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   reason: null,
@@ -5041,11 +5024,11 @@ export const increaseLongETH = prepare({
   account: "0x196a492f60696930d6ee0551d3f4ed56b668aa00",
   marketAddress: "0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315",
   indexTokenPriceMin: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x3857628d95c4c587fc90000000",
   },
   indexTokenPriceMax: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x3865679947fa383c96ba400000",
   },
   marketInfo: {
@@ -5070,16 +5053,16 @@ export const increaseLongETH = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4da5c2e2539b9feedf47a4000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4da5c2e2539b9feedf47a4000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x00",
       },
     },
@@ -5094,16 +5077,16 @@ export const increaseLongETH = prepare({
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f2c9cd04674edea40000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x0c9f5e3e4ecaecf59bfc000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x032b34fb93",
       },
     },
@@ -5118,258 +5101,258 @@ export const increaseLongETH = prepare({
       wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4da5c2e2539b9feedf47a4000000",
         },
         maxPrice: {
-          type: "BigNumber",
+          type: "bigint",
           hex: "0x4da5c2e2539b9feedf47a4000000",
         },
       },
       balance: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0d502d031e418d80",
       },
     },
     longInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x022046a8414f9de69d0cf155cf0000",
     },
     shortInterestUsd: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x4e26dfa7d78123e9626ca58a8000",
     },
     longInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x58406568ffa2072f",
     },
     shortInterestInTokens: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c7cdf059ca99f12",
     },
     longPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x010d0f44067cb75aec",
     },
     shortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0516f73c18",
     },
     maxLongPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxShortPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
     longPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     shortPoolAmountAdjustment: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     poolValueMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a41795af315e559f22c3d8bd5a2df",
     },
     poolValueMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a4189e8fc06c2abc639c95e55a2df",
     },
     reserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     reserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     openInterestReserveFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     maxOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x039938fe034c3882e849df93144f",
     },
     positionImpactPoolAmount: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6545e69b0c9527",
     },
     swapImpactPoolAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0xc421dbd3e6354c84",
     },
     swapImpactPoolAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x1109d7",
     },
     borrowingFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0152d02c7e14af680000",
     },
     borrowingExponentFactorLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     borrowingExponentFactorShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x043c33c1937564800000",
     },
     fundingExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     pnlLongMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x32801d13baa4d40ad650dcab6100",
     },
     pnlLongMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x32801d13baa4d40ad650dcab6100",
     },
     pnlShortMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084815843f012fa793c3d4754e00",
     },
     pnlShortMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084815843f012fa793c3d4754e00",
     },
     netPnlMax: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x2a38078f7ba3a463428d08361300",
     },
     netPnlMin: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "-0x2a38078f7ba3a463428d08361300",
     },
     maxPnlFactorForTradersLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
     minCollateralFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     minCollateralFactorForOpenInterestLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     minCollateralFactorForOpenInterestShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountLong: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     claimableFundingAmountShort: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     positionFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     positionFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     positionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0a968163f0a57b400000",
     },
     positionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x152d02c7e14af6800000",
     },
     maxPositionImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     maxPositionImpactFactorForLiquidations: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
     positionImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     swapFeeFactorForPositiveImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
     swapFeeFactorForNegativeImpact: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
     swapImpactFactorPositive: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0422ca8b0a00a425000000",
     },
     swapImpactFactorNegative: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x084595161401484a000000",
     },
     swapImpactExponentFactor: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
     borrowingFactorPerSecondForLongs: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x6f21761111e36370fb",
     },
     borrowingFactorPerSecondForShorts: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     fundingFactorPerSecond: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032bf02010abf18d9165",
     },
     longsPayShorts: true,
     virtualPoolAmountForLongToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x011ac7d4466b853839",
     },
     virtualPoolAmountForShortToken: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x011f58e1616e72e2d5",
     },
     virtualInventoryForPositions: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
@@ -5387,16 +5370,16 @@ export const increaseLongETH = prepare({
     wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4da5c2e2539b9feedf47a4000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x4da5c2e2539b9feedf47a4000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0d502d031e418d80",
     },
   },
@@ -5413,16 +5396,16 @@ export const increaseLongETH = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f5e3e4ecaecf59bfc000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032b34fb93",
     },
   },
@@ -5437,48 +5420,48 @@ export const increaseLongETH = prepare({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f5e3e4ecaecf59bfc000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x032b34fb93",
     },
   },
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x56d34e",
   },
   sizeDeltaUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0274fd87d9cef9af3032d6000000",
   },
   triggerPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   acceptablePrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x4e5def46246d68ec7afe002c0000",
   },
   executionPrice: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x4e223e3936a0882035b8a9240000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x00",
   },
   orderType: 2,
   orderKey: "0x2f4bdbd274d9b706a05dceaf39fb926f0374e5018c8891ce53063fad64c1a080",
   isLong: true,
   priceImpactUsd: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "-0x011b2bb11d33b875a35ffdd2a0",
   },
   reason: null,
@@ -5499,11 +5482,11 @@ export const requestSwap = prepareSwap({
   orderKey: "0x084356b07d4a6e14a9141e42d731bbbae47a9dc05cf41b0e7c35c8b0d5a3f6ff",
   initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x2a941ee0ca93b6",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x02608540",
   },
   shouldUnwrapNativeToken: false,
@@ -5518,16 +5501,16 @@ export const requestSwap = prepareSwap({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ea874333866f92ba3c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9fcb59381ec6bed809800000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02780d5814",
     },
   },
@@ -5543,16 +5526,16 @@ export const requestSwap = prepareSwap({
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x5414f40165fe6a9c296b63c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x5415433252453aeb1638a7400000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -5572,15 +5555,15 @@ export const executeSwap = prepareSwap({
   orderKey: "0xd62a7fc4a0387e9c40206327804e4b68e77655d7b30dcc19103f2c1c29c10bd7",
   initialCollateralTokenAddress: "0x04fc936a15352a1b15b3b9c56ea002051e3db3e5",
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x406924f3",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0f7dea0694ae55f8",
   },
   executionAmountOut: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0f89a97544b41524",
   },
   shouldUnwrapNativeToken: true,
@@ -5595,16 +5578,16 @@ export const executeSwap = prepareSwap({
     wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x5414f40165fe6a9c296b63c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x5415433252453aeb1638a7400000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x0d4b4b7a1a4c8c80",
     },
   },
@@ -5619,16 +5602,16 @@ export const executeSwap = prepareSwap({
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9ea874333866f92ba3c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9fcb59381ec6bed809800000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x02780d5814",
     },
   },
@@ -5648,15 +5631,15 @@ export const executeOrderSwap = prepareSwap({
   orderKey: "0x0c9cef614c72abac6d78e4bad1310225bca88436b69a6396e54b76d5a3297b5f",
   initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0429d069189e0000",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0xca6ece",
   },
   executionAmountOut: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0234614c",
   },
   shouldUnwrapNativeToken: false,
@@ -5671,16 +5654,16 @@ export const executeOrderSwap = prepareSwap({
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x056a5ca059157e7ea7ff60d2c00000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x056a73fcfb84ba487580064b000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x04b6ac44",
     },
   },
@@ -5696,16 +5679,16 @@ export const executeOrderSwap = prepareSwap({
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x538ed4f5fc330a6a53d645800000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x5393ab3da897ec3e9716a6c00000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x00",
     },
   },
@@ -5725,11 +5708,11 @@ export const failedSwap = prepareSwap({
   orderKey: "0x93f2aea553e314c682d539fd06ea21ffb636d84fab63e8235d69f33442a1fd92",
   initialCollateralTokenAddress: "0x3ebdeaa0db3ffde96e7a0dbbafec961fc50f725f",
   initialCollateralDeltaAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x0f4240",
   },
   minOutputAmount: {
-    type: "BigNumber",
+    type: "bigint",
     hex: "0x01baaa97524bc9",
   },
   shouldUnwrapNativeToken: false,
@@ -5746,16 +5729,16 @@ export const failedSwap = prepareSwap({
     explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0xa78605e37704c320258d40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0xa78605e37704c320258d40000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x11431e0210d745",
     },
   },
@@ -5770,16 +5753,16 @@ export const failedSwap = prepareSwap({
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
-        type: "BigNumber",
+        type: "bigint",
         hex: "0x0ca03d95081f09183bca000000",
       },
     },
     balance: {
-      type: "BigNumber",
+      type: "bigint",
       hex: "0x154e10cc",
     },
   },

@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
 import { DecreasePositionAmounts, IncreasePositionAmounts } from "domain/synthetics/trade";
 
@@ -6,7 +5,7 @@ export type GroupPrefix = "sl" | "tp" | "limit";
 
 export type EntryField = {
   input: string;
-  value: BigNumber | null;
+  value: bigint | null;
   error: string | null;
 };
 
@@ -57,8 +56,8 @@ export type SidecarOrderEntryGroupBase<T extends SidecarOrderEntryBase> = {
 };
 
 export type SidecarOrderEntryGroup = SidecarOrderEntryGroupBase<SidecarOrderEntry> & {
-  totalPnL: BigNumber;
-  totalPnLPercentage: BigNumber;
+  totalPnL: bigint;
+  totalPnLPercentage: bigint;
   error?: null | {
     price?: string;
     percentage?: string;

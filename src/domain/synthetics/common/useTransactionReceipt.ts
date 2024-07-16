@@ -14,7 +14,9 @@ export function useTransactionPending(hash: string | null | undefined) {
 
       const tx = await signer.provider.getTransaction(hash);
       setStatus(true);
-      await tx.wait();
+      if (tx) {
+        await tx.wait();
+      }
       setStatus(false);
     }
 

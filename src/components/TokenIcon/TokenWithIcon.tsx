@@ -9,12 +9,12 @@ type Props = {
 };
 
 export default function TokenWithIcon({ symbol, className, importSize, displaySize }: Props) {
-  const classNames = cx("inline-items-center nobr Token-icon", className);
+  const classNames = cx("Token-icon inline-flex items-center whitespace-nowrap", className);
 
   if (!symbol) return <></>;
   return (
     <span className={classNames}>
-      <TokenIcon className="mr-xs" symbol={symbol} importSize={importSize} displaySize={displaySize} />
+      <TokenIcon className="mr-5" symbol={symbol} importSize={importSize} displaySize={displaySize} />
       {symbol}
     </span>
   );

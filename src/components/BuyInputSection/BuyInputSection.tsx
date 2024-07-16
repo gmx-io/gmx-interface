@@ -83,7 +83,7 @@ export default function BuyInputSection(props: Props) {
     <div>
       <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
         <div className="buy-input-top-row">
-          <div data-label="left" className="text-gray">
+          <div data-label="left" className="text-gray-300">
             {topLeftLabel}
             {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
           </div>
@@ -92,7 +92,7 @@ export default function BuyInputSection(props: Props) {
             className={cx("align-right", { clickable: onClickTopRightLabel })}
             onClick={onClickTopRightLabel}
           >
-            <span className="text-gray">{topRightLabel}</span>
+            <span className="text-gray-300">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
                 {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;{topRightValue}

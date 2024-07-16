@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
 import { convertToTokenAmount } from "../tokens";
-import { BigNumber } from "ethers";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   usePositionsConstants,
@@ -9,7 +8,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxSwapRoutes,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxCollateralToken,
@@ -18,6 +16,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxNextPositionValues,
+  selectTradeboxFindSwapPath,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectConfirmationBoxSidecarOrdersExistingSlEntries,
@@ -27,6 +26,7 @@ import {
 import { selectConfirmationBoxMockPosition } from "context/SyntheticsStateContext/selectors/confirmationBoxSelectors";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { handleEntryError, getCommonError } from "./utils";
+import { OrderType } from "domain/synthetics/orders/types";
 import { SidecarOrderEntry, SidecarSlTpOrderEntryValid, SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "./types";
 
 export * from "./types";
@@ -37,7 +37,7 @@ export function useSidecarOrders() {
   const uiFeeFactor = useUiFeeFactor();
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
-  const swapRoute = useSelector(selectTradeboxSwapRoutes);
+  const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -76,21 +76,15 @@ export function useSidecarOrders() {
   }, [limitEntriesInfo.entries]);
 
   const [minLimitTrigerPrice, maxLimitTrigerPrice] = useMemo(() => {
-    const prices = existingLimits.reduce<BigNumber[]>(
-      (acc, { price }) => (price.value ? [...acc, price.value] : acc),
-      []
-    );
+    const prices = existingLimits.reduce<bigint[]>((acc, { price }) => (price.value ? [...acc, price.value] : acc), []);
 
-    if (isLimit && triggerPrice) {
+    if (isLimit && triggerPrice !== undefined && triggerPrice !== null) {
       prices.push(triggerPrice);
     }
 
     if (!prices.length) return [undefined, undefined];
 
-    return prices.reduce(
-      ([min, max], num) => [num.lt(min) ? num : min, num.gt(max) ? num : max],
-      [prices[0], prices[0]]
-    );
+    return prices.reduce(([min, max], num) => [num < min ? num : min, num > max ? num : max], [prices[0], prices[0]]);
   }, [existingLimits, isLimit, triggerPrice]);
 
   const handleSLErrors = useCallback(
@@ -162,9 +156,17 @@ export function useSidecarOrders() {
 
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
-      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error) return;
+      if (
+        sizeUsd?.value === undefined ||
+        sizeUsd?.value === null ||
+        sizeUsd.error ||
+        price?.value === undefined ||
+        price?.value === null ||
+        price.error
+      )
+        return;
 
-      if (!marketInfo || !mockPositionInfo || !swapRoute || !order) {
+      if (!marketInfo || !mockPositionInfo || !findSwapPath || !order) {
         return;
       }
 
@@ -180,13 +182,13 @@ export function useSidecarOrders() {
         indexTokenAmount: size,
         triggerPrice: price.value,
         position: mockPositionInfo,
-        findSwapPath: swapRoute.findSwapPath,
+        findSwapPath,
         userReferralInfo,
         uiFeeFactor,
         strategy: "independent",
       });
     },
-    [marketInfo, mockPositionInfo, swapRoute, uiFeeFactor, userReferralInfo]
+    [marketInfo, mockPositionInfo, findSwapPath, uiFeeFactor, userReferralInfo]
   );
 
   const limit = useMemo(() => {
@@ -201,8 +203,8 @@ export function useSidecarOrders() {
     return {
       ...limitEntriesInfo,
       entries,
-      totalPnL: BigNumber.from(0),
-      totalPnLPercentage: BigNumber.from(0),
+      totalPnL: 0n,
+      totalPnLPercentage: 0n,
     };
   }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
 
@@ -214,36 +216,40 @@ export function useSidecarOrders() {
     const [limitSummaryCollateralDeltaAmount, limitSummarySizeDeltaInTokens, limitSummarySizeDeltaUsd] =
       limit.entries.reduce(
         ([collateral, tokens, usd], entry) => [
-          collateral.add(entry.increaseAmounts?.collateralDeltaAmount || 0),
-          tokens.add(entry.increaseAmounts?.sizeDeltaInTokens || 0),
-          usd.add(entry.increaseAmounts?.sizeDeltaUsd || 0),
+          collateral + (entry.increaseAmounts?.collateralDeltaAmount || 0n),
+          tokens + (entry.increaseAmounts?.sizeDeltaInTokens || 0n),
+          usd + (entry.increaseAmounts?.sizeDeltaUsd || 0n),
         ],
-        [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)]
+        [0n, 0n, 0n]
       );
 
     return {
       ...mockPositionInfo,
-      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? BigNumber.from(0)).add(limitSummarySizeDeltaUsd ?? BigNumber.from(0)),
-      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? BigNumber.from(0)).add(
-        limitSummarySizeDeltaInTokens ?? BigNumber.from(0)
-      ),
-      collateralAmount: (mockPositionInfo?.collateralAmount ?? BigNumber.from(0)).add(
-        limitSummaryCollateralDeltaAmount ?? BigNumber.from(0)
-      ),
+      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? 0n) + (limitSummarySizeDeltaUsd ?? 0n),
+      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? 0n) + (limitSummarySizeDeltaInTokens ?? 0n),
+      collateralAmount: (mockPositionInfo?.collateralAmount ?? 0n) + (limitSummaryCollateralDeltaAmount ?? 0n),
     };
   }, [mockPositionInfo, limit.entries]);
 
   const getDecreaseAmountsFromEntry = useCallback(
-    ({ sizeUsd, price }: SidecarOrderEntry) => {
-      if (!sizeUsd?.value || sizeUsd.error || !price?.value || price.error || !marketInfo) return;
+    ({ sizeUsd, price }: SidecarOrderEntry, triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease) => {
+      if (
+        sizeUsd?.value === undefined ||
+        sizeUsd?.value === null ||
+        sizeUsd.error ||
+        price?.value === undefined ||
+        price?.value === null ||
+        price.error ||
+        !marketInfo
+      )
+        return;
 
       if (
         !increaseAmounts ||
         !collateralToken ||
         !mockPositionInfoWithLimits ||
-        !minPositionSizeUsd ||
-        !minCollateralUsd ||
-        !sizeUsd?.value
+        minPositionSizeUsd === undefined ||
+        minCollateralUsd === undefined
       ) {
         return;
       }
@@ -262,6 +268,7 @@ export function useSidecarOrders() {
         uiFeeFactor,
         isLimit,
         limitPrice: triggerPrice,
+        triggerOrderType,
       });
     },
     [
@@ -283,7 +290,7 @@ export function useSidecarOrders() {
     const entries = stopLossEntriesInfo.entries.map((entry) => {
       return {
         ...entry,
-        decreaseAmounts: getDecreaseAmountsFromEntry(entry),
+        decreaseAmounts: getDecreaseAmountsFromEntry(entry, OrderType.StopLossDecrease),
         increaseAmounts: undefined,
       };
     });
@@ -294,13 +301,10 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnl || 0),
-        BigNumber.from(0)
-      );
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnlPercentage || 0),
-        BigNumber.from(0)
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        0n
       );
     }
 
@@ -317,7 +321,7 @@ export function useSidecarOrders() {
     const entries = takeProfitEntriesInfo.entries.map((entry) => {
       return {
         ...entry,
-        decreaseAmounts: getDecreaseAmountsFromEntry(entry),
+        decreaseAmounts: getDecreaseAmountsFromEntry(entry, OrderType.LimitDecrease),
         increaseAmounts: undefined,
       };
     });
@@ -328,13 +332,10 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnl || 0),
-        BigNumber.from(0)
-      );
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc.add(entry.decreaseAmounts?.realizedPnlPercentage || 0),
-        BigNumber.from(0)
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        0n
       );
     }
 

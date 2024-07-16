@@ -3,7 +3,7 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { abs, formatAmount, formatUsd } from "lib/bigint";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
@@ -21,6 +21,7 @@ import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/syntheti
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigMath } from "lib/bigmath";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -200,7 +201,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
-                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                   displayDecimals: 0,
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
@@ -366,7 +367,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
           />
         </TableCell>
@@ -378,7 +379,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}
@@ -423,17 +424,16 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
     let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
-        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(),
-        { displayDecimals: 0 }
-      )} to qualify for the rankings.`;
+      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+        displayDecimals: 0,
+      })} to qualify for the rankings.`;
     else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
+    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });
@@ -560,7 +560,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {

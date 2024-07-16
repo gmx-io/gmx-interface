@@ -1,8 +1,7 @@
 import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
@@ -86,8 +85,8 @@ export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}):
       decimals: 30,
       symbol: "SPOT",
       prices: {
-        minPrice: BigNumber.from(1),
-        maxPrice: BigNumber.from(1),
+        minPrice: BigInt(1),
+        maxPrice: BigInt(1),
       },
       ...((overrides.SPOT || {}) as any),
     },
@@ -155,8 +154,8 @@ export function mockMarketsInfoData(
 
       maxLongPoolAmount: usdToToken(10000, longToken),
       maxShortPoolAmount: usdToToken(10000, shortToken),
-      maxLongPoolAmountForDeposit: usdToToken(10000, longToken),
-      maxShortPoolAmountForDeposit: usdToToken(10000, shortToken),
+      maxLongPoolUsdForDeposit: usdToToken(10000, longToken),
+      maxShortPoolUsdForDeposit: usdToToken(10000, shortToken),
 
       poolValueMax: expandDecimals(2000, USD_DECIMALS),
       poolValueMin: expandDecimals(2000, USD_DECIMALS),
@@ -171,8 +170,8 @@ export function mockMarketsInfoData(
       maxOpenInterestShort: expandDecimals(5, 29),
 
       positionImpactPoolAmount: usdToToken(1000, indexToken),
-      positionImpactPoolDistributionRate: bigNumberify(0)!,
-      minPositionImpactPoolAmount: bigNumberify(0)!,
+      positionImpactPoolDistributionRate: 0n,
+      minPositionImpactPoolAmount: 0n,
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
@@ -202,32 +201,32 @@ export function mockMarketsInfoData(
       swapImpactExponentFactor: expandDecimals(2, 30),
 
       // MarketInfo
-      borrowingFactorPerSecondForLongs: BigNumber.from(0),
-      borrowingFactorPerSecondForShorts: BigNumber.from(0),
+      borrowingFactorPerSecondForLongs: 0n,
+      borrowingFactorPerSecondForShorts: 0n,
 
-      borrowingExponentFactorLong: BigNumber.from(0),
-      borrowingExponentFactorShort: BigNumber.from(0),
-      fundingFactor: BigNumber.from(0),
-      fundingExponentFactor: BigNumber.from(0),
-      fundingIncreaseFactorPerSecond: BigNumber.from(0),
-      fundingDecreaseFactorPerSecond: BigNumber.from(0),
-      maxFundingFactorPerSecond: BigNumber.from(0),
-      minFundingFactorPerSecond: BigNumber.from(0),
-      thresholdForDecreaseFunding: BigNumber.from(0),
-      thresholdForStableFunding: BigNumber.from(0),
+      borrowingExponentFactorLong: 0n,
+      borrowingExponentFactorShort: 0n,
+      fundingFactor: 0n,
+      fundingExponentFactor: 0n,
+      fundingIncreaseFactorPerSecond: 0n,
+      fundingDecreaseFactorPerSecond: 0n,
+      maxFundingFactorPerSecond: 0n,
+      minFundingFactorPerSecond: 0n,
+      thresholdForDecreaseFunding: 0n,
+      thresholdForStableFunding: 0n,
 
-      totalBorrowingFees: BigNumber.from(0),
-      minCollateralFactor: BigNumber.from(0),
+      totalBorrowingFees: 0n,
+      minCollateralFactor: 0n,
 
-      minCollateralFactorForOpenInterestLong: BigNumber.from(0),
-      minCollateralFactorForOpenInterestShort: BigNumber.from(0),
+      minCollateralFactorForOpenInterestLong: 0n,
+      minCollateralFactorForOpenInterestShort: 0n,
 
-      longPoolAmountAdjustment: BigNumber.from(0),
-      shortPoolAmountAdjustment: BigNumber.from(0),
-      borrowingFactorLong: BigNumber.from(0),
-      borrowingFactorShort: BigNumber.from(0),
+      longPoolAmountAdjustment: 0n,
+      shortPoolAmountAdjustment: 0n,
+      borrowingFactorLong: 0n,
+      borrowingFactorShort: 0n,
 
-      fundingFactorPerSecond: BigNumber.from(0),
+      fundingFactorPerSecond: 0n,
       longsPayShorts: false,
 
       longInterestUsd: expandDecimals(500, USD_DECIMALS),
@@ -240,9 +239,9 @@ export function mockMarketsInfoData(
 
       data: "",
 
-      virtualPoolAmountForLongToken: BigNumber.from(0),
-      virtualPoolAmountForShortToken: BigNumber.from(0),
-      virtualInventoryForPositions: BigNumber.from(0),
+      virtualPoolAmountForLongToken: 0n,
+      virtualPoolAmountForShortToken: 0n,
+      virtualInventoryForPositions: 0n,
 
       ...(overrides[key] || {}),
     };

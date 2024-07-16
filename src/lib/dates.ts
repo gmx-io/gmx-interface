@@ -41,6 +41,12 @@ function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }
 
+export function toUtcDayStart(date: Date) {
+  const dateUtcSeconds = Math.trunc(date.getTime() / 1000);
+
+  return Math.trunc(dateUtcSeconds / 86400) * 86400;
+}
+
 const START_OF_DAY_DURATION = {
   hours: 0,
   minutes: 0,
@@ -52,7 +58,7 @@ const INCLUDING_CURRENT_DAY_DURATION = {
   hours: 23,
   minutes: 59,
   seconds: 59,
-  milliseconds: 999,
+  milliseconds: 0,
 };
 
 function normalizeDateRange(start: Date | undefined, end: Date | undefined): [number | undefined, number | undefined] {

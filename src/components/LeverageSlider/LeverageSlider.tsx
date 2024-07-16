@@ -23,10 +23,13 @@ type HandleProps = {
 };
 
 function getMarksWithLabel(marks: number[]) {
-  return marks.reduce((marks, value, index) => {
-    marks[index * 10] = `${value}x`;
-    return marks;
-  }, {} as { [key: number]: string });
+  return marks.reduce(
+    (marks, value, index) => {
+      marks[index * 10] = `${value}x`;
+      return marks;
+    },
+    {} as { [key: number]: string }
+  );
 }
 
 export function LeverageSlider(p: Props) {

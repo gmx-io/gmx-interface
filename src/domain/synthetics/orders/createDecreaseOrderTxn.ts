@@ -4,7 +4,7 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -16,24 +16,24 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export type DecreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
-  initialCollateralDeltaAmount: BigNumber;
+  initialCollateralDeltaAmount: bigint;
   swapPath: string[];
   receiveTokenAddress: string;
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber | undefined;
-  minOutputUsd: BigNumber;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint | undefined;
+  minOutputUsd: bigint;
   isLong: boolean;
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode?: string;
@@ -60,7 +60,7 @@ export async function createDecreaseOrderTxn(
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
+  const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
   const account = ps[0].account;
   const encodedPayload = createDecreaseEncodedPayload({
     router,
@@ -87,8 +87,7 @@ export async function createDecreaseOrderTxn(
 
       if (!p.skipSimulation) {
         const primaryPriceOverrides: PriceOverrides = {};
-        const secondaryPriceOverrides: PriceOverrides = {};
-        if (p.triggerPrice) {
+        if (p.triggerPrice != undefined) {
           primaryPriceOverrides[p.indexToken.address] = {
             minPrice: p.triggerPrice,
             maxPrice: p.triggerPrice,
@@ -97,7 +96,6 @@ export async function createDecreaseOrderTxn(
         await simulateExecuteOrderTxn(chainId, {
           account,
           primaryPriceOverrides,
-          secondaryPriceOverrides,
           createOrderMulticallPayload: simulationEncodedPayload,
           value: totalWntAmount,
           tokensData: p.tokensData,
@@ -108,12 +106,15 @@ export async function createDecreaseOrderTxn(
   );
 
   const txnCreatedAt = Date.now();
-  const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+
+  if (!signer.provider) throw new Error("No provider found");
+  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    customSigners: subaccount?.customSigners,
     setPendingTxns: callbacks.setPendingTxns,
   });
 
@@ -137,11 +138,7 @@ export async function createDecreaseOrderTxn(
   }
 }
 
-function getPendingPositionFromParams(
-  txnCreatedAt: number,
-  txnCreatedAtBlock: number | undefined,
-  p: DecreaseOrderParams
-) {
+function getPendingPositionFromParams(txnCreatedAt: number, txnCreatedAtBlock: number, p: DecreaseOrderParams) {
   const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
   return {
     isIncrease: false,
@@ -150,7 +147,7 @@ function getPendingPositionFromParams(
     sizeDeltaUsd: p.sizeDeltaUsd,
     sizeDeltaInTokens: p.sizeDeltaInTokens,
     updatedAt: txnCreatedAt,
-    updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+    updatedAtBlock: BigInt(txnCreatedAtBlock),
   };
 }
 
@@ -186,27 +183,29 @@ export function createDecreaseEncodedPayload({
         : p.minOutputUsd;
       const orderParams = {
         addresses: {
+          cancellationReceiver: ethers.ZeroAddress,
           receiver: p.account,
           initialCollateralToken: initialCollateralTokenAddress,
-          callbackContract: AddressZero,
+          callbackContract: ZeroAddress,
           market: p.marketAddress,
           swapPath: p.swapPath,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,
           initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-          triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+          triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, p.indexToken.decimals),
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
-          callbackGasLimit: BigNumber.from(0),
+          callbackGasLimit: 0n,
           minOutputAmount,
         },
         orderType: p.orderType,
         decreasePositionSwapType: p.decreasePositionSwapType,
         isLong: p.isLong,
         shouldUnwrapNativeToken: isNativeReceive,
-        referralCode: p.referralCode || ethers.constants.HashZero,
+        autoCancel: false,
+        referralCode: p.referralCode || ethers.ZeroHash,
       };
 
       return [

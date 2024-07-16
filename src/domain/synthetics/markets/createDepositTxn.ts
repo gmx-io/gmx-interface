@@ -1,5 +1,5 @@
 import { getContract } from "config/contracts";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
@@ -17,10 +17,10 @@ type Params = {
   longTokenSwapPath: string[];
   shortTokenSwapPath: string[];
   marketTokenAddress: string;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  minMarketTokens: BigNumber;
-  executionFee: BigNumber;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  minMarketTokens: bigint;
+  executionFee: bigint;
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
@@ -32,22 +32,26 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
-  const isNativeLongDeposit = p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount?.gt(0);
-  const isNativeShortDeposit = p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount?.gt(0);
+  const isNativeLongDeposit = Boolean(
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+  );
+  const isNativeShortDeposit = Boolean(
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+  );
 
-  let wntDeposit = BigNumber.from(0);
+  let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {
-    wntDeposit = wntDeposit.add(p.longTokenAmount!);
+    wntDeposit = wntDeposit + p.longTokenAmount!;
   }
 
   if (isNativeShortDeposit) {
-    wntDeposit = wntDeposit.add(p.shortTokenAmount!);
+    wntDeposit = wntDeposit + p.shortTokenAmount!;
   }
 
   const shouldUnwrapNativeToken = isNativeLongDeposit || isNativeShortDeposit;
 
-  const wntAmount = p.executionFee.add(wntDeposit);
+  const wntAmount = p.executionFee + wntDeposit;
 
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
@@ -57,11 +61,11 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
 
-    !isNativeLongDeposit && p.longTokenAmount.gt(0)
+    !isNativeLongDeposit && p.longTokenAmount > 0
       ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount.gt(0)
+    !isNativeShortDeposit && p.shortTokenAmount > 0
       ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
       : undefined,
 
@@ -70,7 +74,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
       params: [
         {
           receiver: p.account,
-          callbackContract: ethers.constants.AddressZero,
+          callbackContract: ethers.ZeroAddress,
           market: p.marketTokenAddress,
           initialLongToken: initialLongTokenAddress,
           initialShortToken: initialShortTokenAddress,
@@ -79,8 +83,8 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           minMarketTokens: minMarketTokens,
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
-          callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          callbackGasLimit: 0n,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
       ],
     },
@@ -94,7 +98,6 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",

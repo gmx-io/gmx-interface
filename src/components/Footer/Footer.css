@@ -1,14 +1,14 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 4rem;
-  background: #16182e;
+  background: var(--color-slate-800);
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
   height: 20rem;
   bottom: 0;
-  border-top: 1px solid #282b4c57;
+  border-top: 1px solid var(--color-gray-950);
 }
 
 .Footer-logo {
@@ -29,7 +29,7 @@
   margin-bottom: 2.4rem;
 }
 .Footer-link {
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   font-size: var(--font-base);
   line-height: 1.85rem;
   font-weight: normal;
@@ -37,7 +37,7 @@
   cursor: pointer;
 }
 .Footer-link:hover {
-  color: white;
+  color: var(--color-white);
 }
 
 .Footer-social-link-block .App-social-link {
@@ -62,7 +62,7 @@
   font-size: 1.3rem;
   line-height: 1.3rem;
   letter-spacing: -0.41px;
-  color: #a0a3c4;
+  color: var(--color-slate-100);
   display: block;
 }
 .Footer-links {

@@ -1,7 +1,7 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { BigNumber, BigNumberish, ethers } from "ethers";
-import { bigNumberify, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { BigNumberish, ethers } from "ethers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
@@ -25,8 +25,9 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import { bigMath } from "lib/bigmath";
 
-function pow(bn: BigNumber, exponent: BigNumber) {
+function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
@@ -49,18 +50,18 @@ function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: numb
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
 }
 
-function formatFactor(factor: BigNumber) {
-  if (factor.eq(0)) {
+function formatFactor(factor: bigint) {
+  if (factor == 0n) {
     return "0";
   }
 
-  if (factor.abs().gt(PRECISION.mul(1000))) {
-    return factor.div(PRECISION).toString();
+  if (bigMath.abs(factor) > PRECISION * 1000n) {
+    return (factor / PRECISION).toString();
   }
 
   const trailingZeroes =
-    factor
-      .abs()
+    bigMath
+      .abs(factor)
       .toString()
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
   const factorDecimals = 30 - trailingZeroes;
@@ -86,17 +87,17 @@ export function SyntheticsStats() {
     if (a.indexTokenAddress === b.indexTokenAddress) {
       return 0;
     }
-    if (a.indexTokenAddress === ethers.constants.AddressZero) {
+    if (a.indexTokenAddress === ethers.ZeroAddress) {
       return 1;
     }
-    if (b.indexTokenAddress === ethers.constants.AddressZero) {
+    if (b.indexTokenAddress === ethers.ZeroAddress) {
       return -1;
     }
     return 0;
   });
 
   return (
-    <div className="SyntheticsStats">
+    <div className="SyntheticsStats mt-20">
       <div className="SyntheticsStats-table-wrap">
         <table>
           <thead>
@@ -173,14 +174,14 @@ export function SyntheticsStats() {
           </thead>
           <tbody>
             {markets.map((market) => {
-              const totalInterestUsd = market.longInterestUsd.add(market.shortInterestUsd);
+              const totalInterestUsd = market.longInterestUsd + market.shortInterestUsd;
 
               const midLongPrice = getMidPrice(market.longToken.prices);
               const midShortPrice = getMidPrice(market.shortToken.prices);
 
               const longPoolUsd = convertToUsd(market.longPoolAmount, market.longToken.decimals, midLongPrice);
               const shortPoolUsd = convertToUsd(market.shortPoolAmount, market.shortToken.decimals, midShortPrice);
-              const totalPoolUsd = longPoolUsd?.add(shortPoolUsd || 0);
+              const totalPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
 
               const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, true);
               const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, false);
@@ -220,15 +221,15 @@ export function SyntheticsStats() {
               const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, 60 * 60 * 100);
               const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, 60 * 60 * 100);
 
-              const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]).mul(100);
-              const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]).mul(100);
+              const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]) * 100n;
+              const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]) * 100n;
 
               function renderMarketCell() {
                 return (
                   <div className="cell">
                     <div>
                       <TooltipWithPortal
-                        portalClassName="SyntheticsStats-tooltip"
+                        tooltipClassName="SyntheticsStats-tooltip"
                         handle={getMarketIndexName(market)}
                         renderContent={() => (
                           <>
@@ -238,7 +239,7 @@ export function SyntheticsStats() {
                               label="Virtual Market Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualMarketId !== ethers.constants.HashZero ? market.virtualMarketId : "-"}
+                                  {market.virtualMarketId !== ethers.ZeroHash ? market.virtualMarketId : "-"}
                                 </div>
                               }
                               showDollar={false}
@@ -248,9 +249,7 @@ export function SyntheticsStats() {
                               label="Virtual Long Token Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualLongTokenId !== ethers.constants.HashZero
-                                    ? market.virtualLongTokenId
-                                    : "-"}
+                                  {market.virtualLongTokenId !== ethers.ZeroHash ? market.virtualLongTokenId : "-"}
                                 </div>
                               }
                               showDollar={false}
@@ -260,9 +259,7 @@ export function SyntheticsStats() {
                               label="Virtual Short Token Id"
                               value={
                                 <div className="debug-key">
-                                  {market.virtualShortTokenId !== ethers.constants.HashZero
-                                    ? market.virtualShortTokenId
-                                    : "-"}
+                                  {market.virtualShortTokenId !== ethers.ZeroHash ? market.virtualShortTokenId : "-"}
                                 </div>
                               }
                               showDollar={false}
@@ -309,18 +306,13 @@ export function SyntheticsStats() {
                           />
 
                           <StatsTooltipRow
-                            label="Pool Max Long Amount For Deposit"
-                            value={formatAmount(market.maxLongPoolAmountForDeposit, market.longToken.decimals, 0, true)}
+                            label="Pool Max Long USD For Deposit"
+                            value={formatUsd(market.maxLongPoolUsdForDeposit)}
                             showDollar={false}
                           />
                           <StatsTooltipRow
-                            label="Pool Max Short Amount For Deposit"
-                            value={formatAmount(
-                              market.maxShortPoolAmountForDeposit,
-                              market.shortToken.decimals,
-                              0,
-                              true
-                            )}
+                            label="Pool Max Short USD For Deposit"
+                            value={formatUsd(market.maxShortPoolUsdForDeposit)}
                             showDollar={false}
                           />
 
@@ -377,29 +369,35 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
-                const maxPoolAmountForDeposit = isLong
-                  ? market.maxLongPoolAmountForDeposit
-                  : market.maxShortPoolAmountForDeposit;
+                const maxPoolUsdForDeposit = isLong
+                  ? market.maxLongPoolUsdForDeposit
+                  : market.maxShortPoolUsdForDeposit;
                 const token = isLong ? market.longToken : market.shortToken;
+                const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
                 return (
                   <div className="cell">
-                    {formatAmountHuman(poolAmount, token.decimals)} /{" "}
-                    {formatAmountHuman(maxPoolAmountForDeposit, token.decimals)} {token.symbol}
-                    <ShareBar share={poolAmount} total={maxPoolAmountForDeposit} warningThreshold={90} />
+                    {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForDeposit)}{" "}
+                    <ShareBar share={poolUsd} total={maxPoolUsdForDeposit} warningThreshold={90} />
                   </div>
                 );
               }
 
               function renderBorrowingRateCell() {
-                const maxBorrowingRateLong = pow(maxLiquidityLong, market.borrowingExponentFactorLong)
-                  .mul(market.borrowingFactorLong)
-                  .div(longPoolUsd!)
-                  .mul(3600 * 100);
-                const maxBorrowingRateShort = pow(maxLiquidityShort, market.borrowingExponentFactorShort)
-                  .mul(market.borrowingFactorShort)
-                  .div(shortPoolUsd!)
-                  .mul(3600 * 100);
+                const maxBorrowingRateLong =
+                  bigMath.mulDiv(
+                    pow(maxLiquidityLong, market.borrowingExponentFactorLong),
+                    market.borrowingFactorLong,
+                    longPoolUsd!
+                  ) *
+                  (3600n * 100n);
+                const maxBorrowingRateShort =
+                  bigMath.mulDiv(
+                    pow(maxLiquidityShort, market.borrowingExponentFactorShort),
+                    market.borrowingFactorShort,
+                    shortPoolUsd!
+                  ) *
+                  (3600n * 100n);
 
                 return (
                   <div className="cell">
@@ -409,12 +407,12 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         handle={
                           <>
-                            <span className={getPositiveOrNegativeClass(borrowingRateLong.mul(-1).add(1))}>
-                              {formatAmount(borrowingRateLong.mul(-1), 30, 4)}%
+                            <span className={getPositiveOrNegativeClass(-borrowingRateLong + 1n)}>
+                              {formatAmount(-borrowingRateLong, 30, 4)}%
                             </span>
                             {" / "}
-                            <span className={getPositiveOrNegativeClass(borrowingRateShort.mul(-1).add(1))}>
-                              {formatAmount(borrowingRateShort.mul(-1), 30, 4)}%
+                            <span className={getPositiveOrNegativeClass(-borrowingRateShort + 1n)}>
+                              {formatAmount(-borrowingRateShort, 30, 4)}%
                             </span>
                           </>
                         }
@@ -473,17 +471,18 @@ export function SyntheticsStats() {
                           <>
                             <span className={getPositiveOrNegativeClass(fundingAprLong)}>
                               {market.longsPayShorts ? "-" : "+"}
-                              {formatAmount(fundingAprLong.abs(), 30, 4)}%
+                              {formatAmount(bigMath.abs(fundingAprLong), 30, 4)}%
                             </span>
                             {" / "}
                             <span className={getPositiveOrNegativeClass(fundingAprShort)}>
                               {market.longsPayShorts ? "+" : "-"}
-                              {formatAmount(fundingAprShort.abs(), 30, 4)}%
+                              {formatAmount(bigMath.abs(fundingAprShort), 30, 4)}%
                             </span>
                           </>
                         }
                         renderContent={() =>
-                          market.fundingIncreaseFactorPerSecond?.gt(0) ? (
+                          market.fundingIncreaseFactorPerSecond !== undefined &&
+                          market.fundingIncreaseFactorPerSecond > 0 ? (
                             <>
                               <StatsTooltipRow
                                 label="Funding increase factor"
@@ -553,7 +552,7 @@ export function SyntheticsStats() {
                           <>
                             <StatsTooltipRow
                               label="Total"
-                              value={formatAmount(market.shortInterestUsd.add(market.longInterestUsd), 30, 0, true)}
+                              value={formatAmount(market.shortInterestUsd + market.longInterestUsd, 30, 0, true)}
                             />
                             <StatsTooltipRow label="Long" value={formatAmount(market.longInterestUsd, 30, 0, true)} />
                             <StatsTooltipRow label="Short" value={formatAmount(market.shortInterestUsd, 30, 0, true)} />
@@ -561,17 +560,17 @@ export function SyntheticsStats() {
                               showDollar={false}
                               label="Percentage"
                               value={(() => {
-                                const totalInterestUsd = market.shortInterestUsd.add(market.longInterestUsd);
+                                const totalInterestUsd = market.shortInterestUsd + market.longInterestUsd;
                                 let longInterestPercent = "0";
                                 let shortInterestPercent = "0";
-                                if (!totalInterestUsd.isZero()) {
+                                if (totalInterestUsd !== 0n) {
                                   longInterestPercent = formatAmount(
-                                    market.longInterestUsd.mul(10000).div(totalInterestUsd),
+                                    bigMath.mulDiv(market.longInterestUsd, 10000n, totalInterestUsd),
                                     2,
                                     2
                                   );
                                   shortInterestPercent = formatAmount(
-                                    market.shortInterestUsd.mul(10000).div(totalInterestUsd),
+                                    bigMath.mulDiv(market.shortInterestUsd, 10000n, totalInterestUsd),
                                     2,
                                     2
                                   );
@@ -586,7 +585,7 @@ export function SyntheticsStats() {
                             <StatsTooltipRow
                               label="Difference"
                               value={formatAmount(
-                                market.shortInterestUsd.sub(market.longInterestUsd).abs(),
+                                bigMath.abs(market.shortInterestUsd - market.longInterestUsd),
                                 30,
                                 0,
                                 true
@@ -634,9 +633,9 @@ export function SyntheticsStats() {
                     ];
 
                 const isLongLabel = isLong ? "Long" : "Short";
-                let availableLiquidity = maxLiquidity.sub(liquidity);
-                if (availableLiquidity.lt(0)) {
-                  availableLiquidity = bigNumberify(0)!;
+                let availableLiquidity = maxLiquidity - liquidity;
+                if (availableLiquidity < 0) {
+                  availableLiquidity = 0n;
                 }
 
                 return (
@@ -685,26 +684,28 @@ export function SyntheticsStats() {
               }
 
               function renderPositionImpactCell() {
-                const bonusApr = market.positionImpactPoolDistributionRate
-                  .mul(86400)
-                  .mul(365)
-                  .mul(market.indexToken.prices.minPrice)
-                  .div(longPoolUsd?.add(shortPoolUsd || 0) || 0)
-                  .mul(100);
+                const bonusApr =
+                  bigMath.mulDiv(
+                    market.positionImpactPoolDistributionRate * 86400n * 365n,
+                    market.indexToken.prices.minPrice,
+                    (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n) ?? 0n
+                  ) * 100n;
 
                 const reservedPositivePriceImpactUsd = getPriceImpactUsd({
-                  currentLongUsd: market.longInterestUsd.sub(market.shortInterestUsd),
-                  currentShortUsd: bigNumberify(0)!,
-                  nextLongUsd: bigNumberify(0)!,
-                  nextShortUsd: bigNumberify(0)!,
+                  currentLongUsd: market.longInterestUsd - market.shortInterestUsd,
+                  currentShortUsd: 0n,
+                  nextLongUsd: 0n,
+                  nextShortUsd: 0n,
                   factorNegative: market.positionImpactFactorNegative,
                   factorPositive: market.positionImpactFactorPositive,
                   exponentFactor: market.positionImpactExponentFactor,
                 });
 
-                const reservedPositivePriceImpact = reservedPositivePriceImpactUsd
-                  .mul(expandDecimals(1, market.indexToken.decimals))
-                  .div(market.indexToken.prices.maxPrice);
+                const reservedPositivePriceImpact = bigMath.mulDiv(
+                  reservedPositivePriceImpactUsd,
+                  expandDecimals(1, market.indexToken.decimals),
+                  market.indexToken.prices.maxPrice
+                );
 
                 return (
                   <div className="cell">
@@ -726,7 +727,7 @@ export function SyntheticsStats() {
                           <StatsTooltipRow
                             label="Impact Pool After Reserved Positive Impact"
                             value={formatAmount(
-                              market.positionImpactPoolAmount.sub(reservedPositivePriceImpact),
+                              market.positionImpactPoolAmount - reservedPositivePriceImpact,
                               market.indexToken.decimals,
                               2,
                               true
@@ -745,10 +746,12 @@ export function SyntheticsStats() {
                           <StatsTooltipRow
                             label="Distribution Rate per Day, USD"
                             value={formatAmount(
-                              market.positionImpactPoolDistributionRate
-                                .mul(86400)
-                                .mul(market.indexToken.prices.minPrice),
-                              market.indexToken.decimals + 60,
+                              bigMath.mulDiv(
+                                market.positionImpactPoolDistributionRate * 86400n,
+                                market.indexToken.prices.minPrice,
+                                expandDecimals(1, 60)
+                              ),
+                              market.indexToken.decimals,
                               2,
                               true
                             )}
@@ -800,10 +803,9 @@ export function SyntheticsStats() {
                       ) : (
                         <TooltipWithPortal
                           handle={
-                            <span
-                              className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}
-                            >
-                              {getPlusOrMinusSymbol(market.netPnlMax)}${formatAmountHuman(market.netPnlMax.abs(), 30)}
+                            <span className={cx({ positive: market.netPnlMax > 0, negative: market.netPnlMax < 0 })}>
+                              {getPlusOrMinusSymbol(market.netPnlMax)}$
+                              {formatAmountHuman(bigMath.abs(market.netPnlMax), 30)}
                             </span>
                           }
                           renderContent={() => (
@@ -811,9 +813,9 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                className={getPositiveOrNegativeClass(market.pnlLongMax)}
+                                textClassName={getPositiveOrNegativeClass(market.pnlLongMax)}
                                 value={`${getPlusOrMinusSymbol(market.pnlLongMax)}${formatAmountHuman(
-                                  market.pnlLongMax.abs(),
+                                  bigMath.abs(market.pnlLongMax),
                                   30,
                                   true
                                 )}`}
@@ -821,9 +823,9 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Short"
-                                className={getPositiveOrNegativeClass(market.pnlShortMax)}
+                                textClassName={getPositiveOrNegativeClass(market.pnlShortMax)}
                                 value={`${getPlusOrMinusSymbol(market.pnlShortMax)}${formatAmountHuman(
-                                  market.pnlShortMax.abs(),
+                                  bigMath.abs(market.pnlShortMax),
                                   30,
                                   true
                                 )}`}
@@ -849,16 +851,16 @@ export function SyntheticsStats() {
                           handle={
                             <>
                               <div>
-                                {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
-                                {formatAmountHuman(virtualInventoryPositions?.abs(), 30) || "$0.00"}
+                                {virtualInventoryPositions > 0 ? "Short" : "Long"}{" "}
+                                {formatAmountHuman(bigMath.abs(virtualInventoryPositions), 30) || "$0.00"}
                               </div>
                             </>
                           }
                           renderContent={() => {
                             return (
                               <StatsTooltipRow
-                                label={virtualInventoryPositions?.gt(0) ? "Short" : "Long"}
-                                value={formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
+                                label={virtualInventoryPositions > 0 ? "Short" : "Long"}
+                                value={formatUsd(bigMath.abs(virtualInventoryPositions)) || "$0.00"}
                                 showDollar={false}
                               />
                             );
@@ -913,7 +915,7 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         position="bottom-end"
                         handle="..."
-                        portalClassName="MarketCard-config-tooltip"
+                        tooltipClassName="MarketCard-config-tooltip"
                         renderContent={() => (
                           <>
                             <div>Position Impact</div>
@@ -1056,8 +1058,8 @@ export function SyntheticsStats() {
                             <StatsTooltipRow
                               label="Max Leverage"
                               value={
-                                market.minCollateralFactor.gt(0)
-                                  ? formatAmount(PRECISION.div(market.minCollateralFactor).mul(100), 2, 2)
+                                market.minCollateralFactor > 0
+                                  ? formatAmount((PRECISION / market.minCollateralFactor) * 100n, 2, 2)
                                   : "..."
                               }
                               showDollar={false}
@@ -1094,12 +1096,14 @@ export function SyntheticsStats() {
           </tbody>
         </table>
       </div>
-      <DownloadAsCsv
-        excludedFields={CSV_EXCLUDED_FIELDS}
-        data={markets}
-        fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
-        className="mt-md download-csv"
-      />
+      <div>
+        <DownloadAsCsv
+          excludedFields={CSV_EXCLUDED_FIELDS}
+          data={markets}
+          fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
+          className="download-csv mt-15"
+        />
+      </div>
     </div>
   );
 }

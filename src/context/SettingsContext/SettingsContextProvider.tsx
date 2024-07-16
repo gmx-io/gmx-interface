@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
 
-import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -13,11 +13,13 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { tenderlyLsKeys } from "lib/tenderly";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -39,6 +41,15 @@ export type SettingsContextType = {
   setShouldDisableValidationForTesting: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+
+  tenderlyAccountSlug: string | undefined;
+  setTenderlyAccountSlug: (val: string | undefined) => void;
+  tenderlyProjectSlug: string | undefined;
+  setTenderlyProjectSlug: (val: string | undefined) => void;
+  tenderlyAccessKey: string | undefined;
+  setTenderlyAccessKey: (val: string | undefined) => void;
+  tenderlySimulationEnabled: boolean | undefined;
+  setTenderlySimulationEnabled: (val: boolean | undefined) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -60,7 +71,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER
   );
 
-  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
+  const [hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey, setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey] =
+    useLocalStorageSerializeKey(getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId), false);
+
+  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
@@ -68,10 +82,13 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
     ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
-    SUPPORTED_CHAIN_IDS.reduce((acc, chainId) => {
-      acc[chainId] = getOracleKeeperRandomIndex(chainId);
-      return acc;
-    }, {} as { [chainId: number]: number })
+    SUPPORTED_CHAIN_IDS.reduce(
+      (acc, chainId) => {
+        acc[chainId] = getOracleKeeperRandomIndex(chainId);
+        return acc;
+      },
+      {} as { [chainId: number]: number }
+    )
   );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
@@ -81,6 +98,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
+
+  const [tenderlyAccountSlug, setTenderlyAccountSlug] = useLocalStorageSerializeKey(tenderlyLsKeys.accountSlug, "");
+  const [tenderlyProjectSlug, setTenderlyProjectSlug] = useLocalStorageSerializeKey(tenderlyLsKeys.projectSlug, "");
+  const [tenderlyAccessKey, setTenderlyAccessKey] = useLocalStorageSerializeKey(tenderlyLsKeys.accessKey, "");
+  const [tenderlySimulationEnabled, setTenderlySimulationEnabled] = useLocalStorageSerializeKey(
+    tenderlyLsKeys.enabled,
     false
   );
 
@@ -109,6 +134,18 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     }
   }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
 
+  useEffect(() => {
+    if (!hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey && chainId === ARBITRUM) {
+      setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps);
+      setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(true);
+    }
+  }, [
+    chainId,
+    hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
+    setExecutionFeeBufferBps,
+    setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
+  ]);
+
   const contextState: SettingsContextType = useMemo(() => {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
@@ -130,6 +167,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+
+      setTenderlyAccessKey,
+      setTenderlyAccountSlug,
+      setTenderlyProjectSlug,
+      setTenderlySimulationEnabled,
+      tenderlyAccessKey,
+      tenderlyAccountSlug,
+      tenderlyProjectSlug,
+      tenderlySimulationEnabled,
     };
   }, [
     showDebugValues,
@@ -151,6 +197,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableValidationForTesting,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    setTenderlyAccessKey,
+    setTenderlyAccountSlug,
+    setTenderlyProjectSlug,
+    setTenderlySimulationEnabled,
+    tenderlyAccessKey,
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    tenderlySimulationEnabled,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

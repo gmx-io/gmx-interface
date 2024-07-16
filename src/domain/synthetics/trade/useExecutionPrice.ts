@@ -1,6 +1,5 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
@@ -10,10 +9,10 @@ export function useDebugExecutionPrice(
   chainId,
   p: {
     marketInfo?: MarketInfo;
-    sizeInUsd?: BigNumber;
-    sizeInTokens?: BigNumber;
-    sizeDeltaUsd?: BigNumber;
-    overrideIndexTokenPrice?: BigNumber;
+    sizeInUsd?: bigint;
+    sizeInTokens?: bigint;
+    sizeDeltaUsd?: bigint;
+    overrideIndexTokenPrice?: bigint;
     skip?: boolean;
     isLong?: boolean;
   }
@@ -21,7 +20,12 @@ export function useDebugExecutionPrice(
   const { marketInfo, sizeInUsd, sizeInTokens, sizeDeltaUsd, skip, isLong, overrideIndexTokenPrice } = p;
 
   const key =
-    !skip && marketInfo && sizeInUsd && sizeInTokens && sizeDeltaUsd && isLong !== undefined
+    !skip &&
+    marketInfo &&
+    sizeInUsd !== undefined &&
+    sizeInTokens !== undefined &&
+    sizeDeltaUsd !== undefined &&
+    isLong !== undefined
       ? [marketInfo.marketTokenAddress, sizeInUsd.toString(), sizeInTokens.toString(), sizeDeltaUsd.toString(), isLong]
       : null;
 
@@ -66,10 +70,10 @@ export function useDebugExecutionPrice(
       // eslint-disable-next-line no-console
       console.log("useExecutionPrice", {
         executionPrice: formatUsd(
-          parseContractPrice(BigNumber.from(returnValues.executionPrice), marketInfo!.indexToken.decimals)
+          parseContractPrice(BigInt(returnValues.executionPrice), marketInfo!.indexToken.decimals)
         ),
-        priceImpactUsd: formatDeltaUsd(BigNumber.from(returnValues.priceImpactUsd)),
-        priceImpactDiffUsd: formatUsd(BigNumber.from(returnValues.priceImpactDiffUsd)),
+        priceImpactUsd: formatDeltaUsd(BigInt(returnValues.priceImpactUsd)),
+        priceImpactDiffUsd: formatUsd(BigInt(returnValues.priceImpactDiffUsd)),
       });
     },
   });

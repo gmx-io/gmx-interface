@@ -1,4 +1,4 @@
-import { BigNumber, Signer } from "ethers";
+import { Signer } from "ethers";
 import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 
@@ -6,7 +6,7 @@ export async function removeSubaccount(chainId: number, signer: Signer, subaccou
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
-    value: BigNumber.from(0),
+    value: 0n,
     hideSentMsg: true,
     hideSuccessMsg: true,
   });

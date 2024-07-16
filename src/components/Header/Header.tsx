@@ -18,7 +18,6 @@ import { Trans } from "@lingui/macro";
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
 import { useMedia } from "react-use";
 import { HeaderLink } from "./HeaderLink";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -48,7 +47,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
-  const isTradingIncentiveActive = useIncentiveStats()?.trading?.isActive ?? false;
+  const isTradingIncentivesActive = false;
 
   useEffect(() => {
     if (isDrawerVisible) {
@@ -145,14 +144,14 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
             </div>
           </div>
         )}
-        {isTradingIncentiveActive && (
+        {isTradingIncentivesActive && (
           <HeaderPromoBanner>
             <Trans>
               Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"} $500k) in prizes in{" "}
               <HeaderLink
                 to="/competitions/"
                 showRedirectModal={showRedirectModal}
-                className="underline inline-block clickable"
+                className="clickable inline-block underline"
               >
                 two&nbsp;weekly
               </HeaderLink>{" "}

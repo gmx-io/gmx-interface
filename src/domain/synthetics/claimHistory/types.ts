@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { MarketInfo } from "../markets";
 import { Token } from "domain/tokens/types";
 
@@ -12,10 +11,10 @@ export enum ClaimType {
 
 export type ClaimMarketItem = {
   marketInfo: MarketInfo;
-  longTokenAmount: BigNumber;
-  longTokenAmountUsd: BigNumber;
-  shortTokenAmount: BigNumber;
-  shortTokenAmountUsd: BigNumber;
+  longTokenAmount: bigint;
+  longTokenAmountUsd: bigint;
+  shortTokenAmount: bigint;
+  shortTokenAmountUsd: bigint;
 };
 
 export type ClaimCollateralAction = {
@@ -23,8 +22,8 @@ export type ClaimCollateralAction = {
   type: "collateral";
   eventName: ClaimType.ClaimFunding | ClaimType.ClaimPriceImpact;
   account: string;
-  amounts: BigNumber[];
-  tokenPrices: BigNumber[];
+  amounts: bigint[];
+  tokenPrices: bigint[];
   claimItems: ClaimMarketItem[];
   timestamp: number;
   transactionHash: string;
@@ -39,8 +38,8 @@ export type ClaimFundingFeeAction = {
     | ClaimType.SettleFundingFeeCreated
     | ClaimType.SettleFundingFeeExecuted;
   account: string;
-  amounts: BigNumber[];
-  tokenPrices: BigNumber[];
+  amounts: bigint[];
+  tokenPrices: bigint[];
   markets: MarketInfo[];
   tokens: Token[];
   isLongOrders: boolean[];

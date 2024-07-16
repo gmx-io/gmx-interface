@@ -21,7 +21,6 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
     <Tooltip
       handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
       position={isMobile ? "bottom-end" : "bottom-start"}
-      handleClassName="plain"
       renderContent={() => {
         return (
           <>
@@ -36,32 +35,32 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
               label={t`PnL`}
               value={position.deltaBeforeFeesStr}
               showDollar={false}
-              className={position.hasProfit ? "text-green" : "text-red"}
+              textClassName={position.hasProfit ? "text-green-500" : "text-red-500"}
             />
             <StatsTooltipRow
               label={t`Borrow Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red"
+              textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Open Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red"
+              textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
-              className="text-red"
+              textClassName="text-red-500"
             />
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
               value={pnlAfterFees}
               showDollar={false}
-              className={position.hasProfitAfterFees ? "text-green" : "text-red"}
+              textClassName={position.hasProfitAfterFees ? "text-green-500" : "text-red-500"}
             />
           </>
         );

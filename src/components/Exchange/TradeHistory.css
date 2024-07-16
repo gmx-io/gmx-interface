@@ -1,5 +1,5 @@
 .TradeHistory-row {
-  font-size: var(--font-sm);
+  font-size: var(--font-base);
   padding: 1.5rem;
   margin-bottom: 0.8rem;
 }

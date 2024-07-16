@@ -1,20 +1,28 @@
 import { gql } from "@apollo/client";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { merge } from "lodash";
 import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
+import type { Address } from "viem";
 
+import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
-import { isIncreaseOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";
-import { parseContractPrice, TokensData } from "domain/synthetics/tokens";
+import {
+  OrderType,
+  isIncreaseOrderType,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
+import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
 import { Token } from "domain/tokens";
 import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { buildFiltersBody, getSyntheticsGraphClient, GraphQlFilters } from "lib/subgraph";
-
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { GraphQlFilters, buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
 import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
 
 export type TradeHistoryResult = {
@@ -32,13 +40,12 @@ export function useTradeHistory(
     pageSize: number;
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
-    marketAddresses?: string[];
+    marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType;
       isDepositOrWithdraw?: boolean;
     }[];
-    isLong?: boolean;
   }
 ): TradeHistoryResult {
   const {
@@ -47,9 +54,8 @@ export function useTradeHistory(
     forAllAccounts,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses,
+    marketsDirectionsFilter,
     orderEventCombinations,
-    isLong,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -65,12 +71,11 @@ export function useTradeHistory(
         forAllAccounts,
         fromTxTimestamp,
         toTxTimestamp,
-        JSON.stringify(orderEventCombinations),
-        structuredClone(marketAddresses)?.sort().join(","),
-        isLong,
+        orderEventCombinations,
+        marketsDirectionsFilter,
         index,
         pageSize,
-      ];
+      ] as const;
     }
     return null;
   };
@@ -88,7 +93,7 @@ export function useTradeHistory(
         chainId,
         pageIndex,
         pageSize,
-        marketAddresses,
+        marketsDirectionsFilter,
         forAllAccounts,
         account,
         fromTxTimestamp,
@@ -96,7 +101,6 @@ export function useTradeHistory(
         orderEventCombinations,
         marketsInfoData,
         tokensData,
-        isLong,
       });
     },
   });
@@ -129,8 +133,8 @@ function createRawTradeActionTransformer(
     const orderType = Number(rawAction.orderType);
 
     if (isSwapOrderType(orderType)) {
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
 
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
@@ -169,11 +173,11 @@ function createRawTradeActionTransformer(
 
       return tradeAction;
     } else {
-      const marketAddress = ethers.utils.getAddress(rawAction.marketAddress!);
+      const marketAddress = ethers.getAddress(rawAction.marketAddress!);
       const marketInfo = getByKey(marketsInfoData, marketAddress);
       const indexToken = marketInfo?.indexToken;
-      const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+      const initialCollateralTokenAddress = ethers.getAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => ethers.getAddress(address));
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
         swapPath,
@@ -220,28 +224,29 @@ function createRawTradeActionTransformer(
           : undefined,
 
         indexTokenPriceMin: rawAction.indexTokenPriceMin
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMin), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMin), indexToken.decimals)
           : undefined,
         indexTokenPriceMax: rawAction.indexTokenPriceMax
-          ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMax), indexToken.decimals)
+          ? parseContractPrice(BigInt(rawAction.indexTokenPriceMax), indexToken.decimals)
           : undefined,
 
         orderType,
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
-        pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
-        basePnlUsd: rawAction.basePnlUsd ? BigNumber.from(rawAction.basePnlUsd) : undefined,
+        pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
+        basePnlUsd: rawAction.basePnlUsd ? BigInt(rawAction.basePnlUsd) : undefined,
 
-        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
-        priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
-        positionFeeAmount: rawAction.positionFeeAmount ? BigNumber.from(rawAction.positionFeeAmount) : undefined,
-        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigNumber.from(rawAction.borrowingFeeAmount) : undefined,
-        fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
+        priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
+        priceImpactUsd: rawAction.priceImpactUsd ? BigInt(rawAction.priceImpactUsd) : undefined,
+        positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
+        borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
+        fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
 
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
 
         transaction: rawAction.transaction,
+        shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
       };
 
       return tradeAction;
@@ -253,7 +258,7 @@ export async function fetchTradeActions({
   chainId,
   pageIndex,
   pageSize,
-  marketAddresses,
+  marketsDirectionsFilter = EMPTY_ARRAY,
   forAllAccounts,
   account,
   fromTxTimestamp,
@@ -261,12 +266,11 @@ export async function fetchTradeActions({
   orderEventCombinations,
   marketsInfoData,
   tokensData,
-  isLong,
 }: {
   chainId: number;
   pageIndex: number;
   pageSize: number;
-  marketAddresses: string[] | undefined;
+  marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
   fromTxTimestamp: number | undefined;
@@ -280,7 +284,6 @@ export async function fetchTradeActions({
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
-  isLong?: boolean;
 }): Promise<TradeAction[]> {
   const client = getSyntheticsGraphClient(chainId);
   definedOrThrow(client);
@@ -288,7 +291,29 @@ export async function fetchTradeActions({
   const skip = pageIndex * pageSize;
   const first = pageSize;
 
-  const maybeLowercaseMarketAddresses = marketAddresses?.map((s) => s.toLowerCase());
+  const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
+    .map((filter) => ({
+      marketAddress: filter.marketAddress.toLowerCase() as Address,
+      direction: filter.direction,
+      collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
+    }));
+
+  const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
+
+  const pureDirectionFilters = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
+    .map((filter) => ({
+      marketAddress: filter.marketAddress.toLowerCase() as "any",
+      direction: filter.direction,
+    }));
+  const hasPureDirectionFilters = pureDirectionFilters.length > 0;
+
+  const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
+    .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
+    .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
+
+  const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
   const filtersStr = buildFiltersBody({
     and: [
@@ -298,45 +323,87 @@ export async function fetchTradeActions({
           timestamp_gte: fromTxTimestamp,
           timestamp_lte: toTxTimestamp,
         },
-        isLong: isLong,
-        // isLong is false even for swap orders, so we need to filter them out when only real shorts are requested
-        orderType_not_in: isLong !== undefined ? [OrderType.LimitSwap, OrderType.MarketSwap] : undefined,
+      },
+      {
+        or: !hasPureDirectionFilters
+          ? undefined
+          : pureDirectionFilters.map((filter) =>
+              filter.direction === "swap"
+                ? {
+                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  }
+                : {
+                    isLong: filter.direction === "long",
+                    orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  }
+            ),
       },
       {
         or: [
           // For non-swap orders
           {
-            orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
-            marketAddress_in: maybeLowercaseMarketAddresses,
-          },
-          // For swap orders
-          {
-            and: [
-              {
-                orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
-              },
-              {
-                or: [
-                  // Source token is not in swap path so we add it to the or filter
+            and: !hasNonSwapRelevantDefinedMarkets
+              ? undefined
+              : [
                   {
-                    marketAddress_in: maybeLowercaseMarketAddresses,
-                  } as GraphQlFilters,
-                ].concat(
-                  maybeLowercaseMarketAddresses?.map((marketAddress) => ({
-                    swapPath_contains: [marketAddress],
-                  })) || []
-                ),
-              },
-            ],
+                    orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  },
+                  {
+                    or: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
+                      marketAddress: filter.marketAddress === "any" ? undefined : filter.marketAddress,
+                      isLong: filter.direction === "any" ? undefined : filter.direction === "long",
+                      // Collateral filtering is done outside of graphql on the client
+                    })),
+                  },
+                ],
+          },
+          // For defined markets on swap orders
+          {
+            and: !hasSwapRelevantDefinedMarkets
+              ? undefined
+              : [
+                  {
+                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  },
+                  {
+                    or: [
+                      // Source token is not in swap path so we add it to the or filter
+                      {
+                        marketAddress_in: swapRelevantDefinedMarketsLowercased,
+                      } as GraphQlFilters,
+                    ].concat(
+                      swapRelevantDefinedMarketsLowercased.map((marketAddress) => ({
+                        swapPath_contains: [marketAddress],
+                      })) || []
+                    ),
+                  },
+                ],
           },
         ],
       },
       {
-        or: orderEventCombinations?.map((combination) => ({
-          eventName: combination.eventName,
-          orderType: combination.orderType,
-          sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
-        })),
+        or: orderEventCombinations?.map((combination) => {
+          let sizeDeltaUsdCondition = {};
+
+          if (
+            combination.orderType !== undefined &&
+            [OrderType.MarketDecrease, OrderType.MarketIncrease].includes(combination.orderType)
+          ) {
+            if (combination.isDepositOrWithdraw) {
+              sizeDeltaUsdCondition = { sizeDeltaUsd: 0 };
+            } else {
+              sizeDeltaUsdCondition = { sizeDeltaUsd_not: 0 };
+            }
+          }
+
+          return merge(
+            {
+              eventName: combination.eventName,
+              orderType: combination.orderType,
+            },
+            sizeDeltaUsdCondition
+          );
+        }),
       },
       {
         // We do not show create liquidation orders in the trade history, thus we filter it out
@@ -413,5 +480,78 @@ export async function fetchTradeActions({
 
   const transformer = createRawTradeActionTransformer(marketsInfoData, wrappedToken, tokensData);
 
-  return rawTradeActions.map(transformer).filter(Boolean) as TradeAction[];
+  let tradeActions = rawTradeActions.map(transformer).filter(Boolean) as TradeAction[];
+
+  const collateralFilterTree: {
+    [direction in "long" | "short"]: {
+      [marketAddress: string]: {
+        [collateralAddress: string]: boolean;
+      };
+    };
+  } = {
+    long: {},
+    short: {},
+  };
+  let hasCollateralFilter = false;
+
+  marketsDirectionsFilter.forEach((filter) => {
+    if (filter.direction === "any" || filter.direction === "swap" || !filter.collateralAddress) {
+      return;
+    }
+
+    if (!collateralFilterTree[filter.direction]) {
+      collateralFilterTree[filter.direction] = {};
+    }
+
+    if (!collateralFilterTree[filter.direction][filter.marketAddress]) {
+      collateralFilterTree[filter.direction][filter.marketAddress] = {};
+    }
+
+    hasCollateralFilter = true;
+    collateralFilterTree[filter.direction][filter.marketAddress][filter.collateralAddress] = true;
+  });
+
+  // Filter out trade actions that do not match the collateral filter
+  // We do this on the client side because the collateral filtering is too complex to be done in the graphql query
+  if (hasCollateralFilter) {
+    tradeActions = tradeActions.filter((tradeAction) => {
+      // All necessary filters for swaps are already applied in the graphql query
+      if (isSwapOrderType(tradeAction.orderType)) {
+        return true;
+      }
+
+      const positionTradeAction = tradeAction as PositionTradeAction;
+
+      let collateralMatch = true;
+
+      const desiredCollateralAddresses =
+        collateralFilterTree[positionTradeAction.isLong ? "long" : "short"]?.[positionTradeAction.marketAddress];
+
+      if (isLimitOrderType(tradeAction.orderType)) {
+        const wrappedToken = getWrappedToken(chainId);
+
+        if (!marketsInfoData) {
+          collateralMatch = true;
+        } else {
+          const { outTokenAddress } = getSwapPathOutputAddresses({
+            marketsInfoData,
+            initialCollateralAddress: positionTradeAction.initialCollateralTokenAddress,
+            isIncrease: isIncreaseOrderType(tradeAction.orderType),
+            shouldUnwrapNativeToken: positionTradeAction.shouldUnwrapNativeToken,
+            swapPath: tradeAction.swapPath,
+            wrappedNativeTokenAddress: wrappedToken.address,
+          });
+
+          collateralMatch =
+            outTokenAddress !== undefined && Boolean(desiredCollateralAddresses?.[outTokenAddress as Address]);
+        }
+      } else if (isTriggerDecreaseOrderType(tradeAction.orderType)) {
+        collateralMatch = Boolean(desiredCollateralAddresses?.[positionTradeAction.initialCollateralTokenAddress]);
+      }
+
+      return collateralMatch;
+    });
+  }
+
+  return tradeActions;
 }

@@ -1,15 +1,16 @@
 import { ComponentPropsWithoutRef, ComponentType, FunctionComponent } from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
+import AccountPnlSummarySkeletonStructure from "./AccountPnlSummarySkeletonStructure";
 import ClaimsHistorySkeletonStructure from "./ClaimsHistorySkeletonStructure";
 import GMListSkeletonStructure from "./GMListSkeletonStructure";
 import { LeaderboardTopAccountsStructure } from "./LeaderboardTopAccountsStructure";
+import { LeaderboardTopPositionsStructure } from "./LeaderboardTopPositionsStructure";
 import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
 import TradesHistorySkeletonStructure from "./TradesHistorySkeletonStructure";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Skeleton.scss";
-import { LeaderboardTopPositionsStructure } from "./LeaderboardTopPositionsStructure";
 
 type Props = {
   count?: number;
@@ -52,4 +53,8 @@ export function TradesHistorySkeleton(props: SkeletonProps<typeof TradesHistoryS
 
 export function ClaimsHistorySkeleton(props: SkeletonProps<typeof ClaimsHistorySkeletonStructure>) {
   return <TableListSkeleton {...props} Structure={ClaimsHistorySkeletonStructure} />;
+}
+
+export function AccountPnlSummarySkeleton(props: SkeletonProps<typeof AccountPnlSummarySkeletonStructure>) {
+  return <TableListSkeleton {...props} Structure={AccountPnlSummarySkeletonStructure} />;
 }

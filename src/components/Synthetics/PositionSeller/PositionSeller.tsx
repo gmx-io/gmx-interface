@@ -1,7 +1,6 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest } from "react-use";
 
@@ -20,6 +19,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { applySlippageToPrice } from "domain/synthetics/trade";
 import {
   useClosingPositionKeyState,
   usePositionsConstants,
@@ -32,16 +32,8 @@ import {
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useHasOutdatedUi } from "domain/legacy";
-import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
-  getTriggerNameByOrderType,
-} from "domain/synthetics/positions";
-import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
+import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -68,23 +60,31 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
-  selectPositionSellerAcceptablePrice,
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerMaxLiquidityPath,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
-  selectPositionSellerReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerSwapRoutes,
+  selectPositionSellerSetDefaultReceiveToken,
+  selectPositionSellerReceiveToken,
+  selectPositionSellerMarkPrice,
+  selectPositionSellerFees,
+  selectPositionSellerExecutionPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
+import { useLocalizedMap } from "lib/i18n";
+import "./PositionSeller.scss";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -94,8 +94,8 @@ export type Props = {
 };
 
 const ORDER_OPTION_LABELS = {
-  [OrderOption.Market]: t`Market`,
-  [OrderOption.Trigger]: t`TP/SL`,
+  [OrderOption.Market]: msg`Market`,
+  [OrderOption.Trigger]: msg`TP/SL`,
 };
 
 export function PositionSeller(p: Props) {
@@ -113,17 +113,17 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const uiFeeFactor = useUiFeeFactor(chainId);
   const position = useSelector(selectPositionSellerPosition);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const gasLimits = useSelector(selectGasLimits);
-  const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
+  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   const isVisible = Boolean(position);
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
+  const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
 
   const {
     allowedSlippage,
@@ -131,19 +131,20 @@ export function PositionSeller(p: Props) {
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
     orderOption,
+    handleSetOrderOption,
     receiveTokenAddress,
     setAllowedSlippage,
     setCloseUsdInputValue: setCloseUsdInputValueRaw,
     setDefaultTriggerAcceptablePriceImpactBps,
     setIsSubmitting,
     setKeepLeverage,
-    setOrderOption,
     setReceiveTokenAddress,
     setSelectedTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
     setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
+    setIsReceiveTokenChanged,
   } = usePositionSeller();
   const keepLeverage = usePositionSellerKeepLeverage();
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
@@ -161,7 +162,15 @@ export function PositionSeller(p: Props) {
   const isTrigger = orderOption === OrderOption.Trigger;
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
-  const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
+  const maxCloseSize = position?.sizeInUsd || 0n;
+
+  const setReceiveTokenManually = useCallback(
+    (token: Token) => {
+      setIsReceiveTokenChanged(true);
+      setReceiveTokenAddress(token.address);
+    },
+    [setReceiveTokenAddress, setIsReceiveTokenChanged]
+  );
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
@@ -174,20 +183,16 @@ export function PositionSeller(p: Props) {
     }
   }, [isVisible, resetPositionSeller]);
 
-  const markPrice = position
-    ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
-    : undefined;
-
-  const { maxSwapLiquidity } = useSelector(selectPositionSellerSwapRoutes);
+  const markPrice = useSelector(selectPositionSellerMarkPrice);
+  const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
-  const acceptablePrice = useSelector(selectPositionSellerAcceptablePrice);
 
   useDebugExecutionPrice(chainId, {
     skip: true,
     marketInfo: position?.marketInfo,
     sizeInUsd: position?.sizeInUsd,
     sizeInTokens: position?.sizeInTokens,
-    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd ? decreaseAmounts.sizeDeltaUsd * -1n : undefined,
     isLong: position?.isLong,
   });
 
@@ -199,49 +204,8 @@ export function PositionSeller(p: Props) {
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
-  const { fees, executionFee } = useMemo(() => {
-    if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
-      return {};
-    }
-
-    const swapsCount =
-      (decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1) +
-      (swapAmounts?.swapPathStats?.swapPath?.length || 0);
-
-    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      swapsCount,
-    });
-
-    return {
-      fees: getTradeFees({
-        isIncrease: false,
-        initialCollateralUsd: position.collateralUsd,
-        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-        swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
-        positionFeeUsd: decreaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
-        positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
-        borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
-        fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
-        feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
-        swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-        uiFeeFactor,
-      }),
-      executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-    };
-  }, [
-    chainId,
-    decreaseAmounts,
-    gasLimits,
-    gasPrice,
-    position,
-    swapAmounts?.swapPathStats?.swapPath,
-    swapAmounts?.swapPathStats?.swapSteps,
-    swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-    tokensData,
-    uiFeeFactor,
-  ]);
+  const { fees, executionFee } = useSelector(selectPositionSellerFees);
+  const executionPrice = useSelector(selectPositionSellerExecutionPrice);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
@@ -254,7 +218,7 @@ export function PositionSeller(p: Props) {
     tradeFlags,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
+  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
   const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
   const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
@@ -299,7 +263,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighFeeConsentError) {
-      return [t`High Execution Fee not yet acknowledged`];
+      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
@@ -337,10 +301,10 @@ export function PositionSeller(p: Props) {
     if (
       !tokensData ||
       !position ||
-      !executionFee?.feeTokenAmount ||
+      executionFee?.feeTokenAmount == undefined ||
       !receiveToken?.address ||
-      !receiveUsd ||
-      !decreaseAmounts?.acceptablePrice ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
       !signer ||
       !orderType
     ) {
@@ -363,7 +327,7 @@ export function PositionSeller(p: Props) {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
         receiveTokenAddress: receiveToken.address,
         swapPath,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -371,7 +335,7 @@ export function PositionSeller(p: Props) {
         isLong: position.isLong,
         acceptablePrice: decreaseAmounts.acceptablePrice,
         triggerPrice: isTrigger ? triggerPrice : undefined,
-        minOutputUsd: BigNumber.from(0),
+        minOutputUsd: 0n,
         decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
         orderType,
         referralCode: userReferralInfo?.referralCodeForTxn,
@@ -379,7 +343,7 @@ export function PositionSeller(p: Props) {
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,
-        skipSimulation: shouldDisableValidationForTesting,
+        skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
       },
       {
         setPendingOrder,
@@ -391,11 +355,13 @@ export function PositionSeller(p: Props) {
     if (subaccount) {
       onClose();
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
       return;
     }
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
     });
   }
 
@@ -424,11 +390,11 @@ export function PositionSeller(p: Props) {
   useEffect(() => {
     if (isTrigger && decreaseAmounts) {
       if (
-        !defaultTriggerAcceptablePriceImpactBps ||
-        !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
+        defaultTriggerAcceptablePriceImpactBps === undefined ||
+        defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
       ) {
-        setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
-        setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+        setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
+        setSelectedTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
       }
     }
   }, [
@@ -442,6 +408,37 @@ export function PositionSeller(p: Props) {
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
+  const executionPriceFlags = useMemo(
+    () => ({
+      isLimit: false,
+      isMarket: orderOption === OrderOption.Market,
+      isIncrease: false,
+      isLong: !!position?.isLong,
+      isShort: !position?.isLong,
+      isSwap: false,
+      isPosition: true,
+      isTrigger: orderOption === OrderOption.Trigger,
+    }),
+    [position?.isLong, orderOption]
+  );
+
+  const shouldApplySlippage = orderOption === OrderOption.Market;
+  const acceptablePrice =
+    shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
+      : decreaseAmounts?.acceptablePrice;
+
+  const limitPriceRow = (
+    <ExecutionPriceRow
+      tradeFlags={executionPriceFlags}
+      displayDecimals={toToken?.priceDecimals}
+      fees={fees}
+      executionPrice={executionPrice ?? undefined}
+      acceptablePrice={acceptablePrice}
+      triggerOrderType={decreaseAmounts?.triggerOrderType}
+    />
+  );
+
   const triggerPriceRow = (
     <ExchangeInfoRow
       className="SwapBox-info-row"
@@ -451,28 +448,6 @@ export function PositionSeller(p: Props) {
           displayDecimals: toToken?.priceDecimals,
         }) || "-"
       }`}
-    />
-  );
-
-  const markPriceRow = (
-    <ExchangeInfoRow
-      label={t`Mark Price`}
-      value={
-        formatUsd(markPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
-    />
-  );
-
-  const entryPriceRow = (
-    <ExchangeInfoRow
-      label={t`Entry Price`}
-      value={
-        formatUsd(position?.entryPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
     />
   );
 
@@ -494,19 +469,6 @@ export function PositionSeller(p: Props) {
     );
   })();
 
-  let acceptablePriceValue: React.ReactNode = "-";
-  if (isStopLoss) {
-    acceptablePriceValue = t`NA`;
-  } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
-    acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
-      displayDecimals: indexPriceDecimals,
-    });
-  } else {
-    acceptablePriceValue = "-";
-  }
-
-  const acceptablePriceRow = <ExchangeInfoRow label={t`Acceptable Price`} value={acceptablePriceValue} />;
-
   const liqPriceRow = position && (
     <ExchangeInfoRow
       className="SwapBox-info-row"
@@ -521,11 +483,11 @@ export function PositionSeller(p: Props) {
           to={
             decreaseAmounts?.isFullClose
               ? "-"
-              : decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })
-              : undefined
+              : decreaseAmounts?.sizeDeltaUsd
+                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })
+                : undefined
           }
         />
       }
@@ -553,7 +515,7 @@ export function PositionSeller(p: Props) {
               </>
             }
             to={
-              decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
+              decreaseAmounts?.sizeDeltaUsd ? (
                 <>
                   {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                   {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
@@ -601,7 +563,7 @@ export function PositionSeller(p: Props) {
             showBalances={false}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
-            onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+            onSelectToken={setReceiveTokenManually}
             tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
@@ -650,7 +612,7 @@ export function PositionSeller(p: Props) {
   if (decreaseAmounts?.isFullClose) {
     leverageValue = t`NA`;
   } else if (position) {
-    if (decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd)) {
+    if (decreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
       leverageValue = "-";
     } else {
       leverageValue = (
@@ -677,8 +639,8 @@ export function PositionSeller(p: Props) {
         <Tab
           options={Object.values(OrderOption)}
           option={orderOption}
-          optionLabels={ORDER_OPTION_LABELS}
-          onChange={setOrderOption}
+          optionLabels={localizedOrderOptionLabels}
+          onChange={handleSetOrderOption}
         />
         <SubaccountNavigationButton
           executionFee={executionFee?.feeTokenAmount}
@@ -695,11 +657,11 @@ export function PositionSeller(p: Props) {
                 topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+                showMaxButton={maxCloseSize > 0 && closeSizeUsd !== maxCloseSize}
                 onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
-                  const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
+                  const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
                   setCloseUsdInputValueRaw(formattedAmount);
                 }}
               >
@@ -750,9 +712,7 @@ export function PositionSeller(p: Props) {
 
               <ExchangeInfo.Group>
                 {isTrigger && triggerPriceRow}
-                {!isTrigger && entryPriceRow}
-                {acceptablePriceRow}
-                {!isTrigger && markPriceRow}
+                {limitPriceRow}
                 {liqPriceRow}
               </ExchangeInfo.Group>
 

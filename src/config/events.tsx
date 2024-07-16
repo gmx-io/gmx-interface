@@ -1,7 +1,14 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import type { JSX } from "react";
+import { Trans } from "@lingui/macro";
+import { memo, type JSX } from "react";
+
+import { ARBITRUM, AVALANCHE } from "./chains";
+import { getIncentivesV2Url } from "./links";
+import { getNormalizedTokenSymbol } from "./tokens";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export type EventData = {
   id: string;
@@ -20,33 +27,36 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
+const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
+  <span className="whitespace-nowrap">
+    <TokenIcon className="relative -top-3" symbol={symbol} displaySize={14} importSize={40} />
+    &nbsp;{symbol}
+  </span>
+));
+
 export const appEventsData: EventData[] = [
   {
-    id: "all-incentives-launch",
-    title: "Incentives are live",
+    id: "arbitrum-and-avalanche-incentives-launch-3",
+    title: "Arbitrum and Avalanche Incentives are Live",
     isActive: true,
-    endDate: "27 Mar 2024, 00:00",
-    bodyText: [
-      `Arbitrum STIP incentives are live for:`,
-      "",
-      "• Arbitrum GM Pools Liquidity.",
-      "• Arbitrum GMX V2 Trading.",
-    ],
-    link: {
-      text: "Read more.",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
-      newTab: true,
-    },
+    endDate: "16 Sep 2024, 00:00",
+    startDate: "03 Jul 2024, 00:00",
+    bodyText: (
+      <Trans>
+        Incentives are live for <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink> and{" "}
+        <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink> GM pools and V2 trading.
+      </Trans>
+    ),
   },
   {
-    id: "incentives-launch",
-    title: "Incentives are live",
+    id: "arbitrum-incentives-launch-2",
+    title: "Arbitrum Incentives are Live",
     isActive: true,
-    endDate: "31 Oct 2024, 12:00",
-    bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
+    endDate: "03 Jul 2024, 00:00",
+    bodyText: "Incentives are live for Arbitrum GM pools and V2 trading.",
     link: {
       text: "Read more",
-      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+      href: getIncentivesV2Url(ARBITRUM),
       newTab: true,
     },
   },
@@ -78,7 +88,7 @@ export const appEventsData: EventData[] = [
   {
     id: "delegate-voting-power",
     title: "Delegate your GMX Voting Power",
-    isActive: true,
+    isActive: false,
     endDate: "6 Jun 2024, 23:59",
     bodyText: (
       <>
@@ -87,5 +97,61 @@ export const appEventsData: EventData[] = [
         before staking or claiming GMX rewards.
       </>
     ),
+  },
+  {
+    id: "max-leverage-doge",
+    title: "Max leverage increased",
+    isActive: true,
+    endDate: "14 Jun 2024, 0:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("DOGE")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("BNB")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("SOL")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LTC")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("LINK")} />
+        {" and "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("XRP")} /> with up to 100x leverage,
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ARB")} /> with up to 75x leverage and{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ATOM")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("AVAX")} />
+        {" and "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("UNI")} /> with up to 60x on Arbitrum.
+      </>
+    ),
+  },
+  {
+    id: "gmxusdc-market",
+    title: "GMX/USD market added on Arbitrum",
+    isActive: true,
+    endDate: "14 Jun 2024, 0:00",
+    bodyText: "Trade GMX/USD, or provide liquidity using GMX or USDC.",
+    link: {
+      text: "Read more",
+      href: "https://snapshot.org/#/gmx.eth/proposal/0x5fc32bea68c7e2ee237c86bae73859f742304c130df9a44495b816cc62b4f30f",
+      newTab: true,
+    },
+  },
+  {
+    id: "account-dashboard-feature",
+    title: "New PnL Analysis Dashboard",
+    isActive: true,
+    endDate: "21 Jun 2024, 0:00",
+    bodyText:
+      "Check the new PnL dashboard for traders under the wallet submenu or the trades history tab when connected.",
+  },
+  {
+    id: "avalanche-single-side-btc-eth-avax-markets",
+    title: "New BTC/USD, ETH/USD, and AVAX/USD single token GM pools on Avalanche",
+    isActive: true,
+    bodyText: (
+      <>
+        Use only <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("BTC")} />,{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("ETH")} />, or{" "}
+        <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("AVAX")} /> to provide liquidity to BTC/USD, ETH/USD, or
+        AVAX/USD. Buy GM without being exposed to stablecoins.
+      </>
+    ),
+    endDate: "14 Jul 2024, 23:59",
   },
 ];

@@ -1,9 +1,9 @@
-import useSWR from "swr";
-import { getTotalVolumeSum } from "lib/legacy";
-import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
-import { bigNumberify } from "lib/numbers";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arrayURLFetcher } from "lib/fetcher";
+import { getTotalVolumeSum } from "lib/legacy";
+import useSWR from "swr";
+
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 export function useTotalVolume() {
@@ -18,10 +18,10 @@ export function useTotalVolume() {
       (acc, chainId, index) => {
         const sum = getTotalVolumeSum(totalVolume[index])!;
         acc[chainId] = sum;
-        acc.total = acc.total.add(sum);
+        acc.total = acc.total + sum;
         return acc;
       },
-      { total: bigNumberify(0)! }
+      { total: 0n }
     );
   }
 }

@@ -3,7 +3,7 @@ import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder, SetPendingPosition, PendingOrderData } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType, OrderTxnType } from "./types";
@@ -19,23 +19,23 @@ import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import concat from "lodash/concat";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 type IncreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
   targetCollateralAddress: string;
-  initialCollateralAmount: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  initialCollateralAmount: bigint;
+  collateralDeltaAmount: bigint;
   swapPath: string[];
-  sizeDeltaUsd: BigNumber;
-  sizeDeltaInTokens: BigNumber;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber | undefined;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint | undefined;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -57,8 +57,8 @@ type SecondaryOrderCommonParams = {
   indexToken: TokenData;
   txnType: OrderTxnType;
   orderType: OrderType;
-  sizeDeltaUsd: BigNumber;
-  initialCollateralDeltaAmount: BigNumber;
+  sizeDeltaUsd: bigint;
+  initialCollateralDeltaAmount: bigint;
 };
 
 export type SecondaryDecreaseOrderParams = BaseDecreaseOrderParams & SecondaryOrderCommonParams;
@@ -69,12 +69,12 @@ export type SecondaryCancelOrderParams = SecondaryOrderCommonParams & {
 
 export type SecondaryUpdateOrderParams = SecondaryOrderCommonParams & {
   orderKey: string;
-  sizeDeltaUsd: BigNumber;
-  acceptablePrice: BigNumber;
-  triggerPrice: BigNumber;
-  executionFee: BigNumber;
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  executionFee: bigint;
   indexToken: TokenData;
-  minOutputAmount: BigNumber;
+  minOutputAmount: bigint;
 };
 
 export async function createIncreaseOrderTxn({
@@ -100,18 +100,18 @@ export async function createIncreaseOrderTxn({
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
     : p.acceptablePrice;
 
-  const wntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
+  const wntAmountToIncrease = wntCollateralAmount + p.executionFee;
   const totalWntAmount = concat<undefined | SecondaryDecreaseOrderParams | SecondaryUpdateOrderParams>(
     createDecreaseOrderParams,
     updateOrderParams
-  ).reduce((acc, p) => (p ? acc.add(p.executionFee) : acc), wntAmountToIncrease);
+  ).reduce((acc, p) => (p ? acc + p.executionFee : acc), wntAmountToIncrease);
 
   const increaseOrder: PendingOrderData = {
     account: p.account,
@@ -120,7 +120,7 @@ export async function createIncreaseOrderTxn({
     initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath: p.swapPath,
     sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: BigNumber.from(0),
+    minOutputAmount: 0n,
     isLong: p.isLong,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
@@ -197,10 +197,9 @@ export async function createIncreaseOrderTxn({
       []
     ) ?? [];
 
-  const secondaryPriceOverrides: PriceOverrides = {};
   const primaryPriceOverrides: PriceOverrides = {};
 
-  if (p.triggerPrice) {
+  if (p.triggerPrice != undefined) {
     primaryPriceOverrides[p.indexToken.address] = {
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
@@ -212,7 +211,6 @@ export async function createIncreaseOrderTxn({
       account: p.account,
       tokensData: p.tokensData,
       primaryPriceOverrides,
-      secondaryPriceOverrides,
       createOrderMulticallPayload: simulationEncodedPayload,
       value: totalWntAmount,
       errorTitle: t`Order error.`,
@@ -226,6 +224,7 @@ export async function createIncreaseOrderTxn({
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
   });
 
@@ -234,7 +233,8 @@ export async function createIncreaseOrderTxn({
   }
 
   if (isMarketOrderType(p.orderType)) {
-    const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+    if (!signer.provider) throw new Error("No provider found");
+    const txnCreatedAtBlock = await signer.provider.getBlockNumber();
     const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
 
     p.setPendingPosition({
@@ -244,7 +244,7 @@ export async function createIncreaseOrderTxn({
       sizeDeltaUsd: p.sizeDeltaUsd,
       sizeDeltaInTokens: p.sizeDeltaInTokens,
       updatedAt: txnCreatedAt,
-      updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+      updatedAtBlock: BigInt(txnCreatedAtBlock),
     });
   }
 }
@@ -262,9 +262,9 @@ async function createEncodedPayload({
 }: {
   router: ethers.Contract;
   orderVaultAddress: string;
-  totalWntAmount: BigNumber;
+  totalWntAmount: bigint;
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
@@ -300,33 +300,35 @@ function createOrderParams({
   isNativePayment,
 }: {
   p: IncreaseOrderParams;
-  acceptablePrice: BigNumber;
+  acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
   subaccount: Subaccount | null;
   isNativePayment: boolean;
 }) {
   return {
     addresses: {
+      cancellationReceiver: ethers.ZeroAddress,
       receiver: p.account,
       initialCollateralToken: initialCollateralTokenAddress,
-      callbackContract: AddressZero,
+      callbackContract: ZeroAddress,
       market: p.marketAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigNumber.from(0),
-      triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : 0n,
+      triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, p.indexToken.decimals),
       acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
       executionFee: p.executionFee,
-      callbackGasLimit: BigNumber.from(0),
-      minOutputAmount: BigNumber.from(0),
+      callbackGasLimit: 0n,
+      minOutputAmount: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
     shouldUnwrapNativeToken: isNativePayment,
-    referralCode: p.referralCode || ethers.constants.HashZero,
+    autoCancel: false,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 }

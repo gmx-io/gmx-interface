@@ -43,9 +43,9 @@ export const selectLeaderboardIsCompetitionOver = createSelector(function select
   return q(selectLeaderboardIsCompetition);
 });
 
-export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(
-  q
-): LeaderboardAccount | undefined {
+export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(q):
+  | LeaderboardAccount
+  | undefined {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);
   const leaderboardAccount = accounts?.find((a) => a.account === currentAccount);
@@ -87,13 +87,16 @@ const selectPositionBasesByAccount = createSelector(function selectPositionBases
 
   if (!positionBases) return {};
 
-  return positionBases.reduce((acc, position) => {
-    if (!acc[position.account]) {
-      acc[position.account] = [];
-    }
-    acc[position.account].push(position);
-    return acc;
-  }, {} as Record<string, LeaderboardPositionBase[]>);
+  return positionBases.reduce(
+    (acc, position) => {
+      if (!acc[position.account]) {
+        acc[position.account] = [];
+      }
+      acc[position.account].push(position);
+      return acc;
+    },
+    {} as Record<string, LeaderboardPositionBase[]>
+  );
 });
 
 const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccounts(q) {
@@ -206,17 +209,10 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
 
   if (!positionBases) return undefined;
 
-  const userReferralInfoBigNumber = q(selectUserReferralInfo);
-  const userReferralInfo = {
+  const userReferralInfo = q(selectUserReferralInfo) ?? {
     totalRebateFactor: 0n,
     discountFactor: 0n,
   };
-
-  if (userReferralInfoBigNumber) {
-    const { totalRebateFactor, discountFactor } = userReferralInfoBigNumber;
-    userReferralInfo.totalRebateFactor = totalRebateFactor.toBigInt();
-    userReferralInfo.discountFactor = discountFactor.toBigInt();
-  }
 
   const positions = positionBases
     .map((position) => {
@@ -235,12 +231,10 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
       const fees = position.realizedFees + position.unrealizedFees;
       const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
 
-      const collateralTokenPrice = q((s) =>
-        selectTokensData(s)?.[position.collateralToken]?.prices.minPrice.toBigInt()
-      );
+      const collateralTokenPrice = q((s) => selectTokensData(s)?.[position.collateralToken]?.prices.minPrice);
       const collateralTokenDecimals = q((s) => selectTokensData(s)?.[position.collateralToken]?.decimals);
 
-      if (!collateralTokenPrice || !collateralTokenDecimals) return undefined;
+      if (collateralTokenPrice === undefined || !collateralTokenDecimals) return undefined;
 
       const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
 
@@ -282,7 +276,7 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   }
 
   let pnl =
-    (position.sizeInTokens * market.indexToken.prices.minPrice.toBigInt()) / 10n ** BigInt(market.indexToken.decimals) -
+    (position.sizeInTokens * market.indexToken.prices.minPrice) / 10n ** BigInt(market.indexToken.decimals) -
     position.sizeInUsd;
 
   if (!position.isLong) {
@@ -310,7 +304,7 @@ function getCloseFee(
     ? marketInfo.positionFeeFactorForPositiveImpact
     : marketInfo.positionFeeFactorForNegativeImpact;
 
-  let positionFeeUsd = applyFactor(sizeDeltaUsd, factor.toBigInt());
+  let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
 
   if (!referralInfo) {
     return positionFeeUsd;

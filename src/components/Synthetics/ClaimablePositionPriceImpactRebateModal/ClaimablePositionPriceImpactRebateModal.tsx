@@ -14,7 +14,7 @@ import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPr
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -99,7 +99,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const indexName = getMarketIndexName(market);
     const poolName = getMarketPoolName(market);
     return (
-      <div className="items-center">
+      <div className="flex items-center">
         <span className="text-white">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
@@ -114,8 +114,8 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       const key = rebateItem.marketAddress + rebateItem.tokenAddress;
       if (typeof groupedTokens[key] === "number") {
         const index = groupedTokens[key];
-        acc[index].value = acc[index].value.add(rebateItem.value);
-        acc[index].valueByFactor = acc[index].valueByFactor.add(rebateItem.valueByFactor);
+        acc[index].value = acc[index].value + rebateItem.value;
+        acc[index].valueByFactor = acc[index].valueByFactor + rebateItem.valueByFactor;
       } else {
         groupedTokens[key] = acc.length;
         acc.push({ ...rebateItem });
@@ -142,15 +142,18 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
   }, [market?.longTokenAddress, market?.shortTokenAddress, rebateItems]);
 
   const usd = useMemo(() => {
-    let total = BigNumber.from(0);
+    let total = 0n;
 
     rebateItems.forEach((rebateItem) => {
       const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
       const price = tokenData?.prices.minPrice;
       const decimals = tokenData?.decimals;
-      const usd = price && decimals ? rebateItem.valueByFactor.mul(price).div(expandDecimals(1, decimals)) : null;
-      if (!usd) return;
-      total = total.add(usd);
+      const usd =
+        price !== undefined && decimals
+          ? bigMath.mulDiv(rebateItem.valueByFactor, price, expandDecimals(1, decimals))
+          : null;
+      if (usd === null) return;
+      total = total + usd;
     });
 
     return formatDeltaUsd(total);
@@ -176,7 +179,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       <div className="ClaimSettleModal-info-label-usd">
         <TooltipWithPortal
           position="top-end"
-          portalClassName="ClaimModal-row-tooltip"
+          tooltipClassName="ClaimModal-row-tooltip"
           handle={usd}
           renderContent={renderContent}
         />

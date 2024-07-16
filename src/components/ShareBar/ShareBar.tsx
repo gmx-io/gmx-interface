@@ -1,7 +1,8 @@
-import { BigNumber, BigNumberish } from "ethers";
 import cx from "classnames";
-import "./ShareBar.scss";
+import { BigNumberish } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { useMemo } from "react";
+import "./ShareBar.scss";
 
 const PERCENTAGE_HIDE_THRESHOLD = 25;
 
@@ -17,11 +18,12 @@ export function ShareBar(p: Props) {
   const { share, total, className, warningThreshold, showPercentage } = p;
 
   const progress = useMemo(() => {
-    if (!share || !total || BigNumber.from(total)?.eq(0)) {
+    if (share == undefined || total == undefined || BigInt(total) == 0n) {
       return null;
     }
-    const calculatedProgress = BigNumber.from(share)!.mul(100).div(total).toNumber();
-    return Math.min(calculatedProgress, 100);
+    const calculatedProgress = Number(bigMath.mulDiv(BigInt(share), 100n, BigInt(total)));
+
+    return Math.max(Math.min(calculatedProgress, 100), 0.01); // 0.01 ~= 0 but css works properly
   }, [share, total]);
 
   const percentageStyle = useMemo(() => {
@@ -34,7 +36,7 @@ export function ShareBar(p: Props) {
     };
   }, [progress]);
 
-  if (!progress) {
+  if (progress === null) {
     return null;
   }
 

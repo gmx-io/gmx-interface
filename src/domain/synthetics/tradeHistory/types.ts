@@ -1,7 +1,7 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { BigNumber, Bytes } from "ethers";
 import { TokenData } from "../tokens";
+import { BytesLike } from "ethers";
 
 export enum TradeActionType {
   OrderCreated = "OrderCreated",
@@ -48,7 +48,7 @@ export type RawTradeAction = {
   shouldUnwrapNativeToken?: boolean;
 
   reason?: string;
-  reasonBytes?: Bytes;
+  reasonBytes?: BytesLike;
 
   transaction: {
     timestamp: number;
@@ -67,28 +67,29 @@ export type PositionTradeAction = {
   targetCollateralToken: TokenData;
   indexToken: TokenData;
   swapPath: string[];
-  initialCollateralDeltaAmount: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  indexTokenPriceMin?: BigNumber;
-  indexTokenPriceMax?: BigNumber;
-  triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
-  executionPrice?: BigNumber;
-  collateralTokenPriceMin?: BigNumber;
-  collateralTokenPriceMax?: BigNumber;
-  minOutputAmount: BigNumber;
-  priceImpactUsd?: BigNumber;
-  priceImpactDiffUsd?: BigNumber;
-  positionFeeAmount?: BigNumber;
-  borrowingFeeAmount?: BigNumber;
-  fundingFeeAmount?: BigNumber;
-  pnlUsd?: BigNumber;
-  basePnlUsd?: BigNumber;
+  initialCollateralDeltaAmount: bigint;
+  sizeDeltaUsd: bigint;
+  indexTokenPriceMin?: bigint;
+  indexTokenPriceMax?: bigint;
+  triggerPrice?: bigint;
+  acceptablePrice: bigint;
+  executionPrice?: bigint;
+  collateralTokenPriceMin?: bigint;
+  collateralTokenPriceMax?: bigint;
+  minOutputAmount: bigint;
+  priceImpactUsd?: bigint;
+  priceImpactDiffUsd?: bigint;
+  positionFeeAmount?: bigint;
+  borrowingFeeAmount?: bigint;
+  fundingFeeAmount?: bigint;
+  pnlUsd?: bigint;
+  basePnlUsd?: bigint;
   orderType: OrderType;
   orderKey: string;
   isLong: boolean;
   reason?: string;
-  reasonBytes?: Bytes;
+  reasonBytes?: BytesLike;
+  shouldUnwrapNativeToken: boolean;
 
   transaction: {
     timestamp: number;
@@ -105,14 +106,14 @@ export type SwapTradeAction = {
   targetCollateralToken: TokenData;
   shouldUnwrapNativeToken: boolean;
   swapPath: string[];
-  initialCollateralDeltaAmount: BigNumber;
-  minOutputAmount: BigNumber;
-  executionAmountOut?: BigNumber;
+  initialCollateralDeltaAmount: bigint;
+  minOutputAmount: bigint;
+  executionAmountOut?: bigint;
   orderType: OrderType;
   orderKey: string;
 
   reason?: string;
-  reasonBytes?: Bytes;
+  reasonBytes?: BytesLike;
 
   transaction: {
     timestamp: number;

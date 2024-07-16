@@ -4,8 +4,8 @@ import { getContract } from "config/contracts";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
-import { BigNumber } from "ethers";
 import useWallet from "lib/wallets/useWallet";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -53,7 +53,7 @@ export function useTokenBalances(
             calls: {
               balance: {
                 methodName: "balanceOf",
-                params: [account],
+                params: [account ?? PLACEHOLDER_ACCOUNT],
               },
             },
           };
@@ -63,7 +63,7 @@ export function useTokenBalances(
       }, {}),
     parseResponse: (res) =>
       Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = BigNumber.from(res.data[tokenAddress].balance.returnValues[0]);
+        tokenBalances[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
 
         return tokenBalances;
       }, {} as TokenBalancesData),

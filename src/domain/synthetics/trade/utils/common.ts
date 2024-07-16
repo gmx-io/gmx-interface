@@ -1,8 +1,8 @@
 import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
-import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { bigMath } from "lib/bigmath";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;
@@ -50,22 +50,20 @@ export function getTradeFlagsForOrder(order: OrderInfo) {
 }
 
 export function getTradeFees(p: {
-  isIncrease: boolean;
-  initialCollateralUsd: BigNumber;
-  sizeDeltaUsd: BigNumber;
+  initialCollateralUsd: bigint;
+  sizeDeltaUsd: bigint;
   swapSteps: SwapStats[];
-  positionFeeUsd: BigNumber;
-  swapPriceImpactDeltaUsd: BigNumber;
-  positionPriceImpactDeltaUsd: BigNumber;
-  priceImpactDiffUsd: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  feeDiscountUsd: BigNumber;
-  swapProfitFeeUsd: BigNumber;
-  uiFeeFactor: BigNumber;
+  positionFeeUsd: bigint;
+  swapPriceImpactDeltaUsd: bigint;
+  positionPriceImpactDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
+  borrowingFeeUsd: bigint;
+  fundingFeeUsd: bigint;
+  feeDiscountUsd: bigint;
+  swapProfitFeeUsd: bigint;
+  uiFeeFactor: bigint;
 }): TradeFees {
   const {
-    isIncrease,
     initialCollateralUsd,
     sizeDeltaUsd,
     swapSteps,
@@ -80,35 +78,36 @@ export function getTradeFees(p: {
     uiFeeFactor,
   } = p;
 
-  const swapFees: SwapFeeItem[] | undefined = initialCollateralUsd.gt(0)
-    ? swapSteps.map((step) => ({
-        tokenInAddress: step.tokenInAddress,
-        tokenOutAddress: step.tokenOutAddress,
-        marketAddress: step.marketAddress,
-        deltaUsd: step.swapFeeUsd.mul(-1),
-        bps: !step.usdIn.eq(0) ? getBasisPoints(step.swapFeeUsd.mul(-1), step.usdIn) : BigNumber.from(0),
-      }))
-    : undefined;
+  const swapFees: SwapFeeItem[] | undefined =
+    initialCollateralUsd > 0
+      ? swapSteps.map((step) => ({
+          tokenInAddress: step.tokenInAddress,
+          tokenOutAddress: step.tokenOutAddress,
+          marketAddress: step.marketAddress,
+          deltaUsd: step.swapFeeUsd * -1n,
+          bps: step.usdIn != 0n ? getBasisPoints(step.swapFeeUsd * -1n, step.usdIn) : 0n,
+        }))
+      : undefined;
 
   const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(swapSteps);
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor);
   const uiSwapFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
-  const uiSwapFee = getFeeItem(uiSwapFeeUsd.mul(-1), totalSwapVolumeUsd, {
+  const uiSwapFee = getFeeItem(uiSwapFeeUsd * -1n, totalSwapVolumeUsd, {
     shouldRoundUp: true,
   });
-  const uiFee = getFeeItem(uiFeeUsd.mul(-1), sizeDeltaUsd, { shouldRoundUp: true });
+  const uiFee = getFeeItem(uiFeeUsd * -1n, sizeDeltaUsd, { shouldRoundUp: true });
 
-  const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
+  const swapProfitFee = getFeeItem(swapProfitFeeUsd * -1n, initialCollateralUsd);
 
   const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);
 
-  const positionFeeBeforeDiscount = getFeeItem(positionFeeUsd.add(feeDiscountUsd).mul(-1), sizeDeltaUsd);
-  const positionFeeAfterDiscount = getFeeItem(positionFeeUsd.mul(-1), sizeDeltaUsd);
+  const positionFeeBeforeDiscount = getFeeItem((positionFeeUsd + feeDiscountUsd) * -1n, sizeDeltaUsd);
+  const positionFeeAfterDiscount = getFeeItem(positionFeeUsd * -1n, sizeDeltaUsd);
 
-  const borrowFee = getFeeItem(borrowingFeeUsd.mul(-1), initialCollateralUsd);
+  const borrowFee = getFeeItem(borrowingFeeUsd * -1n, initialCollateralUsd);
 
-  const fundingFee = getFeeItem(fundingFeeUsd.mul(-1), initialCollateralUsd);
+  const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
   const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
 
   const totalFees = getTotalFeeItem([
@@ -116,7 +115,6 @@ export function getTradeFees(p: {
     swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,
-    positionPriceImpact,
     borrowFee,
     fundingFee,
     uiFee,
@@ -132,7 +130,6 @@ export function getTradeFees(p: {
     fundingFee,
     uiFee,
     uiSwapFee,
-    !isIncrease ? positionPriceImpact : undefined,
   ]);
 
   return {
@@ -150,4 +147,27 @@ export function getTradeFees(p: {
     uiFee,
     uiSwapFee,
   };
+}
+
+export function getNextPositionExecutionPrice(p: {
+  triggerPrice: bigint;
+  priceImpactUsd: bigint;
+  sizeDeltaUsd: bigint;
+  isLong: boolean;
+  isIncrease: boolean;
+}) {
+  if (p.sizeDeltaUsd == 0n) {
+    return null;
+  }
+
+  const adjustedPriceImpactUsd = p.isIncrease
+    ? p.isLong
+      ? -p.priceImpactUsd
+      : p.priceImpactUsd
+    : p.isLong
+      ? p.priceImpactUsd
+      : -p.priceImpactUsd;
+
+  const adjustment = bigMath.mulDiv(p.triggerPrice, adjustedPriceImpactUsd, p.sizeDeltaUsd);
+  return p.triggerPrice + adjustment;
 }

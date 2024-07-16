@@ -116,7 +116,10 @@ export class Multicall {
 
   viemClient: ReturnType<typeof Multicall.getViemClient>;
 
-  constructor(public chainId: number, public rpcUrl: string) {
+  constructor(
+    public chainId: number,
+    public rpcUrl: string
+  ) {
     this.viemClient = Multicall.getViemClient(chainId, rpcUrl);
   }
 

@@ -1,4 +1,4 @@
-import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
+import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject, useMemo } from "react";
 import cx from "classnames";
 
 import ButtonLink from "./ButtonLink";
@@ -16,12 +16,13 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   onClick?: (event: ReactMouseEvent) => void;
   to?: string;
   type?: "button" | "submit" | "reset";
-  imgInfo?: {
-    src: string;
-    alt?: string;
-  };
+  imgSrc?: string;
+  imgAlt?: string;
+  imgClassName?: string;
   newTab?: boolean;
+  showExternalLinkArrow?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
+  slim?: boolean;
 };
 
 export default function Button({
@@ -32,14 +33,26 @@ export default function Button({
   textAlign = "center",
   to,
   className,
-  imgInfo,
+  imgSrc,
+  imgAlt = "",
+  imgClassName = "",
   type,
   newTab,
   buttonRef,
+  showExternalLinkArrow: showExternalLinkArrowOverride,
+  slim,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className, textAlign);
-  const showExternalLinkArrow = variant === "secondary";
+  const classNames = cx("button", variant, className, textAlign, { slim });
+  const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";
+
+  const img = useMemo(() => {
+    if (!imgSrc) {
+      return null;
+    }
+
+    return <img className={cx("btn-image", imgClassName)} src={imgSrc} alt={imgAlt} />;
+  }, [imgSrc, imgAlt, imgClassName]);
 
   function handleClick(event: ReactMouseEvent) {
     if (disabled || !onClick) {
@@ -63,7 +76,7 @@ export default function Button({
         ref={buttonRef}
         {...rest}
       >
-        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
+        {img}
         {children}
       </ButtonLink>
     );
@@ -72,7 +85,7 @@ export default function Button({
   if (onClick) {
     return (
       <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
-        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
+        {img}
         {children}
       </button>
     );
@@ -80,7 +93,7 @@ export default function Button({
 
   return (
     <button ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
-      {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
+      {img}
       {children}
     </button>
   );

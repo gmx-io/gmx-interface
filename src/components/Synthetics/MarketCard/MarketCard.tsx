@@ -58,24 +58,24 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRateLong: getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1),
-      borrowingRateShort: getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1),
+      borrowingRateLong: -getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
+      borrowingRateShort: -getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
-      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+      totalInterestUsd: marketInfo.longInterestUsd + marketInfo.shortInterestUsd,
       priceDecimals: marketInfo.indexToken.priceDecimals,
       maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
-  const netRateHourly = fundingRate?.add(borrowingRate ?? 0);
+  const netRateHourly = (fundingRate ?? 0n) + (borrowingRate ?? 0n);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   const renderFundingFeeTooltipContent = useCallback(() => {
-    if (!fundingRateLong || !fundingRateShort) return [];
+    if (fundingRateLong === undefined || fundingRateShort === undefined) return [];
 
     const long = (
       <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
@@ -106,14 +106,24 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <ExchangeInfoRow
           label={t`Market`}
           value={
-            <div className="items-top">
+            <div className="flex items-start">
               <span>{indexName && indexName}</span>
               <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>
           }
         />
         <ExchangeInfoRow
-          label={t`Entry Price`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Ask Price (Entry)` : t`Bid Price (Entry)`}
+              tooltipClassName="text-white"
+              content={
+                isLong
+                  ? t`The ask price is used for opening longs and closing shorts.`
+                  : t`The bid price is used for opening shorts and closing longs.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
@@ -137,7 +147,17 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Exit Price`}
+          label={
+            <Tooltip
+              handle={isLong ? t`Bid Price (Exit)` : t`Ask Price (Exit)`}
+              tooltipClassName="text-white"
+              content={
+                isLong
+                  ? t`The bid price is used for opening shorts and closing longs.`
+                  : t`The ask price is used for opening longs and closing shorts.`
+              }
+            />
+          }
           value={
             <Tooltip
               handle={
@@ -170,8 +190,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
           value={
             <TooltipWithPortal
-              portalClassName="MarketCard-net-fee"
-              handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
+              tooltipClassName="MarketCard-net-fee"
+              handle={netRateHourly !== undefined ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
               position="top-end"
               renderContent={renderFundingFeeTooltipContent}
             />
@@ -225,7 +245,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               <Tooltip
                 position="bottom-end"
                 handle={
-                  totalInterestUsd?.gt(0) ? (
+                  totalInterestUsd !== undefined && totalInterestUsd > 0 ? (
                     <ShareBar
                       showPercentage
                       className="MarketCard-pool-balance-bar"
@@ -238,14 +258,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 }
                 renderContent={() => (
                   <div>
-                    {marketInfo && totalInterestUsd && (
+                    {(marketInfo && totalInterestUsd !== undefined && (
                       <>
                         <StatsTooltipRow
                           label={t`Long Open Interest`}
                           value={
                             <span>
                               {formatUsd(marketInfo.longInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.longInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
@@ -257,14 +277,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                           value={
                             <span>
                               {formatUsd(marketInfo.shortInterestUsd, { displayDecimals: 0 })} <br />
-                              {totalInterestUsd.gt(0) &&
+                              {totalInterestUsd > 0 &&
                                 `(${formatPercentage(getBasisPoints(marketInfo.shortInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
                           showDollar={false}
                         />
                       </>
-                    )}
+                    )) ||
+                      null}
                   </div>
                 )}
               />

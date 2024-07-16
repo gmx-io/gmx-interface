@@ -5,5 +5,5 @@ export function useAccumulatedBnGMXAmount() {
   const claimableBnGMXAmount = useClaimableBnGMXAmount();
   const unstakedBnGMXAmount = useUnstakedBnGMXAmount();
 
-  return unstakedBnGMXAmount && claimableBnGMXAmount?.add(unstakedBnGMXAmount);
+  return (claimableBnGMXAmount ?? 0n) + (unstakedBnGMXAmount ?? 0n);
 }

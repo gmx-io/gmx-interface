@@ -8,7 +8,6 @@ import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -37,7 +36,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const totalClaimableFundingUsd =
     marketsInfoData && affiliateRewardsData
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
-      : BigNumber.from(0);
+      : 0n;
 
   function renderRewardSection(reward: AffiliateReward) {
     const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
@@ -54,19 +53,19 @@ export function ClaimAffiliatesModal(p: Props) {
     const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
     const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
 
-    const totalReward = BigNumber.from(0).add(longRewardUsd).add(shortRewardUsd);
+    const totalReward = longRewardUsd + shortRewardUsd;
 
-    if (!totalReward.gt(0)) {
+    if (totalReward <= 0) {
       return null;
     }
 
     const claimableAmountsItems: string[] = [];
 
-    if (longTokenAmount?.gt(0)) {
+    if (longTokenAmount > 0) {
       claimableAmountsItems.push(formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (shortTokenAmount?.gt(0)) {
+    if (shortTokenAmount > 0) {
       claimableAmountsItems.push(formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol)!);
     }
 
@@ -76,7 +75,7 @@ export function ClaimAffiliatesModal(p: Props) {
           className="ClaimModal-row"
           label={t`Market`}
           value={
-            <div className="items-center">
+            <div className="flex items-center">
               <span>{indexName}</span>
               <span className="subtext">[{poolName}]</span>
             </div>
@@ -119,12 +118,12 @@ export function ClaimAffiliatesModal(p: Props) {
         continue;
       }
 
-      if (reward.longTokenAmount.gt(0)) {
+      if (reward.longTokenAmount > 0) {
         marketAddresses.push(market.marketTokenAddress);
         tokenAddresses.push(market.longTokenAddress);
       }
 
-      if (reward.shortTokenAmount.gt(0)) {
+      if (reward.shortTokenAmount > 0) {
         marketAddresses.push(market.marketTokenAddress);
         tokenAddresses.push(market.shortTokenAddress);
       }

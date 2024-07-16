@@ -1,0 +1,13 @@
+diff --git a/lib.esm/providers/subscriber-filterid.js b/lib.esm/providers/subscriber-filterid.js
+index 83bbc1d1fc6c63ab670ea71c357055e366f3d6ae..24c4cdc74b66cd9a8a807fd832773bbc9cefeea6 100644
+--- a/lib.esm/providers/subscriber-filterid.js
++++ b/lib.esm/providers/subscriber-filterid.js
+@@ -88,7 +88,7 @@ export class FilterIdSubscriber {
+             await this._emitResults(this.#provider, result);
+         }
+         catch (error) {
+-            console.log("@TODO", error);
++            // console.log("@TODO", error);
+         }
+         this.#provider.once("block", this.#poller);
+     }

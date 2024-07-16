@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -75,13 +75,13 @@ export function SettingsModal({
     if (settings.shouldUseExecutionFeeBuffer) {
       const executionFeeBuffer = parseFloat(String(executionFeeBufferBps));
       if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
-        helperToast.error(t`Invalid execution fee buffer value`);
+        helperToast.error(t`Invalid network fee buffer value`);
         return;
       }
       const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
 
       if (parseInt(String(nextExecutionBufferFeeBps)) !== parseFloat(String(nextExecutionBufferFeeBps))) {
-        helperToast.error(t`Max execution fee buffer precision is 0.01%`);
+        helperToast.error(t`Max network fee buffer precision is 0.01%`);
         return;
       }
 
@@ -149,13 +149,13 @@ export function SettingsModal({
         <div className="App-settings-row">
           <div>
             <Tooltip
-              handle={<Trans>Max Execution Fee Buffer</Trans>}
+              handle={<Trans>Max Network Fee Buffer</Trans>}
               renderContent={() => (
                 <div>
                   <Trans>
-                    The Max Execution Fee is set to a higher value to handle potential increases in gas price during
-                    order execution. Any excess execution fee will be refunded to your account when the order is
-                    executed. Only applicable to GMX V2.
+                    The Max Network Fee is set to a higher value to handle potential increases in gas price during order
+                    execution. Any excess network fee will be refunded to your account when the order is executed. Only
+                    applicable to GMX V2.
                   </Trans>
                   <br />
                   <br />
@@ -175,10 +175,10 @@ export function SettingsModal({
           </div>
           {parseFloat(executionFeeBufferBps) <
             (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-base">
+            <div className="mb-15">
               <AlertInfo type="warning">
                 <Trans>
-                  Max Execution Fee buffer below{" "}
+                  Max Network Fee buffer below{" "}
                   {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
                   failed orders.
                 </Trans>
@@ -220,9 +220,89 @@ export function SettingsModal({
         </div>
       )}
 
-      <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
+      {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
+
+      <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
     </Modal>
+  );
+}
+
+function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
+  const {
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    tenderlyAccessKey,
+    tenderlySimulationEnabled,
+    setTenderlyAccessKey,
+    setTenderlyAccountSlug,
+    setTenderlyProjectSlug,
+    setTenderlySimulationEnabled,
+  } = useSettings();
+
+  const [accountSlug, setAccountSlug] = useState(tenderlyAccountSlug ?? "");
+  const [projectSlug, setProjectSlug] = useState(tenderlyProjectSlug ?? "");
+  const [accessKey, setAccessKey] = useState(tenderlyAccessKey ?? "");
+
+  useEffect(() => {
+    if (isSettingsVisible) {
+      setAccountSlug(tenderlyAccountSlug ?? "");
+      setProjectSlug(tenderlyProjectSlug ?? "");
+      setAccessKey(tenderlyAccessKey ?? "");
+    }
+  }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
+
+  return (
+    <div className="w-full text-12">
+      <br />
+      <h1 className="text-14">Tenderly Settings</h1>
+      <br />
+      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
+      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
+      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
+      <div className="">
+        <Checkbox isChecked={tenderlySimulationEnabled} setIsChecked={setTenderlySimulationEnabled}>
+          <span className="text-12">Simulate TXs</span>
+        </Checkbox>
+      </div>
+      <br />
+      See{" "}
+      <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
+        Tenderly Docs
+      </ExternalLink>
+      .
+    </div>
+  );
+}
+
+function TenderlyInput({
+  value,
+  name,
+  placeholder,
+  onChange,
+}: {
+  value: string;
+  placeholder: string;
+  name: string;
+  onChange: (value: string) => void;
+}) {
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      onChange(e.target.value);
+    },
+    [onChange]
+  );
+
+  return (
+    <p className="mb-12 flex items-center justify-between gap-6">
+      <span>{name}</span>
+      <input
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="w-[280px] border border-gray-800 px-5 py-4 text-12"
+      />
+    </p>
   );
 }

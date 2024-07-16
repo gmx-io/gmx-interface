@@ -1,4 +1,5 @@
-import { t } from "@lingui/macro";
+import type { MessageDescriptor } from "@lingui/core";
+import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
@@ -8,11 +9,11 @@ import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/Tab
 
 type Item = {
   data: string;
-  text: string;
+  text: MessageDescriptor;
 };
 
 type Group = {
-  groupName: string;
+  groupName: MessageDescriptor;
   items: Item[];
 };
 
@@ -20,33 +21,33 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: /*i18n*/ "Funding Fees",
+    groupName: msg`Funding Fees`,
     items: [
       {
         data: ClaimType.SettleFundingFeeExecuted,
-        text: /*i18n*/ "Settled Funding Fees",
+        text: msg`Settled Funding Fees`,
       },
       {
         data: ClaimType.ClaimFunding,
-        text: /*i18n*/ "Claim Funding Fees",
+        text: msg`Claim Funding Fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCancelled,
-        text: /*i18n*/ "Failed Settlement of Funding Fees",
+        text: msg`Failed Settlement of Funding Fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCreated,
-        text: /*i18n*/ "Request Settlement of Funding Fees",
+        text: msg`Request Settlement of Funding Fees`,
       },
     ],
   },
 
   {
-    groupName: /*i18n*/ "Price Impact",
+    groupName: msg`Price Impact`,
     items: [
       {
         data: ClaimType.ClaimPriceImpact,
-        text: /*i18n*/ "Claim Price Impact Rebates",
+        text: msg`Claim Price Impact Rebates`,
       },
     ],
   },
@@ -77,7 +78,7 @@ export function ActionFilter({ value, onChange }: Props) {
     <TableOptionsFilter<string>
       multiple
       label={t`Action`}
-      placeholder={t`Search action`}
+      placeholder={t`Search Action`}
       value={value}
       options={localizedGroups}
       onChange={onChange}

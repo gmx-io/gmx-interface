@@ -19,7 +19,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "config/contracts";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo } from "domain/tokens/utils";
-import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
@@ -27,6 +27,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "config/tokens";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { bigMath } from "lib/bigmath";
 
 export default function OrderEditor(props) {
   const {
@@ -78,7 +79,7 @@ export default function OrderEditor(props) {
 
   let initialRatio = 0;
   if (order.triggerRatio) {
-    initialRatio = triggerRatioInverted ? PRECISION.mul(PRECISION).div(order.triggerRatio) : order.triggerRatio;
+    initialRatio = triggerRatioInverted ? bigMath.mulDiv(PRECISION, PRECISION, order.triggerRatio) : order.triggerRatio;
   }
   const [triggerRatioValue, setTriggerRatioValue] = useState(formatAmountFree(initialRatio, USD_DECIMALS, 6));
 
@@ -89,11 +90,11 @@ export default function OrderEditor(props) {
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
-      return bigNumberify(0);
+      return 0n;
     }
     let ratio = parseValue(triggerRatioValue, USD_DECIMALS);
     if (triggerRatioInverted) {
-      ratio = PRECISION.mul(PRECISION).div(ratio);
+      ratio = bigMath.mulDiv(PRECISION, PRECISION, ratio);
     }
     return ratio;
   }, [triggerRatioValue, triggerRatioInverted]);
@@ -173,43 +174,43 @@ export default function OrderEditor(props) {
   };
 
   const getError = () => {
-    if ((!triggerRatio || triggerRatio.eq(0)) && (!triggerPrice || triggerPrice.eq(0))) {
+    if (triggerRatio === undefined && !triggerPrice) {
       return t`Enter Price`;
     }
-    if (order.type === SWAP && triggerRatio.eq(order.triggerRatio)) {
+    if (order.type === SWAP && triggerRatio == order.triggerRatio) {
       return t`Enter new Price`;
     }
-    if (order.type !== SWAP && triggerPrice.eq(order.triggerPrice)) {
+    if (order.type !== SWAP && triggerPrice == order.triggerPrice) {
       return t`Enter new Price`;
     }
     if (position) {
       if (order.type === DECREASE) {
-        if (position.isLong && triggerPrice.lte(liquidationPrice)) {
+        if (position.isLong && triggerPrice <= liquidationPrice) {
           return t`Price below Liq. Price`;
         }
-        if (!position.isLong && triggerPrice.gte(liquidationPrice)) {
+        if (!position.isLong && triggerPrice >= liquidationPrice) {
           return t`Price above Liq. Price`;
         }
       }
 
       const { delta, hasProfit } = calculatePositionDelta(triggerPrice, position);
-      if (hasProfit && delta.eq(0)) {
+      if (hasProfit && delta == 0n) {
         return t`Invalid price, see warning`;
       }
     }
 
-    if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableValidationForTesting) {
-      if (order.triggerAboveThreshold && indexTokenMarkPrice.gt(triggerPrice)) {
+    if (order.type !== SWAP && indexTokenMarkPrice !== undefined && !savedShouldDisableValidationForTesting) {
+      if (order.triggerAboveThreshold && indexTokenMarkPrice > triggerPrice) {
         return t`Price below Mark Price`;
       }
-      if (!order.triggerAboveThreshold && indexTokenMarkPrice.lt(triggerPrice)) {
+      if (!order.triggerAboveThreshold && indexTokenMarkPrice < triggerPrice) {
         return t`Price above Mark Price`;
       }
     }
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate && !currentRate.gte(triggerRatio)) {
+      if (currentRate !== undefined && currentRate < triggerRatio) {
         return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
       }
     }
@@ -255,7 +256,9 @@ export default function OrderEditor(props) {
           onInputValueChange={onTriggerPriceChange}
           topLeftLabel={t`Price`}
           topRightLabel={t`Mark`}
-          topRightValue={indexTokenMarkPrice && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}
+          topRightValue={
+            indexTokenMarkPrice !== undefined && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)
+          }
           onClickTopRightLabel={() =>
             setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal))
           }
@@ -264,13 +267,13 @@ export default function OrderEditor(props) {
         </BuyInputSection>
 
         <ExchangeInfoRow label={t`Price`}>
-          {triggerPrice && !triggerPrice.eq(order.triggerPrice) ? (
+          {triggerPrice && triggerPrice != order.triggerPrice ? (
             <>
               <span className="muted">
                 {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
               </span>
               &nbsp;
-              <BsArrowRight />
+              <BsArrowRight className="inline-block" />
               &nbsp;
               {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
             </>
@@ -330,11 +333,11 @@ export default function OrderEditor(props) {
         })()}
       </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
-        {triggerRatio && !triggerRatio.eq(order.triggerRatio) ? (
+        {triggerRatio !== undefined && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
-            <BsArrowRight />
+            <BsArrowRight className="inline-block" />
             &nbsp;
             {formatAmount(toAmount, toTokenInfo.decimals, 4, true)}
           </>
@@ -344,21 +347,21 @@ export default function OrderEditor(props) {
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label={t`Price`}>
-        {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) ? (
+        {triggerRatio !== undefined && triggerRatio !== 0n && triggerRatio != order.triggerRatio ? (
           <>
             <span className="muted">
               {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-                omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio),
+                omitSymbols: triggerRatio != order.triggerRatio,
               })}
             </span>
             &nbsp;
-            <BsArrowRight />
+            <BsArrowRight className="inline-block" />
             &nbsp;
             {getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}
           </>
         ) : (
           getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, {
-            omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio),
+            omitSymbols: triggerRatio === undefined || triggerRatio != order.triggerRatio,
           })
         )}
       </ExchangeInfoRow>

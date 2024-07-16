@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { bigNumberify, formatPercentage } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -30,8 +30,8 @@ export function AllowedSlippageRow({
                   <br />
                   <br />
                   Note that a low allowed slippage, e.g. less than -
-                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                  orders if prices are volatile.
+                  {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed orders if
+                  prices are volatile.
                 </Trans>
               </div>
             );

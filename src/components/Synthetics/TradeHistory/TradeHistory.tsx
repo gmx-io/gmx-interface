@@ -1,49 +1,52 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useChainId } from "lib/chains";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { MarketFilterLongShort } from "../TableMarketFilter/MarketFilterLongShort";
+import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
 import downloadIcon from "img/ic_download_simple.svg";
+import { ReactComponent as PnlAnalysisIcon } from "img/ic_pnl_analysis_20.svg";
 
 import "./TradeHistorySynthetics.scss";
 
 const TRADE_HISTORY_PREFETCH_SIZE = 100;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
-const CSV_ICON_INFO = {
-  src: downloadIcon,
-};
-
 type Props = {
   shouldShowPaginationButtons: boolean;
-  account: string | null | undefined;
+  account: Address | null | undefined;
   forAllAccounts?: boolean;
+  hideDashboardLink?: boolean;
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, forAllAccounts, account } = p;
-  const { chainId } = useChainId();
+  const { shouldShowPaginationButtons, forAllAccounts, account, hideDashboardLink = false } = p;
+  const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
-  const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
       orderType: OrderType;
@@ -51,7 +54,6 @@ export function TradeHistory(p: Props) {
       isDepositOrWithdraw: boolean;
     }[]
   >([]);
-  const [isLongFilter, setIsLongFilter] = useState<boolean | undefined>(undefined);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -67,13 +69,12 @@ export function TradeHistory(p: Props) {
     pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
-    isLong: isLongFilter,
   });
 
   const isConnected = Boolean(account);
-  const isLoading = (forAllAccounts || isConnected) && (!minCollateralUsd || isHistoryLoading);
+  const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
@@ -82,7 +83,22 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(startDate || endDate || marketAddressesFilter.length || actionFilter.length);
+  const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
+
+  const pnlAnalysisButton = useMemo(() => {
+    if (!account || hideDashboardLink) {
+      return null;
+    }
+
+    const url = buildAccountDashboardUrl(account, chainId, 2);
+
+    return (
+      <Button variant="secondary" slim to={url}>
+        <PnlAnalysisIcon className="mr-8 h-16 text-white" />
+        <Trans>PnL Analysis</Trans>
+      </Button>
+    );
+  }, [account, chainId, hideDashboardLink]);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -100,23 +116,30 @@ export function TradeHistory(p: Props) {
     forAllAccounts,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddressesFilter,
+    marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
   });
 
   return (
     <div className="TradeHistorySynthetics">
-      <div className="App-box">
-        <div className="TradeHistorySynthetics-controls">
+      <div className="App-box max-[962px]:!-mr-[--default-container-padding] max-[962px]:!rounded-r-0 max-[800px]:!-mr-[--default-container-padding-mobile]">
+        <div className="flex flex-wrap items-center justify-between gap-y-8 border-b border-b-slate-700 px-10 py-16">
           <div>
             <Trans>Trade History</Trans>
           </div>
           <div className="TradeHistorySynthetics-controls-right">
+            {pnlAnalysisButton}
             <div className="TradeHistorySynthetics-filters">
               <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
-            <Button variant="secondary" disabled={isCsvDownloading} imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
+            <Button
+              variant="secondary"
+              slim
+              disabled={isCsvDownloading}
+              imgSrc={downloadIcon}
+              onClick={handleCsvDownload}
+            >
               CSV
             </Button>
           </div>
@@ -128,6 +151,7 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-market-column" />
               <col className="TradeHistorySynthetics-size-column" />
               <col className="TradeHistorySynthetics-price-column" />
+              <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
             <thead className="TradeHistorySynthetics-header">
               <tr>
@@ -136,17 +160,21 @@ export function TradeHistory(p: Props) {
                 </th>
                 <th>
                   <MarketFilterLongShort
-                    value={marketAddressesFilter}
-                    onChange={setMarketAddressesFilter}
-                    valueIsLong={isLongFilter}
-                    onChangeIsLong={setIsLongFilter}
+                    withPositions="all"
+                    value={marketsDirectionsFilter}
+                    onChange={setMarketsDirectionsFilter}
                   />
                 </th>
                 <th>
                   <Trans>Size</Trans>
                 </th>
-                <th className="TradeHistorySynthetics-price-header">
+                <th>
                   <Trans>Price</Trans>
+                </th>
+                <th className="TradeHistorySynthetics-pnl-fees-header">
+                  <TooltipWithPortal content={<Trans>Realized PnL after fees and price impact.</Trans>}>
+                    <Trans>RPnL ($)</Trans>
+                  </TooltipWithPortal>
                 </th>
               </tr>
             </thead>

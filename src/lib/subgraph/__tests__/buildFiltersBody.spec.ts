@@ -200,4 +200,14 @@ describe("buildFiltersBody", () => {
 
     expect(result).toEqual("{foo:true,bar:false}");
   });
+
+  it("should format null values correctly", () => {
+    const input: GraphQlFilters = {
+      foo: null,
+    };
+
+    const result = buildFiltersBody(input);
+
+    expect(result).toEqual("{foo:null}");
+  });
 });

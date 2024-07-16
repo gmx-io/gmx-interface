@@ -1,23 +1,27 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getPlusOrMinusSymbol } from "./utils";
+import { bigMath } from "./bigmath";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
-export const BN_ZERO = BigNumber.from(0);
-export const BN_ONE = BigNumber.from(1);
-export const BN_NEGATIVE_ONE = BigNumber.from(-1);
+export const BN_ZERO = 0n;
+export const BN_ONE = 1n;
+export const BN_NEGATIVE_ONE = -1n;
 
 /**
  *
- * @deprecated Use BigNumber.from instead
+ * @deprecated Use BigInt instead
  */
-export function bigNumberify(n?: BigNumberish) {
+export function bigNumberify(n?: BigNumberish | null | undefined) {
   try {
-    return BigNumber.from(n);
+    if (n === undefined) throw new Error("n is undefined");
+    if (n === null) throw new Error("n is null");
+
+    return BigInt(n);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error("bigNumberify error", e);
@@ -25,30 +29,29 @@ export function bigNumberify(n?: BigNumberish) {
   }
 }
 
-export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
-  // @ts-ignore
-  return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
+export function expandDecimals(n: BigNumberish, decimals: number): bigint {
+  return BigInt(n) * 10n ** BigInt(decimals);
 }
 
 function getLimitedDisplay(
-  amount: BigNumber,
+  amount: bigint,
   tokenDecimals: number,
-  opts: { maxThreshold?: string; minThreshold?: string } = {}
+  opts: { maxThreshold?: string | null; minThreshold?: string } = {}
 ) {
   const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
-  const max = expandDecimals(maxThreshold, tokenDecimals);
-  const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
-  const absAmount = amount.abs();
+  const max = maxThreshold === null ? null : expandDecimals(maxThreshold, tokenDecimals);
+  const min = ethers.parseUnits(minThreshold, tokenDecimals);
+  const absAmount = bigMath.abs(amount);
 
-  if (absAmount.eq(0)) {
+  if (absAmount == 0n) {
     return {
       symbol: "",
       value: absAmount,
     };
   }
 
-  const symbol = absAmount.gt(max) ? TRIGGER_PREFIX_ABOVE : absAmount.lt(min) ? TRIGGER_PREFIX_BELOW : "";
-  const value = absAmount.gt(max) ? max : absAmount.lt(min) ? min : absAmount;
+  const symbol = max !== null && absAmount > max ? TRIGGER_PREFIX_ABOVE : absAmount < min ? TRIGGER_PREFIX_BELOW : "";
+  const value = max !== null && absAmount > max ? max : absAmount < min ? min : absAmount;
 
   return {
     symbol,
@@ -103,16 +106,16 @@ export const formatAmount = (
   useCommas?: boolean,
   defaultValue?: string
 ) => {
-  if (!defaultValue) {
+  if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
   }
-  if (amount === undefined || amount.toString().length === 0) {
+  if (amount === undefined || amount === null || amount === "") {
     return defaultValue;
   }
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(amount, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
@@ -130,11 +133,12 @@ export const formatKeyAmount = <T extends {}>(
   displayDecimals: number,
   useCommas?: boolean
 ) => {
-  if (!map || !map[key]) {
+  const value = map ? map[key] ?? undefined : undefined;
+  if (value === undefined || value === null) {
     return "...";
   }
 
-  return formatAmount(map[key] as unknown as BigNumber, tokenDecimals, displayDecimals, useCommas);
+  return formatAmount(value as bigint, tokenDecimals, displayDecimals, useCommas);
 };
 
 export const formatArrayAmount = (
@@ -144,7 +148,7 @@ export const formatArrayAmount = (
   displayDecimals?: number,
   useCommas?: boolean
 ) => {
-  if (!arr || !arr[index]) {
+  if (!arr || arr[index] === undefined || arr[index] === null) {
     return "...";
   }
 
@@ -152,29 +156,29 @@ export const formatArrayAmount = (
 };
 
 export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
-  if (!amount) {
+  if (amount === undefined || amount === null) {
     return "...";
   }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(amount, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   return trimZeroDecimals(amountStr);
 };
 
 export function formatUsd(
-  usd?: BigNumber,
+  usd?: bigint,
   opts: {
     fallbackToZero?: boolean;
     displayDecimals?: number;
-    maxThreshold?: string;
+    maxThreshold?: string | null;
     minThreshold?: string;
     displayPlus?: boolean;
   } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
-  if (!usd) {
+  if (typeof usd !== "bigint") {
     if (fallbackToZero) {
-      usd = BigNumber.from(0);
+      usd = 0n;
     } else {
       return undefined;
     }
@@ -183,20 +187,20 @@ export function formatUsd(
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
 
   const maybePlus = opts.displayPlus ? "+" : "";
-  const sign = usd.lt(0) ? "-" : maybePlus;
+  const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${symbol}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(
-  deltaUsd?: BigNumber,
-  percentage?: BigNumber,
+  deltaUsd?: bigint,
+  percentage?: bigint,
   opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
 ) {
-  if (!deltaUsd) {
+  if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
-      return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
+      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
     }
 
     return undefined;
@@ -205,19 +209,19 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const percentageStr = percentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
   return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
-export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
+export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
   const { fallbackToZero = false, signed = false } = opts;
 
-  if (!percentage) {
+  if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
-      return `${formatAmount(BigNumber.from(0), 2, 2)}%`;
+      return `${formatAmount(0n, 2, 2)}%`;
     }
 
     return undefined;
@@ -225,11 +229,11 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), 2, 2)}%`;
 }
 
 export function formatTokenAmount(
-  amount?: BigNumber,
+  amount?: bigint,
   tokenDecimals?: number,
   symbol?: string,
   opts: {
@@ -253,9 +257,9 @@ export function formatTokenAmount(
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
-  if (!amount || !tokenDecimals) {
+  if (typeof amount !== "bigint" || !tokenDecimals) {
     if (fallbackToZero) {
-      amount = BigNumber.from(0);
+      amount = 0n;
       tokenDecimals = displayDecimals;
     } else {
       return undefined;
@@ -265,7 +269,7 @@ export function formatTokenAmount(
   let amountStr: string;
 
   const maybePlus = opts.displayPlus ? "+" : "";
-  const sign = amount.lt(0) ? "-" : maybePlus;
+  const sign = amount < 0n ? "-" : maybePlus;
 
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
@@ -279,8 +283,8 @@ export function formatTokenAmount(
 }
 
 export function formatTokenAmountWithUsd(
-  tokenAmount?: BigNumber,
-  usdAmount?: BigNumber,
+  tokenAmount?: bigint,
+  usdAmount?: bigint,
   tokenSymbol?: string,
   tokenDecimals?: number,
   opts: {
@@ -289,7 +293,7 @@ export function formatTokenAmountWithUsd(
     displayPlus?: boolean;
   } = {}
 ) {
-  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+  if (typeof tokenAmount !== "bigint" || typeof usdAmount !== "bigint" || !tokenSymbol || !tokenDecimals) {
     if (!opts.fallbackToZero) {
       return undefined;
     }
@@ -316,12 +320,12 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
   value = limitDecimals(value, tokenDecimals);
-  const amount = ethers.utils.parseUnits(value, tokenDecimals);
+  const amount = ethers.parseUnits(value, tokenDecimals);
   return bigNumberify(amount);
 };
 
 export function numberWithCommas(x: BigNumberish) {
-  if (!x) {
+  if (x === undefined || x === null) {
     return "...";
   }
 
@@ -330,29 +334,29 @@ export function numberWithCommas(x: BigNumberish) {
   return parts.join(".");
 }
 
-export function roundUpDivision(a: BigNumber, b: BigNumber) {
-  return a.add(b).sub(1).div(b);
+export function roundUpDivision(a: bigint, b: bigint) {
+  return (a + b - 1n) / b;
 }
 
-export function roundUpMagnitudeDivision(a: BigNumber, b: BigNumber) {
-  if (a.lt(0)) {
-    return a.sub(b).add(1).div(b);
+export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
+  if (a < 0n) {
+    return (a - b + 1n) / b;
   }
 
-  return a.add(b).sub(1).div(b);
+  return (a + b - 1n) / b;
 }
 
-export function applyFactor(value: BigNumber, factor: BigNumber) {
-  return value.mul(factor).div(PRECISION);
+export function applyFactor(value: bigint, factor: bigint) {
+  return (value * factor) / PRECISION;
 }
 
-export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, shouldRoundUp = false) {
-  const result = numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRoundUp = false) {
+  const result = (numerator * BASIS_POINTS_DIVISOR_BIGINT) / denominator;
 
   if (shouldRoundUp) {
-    const remainder = numerator.mul(BASIS_POINTS_DIVISOR).mod(denominator);
-    if (!remainder.isZero()) {
-      return result.isNegative() ? result.sub(1) : result.add(1);
+    const remainder = (numerator * BASIS_POINTS_DIVISOR_BIGINT) % denominator;
+    if (remainder !== 0n) {
+      return result < 0n ? result - 1n : result + 1n;
     }
   }
 
@@ -363,43 +367,131 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */
-export function formatRatePercentage(rate?: BigNumber, opts?: { displayDecimals?: number; signed?: boolean }) {
-  if (!rate) {
+export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: number; signed?: boolean }) {
+  if (typeof rate !== "bigint") {
     return "-";
   }
 
   const signed = opts?.signed ?? true;
   const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
 
-  return `${plurOrMinus}${formatAmount(rate.mul(100).abs(), 30, opts?.displayDecimals ?? 4)}%`;
+  const amount = bigMath.abs(rate * 100n);
+  return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
-export function basisPointsToFloat(basisPoints: BigNumber) {
-  return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
+export function basisPointsToFloat(basisPoints: bigint) {
+  return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
 
-export function roundToTwoDecimals(n) {
+export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
-export function sumBigNumbers(...args) {
-  return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigNumber.from(0));
-}
-
-export function minBigNumber(...args: BigNumber[]) {
+export function minBigNumber(...args: bigint[]) {
   if (!args.length) return undefined;
 
-  return args.reduce((acc, num) => (num.lt(acc) ? num : acc), args[0]);
+  return args.reduce((acc, num) => (num < acc ? num : acc), args[0]);
 }
 
-export function maxBigNumber(...args: BigNumber[]) {
+export function maxbigint(...args: bigint[]) {
   if (!args.length) return undefined;
 
-  return args.reduce((acc, num) => (num.gt(acc) ? num : acc), args[0]);
+  return args.reduce((acc, num) => (num > acc ? num : acc), args[0]);
 }
 
 export function removeTrailingZeros(amount: string | number) {
   const amountWithoutZeros = Number(amount);
   if (!amountWithoutZeros) return amount;
   return amountWithoutZeros;
+}
+
+type SerializedBigIntsInObject<T> = {
+  [P in keyof T]: T[P] extends bigint
+    ? { type: "bigint"; value: bigint }
+    : T[P] extends object
+      ? SerializedBigIntsInObject<T[P]>
+      : T[P];
+};
+
+type DeserializeBigIntInObject<T> = {
+  [P in keyof T]: T[P] extends { type: "bigint"; value: bigint }
+    ? bigint
+    : T[P] extends object
+      ? DeserializeBigIntInObject<T[P]>
+      : T[P];
+};
+
+export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBigIntsInObject<T> {
+  const result: any = Array.isArray(obj) ? [] : {};
+  for (const key in obj) {
+    const value = obj[key];
+    if (typeof value === "bigint") {
+      result[key] = { type: "bigint", value: String(value) };
+    } else if (value && typeof value === "object") {
+      result[key] = serializeBigIntsInObject(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+export function deserializeBigIntsInObject<T extends object>(obj: T): DeserializeBigIntInObject<T> {
+  const result: any = Array.isArray(obj) ? [] : {};
+  for (const key in obj) {
+    const value = obj[key];
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      (("type" in value && value.type === "bigint") || ("_type" in value && value._type === "BigNumber"))
+    ) {
+      if ("value" in value && typeof value.value === "string") {
+        result[key] = BigInt(value.value);
+      } else if ("hex" in value && typeof value.hex === "string") {
+        if (value.hex.startsWith("-")) {
+          result[key] = BigInt(value.hex.slice(1)) * -1n;
+        } else {
+          result[key] = BigInt(value.hex);
+        }
+      }
+    } else if (value && typeof value === "object") {
+      result[key] = deserializeBigIntsInObject(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+export function bigintToNumber(value: bigint, decimals: number) {
+  const negative = value < 0;
+  if (negative) value *= -1n;
+  const precision = 10n ** BigInt(decimals);
+  const int = value / precision;
+  const frac = value % precision;
+
+  const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
+  return negative ? -num : num;
+}
+
+export function numberToBigint(value: number, decimals: number) {
+  const negative = value < 0;
+  if (negative) value *= -1;
+
+  const int = Math.trunc(value);
+  let frac = value - int;
+
+  let res = BigInt(int);
+
+  for (let i = 0; i < decimals; i++) {
+    res *= 10n;
+    if (frac !== 0) {
+      frac *= 10;
+      const fracInt = Math.trunc(frac);
+      res += BigInt(fracInt);
+      frac -= fracInt;
+    }
+  }
+
+  return negative ? -res : res;
 }

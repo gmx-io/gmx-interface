@@ -1,12 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { BigNumber, Contract } from "ethers";
+import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, setGasPrice } from "./utils";
+import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
 export async function callContract(
   chainId: number,
@@ -14,8 +15,8 @@ export async function callContract(
   method: string,
   params: any,
   opts: {
-    value?: BigNumber | number;
-    gasLimit?: BigNumber | number;
+    value?: bigint | number;
+    gasLimit?: bigint | number;
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
@@ -23,10 +24,13 @@ export async function callContract(
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
+    customSigners?: Wallet[];
     setPendingTxns?: (txns: any) => void;
   }
 ) {
   try {
+    const wallet = contract.runner as Wallet;
+
     if (!Array.isArray(params) && typeof params === "object" && opts === undefined) {
       opts = params;
       params = [];
@@ -36,10 +40,27 @@ export async function callContract(
       opts = {};
     }
 
-    const txnOpts: any = {};
+    const tenderlyConfig = getTenderlyConfig();
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly(chainId, contract, wallet.address, method, params, {
+        gasLimit: opts.gasLimit !== undefined ? BigInt(opts.gasLimit) : undefined,
+        value: opts.value !== undefined ? BigInt(opts.value) : undefined,
+        comment: `calling ${method}`,
+      });
+      return;
+    }
+
+    const txnOpts: Overrides = {};
 
     if (opts.value) {
       txnOpts.value = opts.value;
+    }
+
+    if (opts.customSigners) {
+      // If we send the transaction to multiple RPCs simultaneously,
+      // we should specify a fixed nonce to avoid possible txn duplication.
+      txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
@@ -50,11 +71,30 @@ export async function callContract(
       });
     }
 
-    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    await setGasPrice(txnOpts, contract.provider, chainId);
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+      const txnInstance = { ...txnOpts };
 
-    const res = await contract[method](...params, txnOpts);
+      txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
+
+      if (!cntrct.runner?.provider) {
+        throw new Error("No provider found on contract.");
+      }
+
+      await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
+
+      return cntrct[method](...params, txnInstance);
+    });
+
+    const res = await Promise.any(txnCalls).catch(({ errors }) => {
+      if (errors.length > 1) {
+        // eslint-disable-next-line no-console
+        console.error("All transactions failed", ...errors);
+      }
+
+      throw errors[0];
+    });
 
     if (!opts.hideSentMsg) {
       showCallContractToast({

@@ -10,7 +10,7 @@ type Props = {
 };
 
 function renderEscrowedGMXApr(processedData) {
-  if (!processedData?.gmxAprForEsGmx?.gt(0)) return;
+  if (!processedData?.gmxAprForEsGmx || processedData.gmxAprForEsGmx <= 0) return;
   return (
     <StatsTooltipRow
       label={t`Escrowed GMX APR`}
@@ -23,7 +23,6 @@ function renderEscrowedGMXApr(processedData) {
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUserConnected = false }: Props) {
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
-
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
   if (!isUserConnected) {

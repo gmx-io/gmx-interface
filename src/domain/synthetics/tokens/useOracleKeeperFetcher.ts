@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import type { Address } from "viem";
+
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -5,7 +8,6 @@ import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMemo } from "react";
 
 export type TickersResponse = {
   minPrice: string;
@@ -24,28 +26,33 @@ export type DayPriceCandle = {
   close: number;
 };
 
+type OnlyWhenActive<Data> =
+  | ({
+      isActive: true;
+    } & Data)
+  | {
+      isActive: false;
+    };
+
 export type RawIncentivesStats = {
-  lp: {
-    isActive: boolean;
+  lp: OnlyWhenActive<{
     totalRewards: string;
     period: number;
     rewardsPerMarket: Record<string, string>;
-  };
-  migration: {
-    isActive: boolean;
+    token: string;
+    excludeHolders: Address[];
+  }>;
+  migration: OnlyWhenActive<{
     maxRebateBps: number;
     period: number;
-  };
-  trading:
-    | {
-        isActive: true;
-        rebatePercent: number;
-        allocation: string;
-        period: number;
-      }
-    | {
-        isActive: false;
-      };
+  }>;
+  trading: OnlyWhenActive<{
+    rebatePercent: number;
+    allocation: string;
+    period: number;
+    // not yet implemented on keeper side
+    token?: string;
+  }>;
 };
 
 function parseOracleCandle(rawCandle: number[]): Bar {
@@ -65,7 +72,7 @@ let fallbackThrottleTimerId: any;
 export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
   const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
-  const [forceIncentivesActive] = useLocalStorageSerializeKey("forceIncentivesActive", false);
+  const [forceIncentivesActive] = useLocalStorageSerializeKey([chainId, "forceIncentivesActive"], false);
 
   return useMemo(() => {
     const instance = new OracleKeeperFetcher({
@@ -85,6 +92,7 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
+  fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response>;
 }
 
 class OracleKeeperFetcher implements OracleFetcher {
@@ -177,6 +185,16 @@ class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
+  fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
+    return fetch(buildUrl(this.url!, "/report/ui"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
   async fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>> {
     tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
 
@@ -199,7 +217,7 @@ class OracleKeeperFetcher implements OracleFetcher {
 
   async fetchIncentivesRewards(): Promise<RawIncentivesStats | null> {
     return fetch(
-      buildUrl(this.url!, "/incentives/stip", {
+      buildUrl(this.url!, "/incentives", {
         ignoreStartDate: this.forceIncentivesActive ? "1" : undefined,
       })
     )

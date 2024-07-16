@@ -5,10 +5,10 @@ import {
   isOrderForPosition,
   sortPositionOrders,
 } from "domain/synthetics/orders";
-import { createSelector, createSelectorFactory } from "../utils";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import { createSelector, createSelectorFactory } from "../utils";
 import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
-import { makeSelectSwapRoutes } from "./tradeSelectors";
+import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 
@@ -22,8 +22,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
     if (!marketsInfoData) return { errors: [], level: undefined };
 
     const uiFeeFactor = q(selectUiFeeFactor);
-    const { findSwapPath } = q(
-      makeSelectSwapRoutes(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
+    const findSwapPath = q(
+      makeSelectFindSwapPath(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
     );
 
     const { errors, level } = getOrderErrors({

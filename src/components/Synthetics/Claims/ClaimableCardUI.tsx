@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import Tooltip from "components/Tooltip/Tooltip";
-import { BigNumber } from "ethers";
 import { formatDeltaUsd } from "lib/numbers";
 import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
 import { useMedia } from "react-use";
@@ -10,7 +9,7 @@ type Section = {
   buttonText: ReactNode;
   tooltipText: ReactNode;
   onButtonClick: () => void;
-  usd: BigNumber;
+  usd: bigint;
   buttonStyle?: "primary" | "secondary";
 };
 
@@ -65,7 +64,7 @@ function Section({
           )}
         </span>
       </div>
-      {usd.gt(0) && (
+      {usd > 0 && (
         <button className={`Claims-claim-button ${buttonClassname}`} onClick={onButtonClick}>
           {buttonText}
         </button>

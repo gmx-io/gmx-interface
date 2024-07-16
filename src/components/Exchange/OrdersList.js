@@ -17,7 +17,6 @@ import { getContract } from "config/contracts";
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
-import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
@@ -34,7 +33,7 @@ function getOrderTitle(order, indexTokenSymbol) {
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
   const symbolWithIcon = (
     <>
-      <TokenIcon className="mx-xxs" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
+      <TokenIcon className="mx-[2.5px]" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
     </>
   );
 
@@ -284,7 +283,6 @@ export default function OrdersList(props) {
               className="order-error"
               handle={orderTitle}
               position="bottom-end"
-              handleClassName="plain"
               renderContent={() => <span className="negative">{error}</span>}
             />
           ) : (
@@ -455,10 +453,10 @@ export default function OrdersList(props) {
                 <>
                   <div className="App-card-divider"></div>
                   <div className="remove-top-margin">
-                    <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
+                    <Button variant="secondary" className="mr-15 mt-15" onClick={() => onEditClick(order)}>
                       <Trans>Edit</Trans>
                     </Button>
-                    <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
+                    <Button variant="secondary" className="mt-15" onClick={() => onCancelClick(order)}>
                       <Trans>Cancel</Trans>
                     </Button>
                   </div>
@@ -490,7 +488,6 @@ export default function OrdersList(props) {
                   className="order-error"
                   handle={orderTitle}
                   position="bottom-start"
-                  handleClassName="plain"
                   renderContent={() => <span className="negative">{error}</span>}
                 />
               ) : (
@@ -543,10 +540,10 @@ export default function OrdersList(props) {
               <>
                 <div className="App-card-divider"></div>
                 <div className="remove-top-margin">
-                  <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
+                  <Button variant="secondary" className="mr-15 mt-15" onClick={() => onEditClick(order)}>
                     <Trans>Edit</Trans>
                   </Button>
-                  <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
+                  <Button variant="secondary" className="mt-15" onClick={() => onCancelClick(order)}>
                     <Trans>Cancel</Trans>
                   </Button>
                 </div>

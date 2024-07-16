@@ -2,7 +2,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder, PendingOrderData } from "context/SyntheticsEvents";
-import { BigNumber, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
@@ -14,19 +14,19 @@ import { t } from "@lingui/macro";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {
   account: string;
   fromTokenAddress: string;
-  fromTokenAmount: BigNumber;
+  fromTokenAmount: bigint;
   toTokenAddress: string;
   swapPath: string[];
   referralCode?: string;
   tokensData: TokensData;
-  minOutputAmount: BigNumber;
+  minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
-  executionFee: BigNumber;
+  executionFee: bigint;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
@@ -52,11 +52,11 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 
   const swapOrder: PendingOrderData = {
     account: p.account,
-    marketAddress: AddressZero,
+    marketAddress: ZeroAddress,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.fromTokenAmount,
     swapPath: p.swapPath,
-    sizeDeltaUsd: BigNumber.from(0),
+    sizeDeltaUsd: 0n,
     minOutputAmount,
     isLong: false,
     orderType: p.orderType,
@@ -72,7 +72,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
       createOrderMulticallPayload: simulationEncodedPayload,
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
@@ -84,6 +83,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
   });
 
@@ -102,8 +102,8 @@ async function getParams(
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigNumber.from(0);
-  const totalWntAmount = wntSwapAmount.add(p.executionFee);
+  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
+  const totalWntAmount = wntSwapAmount + p.executionFee;
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
@@ -113,31 +113,33 @@ async function getParams(
     ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
     : p.minOutputAmount;
 
-  const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : BigNumber.from(0);
+  const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
 
   const createOrderParams = {
     addresses: {
       receiver: p.account,
+      cancellationReceiver: ethers.ZeroAddress,
       initialCollateralToken: initialCollateralTokenAddress,
-      callbackContract: AddressZero,
-      market: AddressZero,
+      callbackContract: ZeroAddress,
+      market: ZeroAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
-      sizeDeltaUsd: BigNumber.from(0),
+      sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount,
-      triggerPrice: BigNumber.from(0),
-      acceptablePrice: BigNumber.from(0),
+      triggerPrice: 0n,
+      acceptablePrice: 0n,
       executionFee: p.executionFee,
-      callbackGasLimit: BigNumber.from(0),
+      callbackGasLimit: 0n,
       minOutputAmount,
     },
+    autoCancel: false,
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
     shouldUnwrapNativeToken: isNativeReceive,
-    referralCode: p.referralCode || ethers.constants.HashZero,
+    referralCode: p.referralCode || ethers.ZeroHash,
   };
 
   const multicall = [

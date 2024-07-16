@@ -9,7 +9,6 @@ import { getNeedTokenApprove, getTokenData, useTokensDataRequest } from "domain/
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -34,12 +33,12 @@ type Props = {
   marketToken?: TokenData;
   longToken?: TokenData;
   shortToken?: TokenData;
-  marketTokenAmount: BigNumber;
-  marketTokenUsd: BigNumber;
-  longTokenAmount?: BigNumber;
-  longTokenUsd?: BigNumber;
-  shortTokenAmount?: BigNumber;
-  shortTokenUsd?: BigNumber;
+  marketTokenAmount: bigint;
+  marketTokenUsd: bigint;
+  longTokenAmount?: bigint;
+  longTokenUsd?: bigint;
+  shortTokenAmount?: bigint;
+  shortTokenUsd?: bigint;
   fees?: GmSwapFees;
   error?: string;
   isDeposit: boolean;
@@ -91,10 +90,10 @@ export function GmConfirmationBox({
     const addresses: string[] = [];
 
     if (isDeposit) {
-      if (longTokenAmount?.gt(0) && longToken) {
+      if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
         addresses.push(longToken.address);
       }
-      if (shortTokenAmount?.gt(0) && shortToken) {
+      if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
         addresses.push(shortToken.address);
       }
     } else {
@@ -119,7 +118,8 @@ export function GmConfirmationBox({
 
     if (isDeposit) {
       if (
-        longTokenAmount?.gt(0) &&
+        longTokenAmount !== undefined &&
+        longTokenAmount > 0 &&
         longToken &&
         getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
       ) {
@@ -127,7 +127,8 @@ export function GmConfirmationBox({
       }
 
       if (
-        shortTokenAmount?.gt(0) &&
+        shortTokenAmount !== undefined &&
+        shortTokenAmount > 0 &&
         shortToken &&
         getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
       ) {
@@ -135,7 +136,7 @@ export function GmConfirmationBox({
       }
     } else {
       if (
-        marketTokenAmount.gt(0) &&
+        marketTokenAmount > 0 &&
         marketToken &&
         getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount)
       ) {
@@ -176,6 +177,9 @@ export function GmConfirmationBox({
         .then(() => {
           onSubmitted();
         })
+        .catch((error) => {
+          throw error;
+        })
         .finally(() => {
           setIsSubmitting(false);
         });
@@ -191,7 +195,7 @@ export function GmConfirmationBox({
 
     if (isHighFeeConsentError) {
       return {
-        text: t`High Execution Fee not yet acknowledged`,
+        text: t`High Network Fee not yet acknowledged`,
         disabled: true,
       };
     }
@@ -241,7 +245,15 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData || !signer) {
+    if (
+      !account ||
+      !executionFee ||
+      !marketToken ||
+      !market ||
+      marketTokenAmount === undefined ||
+      !tokensData ||
+      !signer
+    ) {
       return Promise.resolve();
     }
 
@@ -256,8 +268,8 @@ export function GmConfirmationBox({
       initialShortTokenAddress,
       longTokenSwapPath: [],
       shortTokenSwapPath: [],
-      longTokenAmount: longTokenAmount || BigNumber.from(0),
-      shortTokenAmount: shortTokenAmount || BigNumber.from(0),
+      longTokenAmount: longTokenAmount ?? 0n,
+      shortTokenAmount: shortTokenAmount ?? 0n,
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
@@ -275,8 +287,8 @@ export function GmConfirmationBox({
       !market ||
       !marketToken ||
       !executionFee ||
-      !longTokenAmount ||
-      !shortTokenAmount ||
+      longTokenAmount === undefined ||
+      shortTokenAmount === undefined ||
       !tokensData ||
       !signer
     ) {
@@ -309,13 +321,13 @@ export function GmConfirmationBox({
     token,
     usd,
   }: {
-    amount?: BigNumber;
-    usd?: BigNumber;
+    amount?: bigint;
+    usd?: bigint;
     token?: TokenData;
     className?: string;
     overrideSymbol?: string;
   }) => {
-    if (!amount || !usd || !token) return;
+    if (amount === undefined || usd === undefined || !token) return;
     return (
       <div className={className ?? ""}>
         <div className="trade-token-amount">
@@ -343,8 +355,8 @@ export function GmConfirmationBox({
                   <Trans>Pay</Trans>{" "}
                   {market?.isSameCollaterals ? (
                     renderTokenInfo({
-                      amount: longTokenAmount?.add(shortTokenAmount!),
-                      usd: longTokenUsd?.add(shortTokenUsd!),
+                      amount: longTokenAmount !== undefined ? longTokenAmount + shortTokenAmount! : undefined,
+                      usd: longTokenUsd !== undefined ? longTokenUsd + shortTokenUsd! : undefined,
                       token: longToken,
                     })
                   ) : (
@@ -360,7 +372,7 @@ export function GmConfirmationBox({
                         usd: shortTokenUsd,
                         token: shortToken,
                         overrideSymbol: shortSymbol,
-                        className: "mt-xs",
+                        className: "mt-5",
                       })}
                     </>
                   )}
@@ -391,8 +403,8 @@ export function GmConfirmationBox({
                   <Trans>Receive</Trans>{" "}
                   {market?.isSameCollaterals ? (
                     renderTokenInfo({
-                      amount: longTokenAmount?.add(shortTokenAmount!),
-                      usd: longTokenUsd?.add(shortTokenUsd!),
+                      amount: longTokenAmount ? longTokenAmount + shortTokenAmount! : undefined,
+                      usd: longTokenUsd ? longTokenUsd + shortTokenUsd! : undefined,
                       token: longToken,
                     })
                   ) : (
@@ -408,7 +420,7 @@ export function GmConfirmationBox({
                         usd: shortTokenUsd,
                         token: shortToken,
                         overrideSymbol: shortSymbol,
-                        className: "mt-xs",
+                        className: "mt-5",
                       })}
                     </>
                   )}

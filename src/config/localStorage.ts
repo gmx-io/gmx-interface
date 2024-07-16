@@ -7,6 +7,8 @@ export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const EXECUTION_FEE_BUFFER_BPS_KEY = "execution-fee-buffer-basis-points";
+export const HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY =
+  "has-overridden-default-arb-30-execution-fee-buffer-basis-points";
 export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
@@ -32,6 +34,7 @@ export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
+export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
@@ -52,6 +55,10 @@ export function getSyntheticsDepositMarketKey(chainId: number) {
 
 export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
+}
+
+export function getAccountDashboardTabKey(chainId: number) {
+  return [chainId, ACCOUNT_DASHBOARD_TAB_KEY];
 }
 
 export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
@@ -86,7 +93,21 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
 }
 
+// TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then
+export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: number) {
+  return [chainId, HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY];
+}
+
 export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, "one-click-trading-config"];
+}
+
+export function getSyntheticsReceiveMoneyTokenKey(
+  chainId: number,
+  marketName: string | undefined,
+  direction: string,
+  collateralToken: string | undefined
+) {
+  return [chainId, CLOSE_POSITION_RECEIVE_TOKEN_KEY, marketName, direction, collateralToken];
 }

@@ -30,6 +30,7 @@ type Props<T> = {
   popupPlacement?: Placement;
   beforeContent?: ReactNode | undefined;
   forceIsActive?: boolean;
+  asButton?: boolean;
 } & (
   | {
       multiple?: false;
@@ -57,6 +58,7 @@ export function TableOptionsFilter<T>({
   popupPlacement,
   beforeContent,
   forceIsActive,
+  asButton,
 }: Props<T>) {
   const isActive = (multiple ? Boolean(value?.length) : Boolean(value)) || forceIsActive;
 
@@ -161,7 +163,7 @@ export function TableOptionsFilter<T>({
   }, [multiple, onChange]);
 
   return (
-    <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
+    <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement} asButton={asButton}>
       <SearchInput
         className="TableOptionsFilter-search"
         placeholder={placeholder}

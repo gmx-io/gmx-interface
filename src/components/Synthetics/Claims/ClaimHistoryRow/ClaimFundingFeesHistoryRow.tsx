@@ -1,14 +1,18 @@
-import { t } from "@lingui/macro";
-import { useCallback, useMemo } from "react";
+import { MessageDescriptor } from "@lingui/core";
+import { msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
+import React, { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import {
   formatTradeActionTimestamp,
@@ -23,18 +27,17 @@ export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
 };
 
-export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], string> = {
-  [ClaimType.SettleFundingFeeCancelled]: t`Failed Settlement of Funding Fees`,
-  [ClaimType.SettleFundingFeeCreated]: t`Request Settlement of Funding Fees`,
-  [ClaimType.SettleFundingFeeExecuted]: t`Settled Funding Fees`,
+export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], MessageDescriptor> = {
+  [ClaimType.SettleFundingFeeCancelled]: msg`Failed Settlement of Funding Fees`,
+  [ClaimType.SettleFundingFeeCreated]: msg`Request Settlement of Funding Fees`,
+  [ClaimType.SettleFundingFeeExecuted]: msg`Settled Funding Fees`,
 };
 
-const NBSP = String.fromCharCode(160);
-
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
-  const { chainId } = useChainId();
+  const chainId = useSelector(selectChainId);
+  const { _ } = useLingui();
 
-  const eventTitle = claimFundingFeeEventTitles[claimAction.eventName];
+  const eventTitleDescriptor = claimFundingFeeEventTitles[claimAction.eventName];
 
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
 
@@ -44,22 +47,26 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
   const marketContent = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
-      const formattedMarketNames = claimAction.markets
-        .map((market, index) => {
-          const isLong = claimAction.isLongOrders[index];
-
-          let res = "";
-          if (index !== 0) {
-            res += ", ";
-          }
-          res += `${isLong ? t`Long` : t`Short`}${NBSP}${getMarketIndexName(market)}`;
-
-          return res;
-        })
-        .join("");
+      const formattedMarketNames = (
+        <div className="leading-2">
+          {claimAction.markets.map((market, index) => (
+            <React.Fragment key={index}>
+              {index !== 0 && ", "}
+              <MarketWithDirectionLabel
+                bordered
+                indexName={getMarketIndexName(market)}
+                tokenSymbol={market.indexToken.symbol}
+                isLong={claimAction.isLongOrders[index]}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+      );
 
       return (
         <Tooltip
+          disableHandleStyle
+          handleClassName="cursor-help"
           handle={formattedMarketNames}
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
@@ -67,8 +74,11 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const poolName = getMarketPoolName(market);
               const isLong = claimAction.isLongOrders[index];
               return (
-                <div className="text-white ClaimHistoryRow-tooltip-row items-top" key={`${market.name}/${isLong}`}>
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
+                <div
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  key={`${market.name}/${isLong}`}
+                >
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -81,10 +91,15 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
         <TooltipWithPortal
+          disableHandleStyle
+          handleClassName="cursor-help *:cursor-auto"
           handle={
-            <span className="items-top">
-              {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
-            </span>
+            <MarketWithDirectionLabel
+              bordered
+              indexName={indexName}
+              tokenSymbol={claimAction.markets[0].indexToken.symbol}
+              isLong={claimAction.isLongOrders[0]}
+            />
           }
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
@@ -92,8 +107,11 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const poolName = getMarketPoolName(market);
               const isLong = claimAction.isLongOrders[index];
               return (
-                <div className="text-white ClaimHistoryRow-tooltip-row items-top" key={`${market.name}/${isLong}`}>
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
+                <div
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  key={`${market.name}/${isLong}`}
+                >
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -106,9 +124,11 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
 
       const positionName = (
-        <span className="items-top">
-          {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
-        </span>
+        <MarketWithDirectionLabel
+          indexName={indexName}
+          tokenSymbol={claimAction.markets[0].indexToken.symbol}
+          isLong={claimAction.isLongOrders[0]}
+        />
       );
 
       return positionName;
@@ -132,18 +152,18 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
         return (
           <StatsTooltipRow
-            className="ClaimHistoryRow-tooltip-row"
+            textClassName="mb-5 whitespace-nowrap"
             key={market.marketTokenAddress}
             label={
-              <div className="items-top text-white">
+              <div className="flex items-start text-white">
                 <span>{indexName}</span>
-                <span className="subtext lh-1">[{poolName}]</span>
+                <span className="subtext leading-1">[{poolName}]</span>
               </div>
             }
             showDollar={false}
             value={
               <>
-                {longTokenAmount.gt(0) && (
+                {longTokenAmount > 0 && (
                   <div>
                     {formatTokenAmountWithUsd(
                       longTokenAmount,
@@ -154,7 +174,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   </div>
                 )}
 
-                {shortTokenAmount.gt(0) && (
+                {shortTokenAmount > 0 && (
                   <div>
                     {formatTokenAmountWithUsd(
                       shortTokenAmount,
@@ -175,7 +195,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
     return (
       <TooltipWithPortal
-        portalClassName="ClaimHistoryRow-size-tooltip-portal"
+        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         renderContent={() => <>{amounts}</>}
         handle={formattedTotalUsd}
       />
@@ -186,9 +206,9 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     <tr>
       <td>
         <div className="flex">
-          <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
+          <div className="ClaimHistoryRow-action-handle">{_(eventTitleDescriptor)}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-xs"
+            className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
@@ -197,7 +217,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <TooltipWithPortal
           disableHandleStyle
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
-          portalClassName="ClaimHistoryRow-tooltip-portal"
+          tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
       </td>

@@ -19,7 +19,16 @@ export type GraphQlFilters =
        * Otherwise, if for some reason the field name itself starts with an `_`, change these types.
        */
       [key: `_${string}`]: never;
-      [key: string]: string | number | boolean | undefined | GraphQlFilters | string[] | number[] | GraphQlFilters[];
+      [key: string]:
+        | string
+        | number
+        | boolean
+        | undefined
+        | GraphQlFilters
+        | string[]
+        | number[]
+        | GraphQlFilters[]
+        | null;
     };
 
 /**
@@ -92,6 +101,8 @@ export function buildFiltersBody(filters: GraphQlFilters): string {
       if (valueStr !== "[]") {
         res[key] = valueStr;
       }
+    } else if (value === null) {
+      res[key] = null;
     } else {
       const valueStr = buildFiltersBody(value);
       if (valueStr !== "{}") {

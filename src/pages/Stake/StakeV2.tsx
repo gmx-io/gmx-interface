@@ -15,11 +15,11 @@ import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
 import cx from "classnames";
-import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
@@ -37,6 +37,7 @@ import { getContract } from "config/contracts";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
@@ -58,9 +59,11 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -68,7 +71,6 @@ import { useENS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   BN_ZERO,
-  bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
@@ -76,16 +78,34 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { shortenAddressOrEns } from "lib/wallets";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import { getIncentivesV2Url } from "config/links";
+import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
-const { AddressZero } = ethers.constants;
+const { ZeroAddress } = ethers;
 
-function StakeModal(props) {
+function StakeModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  chainId: number;
+  title: string;
+  maxAmount: bigint | undefined;
+  value: string;
+  setValue: (value: string) => void;
+  signer: UncheckedJsonRpcSigner | undefined;
+  stakingTokenSymbol: string;
+  stakingTokenAddress: string;
+  farmAddress: string;
+  rewardRouterAddress: string;
+  stakeMethodName: string;
+  setPendingTxns: SetPendingTransactions;
+}) {
   const {
     isVisible,
     setIsVisible,
@@ -94,8 +114,6 @@ function StakeModal(props) {
     maxAmount,
     value,
     setValue,
-    active,
-    account,
     signer,
     stakingTokenSymbol,
     stakingTokenAddress,
@@ -108,27 +126,27 @@ function StakeModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
   const icons = getIcons(chainId);
-  const { data: tokenAllowance } = useSWR(
-    active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: farmAddress,
+    tokenAddresses: [stakingTokenAddress],
+  });
+  const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 
   let amount = parseValue(value, 18);
-  const needApproval = farmAddress !== AddressZero && tokenAllowance && amount && amount.gt(tokenAllowance);
+  const needApproval =
+    farmAddress !== ZeroAddress && tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (amount === undefined || amount === 0n) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount !== undefined && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -166,7 +184,7 @@ function StakeModal(props) {
     if (error) {
       return false;
     }
-    if (isApproving) {
+    if (isApproving || needApproval) {
       return false;
     }
     if (isStaking) {
@@ -183,11 +201,8 @@ function StakeModal(props) {
     if (error) {
       return error;
     }
-    if (isApproving) {
-      return t`Approving ${stakingTokenSymbol}...`;
-    }
-    if (needApproval) {
-      return t`Approve ${stakingTokenSymbol}`;
+    if (isApproving || needApproval) {
+      return t`Pending ${stakingTokenSymbol} approval`;
     }
     if (isStaking) {
       return t`Staking...`;
@@ -199,7 +214,7 @@ function StakeModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -213,6 +228,7 @@ function StakeModal(props) {
           topRightLabel={t`Max`}
           topRightValue={formatAmount(maxAmount, 18, 4, true)}
           onClickTopRightLabel={() => {
+            if (maxAmount === undefined) return;
             const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
             const finalMaxAmount = isMetamaskMobile
               ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
@@ -225,7 +241,7 @@ function StakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="icon mr-5 h-22"
               height="22"
               src={icons[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
@@ -234,6 +250,16 @@ function StakeModal(props) {
           </div>
         </BuyInputSection>
 
+        {(needApproval || isApproving) && (
+          <div className="mb-12">
+            <ApproveTokenButton
+              tokenAddress={stakingTokenAddress}
+              spenderAddress={farmAddress}
+              tokenSymbol={stakingTokenSymbol}
+              isApproved={!needApproval}
+            />
+          </div>
+        )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -244,7 +270,25 @@ function StakeModal(props) {
   );
 }
 
-function UnstakeModal(props) {
+function UnstakeModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  chainId: number;
+  title: string;
+  maxAmount: bigint | undefined;
+  value: string;
+  setValue: (value: string) => void;
+  signer: UncheckedJsonRpcSigner | undefined;
+  unstakingTokenSymbol: string;
+  rewardRouterAddress: string;
+  unstakeMethodName: string;
+  multiplierPointsAmount: bigint | undefined;
+  reservedAmount: bigint | undefined;
+  bonusGmxInFeeGmx: bigint | undefined;
+  setPendingTxns: SetPendingTransactions;
+  processedData: any;
+  nativeTokenSymbol: string;
+}) {
   const {
     isVisible,
     setIsVisible,
@@ -268,45 +312,49 @@ function UnstakeModal(props) {
   const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
-  let burnAmount;
+  let burnAmount = 0n;
 
   if (
-    multiplierPointsAmount &&
-    multiplierPointsAmount.gt(0) &&
-    amount &&
-    amount.gt(0) &&
-    bonusGmxInFeeGmx &&
-    bonusGmxInFeeGmx.gt(0)
+    multiplierPointsAmount !== undefined &&
+    multiplierPointsAmount > 0 &&
+    amount !== undefined &&
+    amount > 0 &&
+    bonusGmxInFeeGmx !== undefined &&
+    bonusGmxInFeeGmx > 0
   ) {
-    burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
+    burnAmount = bigMath.mulDiv(multiplierPointsAmount, amount, bonusGmxInFeeGmx);
   }
 
-  let unstakeBonusLostPercentage;
+  const unstakeGmxPercentage =
+    maxAmount !== undefined && maxAmount > 0 && amount !== undefined
+      ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
+      : 0n;
+
+  let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
-    amount?.gt(0) &&
-    multiplierPointsAmount?.gt(0) &&
-    burnAmount?.gt(0) &&
-    processedData.esGmxInStakedGmx &&
-    processedData.gmxInStakedGmx
+    amount !== undefined &&
+    amount > 0 &&
+    multiplierPointsAmount !== undefined &&
+    processedData.esGmxInStakedGmx !== undefined &&
+    processedData.gmxInStakedGmx !== undefined
   ) {
-    unstakeBonusLostPercentage = amount
-      ?.add(burnAmount)
-      .mul(BASIS_POINTS_DIVISOR)
-      ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
+    const divisor = multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+    if (divisor !== 0n) {
+      unstakeBonusLostPercentage = bigMath.mulDiv(amount + burnAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+    }
   }
 
   const govTokenAmount = useGovTokenAmount(chainId);
-  const unstakeGmxPercentage = maxAmount?.gt(0) ? amount?.mul(BASIS_POINTS_DIVISOR)?.div(maxAmount) : BigNumber.from(0);
   const votingPowerBurnAmount =
-    unstakeGmxPercentage && govTokenAmount
-      ? govTokenAmount?.mul(unstakeGmxPercentage)?.div(BASIS_POINTS_DIVISOR)
-      : BigNumber.from(0);
+    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
+      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
 
   const getError = () => {
-    if (!amount) {
+    if (amount === undefined || amount === 0n) {
       return t`Enter an amount`;
     }
-    if (amount.gt(maxAmount)) {
+    if (maxAmount !== undefined && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
   };
@@ -357,14 +405,14 @@ function UnstakeModal(props) {
           topLeftLabel={t`Unstake`}
           topRightLabel={t`Max`}
           topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          onClickTopRightLabel={() => maxAmount !== undefined && setValue(formatAmountFree(maxAmount, 18, 18))}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="icon mr-5 h-22"
               height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
@@ -372,26 +420,32 @@ function UnstakeModal(props) {
             {unstakingTokenSymbol}
           </div>
         </BuyInputSection>
-        {reservedAmount && reservedAmount.gt(0) && (
+        {reservedAmount !== undefined && reservedAmount > 0 && (
           <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && amount && !amount.gt(maxAmount) && (
-          <AlertInfo type="warning">
-            <Trans>
-              {chainId === ARBITRUM ? (
+        {burnAmount > 0 &&
+          unstakeBonusLostPercentage !== undefined &&
+          unstakeBonusLostPercentage > 0 &&
+          amount !== undefined &&
+          maxAmount !== undefined &&
+          amount <= maxAmount && (
+            <AlertInfo type="warning">
+              <Trans>
+                Unstaking will burn&nbsp;
+                {chainId === ARBITRUM ? (
+                  <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
+                ) : (
+                  "."
+                )}
                 <span>
-                  Unstaking will burn&nbsp;{formatAmount(votingPowerBurnAmount, 18, 2, true)}&nbsp;voting power.&nbsp;
+                  You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
+                  this action.
                 </span>
-              ) : null}
-              <span>
-                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
-                this action.
-              </span>
-            </Trans>
-          </AlertInfo>
-        )}
+              </Trans>
+            </AlertInfo>
+          )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -402,7 +456,25 @@ function UnstakeModal(props) {
   );
 }
 
-function VesterDepositModal(props) {
+function VesterDepositModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  chainId: number;
+  title: string;
+  maxAmount: bigint | undefined;
+  value: string;
+  setValue: (value: string) => void;
+  balance: bigint | undefined;
+  vestedAmount: bigint | undefined;
+  averageStakedAmount: bigint | undefined;
+  maxVestableAmount: bigint | undefined;
+  signer: UncheckedJsonRpcSigner | undefined;
+  stakeTokenLabel: string;
+  reserveAmount: bigint | undefined;
+  maxReserveAmount: bigint | undefined;
+  vesterAddress: string;
+  setPendingTxns: SetPendingTransactions;
+}) {
   const {
     isVisible,
     setIsVisible,
@@ -427,29 +499,36 @@ function VesterDepositModal(props) {
 
   let amount = parseValue(value, 18);
 
-  let nextReserveAmount = reserveAmount;
+  let nextReserveAmount: bigint | undefined = reserveAmount;
 
   let nextDepositAmount = vestedAmount;
-  if (amount) {
-    nextDepositAmount = vestedAmount.add(amount);
+  if (amount !== undefined && vestedAmount !== undefined) {
+    nextDepositAmount = vestedAmount + amount;
   }
 
-  let additionalReserveAmount = bigNumberify(0);
-  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0) && nextReserveAmount) {
-    nextReserveAmount = nextDepositAmount.mul(averageStakedAmount).div(maxVestableAmount);
-    if (nextReserveAmount?.gt(reserveAmount)) {
-      additionalReserveAmount = nextReserveAmount.sub(reserveAmount);
+  let additionalReserveAmount = 0n;
+  if (
+    amount !== undefined &&
+    nextDepositAmount !== undefined &&
+    averageStakedAmount !== undefined &&
+    maxVestableAmount !== undefined &&
+    maxVestableAmount > 0 &&
+    nextReserveAmount !== undefined
+  ) {
+    nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
+    if (reserveAmount !== undefined && nextReserveAmount > reserveAmount) {
+      additionalReserveAmount = nextReserveAmount - reserveAmount;
     }
   }
 
   const getError = () => {
-    if (!amount || amount.eq(0)) {
+    if (amount === undefined) {
       return t`Enter an amount`;
     }
-    if (maxAmount && amount.gt(maxAmount)) {
+    if (maxAmount !== undefined && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
-    if (nextReserveAmount && nextReserveAmount?.gt(maxReserveAmount)) {
+    if (maxReserveAmount !== undefined && nextReserveAmount !== undefined && nextReserveAmount > maxReserveAmount) {
       return t`Insufficient staked tokens`;
     }
   };
@@ -502,13 +581,13 @@ function VesterDepositModal(props) {
             topLeftLabel={t`Deposit`}
             topRightLabel={t`Max`}
             topRightValue={formatAmount(maxAmount, 18, 4, true)}
-            onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+            onClickTopRightLabel={() => maxAmount !== undefined && setValue(formatAmountFree(maxAmount, 18, 18))}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="mr-xs icon" height="22" src={icons.esgmx} alt="esGMX" />
+              <img className="icon mr-5 h-22" height="22" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -539,6 +618,7 @@ function VesterDepositModal(props) {
                         <p className="text-white">
                           <Trans>Vault Capacity for your Account:</Trans>
                         </p>
+                        <br />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
@@ -555,7 +635,7 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-            {reserveAmount && (
+            {reserveAmount !== undefined && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">
                   <Trans>Reserve Amount</Trans>
@@ -563,9 +643,7 @@ function VesterDepositModal(props) {
                 <div className="align-right">
                   <TooltipWithPortal
                     handle={`${formatAmount(
-                      reserveAmount && reserveAmount.gte(additionalReserveAmount)
-                        ? reserveAmount
-                        : additionalReserveAmount,
+                      nextReserveAmount,
                       18,
                       2,
                       true
@@ -584,15 +662,18 @@ function VesterDepositModal(props) {
                             value={formatAmount(additionalReserveAmount, 18, 2, true)}
                             showDollar={false}
                           />
-                          {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                            <>
-                              <br />
-                              <Trans>
-                                You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                                {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                              </Trans>
-                            </>
-                          )}
+                          {amount !== undefined &&
+                            nextReserveAmount !== undefined &&
+                            maxReserveAmount !== undefined &&
+                            nextReserveAmount > maxReserveAmount && (
+                              <>
+                                <br />
+                                <Trans>
+                                  You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                                  {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                                </Trans>
+                              </>
+                            )}
                         </>
                       );
                     }}
@@ -612,7 +693,15 @@ function VesterDepositModal(props) {
   );
 }
 
-function VesterWithdrawModal(props) {
+function VesterWithdrawModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  chainId: number;
+  title: string;
+  signer: UncheckedJsonRpcSigner | undefined;
+  vesterAddress: string;
+  setPendingTxns: SetPendingTransactions;
+}) {
   const { isVisible, setIsVisible, chainId, title, signer, vesterAddress, setPendingTxns } = props;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
@@ -712,13 +801,21 @@ function AffiliateVesterWithdrawModal(props) {
   );
 }
 
-function CompoundModal(props) {
+function CompoundModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  rewardRouterAddress: string;
+  signer: UncheckedJsonRpcSigner | undefined;
+  chainId: number;
+  setPendingTxns: SetPendingTransactions;
+  totalVesterRewards: bigint | undefined;
+  nativeTokenSymbol: string;
+  wrappedTokenSymbol: string;
+}) {
   const {
     isVisible,
     setIsVisible,
     rewardRouterAddress,
-    active,
-    account,
     signer,
     chainId,
     setPendingTxns,
@@ -755,33 +852,35 @@ function CompoundModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance } = useSWR(
-    active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: stakedGmxTrackerAddress,
+    tokenAddresses: [gmxAddress],
+  });
 
-  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
+  const tokenAllowance = tokensAllowanceData?.[gmxAddress];
+
+  const needApproval =
+    shouldStakeGmx &&
+    totalVesterRewards !== undefined &&
+    ((tokenAllowance !== undefined && totalVesterRewards > tokenAllowance) ||
+      (totalVesterRewards > 0n && tokenAllowance === undefined));
 
   const isPrimaryEnabled = () => {
-    return !isCompounding && !isApproving && !isCompounding && !isUndelegatedGovToken;
+    return !isCompounding && !isApproving && !needApproval && !isCompounding && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
-    if (isApproving) {
-      return t`Approving GMX...`;
+    if (needApproval || isApproving) {
+      return t`Pending GMX approval`;
     }
-    if (needApproval) {
-      return t`Approve GMX`;
-    }
+
     if (isCompounding) {
       return t`Compounding...`;
     }
@@ -856,7 +955,7 @@ function CompoundModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -899,6 +998,16 @@ function CompoundModal(props) {
             </Checkbox>
           </div>
         </div>
+        {(needApproval || isApproving) && (
+          <div className="mb-12">
+            <ApproveTokenButton
+              tokenAddress={gmxAddress}
+              spenderAddress={stakedGmxTrackerAddress}
+              tokenSymbol={"GMX"}
+              isApproved={!needApproval}
+            />
+          </div>
+        )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -909,7 +1018,16 @@ function CompoundModal(props) {
   );
 }
 
-function ClaimModal(props) {
+function ClaimModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  rewardRouterAddress: string;
+  signer: UncheckedJsonRpcSigner | undefined;
+  chainId: number;
+  setPendingTxns: SetPendingTransactions;
+  nativeTokenSymbol: string;
+  wrappedTokenSymbol: string;
+}) {
   const {
     isVisible,
     setIsVisible,
@@ -941,7 +1059,7 @@ function ClaimModal(props) {
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount?.gt(0);
+    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
 
   const isPrimaryEnabled = () => {
     return !isClaiming && !isUndelegatedGovToken;
@@ -997,7 +1115,7 @@ function ClaimModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1040,13 +1158,20 @@ function ClaimModal(props) {
   );
 }
 
-function AffiliateClaimModal(props) {
+function AffiliateClaimModal(props: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  signer: UncheckedJsonRpcSigner | undefined;
+  chainId: number;
+  setPendingTxns: SetPendingTransactions;
+  totalVesterRewards: bigint | undefined;
+}) {
   const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
   const [isClaiming, setIsClaiming] = useState(false);
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const isPrimaryEnabled = () => {
-    if (totalVesterRewards.isZero()) {
+    if (totalVesterRewards == undefined || totalVesterRewards == 0n) {
       return false;
     }
 
@@ -1106,8 +1231,48 @@ function AffiliateClaimModal(props) {
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
+  const incentivesMessage = useMemo(() => {
+    const arbitrumLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
+        {getChainName(ARBITRUM)}
+      </ExternalLink>
+    );
+    const avalancheLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
+        {getChainName(AVALANCHE)}
+      </ExternalLink>
+    );
+    if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
+      return (
+        <div>
+          <Trans>
+            Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
+    } else if (incentiveStats?.lp?.isActive) {
+      return (
+        <div>
+          <Trans>
+            Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
+    } else if (incentiveStats?.trading?.isActive) {
+      return (
+        <div>
+          <Trans>
+            Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
+        </div>
+      );
+    }
+  }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
+
+  const incentivesToken = useAnyAirdroppedTokenTitle();
 
   const [, setPendingTxns] = usePendingTxns();
 
@@ -1115,7 +1280,7 @@ export default function StakeV2() {
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
-  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
+  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<bigint | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
   const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
   const [stakingTokenAddress, setStakingTokenAddress] = useState("");
@@ -1124,8 +1289,8 @@ export default function StakeV2() {
 
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
-  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<BigNumber | undefined>(undefined);
+  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
+  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<bigint | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1133,17 +1298,16 @@ export default function StakeV2() {
   const [isVesterDepositModalVisible, setIsVesterDepositModalVisible] = useState(false);
   const [vesterDepositTitle, setVesterDepositTitle] = useState("");
   const [vesterDepositStakeTokenLabel, setVesterDepositStakeTokenLabel] = useState("");
-  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositBalance, setVesterDepositBalance] = useState<BigNumber | undefined>();
-  const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState<BigNumber | undefined>();
-  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<
-    BigNumber | undefined | string
-  >("");
-  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<BigNumber | undefined>();
+  const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<bigint | undefined>();
+  const [vesterDepositBalance, setVesterDepositBalance] = useState<bigint | undefined>();
+  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<bigint | undefined>();
+  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<bigint | undefined | string>(
+    ""
+  );
+  const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<bigint | undefined>();
   const [vesterDepositValue, setVesterDepositValue] = useState("");
-  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<BigNumber | undefined>();
-  const [vesterDepositMaxReserveAmount, setVesterDepositMaxReserveAmount] = useState<BigNumber | undefined>();
+  const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<bigint | undefined>();
+  const [vesterDepositMaxReserveAmount, setVesterDepositMaxReserveAmount] = useState<bigint | undefined>();
   const [vesterDepositAddress, setVesterDepositAddress] = useState("");
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
@@ -1213,9 +1377,8 @@ export default function StakeV2() {
   ];
 
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -1301,12 +1464,12 @@ export default function StakeV2() {
 
   let esGmxSupplyUsd;
   if (esGmxSupply && gmxPrice) {
-    esGmxSupplyUsd = esGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+    esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
   let aum;
   if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2);
+    aum = (aums[0] + aums[1]) / 2n;
   }
 
   const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
@@ -1332,53 +1495,50 @@ export default function StakeV2() {
     gmxSupply
   );
 
-  let hasMultiplierPoints = false;
-  let multiplierPointsAmount;
-  if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
-    multiplierPointsAmount = accumulatedBnGMXAmount.add(processedData.bnGmxInFeeGmx);
-    if (multiplierPointsAmount.gt(0)) {
-      hasMultiplierPoints = true;
-    }
+  let multiplierPointsAmount: bigint | undefined;
+  if (accumulatedBnGMXAmount !== undefined && processedData?.bnGmxInFeeGmx !== undefined) {
+    multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
   }
+
   let totalRewardTokens;
 
-  if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {
-    totalRewardTokens = processedData.bnGmxInFeeGmx.add(processedData.bonusGmxInFeeGmx);
+  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
+    totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
   }
 
-  let totalRewardAndLpTokens = totalRewardTokens ?? bigNumberify(0);
-  if (processedData?.glpBalance) {
-    totalRewardAndLpTokens = totalRewardAndLpTokens.add(processedData.glpBalance);
+  let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
+  if (processedData?.glpBalance !== undefined) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens + processedData.glpBalance;
   }
-  if (userTotalGmInfo?.balance?.gt(0)) {
-    totalRewardAndLpTokens = totalRewardAndLpTokens.add(userTotalGmInfo.balance);
+  if ((userTotalGmInfo?.balance ?? 0n) > 0) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens + (userTotalGmInfo?.balance ?? 0n);
   }
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  if (!totalGmxStaked.isZero() && gmxPrice) {
-    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (totalGmxStaked !== 0n && gmxPrice) {
+    stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
-    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
+    totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  let maxUnstakeableGmx = bigNumberify(0);
+  let maxUnstakeableGmx = 0n;
   if (
-    totalRewardTokens &&
+    totalRewardTokens !== undefined &&
     vestingData &&
-    vestingData.gmxVesterPairAmount &&
-    multiplierPointsAmount &&
-    processedData?.bonusGmxInFeeGmx
+    vestingData.gmxVesterPairAmount !== undefined &&
+    multiplierPointsAmount !== undefined &&
+    processedData?.bonusGmxInFeeGmx !== undefined
   ) {
-    const availableTokens = totalRewardTokens.sub(vestingData.gmxVesterPairAmount);
+    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount.add(stakedTokens);
-    if (divisor.gt(0)) {
-      maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
+    const divisor = multiplierPointsAmount + stakedTokens;
+    if (divisor > 0) {
+      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
     }
   }
 
@@ -1405,15 +1565,15 @@ export default function StakeV2() {
     setStakeValue("");
     setStakingTokenSymbol("esGMX");
     setStakingTokenAddress(esGmxAddress);
-    setStakingFarmAddress(AddressZero);
+    setStakingFarmAddress(ZeroAddress);
     setStakeMethodName("stakeEsGmx");
   };
 
   const showGmxVesterDepositModal = () => {
     if (!vestingData) return;
 
-    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.vestedAmount);
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount - vestingData.gmxVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1422,7 +1582,6 @@ export default function StakeV2() {
     setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositEscrowedBalance(vestingData.gmxVester.escrowedBalance);
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
@@ -1435,8 +1594,8 @@ export default function StakeV2() {
   const showGlpVesterDepositModal = () => {
     if (!vestingData) return;
 
-    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.vestedAmount);
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount - vestingData.glpVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1445,7 +1604,6 @@ export default function StakeV2() {
     setVesterDepositStakeTokenLabel("staked GLP");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositEscrowedBalance(vestingData.glpVester.escrowedBalance);
     setVesterDepositVestedAmount(vestingData.glpVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount);
@@ -1456,7 +1614,7 @@ export default function StakeV2() {
   };
 
   const showGmxVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+    if (!vestingData || vestingData.gmxVesterVestedAmount === undefined || vestingData.gmxVesterVestedAmount === 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1467,7 +1625,7 @@ export default function StakeV2() {
   };
 
   const showGlpVesterWithdrawModal = () => {
-    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+    if (!vestingData || vestingData.glpVesterVestedAmount === undefined || vestingData.glpVesterVestedAmount === 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1486,11 +1644,11 @@ export default function StakeV2() {
     setUnstakeModalTitle(t`Unstake GMX`);
     let maxAmount = processedData?.gmxInStakedGmx;
     if (
-      processedData?.gmxInStakedGmx &&
+      processedData?.gmxInStakedGmx !== undefined &&
       vestingData &&
-      vestingData.gmxVesterPairAmount.gt(0) &&
-      maxUnstakeableGmx &&
-      maxUnstakeableGmx.lt(processedData.gmxInStakedGmx)
+      vestingData.gmxVesterPairAmount > 0 &&
+      maxUnstakeableGmx !== undefined &&
+      maxUnstakeableGmx < processedData.gmxInStakedGmx
     ) {
       maxAmount = maxUnstakeableGmx;
     }
@@ -1508,11 +1666,11 @@ export default function StakeV2() {
     setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData?.esGmxInStakedGmx;
     if (
-      maxAmount &&
+      maxAmount !== undefined &&
       vestingData &&
-      vestingData.gmxVesterPairAmount.gt(0) &&
-      maxUnstakeableGmx &&
-      maxUnstakeableGmx.lt(maxAmount)
+      vestingData.gmxVesterPairAmount > 0 &&
+      maxUnstakeableGmx !== undefined &&
+      maxUnstakeableGmx < maxAmount
     ) {
       maxAmount = maxUnstakeableGmx;
     }
@@ -1531,10 +1689,9 @@ export default function StakeV2() {
       return;
     }
 
-    let remainingVestableAmount = vestingData?.affiliateVester?.maxVestableAmount?.sub(
-      vestingData?.affiliateVester?.vestedAmount
-    );
-    if (processedData?.esGmxBalance?.lt(remainingVestableAmount)) {
+    let remainingVestableAmount =
+      vestingData.affiliateVester.maxVestableAmount - vestingData.affiliateVester.vestedAmount;
+    if (processedData?.esGmxBalance !== undefined && processedData.esGmxBalance < remainingVestableAmount) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1543,7 +1700,6 @@ export default function StakeV2() {
 
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositEscrowedBalance(vestingData?.affiliateVester.escrowedBalance);
     setVesterDepositVestedAmount(vestingData?.affiliateVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData?.affiliateVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData?.affiliateVester.averageStakedAmount);
@@ -1555,7 +1711,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterWithdrawModal() {
-    if (!vestingData?.affiliateVesterVestedAmount?.gt(0)) {
+    if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -1564,7 +1720,7 @@ export default function StakeV2() {
   }
 
   function showAffiliateVesterClaimModal() {
-    if (!vestingData?.affiliateVesterClaimable?.gt(0)) {
+    if (vestingData?.affiliateVesterClaimable === undefined || vestingData?.affiliateVesterClaimable <= 0) {
       helperToast.error(t`You have no GMX tokens to claim.`);
       return;
     }
@@ -1576,25 +1732,25 @@ export default function StakeV2() {
   }, [processedData?.gmxAprForNativeToken]);
 
   let earnMsg;
-  if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
+  if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
     let gmxAmountStr;
-    if (processedData?.gmxInStakedGmx?.gt(0)) {
+    if (processedData?.gmxInStakedGmx && processedData.gmxInStakedGmx > 0) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
     }
     let esGmxAmountStr;
-    if (processedData?.esGmxInStakedGmx?.gt(0)) {
+    if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
     let mpAmountStr;
-    if (processedData?.bnGmxInFeeGmx?.gt(0)) {
+    if (processedData?.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx > 0) {
       mpAmountStr = formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true) + " MP";
     }
     let glpStr;
-    if (processedData?.glpBalance?.gt(0)) {
+    if (processedData?.glpBalance && processedData.glpBalance > 0) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
     }
     let gmStr;
-    if (userTotalGmInfo?.balance && userTotalGmInfo?.balance.gt(0)) {
+    if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
@@ -1627,18 +1783,13 @@ export default function StakeV2() {
         maxAmount={stakeModalMaxAmount}
         value={stakeValue}
         setValue={setStakeValue}
-        active={active}
-        account={account}
         signer={signer}
         stakingTokenSymbol={stakingTokenSymbol}
         stakingTokenAddress={stakingTokenAddress}
         farmAddress={stakingFarmAddress}
         rewardRouterAddress={rewardRouterAddress}
         stakeMethodName={stakeMethodName}
-        hasMultiplierPoints={hasMultiplierPoints}
         setPendingTxns={setPendingTxns}
-        nativeTokenSymbol={nativeTokenSymbol}
-        wrappedTokenSymbol={wrappedTokenSymbol}
       />
       <UnstakeModal
         setPendingTxns={setPendingTxns}
@@ -1667,9 +1818,14 @@ export default function StakeV2() {
         stakeTokenLabel={vesterDepositStakeTokenLabel}
         maxAmount={vesterDepositMaxAmount}
         balance={vesterDepositBalance}
-        escrowedBalance={vesterDepositEscrowedBalance}
         vestedAmount={vesterDepositVestedAmount}
-        averageStakedAmount={vesterDepositAverageStakedAmount}
+        averageStakedAmount={
+          typeof vesterDepositAverageStakedAmount === "string"
+            ? vesterDepositAverageStakedAmount === ""
+              ? undefined
+              : BigInt(vesterDepositAverageStakedAmount)
+            : vesterDepositAverageStakedAmount
+        }
         maxVestableAmount={vesterDepositMaxVestableAmount}
         reserveAmount={vesterDepositReserveAmount}
         maxReserveAmount={vesterDepositMaxReserveAmount}
@@ -1696,11 +1852,8 @@ export default function StakeV2() {
         setPendingTxns={setPendingTxns}
       />
       <CompoundModal
-        active={active}
-        account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
-        multiplierPointsAmount={multiplierPointsAmount}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData?.totalVesterRewards}
@@ -1710,13 +1863,10 @@ export default function StakeV2() {
         chainId={chainId}
       />
       <ClaimModal
-        active={active}
-        account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isClaimModalVisible}
         setIsVisible={setIsClaimModalVisible}
         rewardRouterAddress={rewardRouterAddress}
-        totalVesterRewards={processedData?.totalVesterRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
@@ -1742,20 +1892,7 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive) && (
-              <div>
-                <Trans>
-                  Liquidity and trading incentives program is live on Arbitrum.{" "}
-                  <ExternalLink
-                    newTab
-                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
-                  >
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
-              </div>
-            )}
+            {incentivesMessage}
           </div>
         }
       />
@@ -1763,8 +1900,8 @@ export default function StakeV2() {
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
                 {t`GMX & Voting Power`}
               </div>
             </div>
@@ -1779,7 +1916,7 @@ export default function StakeV2() {
                   {gmxPrice && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
                         <>
@@ -1821,15 +1958,19 @@ export default function StakeV2() {
                     <Trans>Voting Power</Trans>
                   </div>
                   <div>
-                    {govTokenAmount ? (
+                    {govTokenAmount !== undefined ? (
                       <Tooltip
                         position="bottom-end"
                         className="nowrap"
                         handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
                         renderContent={() => (
                           <>
-                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount.gt(0) ? (
-                              <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-warning">
+                            {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (
+                              <AlertInfo
+                                type="warning"
+                                className={cx("DelegateGMXAlertInfo")}
+                                textColor="text-yellow-500"
+                              >
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                                     Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -1848,8 +1989,8 @@ export default function StakeV2() {
                                     {govTokenDelegatesAddress === account
                                       ? t`Myself`
                                       : govTokenDelegatesEns
-                                      ? shortenAddressOrEns(govTokenDelegatesEns, 25)
-                                      : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
+                                        ? shortenAddressOrEns(govTokenDelegatesEns, 25)
+                                        : shortenAddressOrEns(govTokenDelegatesAddress, 13)}
                                   </ExternalLink>
                                 )
                               }
@@ -1930,11 +2071,11 @@ export default function StakeV2() {
                   <Trans>Total Staked</Trans>
                 </div>
                 <div>
-                  {!totalGmxStaked && "..."}
-                  {totalGmxStaked && (
+                  {totalGmxStaked === undefined && "..."}
+                  {(totalGmxStaked !== undefined && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={
                         formatAmount(totalGmxStaked, 18, 0, true) +
                         " GMX" +
@@ -1949,20 +2090,22 @@ export default function StakeV2() {
                         />
                       )}
                     />
-                  )}
+                  )) ||
+                    null}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Total Supply</Trans>
                 </div>
-                {!totalGmxSupply && "..."}
-                {totalGmxSupply && (
+                {totalGmxSupply === undefined && "..."}
+                {(totalGmxSupply !== undefined && (
                   <div>
                     {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
                   </div>
-                )}
+                )) ||
+                  null}
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
@@ -2054,8 +2197,8 @@ export default function StakeV2() {
           <div className="App-card App-card-space-between">
             <div>
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
                   GLP
                 </div>
               </div>
@@ -2103,7 +2246,7 @@ export default function StakeV2() {
                               showDollar={false}
                             />
 
-                            {processedData?.glpAprForEsGmx?.gt(0) && (
+                            {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0 && (
                               <StatsTooltipRow
                                 label="Escrowed GMX APR"
                                 value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
@@ -2223,8 +2366,8 @@ export default function StakeV2() {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-5 h-20" alt="GLP" src={icons.esgmx} height={20} />
                 <span>
                   <Trans>Escrowed GMX</Trans>
                 </span>
@@ -2319,7 +2462,7 @@ export default function StakeV2() {
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
           <GmList
-            marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketTokensData={marketTokensData}
             marketsInfoData={marketsInfoData}
@@ -2348,8 +2491,8 @@ export default function StakeV2() {
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
                   <Trans>GMX Vault</Trans>
                 </div>
               </div>
@@ -2460,8 +2603,8 @@ export default function StakeV2() {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
                   <Trans>GLP Vault</Trans>
                 </div>
               </div>
@@ -2548,11 +2691,11 @@ export default function StakeV2() {
                 </div>
               </div>
             </div>
-            {vestingData?.affiliateVesterMaxVestableAmount?.gt(0) && (
+            {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0 && (
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
-                  <div className="inline-items-center">
-                    <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                  <div className="inline-flex items-center">
+                    <img className="mr-5 h-20" alt="GLP" src={icons.gmx} height={20} />
                     <Trans>Affiliate Vault</Trans>
                   </div>
                 </div>
@@ -2618,21 +2761,17 @@ export default function StakeV2() {
                   </div>
                 </div>
               </div>
-            )}
+            )) ||
+              null}
           </div>
         </div>
       </div>
-      <div className="mt-sm">
+      <div className="mt-10">
         <PageTitle
           title={t`Incentives & Prizes`}
           subtitle={
             incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-              <Trans>
-                Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
-                V2.
-                <br />
-                Earn prizes by participating in GMX Trading Competitions.
-              </Trans>
+              <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
             ) : (
               <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
             )

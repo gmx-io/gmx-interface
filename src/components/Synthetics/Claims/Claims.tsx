@@ -1,10 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
 import { useMedia } from "react-use";
+
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
@@ -24,21 +26,17 @@ export function Claims({
   shouldShowPaginationButtons,
   isSettling,
   setIsSettling,
-  gettingPendingFeePositionKeys,
-  setGettingPendingFeePositionKeys,
   setPendingTxns,
   allowedSlippage,
 }: {
   shouldShowPaginationButtons: boolean;
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
-  gettingPendingFeePositionKeys: string[];
-  setGettingPendingFeePositionKeys: (keys: string[]) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
 }) {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
   const [isClaiming, setIsClaiming] = useState(false);
 
   const [isAccruedPositionPriceImpactRebateModalVisible, setIsAccruedPositionPriceImpactRebateModalVisible] =
@@ -62,9 +60,8 @@ export function Claims({
   );
 
   const handleSettleCloseClick = useCallback(() => {
-    setGettingPendingFeePositionKeys([]);
     setIsSettling(false);
-  }, [setGettingPendingFeePositionKeys, setIsSettling]);
+  }, [setIsSettling]);
 
   const handleAccruedPositionPriceImpactRebateCloseClick = useCallback(() => {
     setIsAccruedPositionPriceImpactRebateModalVisible(false);
@@ -85,9 +82,7 @@ export function Claims({
       <ClaimModal isVisible={isClaiming} onClose={handleClaimModalClose} setPendingTxns={setPendingTxns} />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
-        positionKeys={gettingPendingFeePositionKeys}
         allowedSlippage={allowedSlippage}
-        setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         onClose={handleSettleCloseClick}
       />
@@ -109,7 +104,7 @@ export function Claims({
         )}
         <div
           className={cx("flex", "w-full", {
-            "flex-column": isMobile,
+            "flex-col": isMobile,
           })}
         >
           {account && !isLoading && (
