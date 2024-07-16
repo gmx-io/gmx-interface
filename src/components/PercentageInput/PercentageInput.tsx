@@ -78,25 +78,33 @@ export default function PercentageInput({
     }
   }
 
-  useEffect(() => {
-    if (value === undefined) {
-      if (inputValue !== "") {
-        setInputValue("");
+  useEffect(
+    () => {
+      if (value === undefined) {
+        if (inputValue !== "") {
+          setInputValue("");
+        }
+
+        return;
       }
 
-      return;
-    }
+      const valueText = getValueText(value);
+      const defaultValueText = getValueText(defaultValue);
 
-    if (
-      // When the value is changed from outside we want to keep input empty
-      // if the value is the same as the default value as it means the user
-      // just cleared the input
-      Number.parseFloat(inputValue) !== Number.parseFloat(getValueText(value)) &&
-      !(getValueText(value) === getValueText(defaultValue) && inputValue === "")
-    ) {
-      setInputValue(getValueText(value));
-    }
-  }, [defaultValue, inputValue, value]);
+      if (
+        // When the value is changed from outside we want to keep input empty
+        // if the value is the same as the default value as it means the user
+        // just cleared the input
+        Number.parseFloat(inputValue) !== Number.parseFloat(valueText) &&
+        !(valueText === defaultValueText && inputValue === "")
+      ) {
+        setInputValue(valueText);
+      }
+    },
+    // intentionally keep input value out of dependencies to handle only change value from outside
+    // eslint-disable-next-line
+    [defaultValue, value]
+  );
 
   const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
@@ -116,6 +124,14 @@ export default function PercentageInput({
   const id = useMemo(() => Math.random().toString(36), []);
 
   const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
+
+  const onSelectSuggestion = useCallback(
+    (suggestion: number) => () => {
+      onChange(suggestion * 100);
+      setIsPanelVisible(false);
+    },
+    [onChange, setIsPanelVisible]
+  );
 
   return (
     <div className="Percentage-input-wrapper">
@@ -150,14 +166,7 @@ export default function PercentageInput({
       {shouldShowPanel && (
         <ul className="Percentage-list">
           {suggestions.map((slippage) => (
-            <li
-              key={slippage}
-              onMouseDown={() => {
-                setInputValue(String(slippage));
-                onChange(slippage * 100);
-                setIsPanelVisible(false);
-              }}
-            >
+            <li key={slippage} onMouseDown={onSelectSuggestion(slippage)}>
               {slippage}%
             </li>
           ))}

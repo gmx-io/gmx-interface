@@ -21,6 +21,7 @@ import {
   ReactHTML,
   ReactNode,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -28,6 +29,7 @@ import {
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 
+import { usePrevious } from "lib/usePrevious";
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
@@ -118,6 +120,14 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
     open: visible,
     onOpenChange: setVisible,
   });
+
+  const previousDisabled = usePrevious(disabled);
+
+  useEffect(() => {
+    if (disabled && !previousDisabled && visible) {
+      setVisible(false);
+    }
+  }, [disabled, previousDisabled, visible]);
 
   const hover = useHover(context, {
     enabled: !disabled,

@@ -4,6 +4,7 @@ import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
@@ -35,17 +36,17 @@ import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 
 interface TradeboxTransactionsProps {
-  allowedSlippage: number | undefined;
   setPendingTxns: (txns: any) => void;
 }
 
-export function useTradeboxTransactions({ allowedSlippage, setPendingTxns }: TradeboxTransactionsProps) {
+export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
+  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);

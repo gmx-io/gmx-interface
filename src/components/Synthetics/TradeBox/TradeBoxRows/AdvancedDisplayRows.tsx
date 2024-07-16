@@ -1,9 +1,6 @@
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  selectSetTradeboxAllowedSlippage,
   selectTradeboxAdvancedOptions,
-  selectTradeboxAllowedSlippage,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
@@ -33,10 +30,6 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
   const fees = useSelector(selectTradeboxFees);
 
-  const { savedAllowedSlippage } = useSettings();
-  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const setAllowedSlippage = useSelector(selectSetTradeboxAllowedSlippage);
-
   const { isMarket, isLimit, isTrigger } = tradeFlags;
 
   const isInputDisabled = useMemo(() => {
@@ -56,13 +49,7 @@ export function AdvancedDisplayRows({ enforceVisible = false }: { enforceVisible
       <SwapSpreadRow />
       <AvailableLiquidityRow />
       <CollateralSpreadRow />
-      {isMarket && (
-        <AllowedSlippageRow
-          defaultSlippage={savedAllowedSlippage}
-          allowedSlippage={allowedSlippage}
-          setSlippage={setAllowedSlippage}
-        />
-      )}
+      {isMarket && <AllowedSlippageRow />}
       {(isLimit || isTrigger) && (
         <AcceptablePriceImpactInputRow
           notAvailable={

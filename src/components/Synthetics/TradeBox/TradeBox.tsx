@@ -716,7 +716,6 @@ export function TradeBox(p: Props) {
   }
 
   const tradeboxTransactions = useTradeboxTransactions({
-    allowedSlippage,
     setPendingTxns,
   });
 
