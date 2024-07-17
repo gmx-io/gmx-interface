@@ -198,7 +198,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
   );
 }
 
-function MarketsListDesktopItem({ stats, priceDecimals }: { stats: IndexTokenStat; priceDecimals?: number }) {
+function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const anyPool = stats.marketsStats[0];
 
   const netFeePerHourLong = stats.bestNetFeeLong;
@@ -226,11 +226,7 @@ function MarketsListDesktopItem({ stats, priceDecimals }: { stats: IndexTokenSta
           </div>
         </div>
       </td>
-      <td>
-        {formatUsdPrice(stats.token.prices?.minPrice, {
-          displayDecimals: priceDecimals,
-        })}
-      </td>
+      <td>{formatUsdPrice(stats.token.prices?.minPrice)}</td>
       <td>
         <Tooltip
           className="nowrap"

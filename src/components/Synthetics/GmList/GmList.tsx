@@ -24,6 +24,7 @@ import {
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { formatUsdPrice } from "domain/synthetics/positions";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useChainId } from "lib/chains";
@@ -32,7 +33,6 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
-import { calculatePriceDecimals } from "../../../config/tokens";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import "./GmList.scss";
 
@@ -282,8 +282,6 @@ export function GmList({
                 ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
                 : getNormalizedTokenSymbol(indexToken.symbol);
 
-              const decimals = calculatePriceDecimals(indexToken.prices?.minPrice);
-
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
@@ -311,11 +309,7 @@ export function GmList({
                       <div className="label">
                         <Trans>Price</Trans>
                       </div>
-                      <div>
-                        {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: decimals,
-                        })}
-                      </div>
+                      <div>{formatUsdPrice(token.prices?.minPrice)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

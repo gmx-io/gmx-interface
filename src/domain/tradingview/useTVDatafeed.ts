@@ -114,7 +114,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
 
 interface OracePriceDecimalsUpdater {
   oraclePriceDecimals?: number;
-  setOraclePriceDecimals: (decimals: number) => void;
+  setOraclePriceDecimals: (decimals?: number) => void;
 }
 
 function buildFeeder({
@@ -144,7 +144,7 @@ function buildFeeder({
   return {
     datafeed: {
       oraclePriceDecimals,
-      setOraclePriceDecimals(decimals: number) {
+      setOraclePriceDecimals(decimals?: number) {
         this.oraclePriceDecimals = decimals;
       },
       onReady: (callback) => {

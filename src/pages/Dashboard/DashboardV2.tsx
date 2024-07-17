@@ -33,6 +33,7 @@ import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { GMX_PRICE_DECIMALS } from "config/ui";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
@@ -885,17 +886,17 @@ export default function DashboardV2() {
                           <TooltipComponent
                             position="bottom-end"
                             className="whitespace-nowrap"
-                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                             renderContent={() => (
                               <>
                                 <StatsTooltipRow
                                   label={t`Price on Arbitrum`}
-                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                                   showDollar={true}
                                 />
                                 <StatsTooltipRow
                                   label={t`Price on Avalanche`}
-                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                                   showDollar={true}
                                 />
                               </>

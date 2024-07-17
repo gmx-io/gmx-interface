@@ -51,7 +51,7 @@ export function TVChart() {
     isChartAvailabeForToken(chainId, token.symbol)
   );
 
-  const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
+  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
@@ -163,12 +163,12 @@ export function TVChart() {
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {
-                  displayDecimals: marketDecimals,
+                  displayDecimals: oraclePriceDecimals,
                 }) || "..."}
               </div>
               <div className="ExchangeChart-info-label">
                 {formatUsd(chartToken?.prices?.minPrice, {
-                  displayDecimals: marketDecimals,
+                  displayDecimals: oraclePriceDecimals,
                 }) || "..."}
               </div>
             </div>
@@ -186,11 +186,11 @@ export function TVChart() {
             </div>
             <div className="ExchangeChart-additional-info">
               <div className="ExchangeChart-info-label">24h High</div>
-              <div>{dayPriceDelta?.high ? numberWithCommas(dayPriceDelta.high.toFixed(marketDecimals)) : "-"}</div>
+              <div>{dayPriceDelta?.high ? numberWithCommas(dayPriceDelta.high.toFixed(oraclePriceDecimals)) : "-"}</div>
             </div>
             <div className="ExchangeChart-additional-info Chart-24h-low">
               <div className="ExchangeChart-info-label">24h Low</div>
-              <div>{dayPriceDelta?.low ? numberWithCommas(dayPriceDelta?.low.toFixed(marketDecimals)) : "-"}</div>
+              <div>{dayPriceDelta?.low ? numberWithCommas(dayPriceDelta?.low.toFixed(oraclePriceDecimals)) : "-"}</div>
             </div>
           </div>
         </div>
@@ -210,6 +210,7 @@ export function TVChart() {
             setPeriod={setPeriod}
             chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+            oraclePriceDecimals={oraclePriceDecimals}
           />
         )}
       </div>

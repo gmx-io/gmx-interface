@@ -3,8 +3,6 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
@@ -37,6 +35,7 @@ type Props = {
       } & TokenPrices)
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
+  oraclePriceDecimals?: number;
 };
 
 export default function TVChartContainer({
@@ -49,6 +48,7 @@ export default function TVChartContainer({
   setPeriod,
   chartToken,
   supportedResolutions,
+  oraclePriceDecimals,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -56,7 +56,8 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
+
+  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
@@ -128,8 +129,6 @@ export default function TVChartContainer({
       }
     }
   }, [symbol, chartReady, period, chainId, oraclePriceDecimals, datafeed]);
-
-  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   useEffect(() => {
     datafeed.setOraclePriceDecimals(oraclePriceDecimals);
