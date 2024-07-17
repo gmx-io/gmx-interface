@@ -13,6 +13,16 @@ function override(config) {
     ],
   });
 
+  config.module.rules.unshift({
+    test: /\.worker\.ts$/,
+    use: {
+      loader: "worker-loader",
+      options: {
+        filename: "[name].[contenthash].js",
+      },
+    },
+  });
+
   config.resolve.fallback = {
     os: false,
     http: false,
@@ -35,6 +45,11 @@ override.jest = function (config) {
     ...config.transform,
   };
   config.transformIgnorePatterns = ["node_modules/(?!multiformats|wagmi)/"];
+
+  config.moduleNameMapper = {
+    "^.+\\.worker$": "<rootDir>/src/domain/synthetics/testUtils/worker.ts",
+    ...config.moduleNameMapper,
+  };
 
   return config;
 };

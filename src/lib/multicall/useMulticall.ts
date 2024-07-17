@@ -1,9 +1,11 @@
-import useSWR, { SWRConfiguration } from "swr";
-import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
-import { executeMulticall } from "./utils";
-import { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import useWallet from "lib/wallets/useWallet";
 import { useRef } from "react";
+import useSWR, { SWRConfiguration } from "swr";
+
+import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
+
+import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+import { executeMulticallWorker } from "./executeMulticallWorker";
+import { executeMulticall } from "./utils";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -23,12 +25,11 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     refreshInterval?: number | null;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
-    request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
+    request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
+    inWorker?: boolean;
   }
 ) {
-  const { signer } = useWallet();
-
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
@@ -50,14 +51,19 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       try {
         // prettier-ignore
         const request = typeof params.request === "function"
-            ? params.request(chainId, params.key as CacheKey)
+            ? await params.request(chainId, params.key as CacheKey)
             : params.request;
 
         if (Object.keys(request).length === 0) {
           throw new Error(`Multicall request is empty`);
         }
 
-        const responseOrFailure = await executeMulticall(chainId, signer, request);
+        let responseOrFailure: any;
+        if (params.inWorker) {
+          responseOrFailure = await executeMulticallWorker(chainId, request);
+        } else {
+          responseOrFailure = await executeMulticall(chainId, request);
+        }
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
