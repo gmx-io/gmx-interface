@@ -16,6 +16,8 @@ hashDataWorker.onmessage = (event) => {
   const promise = promises[id];
 
   if (!promise) {
+    console.warn(`[hashDataWorker] Received message with unknown id: ${id}`);
+
     return;
   }
 
@@ -48,7 +50,7 @@ export function hashDataMapAsync<
   const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(1000).then(() => "timeout");
+  const escapePromise = sleep(4000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then((result) => {

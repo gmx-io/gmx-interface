@@ -1,3 +1,3 @@
 export * from "./useMulticall";
-export * from "./utils";
+export * from "./executeMulticall";
 export * from "./types";
