@@ -28,7 +28,7 @@ export type PositionsInfoResult = {
 export function usePositionsInfoRequest(
   chainId: number,
   p: {
-    account: string | null | undefined;
+    account: string | undefined;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
     pricesUpdatedAt?: number;

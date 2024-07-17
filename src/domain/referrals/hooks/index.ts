@@ -17,6 +17,10 @@ import { getProvider } from "lib/rpc";
 import { getReferralsGraphClient } from "lib/subgraph";
 import { UserReferralInfo } from "../types";
 import { decodeReferralCode, encodeReferralCode } from "../utils";
+import { useIsInMulticallFetcher, useInjectMulticall } from "context/SyntheticsStateContext/useInjectMulticall";
+import { useMulticall } from "lib/multicall";
+import { EMPTY_ARRAY } from "lib/objects";
+import { Address } from "viem";
 
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
@@ -24,7 +28,7 @@ export * from "./useUserCodesOnAllChain";
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,
   chainId: number,
-  account?: string | null,
+  account?: string,
   skipLocalReferralCode = false
 ): UserReferralInfo | undefined {
   const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } = useUserReferralCode(
@@ -77,17 +81,40 @@ export function useUserReferralInfoRequest(
   ]);
 }
 
-export function useAffiliateTier(signer, chainId, account) {
+export function useAffiliateTier(signer, chainId, account: string | undefined) {
+  // const isInMulticallFetcher = useIsInMulticallFetcher();
+  // const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<bigint>(
+  const { data: affiliateTier } = useSWR<bigint>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
     }
   );
+
+  // const query = useAbstractMulticall(chainId, "ReferralStorage:referrerTiers", {
+  //   key: [account],
+  //   request: {
+  //     ReferralStorage: {
+  //       contractAddress: referralStorageAddress,
+  //       abi: ReferralStorage.abi,
+  //       calls: {
+  //         affiliateTier: {
+  //           methodName: "referrerTiers",
+  //           params: [account],
+  //         },
+  //       },
+  //     },
+  //   },
+  //   parseResponse: (res) => {
+  //     return res.data.ReferralStorage.affiliateTier.returnValues[0] as number;
+  //   },
+  // });
+
+  // const affiliateTier = query?.data;
+
   return {
-    affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
-    mutateReferrerTier,
+    affiliateTier: affiliateTier !== undefined ? Number(affiliateTier) : undefined,
   };
 }
 
@@ -144,20 +171,50 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   return codeOwner;
 }
 
-export function useUserReferralCode(signer, chainId, account, skipLocalReferralCode = false) {
+export function useUserReferralCode(signer, chainId, account?: string, skipLocalReferralCode = false) {
+  const isInMulticallFetcher = useIsInMulticallFetcher();
+  const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
+
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: onChainCode } = useSWR<string>(
-    account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(signer, ReferralStorage) as any }
-  );
 
+  // const { data: onChainCode } = useSWR<string>(
+  //   account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
+  //   { fetcher: contractFetcher(signer, ReferralStorage) as any }
+  // );
+
+  // TODO merge it somewhere
   const { data: localStorageCodeOwner } = useSWR<string>(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
     { fetcher: contractFetcher(signer, ReferralStorage) as any }
   );
+
+  const query = useAbstractMulticall(chainId, "userReferralCode", {
+    groupId: "1",
+    key: account ? [account] : null,
+    request: {
+      ReferralStorage: {
+        contractAddress: referralStorageAddress,
+        abi: ReferralStorage.abi,
+        calls: {
+          onChainCode: {
+            methodName: "traderReferralCodes",
+            params: [account],
+          },
+        },
+      },
+    },
+    parseResponse: (res) => {
+      return {
+        onChainCode: res.data.ReferralStorage.onChainCode.returnValues[0] as string,
+      };
+    },
+  });
+
+  const onChainCode = query?.data?.onChainCode;
+  // const localStorageCodeOwner = query?.data?.localStorageCodeOwner;
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
     let attachedOnChain = false;
@@ -208,16 +265,38 @@ export function useReferrerTier(signer, chainId, account) {
 }
 
 export function useCodeOwner(signer, chainId, account, code) {
+  // const isInMulticallFetcher = useIsInMulticallFetcher();
+  // const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
+
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR<string>(
+  const { data: codeOwner } = useSWR<string>(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
     }
   );
+
+  // const query = useAbstractMulticall(chainId, "ReferralStorage:codeOwners", {
+  //   key: EMPTY_ARRAY,
+  //   request: {
+  //     ReferralStorage: {
+  //       contractAddress: referralStorageAddress,
+  //       abi: ReferralStorage.abi,
+  //       calls: {
+  //         codeOwner: {
+  //           methodName: "codeOwners",
+  //           params: [code],
+  //         },
+  //       },
+  //     },
+  //   },
+  //   parseResponse: (res) => {
+  //     return res.data.ReferralStorage.codeOwner.returnValues[0] as string;
+  //   },
+  // });
+
   return {
-    codeOwner,
-    mutateCodeOwner,
+    codeOwner: codeOwner,
   };
 }
 

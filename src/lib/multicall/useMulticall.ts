@@ -7,6 +7,8 @@ import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from 
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import { executeMulticall } from "./utils";
 
+let counter = 0;
+let start = -1;
 /**
  * A hook to fetch data from contracts via multicall.
  * Preferably wrapped in custom hooks, such as useMarkets, usePositions, etc.
@@ -28,6 +30,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
     inWorker?: boolean;
+    [param: string]: any;
   }
 ) {
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
@@ -59,6 +62,11 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         let responseOrFailure: any;
+        if (start === -1) {
+          start = Date.now();
+        }
+        console.log("muticall counter", counter++, Date.now() - start, name);
+
         if (params.inWorker) {
           responseOrFailure = await executeMulticallWorker(chainId, request);
         } else {

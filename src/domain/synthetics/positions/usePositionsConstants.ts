@@ -1,6 +1,7 @@
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
+import { useInjectMulticall, useIsInMulticallFetcher } from "context/SyntheticsStateContext/useInjectMulticall";
 import { useMulticall } from "lib/multicall";
 
 export type PositionsConstantsResult = {
@@ -9,9 +10,12 @@ export type PositionsConstantsResult = {
 };
 
 export function usePositionsConstantsRequest(chainId: number): PositionsConstantsResult {
-  const { data } = useMulticall(chainId, "usePositionsConstants", {
-    key: [],
+  const isInMulticallFetcher = useIsInMulticallFetcher();
+  const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
 
+  const { data } = useAbstractMulticall(chainId, "usePositionsConstants", {
+    key: [],
+    groupId: "1",
     refreshInterval: 60000,
 
     request: {

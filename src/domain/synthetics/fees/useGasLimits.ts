@@ -14,11 +14,15 @@ import { useMulticall } from "lib/multicall";
 import type { GasLimitsConfig } from "./types";
 
 import DataStore from "abis/DataStore.json";
+import { useInjectMulticall, useIsInMulticallFetcher } from "context/SyntheticsStateContext/useInjectMulticall";
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
-  const { data } = useMulticall(chainId, "useGasLimitsConfig", {
-    key: [],
+  const isInMulticallFetcher = useIsInMulticallFetcher();
+  const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
 
+  const { data } = useAbstractMulticall(chainId, "useGasLimitsConfig", {
+    key: [],
+    groupId: "1",
     refreshInterval: 60000,
 
     request: () => ({

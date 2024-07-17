@@ -13,9 +13,9 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
+import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -99,14 +99,25 @@ export function SyntheticsStateContextProvider({
   }
 
   const account = pageType === "accounts" ? checkSummedAccount : walletAccount;
+
+  console.log({ account });
+
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
+  // const [fetcherStore, execute] = useMulticallFetcherStore();
+
+  // x1 multicall
   const markets = useMarkets(chainId);
+
+  // x3 multicall
   const marketsInfo = useMarketsInfoRequest(chainId);
+  // x1 multicall
   const positionsConstants = usePositionsConstantsRequest(chainId);
+  // x1 multicall
   const uiFeeFactor = useUiFeeFactor(chainId);
+  // x5 contact fetches
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
@@ -115,7 +126,7 @@ export function SyntheticsStateContextProvider({
   );
 
   const settings = useSettings();
-
+  // x4+ multicall
   const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
@@ -125,6 +136,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
+  // x1 multicall
   const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -144,7 +156,9 @@ export function SyntheticsStateContextProvider({
   const positionEditorState = usePositionEditorState(chainId);
   const confirmationBoxState = useConfirmationBoxState();
 
+  // x1 multicall
   const gasLimits = useGasLimits(chainId);
+  // Not a call but gets fee estimate
   const gasPrice = useGasPrice(chainId);
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);

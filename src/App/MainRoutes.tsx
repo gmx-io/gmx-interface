@@ -45,6 +45,7 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import PositionRouter from "abis/PositionRouter.json";
 import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
+import { MulticallFetcherStoreProvider } from "context/SyntheticsStateContext/useInjectMulticall";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
@@ -130,9 +131,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/trade/:tradeType?">
         {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
-            <SyntheticsPage openSettings={openSettings} />
-          </SyntheticsStateContextProvider>
+          <MulticallFetcherStoreProvider>
+            <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
+              <SyntheticsPage openSettings={openSettings} />
+            </SyntheticsStateContextProvider>
+          </MulticallFetcherStoreProvider>
         ) : (
           <SyntheticsFallbackPage />
         )}

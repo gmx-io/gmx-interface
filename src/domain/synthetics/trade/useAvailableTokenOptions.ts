@@ -15,6 +15,7 @@ export type AvailableTokenOptions = {
   sortedAllMarkets: MarketInfo[];
 };
 
+// todo: make this a selector
 export function useAvailableTokenOptions(
   chainId: number,
   p: {

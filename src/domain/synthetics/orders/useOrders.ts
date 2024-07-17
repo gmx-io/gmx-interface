@@ -23,6 +23,7 @@ import {
 
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
+import { useInjectMulticall, useIsInMulticallFetcher } from "context/SyntheticsStateContext/useInjectMulticall";
 
 type OrdersResult = {
   ordersData?: OrdersData;
@@ -89,8 +90,12 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const { data } = useMulticall(chainId, "useOrdersData", {
+  const isInMulticallFetcher = useIsInMulticallFetcher();
+  const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
+
+  const { data } = useAbstractMulticall(chainId, "useOrdersData", {
     key: key,
+    groupId: "1",
     request: buildUseOrdersMulticall,
     parseResponse: parseResponse,
   });

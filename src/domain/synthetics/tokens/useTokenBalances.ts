@@ -8,6 +8,7 @@ import { TokenBalancesData } from "./types";
 
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
+import { useInjectMulticall, useIsInMulticallFetcher } from "context/SyntheticsStateContext/useInjectMulticall";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -22,14 +23,18 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
+  const isInMulticallFetcher = useIsInMulticallFetcher();
+  const useAbstractMulticall = isInMulticallFetcher ? useInjectMulticall : useMulticall;
+
   const { address: currentAccount } = useAccount();
 
   const account = overrideAccount ?? currentAccount;
 
-  const { data } = useMulticall(chainId, "useTokenBalances", {
+  const { data } = useAbstractMulticall(chainId, "useTokenBalances", {
     key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
+    groupId: "1",
 
-    refreshInterval,
+    refreshInterval: refreshInterval as any,
 
     request: () =>
       (overrideTokenList ?? getV2Tokens(chainId)).reduce((acc, token) => {

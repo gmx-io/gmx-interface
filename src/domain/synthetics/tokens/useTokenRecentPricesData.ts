@@ -54,7 +54,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           updatedAt: Date.now(),
         };
       }),
-    refreshWhenHidden: true,
+    refreshWhenHidden: false,
   });
 
   return {
