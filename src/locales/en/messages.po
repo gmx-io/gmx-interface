@@ -4711,6 +4711,10 @@ msgstr "LONG LIQ."
 msgid "No open positions"
 msgstr "No open positions"
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b Retroactive Bonus"
+msgstr "STIP.b Retroactive Bonus"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
