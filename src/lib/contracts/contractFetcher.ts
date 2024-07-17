@@ -1,5 +1,7 @@
-import { Provider, Signer, ethers } from "ethers";
+import { Provider, Result, Signer, ethers } from "ethers";
 import { getFallbackProvider, getProvider } from "../rpc";
+import { executeMulticall } from "lib/multicall";
+import { decodeFunctionResult } from "viem";
 
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
@@ -10,7 +12,8 @@ export const contractFetcher =
 
     const method = ethers.isAddress(arg0) ? arg1 : arg0;
 
-    const contractCall = getContractCall({
+    const contractCall = fetchContractData({
+      chainId,
       provider,
       contractInfo,
       arg0,
@@ -38,7 +41,8 @@ export const contractFetcher =
 
       // eslint-disable-next-line no-console
       console.info("using fallbackProvider for", method);
-      const fallbackContractCall = getContractCall({
+      const fallbackContractCall = fetchContractData({
+        chainId,
         provider: fallbackProvider,
         contractInfo,
         arg0,
@@ -87,7 +91,8 @@ export const contractFetcher =
     });
   };
 
-function getContractCall({
+async function fetchContractData({
+  chainId,
   provider,
   contractInfo,
   arg0,
@@ -95,15 +100,66 @@ function getContractCall({
   method,
   params,
   additionalArgs,
-}): Promise<any> | undefined {
+}: {
+  chainId: number;
+  provider: Provider | Signer | undefined;
+  contractInfo: any;
+  arg0: any;
+  arg1: any;
+  method: any;
+  params: any;
+  additionalArgs: any;
+}): Promise<any | undefined> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
+    // {
+    //   if (additionalArgs) {
+    //     const value = await contract[method](...params.concat(additionalArgs));
+    //     return value;
+    //   }
 
-    if (additionalArgs) {
-      return contract[method](...params.concat(additionalArgs));
+    //   const value = await contract[method](...params);
+    //   return value;
+    // }
+
+    const result = await executeMulticall(chainId, {
+      getContractCall: {
+        abi: contractInfo.abi,
+        contractAddress: address,
+        calls: {
+          call: {
+            methodName: method,
+            params: additionalArgs ? params.concat(additionalArgs) : params,
+          },
+        },
+      },
+    });
+
+    const outputs = contract.interface.getFunction(method)!.outputs;
+
+    const outputsCount = outputs.length;
+
+    const value = result.data?.getContractCall?.call.returnValues;
+    console.log("first", outputs[0].isArray());
+
+    if (outputsCount === 1 && !outputs[0].isArray()) {
+      return value[0];
     }
-    return contract[method](...params);
+
+    const names = outputs.map((output) => output.name);
+
+    console.log(names);
+
+    const dict = Result.fromItems(value as any[], names);
+
+    // const dict = Array.from(value as any[]);
+
+    // for (let i = 0; i < outputsCount; i++) {
+    //   dict[outputs[i].name] = value[i];
+    // }
+
+    return dict;
   }
 
   if (!provider) {

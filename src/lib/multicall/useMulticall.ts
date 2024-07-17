@@ -5,7 +5,7 @@ import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticallWorker } from "./executeMulticallWorker";
-import { executeMulticall } from "./utils";
+import { executeMulticall } from "./executeMulticall";
 
 /**
  * A hook to fetch data from contracts via multicall.

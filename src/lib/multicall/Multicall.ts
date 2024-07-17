@@ -3,7 +3,6 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { sleep } from "lib/sleep";
-
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
@@ -67,12 +66,6 @@ const BATCH_CONFIGS = {
     },
   },
 };
-
-export async function executeMulticall(chainId: number, request: MulticallRequestConfig<any>) {
-  const multicall = await Multicall.getInstance(chainId);
-
-  return multicall?.call(request, MAX_TIMEOUT);
-}
 
 export class Multicall {
   static instances: {

@@ -44,7 +44,7 @@ import {
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { useMulticall } from "lib/multicall";
-import { hashDataMapAsync } from "lib/multicall/hashDataAsync";
+import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
 import { BN_ONE } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { TokensData, useTokensDataRequest } from "../tokens";
