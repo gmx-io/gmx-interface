@@ -5,7 +5,10 @@ import { LRUCache } from "lib/LruCache";
 const dataCache = new LRUCache<string>(10_000);
 
 export function hashData(dataTypes, dataValues) {
-  const key = JSON.stringify({ dataTypes, dataValues });
+  const key = JSON.stringify({ dataTypes, dataValues }, (_, val) => {
+    return typeof val === "bigint" ? String(val) : val;
+  });
+
   if (dataCache.has(key)) {
     return dataCache.get(key)!;
   }
