@@ -42,7 +42,6 @@ import {
 import {
   formatLeverage,
   formatLiquidationPrice,
-  formatUsdPrice,
   getLeverage,
   getLiquidationPrice,
   substractMaxLeverageSlippage,
@@ -83,6 +82,7 @@ import {
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { bigMath } from "lib/bigmath";
@@ -182,6 +182,8 @@ export function PositionEditor(p: Props) {
 
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
 
   const needCollateralApproval =
     isDeposit &&
@@ -700,16 +702,30 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                <ExchangeInfoRow label={t`Entry Price`} value={formatUsdPrice(position.entryPrice)} />
-                <ExchangeInfoRow label={t`Mark Price`} value={formatUsdPrice(position.markPrice)} />
+                <ExchangeInfoRow
+                  label={t`Entry Price`}
+                  value={formatUsd(position.entryPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
+                />
+                <ExchangeInfoRow
+                  label={t`Mark Price`}
+                  value={formatUsd(position.markPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
+                />
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice)}
+                      from={formatLiquidationPrice(position.liquidationPrice, {
+                        displayDecimals: marketDecimals,
+                      })}
                       to={
                         collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
-                          ? formatLiquidationPrice(nextLiqPrice)
+                          ? formatLiquidationPrice(nextLiqPrice, {
+                              displayDecimals: marketDecimals,
+                            })
                           : undefined
                       }
                     />

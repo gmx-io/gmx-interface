@@ -45,6 +45,7 @@ import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "conf
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import {
+  calculatePriceDecimals,
   getNativeToken,
   getToken,
   getTokenBySymbolSafe,
@@ -57,7 +58,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
@@ -73,6 +73,7 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatKeyAmount,
+  formatUsd,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
@@ -85,6 +86,8 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+
+const GLP_PRICE_DECIMALS = 4;
 
 const { ZeroAddress } = ethers;
 
@@ -959,7 +962,7 @@ export default function GlpSwap(props) {
               <div className="label">
                 <Trans>Price</Trans>
               </div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
+              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
             </div>
             <div className="App-card-row">
               <div className="label">
@@ -1401,6 +1404,8 @@ export default function GlpSwap(props) {
                 }
               }
 
+              const tokenDecimals = tokenInfo.isStable ? 2 : calculatePriceDecimals(tokenInfo.minPrice);
+
               return (
                 <tr key={token.symbol}>
                   <td>
@@ -1417,7 +1422,11 @@ export default function GlpSwap(props) {
                       </div>
                     </div>
                   </td>
-                  <td>{formatUsdPrice(tokenInfo.minPrice)}</td>
+                  <td>
+                    {formatUsd(tokenInfo.minPrice, {
+                      displayDecimals: tokenDecimals,
+                    })}
+                  </td>
                   <td>
                     {isBuying && (
                       <div>
@@ -1523,6 +1532,7 @@ export default function GlpSwap(props) {
               amountLeftToDeposit = 0n;
             }
             let isCapReached = tokenInfo.managedAmount > tokenInfo.maxUsdgAmount;
+            const tokenDecimals = tokenInfo.isStable ? 2 : calculatePriceDecimals(tokenInfo.minPrice);
 
             function renderFees() {
               switch (true) {
@@ -1562,7 +1572,11 @@ export default function GlpSwap(props) {
                     <div className="label">
                       <Trans>Price</Trans>
                     </div>
-                    <div>{formatUsdPrice(tokenInfo.minPrice)}</div>
+                    <div>
+                      {formatUsd(tokenInfo.minPrice, {
+                        displayDecimals: tokenDecimals,
+                      })}
+                    </div>
                   </div>
                   {isBuying && (
                     <div className="App-card-row">

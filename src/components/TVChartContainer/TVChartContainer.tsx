@@ -2,19 +2,21 @@ import Loader from "components/Common/Loader";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 
 export type ChartLine = {
   price: number;
@@ -54,6 +56,8 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
+  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
+
   const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
@@ -63,12 +67,13 @@ export default function TVChartContainer({
       let priceDecimals: number;
 
       try {
-        priceDecimals = getPriceDecimals(chainId, chartToken.symbol);
+        priceDecimals = oraclePriceDecimals ?? getPriceDecimals(chainId, chartToken.symbol);
       } catch (e) {
         return;
       }
 
       const averagePrice = getMidPrice(chartToken);
+
       const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, priceDecimals));
       dataProvider?.setCurrentChartToken({
         price: formattedPrice,
@@ -76,7 +81,7 @@ export default function TVChartContainer({
         isChartReady: chartReady,
       });
     }
-  }, [chartToken, chartReady, dataProvider, chainId]);
+  }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -119,13 +124,15 @@ export default function TVChartContainer({
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
+        datafeed.setOraclePriceDecimals(oraclePriceDecimals);
       }
     }
-  }, [symbol, chartReady, period, chainId]);
+  }, [symbol, chartReady, period, chainId, oraclePriceDecimals, datafeed]);
 
   const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   useEffect(() => {
+    datafeed.setOraclePriceDecimals(oraclePriceDecimals);
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol

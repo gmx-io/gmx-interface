@@ -1,4 +1,4 @@
-import { hashString, hashData } from "lib/hash";
+import { hashData, hashString } from "lib/hash";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");
@@ -210,7 +210,7 @@ export function swapImpactPoolAmountKey(market: string, token: string) {
 }
 
 export function orderKey(dataStoreAddress: string, nonce: bigint) {
-  return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
+  return hashData(["address", "uint256"], [dataStoreAddress, String(nonce)]);
 }
 
 export function depositGasLimitKey(singleToken: boolean) {

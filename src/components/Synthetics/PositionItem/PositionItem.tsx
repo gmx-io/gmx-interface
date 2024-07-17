@@ -26,7 +26,6 @@ import {
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
-  formatUsdPrice,
   getEstimatedLiquidationTimeInHours,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
@@ -41,6 +40,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionItem.scss";
 
 export type Props = {
@@ -72,6 +72,8 @@ export function PositionItem(p: Props) {
     currentMarketAddress === p.position.marketAddress &&
     currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
+
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.marketInfo.indexTokenAddress));
 
   function renderNetValue() {
     return (
@@ -312,7 +314,11 @@ export function PositionItem(p: Props) {
     if (liqPriceWarning || estimatedLiquidationHours) {
       return (
         <Tooltip
-          handle={formatLiquidationPrice(p.position.liquidationPrice) || "..."}
+          handle={
+            formatLiquidationPrice(p.position.liquidationPrice, {
+              displayDecimals: marketDecimals,
+            }) || "..."
+          }
           position="bottom-end"
           handleClassName={cx({
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
@@ -323,7 +329,11 @@ export function PositionItem(p: Props) {
       );
     }
 
-    return formatLiquidationPrice(p.position.liquidationPrice) || "...";
+    return (
+      formatLiquidationPrice(p.position.liquidationPrice, {
+        displayDecimals: marketDecimals,
+      }) || "..."
+    );
   }
 
   function renderLarge() {
@@ -430,11 +440,17 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* entryPrice */}
-          {p.position.isOpening ? t`Opening...` : formatUsdPrice(p.position.entryPrice)}
+          {p.position.isOpening
+            ? t`Opening...`
+            : formatUsd(p.position.entryPrice, {
+                displayDecimals: marketDecimals,
+              })}
         </td>
         <td>
           {/* markPrice */}
-          {formatUsdPrice(p.position.markPrice)}
+          {formatUsd(p.position.markPrice, {
+            displayDecimals: marketDecimals,
+          })}
         </td>
         <td>
           {/* liqPrice */}
@@ -563,13 +579,21 @@ export function PositionItem(p: Props) {
                 <div className="label">
                   <Trans>Entry Price</Trans>
                 </div>
-                <div>{formatUsdPrice(p.position.entryPrice)}</div>
+                <div>
+                  {formatUsd(p.position.entryPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
+                </div>
               </div>
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Mark Price</Trans>
                 </div>
-                <div>{formatUsdPrice(p.position.markPrice)}</div>
+                <div>
+                  {formatUsd(p.position.markPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
+                </div>
               </div>
               <div className="App-card-row">
                 <div className="label">

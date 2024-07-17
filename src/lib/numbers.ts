@@ -1,9 +1,9 @@
-import { BigNumberish, ethers } from "ethers";
-import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { getPlusOrMinusSymbol } from "./utils";
+import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
+import { PRECISION, USD_DECIMALS } from "./legacy";
+import { getPlusOrMinusSymbol } from "./utils";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";

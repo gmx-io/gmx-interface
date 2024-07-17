@@ -32,12 +32,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import {
-  formatLeverage,
-  formatLiquidationPrice,
-  formatUsdPrice,
-  getTriggerNameByOrderType,
-} from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { applySlippageToPrice } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
@@ -90,6 +85,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import "./PositionSeller.scss";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -129,6 +125,7 @@ export function PositionSeller(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
 
   const {
     allowedSlippage,
@@ -435,8 +432,8 @@ export function PositionSeller(p: Props) {
   const limitPriceRow = (
     <ExecutionPriceRow
       tradeFlags={executionPriceFlags}
-      displayDecimals={toToken?.priceDecimals}
       fees={fees}
+      displayDecimals={marketDecimals ?? toToken?.priceDecimals}
       executionPrice={executionPrice ?? undefined}
       acceptablePrice={acceptablePrice}
       triggerOrderType={decreaseAmounts?.triggerOrderType}
@@ -447,7 +444,11 @@ export function PositionSeller(p: Props) {
     <ExchangeInfoRow
       className="SwapBox-info-row"
       label={t`Trigger Price`}
-      value={`${decreaseAmounts?.triggerThresholdType || ""} ${formatUsdPrice(decreaseAmounts?.triggerPrice) || "-"}`}
+      value={`${decreaseAmounts?.triggerThresholdType || ""} ${
+        formatUsd(decreaseAmounts?.triggerPrice, {
+          displayDecimals: marketDecimals ?? toToken?.priceDecimals,
+        }) || "-"
+      }`}
     />
   );
 
@@ -475,12 +476,18 @@ export function PositionSeller(p: Props) {
       label={t`Liq. Price`}
       value={
         <ValueTransition
-          from={formatLiquidationPrice(position.liquidationPrice)!}
+          from={
+            formatLiquidationPrice(position.liquidationPrice, {
+              displayDecimals: marketDecimals,
+            })!
+          }
           to={
             decreaseAmounts?.isFullClose
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
-                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice)
+                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: marketDecimals,
+                  })
                 : undefined
           }
         />
@@ -666,7 +673,7 @@ export function PositionSeller(p: Props) {
               <BuyInputSection
                 topLeftLabel={t`Price`}
                 topRightLabel={t`Mark`}
-                topRightValue={formatUsdPrice(markPrice)}
+                topRightValue={formatUsd(markPrice)}
                 onClickTopRightLabel={() => {
                   setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
                 }}

@@ -1,8 +1,8 @@
 import { Token } from "domain/tokens";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { USD_DECIMALS } from "lib/legacy";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
-import { USD_DECIMALS } from "lib/legacy";
 
 export const NATIVE_TOKEN_ADDRESS = ethers.ZeroAddress;
 
@@ -1146,8 +1146,8 @@ export function isTokenInList(token: Token, tokenList: Token[]): boolean {
   return tokenList.some((t) => t.address === token.address);
 }
 
-export function calculatePriceDecimals(price?: BigNumber, decimals = USD_DECIMALS) {
-  if (!price) return 2;
+export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) {
+  if (price === undefined || price === 0n) return 2;
   const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
 
   if (isNaN(priceNumber)) return 2;
@@ -1156,5 +1156,7 @@ export function calculatePriceDecimals(price?: BigNumber, decimals = USD_DECIMAL
   if (priceNumber >= 1) return 4;
   if (priceNumber >= 0.1) return 5;
   if (priceNumber >= 0.01) return 6;
-  return 7;
+  if (priceNumber >= 0.0001) return 7;
+
+  return 8;
 }

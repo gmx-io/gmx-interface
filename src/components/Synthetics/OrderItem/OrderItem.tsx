@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
-import { getWrappedToken } from "config/tokens";
+import { calculatePriceDecimals, getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -38,6 +38,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SwapMarketLabel } from "../../SwapMarketLabel/SwapMarketLabel";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { bigMath } from "../../../lib/bigmath";
 import "./OrderItem.scss";
 
 type Props = {
@@ -246,17 +248,23 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [order]);
 
+  const positionOrder = order as PositionOrderInfo;
+  const priceDecimals = useSelector(makeSelectMarketPriceDecimals(positionOrder.marketInfo?.indexTokenAddress));
+
+  const markPriceFormatted = useMemo(() => {
+    return formatUsd(markPrice, { displayDecimals: priceDecimals });
+  }, [markPrice, priceDecimals]);
+
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return markSwapRatioText;
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals = positionOrder?.indexToken?.priceDecimals;
 
     return (
       <Tooltip
-        handle={formatUsd(markPrice, { displayDecimals: priceDecimals })}
+        handle={markPriceFormatted}
         position="bottom-end"
         renderContent={() => {
           return (
@@ -303,7 +311,8 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals = positionOrder?.indexToken?.priceDecimals;
+    const priceDecimals =
+      calculatePriceDecimals(positionOrder?.indexToken?.prices?.minPrice) || positionOrder?.indexToken?.priceDecimals;
     return (
       <Tooltip
         handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
@@ -621,10 +630,16 @@ function getSwapRatioText(order: OrderInfo) {
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
+  const minPriceInSwap = bigMath.min(
+    order.initialCollateralToken.prices.minPrice,
+    order.targetCollateralToken.prices.minPrice
+  );
+  const priceDecimals = calculatePriceDecimals(minPriceInSwap);
+
   const swapRatioText = `${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,
-    triggerRatio?.smallestToken.isStable ? 2 : 4,
+    priceDecimals,
     true
   )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 

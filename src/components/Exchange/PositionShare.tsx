@@ -3,6 +3,8 @@ import Button from "components/Button/Button";
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { Token } from "domain/tokens";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toJpeg } from "html-to-image";
 import shareBgImg from "img/position-share-bg.png";
 import downloadImage from "lib/downloadImage";
@@ -103,6 +105,8 @@ function PositionShare({
     helperToast.success(t`Link copied to clipboard.`);
   }
 
+  const priceDecimals = useSelector(makeSelectMarketPriceDecimals(indexToken?.address));
+
   return (
     <Modal
       className="position-share-modal"
@@ -119,6 +123,7 @@ function PositionShare({
         pnlAfterFeesPercentage={pnlAfterFeesPercentage}
         userAffiliateCode={userAffiliateCode}
         ref={cardRef}
+        priceDecimals={priceDecimals}
         loading={!uploadedImageInfo && !uploadedImageError}
         sharePositionBgImg={sharePositionBgImg}
       />

@@ -5,9 +5,11 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
 
+import { calculatePriceDecimals } from "config/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
+import { bigMath } from "../../../lib/bigmath";
 
 export type Props = {
   maxLiquidityUsd?: bigint;
@@ -20,6 +22,9 @@ export function SwapCard(p: Props) {
   const { fromToken, toToken, maxLiquidityUsd } = p;
 
   const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
+
+  const minPrice = bigMath.min(fromToken?.prices?.minPrice ?? 0n, toToken?.prices?.maxPrice ?? 0n);
+  const priceDecimals = calculatePriceDecimals(minPrice);
 
   const ratioStr = useMemo(() => {
     if (!fromToken || !toToken) return "...";
@@ -34,7 +39,10 @@ export function SwapCard(p: Props) {
     const smallest = markRatio.smallestToken;
     const largest = markRatio.largestToken;
 
-    return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
+    const minPrice = bigMath.min(fromToken.prices.minPrice, toToken.prices.maxPrice);
+    const priceDecimals = calculatePriceDecimals(minPrice);
+
+    return `${formatAmount(markRatio.ratio, USD_DECIMALS, priceDecimals)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);
 
   const maxOutValue = useMemo(
@@ -60,7 +68,7 @@ export function SwapCard(p: Props) {
           label={t`${fromToken?.symbol} Price`}
           value={
             formatUsd(fromToken?.prices?.minPrice, {
-              displayDecimals: fromToken?.priceDecimals,
+              displayDecimals: priceDecimals,
             }) || "..."
           }
         />
@@ -69,7 +77,7 @@ export function SwapCard(p: Props) {
           label={t`${toToken?.symbol} Price`}
           value={
             formatUsd(toToken?.prices?.maxPrice, {
-              displayDecimals: toToken?.priceDecimals,
+              displayDecimals: priceDecimals,
             }) || "..."
           }
         />

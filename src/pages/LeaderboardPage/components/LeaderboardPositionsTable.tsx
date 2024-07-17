@@ -11,22 +11,23 @@ import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   selectPositionConstants,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
+import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
-import { bigMath } from "lib/bigmath";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -279,6 +280,8 @@ const TableRow = memo(
       userReferralInfo,
     ]);
 
+    const marketDecimals = useSelector(makeSelectMarketPriceDecimals(marketInfo?.indexTokenAddress));
+
     const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
     const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
@@ -379,7 +382,11 @@ const TableRow = memo(
             renderContent={renderPositionTooltip}
           />
         </TableCell>
-        <TableCell>{formatUsd(position.entryPrice)}</TableCell>
+        <TableCell>
+          {formatUsd(position.entryPrice, {
+            displayDecimals: marketDecimals,
+          })}
+        </TableCell>
         <TableCell>
           <TooltipWithPortal
             handle={formatUsd(position.sizeInUsd)}
@@ -394,7 +401,7 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
-              handle={formatUsd(liquidationPrice, { maxThreshold: "1000000" })}
+              handle={formatUsd(liquidationPrice, { maxThreshold: "1000000", displayDecimals: marketDecimals })}
             />
           ) : (
             <TooltipWithPortal

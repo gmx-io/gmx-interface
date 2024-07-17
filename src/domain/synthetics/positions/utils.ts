@@ -232,7 +232,7 @@ export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayD
 }
 
 export function formatUsdPrice(price?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (price === undefined || price > 0n) {
+  if (price === undefined || price < 0n) {
     return;
   }
 

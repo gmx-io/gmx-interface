@@ -1,10 +1,9 @@
 import { Trans } from "@lingui/macro";
 import SpinningLoader from "components/Common/SpinningLoader";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import { Token } from "domain/tokens";
 import gmxLogo from "img/gmx-logo-with-name.svg";
 import { getHomeUrl } from "lib/legacy";
-import { formatAmount, formatPercentage } from "lib/numbers";
+import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
@@ -19,6 +18,7 @@ type Props = {
   pnlAfterFeesPercentage: bigint;
   sharePositionBgImg: string | null;
   userAffiliateCode: any;
+  priceDecimals?: number;
 };
 
 export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
@@ -33,6 +33,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
       pnlAfterFeesPercentage,
       sharePositionBgImg,
       userAffiliateCode,
+      priceDecimals,
     },
     ref
   ) => {
@@ -54,11 +55,19 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
           <div className="prices">
             <div>
               <p>Entry Price</p>
-              <p className="price">{formatUsdPrice(entryPrice)}</p>
+              <p className="price">
+                {formatUsd(entryPrice, {
+                  displayDecimals: priceDecimals,
+                })}
+              </p>
             </div>
             <div>
               <p>Mark Price</p>
-              <p className="price">{formatUsdPrice(markPrice)}</p>
+              <p className="price">
+                {formatUsd(markPrice, {
+                  displayDecimals: priceDecimals,
+                })}
+              </p>
             </div>
           </div>
           <div className="referral-code">

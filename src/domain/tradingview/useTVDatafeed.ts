@@ -30,9 +30,10 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 
 type Props = {
   dataProvider?: TVDataProvider;
+  oraclePriceDecimals?: number;
 };
 
-export default function useTVDatafeed({ dataProvider }: Props) {
+export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<number | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
@@ -106,8 +107,14 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
+      oraclePriceDecimals,
     });
-  }, [chainId, stableTokens, supportedResolutions]);
+  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals]);
+}
+
+interface OracePriceDecimalsUpdater {
+  oraclePriceDecimals?: number;
+  setOraclePriceDecimals: (decimals: number) => void;
 }
 
 function buildFeeder({
@@ -119,6 +126,7 @@ function buildFeeder({
   missingBarsInfoRef,
   feedDataRef,
   lastBarTimeRef,
+  oraclePriceDecimals,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -131,9 +139,14 @@ function buildFeeder({
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
-}): { datafeed: Partial<IExternalDatafeed & IDatafeedChartApi> } {
+  oraclePriceDecimals?: number;
+}): { datafeed: Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater } {
   return {
     datafeed: {
+      oraclePriceDecimals,
+      setOraclePriceDecimals(decimals: number) {
+        this.oraclePriceDecimals = decimals;
+      },
       onReady: (callback) => {
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
       },
@@ -142,7 +155,7 @@ function buildFeeder({
           symbolName = getNativeToken(chainId).symbol;
         }
 
-        const pricescale = Math.pow(10, getPriceDecimals(chainId, symbolName));
+        const pricescale = Math.pow(10, this.oraclePriceDecimals ?? getPriceDecimals(chainId, symbolName));
 
         const symbolInfo = {
           name: symbolName,
