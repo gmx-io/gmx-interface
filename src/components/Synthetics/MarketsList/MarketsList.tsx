@@ -18,7 +18,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
-import { GM_POOLS_PRICES_DECIMALS } from "config/ui";
+import { formatUsdPrice } from "domain/synthetics/positions";
 import "./MarketsList.scss";
 
 export function MarketsList() {
@@ -109,11 +109,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                   <div className="label">
                     <Trans>Price</Trans>
                   </div>
-                  <div>
-                    {formatUsd(stats.token.prices?.minPrice, {
-                      displayDecimals: GM_POOLS_PRICES_DECIMALS,
-                    })}
-                  </div>
+                  <div>{formatUsdPrice(stats.token.prices?.minPrice)}</div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
@@ -202,7 +198,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
   );
 }
 
-function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
+function MarketsListDesktopItem({ stats, priceDecimals }: { stats: IndexTokenStat; priceDecimals?: number }) {
   const anyPool = stats.marketsStats[0];
 
   const netFeePerHourLong = stats.bestNetFeeLong;
@@ -231,8 +227,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         </div>
       </td>
       <td>
-        {formatUsd(stats.token.prices?.minPrice, {
-          displayDecimals: GM_POOLS_PRICES_DECIMALS,
+        {formatUsdPrice(stats.token.prices?.minPrice, {
+          displayDecimals: priceDecimals,
         })}
       </td>
       <td>

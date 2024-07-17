@@ -1404,7 +1404,7 @@ export default function GlpSwap(props) {
                 }
               }
 
-              const tokenDecimals = tokenInfo.isStable ? 2 : calculatePriceDecimals(tokenInfo.minPrice);
+              const tokenDecimals = calculatePriceDecimals(tokenInfo.minPrice);
 
               return (
                 <tr key={token.symbol}>
