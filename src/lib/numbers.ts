@@ -184,7 +184,12 @@ export function formatUsd(
     }
   }
 
-  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
+  const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;
+
+  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, {
+    maxThreshold: opts.maxThreshold,
+    minThreshold: opts.minThreshold ?? defaultMinThreshold,
+  });
 
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
