@@ -210,7 +210,7 @@ export function swapImpactPoolAmountKey(market: string, token: string) {
 }
 
 export function orderKey(dataStoreAddress: string, nonce: bigint) {
-  return hashData(["address", "uint256"], [dataStoreAddress, String(nonce)]);
+  return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
 }
 
 export function depositGasLimitKey(singleToken: boolean) {

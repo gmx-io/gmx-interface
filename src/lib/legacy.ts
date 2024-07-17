@@ -14,7 +14,6 @@ import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factor
 import { calculatePriceDecimals, isValidToken } from "config/tokens";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
-import { bigMath } from "./bigmath";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
@@ -121,9 +120,8 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = (PRECISION * PRECISION) / rate;
   }
-  const minPrice = bigMath.min(tokenA.prices.minPrice ?? 0n, tokenB.prices.minPrice ?? 0n);
-  const ratioPriceDecimals = calculatePriceDecimals(minPrice);
-  const rateValue = formatAmount(rate, USD_DECIMALS, ratioPriceDecimals, true);
+  const rateDecimals = calculatePriceDecimals(rate);
+  const rateValue = formatAmount(rate, USD_DECIMALS, rateDecimals, true);
   if (opts.omitSymbols) {
     return rateValue;
   }

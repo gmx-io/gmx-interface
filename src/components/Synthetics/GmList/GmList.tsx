@@ -10,6 +10,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
+import { GM_POOLS_PRICES_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   MarketTokensAPRData,
@@ -154,8 +155,6 @@ export function GmList({
                     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
                     : getNormalizedTokenSymbol(indexToken.symbol);
 
-                  const decimals = calculatePriceDecimals(indexToken.prices?.minPrice);
-
                   return (
                     <tr key={token.address}>
                       <td>
@@ -190,7 +189,7 @@ export function GmList({
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: decimals,
+                          displayDecimals: GM_POOLS_PRICES_DECIMALS,
                         })}
                       </td>
 

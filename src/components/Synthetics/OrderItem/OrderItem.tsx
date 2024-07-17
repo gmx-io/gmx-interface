@@ -39,7 +39,6 @@ import { SwapMarketLabel } from "../../SwapMarketLabel/SwapMarketLabel";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { bigMath } from "../../../lib/bigmath";
 import "./OrderItem.scss";
 
 type Props = {
@@ -630,16 +629,11 @@ function getSwapRatioText(order: OrderInfo) {
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
-  const minPriceInSwap = bigMath.min(
-    order.initialCollateralToken.prices.minPrice,
-    order.targetCollateralToken.prices.minPrice
-  );
-  const priceDecimals = calculatePriceDecimals(minPriceInSwap);
-
+  const ratioDecimals = calculatePriceDecimals(triggerRatio?.ratio);
   const swapRatioText = `${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,
-    priceDecimals,
+    ratioDecimals,
     true
   )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 

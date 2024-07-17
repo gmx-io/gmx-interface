@@ -194,9 +194,9 @@ Object {
   "indexTokenSymbol": "ARB",
   "isLong": false,
   "market": "Short ARB/USD",
-  "marketPrice": "< $0.010",
+  "marketPrice": "< $0.01000",
   "poolName": "ARB-USDC",
-  "price": "< $0.010",
+  "price": "< $0.01000",
   "priceComment": Array [
     "Mark price for the order.",
     "",
@@ -293,11 +293,11 @@ Object {
   "isActionError": true,
   "isLong": false,
   "market": "Short LINK/USD",
-  "marketPrice": "$6.090",
+  "marketPrice": "$6.0906",
   "pnl": "-$126.31",
   "pnlState": "error",
   "poolName": "LINK-USDC",
-  "price": "$6.090",
+  "price": "$6.0906",
   "priceComment": Array [
     "Mark price for the liquidation.",
     "",
@@ -441,19 +441,19 @@ Object {
 `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
 Object {
-  "acceptablePrice": "<  968.04 USDC / ETH",
+  "acceptablePrice": "<  968.043 USDC / ETH",
   "action": "Execute Market Swap",
-  "executionPrice": "965.18 USDC / ETH",
+  "executionPrice": "965.184 USDC / ETH",
   "fullMarket": "...",
   "fullMarketNames": undefined,
   "market": "...",
-  "price": "965.18 USDC / ETH",
+  "price": "965.184 USDC / ETH",
   "priceComment": Array [
     "Execution price for the order.",
     "",
     Object {
       "key": "Order Acceptable Price",
-      "value": "<  968.04 USDC / ETH",
+      "value": "<  968.043 USDC / ETH",
     },
   ],
   "size": "1,080.6325 USDC to 1.1196 ETH",
@@ -470,11 +470,11 @@ Object {
 Object {
   "acceptablePrice": "<  2.2613 WETH / BTC",
   "action": "Execute Limit Swap",
-  "executionPrice": "0.8110 WETH / BTC",
+  "executionPrice": "0.81109 WETH / BTC",
   "fullMarket": "...",
   "fullMarketNames": undefined,
   "market": "...",
-  "price": "0.8110 WETH / BTC",
+  "price": "0.81109 WETH / BTC",
   "priceComment": Array [
     "Execution price for the order.",
     "",

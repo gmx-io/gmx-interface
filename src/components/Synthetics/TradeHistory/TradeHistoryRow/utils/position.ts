@@ -18,6 +18,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 
+import { calculatePriceDecimals } from "config/tokens";
 import { actionTextMap, getActionTitle } from "../../keys";
 import {
   INEQUALITY_GT,
@@ -42,6 +43,7 @@ export const formatPositionMessage = (
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
+  const marketPriceDecimals = calculatePriceDecimals(tradeAction.indexToken.prices.minPrice);
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -107,7 +109,7 @@ export const formatPositionMessage = (
 
   const marketPrice = getTokenPriceByTradeAction(tradeAction);
   const formattedMarketPrice = formatUsd(marketPrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   });
 
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {

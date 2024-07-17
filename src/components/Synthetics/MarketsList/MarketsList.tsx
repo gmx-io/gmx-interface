@@ -15,10 +15,10 @@ import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
+import { GM_POOLS_PRICES_DECIMALS } from "config/ui";
 import "./MarketsList.scss";
 
 export function MarketsList() {
@@ -109,7 +109,11 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                   <div className="label">
                     <Trans>Price</Trans>
                   </div>
-                  <div>{formatUsdPrice(stats.token.prices?.minPrice)}</div>
+                  <div>
+                    {formatUsd(stats.token.prices?.minPrice, {
+                      displayDecimals: GM_POOLS_PRICES_DECIMALS,
+                    })}
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
@@ -226,7 +230,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </td>
-      <td>{formatUsdPrice(stats.token.prices?.minPrice)}</td>
+      <td>
+        {formatUsd(stats.token.prices?.minPrice, {
+          displayDecimals: GM_POOLS_PRICES_DECIMALS,
+        })}
+      </td>
       <td>
         <Tooltip
           className="nowrap"

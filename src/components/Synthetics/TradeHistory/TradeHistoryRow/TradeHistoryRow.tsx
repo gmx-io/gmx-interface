@@ -68,6 +68,7 @@ function LineSpans({ spans }: { spans: TooltipString[] }) {
 }
 
 function TooltipContentComponent({ content }: { content: TooltipContent }) {
+  debugger; // eslint-disable-line
   return (
     <div className="TradeHistoryRow-tooltip">
       {content.map((line, i) => {
