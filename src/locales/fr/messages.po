@@ -182,7 +182,7 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -435,7 +435,7 @@ msgstr "Token invalide duToken:: \"{0}\" àToken: \"{toTokenAddress}\""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stats"
-msgstr "Stats<<<<<<< HEAD"
+msgstr "Stats"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -1541,6 +1541,10 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "Sortir en {0} max"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr ""
@@ -1600,7 +1604,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-msgstr "======="
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
@@ -4172,6 +4176,10 @@ msgstr "Le prix d'exécution n'a pas respecté la condition de prix acceptable."
 msgid "Reserve Amount"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "Raison: {0}"
@@ -5719,7 +5727,7 @@ msgstr "Mettre à jour l'ordre de prise de profit"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Total APR"
-msgstr "======="
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
@@ -6241,7 +6249,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
@@ -6500,13 +6508,13 @@ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake submitted! <0>View status.</0>"
-msgstr "Arrêt du staking soumis! <0>Voir le statut.</0><<<<<<< HEAD"
+msgstr "Arrêt du staking soumis! <0>Voir le statut.</0>"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
-msgstr "Permettre le levier>>>>>>> release-33"
+msgstr "Permettre le levier"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"

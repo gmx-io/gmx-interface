@@ -161,7 +161,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Current Reserved"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
@@ -435,7 +435,7 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stats"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -1540,6 +1540,10 @@ msgstr ""
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
@@ -4172,6 +4176,10 @@ msgstr ""
 msgid "Reserve Amount"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr ""
@@ -6241,7 +6249,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
@@ -7655,7 +7663,7 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Protocol"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop-Loss Order"

@@ -1541,6 +1541,10 @@ msgstr "Pair"
 msgid "Max {0} out"
 msgstr "Max {0} out"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "The amount left in the sub-account is not enough to cover network gas costs."
+#~ msgstr "The amount left in the sub-account is not enough to cover network gas costs."
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr "Updating Subaccount"
@@ -4174,6 +4178,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#~ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
+#~ msgstr "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
