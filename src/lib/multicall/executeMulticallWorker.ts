@@ -4,7 +4,7 @@ import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { sleep } from "lib/sleep";
 
 import MulticallWorker from "./multicall.worker";
-import type { MulticallRequestConfig } from "./types";
+import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { executeMulticall } from "./utils";
 
 const executorWorker: Worker = new MulticallWorker();
@@ -33,7 +33,10 @@ executorWorker.onmessage = (event) => {
  * Executes a multicall request in a worker.
  * If the worker does not respond in time, it falls back to the main thread.
  */
-export async function executeMulticallWorker(chainId: number, request: MulticallRequestConfig<any>) {
+export async function executeMulticallWorker(
+  chainId: number,
+  request: MulticallRequestConfig<any>
+): Promise<MulticallResult<any> | undefined> {
   const id = uniqueId("multicall-");
 
   executorWorker.postMessage({
@@ -65,5 +68,5 @@ export async function executeMulticallWorker(chainId: number, request: Multicall
     }
   });
 
-  return promise;
+  return promise as any;
 }
