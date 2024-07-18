@@ -16,7 +16,7 @@ const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
-    key: [chainId],
+    key: [],
 
     refreshInterval: 60000,
 

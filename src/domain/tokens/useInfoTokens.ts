@@ -47,7 +47,7 @@ export function useInfoTokens(
   const { data: indexPrices } = useSWR(indexPricesUrl, {
     // @ts-ignore spread args incorrect type
     fetcher: (url) => fetch(url).then((res) => res.json()),
-    refreshInterval: 500,
+    refreshInterval: 1000,
     refreshWhenHidden: true,
   });
 

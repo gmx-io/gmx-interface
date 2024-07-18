@@ -1,7 +1,6 @@
 import { Provider, Result, Signer, ethers } from "ethers";
 import { getFallbackProvider, getProvider } from "../rpc";
 import { executeMulticall } from "lib/multicall";
-import { decodeFunctionResult } from "viem";
 
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
@@ -113,15 +112,6 @@ async function fetchContractData({
   if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
-    // {
-    //   if (additionalArgs) {
-    //     const value = await contract[method](...params.concat(additionalArgs));
-    //     return value;
-    //   }
-
-    //   const value = await contract[method](...params);
-    //   return value;
-    // }
 
     const result = await executeMulticall(chainId, {
       getContractCall: {
@@ -141,7 +131,6 @@ async function fetchContractData({
     const outputsCount = outputs.length;
 
     const value = result.data?.getContractCall?.call.returnValues;
-    console.log("first", outputs[0].isArray());
 
     if (outputsCount === 1 && !outputs[0].isArray()) {
       return value[0];
@@ -149,15 +138,7 @@ async function fetchContractData({
 
     const names = outputs.map((output) => output.name);
 
-    console.log(names);
-
     const dict = Result.fromItems(value as any[], names);
-
-    // const dict = Array.from(value as any[]);
-
-    // for (let i = 0; i < outputsCount; i++) {
-    //   dict[outputs[i].name] = value[i];
-    // }
 
     return dict;
   }

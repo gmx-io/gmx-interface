@@ -25,14 +25,9 @@ const store: {
 } = {
   current: {},
 };
-let start = -1;
-let count = 0;
+
 async function executeChainsMulticalls() {
   const tasks: Promise<any>[] = [];
-  if (start === -1) {
-    start = Date.now();
-  }
-  console.log("giga executeChainsMulticalls", count++, Date.now() - start);
 
   for (const [chainIdStr, calls] of entries(store.current)) {
     const chainId = parseInt(chainIdStr);
@@ -46,7 +41,7 @@ async function executeChainsMulticalls() {
   await Promise.allSettled(tasks);
 }
 
-const throttledExecuteChainsMulticalls = throttle(executeChainsMulticalls, 50, { leading: false, trailing: true });
+const throttledExecuteChainsMulticalls = throttle(executeChainsMulticalls, 500, { leading: false, trailing: true });
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
   const request: MulticallRequestConfig<any> = {};
@@ -71,8 +66,6 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
   let responseOrFailure: MulticallResult<any> | undefined;
 
-  console.log("callCount", callCount);
-
   if (callCount > 10) {
     responseOrFailure = await executeMulticallWorker(chainId, request);
   } else {
@@ -93,15 +86,19 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
   request: TConfig
 ): Promise<MulticallResult<TConfig>> {
   let groupNameMapping: {
+    // Contract address
     [address: string]: {
-      name: string;
-      calls: {
-        [callId: string]: string;
-      };
+      // Unique call id based on contract address, method name and params
+      [callId: string]: {
+        // Human readable call group name
+        callGroupName: string;
+        // Human readable call name
+        callName: string;
+      }[];
     };
   } = {};
 
-  const { promise, resolve, reject } = Promise.withResolvers();
+  const { promise, resolve } = Promise.withResolvers();
 
   const hook = (data: MulticallResult<any>) => {
     const strippedRenamedData: MulticallResult<any> = {
@@ -114,19 +111,21 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
       if (!groupNameMapping[contractAddress]) {
         continue;
       }
-      const groupName = groupNameMapping[contractAddress].name;
 
       for (const [callId, callResult] of entries(contractResult)) {
-        if (!groupName) {
+        if (!groupNameMapping[contractAddress][callId]) {
           continue;
         }
-        const callName = groupNameMapping[contractAddress].calls[callId];
 
-        if (!strippedRenamedData.data[groupName]) {
-          strippedRenamedData.data[groupName] = {};
+        const destinations = groupNameMapping[contractAddress][callId];
+
+        for (const { callGroupName, callName } of destinations) {
+          if (!strippedRenamedData.data[callGroupName]) {
+            strippedRenamedData.data[callGroupName] = {};
+          }
+
+          strippedRenamedData.data[callGroupName][callName] = callResult;
         }
-
-        strippedRenamedData.data[groupName][callName] = callResult;
       }
     }
 
@@ -134,19 +133,21 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
       if (!groupNameMapping[contractAddress]) {
         continue;
       }
-      const groupName = groupNameMapping[contractAddress].name;
 
       for (const [callId, error] of entries(contractErrors)) {
-        const callName = groupNameMapping[groupName]?.calls[callId];
-        if (!callName) {
+        if (!groupNameMapping[contractAddress][callId]) {
           continue;
         }
 
-        if (!strippedRenamedData.errors[groupName]) {
-          strippedRenamedData.errors[groupName] = {};
-        }
+        const destinations = groupNameMapping[contractAddress][callId];
 
-        strippedRenamedData.errors[groupName][callName] = error;
+        for (const { callGroupName, callName } of destinations) {
+          if (!strippedRenamedData.errors[callGroupName]) {
+            strippedRenamedData.errors[callGroupName] = {};
+          }
+
+          strippedRenamedData.errors[callGroupName][callName] = error;
+        }
       }
     }
 
@@ -155,10 +156,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
 
   for (const [callGroupName, callGroup] of entries(request)) {
     if (!groupNameMapping[callGroup.contractAddress]) {
-      groupNameMapping[callGroup.contractAddress] = {
-        name: callGroupName,
-        calls: {},
-      };
+      groupNameMapping[callGroup.contractAddress] = {};
     }
     for (const [callName, call] of entries(callGroup.calls)) {
       if (!call) {
@@ -167,9 +165,13 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
 
       const callId = stableHash([callGroup.contractAddress, call.methodName, call.params]);
 
-      if (!groupNameMapping[callGroup.contractAddress].calls[callId]) {
-        groupNameMapping[callGroup.contractAddress].calls[callId] = callName;
+      if (!groupNameMapping[callGroup.contractAddress][callId]) {
+        groupNameMapping[callGroup.contractAddress][callId] = [];
       }
+      groupNameMapping[callGroup.contractAddress][callId].push({
+        callGroupName,
+        callName,
+      });
 
       if (!store.current[chainId]) {
         store.current[chainId] = {};
