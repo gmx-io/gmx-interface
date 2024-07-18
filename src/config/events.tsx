@@ -39,20 +39,6 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
-    id: "multiplier-points-update",
-    title: "Multiplier Points Update",
-    isActive: true,
-    startDate: "17 Jul 2024, 00:00",
-    endDate: "20 Jul 2024, 00:00",
-    bodyText:
-      "The multiplier point update will be executed this week. During this update, there will be a few hours when staking, unstaking, and account transfers will not be usable.",
-    link: {
-      href: "https://snapshot.org/#/gmx.eth/proposal/0x28fba55e2d06f964be90fd0db3ba732dbd1a4297a6991177aff8dc333cecfe07",
-      text: "Read more",
-      newTab: true,
-    },
-  },
-  {
     id: "arbitrum-and-avalanche-incentives-launch-3",
     title: "Arbitrum and Avalanche Incentives are Live",
     isActive: true,
