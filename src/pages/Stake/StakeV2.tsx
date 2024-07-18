@@ -1405,7 +1405,6 @@ export default function StakeV2() {
     }
   );
 
-  // Vester.getPairAmount
   const { data: pairAmount } = useSWR(
     vesterBalance !== undefined
       ? [`StakeV2:pairAmount:${active}`, chainId, gmxVesterAddress, "getPairAmount", account]
