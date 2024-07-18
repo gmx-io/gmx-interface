@@ -318,21 +318,30 @@ const TableRow = memo(
     );
 
     const renderLiquidationTooltip = useCallback(() => {
-      const markPrice = marketInfo?.indexToken.prices.maxPrice;
+      const markPrice = indexToken?.prices.maxPrice;
       const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
       return (
         <>
-          <StatsTooltipRow label={t`Mark Price`} value={formatUsd(markPrice)} showDollar={false} />
+          <StatsTooltipRow
+            label={t`Mark Price`}
+            value={formatUsd(markPrice, {
+              displayDecimals: indexToken?.priceDecimals,
+            })}
+            showDollar={false}
+          />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
-              value={formatUsd(liquidationPrice - markPrice, { maxThreshold: "1000000" })}
+              value={formatUsd(liquidationPrice - markPrice, {
+                maxThreshold: "1000000",
+                displayDecimals: indexToken?.priceDecimals,
+              })}
               showDollar={false}
             />
           )}
         </>
       );
-    }, [liquidationPrice, marketInfo?.indexToken.prices.maxPrice]);
+    }, [indexToken?.priceDecimals, indexToken?.prices.maxPrice, liquidationPrice]);
 
     return (
       <tr className="Table_tr" key={position.key}>
@@ -379,7 +388,11 @@ const TableRow = memo(
             renderContent={renderPositionTooltip}
           />
         </TableCell>
-        <TableCell>{formatUsd(position.entryPrice)}</TableCell>
+        <TableCell>
+          {formatUsd(position.entryPrice, {
+            displayDecimals: indexToken?.priceDecimals,
+          })}
+        </TableCell>
         <TableCell>
           <TooltipWithPortal
             handle={formatUsd(position.sizeInUsd)}
@@ -394,7 +407,10 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
-              handle={formatUsd(liquidationPrice, { maxThreshold: "1000000" })}
+              handle={formatUsd(liquidationPrice, {
+                maxThreshold: "1000000",
+                displayDecimals: indexToken?.priceDecimals,
+              })}
             />
           ) : (
             <TooltipWithPortal

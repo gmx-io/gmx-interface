@@ -39,6 +39,14 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
+    id: "pepe-and-wif-markets-arbitrum",
+    title: "PEPE and WIF markets added on Arbitrum",
+    isActive: true,
+    startDate: "17 Jul 2024, 00:00",
+    endDate: "01 Aug 2024, 00:00",
+    bodyText: "Trade PEPE/USD and WIF/USD, or provide liquidity to these pools by using PEPE, WIF, or USDC.",
+  },
+  {
     id: "arbitrum-and-avalanche-incentives-launch-3",
     title: "Arbitrum and Avalanche Incentives are Live",
     isActive: true,
