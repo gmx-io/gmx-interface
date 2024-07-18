@@ -1212,7 +1212,6 @@ export function getProcessedData(
   aum,
   nativeTokenPrice,
   stakedGmxSupply,
-  stakedBnGmxSupply,
   gmxPrice,
   gmxSupply
 ): ProcessedData | undefined {
@@ -1225,7 +1224,6 @@ export function getProcessedData(
     !aum ||
     !nativeTokenPrice ||
     !stakedGmxSupply ||
-    !stakedBnGmxSupply ||
     !gmxPrice ||
     !gmxSupply
   ) {

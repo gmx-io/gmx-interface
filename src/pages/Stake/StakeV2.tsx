@@ -53,7 +53,6 @@ import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -1356,7 +1355,6 @@ export default function StakeV2() {
     feeGlpTrackerAddress,
   ];
 
-  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
@@ -1468,7 +1466,6 @@ export default function StakeV2() {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
-    stakedBnGmxSupply,
     gmxPrice,
     gmxSupply
   );
