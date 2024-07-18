@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function TokenWithIcon({ symbol, className, importSize, displaySize }: Props) {
-  const classNames = cx("inline-flex items-center whitespace-nowrap Token-icon", className);
+  const classNames = cx("Token-icon inline-flex items-center whitespace-nowrap", className);
 
   if (!symbol) return <></>;
   return (
