@@ -18,7 +18,6 @@ import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -282,9 +281,7 @@ function UnstakeModal(props: {
   unstakingTokenSymbol: string;
   rewardRouterAddress: string;
   unstakeMethodName: string;
-  multiplierPointsAmount: bigint | undefined;
   reservedAmount: bigint | undefined;
-  bonusGmxInFeeGmx: bigint | undefined;
   setPendingTxns: SetPendingTransactions;
   processedData: any;
   nativeTokenSymbol: string;
@@ -301,9 +298,7 @@ function UnstakeModal(props: {
     unstakingTokenSymbol,
     rewardRouterAddress,
     unstakeMethodName,
-    multiplierPointsAmount,
     reservedAmount,
-    bonusGmxInFeeGmx,
     setPendingTxns,
     processedData,
     nativeTokenSymbol,
@@ -312,18 +307,6 @@ function UnstakeModal(props: {
   const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
-  let burnAmount = 0n;
-
-  if (
-    multiplierPointsAmount !== undefined &&
-    multiplierPointsAmount > 0 &&
-    amount !== undefined &&
-    amount > 0 &&
-    bonusGmxInFeeGmx !== undefined &&
-    bonusGmxInFeeGmx > 0
-  ) {
-    burnAmount = bigMath.mulDiv(multiplierPointsAmount, amount, bonusGmxInFeeGmx);
-  }
 
   const unstakeGmxPercentage =
     maxAmount !== undefined && maxAmount > 0 && amount !== undefined
@@ -334,13 +317,12 @@ function UnstakeModal(props: {
   if (
     amount !== undefined &&
     amount > 0 &&
-    multiplierPointsAmount !== undefined &&
     processedData.esGmxInStakedGmx !== undefined &&
     processedData.gmxInStakedGmx !== undefined
   ) {
-    const divisor = multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+    const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
     if (divisor !== 0n) {
-      unstakeBonusLostPercentage = bigMath.mulDiv(amount + burnAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+      unstakeBonusLostPercentage = bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
     }
   }
 
@@ -425,8 +407,7 @@ function UnstakeModal(props: {
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount > 0 &&
-          unstakeBonusLostPercentage !== undefined &&
+        {unstakeBonusLostPercentage !== undefined &&
           unstakeBonusLostPercentage > 0 &&
           amount !== undefined &&
           maxAmount !== undefined &&
@@ -1441,8 +1422,6 @@ export default function StakeV2() {
     }
   );
 
-  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
-
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1494,15 +1473,10 @@ export default function StakeV2() {
     gmxSupply
   );
 
-  let multiplierPointsAmount: bigint | undefined;
-  if (accumulatedBnGMXAmount !== undefined && processedData?.bnGmxInFeeGmx !== undefined) {
-    multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
-  }
-
   let totalRewardTokens;
 
-  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
-    totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
+  if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
+    totalRewardTokens = processedData.bonusGmxInFeeGmx;
   }
 
   let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
@@ -1512,8 +1486,6 @@ export default function StakeV2() {
   if ((userTotalGmInfo?.balance ?? 0n) > 0) {
     totalRewardAndLpTokens = totalRewardAndLpTokens + (userTotalGmInfo?.balance ?? 0n);
   }
-
-  const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
   if (totalGmxStaked !== 0n && gmxPrice) {
@@ -1530,12 +1502,11 @@ export default function StakeV2() {
     totalRewardTokens !== undefined &&
     vestingData &&
     vestingData.gmxVesterPairAmount !== undefined &&
-    multiplierPointsAmount !== undefined &&
     processedData?.bonusGmxInFeeGmx !== undefined
   ) {
     const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount + stakedTokens;
+    const divisor = stakedTokens;
     if (divisor > 0) {
       maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
     }
@@ -1740,10 +1711,6 @@ export default function StakeV2() {
     if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
-    let mpAmountStr;
-    if (processedData?.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx > 0) {
-      mpAmountStr = formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true) + " MP";
-    }
     let glpStr;
     if (processedData?.glpBalance && processedData.glpBalance > 0) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
@@ -1752,7 +1719,7 @@ export default function StakeV2() {
     if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
-    const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
+    const amountStr = [gmxAmountStr, esGmxAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
     earnMsg = (
       <div>
         <Trans>
@@ -1804,8 +1771,6 @@ export default function StakeV2() {
         unstakingTokenSymbol={unstakingTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
         unstakeMethodName={unstakeMethodName}
-        multiplierPointsAmount={multiplierPointsAmount}
-        bonusGmxInFeeGmx={bonusGmxInFeeGmx}
         processedData={processedData}
         nativeTokenSymbol={nativeTokenSymbol}
       />
