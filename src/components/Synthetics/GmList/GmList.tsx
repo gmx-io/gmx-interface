@@ -10,7 +10,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { GM_POOLS_PRICES_DECIMALS } from "config/ui";
+import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   MarketTokensAPRData,
@@ -24,11 +24,10 @@ import {
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
@@ -189,7 +188,7 @@ export function GmList({
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: GM_POOLS_PRICES_DECIMALS,
+                          displayDecimals: GM_POOL_PRICE_DECIMALS,
                         })}
                       </td>
 

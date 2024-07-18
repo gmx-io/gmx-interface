@@ -1002,7 +1002,9 @@ export function TradeBox(p: Props) {
       <BuyInputSection
         topLeftLabel={t`Price`}
         topRightLabel={t`Mark`}
-        topRightValue={formatUsd(markPrice)}
+        topRightValue={formatUsd(markPrice, {
+          displayDecimals: marketDecimals,
+        })}
         onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}

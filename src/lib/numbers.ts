@@ -4,6 +4,7 @@ import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { getPlusOrMinusSymbol } from "./utils";
+import { isDevelopment } from "config/env";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -494,4 +495,35 @@ export function numberToBigint(value: number, decimals: number) {
   }
 
   return negative ? -res : res;
+}
+
+export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) {
+  if (price === undefined || price === 0n) return 2;
+  const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
+
+  if (isNaN(priceNumber)) return 2;
+  if (priceNumber >= 1000) return 2;
+  if (priceNumber >= 100) return 3;
+  if (priceNumber >= 1) return 4;
+  if (priceNumber >= 0.1) return 5;
+  if (priceNumber >= 0.01) return 6;
+  if (priceNumber >= 0.0001) return 7;
+
+  return 8;
+}
+
+export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
+  if (price === undefined || price < 0n) {
+    if (isDevelopment()) {
+      throw new Error("formatUsdPrice accept only non-negative bigints");
+    }
+    return;
+  }
+
+  const decimals = calculatePriceDecimals(price);
+
+  return formatUsd(price, {
+    ...opts,
+    displayDecimals: decimals,
+  });
 }

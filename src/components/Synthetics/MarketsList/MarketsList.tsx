@@ -7,7 +7,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { formatAmount, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 
 import PageTitle from "components/PageTitle/PageTitle";
@@ -18,7 +18,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
-import { formatUsdPrice } from "domain/synthetics/positions";
 import "./MarketsList.scss";
 
 export function MarketsList() {

@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
-import { calculatePriceDecimals, getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -26,7 +26,7 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";

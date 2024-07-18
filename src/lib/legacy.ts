@@ -11,12 +11,18 @@ import { getServerBaseUrl } from "config/backend";
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { calculatePriceDecimals, isValidToken } from "config/tokens";
+import { isValidToken } from "config/tokens";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
-import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
+import {
+  bigNumberify,
+  deserializeBigIntsInObject,
+  expandDecimals,
+  formatAmount,
+  calculatePriceDecimals,
+} from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
 

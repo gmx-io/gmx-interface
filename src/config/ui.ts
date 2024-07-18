@@ -18,6 +18,7 @@ export const DEFAULT_TOOLTIP_POSITION = "bottom-start";
 export const TOOLTIP_OPEN_DELAY = 100; // ms
 export const TOOLTIP_CLOSE_DELAY = 100; // ms
 
-export const GM_POOLS_PRICES_DECIMALS = 4;
+export const MARKET_STATS_DECIMALS = 4;
+export const GM_POOL_PRICE_DECIMALS = 4;
 export const GLP_PRICE_DECIMALS = 4;
 export const GMX_PRICE_DECIMALS = 2;

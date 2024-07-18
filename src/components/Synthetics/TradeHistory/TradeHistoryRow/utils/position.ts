@@ -12,13 +12,13 @@ import {
   BN_NEGATIVE_ONE,
   BN_ONE,
   applyFactor,
+  calculatePriceDecimals,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
 
-import { calculatePriceDecimals } from "config/tokens";
 import { actionTextMap, getActionTitle } from "../../keys";
 import {
   INEQUALITY_GT,

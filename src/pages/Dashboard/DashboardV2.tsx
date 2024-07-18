@@ -33,7 +33,7 @@ import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
-import { GMX_PRICE_DECIMALS } from "config/ui";
+import { GLP_PRICE_DECIMALS, GMX_PRICE_DECIMALS } from "config/ui";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
@@ -43,7 +43,6 @@ import {
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useInfoTokens } from "domain/tokens";
@@ -59,6 +58,7 @@ import {
   formatKeyAmount,
   formatTokenAmount,
   formatUsd,
+  formatUsdPrice,
   numberWithCommas,
 } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -963,7 +963,7 @@ export default function DashboardV2() {
                         <div className="label">
                           <Trans>Price</Trans>
                         </div>
-                        <div>${formatAmount(glpPrice, USD_DECIMALS, 4, true)}</div>
+                        <div>${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">

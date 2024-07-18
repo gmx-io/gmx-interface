@@ -57,7 +57,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
-import { formatUsdPrice } from "domain/synthetics/positions";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
@@ -73,6 +72,7 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatKeyAmount,
+  formatUsdPrice,
   limitDecimals,
   parseValue,
 } from "lib/numbers";

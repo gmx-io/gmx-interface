@@ -673,7 +673,9 @@ export function PositionSeller(p: Props) {
               <BuyInputSection
                 topLeftLabel={t`Price`}
                 topRightLabel={t`Mark`}
-                topRightValue={formatUsd(markPrice)}
+                topRightValue={formatUsd(markPrice, {
+                  displayDecimals: marketDecimals,
+                })}
                 onClickTopRightLabel={() => {
                   setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
                 }}

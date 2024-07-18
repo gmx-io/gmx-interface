@@ -528,7 +528,7 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const marketPriceDecimaks = useSelector(makeSelectMarketPriceDecimals(p.order.marketAddress));
+  const marketPriceDecimals = useSelector(makeSelectMarketPriceDecimals(p.order.marketAddress));
 
   return (
     <div className="PositionEditor">
@@ -629,7 +629,7 @@ export function OrderEditor(p: Props) {
                   <ExchangeInfoRow
                     label={t`Liq. Price`}
                     value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                      displayDecimals: marketPriceDecimaks,
+                      displayDecimals: marketPriceDecimals,
                     })}
                   />
                 )}

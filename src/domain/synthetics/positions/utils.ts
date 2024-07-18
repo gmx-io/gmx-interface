@@ -1,13 +1,12 @@
 import { t } from "@lingui/macro";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { calculatePriceDecimals } from "config/tokens";
 import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
@@ -229,19 +228,6 @@ export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayD
   const priceDecimalPlaces = calculatePriceDecimals(acceptablePrice);
 
   return formatUsd(acceptablePrice, { ...opts, displayDecimals: opts.displayDecimals ?? priceDecimalPlaces });
-}
-
-export function formatUsdPrice(price?: bigint, opts: { displayDecimals?: number } = {}) {
-  if (price === undefined || price < 0n) {
-    return;
-  }
-
-  const priceDecimalPlaces = calculatePriceDecimals(price);
-
-  return formatUsd(price, {
-    ...opts,
-    displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
-  });
 }
 
 export function getLeverage(p: {

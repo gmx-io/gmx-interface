@@ -1,4 +1,4 @@
-import { calculatePriceDecimals } from "config/tokens";
+import { calculatePriceDecimals } from "lib/numbers";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
