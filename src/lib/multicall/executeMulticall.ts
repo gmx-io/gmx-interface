@@ -41,7 +41,7 @@ async function executeChainsMulticalls() {
   await Promise.allSettled(tasks);
 }
 
-const throttledExecuteChainsMulticalls = throttle(executeChainsMulticalls, 500, { leading: false, trailing: true });
+const throttledExecuteChainsMulticalls = throttle(executeChainsMulticalls, 50, { leading: false, trailing: true });
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
   const request: MulticallRequestConfig<any> = {};

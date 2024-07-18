@@ -320,7 +320,6 @@ function useFrequentData({
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const frequentQuery = useMulticall(chainId, "useMarketsInfo", {
-    // inWorker: true,
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account, pricesUpdatedAt],
 
     // Refreshed on every prices update
