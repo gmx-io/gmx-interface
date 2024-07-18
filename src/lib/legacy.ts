@@ -1237,8 +1237,7 @@ export function getProcessedData(
     !stakedGmxSupply ||
     !stakedBnGmxSupply ||
     !gmxPrice ||
-    !gmxSupply ||
-    !maxBoostMultiplier
+    !gmxSupply
   ) {
     return undefined;
   }
