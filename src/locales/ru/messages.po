@@ -4890,6 +4890,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "Нет открытых позиций"
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b Retroactive Bonus"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Попробуйте увеличить \" Допустимое Скольжение\", под меню Настройки в правом верхнем углу"
