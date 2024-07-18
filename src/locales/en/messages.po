@@ -1217,8 +1217,8 @@ msgid "Set Max Leverage"
 msgstr "Set Max Leverage"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum Avg. APR:"
-msgstr "Arbitrum Avg. APR:"
+#~ msgid "Arbitrum Avg. APR:"
+#~ msgstr "Arbitrum Avg. APR:"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
@@ -2276,6 +2276,7 @@ msgstr "{actionDisplay} Order"
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
 msgstr "There are more longs than shorts, borrow fees for shorting is currently zero"
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
@@ -4700,8 +4701,8 @@ msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche Avg. APR:"
-msgstr "Avalanche Avg. APR:"
+#~ msgid "Avalanche Avg. APR:"
+#~ msgstr "Avalanche Avg. APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Stake/StakeV1.js
@@ -7153,6 +7154,7 @@ msgstr "DeFi Portfolio Tracker"
 msgid "Current Funding Fee / Day"
 msgstr "Current Funding Fee / Day"
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
