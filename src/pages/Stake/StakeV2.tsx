@@ -306,12 +306,6 @@ function UnstakeModal(props: {
   const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
-
-  const unstakeGmxPercentage =
-    maxAmount !== undefined && maxAmount > 0 && amount !== undefined
-      ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
-      : 0n;
-
   let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
     amount !== undefined &&
@@ -325,11 +319,7 @@ function UnstakeModal(props: {
     }
   }
 
-  const govTokenAmount = useGovTokenAmount(chainId);
-  const votingPowerBurnAmount =
-    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
-      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
-      : 0n;
+  const votingPowerBurnAmount = amount;
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
@@ -445,7 +435,6 @@ function VesterDepositModal(props: {
   setValue: (value: string) => void;
   balance: bigint | undefined;
   vestedAmount: bigint | undefined;
-  averageStakedAmount: bigint | undefined;
   maxVestableAmount: bigint | undefined;
   signer: UncheckedJsonRpcSigner | undefined;
   stakeTokenLabel: string;
@@ -464,7 +453,6 @@ function VesterDepositModal(props: {
     setValue,
     balance,
     vestedAmount,
-    averageStakedAmount,
     maxVestableAmount,
     signer,
     stakeTokenLabel,
@@ -486,15 +474,8 @@ function VesterDepositModal(props: {
   }
 
   let additionalReserveAmount = 0n;
-  if (
-    amount !== undefined &&
-    nextDepositAmount !== undefined &&
-    averageStakedAmount !== undefined &&
-    maxVestableAmount !== undefined &&
-    maxVestableAmount > 0 &&
-    nextReserveAmount !== undefined
-  ) {
-    nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
+  if (nextDepositAmount !== undefined && reserveAmount !== undefined && nextReserveAmount !== undefined) {
+    nextReserveAmount = reserveAmount + nextDepositAmount;
     if (reserveAmount !== undefined && nextReserveAmount > reserveAmount) {
       additionalReserveAmount = nextReserveAmount - reserveAmount;
     }
@@ -1280,9 +1261,6 @@ export default function StakeV2() {
   const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState<bigint | undefined>();
   const [vesterDepositBalance, setVesterDepositBalance] = useState<bigint | undefined>();
   const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState<bigint | undefined>();
-  const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState<bigint | undefined | string>(
-    ""
-  );
   const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState<bigint | undefined>();
   const [vesterDepositValue, setVesterDepositValue] = useState("");
   const [vesterDepositReserveAmount, setVesterDepositReserveAmount] = useState<bigint | undefined>();
@@ -1420,6 +1398,23 @@ export default function StakeV2() {
     }
   );
 
+  const { data: vesterBalance } = useSWR(
+    [`StakeV2:vesterBalance:${active}`, chainId, gmxVesterAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(undefined, Vester),
+    }
+  );
+
+  // Vester.getPairAmount
+  const { data: pairAmount } = useSWR(
+    vesterBalance !== undefined
+      ? [`StakeV2:pairAmount:${active}`, chainId, gmxVesterAddress, "getPairAmount", account]
+      : undefined,
+    {
+      fetcher: contractFetcher(undefined, Vester, [vesterBalance]),
+    }
+  );
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1498,10 +1493,10 @@ export default function StakeV2() {
   if (
     totalRewardTokens !== undefined &&
     vestingData &&
-    vestingData.gmxVesterPairAmount !== undefined &&
+    pairAmount !== undefined &&
     processedData?.bonusGmxInFeeGmx !== undefined
   ) {
-    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
+    const availableTokens = (totalRewardTokens as bigint) - pairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
     const divisor = stakedTokens;
     if (divisor > 0) {
@@ -1551,8 +1546,7 @@ export default function StakeV2() {
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
-    setVesterDepositReserveAmount(vestingData.gmxVester.pairAmount);
+    setVesterDepositReserveAmount(pairAmount);
     setVesterDepositMaxReserveAmount(totalRewardTokens);
     setVesterDepositValue("");
     setVesterDepositAddress(gmxVesterAddress);
@@ -1573,7 +1567,6 @@ export default function StakeV2() {
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData.glpVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount);
     setVesterDepositReserveAmount(vestingData.glpVester.pairAmount);
     setVesterDepositMaxReserveAmount(processedData?.glpBalance);
     setVesterDepositValue("");
@@ -1669,7 +1662,6 @@ export default function StakeV2() {
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData?.affiliateVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData?.affiliateVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData?.affiliateVester.averageStakedAmount);
 
     setVesterDepositReserveAmount(undefined);
     setVesterDepositValue("");
@@ -1780,13 +1772,6 @@ export default function StakeV2() {
         maxAmount={vesterDepositMaxAmount}
         balance={vesterDepositBalance}
         vestedAmount={vesterDepositVestedAmount}
-        averageStakedAmount={
-          typeof vesterDepositAverageStakedAmount === "string"
-            ? vesterDepositAverageStakedAmount === ""
-              ? undefined
-              : BigInt(vesterDepositAverageStakedAmount)
-            : vesterDepositAverageStakedAmount
-        }
         maxVestableAmount={vesterDepositMaxVestableAmount}
         reserveAmount={vesterDepositReserveAmount}
         maxReserveAmount={vesterDepositMaxReserveAmount}
@@ -2492,8 +2477,7 @@ export default function StakeV2() {
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatKeyAmount(vestingData, "gmxVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(totalRewardTokens, 18, 2, true)}
+                    {formatAmount(pairAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
