@@ -26,7 +26,6 @@ export function EntryPriceRow() {
 
   return (
     <ExchangeInfoRow
-      className="SwapBox-info-row"
       label={t`Entry Price`}
       value={
         nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (

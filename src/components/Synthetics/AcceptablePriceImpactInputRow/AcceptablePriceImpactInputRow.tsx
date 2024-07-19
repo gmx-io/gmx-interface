@@ -17,6 +17,7 @@ type Props = {
   priceImpactFeeBps?: bigint;
   setAcceptablePriceImpactBps: (value: bigint) => void;
   notAvailable?: boolean;
+  className?: string;
 };
 
 const EMPTY_SUGGESTIONS: number[] = [];
@@ -28,6 +29,7 @@ function AcceptablePriceImpactInputRowImpl({
   priceImpactFeeBps,
   setAcceptablePriceImpactBps,
   notAvailable = false,
+  className,
 }: Props) {
   const setValue = useCallback(
     (value: number | undefined) => {
@@ -112,7 +114,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+    <ExchangeInfoRow className={className} label={t`Acceptable Price Impact`}>
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

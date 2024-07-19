@@ -49,5 +49,5 @@ export function LimitPriceRow() {
     return null;
   }
 
-  return <ExchangeInfoRow className="SwapBox-info-row" label={t`Limit Price`} value={value} />;
+  return <ExchangeInfoRow label={t`Limit Price`} value={value} />;
 }

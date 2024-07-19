@@ -160,7 +160,7 @@ export function TradeBoxOneClickTrading() {
     return (
       <ExchangeInfo.Row
         label={content}
-        className="SwapBox-info-row"
+        className="!items-center"
         value={
           <span className="flex flex-row justify-center gap-4 whitespace-nowrap align-middle">
             <Button variant="link" disabled={!clickable} onClick={jumpToSubaccount}>
@@ -171,7 +171,7 @@ export function TradeBoxOneClickTrading() {
                 src={CloseIcon}
                 onClick={onCloseClick}
                 alt="close"
-                className="TradeBox-close-icon relative top-2 cursor-pointer"
+                className="TradeBox-close-icon relative top-2 h-18 w-18 cursor-pointer"
               />
             )}
           </span>
@@ -180,7 +180,7 @@ export function TradeBoxOneClickTrading() {
     );
   }
 
-  return content ? <ExchangeInfo.Row label={content} className="SwapBox-info-row" value={null} /> : null;
+  return content ? <ExchangeInfo.Row className="!items-center" label={content} value={null} /> : null;
 }
 
 function OneClickAlertInfo({ children }: { children: ReactNode }) {

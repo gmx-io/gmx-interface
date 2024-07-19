@@ -1,53 +1,21 @@
 import { t } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import {
-  BASIS_POINTS_DIVISOR_BIGINT,
-  COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD,
-  HIGH_SPREAD_THRESHOLD,
-} from "config/factors";
-import {
-  selectTradeboxCollateralToken,
-  selectTradeboxMarketInfo,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { BASIS_POINTS_DIVISOR_BIGINT, COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD } from "config/factors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatPercentage } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function CollateralSpreadRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const collateralToken = useSelector(selectTradeboxCollateralToken);
 
   const { isMarket, isSwap } = tradeFlags;
 
-  const { indexToken } = marketInfo ?? {};
-
-  const collateralSpreadInfo = useMemo(() => {
-    if (!indexToken || !collateralToken) {
-      return undefined;
-    }
-
-    let totalSpread = getSpread(indexToken.prices);
-
-    if (getIsEquivalentTokens(collateralToken, indexToken)) {
-      return {
-        spread: totalSpread,
-        isHigh: totalSpread > HIGH_SPREAD_THRESHOLD,
-      };
-    }
-
-    totalSpread = totalSpread + getSpread(collateralToken!.prices!);
-
-    return {
-      spread: totalSpread,
-      isHigh: totalSpread > HIGH_SPREAD_THRESHOLD,
-    };
-  }, [collateralToken, indexToken]);
+  const collateralSpreadInfo = useSelector(selectTradeboxCollateralSpreadInfo);
 
   const [initialCollateralSpread, setInitialCollateralSpread] = useState<bigint | undefined>();
   const collateralSpreadPercent =

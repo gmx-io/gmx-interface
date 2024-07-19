@@ -2,6 +2,7 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
+import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
@@ -28,6 +29,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -91,7 +93,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
-  formatPercentage,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
@@ -112,19 +113,17 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
-import { useHistory } from "react-router-dom";
-import "./TradeBox.scss";
-import { TradeBoxAdvancedRows } from "./TradeBoxRows/AdvancedRows";
-import { EntryPriceRow } from "./TradeBoxRows/EntryPriceRow";
+
+import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
+import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
+
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
@@ -133,6 +132,8 @@ import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvaila
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
+
+import "./TradeBox.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -219,8 +220,6 @@ export function TradeBox(p: Props) {
     setLeverageOption,
     isLeverageEnabled,
     setIsLeverageEnabled,
-    keepLeverage,
-    setKeepLeverage,
     isWrapOrUnwrap,
     switchTokenAddresses,
     tradeMode,
@@ -1112,61 +1111,6 @@ export function TradeBox(p: Props) {
     );
   }
 
-  function renderLeverageInfo() {
-    if (isIncrease) {
-      return (
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Leverage`}
-          value={
-            nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
-              <ValueTransition
-                from={formatLeverage(selectedPosition?.leverage)}
-                to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
-              />
-            ) : (
-              formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
-            )
-          }
-        />
-      );
-    } else if (isTrigger && selectedPosition) {
-      let leverageValue: ReactNode = "-";
-
-      if (decreaseAmounts?.isFullClose) {
-        leverageValue = t`NA`;
-      } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
-        leverageValue = "-";
-      } else {
-        leverageValue = (
-          <ValueTransition
-            from={formatLeverage(selectedPosition.leverage)}
-            to={formatLeverage(nextPositionValues?.nextLeverage)}
-          />
-        );
-      }
-
-      const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
-
-      return (
-        <>
-          <ExchangeInfoRow className="SwapBox-info-row" label={t`Leverage`} value={leverageValue} />
-          {selectedPosition?.leverage && (
-            <ToggleSwitch
-              isChecked={keepLeverageChecked}
-              setIsChecked={setKeepLeverage}
-              disabled={decreaseAmounts?.isFullClose}
-            >
-              <span className="text-14 text-gray-300">
-                <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-              </span>
-            </ToggleSwitch>
-          )}
-        </>
-      );
-    }
-  }
-
   function renderIncreaseOrderInfo() {
     const acceptablePrice =
       isMarket && increaseAmounts?.acceptablePrice
@@ -1183,9 +1127,7 @@ export function TradeBox(p: Props) {
           executionPrice={executionPrice ?? undefined}
           triggerOrderType={fixedTriggerOrderType}
         />
-        <EntryPriceRow />
         <ExchangeInfoRow
-          className="SwapBox-info-row"
           label={t`Liq. Price`}
           value={
             <ValueTransition
@@ -1216,7 +1158,6 @@ export function TradeBox(p: Props) {
     return (
       <>
         <ExchangeInfoRow
-          className="SwapBox-info-row"
           label={t`Trigger Price`}
           value={`${decreaseAmounts?.triggerThresholdType || ""} ${
             formatUsd(decreaseAmounts?.triggerPrice, {
@@ -1236,7 +1177,6 @@ export function TradeBox(p: Props) {
 
         {selectedPosition && (
           <ExchangeInfoRow
-            className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
               <ValueTransition
@@ -1260,58 +1200,6 @@ export function TradeBox(p: Props) {
             }
           />
         )}
-      </>
-    );
-  }
-
-  function renderExistingPositionInfo() {
-    return (
-      <>
-        {selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Size`}
-            value={
-              <ValueTransition
-                from={formatUsd(selectedPosition.sizeInUsd)!}
-                to={formatUsd(nextPositionValues?.nextSizeUsd)}
-              />
-            }
-          />
-        )}
-        {!isIncrease && (
-          <ExchangeInfoRow
-            label={t`PnL`}
-            value={
-              <ValueTransition
-                from={
-                  <>
-                    {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                    {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                  </>
-                }
-                to={
-                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                    <>
-                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                    </>
-                  ) : undefined
-                }
-              />
-            }
-          />
-        )}
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Collateral (${selectedPosition?.collateralToken?.symbol})`}
-          value={
-            <ValueTransition
-              from={formatUsd(selectedPosition?.collateralUsd)}
-              to={formatUsd(nextPositionValues?.nextCollateralUsd)}
-            />
-          }
-        />
       </>
     );
   }
@@ -1384,7 +1272,9 @@ export function TradeBox(p: Props) {
               <ExchangeInfo.Group>
                 <TradeBoxOneClickTrading />
               </ExchangeInfo.Group>
-              <TradeBoxAdvancedRows />
+              <ExchangeInfo.Group>
+                <LimitAndTPSLGroup />
+              </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
                 <LimitPriceRow />
@@ -1393,9 +1283,9 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {renderLeverageInfo()}
-                {selectedPosition && !isSwap && renderExistingPositionInfo()}
+                <TradeBoxAdvancedGroups />
               </ExchangeInfo.Group>
+
               {feesType && (
                 <ExchangeInfo.Group>
                   <TradeFeesRow {...fees} feesType={feesType} />
@@ -1405,7 +1295,6 @@ export function TradeBox(p: Props) {
               <ExchangeInfo.Group>
                 {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                   <ExchangeInfoRow
-                    className="SwapBox-info-row"
                     label={t`Receive`}
                     value={formatTokenAmountWithUsd(
                       decreaseAmounts.receiveTokenAmount,
