@@ -1426,6 +1426,13 @@ export default function StakeV2() {
     }
   );
 
+  const { data: sbfGmxBalance } = useSWR(
+    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    {
+      fetcher: contractFetcher(undefined, Token),
+    }
+  );
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1625,6 +1632,11 @@ export default function StakeV2() {
     ) {
       maxAmount = maxUnstakeableGmx;
     }
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
+    }
+
     setUnstakeModalMaxAmount(maxAmount);
     setUnstakeValue("");
     setUnstakingTokenSymbol("GMX");
@@ -1644,6 +1656,11 @@ export default function StakeV2() {
     ) {
       maxAmount = maxUnstakeableGmx;
     }
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
+    }
+
     setUnstakeModalMaxAmount(maxAmount);
     setUnstakeValue("");
     setUnstakingTokenSymbol("esGMX");
