@@ -16,6 +16,7 @@ import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import PageTitle from "components/PageTitle/PageTitle";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -40,32 +41,16 @@ export function MarketsList() {
 }
 
 function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; indexTokensStats: IndexTokenStat[] }) {
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<
+    "price" | "tvl" | "liquidity" | "utilization" | "unspecified"
+  >();
   const [searchText, setSearchText] = useState("");
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   }, []);
 
-  const filteredMarkets = useMemo(() => {
-    if (!searchText.trim()) {
-      return indexTokensStats;
-    }
-
-    return indexTokensStats.filter((indexTokenStat) => {
-      const token = indexTokenStat.token;
-
-      const tokenSymbol = token.symbol;
-      const tokenName = token.name;
-
-      const tokenAddress = token.address;
-
-      return (
-        tokenSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        tokenName.toLowerCase().includes(searchText.toLowerCase()) ||
-        (isAddress(searchText) && isAddressEqual(tokenAddress as Address, searchText))
-      );
-    });
-  }, [indexTokensStats, searchText]);
+  const sortedMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
 
   return (
     <div className="token-table-wrapper App-card">
@@ -90,30 +75,38 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               <Trans>MARKETS</Trans>
             </th>
             <th>
-              <Trans>PRICE</Trans>
+              <Sorter {...getSorterProps("price")}>
+                <Trans>PRICE</Trans>
+              </Sorter>
             </th>
             <th>
-              <Trans comment="Total Value Locked">TVL</Trans>
+              <Sorter {...getSorterProps("tvl")}>
+                <Trans comment="Total Value Locked">TVL</Trans>
+              </Sorter>
             </th>
             <th>
-              <Trans>LIQUIDITY</Trans>
+              <Sorter {...getSorterProps("liquidity")}>
+                <Trans>LIQUIDITY</Trans>
+              </Sorter>
             </th>
             <th>
               <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
             </th>
             <th>
-              <Trans>UTILIZATION</Trans>
+              <Sorter {...getSorterProps("utilization")}>
+                <Trans>UTILIZATION</Trans>
+              </Sorter>
             </th>
           </tr>
         </thead>
         <tbody>
           {indexTokensStats.length > 0 &&
-            filteredMarkets.length > 0 &&
-            filteredMarkets.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
+            sortedMarkets.length > 0 &&
+            sortedMarkets.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
           {!indexTokensStats.length && <MarketListSkeleton />}
 
-          {indexTokensStats.length > 0 && !filteredMarkets.length && (
+          {indexTokensStats.length > 0 && !sortedMarkets.length && (
             <tr>
               <td colSpan={6} className="text-center">
                 <div className="text-center text-gray-400">
@@ -126,6 +119,69 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
       </table>
     </div>
   );
+}
+
+function useFilterSortMarkets({
+  indexTokensStats,
+  searchText,
+  orderBy,
+  direction,
+}: {
+  indexTokensStats: IndexTokenStat[];
+  searchText: string;
+  orderBy: string;
+  direction: string;
+}) {
+  const filteredMarkets = useMemo(() => {
+    if (!searchText.trim()) {
+      return indexTokensStats;
+    }
+
+    return indexTokensStats.filter((indexTokenStat) => {
+      const token = indexTokenStat.token;
+
+      const tokenSymbol = token.symbol;
+      const tokenName = token.name;
+
+      const tokenAddress = token.address;
+
+      return (
+        tokenSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        tokenName.toLowerCase().includes(searchText.toLowerCase()) ||
+        (isAddress(searchText) && isAddressEqual(tokenAddress as Address, searchText))
+      );
+    });
+  }, [indexTokensStats, searchText]);
+
+  const sortedMarkets = useMemo(() => {
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return filteredMarkets;
+    }
+
+    return filteredMarkets.slice().sort((a, b) => {
+      const directionMultiplier = direction === "asc" ? 1 : -1;
+
+      if (orderBy === "price") {
+        return a.token.prices?.minPrice > b.token.prices?.minPrice ? directionMultiplier : -directionMultiplier;
+      }
+
+      if (orderBy === "tvl") {
+        return a.totalPoolValue > b.totalPoolValue ? directionMultiplier : -directionMultiplier;
+      }
+
+      if (orderBy === "liquidity") {
+        return a.totalMaxLiquidity > b.totalMaxLiquidity ? directionMultiplier : -directionMultiplier;
+      }
+
+      if (orderBy === "utilization") {
+        return a.totalUtilization > b.totalUtilization ? directionMultiplier : -directionMultiplier;
+      }
+
+      return 0;
+    });
+  }, [filteredMarkets, orderBy, direction]);
+
+  return sortedMarkets;
 }
 
 function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenStat[] }) {

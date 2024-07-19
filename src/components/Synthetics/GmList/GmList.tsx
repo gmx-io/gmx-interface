@@ -38,12 +38,12 @@ import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmToke
 import Pagination from "components/Pagination/Pagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
-import { Sorter, type SortDirection } from "./Sorter";
 
 type Props = {
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -66,8 +66,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
   const userEarnings = useUserEarnings(chainId);
   const { showDebugValues } = useSettings();
   const daysConsidered = useDaysConsideredInMarketsApr();
-  const [orderBy, setOrderBy] = useState<SortField>("unspecified");
-  const [direction, setDirection] = useState<SortDirection>("unspecified");
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchText, setSearchText] = useState("");
 
   const isLoading = !marketsInfoData || !marketTokensData;
@@ -127,35 +126,17 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                 <Trans>MARKET</Trans>
               </ExchangeTh>
               <ExchangeTh>
-                <Sorter
-                  direction={orderBy === "price" ? direction : "unspecified"}
-                  onChange={(d) => {
-                    setOrderBy("price");
-                    setDirection(d);
-                  }}
-                >
+                <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
               </ExchangeTh>
               <ExchangeTh>
-                <Sorter
-                  direction={orderBy === "totalSupply" ? direction : "unspecified"}
-                  onChange={(d) => {
-                    setOrderBy("totalSupply");
-                    setDirection(d);
-                  }}
-                >
+                <Sorter {...getSorterProps("totalSupply")}>
                   <Trans>TOTAL SUPPLY</Trans>
                 </Sorter>
               </ExchangeTh>
               <ExchangeTh>
-                <Sorter
-                  direction={orderBy === "buyable" ? direction : "unspecified"}
-                  onChange={(d) => {
-                    setOrderBy("buyable");
-                    setDirection(d);
-                  }}
-                >
+                <Sorter {...getSorterProps("buyable")}>
                   <Tooltip
                     handle={<Trans>BUYABLE</Trans>}
                     className="normal-case"
@@ -169,13 +150,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                 </Sorter>
               </ExchangeTh>
               <ExchangeTh>
-                <Sorter
-                  direction={orderBy === "wallet" ? direction : "unspecified"}
-                  onChange={(d) => {
-                    setOrderBy("wallet");
-                    setDirection(d);
-                  }}
-                >
+                <Sorter {...getSorterProps("wallet")}>
                   <GmTokensTotalBalanceInfo
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
@@ -185,13 +160,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                 </Sorter>
               </ExchangeTh>
               <ExchangeTh>
-                <Sorter
-                  direction={orderBy === "apy" ? direction : "unspecified"}
-                  onChange={(d) => {
-                    setOrderBy("apy");
-                    setDirection(d);
-                  }}
-                >
+                <Sorter {...getSorterProps("apy")}>
                   <Tooltip
                     handle={t`APY`}
                     className="normal-case"

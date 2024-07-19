@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useCallback, useRef, useState } from "react";
 
 import { ReactComponent as IcSortable } from "img/ic_sortable.svg";
 import { ReactComponent as IcSortedAsc } from "img/ic_sorted_asc.svg";
@@ -36,4 +36,32 @@ export function Sorter(
       <Icon />
     </button>
   );
+}
+
+export function useSorterHandlers<SortField extends string | "unspecified">() {
+  const [orderBy, setOrderBy] = useState<SortField | "unspecified">("unspecified");
+  const [direction, setDirection] = useState<SortDirection>("unspecified");
+  const onChangeCache = useRef<Partial<Record<SortField, (direction: SortDirection) => void>>>({});
+
+  const getSorterProps = useCallback(
+    (field: SortField) => {
+      let cachedHandler = onChangeCache.current[field];
+
+      if (!cachedHandler) {
+        cachedHandler = (newDirection: SortDirection) => {
+          setOrderBy(field);
+          setDirection(newDirection);
+        };
+        onChangeCache.current[field] = cachedHandler;
+      }
+
+      return {
+        direction: orderBy === field ? direction : "unspecified",
+        onChange: cachedHandler!,
+      };
+    },
+    [direction, orderBy]
+  );
+
+  return { getSorterProps, orderBy, direction };
 }

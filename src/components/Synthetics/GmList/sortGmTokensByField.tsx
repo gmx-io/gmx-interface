@@ -1,9 +1,9 @@
 import { values } from "lodash";
 
+import type { SortDirection } from "components/Sorter/Sorter";
 import { MarketTokensAPRData, MarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
-import type { TokensData } from "domain/synthetics/tokens";
+import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
 import type { SortField } from "./GmList";
-import type { SortDirection } from "./Sorter";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 export function sortGmTokensByField({
@@ -45,7 +45,10 @@ export function sortGmTokensByField({
 
   if (orderBy === "wallet") {
     return gmTokens.sort((a, b) => {
-      return (a.balance ?? 0n) > (b.balance ?? 0n) ? directionMultiplier : -directionMultiplier;
+      const aUsd = convertToUsd(a.balance, a.decimals, a.prices.minPrice) ?? 0n;
+      const bUsd = convertToUsd(b.balance, b.decimals, b.prices.minPrice) ?? 0n;
+
+      return aUsd > bUsd ? directionMultiplier : -directionMultiplier;
     });
   }
 
