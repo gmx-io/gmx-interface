@@ -138,12 +138,12 @@ function MarketTokenSelectorInternal(props: Props) {
   );
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const isSmallMobile = useMedia("(max-width: 400px)");
+  const isSmallMobile = useMedia("(max-width: 560px)");
 
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
   const thClassName = cx(
-    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "sticky top-0 z-10 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -176,7 +176,7 @@ function MarketTokenSelectorInternal(props: Props) {
   );
 
   return (
-    <div>
+    <>
       <SelectorBaseMobileHeaderContent>
         <SearchInput
           className="mt-15"
@@ -186,88 +186,86 @@ function MarketTokenSelectorInternal(props: Props) {
           placeholder="Search Market"
         />
       </SelectorBaseMobileHeaderContent>
-      {!isMobile && (
-        <>
-          <SearchInput
-            className="m-15"
-            value={searchKeyword}
-            setValue={({ target }) => setSearchKeyword(target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && sortedTokensInfo.length > 0) {
-                handleSelectToken(sortedTokensInfo[0].market.address);
-              }
-            }}
-            placeholder="Search Market"
-          />
-          <div className="divider" />
-        </>
-      )}
-
-      <Tab
-        className="px-15 py-4"
-        options={indexTokensFavoritesTabOptions}
-        optionLabels={localizedTabOptionLabels}
-        type="inline"
-        option={tab}
-        setOption={setTab}
-      />
-
-      <div>
-        <table className="w-full">
-          {sortedMarketsByIndexToken.length > 0 && (
-            <thead>
-              <tr>
-                <th className={thClassName} colSpan={2}>
-                  <Trans>MARKET</Trans>
-                </th>
-                <th className={cx(thClassName, "relative")}>
-                  <span
-                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
-                  >
-                    <Sorter {...getSorterProps("buyable")}>
-                      <Trans>BUYABLE</Trans>
-                    </Sorter>
-                  </span>
-                </th>
-                <th className={cx(thClassName, "relative")}>
-                  <span
-                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
-                  >
-                    <Sorter {...getSorterProps("sellable")}>
-                      <Trans>SELLABLE</Trans>
-                    </Sorter>
-                  </span>
-                </th>
-                <th className={thClassName}>
-                  <Sorter {...getSorterProps("apy")}>
-                    <Trans>APY</Trans>
-                  </Sorter>
-                </th>
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {sortedTokensInfo.map((option) => (
-              <MarketTokenListItem
-                key={option.market.address}
-                {...option}
-                tdClassName={tdClassName}
-                isFavorite={favoriteTokens.includes(option.market.address)}
-                onFavorite={handleFavoriteClick}
-                handleSelectToken={handleSelectToken}
-                isSmallMobile={isSmallMobile}
-                rowVerticalPadding={rowVerticalPadding}
-              />
-            ))}
-          </tbody>
-        </table>
-        {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-          <div className="py-15 text-center text-gray-400">
-            <Trans>No markets matched.</Trans>
-          </div>
+      <div
+        className={cx({
+          "w-[618px]": !isMobile,
+        })}
+      >
+        {!isMobile && (
+          <>
+            <SearchInput
+              className="m-15"
+              value={searchKeyword}
+              setValue={({ target }) => setSearchKeyword(target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && sortedTokensInfo.length > 0) {
+                  handleSelectToken(sortedTokensInfo[0].market.address);
+                }
+              }}
+              placeholder="Search Market"
+            />
+            <div className="divider" />
+          </>
         )}
+
+        <Tab
+          className="px-15 py-4"
+          options={indexTokensFavoritesTabOptions}
+          optionLabels={localizedTabOptionLabels}
+          type="inline"
+          option={tab}
+          setOption={setTab}
+        />
+
+        <div>
+          <table className="w-full">
+            {sortedMarketsByIndexToken.length > 0 && (
+              <thead>
+                <tr>
+                  <th className={thClassName} colSpan={2}>
+                    <Trans>MARKET</Trans>
+                  </th>
+                  <th className={cx(thClassName, "relative")}>
+                    <Sorter {...getSorterProps("buyable")}>
+                      {isSmallMobile ? <Trans>BUY&hellip;</Trans> : <Trans>BUYABLE</Trans>}
+                    </Sorter>
+                  </th>
+                  <th className={cx(thClassName, "relative")}>
+                    <Sorter {...getSorterProps("sellable")}>
+                      {isSmallMobile ? <Trans>SELL&hellip;</Trans> : <Trans>SELLABLE</Trans>}
+                    </Sorter>
+                  </th>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("apy")}>
+                      <Trans>APY</Trans>
+                    </Sorter>
+                  </th>
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {sortedTokensInfo.map((option) => (
+                <MarketTokenListItem
+                  key={option.market.address}
+                  {...option}
+                  tdClassName={tdClassName}
+                  isFavorite={favoriteTokens.includes(option.market.address)}
+                  onFavorite={handleFavoriteClick}
+                  handleSelectToken={handleSelectToken}
+                  isSmallMobile={isSmallMobile}
+                  rowVerticalPadding={rowVerticalPadding}
+                />
+              ))}
+            </tbody>
+          </table>
+          {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+            <div className="py-15 text-center text-gray-400">
+              <Trans>No markets matched.</Trans>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -441,17 +439,22 @@ function MarketTokenListItem({
         <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")} onClick={handleSelect}>
-        <span className="inline-flex items-center">
-          {marketInfo && (
-            <>
-              <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-              <div className="inline-flex flex-wrap items-center">
-                <span>{indexName && indexName}</span>
-                <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-              </div>
-            </>
-          )}
-        </span>
+        {marketInfo && !isSmallMobile && (
+          <div className="inline-flex items-center">
+            <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
+            <div className="inline-flex flex-wrap items-center">
+              <span>{indexName && indexName}</span>
+              <span className="ml-3 text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            </div>
+          </div>
+        )}
+        {marketInfo && isSmallMobile && (
+          <div className="inline-flex flex-col items-start">
+            <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
+            <span>{indexName && indexName}</span>
+            <span className="text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+          </div>
+        )}
       </td>
       <td className={tdClassName} onClick={handleSelect}>
         {formattedMintableUsd}
