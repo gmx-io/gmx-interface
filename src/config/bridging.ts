@@ -34,6 +34,18 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: () => " https://stargate.finance/transfer",
     },
   ],
+  PEPE: [
+    {
+      name: "Stargate",
+      generateLink: () => "https://stargate.finance/bridge",
+    },
+  ],
+  WIF: [
+    {
+      name: "Portalbridge",
+      generateLink: () => "https://portalbridge.com/advanced-tools/#/transfer?sourceChain=solana&targetChain=arbitrum",
+    },
+  ],
 };
 
 export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {
