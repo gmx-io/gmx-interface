@@ -15,12 +15,14 @@ import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/global
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
 import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
-import { MarketsData } from "domain/synthetics/markets";
+import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useMemo } from "react";
@@ -28,19 +30,32 @@ import { Link } from "react-router-dom";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
-function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[], gmMarkets: MarketsData | undefined) {
+function getNormalizedIncentive(
+  incentive: UserIncentiveData,
+  tokens: Token[],
+  gmMarkets: MarketsData | undefined,
+  marketTokensData: TokensData | undefined
+) {
   const tokenIncentiveDetails = incentive.tokens.map((tokenAddressRaw, index) => {
     // backend should send tokenAddress in lowercase but we double-check here to not break the logic
     const tokenAddress = tokenAddressRaw.toLowerCase();
     const marketTokenKey = gmMarkets ? Object.keys(gmMarkets).find((key) => key.toLowerCase() === tokenAddress) : null;
     const marketToken = marketTokenKey ? gmMarkets?.[marketTokenKey] : undefined;
     const tokenInfo = marketToken ? undefined : tokens.find((token) => token.address.toLowerCase() === tokenAddress);
+    const amountInUsd =
+      marketTokensData && marketToken
+        ? bigMath.mulDiv(
+            BigInt(incentive.amounts[index]),
+            marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
+            expandDecimals(1, GM_DECIMALS)
+          )
+        : BigInt(incentive.amountsInUsd[index]);
 
     return {
       symbol: tokenInfo ? tokenInfo.symbol : marketToken?.name,
       decimals: tokenInfo ? tokenInfo.decimals : GM_DECIMALS,
       amount: BigInt(incentive.amounts[index]),
-      amountInUsd: BigInt(incentive.amountsInUsd[index]),
+      amountInUsd,
       id: `${incentive.id}-${tokenAddress}`,
     };
   });
@@ -61,11 +76,15 @@ export default function UserIncentiveDistributionList() {
   const { chainId } = useChainId();
   const tokens = getTokens(chainId);
   const gmMarkets = useSelector(selectGmMarkets);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const userIncentiveData = useUserIncentiveData(chainId, account);
 
   const normalizedIncentiveData: NormalizedIncentiveData[] = useMemo(
-    () => userIncentiveData?.data?.map((incentive) => getNormalizedIncentive(incentive, tokens, gmMarkets)) ?? [],
-    [userIncentiveData?.data, tokens, gmMarkets]
+    () =>
+      userIncentiveData?.data?.map((incentive) =>
+        getNormalizedIncentive(incentive, tokens, gmMarkets, marketTokensData)
+      ) ?? [],
+    [userIncentiveData?.data, tokens, gmMarkets, marketTokensData]
   );
 
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
