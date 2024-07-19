@@ -513,11 +513,12 @@ export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) 
 }
 
 export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
-  if (price === undefined || price < 0n) {
-    if (isDevelopment()) {
-      throw new Error("formatUsdPrice accept only non-negative bigints");
-    }
+  if (price === undefined) {
     return;
+  }
+
+  if (price < 0n && isDevelopment()) {
+    throw new Error("formatUsdPrice accept only non-negative bigints");
   }
 
   const decimals = calculatePriceDecimals(price);

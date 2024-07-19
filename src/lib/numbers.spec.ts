@@ -34,8 +34,11 @@ describe("numbers.ts", () => {
 const ONE_USD = 1000000000000000000000000000000n;
 
 describe("formatUsdPrice", () => {
+  it("should tolerate undefined", () => {
+    expect(formatUsdPrice()).toBeUndefined();
+  });
+
   it("should return nothing if undefined or negative", () => {
-    expect(() => formatUsdPrice(undefined)).toThrowError();
     expect(() => formatUsdPrice(-1n)).toThrowError();
   });
 

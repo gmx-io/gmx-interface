@@ -56,7 +56,7 @@ import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -2366,7 +2366,7 @@ export default function StakeV2() {
                   <div className="label">
                     <Trans>Price</Trans>
                   </div>
-                  <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 4, true)}</div>
+                  <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
