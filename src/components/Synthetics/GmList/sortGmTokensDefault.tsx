@@ -48,19 +48,6 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
       groupKey = market.indexTokenAddress as Address;
     }
 
-    if (market.isSpotOnly) {
-      groupedTokens[groupKey] = {
-        tokens: [
-          {
-            tokenData: marketTokenData,
-            totalSupplyUsd: totalSupplyUsd,
-          },
-        ],
-        totalSupplyUsd: totalSupplyUsd,
-      };
-      continue;
-    }
-
     if (!groupedTokens[groupKey]) {
       groupedTokens[groupKey] = {
         tokens: [],
