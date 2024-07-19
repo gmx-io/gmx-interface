@@ -217,7 +217,11 @@ function MarketTokenSelectorInternal(props: Props) {
           setOption={setTab}
         />
 
-        <div>
+        <div
+          className={cx({
+            "max-h-[444px] overflow-y-auto": !isMobile,
+          })}
+        >
           <table className="w-full">
             {sortedMarketsByIndexToken.length > 0 && (
               <thead>
@@ -225,12 +229,12 @@ function MarketTokenSelectorInternal(props: Props) {
                   <th className={thClassName} colSpan={2}>
                     <Trans>MARKET</Trans>
                   </th>
-                  <th className={cx(thClassName, "relative")}>
+                  <th className={thClassName}>
                     <Sorter {...getSorterProps("buyable")}>
                       {isSmallMobile ? <Trans>BUY&hellip;</Trans> : <Trans>BUYABLE</Trans>}
                     </Sorter>
                   </th>
-                  <th className={cx(thClassName, "relative")}>
+                  <th className={thClassName}>
                     <Sorter {...getSorterProps("sellable")}>
                       {isSmallMobile ? <Trans>SELL&hellip;</Trans> : <Trans>SELLABLE</Trans>}
                     </Sorter>
@@ -258,12 +262,12 @@ function MarketTokenSelectorInternal(props: Props) {
               ))}
             </tbody>
           </table>
-          {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-            <div className="py-15 text-center text-gray-400">
-              <Trans>No markets matched.</Trans>
-            </div>
-          )}
         </div>
+        {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+          <div className="py-15 text-center text-gray-400">
+            <Trans>No markets matched.</Trans>
+          </div>
+        )}
       </div>
     </>
   );

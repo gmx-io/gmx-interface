@@ -190,7 +190,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
 
         <div
           className={cx({
-            "max-h-svh overflow-x-auto": !isMobile,
+            "max-h-[444px] overflow-x-auto": !isMobile,
           })}
         >
           <table className={cx("text-sm w-full")}>
