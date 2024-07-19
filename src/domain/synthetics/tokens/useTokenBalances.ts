@@ -1,10 +1,13 @@
-import Multicall from "abis/Multicall.json";
-import Token from "abis/Token.json";
+import { useAccount } from "wagmi";
+
 import { getContract } from "config/contracts";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
-import useWallet from "lib/wallets/useWallet";
+
+import Multicall from "abis/Multicall.json";
+import Token from "abis/Token.json";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -19,7 +22,8 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
-  const { account: currentAccount } = useWallet();
+  const { address: currentAccount } = useAccount();
+
   const account = overrideAccount ?? currentAccount;
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
@@ -52,7 +56,7 @@ export function useTokenBalances(
             calls: {
               balance: {
                 methodName: "balanceOf",
-                params: [account],
+                params: [account ?? PLACEHOLDER_ACCOUNT],
               },
             },
           };

@@ -155,9 +155,9 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
 
   const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
 
-  const finalContent = content ?? renderContent?.();
+  const finalContent = visible ? content ?? renderContent?.() : undefined;
 
-  const tooltipContent = (
+  const tooltipContent = visible ? (
     <div
       ref={refs.setFloating}
       style={floatingStyles}
@@ -167,7 +167,7 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
       <FloatingArrow ref={arrowRef} context={context} fill={color} />
       {finalContent}
     </div>
-  );
+  ) : undefined;
 
   if (as) {
     const Container = as as any;

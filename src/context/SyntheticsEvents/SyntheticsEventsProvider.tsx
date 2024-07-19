@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
@@ -449,18 +448,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
-    if (isDevelopment()) {
-      // eslint-disable-next-line no-console
-      console.debug("events", {
-        orderStatuses,
-        depositStatuses,
-        withdrawalStatuses,
-        increasePositionEvents: positionIncreaseEvents,
-        decreasePositionEvents: positionDecreaseEvents,
-        pendingPositionsUpdates,
-      });
-    }
-
     return {
       orderStatuses,
       depositStatuses,

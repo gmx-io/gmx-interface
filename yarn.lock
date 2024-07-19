@@ -11063,6 +11063,7 @@ __metadata:
     viem: 2.7.20
     wagmi: 2.5.7
     web-vitals: 1.1.2
+    worker-loader: 3.0.8
   languageName: unknown
   linkType: soft
 
@@ -20904,6 +20905,18 @@ __metadata:
     "@types/trusted-types": ^2.0.2
     workbox-core: 6.6.0
   checksum: bb1dd031c1525317ceffbdc3e4f502a70dce461fd6355146e1050c1090f3c640bf65edf42a5d2a3b91b4d0c313df32c1405d88bf701d44c0e3ebc492cd77fe14
+  languageName: node
+  linkType: hard
+
+"worker-loader@npm:3.0.8":
+  version: 3.0.8
+  resolution: "worker-loader@npm:3.0.8"
+  dependencies:
+    loader-utils: ^2.0.0
+    schema-utils: ^3.0.0
+  peerDependencies:
+    webpack: ^4.0.0 || ^5.0.0
+  checksum: 84f4a7eeb2a1d8b9704425837e017c91eedfae67ac89e0b866a2dcf283323c1dcabe0258196278b7d5fd0041392da895c8a0c59ddf3a94f1b2e003df68ddfec3
   languageName: node
   linkType: hard
 

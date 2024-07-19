@@ -1,9 +1,11 @@
 import useSWR from "swr";
+import { useAccount } from "wagmi";
 
-import { contractFetcher } from "lib/contracts";
 import { getContract } from "config/contracts";
+import { contractFetcher } from "lib/contracts";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+
 import GovToken from "abis/GovToken.json";
-import useWallet from "lib/wallets/useWallet";
 
 export function useGovTokenDelegates(chainId: number) {
   let govTokenAddress;
@@ -14,10 +16,16 @@ export function useGovTokenDelegates(chainId: number) {
     govTokenAddress = null;
   }
 
-  const { account } = useWallet();
+  const { address: account } = useAccount();
 
   const { data: govTokenDelegate } = useSWR(
-    govTokenAddress && [`GovTokenDelegates:${chainId}`, chainId, govTokenAddress, "delegates", account],
+    govTokenAddress && [
+      `GovTokenDelegates:${chainId}`,
+      chainId,
+      govTokenAddress,
+      "delegates",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, GovToken),
     }
