@@ -18,6 +18,9 @@ executorWorker.onmessage = (event) => {
   const promise = promises[id];
 
   if (!promise) {
+    // eslint-disable-next-line no-console
+    console.warn(`[executeMulticallWorker] Received message with unknown id: ${id}`);
+
     return;
   }
 
@@ -50,7 +53,7 @@ export async function executeMulticallWorker(
   const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(4_000).then(() => "timeout");
+  const escapePromise = sleep(4000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then(async (result) => {
@@ -58,7 +61,7 @@ export async function executeMulticallWorker(
       delete promises[id];
 
       // eslint-disable-next-line no-console
-      console.error("[executeMulticallWorker] Worker did not respond in time. Falling back to main thread.");
+      console.error("[executeMulticallWorker] Worker did not respond in time. Falling back to main thread.", request);
       try {
         const result = await executeMulticallMainThread(chainId, request);
 
