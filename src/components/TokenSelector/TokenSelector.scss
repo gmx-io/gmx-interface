@@ -127,7 +127,7 @@
   background: var(--dark-blue-hover);
 }
 
-.TokenSelector-token-row:active {
+.TokenSelector-token-row:active:not(:has(.favorite-star:active)) {
   background: var(--dark-blue-active);
 }
 

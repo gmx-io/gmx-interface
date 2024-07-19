@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
@@ -24,6 +23,7 @@ import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
+import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -360,7 +360,7 @@ function MarketTokenListItem({
         className={cx("rounded-4 pl-15 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
-        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+        <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")} onClick={handleSelect}>
         <span className="inline-flex items-center">

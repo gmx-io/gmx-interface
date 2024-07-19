@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useCallback, useMemo, useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
 import { useMedia } from "react-use";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -26,6 +25,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
+import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -332,7 +332,7 @@ function MarketListItem({
         className={cx("cursor-pointer rounded-4 pl-15 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
-        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+        <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td
         className={cx(

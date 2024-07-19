@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import { FaRegStar, FaStar } from "react-icons/fa";
 
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
@@ -16,6 +15,7 @@ import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
+import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -277,10 +277,10 @@ function MarketListItem(props: {
         </span>
       </div>
       <div
-        className="flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700"
+        className="favorite-star flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
         onClick={handleFavoriteClick}
       >
-        {isFavorite ? <FaStar className="text-gray-400" /> : <FaRegStar className="text-gray-400" />}
+        <FavoriteStar isFavorite={isFavorite} />
       </div>
     </div>
   );
