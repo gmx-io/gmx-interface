@@ -331,6 +331,7 @@ export function PositionItem(p: Props) {
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <tr
+        data-qa="position-item"
         className={cx("Exchange-list-item", {
           "Exchange-list-item-active": isCurrentMarket,
         })}
@@ -478,7 +479,7 @@ export function PositionItem(p: Props) {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
-      <div className="App-card">
+      <div className="App-card" data-qa="position-item">
         <div className="flex flex-grow flex-col">
           <div className="flex-grow">
             <div

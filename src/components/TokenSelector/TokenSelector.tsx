@@ -39,6 +39,7 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
+  qa?: string;
 };
 
 export default function TokenSelector(props: Props) {
@@ -65,6 +66,7 @@ export default function TokenSelector(props: Props) {
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
+    qa,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -167,6 +169,7 @@ export default function TokenSelector(props: Props) {
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
       <Modal
+        qa={qa + "-modal"}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
@@ -201,6 +204,7 @@ export default function TokenSelector(props: Props) {
             return (
               <div
                 key={token.address}
+                data-qa={`${qa}-token-${token.symbol}`}
                 className={cx("TokenSelector-token-row", { disabled: tokenState.disabled })}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
@@ -246,12 +250,12 @@ export default function TokenSelector(props: Props) {
         </div>
       </Modal>
       {selectedTokenLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {selectedTokenLabel}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
         </div>
       ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           <span className="inline-flex items-center">
             {showSymbolImage && (
               <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />

@@ -248,6 +248,7 @@ export function SyntheticsPage(p: Props) {
                 onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"
+                qa="exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
                 {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (

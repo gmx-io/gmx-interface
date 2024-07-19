@@ -113,6 +113,7 @@ export function MarketSelector({
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <Modal
+        qa="market-selector-modal"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -137,6 +138,7 @@ export function MarketSelector({
 
             return (
               <div
+                data-qa={`market-selector-${indexName}`}
                 key={indexName}
                 className={cx("TokenSelector-token-row", { disabled: state.disabled })}
                 onClick={() => !state.disabled && onSelectOption(option)}
@@ -181,12 +183,12 @@ export function MarketSelector({
         </div>
       </Modal>
       {selectedMarketLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
           {selectedMarketLabel}
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
           {marketInfo ? getMarketIndexName(marketInfo) : "..."}
           <BiChevronDown className="TokenSelector-caret" />
         </div>

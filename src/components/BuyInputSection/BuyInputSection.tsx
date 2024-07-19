@@ -22,6 +22,7 @@ type Props = {
   showPercentSelector?: boolean;
   onPercentChange?: (percentage: number) => void;
   preventFocusOnLabelClick?: "left" | "right" | "both";
+  qa?: string;
 };
 
 export default function BuyInputSection(props: Props) {
@@ -42,6 +43,7 @@ export default function BuyInputSection(props: Props) {
     showPercentSelector,
     onPercentChange,
     preventFocusOnLabelClick,
+    qa,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,7 +82,7 @@ export default function BuyInputSection(props: Props) {
   }
 
   return (
-    <div>
+    <div data-qa={qa}>
       <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
         <div className="buy-input-top-row">
           <div data-label="left" className="text-gray-300">
@@ -111,6 +113,7 @@ export default function BuyInputSection(props: Props) {
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
                 placeholder="0.0"
+                qa={qa ? qa + "-input" : undefined}
               />
             )}
             {staticInput && <div className="InputSection-static-input">{inputValue}</div>}

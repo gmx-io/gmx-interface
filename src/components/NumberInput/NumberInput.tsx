@@ -14,9 +14,10 @@ type Props = {
   onBlur?: () => void;
   className?: string;
   placeholder?: string;
+  qa?: string;
 };
 
-function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, className, placeholder }: Props) {
+function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, className, placeholder, qa }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
     // Replace comma with dot
@@ -32,6 +33,7 @@ function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, cla
   }
   return (
     <input
+      data-qa={qa}
       type="text"
       inputMode="decimal"
       placeholder={placeholder}
