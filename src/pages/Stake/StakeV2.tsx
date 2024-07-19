@@ -1507,21 +1507,6 @@ export default function StakeV2() {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  let maxUnstakeableGmx = 0n;
-  if (
-    totalRewardTokens !== undefined &&
-    vestingData &&
-    pairAmount !== undefined &&
-    processedData?.bonusGmxInFeeGmx !== undefined
-  ) {
-    const availableTokens = (totalRewardTokens as bigint) - pairAmount;
-    const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = stakedTokens;
-    if (divisor > 0) {
-      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
-    }
-  }
-
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
       helperToast.error(t`GMX transfers not yet enabled`);
@@ -1623,15 +1608,6 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake GMX`);
     let maxAmount = processedData?.gmxInStakedGmx;
-    if (
-      processedData?.gmxInStakedGmx !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < processedData.gmxInStakedGmx
-    ) {
-      maxAmount = maxUnstakeableGmx;
-    }
 
     if (maxAmount !== undefined) {
       maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
@@ -1647,15 +1623,6 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData?.esGmxInStakedGmx;
-    if (
-      maxAmount !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < maxAmount
-    ) {
-      maxAmount = maxUnstakeableGmx;
-    }
 
     if (maxAmount !== undefined) {
       maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
