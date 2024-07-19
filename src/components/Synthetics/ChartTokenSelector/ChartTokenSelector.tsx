@@ -27,6 +27,7 @@ import { getByKey } from "lib/objects";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
+import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
@@ -67,6 +68,8 @@ export default function ChartTokenSelector(props: Props) {
   );
 }
 
+type SortField = "longLiquidity" | "shortLiquidity" | "unspecified";
+
 function MarketsList(props: { options: Token[] | undefined }) {
   const { options } = props;
   const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
@@ -77,27 +80,11 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const close = useSelectorClose();
 
   const tradeType = useSelector(selectTradeboxTradeType);
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchKeyword, setSearchKeyword] = useState("");
   const isSwap = tradeType === TradeType.Swap;
 
-  const filteredTokens: Token[] | undefined = useMemo(
-    () =>
-      options?.filter((item) => {
-        let textSearchMatch = false;
-        if (!searchKeyword.trim()) {
-          textSearchMatch = true;
-        } else {
-          textSearchMatch =
-            item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
-        }
-
-        const favoriteMatch = tab === "favorites" && !isSwap ? favoriteTokens?.includes(item.address) : true;
-
-        return textSearchMatch && favoriteMatch;
-      }),
-    [favoriteTokens, isSwap, options, searchKeyword, tab]
-  );
+  const sortedTokens = useFilterSortTokens({ options, searchKeyword, tab, isSwap, favoriteTokens, direction, orderBy });
 
   const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
   const marketsInfoData = useMarketsInfoData();
@@ -155,12 +142,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
-        const token = filteredTokens[0];
+      if (event.key === "Enter" && sortedTokens && sortedTokens.length > 0) {
+        const token = sortedTokens[0];
         handleMarketSelect(token.address);
       }
     },
-    [filteredTokens, handleMarketSelect]
+    [sortedTokens, handleMarketSelect]
   );
 
   const handleFavoriteClick = useCallback(
@@ -215,10 +202,14 @@ function MarketsList(props: { options: Token[] | undefined }) {
                 {!isSwap && (
                   <>
                     <th className={thClassName}>
-                      <Trans>LONG LIQ.</Trans>
+                      <Sorter {...getSorterProps("longLiquidity")}>
+                        <Trans>LONG LIQ.</Trans>
+                      </Sorter>
                     </th>
                     <th className={thClassName}>
-                      <Trans>SHORT LIQ.</Trans>
+                      <Sorter {...getSorterProps("shortLiquidity")}>
+                        <Trans>SHORT LIQ.</Trans>
+                      </Sorter>
                     </th>
                   </>
                 )}
@@ -226,7 +217,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
             </thead>
 
             <tbody>
-              {filteredTokens?.map((token) => (
+              {sortedTokens?.map((token) => (
                 <MarketListItem
                   key={token.address}
                   token={token}
@@ -242,7 +233,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               ))}
             </tbody>
           </table>
-          {options && options.length > 0 && !filteredTokens?.length && (
+          {options && options.length > 0 && !sortedTokens?.length && (
             <div className="py-15 text-center text-gray-400">
               <Trans>No markets matched.</Trans>
             </div>
@@ -251,6 +242,76 @@ function MarketsList(props: { options: Token[] | undefined }) {
       </div>
     </>
   );
+}
+
+function useFilterSortTokens({
+  options,
+  searchKeyword,
+  tab,
+  isSwap,
+  favoriteTokens,
+  direction,
+  orderBy,
+}: {
+  options: Token[] | undefined;
+  searchKeyword: string;
+  tab: string;
+  isSwap: boolean;
+  favoriteTokens: string[];
+  direction: SortDirection;
+  orderBy: SortField;
+}) {
+  const filteredTokens: Token[] | undefined = useMemo(
+    () =>
+      options?.filter((item) => {
+        let textSearchMatch = false;
+        if (!searchKeyword.trim()) {
+          textSearchMatch = true;
+        } else {
+          textSearchMatch =
+            item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
+        }
+
+        const favoriteMatch = tab === "favorites" && !isSwap ? favoriteTokens?.includes(item.address) : true;
+
+        return textSearchMatch && favoriteMatch;
+      }),
+    [favoriteTokens, isSwap, options, searchKeyword, tab]
+  );
+
+  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+
+  const sortedTokens = useMemo(() => {
+    if (isSwap || orderBy === "unspecified" || direction === "unspecified") {
+      return filteredTokens;
+    }
+
+    const directionMultiplier = direction === "asc" ? 1 : -1;
+
+    return filteredTokens?.slice().sort((a, b) => {
+      const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
+      const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
+
+      if (orderBy === "longLiquidity") {
+        const aLongLiquidity = aLongLiq?.maxLongLiquidity || 0n;
+        const bLongLiquidity = bLongLiq?.maxLongLiquidity || 0n;
+
+        return aLongLiquidity > bLongLiquidity ? directionMultiplier : -directionMultiplier;
+      }
+
+      if (orderBy === "shortLiquidity") {
+        const aShortLiquidity = aShortLiq?.maxShortLiquidity || 0n;
+        const bShortLiquidity = bShortLiq?.maxShortLiquidity || 0n;
+
+        return aShortLiquidity > bShortLiquidity ? directionMultiplier : -directionMultiplier;
+      }
+
+      return 0;
+    });
+  }, [isSwap, direction, filteredTokens, getMaxLongShortLiquidityPool, orderBy]);
+
+  return sortedTokens;
 }
 
 function MarketListItem({
