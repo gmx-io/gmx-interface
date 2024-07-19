@@ -4,6 +4,7 @@ import { sleep } from "lib/sleep";
 
 import HashDataWorker from "./hashData.worker";
 import { hashDataMap } from "./hashDataMap";
+import { promiseWithResolvers } from "lib/utils";
 
 export const hashDataWorker: Worker = new HashDataWorker();
 
@@ -44,7 +45,7 @@ export function hashDataMapAsync<
     map,
   });
 
-  const { promise, resolve, reject } = Promise.withResolvers();
+  const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
   const escapePromise = sleep(1000).then(() => "timeout");
