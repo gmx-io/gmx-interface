@@ -307,11 +307,6 @@ function UnstakeModal(props: {
 
   let amount = parseValue(value, 18);
 
-  const unstakeGmxPercentage =
-    maxAmount !== undefined && maxAmount > 0 && amount !== undefined
-      ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
-      : 0n;
-
   let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
     amount !== undefined &&
@@ -325,11 +320,7 @@ function UnstakeModal(props: {
     }
   }
 
-  const govTokenAmount = useGovTokenAmount(chainId);
-  const votingPowerBurnAmount =
-    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
-      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
-      : 0n;
+  const votingPowerBurnAmount = amount;
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
@@ -1513,10 +1504,10 @@ export default function StakeV2() {
   if (
     totalRewardTokens !== undefined &&
     vestingData &&
-    vestingData.gmxVesterPairAmount !== undefined &&
+    pairAmount !== undefined &&
     processedData?.bonusGmxInFeeGmx !== undefined
   ) {
-    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
+    const availableTokens = (totalRewardTokens as bigint) - pairAmount;
     const stakedTokens = processedData.bonusGmxInFeeGmx;
     const divisor = stakedTokens;
     if (divisor > 0) {
