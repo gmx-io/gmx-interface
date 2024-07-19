@@ -41,6 +41,7 @@ const colors = {
     950: "rgba(255, 255, 255, 0.05)",
   },
   yellow: {
+    300: "#ffda44",
     500: "#f3b50c",
   },
   red: {
