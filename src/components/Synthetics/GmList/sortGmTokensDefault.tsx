@@ -78,9 +78,11 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
   // sort withing each group
   for (const [groupKey, indexTokenGroup] of entries(groupedTokens)) {
     if (groupKey === "nonZero") {
-      // by balance descending
+      // by balance usd descending
       indexTokenGroup.tokens.sort((a, b) => {
-        return a.tokenData.balance! > b.tokenData.balance! ? -1 : 1;
+        const aUsd = convertToUsd(a.tokenData.balance, a.tokenData.decimals, a.tokenData.prices.minPrice)!;
+        const bUsd = convertToUsd(b.tokenData.balance, b.tokenData.decimals, b.tokenData.prices.minPrice)!;
+        return aUsd > bUsd ? -1 : 1;
       });
       continue;
     }
@@ -92,11 +94,19 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
   }
 
   // sort and unwrap groups
-  const sortedTokens = values(groupedTokens)
-    .sort((a, b) => {
+  const sortedTokens = entries(groupedTokens)
+    .sort(([aKey, a], [bKey, b]) => {
+      // nonZero first
+      if (aKey === "nonZero") {
+        return -1;
+      }
+      if (bKey === "nonZero") {
+        return 1;
+      }
+      // by total supply descending
       return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
     })
-    .flatMap((group) => group.tokens)
+    .flatMap((groupEntree) => groupEntree[1].tokens)
     .map((token) => token.tokenData);
 
   return sortedTokens;
