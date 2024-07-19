@@ -15,7 +15,7 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
+import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
 import { USD_DECIMALS } from "lib/legacy";
@@ -25,6 +25,7 @@ import { getByKey } from "lib/objects";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
+import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
@@ -100,14 +101,197 @@ export default function MarketTokenSelector(props: Props) {
   );
 }
 
+type SortField = "buyable" | "sellable" | "apy" | "unspecified";
+
 function MarketTokenSelectorInternal(props: Props) {
   const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
   const { tab, setTab, favoriteTokens, setFavoriteTokens } = useGmTokensFavorites();
 
+  const sortedTokensInfo = useFilterSortTokensInfo({
+    sortedMarketsByIndexToken,
+    searchKeyword,
+    tab,
+    marketsInfoData,
+    favoriteTokens,
+    marketsTokensAPRData,
+    marketsTokensIncentiveAprData,
+    orderBy,
+    direction,
+  });
+
+  const close = useSelectorClose();
+
+  const handleSelectToken = useCallback(
+    (marketTokenAddress: string) => {
+      close();
+      history.push({
+        pathname: "/pools",
+        search: `?market=${marketTokenAddress}`,
+      });
+    },
+    [close, history]
+  );
+
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
+  const isSmallMobile = useMedia("(max-width: 400px)");
+
+  const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
+  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
+  const thClassName = cx(
+    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    rowVerticalPadding,
+    rowHorizontalPadding
+  );
+  const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
+
+  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
+
+  const handleFavoriteClick = useCallback(
+    (address: string) => {
+      if (favoriteTokens.includes(address)) {
+        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
+      } else {
+        setFavoriteTokens([...favoriteTokens, address]);
+      }
+    },
+    [favoriteTokens, setFavoriteTokens]
+  );
+
+  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(event.target.value);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && sortedTokensInfo.length > 0) {
+        handleSelectToken(sortedTokensInfo[0].market.address);
+      }
+    },
+    [sortedTokensInfo, handleSelectToken]
+  );
+
+  return (
+    <div>
+      <SelectorBaseMobileHeaderContent>
+        <SearchInput
+          className="mt-15"
+          value={searchKeyword}
+          setValue={handleSearch}
+          onKeyDown={handleKeyDown}
+          placeholder="Search Market"
+        />
+      </SelectorBaseMobileHeaderContent>
+      {!isMobile && (
+        <>
+          <SearchInput
+            className="m-15"
+            value={searchKeyword}
+            setValue={({ target }) => setSearchKeyword(target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && sortedTokensInfo.length > 0) {
+                handleSelectToken(sortedTokensInfo[0].market.address);
+              }
+            }}
+            placeholder="Search Market"
+          />
+          <div className="divider" />
+        </>
+      )}
+
+      <Tab
+        className="px-15 py-4"
+        options={indexTokensFavoritesTabOptions}
+        optionLabels={localizedTabOptionLabels}
+        type="inline"
+        option={tab}
+        setOption={setTab}
+      />
+
+      <div>
+        <table className="w-full">
+          {sortedMarketsByIndexToken.length > 0 && (
+            <thead>
+              <tr>
+                <th className={thClassName} colSpan={2}>
+                  <Trans>MARKET</Trans>
+                </th>
+                <th className={cx(thClassName, "relative")}>
+                  <span
+                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
+                  >
+                    <Sorter {...getSorterProps("buyable")}>
+                      <Trans>BUYABLE</Trans>
+                    </Sorter>
+                  </span>
+                </th>
+                <th className={cx(thClassName, "relative")}>
+                  <span
+                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
+                  >
+                    <Sorter {...getSorterProps("sellable")}>
+                      <Trans>SELLABLE</Trans>
+                    </Sorter>
+                  </span>
+                </th>
+                <th className={thClassName}>
+                  <Sorter {...getSorterProps("apy")}>
+                    <Trans>APY</Trans>
+                  </Sorter>
+                </th>
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {sortedTokensInfo.map((option) => (
+              <MarketTokenListItem
+                key={option.market.address}
+                {...option}
+                tdClassName={tdClassName}
+                isFavorite={favoriteTokens.includes(option.market.address)}
+                onFavorite={handleFavoriteClick}
+                handleSelectToken={handleSelectToken}
+                isSmallMobile={isSmallMobile}
+                rowVerticalPadding={rowVerticalPadding}
+              />
+            ))}
+          </tbody>
+        </table>
+        {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+          <div className="py-15 text-center text-gray-400">
+            <Trans>No markets matched.</Trans>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function useFilterSortTokensInfo({
+  sortedMarketsByIndexToken,
+  searchKeyword,
+  tab,
+  marketsInfoData,
+  favoriteTokens,
+  marketsTokensAPRData,
+  marketsTokensIncentiveAprData,
+  orderBy,
+  direction,
+}: {
+  sortedMarketsByIndexToken: TokenData[];
+  searchKeyword: string;
+  tab: GmTokenFavoritesTabOption;
+  marketsInfoData: MarketsInfoData | undefined;
+  favoriteTokens: string[];
+  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  orderBy: SortField;
+  direction: SortDirection;
+}) {
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
@@ -161,143 +345,37 @@ function MarketTokenSelectorInternal(props: Props) {
     tab,
   ]);
 
-  const close = useSelectorClose();
+  const sortedTokensInfo = useMemo(() => {
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return filteredTokensInfo;
+    }
 
-  const handleSelectToken = useCallback(
-    (marketTokenAddress: string) => {
-      close();
-      history.push({
-        pathname: "/pools",
-        search: `?market=${marketTokenAddress}`,
-      });
-    },
-    [close, history]
-  );
+    const directionMultiplier = direction === "asc" ? 1 : -1;
 
-  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const isSmallMobile = useMedia("(max-width: 400px)");
-
-  const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
-  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
-  const thClassName = cx(
-    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
-    rowVerticalPadding,
-    rowHorizontalPadding
-  );
-  const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
-
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
-
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
+    return filteredTokensInfo.slice().sort((a, b) => {
+      if (orderBy === "buyable") {
+        const mintableA = a.mintableInfo?.mintableUsd ?? 0n;
+        const mintableB = b.mintableInfo?.mintableUsd ?? 0n;
+        return mintableA > mintableB ? directionMultiplier : -directionMultiplier;
       }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
 
-  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-  }, []);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && filteredTokensInfo.length > 0) {
-        handleSelectToken(filteredTokensInfo[0].market.address);
+      if (orderBy === "sellable") {
+        const sellableA = a.sellableInfo?.totalAmount ?? 0n;
+        const sellableB = b.sellableInfo?.totalAmount ?? 0n;
+        return sellableA > sellableB ? directionMultiplier : -directionMultiplier;
       }
-    },
-    [filteredTokensInfo, handleSelectToken]
-  );
 
-  return (
-    <div>
-      <SelectorBaseMobileHeaderContent>
-        <SearchInput
-          className="mt-15"
-          value={searchKeyword}
-          setValue={handleSearch}
-          onKeyDown={handleKeyDown}
-          placeholder="Search Market"
-        />
-      </SelectorBaseMobileHeaderContent>
-      {!isMobile && (
-        <>
-          <SearchInput
-            className="m-15"
-            value={searchKeyword}
-            setValue={({ target }) => setSearchKeyword(target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && filteredTokensInfo.length > 0) {
-                handleSelectToken(filteredTokensInfo[0].market.address);
-              }
-            }}
-            placeholder="Search Market"
-          />
-          <div className="divider" />
-        </>
-      )}
+      if (orderBy === "apy") {
+        const aprA = a.apr ?? 0n;
+        const aprB = b.apr ?? 0n;
+        return aprA > aprB ? directionMultiplier : -directionMultiplier;
+      }
 
-      <Tab
-        className="px-15 py-4"
-        options={indexTokensFavoritesTabOptions}
-        optionLabels={localizedTabOptionLabels}
-        type="inline"
-        option={tab}
-        setOption={setTab}
-      />
+      return 0;
+    });
+  }, [filteredTokensInfo, orderBy, direction]);
 
-      <div>
-        <table className="w-full">
-          {sortedMarketsByIndexToken.length > 0 && (
-            <thead>
-              <tr>
-                <th className={thClassName} colSpan={2}>
-                  MARKET
-                </th>
-                <th className={cx(thClassName, "relative")}>
-                  <span
-                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
-                  >
-                    BUYABLE
-                  </span>
-                </th>
-                <th className={cx(thClassName, "relative")}>
-                  <span
-                    className={cx("absolute inset-0 truncate", isSmallMobile ? "px-6" : "px-15", rowVerticalPadding)}
-                  >
-                    SELLABLE
-                  </span>
-                </th>
-                <th className={thClassName}>APY</th>
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {filteredTokensInfo.map((option) => (
-              <MarketTokenListItem
-                key={option.market.address}
-                {...option}
-                tdClassName={tdClassName}
-                isFavorite={favoriteTokens.includes(option.market.address)}
-                onFavorite={handleFavoriteClick}
-                handleSelectToken={handleSelectToken}
-                isSmallMobile={isSmallMobile}
-                rowVerticalPadding={rowVerticalPadding}
-              />
-            ))}
-          </tbody>
-        </table>
-        {sortedMarketsByIndexToken.length > 0 && !filteredTokensInfo?.length && (
-          <div className="py-15 text-center text-gray-400">
-            <Trans>No markets matched.</Trans>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  return sortedTokensInfo;
 }
 
 function MarketTokenListItem({
