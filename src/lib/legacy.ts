@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEnsName } from "wagmi";
 import { ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
@@ -6,7 +6,7 @@ import useSWR from "swr";
 import OrderBookReader from "abis/OrderBookReader.json";
 import OrderBook from "abis/OrderBook.json";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { getServerBaseUrl } from "config/backend";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -749,18 +749,11 @@ export function shortenAddress(address, length, padStart = 1) {
 }
 
 export function useENS(address) {
-  const [ensName, setENSName] = useState<string | undefined>();
-
-  useEffect(() => {
-    async function resolveENS() {
-      if (address) {
-        const provider = new ethers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
-        const name = await provider.lookupAddress(address.toLowerCase());
-        if (name) setENSName(name);
-      }
-    }
-    resolveENS();
-  }, [address]);
+  const ensNameQuery = useEnsName({
+    address,
+    chainId: ETH_MAINNET,
+  });
+  const ensName = ensNameQuery.data || undefined;
 
   return { ensName };
 }

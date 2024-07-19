@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2024-07-11 14:32+0400\n"
+"POT-Creation-Date: 2022-10-05 15:32+0530\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -621,10 +621,6 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr ""
@@ -666,7 +662,7 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -804,6 +800,10 @@ msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "Total Assets Migrated"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -1630,10 +1630,6 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
-msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Max Bonus Rebate"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -4244,6 +4240,10 @@ msgstr ""
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
 msgstr ""
@@ -4587,10 +4587,6 @@ msgstr ""
 msgid "Multiplier Points"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "(up to {0}% of {feesTypeName})"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -4710,6 +4706,10 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b Retroactive Bonus"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4901,7 +4901,7 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Liquidation"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -5560,7 +5560,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Sell Fee"
@@ -5901,7 +5901,7 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Positions"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not execute withdrawal from {0} {longOrShortText}"
@@ -6494,6 +6494,10 @@ msgstr ""
 msgid "Selling GM..."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Purchase Insurance"
 msgstr ""
@@ -6739,7 +6743,7 @@ msgstr ""
 #: src/components/Footer/constants.ts
 #: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
@@ -6754,7 +6758,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed Pay amount"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Swap"
