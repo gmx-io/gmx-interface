@@ -1,5 +1,8 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
+import noop from "lodash/noop";
+import { useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
+import { Address, isAddress, isAddressEqual } from "viem";
 
 import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
@@ -8,9 +11,10 @@ import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTo
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
-import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 
+import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import PageTitle from "components/PageTitle/PageTitle";
+import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -36,10 +40,47 @@ export function MarketsList() {
 }
 
 function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; indexTokensStats: IndexTokenStat[] }) {
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  }, []);
+
+  const filteredMarkets = useMemo(() => {
+    if (!searchText.trim()) {
+      return indexTokensStats;
+    }
+
+    return indexTokensStats.filter((indexTokenStat) => {
+      const token = indexTokenStat.token;
+
+      const tokenSymbol = token.symbol;
+      const tokenName = token.name;
+
+      const tokenAddress = token.address;
+
+      return (
+        tokenSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        tokenName.toLowerCase().includes(searchText.toLowerCase()) ||
+        (isAddress(searchText) && isAddressEqual(tokenAddress as Address, searchText))
+      );
+    });
+  }, [indexTokensStats, searchText]);
+
   return (
     <div className="token-table-wrapper App-card">
-      <div className="App-card-title">
-        <Trans>GM Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+      <div className="mb-15 flex items-center text-16">
+        <Trans>GM Pools</Trans>
+        <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+        <SearchInput
+          size="s"
+          value={searchText}
+          setValue={handleSearch}
+          className="*:!text-16"
+          placeholder="Search Market"
+          onKeyDown={noop}
+          autoFocus={false}
+        />
       </div>
       <div className="App-card-divider"></div>
       <table className="token-table">
@@ -66,10 +107,20 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           </tr>
         </thead>
         <tbody>
-          {indexTokensStats.length ? (
-            indexTokensStats.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)
-          ) : (
-            <MarketListSkeleton />
+          {indexTokensStats.length > 0 &&
+            filteredMarkets.length > 0 &&
+            filteredMarkets.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
+
+          {!indexTokensStats.length && <MarketListSkeleton />}
+
+          {indexTokensStats.length > 0 && !filteredMarkets.length && (
+            <tr>
+              <td colSpan={6} className="text-center">
+                <div className="text-center text-gray-400">
+                  <Trans>No markets found.</Trans>
+                </div>
+              </td>
+            </tr>
           )}
         </tbody>
       </table>
