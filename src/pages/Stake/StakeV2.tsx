@@ -1250,7 +1250,6 @@ export default function StakeV2() {
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
   const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<bigint | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1612,9 +1611,6 @@ export default function StakeV2() {
       maxAmount = maxUnstakeableGmx;
     }
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("GMX");
     setUnstakeMethodName("unstakeGmx");
@@ -1634,9 +1630,6 @@ export default function StakeV2() {
       maxAmount = maxUnstakeableGmx;
     }
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("esGMX");
     setUnstakeMethodName("unstakeEsGmx");
@@ -1752,7 +1745,7 @@ export default function StakeV2() {
         chainId={chainId}
         title={unstakeModalTitle}
         maxAmount={unstakeModalMaxAmount}
-        reservedAmount={unstakeModalReservedAmount}
+        reservedAmount={pairAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
         signer={signer}
