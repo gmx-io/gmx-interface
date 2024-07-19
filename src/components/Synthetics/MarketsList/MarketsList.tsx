@@ -1,7 +1,6 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import noop from "lodash/noop";
 import { useCallback, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 import { Address, isAddress, isAddressEqual } from "viem";
 
 import usePagination from "components/Referrals/usePagination";
@@ -23,6 +22,8 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
+import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
 import "./MarketsList.scss";
@@ -32,12 +33,9 @@ export function MarketsList() {
 
   const indexTokensStats = useMarketsInfoDataToIndexTokensStats();
 
-  const isMobile = useMedia("(max-width: 1100px)");
-
   return (
     <>
-      {!isMobile && <MarketsListDesktop chainId={chainId} indexTokensStats={indexTokensStats} />}
-      {isMobile && <MarketsListMobile indexTokensStats={indexTokensStats} />}
+      <MarketsListDesktop chainId={chainId} indexTokensStats={indexTokensStats} />
     </>
   );
 }
@@ -61,7 +59,11 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="token-table-wrapper App-box">
+    <div
+      className="my-15 rounded-4 bg-slate-800 text-left
+                 max-[964px]:!-mr-[--default-container-padding] max-[964px]:!rounded-r-0
+                 max-[600px]:!-mr-[--default-container-padding-mobile]"
+    >
       <div className="flex items-center px-14 py-10 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
@@ -76,37 +78,37 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
         />
       </div>
       <div className="h-1 bg-slate-700"></div>
-      <div className="px-14">
-        <table className="token-table px-14">
+      <div className="overflow-x-auto">
+        <table className="w-[max(100%,900px)]">
           <thead>
-            <tr>
-              <th>
+            <ExchangeTheadTr bordered={false}>
+              <ExchangeTh>
                 <Trans>MARKETS</Trans>
-              </th>
-              <th>
+              </ExchangeTh>
+              <ExchangeTh>
                 <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
-              </th>
-              <th>
+              </ExchangeTh>
+              <ExchangeTh>
                 <Sorter {...getSorterProps("tvl")}>
                   <Trans comment="Total Value Locked">TVL</Trans>
                 </Sorter>
-              </th>
-              <th>
+              </ExchangeTh>
+              <ExchangeTh>
                 <Sorter {...getSorterProps("liquidity")}>
                   <Trans>LIQUIDITY</Trans>
                 </Sorter>
-              </th>
-              <th>
+              </ExchangeTh>
+              <ExchangeTh>
                 <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
-              </th>
-              <th>
+              </ExchangeTh>
+              <ExchangeTh>
                 <Sorter {...getSorterProps("utilization")}>
                   <Trans>UTILIZATION</Trans>
                 </Sorter>
-              </th>
-            </tr>
+              </ExchangeTh>
+            </ExchangeTheadTr>
           </thead>
           <tbody>
             {indexTokensStats.length > 0 &&
@@ -114,19 +116,14 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
             {!indexTokensStats.length && <MarketListSkeleton />}
-
-            {indexTokensStats.length > 0 && !currentData.length && (
-              <tr>
-                <td colSpan={6} className="text-center">
-                  <div className="text-center text-gray-400">
-                    <Trans>No markets found.</Trans>
-                  </div>
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>
+      {indexTokensStats.length > 0 && !currentData.length && (
+        <div className="p-14 text-center text-gray-400">
+          <Trans>No markets found.</Trans>
+        </div>
+      )}
       <div className="h-1 bg-slate-700"></div>
       <div className="py-10">
         <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
@@ -198,126 +195,6 @@ function useFilterSortMarkets({
   return sortedMarkets;
 }
 
-function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenStat[] }) {
-  return (
-    <>
-      <PageTitle title={t`GM Pools`} />
-      <div className="token-grid">
-        {indexTokensStats.map((stats, index) => {
-          const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "bottom-end" : "top-end";
-          const netFeePerHourLong = stats.bestNetFeeLong;
-          const netFeePerHourShort = stats.bestNetFeeShort;
-
-          return (
-            <div className="App-card" key={stats.token.symbol}>
-              <div className="App-card-title">
-                <div className="mobile-token-card">
-                  <img
-                    src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                    alt={stats.token.symbol}
-                    width="20"
-                  />
-                  <div className="token-symbol-text">{stats.token.symbol}</div>
-                  <div>
-                    <AssetDropdown assetSymbol={stats.token.symbol} />
-                  </div>
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Price</Trans>
-                  </div>
-                  <div>{formatUsdPrice(stats.token.prices?.minPrice)}</div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>TVL</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={formatUsd(stats.totalPoolValue)}
-                      position="bottom-end"
-                      className="MarketList-mobile-tvl-tooltip"
-                      renderContent={() => (
-                        <>
-                          {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                            <StatsTooltipRow
-                              key={marketInfo.marketTokenAddress}
-                              showDollar={false}
-                              label={
-                                <div className="inline-flex items-start">
-                                  <span className="text-white">{getMarketIndexName(marketInfo)}</span>
-                                  <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
-                                </div>
-                              }
-                              value={formatUsd(poolValueUsd)}
-                            />
-                          ))}
-                        </>
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Liquidity</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={formatUsd(stats.totalMaxLiquidity)}
-                      className="MarketList-mobile-tvl-tooltip"
-                      renderContent={() => (
-                        <>
-                          {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
-                            <StatsTooltipRow
-                              key={marketInfo.marketTokenAddress}
-                              showDollar={false}
-                              label={
-                                <div className="inline-flex items-start">
-                                  <span className="text-white">{getMarketIndexName(marketInfo)}</span>
-                                  <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
-                                </div>
-                              }
-                              value={formatUsd(maxLiquidity)}
-                            />
-                          ))}
-                        </>
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Tooltip handle={<Trans>Net Rate / 1h</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
-                  </div>
-                  <div>
-                    <TooltipWithPortal
-                      tooltipClassName="MarketList-netfee-tooltip"
-                      handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
-                        netFeePerHourShort
-                      )}`}
-                      position={tooltipPositionNetFee}
-                      renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Utilization</Trans>
-                  </div>
-                  <div>{formatAmount(stats.totalUtilization, 2, 2, false)}%</div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </>
-  );
-}
-
 function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const anyPool = stats.marketsStats[0];
 
@@ -326,8 +203,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const marketIndexName = getMarketIndexName(anyPool.marketInfo);
 
   return (
-    <tr key={stats.token.symbol}>
-      <td>
+    <ExchangeTr key={stats.token.symbol} bordered={false} hoverable={false}>
+      <ExchangeTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
             <div className="App-card-title-info-icon min-h-40">
@@ -345,9 +222,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </div>
           </div>
         </div>
-      </td>
-      <td>{formatUsdPrice(stats.token.prices?.minPrice)}</td>
-      <td>
+      </ExchangeTd>
+      <ExchangeTd>{formatUsdPrice(stats.token.prices?.minPrice)}</ExchangeTd>
+      <ExchangeTd>
         <Tooltip
           className="nowrap"
           handle={formatUsd(stats.totalPoolValue)}
@@ -370,8 +247,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </td>
-      <td>
+      </ExchangeTd>
+      <ExchangeTd>
         <Tooltip
           className="nowrap"
           handle={formatUsd(stats.totalMaxLiquidity)}
@@ -394,8 +271,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </td>
-      <td>
+      </ExchangeTd>
+      <ExchangeTd>
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
@@ -403,8 +280,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
-      </td>
-      <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
-    </tr>
+      </ExchangeTd>
+      <ExchangeTd>{formatAmount(stats.totalUtilization, 2, 2)}%</ExchangeTd>
+    </ExchangeTr>
   );
 }
