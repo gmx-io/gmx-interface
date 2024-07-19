@@ -27,7 +27,7 @@ export function Sorter(
 
   return (
     <button
-      className={cx("flex items-center", {
+      className={cx("inline-flex items-center", {
         "text-blue-300": props.direction !== "unspecified",
       })}
       onClick={handleClick}

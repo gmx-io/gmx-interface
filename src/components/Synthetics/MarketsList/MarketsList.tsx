@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 import { Address, isAddress, isAddressEqual } from "viem";
 
+import usePagination from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -14,6 +15,7 @@ import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "l
 
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import PageTitle from "components/PageTitle/PageTitle";
+import Pagination from "components/Pagination/Pagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -50,11 +52,17 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
     setSearchText(e.target.value);
   }, []);
 
-  const sortedMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
+  const filteredMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
+
+  const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
+    `${chainId} ${direction} ${orderBy} ${searchText}`,
+    filteredMarkets,
+    10
+  );
 
   return (
-    <div className="token-table-wrapper App-card">
-      <div className="mb-15 flex items-center text-16">
+    <div className="token-table-wrapper App-box">
+      <div className="flex items-center px-14 py-10 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
         <SearchInput
@@ -67,56 +75,62 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           autoFocus={false}
         />
       </div>
-      <div className="App-card-divider"></div>
-      <table className="token-table">
-        <thead>
-          <tr>
-            <th>
-              <Trans>MARKETS</Trans>
-            </th>
-            <th>
-              <Sorter {...getSorterProps("price")}>
-                <Trans>PRICE</Trans>
-              </Sorter>
-            </th>
-            <th>
-              <Sorter {...getSorterProps("tvl")}>
-                <Trans comment="Total Value Locked">TVL</Trans>
-              </Sorter>
-            </th>
-            <th>
-              <Sorter {...getSorterProps("liquidity")}>
-                <Trans>LIQUIDITY</Trans>
-              </Sorter>
-            </th>
-            <th>
-              <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
-            </th>
-            <th>
-              <Sorter {...getSorterProps("utilization")}>
-                <Trans>UTILIZATION</Trans>
-              </Sorter>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {indexTokensStats.length > 0 &&
-            sortedMarkets.length > 0 &&
-            sortedMarkets.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
-
-          {!indexTokensStats.length && <MarketListSkeleton />}
-
-          {indexTokensStats.length > 0 && !sortedMarkets.length && (
+      <div className="h-1 bg-slate-700"></div>
+      <div className="px-14">
+        <table className="token-table px-14">
+          <thead>
             <tr>
-              <td colSpan={6} className="text-center">
-                <div className="text-center text-gray-400">
-                  <Trans>No markets found.</Trans>
-                </div>
-              </td>
+              <th>
+                <Trans>MARKETS</Trans>
+              </th>
+              <th>
+                <Sorter {...getSorterProps("price")}>
+                  <Trans>PRICE</Trans>
+                </Sorter>
+              </th>
+              <th>
+                <Sorter {...getSorterProps("tvl")}>
+                  <Trans comment="Total Value Locked">TVL</Trans>
+                </Sorter>
+              </th>
+              <th>
+                <Sorter {...getSorterProps("liquidity")}>
+                  <Trans>LIQUIDITY</Trans>
+                </Sorter>
+              </th>
+              <th>
+                <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
+              </th>
+              <th>
+                <Sorter {...getSorterProps("utilization")}>
+                  <Trans>UTILIZATION</Trans>
+                </Sorter>
+              </th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {indexTokensStats.length > 0 &&
+              currentData.length > 0 &&
+              currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
+
+            {!indexTokensStats.length && <MarketListSkeleton />}
+
+            {indexTokensStats.length > 0 && !currentData.length && (
+              <tr>
+                <td colSpan={6} className="text-center">
+                  <div className="text-center text-gray-400">
+                    <Trans>No markets found.</Trans>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="h-1 bg-slate-700"></div>
+      <div className="py-10">
+        <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+      </div>
     </div>
   );
 }
@@ -316,7 +330,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <td>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
-            <div className="App-card-title-info-icon">
+            <div className="App-card-title-info-icon min-h-40">
               <img
                 src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
                 alt={stats.token.symbol}
