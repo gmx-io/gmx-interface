@@ -1170,7 +1170,6 @@ export type ProcessedData = Partial<{
   stakedEsGmxSupplyUsd: bigint;
   esGmxInStakedGmx: bigint;
   esGmxInStakedGmxUsd: bigint;
-  bnGmxInFeeGmx: bigint;
   bonusGmxInFeeGmx: bigint;
   feeGmxSupply: bigint;
   feeGmxSupplyUsd: bigint;
@@ -1178,11 +1177,9 @@ export type ProcessedData = Partial<{
   stakedGmxTrackerRewardsUsd: bigint;
   feeGmxTrackerRewards: bigint;
   feeGmxTrackerRewardsUsd: bigint;
-  boostBasisPoints: bigint;
   stakedGmxTrackerAnnualRewardsUsd: bigint;
   feeGmxTrackerAnnualRewardsUsd: bigint;
   gmxAprTotal: bigint;
-  gmxAprTotalWithBoost: bigint;
   totalGmxRewardsUsd: bigint;
   glpSupply: bigint;
   glpPrice: bigint;
@@ -1208,15 +1205,9 @@ export type ProcessedData = Partial<{
   totalNativeTokenRewards: bigint;
   totalNativeTokenRewardsUsd: bigint;
   totalRewardsUsd: bigint;
-  avgBoostAprForNativeToken: bigint;
-  avgGMXAprForNativeToken: bigint;
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
-  maxGmxAprForNativeToken: bigint;
-  gmxAprForNativeTokenWithBoost: bigint;
-  gmxBoostAprForNativeToken?: bigint;
-  avgBoostMultiplier?: bigint;
 };
 
 export function getProcessedData(
@@ -1228,10 +1219,8 @@ export function getProcessedData(
   aum,
   nativeTokenPrice,
   stakedGmxSupply,
-  stakedBnGmxSupply,
   gmxPrice,
-  gmxSupply,
-  maxBoostMultiplier
+  gmxSupply
 ): ProcessedData | undefined {
   if (
     !balanceData ||
@@ -1242,10 +1231,8 @@ export function getProcessedData(
     !aum ||
     !nativeTokenPrice ||
     !stakedGmxSupply ||
-    !stakedBnGmxSupply ||
     !gmxPrice ||
-    !gmxSupply ||
-    !maxBoostMultiplier
+    !gmxSupply
   ) {
     return undefined;
   }
@@ -1273,7 +1260,6 @@ export function getProcessedData(
   data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx;
   data.esGmxInStakedGmxUsd = mulDiv(depositBalanceData.esGmxInStakedGmx, gmxPrice, expandDecimals(1, 18));
 
-  data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx;
   data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx;
   data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply;
   data.feeGmxSupplyUsd = mulDiv(data.feeGmxSupply, gmxPrice, expandDecimals(1, 18));
@@ -1283,11 +1269,6 @@ export function getProcessedData(
 
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
-
-  data.boostBasisPoints = 0n;
-  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx > 0) {
-    data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR_BIGINT, data.bonusGmxInFeeGmx);
-  }
 
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
@@ -1301,16 +1282,8 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
       : 0n;
-  data.gmxBoostAprForNativeToken = mulDiv(
-    data.gmxAprForNativeToken,
-    data.boostBasisPoints,
-    BASIS_POINTS_DIVISOR_BIGINT
-  );
-  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
-  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken + data.gmxAprForEsGmx;
-  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken;
 
-  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken + data.gmxAprForNativeToken * maxBoostMultiplier;
+  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
 
@@ -1364,13 +1337,6 @@ export function getProcessedData(
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
 
-  data.avgBoostMultiplier = stakedBnGmxSupply
-    ? mulDiv(stakedBnGmxSupply, BASIS_POINTS_DIVISOR_BIGINT, stakedGmxSupply + (data?.stakedEsGmxSupply ?? 0n))
-    : undefined;
-
-  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken
-    ? mulDiv(data.gmxAprForNativeToken, data.avgBoostMultiplier, BASIS_POINTS_DIVISOR_BIGINT)
-    : undefined;
   data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
     ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)
     : undefined;

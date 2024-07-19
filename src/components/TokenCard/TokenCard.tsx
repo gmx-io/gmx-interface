@@ -144,8 +144,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
-              <Trans>Arbitrum Avg. APR:</Trans> <APRLabel chainId={ARBITRUM} label="avgGMXAprForNativeToken" />,{" "}
-              <Trans>Avalanche Avg. APR:</Trans> <APRLabel chainId={AVALANCHE} label="avgGMXAprForNativeToken" />
+              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="avgGMXAprForNativeToken" />,{" "}
+              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="avgGMXAprForNativeToken" />
             </div>
           </div>
         </div>

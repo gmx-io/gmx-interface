@@ -30,7 +30,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
 Object {
-  "acceptablePrice": ">  $35.05",
+  "acceptablePrice": ">  $35.0578",
   "action": "Request Market Increase",
   "executionPrice": undefined,
   "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -40,7 +40,7 @@ Object {
   "market": "Short AVAX/USD",
   "marketPrice": undefined,
   "poolName": "WAVAX-USDC",
-  "price": ">  $35.05",
+  "price": ">  $35.0578",
   "priceComment": Array [
     "Acceptable price for the order.",
   ],
@@ -53,7 +53,7 @@ Object {
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
 Object {
-  "acceptablePrice": "<  $43.23",
+  "acceptablePrice": "<  $43.2376",
   "action": "Request Withdraw",
   "executionPrice": undefined,
   "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -63,7 +63,7 @@ Object {
   "market": "Short AVAX/USD",
   "marketPrice": undefined,
   "poolName": "WAVAX-USDC",
-  "price": "<  $43.23",
+  "price": "<  $43.2376",
   "priceComment": Array [
     "Acceptable price for the order.",
   ],
@@ -76,7 +76,7 @@ Object {
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
 Object {
-  "acceptablePrice": "<  $0.0851",
+  "acceptablePrice": "<  $0.085151",
   "action": "Request Deposit",
   "executionPrice": undefined,
   "fullMarket": "DOGE/USD [ETH-DAI]",
@@ -86,7 +86,7 @@ Object {
   "market": "Long DOGE/USD",
   "marketPrice": undefined,
   "poolName": "ETH-DAI",
-  "price": "<  $0.0851",
+  "price": "<  $0.085151",
   "priceComment": Array [
     "Acceptable price for the order.",
   ],
@@ -186,7 +186,7 @@ Object {
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
 Object {
-  "acceptablePrice": ">  $0.827",
+  "acceptablePrice": ">  $0.82764",
   "action": "Execute Limit Order",
   "executionPrice": "$0.837",
   "fullMarket": "ARB/USD [ARB-USDC]",
@@ -194,19 +194,19 @@ Object {
   "indexTokenSymbol": "ARB",
   "isLong": false,
   "market": "Short ARB/USD",
-  "marketPrice": "< $0.01000",
+  "marketPrice": "< $0.00001",
   "poolName": "ARB-USDC",
-  "price": "< $0.01000",
+  "price": "< $0.00001",
   "priceComment": Array [
     "Mark price for the order.",
     "",
     Object {
       "key": "Order Trigger Price",
-      "value": ">  $0.836",
+      "value": ">  $0.83600",
     },
     Object {
       "key": "Order Acceptable Price",
-      "value": ">  $0.827",
+      "value": ">  $0.82764",
     },
     Object {
       "key": "Order Execution Price",

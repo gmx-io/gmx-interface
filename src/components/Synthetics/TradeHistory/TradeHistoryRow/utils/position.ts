@@ -113,10 +113,10 @@ export const formatPositionMessage = (
   });
 
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   })!;
   const formattedTriggerPrice = formatUsd(tradeAction.triggerPrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   })!;
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);

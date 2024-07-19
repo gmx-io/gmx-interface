@@ -6,6 +6,7 @@ import { sleep } from "lib/sleep";
 import MulticallWorker from "./multicall.worker";
 import type { MulticallRequestConfig } from "./types";
 import { executeMulticall } from "./utils";
+import { promiseWithResolvers } from "lib/utils";
 
 const executorWorker: Worker = new MulticallWorker();
 
@@ -43,7 +44,7 @@ export async function executeMulticallWorker(chainId: number, request: Multicall
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 
-  const { promise, resolve, reject } = Promise.withResolvers();
+  const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
   const escapePromise = sleep(2_000).then(() => "timeout");

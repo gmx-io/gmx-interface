@@ -15,12 +15,9 @@ import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 
 import { useGmxPrice } from "domain/legacy";
-import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import useVestingData from "domain/vesting/useVestingData";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
@@ -111,10 +108,7 @@ export default function APRLabel({ chainId, label }) {
       fetcher: contractFetcher(undefined, Vault),
     }
   );
-  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
-
-  const maxBoostBasicPoints = useMaxBoostBasicPoints();
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR(gmxSupplyUrl, {
@@ -139,10 +133,8 @@ export default function APRLabel({ chainId, label }) {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
-    stakedBnGmxSupply,
     gmxPrice,
-    gmxSupply,
-    maxBoostBasicPoints / BASIS_POINTS_DIVISOR_BIGINT
+    gmxSupply
   );
 
   return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;

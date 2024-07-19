@@ -321,21 +321,30 @@ const TableRow = memo(
     );
 
     const renderLiquidationTooltip = useCallback(() => {
-      const markPrice = marketInfo?.indexToken.prices.maxPrice;
+      const markPrice = indexToken?.prices.maxPrice;
       const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
       return (
         <>
-          <StatsTooltipRow label={t`Mark Price`} value={formatUsd(markPrice)} showDollar={false} />
+          <StatsTooltipRow
+            label={t`Mark Price`}
+            value={formatUsd(markPrice, {
+              displayDecimals: indexToken?.priceDecimals,
+            })}
+            showDollar={false}
+          />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
-              value={formatUsd(liquidationPrice - markPrice, { maxThreshold: "1000000" })}
+              value={formatUsd(liquidationPrice - markPrice, {
+                maxThreshold: "1000000",
+                displayDecimals: indexToken?.priceDecimals,
+              })}
               showDollar={false}
             />
           )}
         </>
       );
-    }, [liquidationPrice, marketInfo?.indexToken.prices.maxPrice]);
+    }, [indexToken?.priceDecimals, indexToken?.prices.maxPrice, liquidationPrice]);
 
     return (
       <tr className="Table_tr" key={position.key}>
