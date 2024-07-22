@@ -9,7 +9,7 @@ import { formatAmount } from "lib/numbers";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -62,7 +62,12 @@ export function AprInfo({
   }, [apy, incentiveApr, totalApr]);
 
   return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
-    <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
+    <TooltipWithPortal
+      maxAllowedWidth={280}
+      handle={aprNode}
+      position="bottom-end"
+      renderContent={renderTooltipContent}
+    />
   ) : (
     aprNode
   );

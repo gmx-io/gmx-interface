@@ -41,7 +41,7 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 
@@ -137,7 +137,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
               </ExchangeTh>
               <ExchangeTh>
                 <Sorter {...getSorterProps("buyable")}>
-                  <Tooltip
+                  <TooltipWithPortal
                     handle={<Trans>BUYABLE</Trans>}
                     className="normal-case"
                     position="bottom-end"
@@ -161,7 +161,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
               </ExchangeTh>
               <ExchangeTh>
                 <Sorter {...getSorterProps("apy")}>
-                  <Tooltip
+                  <TooltipWithPortal
                     handle={t`APY`}
                     className="normal-case"
                     position="bottom-end"
@@ -453,7 +453,7 @@ function MintableAmount({
   );
 
   return (
-    <Tooltip
+    <TooltipWithPortal
       maxAllowedWidth={350}
       handle={
         <>
