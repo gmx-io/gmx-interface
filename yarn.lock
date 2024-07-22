@@ -11029,6 +11029,7 @@ __metadata:
     hex-to-rgba: 2.0.1
     html-to-image: ^1.10.8
     husky: 7.0.4
+    immer: 10.1.1
     lint-staged: 12.3.4
     lodash: 4.17.21
     prettier: 3.2.5
@@ -11886,6 +11887,13 @@ __metadata:
   version: 5.3.1
   resolution: "ignore@npm:5.3.1"
   checksum: 71d7bb4c1dbe020f915fd881108cbe85a0db3d636a0ea3ba911393c53946711d13a9b1143c7e70db06d571a5822c0a324a6bcde5c9904e7ca5047f01f1bf8cd3
+  languageName: node
+  linkType: hard
+
+"immer@npm:10.1.1":
+  version: 10.1.1
+  resolution: "immer@npm:10.1.1"
+  checksum: 07c67970b7d22aded73607193d84861bf786f07d47f7d7c98bb10016c7a88f6654ad78ae1e220b3c623695b133aabbf24f5eb8d9e8060cff11e89ccd81c9c10b
   languageName: node
   linkType: hard
 
