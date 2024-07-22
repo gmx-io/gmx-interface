@@ -1,10 +1,9 @@
 import { useRef } from "react";
-import useSWR, { SWRConfiguration } from "swr";
+import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
-import { executeMulticallWorker } from "./executeMulticallWorker";
 import { executeMulticall } from "./executeMulticall";
 
 /**
@@ -27,9 +26,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
-    inWorker?: boolean;
   }
 ) {
+  const defaultConfig = useSWRConfig();
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
@@ -61,11 +60,23 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         let responseOrFailure: any;
 
         let priority: "urgent" | "background" = "urgent";
-        if (successDataByChainIdRef.current[chainId] !== undefined && typeof params.refreshInterval === "number") {
+        const hasData = successDataByChainIdRef.current[chainId] !== undefined;
+        let isInterval = false;
+        if (typeof params.refreshInterval === "number") {
+          isInterval = true;
+        } else if (params.refreshInterval === undefined) {
+          if (typeof defaultConfig.refreshInterval === "number") {
+            isInterval = true;
+          } else if (hasData && defaultConfig.refreshInterval?.(successDataByChainIdRef.current[chainId])) {
+            isInterval = true;
+          }
+        }
+
+        if (hasData && isInterval) {
           priority = "background";
         }
 
-        console.log(Date.now(), { priority });
+        console.log({ priority });
 
         responseOrFailure = await executeMulticall(chainId, request, priority);
 
