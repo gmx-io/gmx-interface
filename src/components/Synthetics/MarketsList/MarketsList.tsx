@@ -108,7 +108,11 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                   <div className="label">
                     <Trans>Price</Trans>
                   </div>
-                  <div>{formatUsd(stats.token.prices?.minPrice)}</div>
+                  <div>
+                    {formatUsd(stats.token.prices?.minPrice, {
+                      displayDecimals: stats.token.priceDecimals,
+                    })}
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
@@ -225,7 +229,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </td>
-      <td>{formatUsd(stats.token.prices?.minPrice)}</td>
+      <td>
+        {formatUsd(stats.token.prices?.minPrice, {
+          displayDecimals: stats.token.priceDecimals,
+        })}
+      </td>
       <td>
         <Tooltip
           className="nowrap"

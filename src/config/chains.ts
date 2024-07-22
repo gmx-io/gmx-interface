@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { sample } from "lodash";
-import { NetworkMetadata } from "lib/wallets";
+import type { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
 const { parseEther } = ethers;
@@ -344,7 +344,7 @@ export function getFallbackRpcUrl(chainId: number): string | undefined {
 }
 
 function getAlchemyKey() {
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
     return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
   }
   return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
