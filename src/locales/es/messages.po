@@ -4116,6 +4116,10 @@ msgstr "Precio inferior al de liquidación"
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Airdrop"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake submitted!"
 msgstr ""
