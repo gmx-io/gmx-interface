@@ -33,6 +33,7 @@ import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { GLP_PRICE_DECIMALS, GMX_PRICE_DECIMALS } from "config/ui";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
@@ -45,6 +46,7 @@ import {
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useInfoTokens } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
@@ -56,6 +58,7 @@ import {
   formatKeyAmount,
   formatTokenAmount,
   formatUsd,
+  formatUsdPrice,
   numberWithCommas,
 } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -63,7 +66,6 @@ import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { groupBy } from "lodash";
 import AssetDropdown from "./AssetDropdown";
-import { bigMath } from "lib/bigmath";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -884,17 +886,17 @@ export default function DashboardV2() {
                           <TooltipComponent
                             position="bottom-end"
                             className="whitespace-nowrap"
-                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                             renderContent={() => (
                               <>
                                 <StatsTooltipRow
                                   label={t`Price on Arbitrum`}
-                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                                   showDollar={true}
                                 />
                                 <StatsTooltipRow
                                   label={t`Price on Avalanche`}
-                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                                   showDollar={true}
                                 />
                               </>
@@ -961,7 +963,7 @@ export default function DashboardV2() {
                         <div className="label">
                           <Trans>Price</Trans>
                         </div>
-                        <div>${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
+                        <div>${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
@@ -1061,7 +1063,7 @@ export default function DashboardV2() {
                                 </div>
                               </div>
                             </td>
-                            <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                            <td>{formatUsdPrice(tokenInfo?.minPrice)}</td>
                             <td>
                               <TooltipComponent
                                 handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
@@ -1153,7 +1155,7 @@ export default function DashboardV2() {
                             <div className="label">
                               <Trans>Price</Trans>
                             </div>
-                            <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                            <div>{formatUsdPrice(tokenInfo.minPrice)}</div>
                           </div>
                           <div className="App-card-row">
                             <div className="label">
