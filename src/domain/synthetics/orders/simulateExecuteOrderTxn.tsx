@@ -1,18 +1,17 @@
 import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getContract } from "config/contracts";
+import { getContract, getDataStoreContract, getMulticallContract, getExchangeRouterContract } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { ethers } from "ethers";
+import { ethers, BytesLike, BaseContract } from "ethers";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { Multicall__factory, DataStore__factory, ExchangeRouter__factory } from "typechain-types";
-
-export type MulticallRequest = { method: string; params: any[] }[];
+import { SwapPricingType } from "domain/synthetics/orders";
+import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -24,9 +23,9 @@ type SimulateExecuteOrderParams = {
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: bigint;
-  method?: string;
+  method?: "simulateExecuteDeposit" | "simulateExecuteWithdrawal" | "simulateExecuteOrder";
   errorTitle?: string;
-  extraArgs?: any[];
+  swapPricingType?: SwapPricingType;
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
@@ -34,11 +33,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
 
   const dataStoreAddress = getContract(chainId, "DataStore");
   const multicallAddress = getContract(chainId, "Multicall");
-  const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-  const dataStore = DataStore__factory.connect(dataStoreAddress, provider);
-  const multicall = Multicall__factory.connect(multicallAddress, provider);
-  const exchangeRouter = ExchangeRouter__factory.connect(exchangeRouterAddress, provider);
+  const dataStore = getDataStoreContract(chainId, provider);
+  const multicall = getMulticallContract(chainId, provider);
+  const exchangeRouter = getExchangeRouterContract(chainId, provider);
 
   const result = await multicall.blockAndAggregate.staticCall([
     { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },
@@ -54,39 +52,65 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   );
 
   const nextNonce = nonce + 1n;
-  const nextKey = orderKey(dataStoreAddress, nextNonce);
+  const nextKey = orderKey(dataStoreAddress, nextNonce) as BytesLike;
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 5n;
   const method = p.method || "simulateExecuteOrder";
 
-  const simulationPayload = [
-    ...p.createOrderMulticallPayload,
-    exchangeRouter.interface.encodeFunctionData(method, [
-      nextKey,
-      {
-        primaryTokens: primaryTokens,
-        primaryPrices: primaryPrices,
-        minTimestamp: priceTimestamp,
-        maxTimestamp: priceTimestamp,
-      },
-      ...(p.extraArgs ?? []),
-    ] as any),
-  ];
+  const simulationPriceParams = {
+    primaryTokens: primaryTokens,
+    primaryPrices: primaryPrices,
+    minTimestamp: priceTimestamp,
+    maxTimestamp: priceTimestamp,
+  } as OracleUtils.SimulatePricesParamsStruct;
+
+  let simulationPayloadData = [...p.createOrderMulticallPayload];
+
+  if (method === "simulateExecuteWithdrawal") {
+    if (p.swapPricingType === undefined) {
+      throw new Error("swapPricingType is required for simulateExecuteWithdrawal");
+    }
+
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteWithdrawal", [
+        nextKey,
+        simulationPriceParams,
+        p.swapPricingType,
+      ])
+    );
+  } else if (method === "simulateExecuteDeposit") {
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteDeposit", [nextKey, simulationPriceParams])
+    );
+  } else if (method === "simulateExecuteOrder") {
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteOrder", [nextKey, simulationPriceParams])
+    );
+  } else {
+    throw new Error(`Unknown method: ${method}`);
+  }
 
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   const tenderlyConfig = getTenderlyConfig();
 
   if (tenderlyConfig) {
-    await simulateTxWithTenderly(chainId, exchangeRouter, p.account, "multicall", [simulationPayload], {
-      value: p.value,
-      comment: `calling ${method}`,
-    });
+    await simulateTxWithTenderly(
+      chainId,
+      exchangeRouter as BaseContract,
+      p.account,
+      "multicall",
+      [simulationPayloadData],
+      {
+        value: p.value,
+        comment: `calling ${method}`,
+      }
+    );
   }
 
   try {
-    await exchangeRouter.multicall.staticCall(simulationPayload, {
+    await exchangeRouter.multicall.staticCall(simulationPayloadData, {
       value: p.value,
       blockTag: blockNumber,
       from: p.account,
@@ -94,7 +118,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-    let msg: any = undefined;
+    let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);

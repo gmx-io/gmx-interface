@@ -1,5 +1,47 @@
-import { ethers } from "ethers";
+import { ethers, ContractRunner, Contract, InterfaceAbi } from "ethers";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import {
+  CustomErrors__factory,
+  DataStore__factory,
+  ERC721__factory,
+  EventEmitter__factory,
+  ExchangeRouter__factory,
+  GlpManager__factory,
+  GMT__factory,
+  GmxMigrator__factory,
+  GovToken__factory,
+  MintableBaseToken__factory,
+  Multicall__factory,
+  OrderBook__factory,
+  OrderBookReader__factory,
+  OrderExecutor__factory,
+  PositionManager__factory,
+  PositionRouter__factory,
+  Reader__factory,
+  ReaderV2__factory,
+  ReferralStorage__factory,
+  RewardReader__factory,
+  RewardRouter__factory,
+  RewardTracker__factory,
+  RouterV2__factory,
+  Router__factory,
+  SubaccountRouter__factory,
+  SyntheticsReader__factory,
+  SyntheticsRouter__factory,
+  Timelock__factory,
+  Token__factory,
+  Treasury__factory,
+  UniPool__factory,
+  UniswapV2__factory,
+  Vault__factory,
+  VaultReader__factory,
+  VaultV2__factory,
+  VaultV2b__factory,
+  Vester__factory,
+  WETH__factory,
+  YieldFarm__factory,
+  YieldToken__factory,
+} from "typechain-types";
 
 const { ZeroAddress } = ethers;
 
@@ -314,3 +356,52 @@ export function getContract(chainId: number, name: string): string {
 
   return CONTRACTS[chainId][name];
 }
+
+function makeGetContract<T extends unknown & { abi: InterfaceAbi; connect: (address: string) => unknown }>(
+  name: string,
+  factory: T
+) {
+  return (chainId: number, provider?: ContractRunner) =>
+    new Contract(getContract(chainId, name), factory.abi, provider) as unknown as ReturnType<T["connect"]>;
+}
+
+export const getCustomErrorsContract = makeGetContract("CustomErrors", CustomErrors__factory);
+export const getDataStoreContract = makeGetContract("DataStore", DataStore__factory);
+export const getERC721Contract = makeGetContract("ERC721", ERC721__factory);
+export const getEventEmitterContract = makeGetContract("EventEmitter", EventEmitter__factory);
+export const getExchangeRouterContract = makeGetContract("ExchangeRouter", ExchangeRouter__factory);
+export const getGlpManagerContract = makeGetContract("GlpManager", GlpManager__factory);
+export const getGMTContract = makeGetContract("GMT", GMT__factory);
+export const getGmxMigratorContract = makeGetContract("GmxMigrator", GmxMigrator__factory);
+export const getGovTokenContract = makeGetContract("GovToken", GovToken__factory);
+export const getMintableBaseTokenContract = makeGetContract("MintableBaseToken", MintableBaseToken__factory);
+export const getMulticallContract = makeGetContract("Multicall", Multicall__factory);
+export const getOrderBookContract = makeGetContract("OrderBook", OrderBook__factory);
+export const getOrderBookReaderContract = makeGetContract("OrderBookReader", OrderBookReader__factory);
+export const getOrderExecutorContract = makeGetContract("OrderExecutor", OrderExecutor__factory);
+export const getPositionManagerContract = makeGetContract("PositionManager", PositionManager__factory);
+export const getPositionRouterContract = makeGetContract("PositionRouter", PositionRouter__factory);
+export const getReaderContract = makeGetContract("Reader", Reader__factory);
+export const getReaderV2Contract = makeGetContract("ReaderV2", ReaderV2__factory);
+export const getReferralStorageContract = makeGetContract("ReferralStorage", ReferralStorage__factory);
+export const getRewardReaderContract = makeGetContract("RewardReader", RewardReader__factory);
+export const getRewardRouterContract = makeGetContract("RewardRouter", RewardRouter__factory);
+export const getRewardTrackerContract = makeGetContract("RewardTracker", RewardTracker__factory);
+export const getRouterV2Contract = makeGetContract("RouterV2", RouterV2__factory);
+export const getRouterContract = makeGetContract("Router", Router__factory);
+export const getSubaccountRouterContract = makeGetContract("SubaccountRouter", SubaccountRouter__factory);
+export const getSyntheticsReaderContract = makeGetContract("SyntheticsReader", SyntheticsReader__factory);
+export const getSyntheticsRouterContract = makeGetContract("SyntheticsRouter", SyntheticsRouter__factory);
+export const getTimelockContract = makeGetContract("Timelock", Timelock__factory);
+export const getTokenContract = makeGetContract("Token", Token__factory);
+export const getTreasuryContract = makeGetContract("Treasury", Treasury__factory);
+export const getUniPoolContract = makeGetContract("UniPool", UniPool__factory);
+export const getUniswapV2Contract = makeGetContract("UniswapV2", UniswapV2__factory);
+export const getVaultContract = makeGetContract("Vault", Vault__factory);
+export const getVaultReaderContract = makeGetContract("VaultReader", VaultReader__factory);
+export const getVaultV2Contract = makeGetContract("VaultV2", VaultV2__factory);
+export const getVaultV2bContract = makeGetContract("VaultV2b", VaultV2b__factory);
+export const getVesterContract = makeGetContract("Vester", Vester__factory);
+export const getWETHContract = makeGetContract("WETH", WETH__factory);
+export const getYieldFarmContract = makeGetContract("YieldFarm", YieldFarm__factory);
+export const getYieldTokenContract = makeGetContract("YieldToken", YieldToken__factory);
