@@ -35,7 +35,7 @@ function pow(bn: bigint, exponent: bigint) {
   return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
+export function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
   const isNegative = n < 0;
   const absN = Math.abs(n);

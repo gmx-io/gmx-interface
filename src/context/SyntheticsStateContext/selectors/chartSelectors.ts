@@ -4,10 +4,15 @@ import { selectChainId, selectTokensData } from "./globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
+  selectTradeboxMarketInfo,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "./tradeboxSelectors";
 import { getTokenData } from "domain/synthetics/tokens";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
+import { getFundingFactorPerPeriod } from "../../../domain/synthetics/fees/utils/index";
+import { CHART_PERIODS } from "lib/legacy";
 
 export const selectChartToken = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -55,4 +60,30 @@ export const selectAvailableChartTokens = createSelector(function selectChartTok
   });
 
   return sortedAvailableChartTokens;
+});
+
+export const selectChartHeaderInfo = createSelector((q) => {
+  const marketInfo = q(selectTradeboxMarketInfo);
+
+  if (!marketInfo) {
+    return;
+  }
+
+  const borrowingRateLong = -getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
+  const borrowingRateShort = -getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+  const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
+  const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+
+  const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
+  const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);
+
+  return {
+    liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),
+    liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false),
+    netRateHourlyLong,
+    netRateHourlyShort,
+    openInterestLong: marketInfo.longInterestUsd,
+    openInterestShort: marketInfo.shortInterestUsd,
+    decimals: marketInfo.indexToken.decimals,
+  };
 });
