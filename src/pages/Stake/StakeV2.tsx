@@ -1410,22 +1410,6 @@ export default function StakeV2() {
     }
   );
 
-  const { data: vesterBalance } = useSWR(
-    [`StakeV2:vesterBalance:${active}`, chainId, gmxVesterAddress, "balanceOf", account],
-    {
-      fetcher: contractFetcher(undefined, Vester),
-    }
-  );
-
-  const { data: pairAmount } = useSWR(
-    vesterBalance !== undefined
-      ? [`StakeV2:pairAmount:${active}`, chainId, gmxVesterAddress, "getPairAmount", account]
-      : undefined,
-    {
-      fetcher: contractFetcher(undefined, Vester, [vesterBalance]),
-    }
-  );
-
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
@@ -1482,6 +1466,12 @@ export default function StakeV2() {
     gmxPrice,
     gmxSupply
   );
+
+  const reservedAmount =
+    (processedData?.gmxInStakedGmx !== undefined &&
+      processedData?.esGmxInStakedGmx !== undefined &&
+      processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
+    0n;
 
   let totalRewardTokens;
 
@@ -1550,7 +1540,7 @@ export default function StakeV2() {
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
-    setVesterDepositReserveAmount(pairAmount);
+    setVesterDepositReserveAmount(reservedAmount);
     setVesterDepositMaxReserveAmount(totalRewardTokens);
     setVesterDepositValue("");
     setVesterDepositAddress(gmxVesterAddress);
@@ -1745,7 +1735,7 @@ export default function StakeV2() {
         chainId={chainId}
         title={unstakeModalTitle}
         maxAmount={unstakeModalMaxAmount}
-        reservedAmount={pairAmount}
+        reservedAmount={reservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
         signer={signer}
@@ -2476,7 +2466,7 @@ export default function StakeV2() {
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatAmount(pairAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
+                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
