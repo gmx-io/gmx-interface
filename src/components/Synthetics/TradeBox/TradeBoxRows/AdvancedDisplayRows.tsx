@@ -1,7 +1,8 @@
+import { ReactNode, useCallback, useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
@@ -22,19 +23,18 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
+import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
-import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
-import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
-import { usePrevious } from "lib/usePrevious";
 
 export function AdvancedDisplayRows() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -210,67 +210,39 @@ export function TradeBoxAdvancedGroups() {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
+  const collateralSpreadInfo = useSelector(selectTradeboxCollateralSpreadInfo);
 
   const hasError = useMemo(() => {
-    return isLiquidityRisk;
-  }, [isLiquidityRisk]);
+    return isLiquidityRisk || collateralSpreadInfo?.isHigh;
+  }, [isLiquidityRisk, collateralSpreadInfo]);
 
-  const previousHasError = usePrevious(hasError);
-
-  useEffect(() => {
-    if (hasError && !previousHasError) {
+  const toggleAdvancedDisplay = useCallback(
+    (value: boolean) => {
       setOptions((ops) => ({
         ...ops,
-        advancedDisplay: true,
+        advancedDisplay: value,
       }));
-    }
-  }, [hasError, previousHasError, setOptions]);
-
-  const toggleAdvancedDisplay = useCallback(() => {
-    setOptions((ops) => ({
-      ...ops,
-      advancedDisplay: !options.advancedDisplay,
-    }));
-  }, [setOptions, options.advancedDisplay]);
+    },
+    [setOptions]
+  );
 
   const isVisible = isSwap ? true : options.advancedDisplay;
 
   return (
-    <>
-      <ExchangeInfo.Group>
-        {!isSwap && (
-          <ExchangeInfo.Row
-            className={cx("!items-center", {
-              "!mb-12": options.advancedDisplay,
-            })}
-            onClick={toggleAdvancedDisplay}
-            label={
-              <span className="flex flex-row justify-between align-middle">
-                <Trans>Advanced display</Trans>
-              </span>
-            }
-            value={
-              options.advancedDisplay ? (
-                <BiChevronUp className="-mb-4 -mr-[0.5rem] -mt-4 h-24 w-24" />
-              ) : (
-                <BiChevronDown className="-mb-4 -mr-[0.5rem] -mt-4 h-24 w-24" />
-              )
-            }
-          />
-        )}
-        {isVisible && <AdvancedDisplayRows />}
-      </ExchangeInfo.Group>
-      {isVisible && (
-        <>
-          <div className="App-card-divider" />
-          <ExchangeInfo.Group>
-            <LeverageInfoRows />
-            <EntryPriceRow />
-            <ExistingPositionInfoRows />
-          </ExchangeInfo.Group>
-        </>
-      )}
+    <ExpandableRow
+      open={isVisible}
+      title={t`Advanced Display`}
+      hideExpand={isSwap}
+      onToggle={toggleAdvancedDisplay}
+      disableCollapseOnError={false}
+      hasError={hasError}
+    >
+      <AdvancedDisplayRows />
       <div className="App-card-divider" />
-    </>
+      <LeverageInfoRows />
+      <EntryPriceRow />
+      <ExistingPositionInfoRows />
+      <div className="App-card-divider" />
+    </ExpandableRow>
   );
 }

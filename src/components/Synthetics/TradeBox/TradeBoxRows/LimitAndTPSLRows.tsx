@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
-import cx from "classnames";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
   selectTradeboxAdvancedOptions,
@@ -14,11 +14,8 @@ import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrde
 import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
-import { usePrevious } from "lib/usePrevious";
-import { useCallback, useEffect, useMemo } from "react";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { useCallback, useMemo } from "react";
 import { SideOrderEntries } from "../components/SideOrderEntries";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function LimitAndTPSLRows() {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
@@ -130,73 +127,48 @@ export function LimitAndTPSLGroup() {
   const showTPSL = !isTrigger && !isSwap;
 
   const entries = useSidecarEntries();
+  const orders = useSidecarOrders();
 
   const hasError = useMemo(() => {
-    return entries.some((e) => {
+    const hasAnyEntryError = entries.some((e) => {
       if (e.txnType === "cancel") return false;
 
       return e.sizeUsd?.error || e.percentage?.error || e.price?.error;
     });
-  }, [entries]);
-
-  const previousHasError = usePrevious(hasError);
-
-  useEffect(() => {
-    if (hasError && !previousHasError) {
-      setOptions((ops) => ({
-        ...ops,
-        limitOrTPSL: true,
-      }));
-    }
-  }, [hasError, previousHasError, setOptions]);
+    return Boolean(orders.stopLoss.error?.percentage || orders.takeProfit.error?.percentage || hasAnyEntryError);
+  }, [entries, orders]);
 
   const isTpSlVisible = hasError ? true : options.limitOrTPSL;
 
-  const toggleLimitOrTPSL = useCallback(() => {
-    if (hasError) {
-      return;
-    }
-
-    setOptions((ops) => ({
-      ...ops,
-      limitOrTPSL: !options.limitOrTPSL,
-    }));
-  }, [setOptions, options.limitOrTPSL, hasError]);
+  const toggleLimitOrTPSL = useCallback(
+    (value: boolean) => {
+      setOptions((ops) => ({
+        ...ops,
+        limitOrTPSL: value,
+      }));
+    },
+    [setOptions]
+  );
 
   if (!showTPSL) {
     return null;
   }
 
-  const title = (
-    <span className="flex flex-row justify-between align-middle">
-      <Trans>Limit / TP / SL</Trans>
-    </span>
-  );
-
   return (
-    <>
-      <ExchangeInfo.Row
-        onClick={toggleLimitOrTPSL}
-        label={
-          hasError ? (
-            <TooltipWithPortal handle={title} content={<Trans>There are issues in the TP/SL orders.</Trans>} />
-          ) : (
-            title
-          )
-        }
-        className={cx("!items-center", {
-          "!mb-12": options.limitOrTPSL,
-          "cursor-not-allowed": hasError,
-        })}
-        value={
-          isTpSlVisible ? (
-            <BiChevronUp className="-mb-4 -mr-[0.35rem] -mt-4 h-24 w-24 opacity-70" />
-          ) : (
-            <BiChevronDown className="-mb-4 -mr-[0.35rem] -mt-4 h-24 w-24 opacity-70" />
-          )
-        }
-      />
-      {isTpSlVisible && <LimitAndTPSLRows />}
-    </>
+    <ExpandableRow
+      open={isTpSlVisible}
+      title={
+        <span className="flex flex-row justify-between align-middle">
+          <Trans>Limit / TP / SL</Trans>
+        </span>
+      }
+      hasError={hasError}
+      disableCollapseOnError
+      autoExpandOnError
+      errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
+      onToggle={toggleLimitOrTPSL}
+    >
+      <LimitAndTPSLRows />
+    </ExpandableRow>
   );
 }

@@ -1533,7 +1533,7 @@ msgstr ""
 msgid "Mark"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
@@ -1733,10 +1733,10 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -1871,7 +1871,8 @@ msgstr ""
 msgid "{0} Approved!"
 msgstr "{0}が承認されました!"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Advanced display"
 msgstr ""
 
@@ -2211,6 +2212,10 @@ msgstr "マーク価格を下回る価格"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+msgid "Advanced Display"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Generate & Activate Subaccount"
@@ -2658,8 +2663,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -3113,8 +3118,8 @@ msgstr "スワップ申し込み完了。"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -3139,6 +3144,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/StakeV2.tsx
@@ -3414,8 +3420,8 @@ msgstr ""
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
 msgstr "実行価格が許容価格条件を満たしませんでした。条件を満たしたときに注文が執行されます。"
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
@@ -3433,7 +3439,7 @@ msgid "Structured Products"
 msgstr "ストラクチャードプロダクト"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4209,8 +4215,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Collateral ({0})"
 msgstr "担保  ({0})"
@@ -5704,6 +5710,7 @@ msgstr "{0} {longOrShortText}への入金を実行できませんでした"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -6909,7 +6916,7 @@ msgstr "ツイート"
 msgid "Confirm Swap"
 msgstr "スワップを確認する"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr ""
 
