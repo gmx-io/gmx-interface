@@ -68,9 +68,7 @@ export function usePositions(
   });
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices.contractPositionsKeys.length
-      ? [keysAndPrices.contractPositionsKeys.join("-"), pricesUpdatedAt]
-      : null,
+    key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys, pricesUpdatedAt] : null,
 
     // Refresh on every prices update
     refreshInterval: null,

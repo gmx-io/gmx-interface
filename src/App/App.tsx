@@ -29,10 +29,10 @@ import { IndexTokensFavoritesContextProvider } from "domain/synthetics/tokens/us
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { SWRConfigProp } from "./swrConfig";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
@@ -43,13 +43,6 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
   // @ts-ignore
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
-
-const SWRConfigProp = {
-  refreshInterval: 5000,
-  refreshWhenHidden: false,
-  refreshWhenOffline: false,
-  use: [swrGCMiddleware],
-};
 
 function App() {
   const signer = useEthersSigner();
@@ -142,7 +135,7 @@ function App() {
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = (
-    <SWRConfig key={chainId} value={SWRConfigProp as any}>
+    <SWRConfig key={chainId} value={SWRConfigProp}>
       {app}
     </SWRConfig>
   );
