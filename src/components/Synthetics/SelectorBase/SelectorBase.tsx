@@ -4,16 +4,7 @@ import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import { createPortal } from "react-dom";
 import { noop } from "lodash";
-import React, {
-  PropsWithChildren,
-  ReactNode,
-  createRef,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
@@ -33,19 +24,17 @@ type Props = PropsWithChildren<{
   popoverPlacement?: Placement;
 }>;
 
-type SelectorContextType = { close: () => void; mobileHeaderContentRef?: React.RefObject<HTMLDivElement> };
+type SelectorContextType = { close: () => void; mobileHeader?: HTMLDivElement };
 
 const selectorContext = React.createContext<SelectorContextType>({
   close: noop,
-  mobileHeaderContentRef: createRef(),
+  mobileHeader: undefined,
 });
 export const useSelectorClose = () => React.useContext(selectorContext).close;
-const SelectorContextProvider = (
-  props: PropsWithChildren<{ close: () => void; mobileHeaderContentRef?: React.RefObject<HTMLDivElement> }>
-) => {
+const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void; mobileHeader?: HTMLDivElement }>) => {
   const stableValue = useMemo(
-    () => ({ close: props.close, mobileHeaderContentRef: props.mobileHeaderContentRef }),
-    [props.close, props.mobileHeaderContentRef]
+    () => ({ close: props.close, mobileHeader: props.mobileHeader }),
+    [props.close, props.mobileHeader]
   );
 
   return <selectorContext.Provider value={stableValue}>{props.children}</selectorContext.Provider>;
@@ -128,13 +117,13 @@ export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
 }
 
 export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {
-  const ref = useContext(selectorContext).mobileHeaderContentRef;
+  const element = useContext(selectorContext).mobileHeader;
 
-  if (!ref?.current) {
+  if (!element) {
     return null;
   }
 
-  return createPortal(props.children, ref.current);
+  return createPortal(props.children, element);
 }
 //#endregion
 
@@ -194,7 +183,14 @@ function SelectorBaseDesktop(props: Props) {
 
 function SelectorBaseMobile(props: Props) {
   const [isVisible, setIsVisible] = useState(false);
-  const headerContentRed = useRef<HTMLDivElement>(null);
+  const [headerContent, setHeaderContent] = useState<HTMLDivElement | undefined>(undefined);
+  const headerContentRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      setHeaderContent(node);
+    } else {
+      setHeaderContent(undefined);
+    }
+  }, []);
 
   const toggleVisibility = useCallback(() => {
     setIsVisible((prev) => !prev);
@@ -215,10 +211,10 @@ function SelectorBaseMobile(props: Props) {
         isVisible={isVisible}
         label={props.modalLabel}
         className="SelectorBase-mobile-modal"
-        headerContent={<div ref={headerContentRed} />}
+        headerContent={<div ref={headerContentRef} />}
         contentPadding={props.mobileModalContentPadding}
       >
-        <SelectorContextProvider close={toggleVisibility} mobileHeaderContentRef={headerContentRed}>
+        <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>
           {props.children}
         </SelectorContextProvider>
       </Modal>
