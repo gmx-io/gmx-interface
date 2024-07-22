@@ -188,7 +188,7 @@ function MarketTokenSelectorInternal(props: Props) {
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx({
-          "w-[618px]": !isMobile,
+          "w-[630px]": !isMobile,
         })}
       >
         {!isMobile && (
