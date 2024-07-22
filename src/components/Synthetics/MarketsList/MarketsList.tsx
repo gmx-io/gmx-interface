@@ -101,7 +101,10 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
                 </Sorter>
               </ExchangeTh>
               <ExchangeTh>
-                <Tooltip handle={<Trans>NET RATE / 1 H</Trans>} renderContent={renderNetFeeHeaderTooltipContent} />
+                <TooltipWithPortal
+                  handle={<Trans>NET RATE / 1 H</Trans>}
+                  renderContent={renderNetFeeHeaderTooltipContent}
+                />
               </ExchangeTh>
               <ExchangeTh>
                 <Sorter {...getSorterProps("utilization")}>
@@ -229,7 +232,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       </ExchangeTd>
       <ExchangeTd>{formatUsdPrice(stats.token.prices?.minPrice)}</ExchangeTd>
       <ExchangeTd>
-        <Tooltip
+        <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalPoolValue)}
           renderContent={() => (
@@ -253,7 +256,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         />
       </ExchangeTd>
       <ExchangeTd>
-        <Tooltip
+        <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalMaxLiquidity)}
           renderContent={() => (
