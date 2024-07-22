@@ -5,7 +5,6 @@ import { getContract } from "config/contracts";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectTradeboxExecutionFee,
-  selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -20,7 +19,7 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 
-export function useTradeboxWarningsRows() {
+export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<typeof usePriceImpactWarningState>) {
   const tokenData = useTokensData();
   const { chainId } = useChainId();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
@@ -29,7 +28,6 @@ export function useTradeboxWarningsRows() {
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const fees = useSelector(selectTradeboxFees);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
@@ -53,13 +51,6 @@ export function useTradeboxWarningsRows() {
     fromToken &&
     payAmount !== undefined &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
-
-  const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionPriceImpact,
-    swapPriceImpact: fees?.swapPriceImpact,
-    place: "tradeBox",
-    tradeFlags,
-  });
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd

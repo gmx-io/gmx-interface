@@ -569,7 +569,7 @@ export function TradeBox(p: Props) {
 
   const isSubmitButtonDisabled = account ? Boolean(buttonErrorText) : false;
 
-  const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows();
+  const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
   const submitButtonText = useMemo(() => {
