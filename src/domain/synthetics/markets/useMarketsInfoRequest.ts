@@ -94,7 +94,6 @@ type FrequentMarketInfo = Market &
     | "virtualPoolAmountForLongToken"
     | "virtualPoolAmountForShortToken"
     | "virtualInventoryForPositions"
-    | "netPnlMin"
   >;
 
 type SeldomMarketInfo = Pick<
