@@ -20,7 +20,12 @@ type MulticallFetcherConfig = {
   };
 };
 
-const store: {
+const urgentStore: {
+  current: MulticallFetcherConfig;
+} = {
+  current: {},
+};
+const backgroundStore: {
   current: MulticallFetcherConfig;
 } = {
   current: {},
@@ -29,19 +34,22 @@ const store: {
 async function executeChainsMulticalls() {
   const tasks: Promise<any>[] = [];
 
-  for (const [chainIdStr, calls] of entries(store.current)) {
-    const chainId = parseInt(chainIdStr);
-    const task = executeChainMulticall(chainId, calls);
-    tasks.push(task);
+  for (const store of [urgentStore, backgroundStore]) {
+    for (const [chainIdStr, calls] of entries(store.current)) {
+      const chainId = parseInt(chainIdStr);
+      const task = executeChainMulticall(chainId, calls);
+      tasks.push(task);
+    }
   }
 
-  store.current = {};
-  throttledExecuteChainsMulticalls.cancel();
+  urgentStore.current = {};
+  backgroundStore.current = {};
+
+  throttledExecuteUrgentChainsMulticalls.cancel();
+  throttledExecuteBackgroundChainsMulticalls.cancel();
 
   await Promise.allSettled(tasks);
 }
-
-const throttledExecuteChainsMulticalls = throttle(executeChainsMulticalls, 50, { leading: false, trailing: true });
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
   const request: MulticallRequestConfig<any> = {};
@@ -81,10 +89,22 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
   }
 }
 
+const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, 50, {
+  leading: false,
+  trailing: true,
+});
+const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMulticalls, 2000, {
+  leading: false,
+  trailing: true,
+});
+
 export async function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
-  request: TConfig
+  request: TConfig,
+  priority: "urgent" | "background" = "urgent"
 ): Promise<MulticallResult<TConfig>> {
+  const store = priority === "urgent" ? urgentStore : backgroundStore;
+
   let groupNameMapping: {
     // Contract address
     [address: string]: {
@@ -193,10 +213,13 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
     }
   }
 
-  throttledExecuteChainsMulticalls();
+  if (priority === "urgent") {
+    throttledExecuteUrgentChainsMulticalls();
+  } else {
+    console.log("schedule background multicall");
+
+    throttledExecuteBackgroundChainsMulticalls();
+  }
 
   return promise as any;
-
-  // const multicall = await Multicall.getInstance(chainId);
-  // return multicall?.call(request, MAX_TIMEOUT);
 }
