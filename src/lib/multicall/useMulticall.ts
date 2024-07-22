@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
+import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
-import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall } from "./executeMulticall";
+import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -60,7 +61,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         let responseOrFailure: any;
 
         let priority: "urgent" | "background" = "urgent";
-        const hasData = successDataByChainIdRef.current[chainId] !== undefined;
+
+        const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
+
         let isInterval = false;
         if (typeof params.refreshInterval === "number") {
           isInterval = true;
@@ -75,8 +78,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         if (hasData && isInterval) {
           priority = "background";
         }
-
-        console.log({ priority });
 
         responseOrFailure = await executeMulticall(chainId, request, priority);
 

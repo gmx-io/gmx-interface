@@ -61,7 +61,10 @@ export type MarketsInfoResult = {
   pricesUpdatedAt?: number;
 };
 
-type FrequentMarketInfo = Market &
+/**
+ * Updates frequently
+ */
+type MarketValues = Market &
   Pick<
     MarketInfo,
     | "longToken"
@@ -96,7 +99,10 @@ type FrequentMarketInfo = Market &
     | "virtualInventoryForPositions"
   >;
 
-type SeldomMarketInfo = Pick<
+/**
+ * Updates seldom
+ */
+type MarketConfig = Pick<
   MarketInfo,
   | "isDisabled"
   | "maxLongPoolUsdForDeposit"
@@ -148,7 +154,7 @@ type SeldomMarketInfo = Pick<
   | "virtualShortTokenId"
 >;
 
-type FrequentMarketInfoMulticallRequestConfig = MulticallRequestConfig<{
+type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
   [key: `${string}-reader`]: {
     calls: Record<
       "marketInfo" | "marketTokenPriceMax" | "marketTokenPriceMin",
@@ -183,7 +189,7 @@ type FrequentMarketInfoMulticallRequestConfig = MulticallRequestConfig<{
   };
 }>;
 
-type SeldomMarketInfoMulticallRequestConfig = MulticallRequestConfig<{
+type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
   [key: `${string}-dataStore`]: {
     calls: Record<
       | "isDisabled"
@@ -249,7 +255,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
-  const frequentQuery = useFrequentData({
+  const marketsValues = useMarketsValuesRequest({
     chainId,
     account,
     isDependenciesLoading,
@@ -259,7 +265,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     tokensData,
   });
 
-  const seldomQuery = useSeldomData({
+  const marketsConfigs = useMarketsConfigsRequest({
     chainId,
     isDependenciesLoading,
     marketsAddresses,
@@ -267,30 +273,30 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   });
 
   const mergedData = useMemo(() => {
-    if (!frequentQuery.data || !seldomQuery.data || !marketsAddresses) {
+    if (!marketsValues.data || !marketsConfigs.data || !marketsAddresses) {
       return undefined;
     }
 
     // Manual merging to avoid cloning tokens as they are sometimes compared by reference
     const data: MarketsInfoData = {};
     for (const marketAddress of marketsAddresses) {
-      const frequentMarketData = frequentQuery.data[marketAddress];
-      const seldomMarketData = seldomQuery.data[marketAddress];
+      const marketValues = marketsValues.data[marketAddress];
+      const marketConfig = marketsConfigs.data[marketAddress];
 
-      if (!frequentMarketData || !seldomMarketData) {
+      if (!marketValues || !marketConfig) {
         continue;
       }
 
       const fullMarketInfo: MarketInfo = {
-        ...frequentMarketData,
-        ...seldomMarketData,
+        ...marketValues,
+        ...marketConfig,
       };
 
       data[marketAddress] = fullMarketInfo;
     }
 
     return data as MarketsInfoData;
-  }, [frequentQuery.data, marketsAddresses, seldomQuery.data]);
+  }, [marketsValues.data, marketsAddresses, marketsConfigs.data]);
 
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
@@ -299,7 +305,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   };
 }
 
-function useFrequentData({
+function useMarketsValuesRequest({
   chainId,
   account,
   isDependenciesLoading,
@@ -318,7 +324,7 @@ function useFrequentData({
 }) {
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const frequentQuery = useMulticall(chainId, "useMarketsInfo", {
+  const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account, pricesUpdatedAt],
 
     // Refreshed on every prices update
@@ -327,7 +333,7 @@ function useFrequentData({
     keepPreviousData: true,
 
     request: async () => {
-      const request: FrequentMarketInfoMulticallRequestConfig = {};
+      const request: MarketValuesMulticallRequestConfig = {};
 
       const promises = (marketsAddresses || []).map(async (marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
@@ -634,7 +640,7 @@ function useFrequentData({
           return acc;
         },
         {} as {
-          [marketAddress: string]: FrequentMarketInfo;
+          [marketAddress: string]: MarketValues;
         }
       );
 
@@ -642,10 +648,10 @@ function useFrequentData({
     },
   });
 
-  return frequentQuery;
+  return marketsValuesQuery;
 }
 
-function useSeldomData({
+function useMarketsConfigsRequest({
   chainId,
   isDependenciesLoading,
   marketsAddresses,
@@ -658,7 +664,7 @@ function useSeldomData({
 }) {
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const seldomQuery = useMulticall(chainId, "useMarketsInfo", {
+  const marketsConfigsQuery = useMulticall(chainId, "useMarketsConfigsRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses],
 
     refreshInterval: 60_000,
@@ -666,7 +672,7 @@ function useSeldomData({
     keepPreviousData: true,
 
     request: async () => {
-      const request: SeldomMarketInfoMulticallRequestConfig = {};
+      const request: MarketConfigMulticallRequestConfig = {};
       const promises = (marketsAddresses || []).map(async (marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
 
@@ -1145,7 +1151,7 @@ function useSeldomData({
           return acc;
         },
         {} as {
-          [marketAddress: string]: SeldomMarketInfo;
+          [marketAddress: string]: MarketConfig;
         }
       );
 
@@ -1153,5 +1159,5 @@ function useSeldomData({
     },
   });
 
-  return seldomQuery;
+  return marketsConfigsQuery;
 }
