@@ -64,6 +64,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -101,6 +102,7 @@ export function PositionSeller(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
 
   const {
     allowedSlippage,
@@ -377,7 +379,6 @@ export function PositionSeller(p: Props) {
     setSelectedTriggerAcceptablePriceImpactBps,
   ]);
 
-  const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
   const executionPriceFlags = useMemo(
@@ -403,8 +404,8 @@ export function PositionSeller(p: Props) {
   const limitPriceRow = (
     <ExecutionPriceRow
       tradeFlags={executionPriceFlags}
-      displayDecimals={toToken?.priceDecimals}
       fees={fees}
+      displayDecimals={marketDecimals ?? toToken?.priceDecimals}
       executionPrice={executionPrice ?? undefined}
       acceptablePrice={acceptablePrice}
       triggerOrderType={decreaseAmounts?.triggerOrderType}
@@ -417,7 +418,7 @@ export function PositionSeller(p: Props) {
       label={t`Trigger Price`}
       value={`${decreaseAmounts?.triggerThresholdType || ""} ${
         formatUsd(decreaseAmounts?.triggerPrice, {
-          displayDecimals: toToken?.priceDecimals,
+          displayDecimals: marketDecimals ?? toToken?.priceDecimals,
         }) || "-"
       }`}
     />
@@ -431,7 +432,7 @@ export function PositionSeller(p: Props) {
         <ValueTransition
           from={
             formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: indexPriceDecimals,
+              displayDecimals: marketDecimals,
             })!
           }
           to={
@@ -439,7 +440,7 @@ export function PositionSeller(p: Props) {
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
                 ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: indexPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })
                 : undefined
           }
@@ -541,7 +542,7 @@ export function PositionSeller(p: Props) {
                 topLeftLabel={t`Price`}
                 topRightLabel={t`Mark`}
                 topRightValue={formatUsd(markPrice, {
-                  displayDecimals: toToken?.priceDecimals,
+                  displayDecimals: marketDecimals,
                 })}
                 onClickTopRightLabel={() => {
                   setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));

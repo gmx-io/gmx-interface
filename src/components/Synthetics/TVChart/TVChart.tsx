@@ -10,6 +10,7 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
@@ -49,6 +50,8 @@ export function TVChart() {
   const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
     isChartAvailabeForToken(chainId, token.symbol)
   );
+
+  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
@@ -160,12 +163,12 @@ export function TVChart() {
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {
-                  displayDecimals: chartToken?.priceDecimals,
+                  displayDecimals: oraclePriceDecimals,
                 }) || "..."}
               </div>
               <div className="ExchangeChart-info-label">
                 {formatUsd(chartToken?.prices?.minPrice, {
-                  displayDecimals: chartToken?.priceDecimals,
+                  displayDecimals: oraclePriceDecimals,
                 }) || "..."}
               </div>
             </div>
@@ -183,19 +186,11 @@ export function TVChart() {
             </div>
             <div className="ExchangeChart-additional-info">
               <div className="ExchangeChart-info-label">24h High</div>
-              <div>
-                {dayPriceDelta?.high
-                  ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
-                  : "-"}
-              </div>
+              <div>{dayPriceDelta?.high ? numberWithCommas(dayPriceDelta.high.toFixed(oraclePriceDecimals)) : "-"}</div>
             </div>
             <div className="ExchangeChart-additional-info Chart-24h-low">
               <div className="ExchangeChart-info-label">24h Low</div>
-              <div>
-                {dayPriceDelta?.low
-                  ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
-                  : "-"}
-              </div>
+              <div>{dayPriceDelta?.low ? numberWithCommas(dayPriceDelta?.low.toFixed(oraclePriceDecimals)) : "-"}</div>
             </div>
           </div>
         </div>
@@ -215,6 +210,7 @@ export function TVChart() {
             setPeriod={setPeriod}
             chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+            oraclePriceDecimals={oraclePriceDecimals}
           />
         )}
       </div>

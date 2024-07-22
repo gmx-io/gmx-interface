@@ -1,16 +1,16 @@
+import { t } from "@lingui/macro";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
+import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
-import { OrderType } from "../orders/types";
-import { t } from "@lingui/macro";
-import { bigMath } from "lib/bigmath";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -211,8 +211,13 @@ export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displa
   if (liquidationPrice === undefined || liquidationPrice < 0) {
     return "NA";
   }
+  const priceDecimalPlaces = calculatePriceDecimals(liquidationPrice);
 
-  return formatUsd(liquidationPrice, { ...opts, maxThreshold: "1000000" });
+  return formatUsd(liquidationPrice, {
+    ...opts,
+    displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
+    maxThreshold: "1000000",
+  });
 }
 
 export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayDecimals?: number } = {}) {
@@ -220,7 +225,9 @@ export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayD
     return "NA";
   }
 
-  return formatUsd(acceptablePrice, { ...opts });
+  const priceDecimalPlaces = calculatePriceDecimals(acceptablePrice);
+
+  return formatUsd(acceptablePrice, { ...opts, displayDecimals: opts.displayDecimals ?? priceDecimalPlaces });
 }
 
 export function getLeverage(p: {

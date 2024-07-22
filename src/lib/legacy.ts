@@ -1,23 +1,29 @@
-import { useEnsName } from "wagmi";
-import { ethers } from "ethers";
 import { getContract } from "config/contracts";
+import { ethers } from "ethers";
 import useSWR from "swr";
+import { useEnsName } from "wagmi";
 
-import OrderBookReader from "abis/OrderBookReader.json";
 import OrderBook from "abis/OrderBook.json";
+import OrderBookReader from "abis/OrderBookReader.json";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
-import { getServerBaseUrl } from "config/backend";
-import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
-import { getTokenInfo } from "domain/tokens/utils";
-import { getProvider } from "./rpc";
-import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
-import { isValidToken } from "config/tokens";
-import { useChainId } from "./chains";
-import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
+import { getServerBaseUrl } from "config/backend";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { isValidToken } from "config/tokens";
+import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useChainId } from "./chains";
+import { isValidTimestamp } from "./dates";
+import {
+  bigNumberify,
+  deserializeBigIntsInObject,
+  expandDecimals,
+  formatAmount,
+  calculatePriceDecimals,
+} from "./numbers";
+import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
 
 const { ZeroAddress } = ethers;
@@ -120,7 +126,8 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = (PRECISION * PRECISION) / rate;
   }
-  const rateValue = formatAmount(rate, USD_DECIMALS, tokenA.isStable || tokenA.isUsdg ? 2 : 4, true);
+  const rateDecimals = calculatePriceDecimals(rate);
+  const rateValue = formatAmount(rate, USD_DECIMALS, rateDecimals, true);
   if (opts.omitSymbols) {
     return rateValue;
   }

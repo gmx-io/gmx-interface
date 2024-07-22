@@ -1,7 +1,9 @@
-import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { calculatePriceDecimals } from "lib/numbers";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { createSelector } from "../utils";
-import { EMPTY_ARRAY } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { createSelector, createSelectorFactory } from "../utils";
+import { selectChartToken } from "./chartSelectors";
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -29,3 +31,26 @@ export const selectIndexTokenStatsMap = createSelector((q) => {
 
   return marketsInfoData2IndexTokenStatsMap(marketsInfoData);
 });
+
+export const selectSelectedMarketPriceDecimals = createSelector((q) => {
+  const token = q(selectChartToken);
+
+  if (!token) {
+    return 2;
+  }
+
+  return calculatePriceDecimals(token.prices.minPrice);
+});
+
+export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress?: string) =>
+  createSelector(function selectSelectedMarketPriceDecimals(q) {
+    const tokensData = q(selectTokensData);
+    const token = getByKey(tokensData, tokenAddress);
+
+    if (!token) {
+      return;
+    }
+
+    return calculatePriceDecimals(token.prices.minPrice);
+  })
+);

@@ -77,6 +77,8 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
 import "./PositionEditor.scss";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 export type Props = {
   allowedSlippage: number;
@@ -137,8 +139,6 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
-  const indexPriceDecimals = position?.indexToken.priceDecimals || 2;
-
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
     getSyntheticsCollateralEditAddressKey(chainId, position?.collateralTokenAddress),
     position?.collateralTokenAddress
@@ -169,6 +169,8 @@ export function PositionEditor(p: Props) {
   const [collateralInputValue, setCollateralInputValue] = useState("");
   const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
   const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
+
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
 
   const needCollateralApproval =
     isDeposit &&
@@ -589,10 +591,14 @@ export function PositionEditor(p: Props) {
                   label={t`Liq. Price`}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                      from={formatLiquidationPrice(position.liquidationPrice, {
+                        displayDecimals: marketDecimals,
+                      })}
                       to={
                         collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
-                          ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
+                          ? formatLiquidationPrice(nextLiqPrice, {
+                              displayDecimals: marketDecimals,
+                            })
                           : undefined
                       }
                     />

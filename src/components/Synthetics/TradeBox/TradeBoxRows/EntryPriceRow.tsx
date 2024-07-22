@@ -2,12 +2,12 @@ import { t } from "@lingui/macro";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
-  selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatUsd } from "lib/numbers";
@@ -18,7 +18,7 @@ export function EntryPriceRow() {
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const markPrice = useSelector(selectTradeboxMarkPrice);
 
-  const toToken = useSelector(selectTradeboxToToken);
+  const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   if (!advancedDisplay || !selectedPosition) {
     return null;
@@ -31,15 +31,15 @@ export function EntryPriceRow() {
         nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
           <ValueTransition
             from={formatUsd(selectedPosition?.entryPrice, {
-              displayDecimals: toToken?.priceDecimals,
+              displayDecimals: marketDecimals,
             })}
             to={formatUsd(nextPositionValues?.nextEntryPrice, {
-              displayDecimals: toToken?.priceDecimals,
+              displayDecimals: marketDecimals,
             })}
           />
         ) : (
           formatUsd(markPrice, {
-            displayDecimals: toToken?.priceDecimals,
+            displayDecimals: marketDecimals,
           })
         )
       }
