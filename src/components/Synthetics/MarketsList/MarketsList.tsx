@@ -124,10 +124,14 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           <Trans>No markets found.</Trans>
         </div>
       )}
-      <div className="h-1 bg-slate-700"></div>
-      <div className="py-10">
-        <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      </div>
+      {pageCount > 1 && (
+        <>
+          <div className="h-1 bg-slate-700"></div>
+          <div className="py-10">
+            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

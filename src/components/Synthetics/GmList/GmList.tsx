@@ -303,10 +303,14 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
           </tbody>
         </table>
       </div>
-      <div className="h-1 bg-slate-700"></div>
-      <div className="py-10">
-        <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      </div>
+      {pageCount > 1 && (
+        <>
+          <div className="h-1 bg-slate-700"></div>
+          <div className="py-10">
+            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
