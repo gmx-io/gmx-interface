@@ -72,7 +72,12 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
         <Menu.Button as="div" ref={refs.setReference} className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" ref={refs.setFloating} style={floatingStyles} className={cx("asset-menu-items")}>
+        <Menu.Items
+          as="div"
+          ref={refs.setFloating}
+          style={floatingStyles}
+          className="z-10 rounded-4 border border-gray-800 bg-slate-800 outline-none"
+        >
           {market && (
             <Menu.Item as="div">
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
