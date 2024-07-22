@@ -59,11 +59,15 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         let responseOrFailure: any;
-        if (params.inWorker) {
-          responseOrFailure = await executeMulticallWorker(chainId, request);
-        } else {
-          responseOrFailure = await executeMulticall(chainId, request);
+
+        let priority: "urgent" | "background" = "urgent";
+        if (successDataByChainIdRef.current[chainId] !== undefined && typeof params.refreshInterval === "number") {
+          priority = "background";
         }
+
+        console.log(Date.now(), { priority });
+
+        responseOrFailure = await executeMulticall(chainId, request, priority);
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
