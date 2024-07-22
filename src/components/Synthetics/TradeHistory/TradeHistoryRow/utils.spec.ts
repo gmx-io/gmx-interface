@@ -194,9 +194,9 @@ Object {
   "indexTokenSymbol": "ARB",
   "isLong": false,
   "market": "Short ARB/USD",
-  "marketPrice": "< $0.010",
+  "marketPrice": "< $0.001",
   "poolName": "ARB-USDC",
-  "price": "< $0.010",
+  "price": "< $0.001",
   "priceComment": Array [
     "Mark price for the order.",
     "",
