@@ -1,7 +1,6 @@
 import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import type { ReactNode } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { createBreakpoint } from "react-use";
