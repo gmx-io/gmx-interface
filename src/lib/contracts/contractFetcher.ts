@@ -1,6 +1,9 @@
 import { Provider, Result, Signer, ethers } from "ethers";
+import { stableHash } from "swr/_internal";
+
 import { getFallbackProvider, getProvider } from "../rpc";
 import { executeMulticall } from "lib/multicall";
+import { swrCache, SWRConfigProp } from "App/swrConfig";
 
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
@@ -8,6 +11,25 @@ export const contractFetcher =
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = isProvider(signer) ? signer : getProvider(signer, chainId);
+
+    let priority: "urgent" | "background" = "urgent";
+
+    const hasData = swrCache.get(stableHash(args))?.isLoading === false;
+
+    let isInterval = false;
+    if (typeof params.refreshInterval === "number") {
+      isInterval = true;
+    } else if (params.refreshInterval === undefined) {
+      if (typeof SWRConfigProp.refreshInterval === "number") {
+        isInterval = true;
+      } else if (hasData && SWRConfigProp.refreshInterval?.(swrCache.get(stableHash(args))?.data)) {
+        isInterval = true;
+      }
+    }
+
+    if (hasData && isInterval) {
+      priority = "background";
+    }
 
     const method = ethers.isAddress(arg0) ? arg1 : arg0;
 
@@ -20,6 +42,7 @@ export const contractFetcher =
       method,
       params,
       additionalArgs,
+      priority,
     });
 
     let shouldCallFallback = true;
@@ -49,6 +72,7 @@ export const contractFetcher =
         method,
         params,
         additionalArgs,
+        priority,
       });
 
       fallbackContractCall
@@ -99,6 +123,7 @@ async function fetchContractData({
   method,
   params,
   additionalArgs,
+  priority,
 }: {
   chainId: number;
   provider: Provider | Signer | undefined;
@@ -108,23 +133,28 @@ async function fetchContractData({
   method: any;
   params: any;
   additionalArgs: any;
+  priority: "urgent" | "background";
 }): Promise<any | undefined> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
 
-    const result = await executeMulticall(chainId, {
-      getContractCall: {
-        abi: contractInfo.abi,
-        contractAddress: address,
-        calls: {
-          call: {
-            methodName: method,
-            params: additionalArgs ? params.concat(additionalArgs) : params,
+    const result = await executeMulticall(
+      chainId,
+      {
+        getContractCall: {
+          abi: contractInfo.abi,
+          contractAddress: address,
+          calls: {
+            call: {
+              methodName: method,
+              params: additionalArgs ? params.concat(additionalArgs) : params,
+            },
           },
         },
       },
-    });
+      priority
+    );
 
     const outputs = contract.interface.getFunction(method)!.outputs;
 
