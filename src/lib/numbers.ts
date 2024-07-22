@@ -1,9 +1,10 @@
-import { BigNumberish, ethers } from "ethers";
-import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { getPlusOrMinusSymbol } from "./utils";
+import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
+import { PRECISION, USD_DECIMALS } from "./legacy";
+import { getPlusOrMinusSymbol } from "./utils";
+import { isDevelopment } from "config/env";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -184,7 +185,12 @@ export function formatUsd(
     }
   }
 
-  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
+  const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;
+
+  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, {
+    maxThreshold: opts.maxThreshold,
+    minThreshold: opts.minThreshold ?? defaultMinThreshold,
+  });
 
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
@@ -494,4 +500,36 @@ export function numberToBigint(value: number, decimals: number) {
   }
 
   return negative ? -res : res;
+}
+
+export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) {
+  if (price === undefined || price === 0n) return 2;
+  const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
+
+  if (isNaN(priceNumber)) return 2;
+  if (priceNumber >= 1000) return 2;
+  if (priceNumber >= 100) return 3;
+  if (priceNumber >= 1) return 4;
+  if (priceNumber >= 0.1) return 5;
+  if (priceNumber >= 0.01) return 6;
+  if (priceNumber >= 0.0001) return 7;
+
+  return 8;
+}
+
+export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
+  if (price === undefined) {
+    return;
+  }
+
+  if (price < 0n && isDevelopment()) {
+    throw new Error("formatUsdPrice accept only non-negative bigints");
+  }
+
+  const decimals = calculatePriceDecimals(price);
+
+  return formatUsd(price, {
+    ...opts,
+    displayDecimals: decimals,
+  });
 }

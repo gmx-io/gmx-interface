@@ -40,6 +40,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionItem.scss";
 
 export type Props = {
@@ -65,13 +66,14 @@ export function PositionItem(p: Props) {
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const isMobile = useMedia("(max-width: 1100px)");
-  const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants();
   const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
   const isCurrentMarket =
     currentMarketAddress === p.position.marketAddress &&
     currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
+
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.marketInfo.indexTokenAddress));
 
   function renderNetValue() {
     return (
@@ -312,7 +314,11 @@ export function PositionItem(p: Props) {
     if (liqPriceWarning || estimatedLiquidationHours) {
       return (
         <Tooltip
-          handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+          handle={
+            formatLiquidationPrice(p.position.liquidationPrice, {
+              displayDecimals: marketDecimals,
+            }) || "..."
+          }
           position="bottom-end"
           handleClassName={cx({
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
@@ -323,7 +329,11 @@ export function PositionItem(p: Props) {
       );
     }
 
-    return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
+    return (
+      formatLiquidationPrice(p.position.liquidationPrice, {
+        displayDecimals: marketDecimals,
+      }) || "..."
+    );
   }
 
   function renderLarge() {
@@ -331,12 +341,12 @@ export function PositionItem(p: Props) {
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <tr
-        data-qa="position-item"
+        data-qa={`position-item-${indexName}-${poolName}-${p.position.isLong ? "long" : "short"}`}
         className={cx("Exchange-list-item", {
           "Exchange-list-item-active": isCurrentMarket,
         })}
       >
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td className="clickable" data-qa="position-handle" onClick={() => p.onSelectPositionClick?.()}>
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
@@ -434,13 +444,13 @@ export function PositionItem(p: Props) {
           {p.position.isOpening
             ? t`Opening...`
             : formatUsd(p.position.entryPrice, {
-                displayDecimals: indexPriceDecimals,
+                displayDecimals: marketDecimals,
               })}
         </td>
         <td>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
-            displayDecimals: indexPriceDecimals,
+            displayDecimals: marketDecimals,
           })}
         </td>
         <td>
@@ -572,7 +582,7 @@ export function PositionItem(p: Props) {
                 </div>
                 <div>
                   {formatUsd(p.position.entryPrice, {
-                    displayDecimals: indexPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })}
                 </div>
               </div>
@@ -582,7 +592,7 @@ export function PositionItem(p: Props) {
                 </div>
                 <div>
                   {formatUsd(p.position.markPrice, {
-                    displayDecimals: indexPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })}
                 </div>
               </div>

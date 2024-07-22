@@ -113,7 +113,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
   return (
     <div className="App-header-network">
       <Menu>
-        <Menu.Button as="div" className="network-dropdown">
+        <Menu.Button as="div" className="network-dropdown" data-qa="networks-dropdown-handle">
           <NavIcons selectorLabel={selectorLabel} />
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items">
@@ -125,7 +125,11 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
           </div>
           <div className="network-dropdown-divider" />
           <Menu.Item>
-            <div className="network-dropdown-menu-item menu-item" onClick={openSettings}>
+            <div
+              className="network-dropdown-menu-item menu-item"
+              onClick={openSettings}
+              data-qa="networks-dropdown-settings"
+            >
               <div className="menu-item-group">
                 <div className="menu-item-icon">
                   <img className="network-dropdown-icon" src={settingsIcon} alt="" />
@@ -162,7 +166,11 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
   return networkOptions.map((network) => {
     return (
       <Menu.Item key={network.value}>
-        <div className="network-dropdown-menu-item menu-item" onClick={() => switchNetwork(network.value, active)}>
+        <div
+          className="network-dropdown-menu-item menu-item"
+          data-qa={`networks-dropdown-${network.label}`}
+          onClick={() => switchNetwork(network.value, active)}
+        >
           <div className="menu-item-group">
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
@@ -181,7 +189,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
 function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
   const { active } = useWallet();
   return (
-    <div className="network-dropdown-items">
+    <div className="network-dropdown-items" data-qa="networks-dropdown">
       <div className="network-dropdown-list">
         <span className="network-dropdown-label">
           <Trans>Networks</Trans>

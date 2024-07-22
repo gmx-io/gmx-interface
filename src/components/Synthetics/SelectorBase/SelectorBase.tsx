@@ -26,7 +26,7 @@ const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void }>
   return <selectorContext.Provider value={props.close}>{props.children}</selectorContext.Provider>;
 };
 
-export function SelectorBase(props: Props) {
+export function SelectorBase(props: Props & { qa?: string }) {
   const isMobile = useMedia("(max-width: 1100px)");
 
   if (isMobile) {
@@ -101,7 +101,7 @@ export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
 }
 //#endregion
 
-function SelectorBaseDesktop(props: Props) {
+function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(), flip(), shift()],
     placement: "bottom-end",
@@ -122,7 +122,7 @@ function SelectorBaseDesktop(props: Props) {
       {(popoverProps) => (
         <>
           <Popover.Button as="div" className="SelectorBase-button" ref={refs.setReference}>
-            {props.label}
+            <span data-qa={props.qa + "-handle"}>{props.label}</span>
             {<BiChevronDown className="TokenSelector-caret" />}
           </Popover.Button>
 

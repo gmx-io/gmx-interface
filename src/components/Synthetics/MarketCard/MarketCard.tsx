@@ -25,6 +25,8 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import MarketNetFee from "components/Synthetics/MarketNetFee/MarketNetFee";
 import { renderNetFeeHeaderTooltipContent } from "components/Synthetics/MarketsList/NetFeeHeaderTooltipContent";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -49,7 +51,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
-    priceDecimals,
     currentOpenInterest,
     maxOpenInterest,
   } = useMemo(() => {
@@ -64,7 +65,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
       totalInterestUsd: marketInfo.longInterestUsd + marketInfo.shortInterestUsd,
-      priceDecimals: marketInfo.indexToken.priceDecimals,
       maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
     };
   }, [marketInfo, isLong]);
@@ -73,6 +73,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
   const netRateHourly = (fundingRate ?? 0n) + (borrowingRate ?? 0n);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
+  const priceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (fundingRateLong === undefined || fundingRateShort === undefined) return [];
@@ -126,13 +127,21 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
           value={
             <Tooltip
-              handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
+              handle={
+                formatUsd(entryPrice, {
+                  displayDecimals: priceDecimals,
+                }) || "..."
+              }
               position="bottom-end"
               renderContent={() => (
                 <Trans>
                   The position will be opened at a reference price of{" "}
-                  {formatUsd(entryPrice, { displayDecimals: priceDecimals })}, not accounting for price impact, with a
-                  max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  {formatUsd(entryPrice, {
+                    displayDecimals: priceDecimals,
+                  })}
+                  , not accounting for price impact, with a max slippage of -
+                  {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}
+                  %.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -169,7 +178,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               renderContent={() => (
                 <Trans>
                   If you have an existing position, the position will be closed at a reference price of{" "}
-                  {formatUsd(entryPrice)}, not accounting for price impact.
+                  {formatUsd(entryPrice, {
+                    displayDecimals: priceDecimals,
+                  })}
+                  , not accounting for price impact.
                   <br />
                   <br />
                   This exit price will change with the price of the asset.

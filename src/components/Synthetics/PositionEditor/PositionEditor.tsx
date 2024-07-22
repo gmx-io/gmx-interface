@@ -75,19 +75,20 @@ import useSWR from "swr";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useKey } from "react-use";
-import "./PositionEditor.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { useKey } from "react-use";
+import "./PositionEditor.scss";
 
 export type Props = {
   allowedSlippage: number;
@@ -148,8 +149,6 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
-  const indexPriceDecimals = position?.indexToken.priceDecimals || 2;
-
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
     getSyntheticsCollateralEditAddressKey(chainId, position?.collateralTokenAddress),
     position?.collateralTokenAddress
@@ -183,6 +182,8 @@ export function PositionEditor(p: Props) {
 
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
 
   const needCollateralApproval =
     isDeposit &&
@@ -703,20 +704,28 @@ export function PositionEditor(p: Props) {
               <ExchangeInfo.Group>
                 <ExchangeInfoRow
                   label={t`Entry Price`}
-                  value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
+                  value={formatUsd(position.entryPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
                 />
                 <ExchangeInfoRow
                   label={t`Mark Price`}
-                  value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
+                  value={formatUsd(position.markPrice, {
+                    displayDecimals: marketDecimals,
+                  })}
                 />
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                      from={formatLiquidationPrice(position.liquidationPrice, {
+                        displayDecimals: marketDecimals,
+                      })}
                       to={
                         collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
-                          ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
+                          ? formatLiquidationPrice(nextLiqPrice, {
+                              displayDecimals: marketDecimals,
+                            })
                           : undefined
                       }
                     />

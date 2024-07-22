@@ -10,6 +10,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
+import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   MarketTokensAPRData,
@@ -26,7 +27,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
@@ -187,7 +188,7 @@ export function GmList({
                       </td>
                       <td>
                         {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: 3,
+                          displayDecimals: GM_POOL_PRICE_DECIMALS,
                         })}
                       </td>
 
@@ -307,11 +308,7 @@ export function GmList({
                       <div className="label">
                         <Trans>Price</Trans>
                       </div>
-                      <div>
-                        {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: 3,
-                        })}
-                      </div>
+                      <div>{formatUsdPrice(token.prices?.minPrice)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

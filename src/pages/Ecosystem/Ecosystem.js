@@ -499,7 +499,7 @@ export default function Ecosystem() {
 
   return (
     <SEO title={getPageTitle(t`Ecosystem Projects`)}>
-      <div className="default-container page-layout">
+      <div className="default-container page-layout" data-qa="ecosystem">
         <div>
           <PageTitle showNetworkIcon={false} isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} />
           <div className="Ecosystem-projects">

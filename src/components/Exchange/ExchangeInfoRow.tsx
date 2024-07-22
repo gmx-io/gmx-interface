@@ -7,15 +7,23 @@ type Props = PropsWithChildren<{
   isTop?: boolean;
   isWarning?: boolean;
   className?: string;
+  qa?: string;
 }>;
 
 export default function ExchangeInfoRow(props: Props) {
-  const { label, children, value, isTop, isWarning, className } = props;
+  const { label, children, value, isTop, isWarning, className, qa } = props;
 
   return (
-    <div className={cx("Exchange-info-row", className, { "top-line": isTop })}>
-      <div className="Exchange-info-label">{label}</div>
-      <div className={cx("Exchange-info-value", { "Exchange-info-value-warning": isWarning })}>{children || value}</div>
+    <div className={cx("Exchange-info-row", className, { "top-line": isTop })} data-qa={`info-row-${qa}`}>
+      <div className="Exchange-info-label" data-qa={`info-row-${qa}-label`}>
+        {label}
+      </div>
+      <div
+        className={cx("Exchange-info-value", { "Exchange-info-value-warning": isWarning })}
+        data-qa={`info-row-${qa}-value`}
+      >
+        {children || value}
+      </div>
     </div>
   );
 }

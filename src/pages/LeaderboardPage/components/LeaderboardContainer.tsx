@@ -169,7 +169,7 @@ export function LeaderboardContainer() {
   }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
 
   return (
-    <div className="GlobalLeaderboards">
+    <div className="GlobalLeaderboards" data-qa="leaderboard">
       <LeaderboardNavigation />
       <div className="Leaderboard-Title default-container">
         <div>

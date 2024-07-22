@@ -66,6 +66,7 @@ import {
   selectOrderEditorDecreaseAmounts,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
+  selectOrderEditorFindSwapPath,
   selectOrderEditorFromToken,
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
@@ -78,19 +79,19 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorFindSwapPath,
   selectOrderEditorToToken,
   selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { bigMath } from "lib/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
 import "./OrderEditor.scss";
-import { bigMath } from "lib/bigmath";
 
 type Props = {
   order: OrderInfo;
@@ -527,6 +528,8 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
+  const marketPriceDecimals = useSelector(makeSelectMarketPriceDecimals(p.order.marketAddress));
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -626,7 +629,7 @@ export function OrderEditor(p: Props) {
                   <ExchangeInfoRow
                     label={t`Liq. Price`}
                     value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                      displayDecimals: indexPriceDecimals,
+                      displayDecimals: marketPriceDecimals,
                     })}
                   />
                 )}
