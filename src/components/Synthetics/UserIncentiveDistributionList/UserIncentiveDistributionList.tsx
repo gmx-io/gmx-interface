@@ -150,7 +150,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { _ } = useLingui();
 
   const isCompetition = typeId >= 2000 && typeId < 3000;
-  const typeStr = isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId]);
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId] ?? t`Airdrop`);
   const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
 
   const renderTotalTooltipContent = useCallback(() => {
