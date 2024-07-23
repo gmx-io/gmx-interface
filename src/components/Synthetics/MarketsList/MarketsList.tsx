@@ -12,8 +12,6 @@ import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 
-import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
-import PageTitle from "components/PageTitle/PageTitle";
 import Pagination from "components/Pagination/Pagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
