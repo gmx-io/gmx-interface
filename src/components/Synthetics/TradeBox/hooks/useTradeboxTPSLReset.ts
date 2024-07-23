@@ -27,13 +27,12 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
 
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
 
-  const shouldResetLimitOrTPSL = [
-    fromTokenAddress !== previouseFromTokenAddress,
-    toTokenAddress !== previousToTokenAddress,
-    isLong !== previousIsLong,
-    marketAddress !== previousMarketAddress,
-    collateralToken !== previousCollateralToken,
-  ].some(Boolean);
+  const shouldResetLimitOrTPSL =
+    fromTokenAddress !== previouseFromTokenAddress ||
+    toTokenAddress !== previousToTokenAddress ||
+    isLong !== previousIsLong ||
+    marketAddress !== previousMarketAddress ||
+    collateralToken !== previousCollateralToken;
 
   useEffect(() => {
     if (shouldResetLimitOrTPSL) {
