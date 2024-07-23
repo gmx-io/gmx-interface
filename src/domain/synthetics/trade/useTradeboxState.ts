@@ -9,7 +9,7 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
-import { getTokenBySymbolSafe, getToken, isSimilarToken } from "config/tokens";
+import { getToken, isSimilarToken } from "config/tokens";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
@@ -707,14 +707,15 @@ function fallbackPositionTokens(
     if (nextPayTokenAddress) {
       const desirablePayToken = getToken(chainId, nextPayTokenAddress);
 
-      if (desirablePayToken && desirablePayToken.symbol) {
-        const nonSyntheticToken = getTokenBySymbolSafe(chainId, desirablePayToken.symbol, {
-          isSynthetic: false,
-          symbolType: "baseSymbol",
+      if (desirablePayToken) {
+        const similarPayTokenAddress = Array.from(allowedPayTokensSet).find((m) => {
+          const indexToken = getToken(chainId, m);
+
+          return isSimilarToken(indexToken, desirablePayToken);
         });
 
-        if (nonSyntheticToken && allowedPayTokensSet.has(nonSyntheticToken.address)) {
-          fallbackPayTokenAddress = nonSyntheticToken.address;
+        if (similarPayTokenAddress) {
+          fallbackPayTokenAddress = similarPayTokenAddress;
         }
       }
     }
@@ -728,14 +729,15 @@ function fallbackPositionTokens(
     if (nextIndexTokenAddress) {
       const desirableIndexToken = getToken(chainId, nextIndexTokenAddress);
 
-      if (desirableIndexToken && desirableIndexToken.baseSymbol) {
-        const syntheticToken = getTokenBySymbolSafe(chainId, desirableIndexToken.baseSymbol, {
-          isSynthetic: true,
-          symbolType: "symbol",
+      if (desirableIndexToken) {
+        const similarMarket = allowedMarkets.find((m) => {
+          const indexToken = getToken(chainId, m.indexTokenAddress);
+
+          return isSimilarToken(indexToken, desirableIndexToken);
         });
 
-        if (syntheticToken && allowedIndexTokens.has(syntheticToken.address)) {
-          fallbackIndexTokenAddress = syntheticToken?.address;
+        if (similarMarket) {
+          fallbackIndexTokenAddress = similarMarket.indexToken.address;
         }
       }
     }
