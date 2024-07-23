@@ -20,7 +20,7 @@ export function useTokenBalances(
     address: string;
     isSynthetic?: boolean;
   }[],
-  refreshInterval?: number
+  refreshInterval?: 5000 | 60000 | null
 ): BalancesDataResult {
   const { address: currentAccount } = useAccount();
 

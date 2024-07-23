@@ -6,6 +6,11 @@ import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 
+type Subscription = {
+  hook: (data: MulticallResult<any>) => void;
+  priority: "urgent" | "background-5" | "background-60";
+};
+
 type MulticallFetcherConfig = {
   [chainId: number]: {
     [callDataId: string]: {
@@ -15,7 +20,7 @@ type MulticallFetcherConfig = {
         methodName: string;
         params: any[];
       };
-      hooks: ((data: MulticallResult<any>) => void)[];
+      subscriptions: Subscription[];
     };
   };
 };
@@ -26,19 +31,63 @@ const store: {
   current: {},
 };
 
-async function executeChainsMulticalls() {
+const PRIORITY_MAP = {
+  urgent: 0,
+  "background-5": 1,
+  "background-60": 2,
+};
+
+function extractPriority(
+  config: MulticallFetcherConfig,
+  priority: "urgent" | "background-5" | "background-60"
+): {
+  priorityConfig: MulticallFetcherConfig;
+  restConfig: MulticallFetcherConfig;
+} {
+  const restConfig: MulticallFetcherConfig = {};
+  const priorityConfig: MulticallFetcherConfig = {};
+
+  for (const [chainId, calls] of entries(config)) {
+    for (const [callId, call] of entries(calls)) {
+      const hasPriority = call.subscriptions.some(
+        (subscription) => PRIORITY_MAP[subscription.priority] <= PRIORITY_MAP[priority]
+      );
+
+      if (hasPriority) {
+        if (!priorityConfig[chainId]) {
+          priorityConfig[chainId] = {};
+        }
+
+        priorityConfig[chainId][callId] = call;
+      } else {
+        if (!restConfig[chainId]) {
+          restConfig[chainId] = {};
+        }
+
+        restConfig[chainId][callId] = call;
+      }
+    }
+  }
+
+  return {
+    priorityConfig,
+    restConfig,
+  };
+}
+
+async function executeChainsMulticalls(priority: "urgent" | "background-5" | "background-60" = "urgent") {
   const tasks: Promise<any>[] = [];
 
   throttledExecuteUrgentChainsMulticalls.cancel();
-  throttledExecuteBackgroundChainsMulticalls.cancel();
 
-  for (const [chainIdStr, calls] of entries(store.current)) {
+  const { priorityConfig, restConfig } = extractPriority(store.current, priority);
+  store.current = restConfig;
+
+  for (const [chainIdStr, calls] of entries(priorityConfig)) {
     const chainId = parseInt(chainIdStr);
     const task = executeChainMulticall(chainId, calls);
     tasks.push(task);
   }
-
-  store.current = {};
 
   await Promise.allSettled(tasks);
 }
@@ -74,27 +123,47 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
   if (responseOrFailure) {
     for (const call of values(calls)) {
-      for (const hook of call.hooks) {
-        hook(responseOrFailure);
+      for (const subscriptions of call.subscriptions) {
+        subscriptions.hook(responseOrFailure);
       }
     }
   }
 }
 
-const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, 50, {
-  leading: false,
-  trailing: true,
-});
-const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMulticalls, 2000, {
+const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls.bind(null, "urgent"), 50, {
   leading: false,
   trailing: true,
 });
 
+function createTimer() {
+  let count = 0;
+
+  const timerId = window.setInterval(() => {
+    count++;
+
+    // Every 60 seconds
+    if (count % 12 === 0) {
+      executeChainsMulticalls("background-60");
+    } else {
+      // Every 5 seconds
+      executeChainsMulticalls("background-5");
+    }
+  }, 5000);
+
+  return timerId;
+}
+
+let multicallTimer: number;
+
 export async function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
   request: TConfig,
-  priority: "urgent" | "background" = "urgent"
+  priority: "urgent" | "background-5" | "background-60" = "urgent"
 ): Promise<MulticallResult<TConfig>> {
+  if (!multicallTimer) {
+    multicallTimer = createTimer();
+  }
+
   let groupNameMapping: {
     // Contract address
     [address: string]: {
@@ -195,18 +264,24 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
             methodName: call.methodName,
             params: call.params,
           },
-          hooks: [hook],
+          subscriptions: [
+            {
+              hook,
+              priority,
+            },
+          ],
         };
       } else {
-        store.current[chainId][callId].hooks.push(hook);
+        store.current[chainId][callId].subscriptions.push({
+          hook,
+          priority,
+        });
       }
     }
   }
 
   if (priority === "urgent") {
     throttledExecuteUrgentChainsMulticalls();
-  } else {
-    throttledExecuteBackgroundChainsMulticalls();
   }
 
   return promise as any;

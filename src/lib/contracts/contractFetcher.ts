@@ -12,7 +12,7 @@ export const contractFetcher =
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = isProvider(signer) ? signer : getProvider(signer, chainId);
 
-    let priority: "urgent" | "background" = "urgent";
+    let priority: "urgent" | "background-5" = "urgent";
 
     const hasData = swrCache.get(stableHash(args))?.isLoading === false;
 
@@ -28,7 +28,7 @@ export const contractFetcher =
     }
 
     if (hasData && isInterval) {
-      priority = "background";
+      priority = "background-5";
     }
 
     const method = ethers.isAddress(arg0) ? arg1 : arg0;
@@ -133,7 +133,7 @@ async function fetchContractData({
   method: any;
   params: any;
   additionalArgs: any;
-  priority: "urgent" | "background";
+  priority: "urgent" | "background-5";
 }): Promise<any | undefined> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;

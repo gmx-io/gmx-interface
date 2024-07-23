@@ -22,7 +22,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   name: string,
   params: {
     key: CacheKey | SkipKey;
-    refreshInterval?: number | null;
+    refreshInterval?: 5000 | 60000 | null;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
@@ -60,7 +60,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         let responseOrFailure: any;
 
-        let priority: "urgent" | "background" = "urgent";
+        let priority: "urgent" | "background-5" | "background-60" = "urgent";
 
         const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
 
@@ -76,7 +76,11 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         if (hasData && isInterval) {
-          priority = "background";
+          if (params.refreshInterval === 5000) {
+            priority = "background-5";
+          } else if (params.refreshInterval === 60000) {
+            priority = "background-60";
+          }
         }
 
         responseOrFailure = await executeMulticall(chainId, request, priority);
