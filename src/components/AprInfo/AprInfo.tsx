@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
 import { getIncentivesV2Url } from "config/links";
@@ -17,34 +18,77 @@ export function AprInfo({
   apy,
   incentiveApr,
   showTooltip = true,
+  futureDateForApyReadiness,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   showTooltip?: boolean;
+  /**
+   * @default undefined meaning that APY is ready to be shown
+   */
+  futureDateForApyReadiness?: Date;
 }) {
   const { chainId } = useChainId();
-  const totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
+  let totalApr = 0n;
+  if (futureDateForApyReadiness) {
+    totalApr = incentiveApr ?? 0n;
+  } else {
+    totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
+  }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData;
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
     if (!isIncentiveActive) {
-      return <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />;
+      return (
+        <>
+          <StatsTooltipRow
+            showDollar={false}
+            label={t`Base APY`}
+            value={futureDateForApyReadiness ? t`NA` : `${formatAmount(apy, 28, 2)}%`}
+          />
+          {futureDateForApyReadiness && (
+            <>
+              <br />
+              <Trans>
+                The base APY estimate will be available{" "}
+                {formatDistanceToNowStrict(futureDateForApyReadiness, { addSuffix: true })} to ensure accurate data
+                display.
+              </Trans>
+            </>
+          )}
+        </>
+      );
     }
 
     return (
       <>
-        <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
+        <StatsTooltipRow
+          showDollar={false}
+          label={t`Base APY`}
+          value={futureDateForApyReadiness ? t`NA` : `${formatAmount(apy, 28, 2)}%`}
+        />
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
+        {futureDateForApyReadiness && (
+          <>
+            <Trans>
+              The base APY estimate will be available{" "}
+              {formatDistanceToNowStrict(futureDateForApyReadiness, { addSuffix: true })} to ensure accurate data
+              display.
+            </Trans>
+            <br />
+            <br />
+          </>
+        )}
         <Trans>
           The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
           <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
         </Trans>
       </>
     );
-  }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive]);
+  }, [airdropTokenTitle, apy, chainId, futureDateForApyReadiness, incentiveApr, isIncentiveActive]);
 
   const aprNode = useMemo(() => {
     const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;

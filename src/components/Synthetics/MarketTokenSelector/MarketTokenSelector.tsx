@@ -1,9 +1,13 @@
-import "./MarketTokenSelector.scss";
-import React, { useMemo, useState } from "react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
+import { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import SearchInput from "components/SearchInput/SearchInput";
+import { useHistory } from "react-router-dom";
+
+import { getFutureDateForApyReadiness } from "config/markets";
+import { getNormalizedTokenSymbol } from "config/tokens";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -15,12 +19,14 @@ import {
 } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { getByKey } from "lib/objects";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { useHistory } from "react-router-dom";
+import { getByKey } from "lib/objects";
+
 import { AprInfo } from "components/AprInfo/AprInfo";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import "./MarketTokenSelector.scss";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -33,6 +39,7 @@ type Props = {
 export default function MarketTokenSelector(props: Props) {
   const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } =
     props;
+  const chainId = useSelector(selectChainId);
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
@@ -60,6 +67,7 @@ export default function MarketTokenSelector(props: Props) {
       const sellableInfo = getSellableMarketToken(marketInfo, market);
       const apr = getByKey(marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
+      const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, market.address);
       const indexName = getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -71,9 +79,10 @@ export default function MarketTokenSelector(props: Props) {
         poolName,
         apr,
         incentiveApr,
+        futureDateForApyReadiness,
       };
     });
-  }, [filteredTokens, marketsInfoData, marketsTokensAPRData, marketsTokensIncentiveAprData]);
+  }, [chainId, filteredTokens, marketsInfoData, marketsTokensAPRData, marketsTokensIncentiveAprData]);
 
   function handleSelectToken(marketTokenAddress: string) {
     history.push({
@@ -155,6 +164,7 @@ export default function MarketTokenSelector(props: Props) {
                           sellableInfo,
                           apr,
                           incentiveApr,
+                          futureDateForApyReadiness,
                           marketInfo,
                           poolName,
                           indexName,
@@ -200,7 +210,12 @@ export default function MarketTokenSelector(props: Props) {
                                 })}
                               </td>
                               <td>
-                                <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
+                                <AprInfo
+                                  apy={apr}
+                                  incentiveApr={incentiveApr}
+                                  futureDateForApyReadiness={futureDateForApyReadiness}
+                                  showTooltip={false}
+                                />
                               </td>
                             </Popover.Button>
                           );
