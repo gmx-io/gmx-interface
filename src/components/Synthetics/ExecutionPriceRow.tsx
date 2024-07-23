@@ -1,17 +1,15 @@
-import { memo, useMemo } from "react";
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { OrderType } from "domain/synthetics/orders/types";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
-import { getPositiveOrNegativeClass } from "lib/utils";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
+import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
 import { bigMath } from "lib/bigmath";
-import { formatPercentage } from "lib/numbers";
-import { TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { TradeFees } from "domain/synthetics/trade";
+import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { getPositiveOrNegativeClass } from "lib/utils";
+import { memo, useMemo } from "react";
 
 interface Props {
   tradeFlags: TradeFlags;

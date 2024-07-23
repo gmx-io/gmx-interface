@@ -1,5 +1,5 @@
 import { PRECISION } from "./legacy";
-import { bigintToNumber, numberToBigint } from "./numbers";
+import { bigintToNumber, numberToBigint, formatUsdPrice } from "./numbers";
 
 describe("numbers.ts", () => {
   it("bigintToNumber", () => {
@@ -28,5 +28,28 @@ describe("numbers.ts", () => {
     expect(numberToBigint(1.12345678, 6)).toEqual(1123456n);
     expect(numberToBigint(1.123456789, 6)).toEqual(1123456n);
     expect(numberToBigint(-1.123456789, 6)).toEqual(-1123456n);
+  });
+});
+
+const ONE_USD = 1000000000000000000000000000000n;
+
+describe("formatUsdPrice", () => {
+  it("should tolerate undefined", () => {
+    expect(formatUsdPrice()).toBeUndefined();
+  });
+
+  it("should return nothing if undefined or negative", () => {
+    expect(() => formatUsdPrice(-1n)).toThrowError();
+  });
+
+  it("should calculate correct decimals if displayDecimals not passed", () => {
+    expect(formatUsdPrice(ONE_USD)).toBe("$1.0000");
+    expect(formatUsdPrice(ONE_USD * 10000n)).toBe("$10,000.00");
+    expect(formatUsdPrice(ONE_USD * 1000n)).toBe("$1,000.000");
+    expect(formatUsdPrice(ONE_USD * 100n)).toBe("$100.000");
+    expect(formatUsdPrice(ONE_USD * 10n)).toBe("$10.0000");
+    expect(formatUsdPrice(ONE_USD / 10n)).toBe("$0.100000");
+    expect(formatUsdPrice(ONE_USD / 1000n)).toBe("$0.0010000");
+    expect(formatUsdPrice(ONE_USD / 10000000000n)).toBe("< $0.00000001");
   });
 });

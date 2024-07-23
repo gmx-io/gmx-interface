@@ -95,7 +95,7 @@ msgstr ""
 msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法降低{tokenSymbol} {longOrShortText} 在可接受的滑点内, 您可在页面右上方的设定中调整可接受滑点"
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "同意"
 
@@ -483,7 +483,7 @@ msgstr "交易历史"
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要，可复制链接至此页面"
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
 
@@ -885,7 +885,7 @@ msgstr ""
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "其他选项链接可在<0>docs</0>.<1/><2/>点选同意接受<3>相关条款</3> 以及 <4>以及推荐条款</4>.<5/><6/>后获得"
 
@@ -2255,7 +2255,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 #: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr "启动应用程序"
@@ -3112,7 +3112,7 @@ msgstr ""
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "该网站是一个社区部署和维护的开放资源<0>GMX前端的实例</0>，在分布式、对等的<1>IPFS网络</1>上托管和服务"
 
@@ -3804,7 +3804,7 @@ msgstr "资金费用"
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至11月30h, <1>点击这里</1> 了解更多"
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "您正要离开GMX.io，并且将被重新导向到第三方独立网站"
 

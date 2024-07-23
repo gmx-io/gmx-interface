@@ -95,7 +95,7 @@ msgstr ""
 msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "Не удалось уменьшить {tokenSymbol} {longOrShortText} в пределах допустимого уровня скольжения, вы можете настроить допустимое скольжение в настройках в правом верхнем углу страницы."
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "Согласен"
 
@@ -483,7 +483,7 @@ msgstr "История торгов"
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "Вам нужно будет находиться на этой странице, чтобы принять перевод, <0>нажмите сюда</0>, чтобы скопировать ссылку на эту страницу, если это необходимо."
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "Не показывайте это сообщение снова в течение 30 дней."
 
@@ -885,7 +885,7 @@ msgstr ""
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Альтернативные ссылки можно найти в <0>документах</0>.<1/><2/>Нажав кнопку Согласен, вы принимаете <3>T&Cs</3> и <4>Referral T&Cs</4>.<5/><6/>"
 
@@ -2255,7 +2255,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 #: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr "Запустить Приложение"
@@ -3112,7 +3112,7 @@ msgstr ""
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Сайт представляет собой развернутый и поддерживаемый сообществом экземпляр открытого источника <0>GMX фронт-энда</0>, размещенный и обслуживаемый в распределенной, peer-to-peer <1>IPFS сети</1>."
 
@@ -3804,7 +3804,7 @@ msgstr "Комиссии за финансирование"
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Торгуйте на GMX и выиграйте <0>$250.000</0> в качестве призов! Действует до 30 ноября, <1> нажмите здесь</1>, чтобы узнать больше.\""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Вы покидаете сайт GMX.io и будете перенаправлены на сторонний, независимый сайт."
 

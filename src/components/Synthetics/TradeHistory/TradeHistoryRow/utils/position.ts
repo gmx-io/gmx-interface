@@ -12,6 +12,7 @@ import {
   BN_NEGATIVE_ONE,
   BN_ONE,
   applyFactor,
+  calculatePriceDecimals,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -42,6 +43,7 @@ export const formatPositionMessage = (
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
+  const marketPriceDecimals = calculatePriceDecimals(tradeAction.indexToken.prices.minPrice);
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -107,14 +109,14 @@ export const formatPositionMessage = (
 
   const marketPrice = getTokenPriceByTradeAction(tradeAction);
   const formattedMarketPrice = formatUsd(marketPrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   });
 
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   })!;
   const formattedTriggerPrice = formatUsd(tradeAction.triggerPrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
   })!;
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);

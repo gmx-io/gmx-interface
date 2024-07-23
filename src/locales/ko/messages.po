@@ -95,7 +95,7 @@ msgstr ""
 msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "허용가능한 슬리피지 안에서는 {tokenSymbol} {longOrShortText}을 감소시키지 못했습니다. 최상단 우측의 설정 버튼을 통해 허용가능한 슬리피지를 변경할 수 있습니다."
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "동의하기"
 
@@ -483,7 +483,7 @@ msgstr "트레이딩 히스토리"
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "이전을 수락하려면 이 페이지에 있어야 합니다. 필요에 따라, <0>여기를 클릭하세요</0>를 통해 페이지 링크를 복사하세요."
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
@@ -885,7 +885,7 @@ msgstr ""
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "이외의 링크는 <0>docs</0>에서 확인할 수 있습니다.<1/><2/>동의 버튼을 클릭하여 <3>T&Cs</3> 그리고 <4>Referral T&Cs</4>에 동의합니다.<5/><6/>"
 
@@ -2255,7 +2255,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 #: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr "앱 실행하기"
@@ -3112,7 +3112,7 @@ msgstr ""
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
 
@@ -3804,7 +3804,7 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
 
-#: src/components/ModalViews/RedirectModal.js
+#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
 

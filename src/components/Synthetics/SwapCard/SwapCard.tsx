@@ -5,6 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
 
+import { formatUsdPrice, calculatePriceDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
@@ -34,7 +35,9 @@ export function SwapCard(p: Props) {
     const smallest = markRatio.smallestToken;
     const largest = markRatio.largestToken;
 
-    return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
+    const ratioDecimals = calculatePriceDecimals(markRatio.ratio);
+
+    return `${formatAmount(markRatio.ratio, USD_DECIMALS, ratioDecimals)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);
 
   const maxOutValue = useMemo(
@@ -58,20 +61,12 @@ export function SwapCard(p: Props) {
       <div>
         <ExchangeInfoRow
           label={t`${fromToken?.symbol} Price`}
-          value={
-            formatUsd(fromToken?.prices?.minPrice, {
-              displayDecimals: fromToken?.priceDecimals,
-            }) || "..."
-          }
+          value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
         />
 
         <ExchangeInfoRow
           label={t`${toToken?.symbol} Price`}
-          value={
-            formatUsd(toToken?.prices?.maxPrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "..."
-          }
+          value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
         />
 
         <ExchangeInfoRow

@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
@@ -14,8 +15,7 @@ import {
   USD_DECIMALS,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
@@ -35,20 +35,31 @@ import Token from "abis/Token.json";
 import VaultV2 from "abis/VaultV2.json";
 import Vester from "abis/Vester.json";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
 import {
   getNativeToken,
   getToken,
-  getV1Tokens,
   getTokenBySymbolSafe,
+  getV1Tokens,
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "config/tokens";
+import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { getFeeItem } from "domain/synthetics/fees";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -61,29 +72,19 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatKeyAmount,
+  formatUsdPrice,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useSearchParams from "lib/useSearchParams";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import PageTitle from "components/PageTitle/PageTitle";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import useSearchParams from "lib/useSearchParams";
-import { getFeeItem } from "domain/synthetics/fees";
-import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import Checkbox from "components/Checkbox/Checkbox";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePendingTxns } from "lib/usePendingTxns";
-import { bigMath } from "lib/bigmath";
-import { getIncentivesV2Url } from "config/links";
 
 const { ZeroAddress } = ethers;
 
@@ -958,7 +959,7 @@ export default function GlpSwap(props) {
               <div className="label">
                 <Trans>Price</Trans>
               </div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
+              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
             </div>
             <div className="App-card-row">
               <div className="label">
@@ -1416,7 +1417,7 @@ export default function GlpSwap(props) {
                       </div>
                     </div>
                   </td>
-                  <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                  <td>{formatUsdPrice(tokenInfo.minPrice)}</td>
                   <td>
                     {isBuying && (
                       <div>
@@ -1561,7 +1562,7 @@ export default function GlpSwap(props) {
                     <div className="label">
                       <Trans>Price</Trans>
                     </div>
-                    <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                    <div>{formatUsdPrice(tokenInfo.minPrice)}</div>
                   </div>
                   {isBuying && (
                     <div className="App-card-row">

@@ -33,6 +33,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Bitcoin (WBTC)",
       symbol: "BTC",
       assetSymbol: "WBTC",
+      baseSymbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
@@ -45,7 +46,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
@@ -55,6 +56,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped SOL (Wormhole)",
       symbol: "SOL",
       assetSymbol: "WSOL (Wormhole)",
+      priceDecimals: 3,
       decimals: 9,
       address: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
@@ -67,7 +69,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -80,7 +82,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
       isStable: false,
       isShortable: true,
@@ -167,7 +169,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Dogecoin",
       symbol: "DOGE",
       decimals: 8,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png?1547792256",
@@ -177,6 +179,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Litecoin",
       symbol: "LTC",
       decimals: 8,
+      priceDecimals: 3,
       address: "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/2/small/litecoin.png?1547033580",
@@ -244,6 +247,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Cosmos",
       symbol: "ATOM",
       assetSymbol: "ATOM",
+      priceDecimals: 4,
       address: "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
       decimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/1481/standard/cosmos_hub.png?1696502525",
@@ -255,6 +259,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Near",
       symbol: "NEAR",
       assetSymbol: "NEAR",
+      priceDecimals: 4,
       address: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
       decimals: 24,
       imageUrl: "https://assets.coingecko.com/coins/images/10365/standard/near.jpg?1696510367",
@@ -266,6 +271,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Aave",
       symbol: "AAVE",
       assetSymbol: "AAVE",
+      priceDecimals: 3,
       address: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
@@ -276,6 +282,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped AVAX (Wormhole)",
       symbol: "AVAX",
       assetSymbol: "WAVAX (Wormhole)",
+      priceDecimals: 3,
       address: "0x565609fAF65B92F7be02468acF86f8979423e514",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
@@ -286,6 +293,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Optimism",
       symbol: "OP",
+      priceDecimals: 4,
       address: "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
@@ -439,7 +447,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0x5947BB275c521040051D82396192181b413227A3",
       isStable: false,
       isShortable: true,
@@ -451,7 +459,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Dogecoin",
       symbol: "DOGE",
       decimals: 8,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png?1547792256",
@@ -461,6 +469,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Litecoin",
       symbol: "LTC",
       decimals: 8,
+      priceDecimals: 3,
       address: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/2/small/litecoin.png?1547033580",
@@ -470,6 +479,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped SOL (Wormhole)",
       symbol: "SOL",
       assetSymbol: "WSOL (Wormhole)",
+      priceDecimals: 3,
       decimals: 9,
       address: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
@@ -481,7 +491,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
       coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
@@ -588,6 +598,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Solana",
       symbol: "SOL",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x9A98a11279FaeB0fF695dFEC3C4B8a29138d0a2f",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
@@ -605,6 +616,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "BNB",
       symbol: "BNB",
       isSynthetic: true,
+      priceDecimals: 3,
       decimals: 18,
       address: "0xa076E6db62f61bd1A4fC283F84739D2b0c80e2a3",
       coingeckoUrl: "https://www.coingecko.com/en/coins/binancecoin",
@@ -613,7 +625,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Cardano",
       symbol: "ADA",
       decimals: 18,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x5F8a8f06da2848f846A2b5e3e42A4A2eEC5f337B",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
@@ -622,7 +634,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "TRON",
       symbol: "TRX",
       decimals: 18,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x7a9Ba06548D0499f6Debf97809CC351c1e85795D",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
@@ -640,6 +652,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Polkadot",
       symbol: "DOT",
       decimals: 18,
+      priceDecimals: 4,
       address: "0x7361D58cBc6495B6419397dFd5ebE2e2017F23E9",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
@@ -648,7 +661,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0x6DEbb9cC48819941F797a2F0c63f9168C19fD057",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
@@ -659,7 +672,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       isShortable: true,
       decimals: 8,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x3e2fA75b78edF836299127FBAA776304B4712972",
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     },
@@ -667,7 +680,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0x55602A94239a7926D92da5C53Fb96E80372382aa",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
@@ -676,7 +689,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0xF1C2093383453831e8c90ecf809691123116dAaC",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
@@ -718,6 +731,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Avalanche",
       symbol: "AVAX",
+      priceDecimals: 3,
       decimals: 18,
       address: ethers.ZeroAddress,
       isNative: true,
@@ -727,6 +741,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped AVAX",
       symbol: "WAVAX",
+      priceDecimals: 3,
       decimals: 18,
       address: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       isWrapped: true,
@@ -790,6 +805,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Solana",
       symbol: "SOL",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x137f4a7336df4f3f11894718528516edaaD0B082",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
@@ -807,6 +823,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "BNB",
       symbol: "BNB",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/binancecoin",
@@ -815,7 +832,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Cardano",
       symbol: "ADA",
       decimals: 18,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0xE64dfFF37Fa6Fe969b792B4146cEe2774Ef6e1a1",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
@@ -824,7 +841,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "TRON",
       symbol: "TRX",
       decimals: 18,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x0D1495527C255068F2f6feE31C85d326D0A76FE8",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
@@ -843,6 +860,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "DOT",
       address: "0x65FFb5664a7B3377A5a27D9e59C72Fb1A5E94962",
       decimals: 18,
+      priceDecimals: 4,
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
     },
@@ -850,7 +868,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0xF62dC1d2452d0893735D22945Af53C290b158eAF",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
@@ -859,7 +877,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Dogecoin",
       symbol: "DOGE",
       decimals: 8,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
       isSynthetic: true,
       isShortable: true,
@@ -1053,7 +1071,11 @@ export function getToken(chainId: number, address: string) {
 export function getTokenBySymbol(
   chainId: number,
   symbol: string,
-  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+  {
+    isSynthetic,
+    version,
+    symbolType = "symbol",
+  }: { isSynthetic?: boolean; version?: "v1" | "v2"; symbolType?: "symbol" | "baseSymbol" } = {}
 ) {
   let tokens = Object.values(TOKENS_MAP[chainId]);
 
@@ -1061,18 +1083,19 @@ export function getTokenBySymbol(
     tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
   }
 
-  if (isSynthetic) {
-    const syntheticToken = tokens.find((token) => {
-      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
+  let token: Token | undefined;
+
+  if (isSynthetic !== undefined) {
+    token = tokens.find((token) => {
+      return token[symbolType]?.toLowerCase() === symbol.toLowerCase() && Boolean(token.isSynthetic) === isSynthetic;
     });
-    if (syntheticToken) {
-      return syntheticToken;
+  } else {
+    if (symbolType === "symbol" && TOKENS_BY_SYMBOL_MAP[chainId][symbol]) {
+      token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
+    } else {
+      token = tokens.find((token) => token[symbolType]?.toLowerCase() === symbol.toLowerCase());
     }
   }
-
-  const token =
-    tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase()) ||
-    TOKENS_BY_SYMBOL_MAP[chainId][symbol];
 
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
@@ -1132,10 +1155,10 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
 export function getTokenBySymbolSafe(
   chainId: number,
   symbol: string,
-  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+  params: Parameters<typeof getTokenBySymbol>[2] = {}
 ) {
   try {
-    return getTokenBySymbol(chainId, symbol, { isSynthetic, version });
+    return getTokenBySymbol(chainId, symbol, params);
   } catch (e) {
     return;
   }
@@ -1143,4 +1166,16 @@ export function getTokenBySymbolSafe(
 
 export function isTokenInList(token: Token, tokenList: Token[]): boolean {
   return tokenList.some((t) => t.address === token.address);
+}
+
+export function isSimilarToken(tokenA: Token, tokenB: Token) {
+  if (tokenA.address === tokenB.address) {
+    return true;
+  }
+
+  if (tokenA.symbol === tokenB.symbol || tokenA.baseSymbol === tokenB.symbol || tokenA.symbol === tokenB.baseSymbol) {
+    return true;
+  }
+
+  return false;
 }
