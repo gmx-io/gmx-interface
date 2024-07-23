@@ -16,7 +16,7 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
-import { entries, keyBy, set, values } from "lodash";
+import { keyBy, set, values } from "lodash";
 import { MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrderType } from "../orders/types";
@@ -162,9 +162,9 @@ export function useTradeboxState(
       setStoredOptionsOnChain({
         ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
         markets: {
-          [market.marketTokenAddress]: {
-            long: market.longTokenAddress,
-            short: market.shortTokenAddress,
+          [market.indexTokenAddress]: {
+            long: market.marketTokenAddress,
+            short: market.marketTokenAddress,
           },
         },
         tokens: {
@@ -654,14 +654,21 @@ function fallbackPositionTokens(
   allowedPayTokens: string[],
   allowedMarkets: MarketInfo[]
 ) {
+  const longOrShort = nextState.tradeType === TradeType.Long ? "long" : "short";
+
   const allowedPayTokensSet = new Set(allowedPayTokens);
-  const allowedIndexTokenToMarketMap = new Map(entries(keyBy(allowedMarkets, (m) => m.indexToken.address)));
+  const allowedIndexTokens = new Set(allowedMarkets.map((m) => m.indexToken.address));
+
+  const marketsMap = keyBy(allowedMarkets, (m) => m.marketTokenAddress);
 
   const nextPayTokenAddress = nextState.tokens.fromTokenAddress;
   const nextIndexTokenAddress = nextState.tokens.indexTokenAddress;
+  const nextMarketTokenAdress = nextIndexTokenAddress && nextState.markets[nextIndexTokenAddress]?.[longOrShort];
 
   const isNextPayTokenValid = nextPayTokenAddress && allowedPayTokensSet.has(nextPayTokenAddress);
-  const isNextIndexTokenValid = nextIndexTokenAddress && allowedIndexTokenToMarketMap.has(nextIndexTokenAddress);
+  const isNextIndexTokenValid = nextIndexTokenAddress && allowedIndexTokens.has(nextIndexTokenAddress);
+  const isNextMarketTokenValid =
+    nextMarketTokenAdress && marketsMap[nextMarketTokenAdress]?.marketTokenAddress === nextMarketTokenAdress;
 
   const fallbackPayToken = (fallbackPayToken?: string) => {
     return produce(nextState, (draft) => {
@@ -669,21 +676,28 @@ function fallbackPositionTokens(
     });
   };
 
-  const fallbackIndexToken = (fallbackIndexToken?: string) => {
-    if (!fallbackIndexToken || !allowedIndexTokenToMarketMap.has(fallbackIndexToken)) {
+  const fallbackIndexTokenAndMarket = (fallbackIndexToken?: string) => {
+    if (!fallbackIndexToken || !allowedIndexTokens.has(fallbackIndexToken)) {
       return produce(nextState, (draft) => {
         draft.tokens.indexTokenAddress = prevState.tokens.indexTokenAddress;
       });
     }
 
-    const indexTokenMarketAddress = allowedIndexTokenToMarketMap.get(fallbackIndexToken)!.marketTokenAddress;
+    const fallbackMarketTokenAddress = nextState.markets[fallbackIndexToken]?.[longOrShort];
+    const isValidMarketToken =
+      fallbackMarketTokenAddress &&
+      marketsMap[fallbackMarketTokenAddress]?.marketTokenAddress === fallbackMarketTokenAddress;
 
-    const updater = setToTokenAddressUpdaterBuilder(nextState.tradeType, fallbackIndexToken, indexTokenMarketAddress);
+    const fallbackMarketToken = isValidMarketToken
+      ? fallbackMarketTokenAddress
+      : allowedMarkets.find((m) => m.indexToken.address === fallbackIndexToken)?.marketTokenAddress;
+
+    const updater = setToTokenAddressUpdaterBuilder(nextState.tradeType, fallbackIndexToken, fallbackMarketToken);
 
     return updater(nextState);
   };
 
-  if (isNextPayTokenValid && isNextIndexTokenValid) {
+  if (isNextPayTokenValid && isNextIndexTokenValid && isNextMarketTokenValid) {
     return nextState;
   }
 
@@ -720,23 +734,27 @@ function fallbackPositionTokens(
           symbolType: "symbol",
         });
 
-        if (syntheticToken && allowedIndexTokenToMarketMap.has(syntheticToken.address)) {
+        if (syntheticToken && allowedIndexTokens.has(syntheticToken.address)) {
           fallbackIndexTokenAddress = syntheticToken?.address;
         }
       }
     }
 
-    nextState = fallbackIndexToken(fallbackIndexTokenAddress);
+    nextState = fallbackIndexTokenAndMarket(fallbackIndexTokenAddress);
+  }
+
+  if (!isNextMarketTokenValid) {
+    nextState = fallbackIndexTokenAndMarket(nextState.tokens.indexTokenAddress);
   }
 
   const isFallbackPayTokenValid =
     nextState.tokens.fromTokenAddress && allowedPayTokensSet.has(nextState.tokens.fromTokenAddress);
   const isFallbackIndexTokenValid =
-    nextState.tokens.indexTokenAddress && allowedIndexTokenToMarketMap.has(nextState.tokens.indexTokenAddress);
+    nextState.tokens.indexTokenAddress && allowedIndexTokens.has(nextState.tokens.indexTokenAddress);
 
   if (!isFallbackPayTokenValid && !isFallbackIndexTokenValid) {
     nextState = fallbackPayToken(prevState.tokens.fromTokenAddress);
-    nextState = fallbackIndexToken(prevState.tokens.indexTokenAddress);
+    nextState = fallbackIndexTokenAndMarket(prevState.tokens.indexTokenAddress);
   }
 
   return nextState;
