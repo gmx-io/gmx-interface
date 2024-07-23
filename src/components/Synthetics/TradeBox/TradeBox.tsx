@@ -215,6 +215,7 @@ export function TradeBox(p: Props) {
     keepLeverage,
     setKeepLeverage,
     isWrapOrUnwrap,
+    isSwitchTokensAllowed,
     switchTokenAddresses,
     tradeMode,
     tradeType,
@@ -901,7 +902,12 @@ export function TradeBox(p: Props) {
         </BuyInputSection>
 
         <div className="Exchange-swap-ball-container">
-          <button type="button" className="Exchange-swap-ball bg-blue-500" onClick={onSwitchTokens}>
+          <button
+            type="button"
+            disabled={!isSwitchTokensAllowed}
+            className="Exchange-swap-ball bg-blue-500"
+            onClick={onSwitchTokens}
+          >
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
         </div>
