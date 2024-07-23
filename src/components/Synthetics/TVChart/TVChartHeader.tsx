@@ -111,11 +111,11 @@ function TVChartHeaderInfoDesktop() {
           </div>
           <div className="flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-8">
-              <LongIcon /> {info?.openInterestLong ? formatUsd(info?.openInterestLong) : "-"}
+              <LongIcon /> {info?.openInterestLong ? formatAmountHuman(info?.openInterestLong, USD_DECIMALS) : "-"}
             </div>
             <div className="flex flex-row items-center gap-8">
               <ShortIcon />
-              {info?.openInterestShort ? formatUsd(info?.openInterestShort) : "-"}
+              {info?.openInterestShort ? formatAmountHuman(info?.openInterestShort, USD_DECIMALS) : "-"}
             </div>
           </div>
         </div>

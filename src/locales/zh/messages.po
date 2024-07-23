@@ -3232,6 +3232,7 @@ msgstr "资金费用"
 msgid "Approval failed"
 msgstr "核准失败"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3433,6 +3434,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "净率 / 1小时"
 
@@ -4145,6 +4147,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "可用的流动资金"
 

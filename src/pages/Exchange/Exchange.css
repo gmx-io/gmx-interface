@@ -1,5 +1,5 @@
 .Exchange {
-  max-width: 155rem;
+  max-width: 160rem;
   margin: auto;
   justify-content: space-between;
 }
@@ -54,7 +54,6 @@
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 1.5rem;
-  padding: 3.1rem;
   padding-top: 0rem;
   margin-top: -1.5rem;
 }
@@ -258,6 +257,7 @@
 .ExchangeChart {
   position: relative;
   height: 49.6rem;
+  max-width: 120rem;
 }
 
 .ExchangeChart-main-price {
@@ -271,7 +271,7 @@
 
 .ExchangeChart-top-inner {
   display: grid;
-  grid-template-columns: auto auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto auto;
   grid-column-gap: 4.65rem;
   align-items: center;
   padding-left: 0.9rem;
