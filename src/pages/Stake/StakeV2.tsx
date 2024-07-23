@@ -1470,6 +1470,7 @@ export default function StakeV2() {
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&
       processedData?.esGmxInStakedGmx !== undefined &&
+      sbfGmxBalance !== undefined &&
       processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
     0n;
 
@@ -1534,7 +1535,7 @@ export default function StakeV2() {
 
     setIsVesterDepositModalVisible(true);
     setVesterDepositTitle(t`GMX Vault`);
-    setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points");
+    setVesterDepositStakeTokenLabel("staked GMX + esGMX");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
