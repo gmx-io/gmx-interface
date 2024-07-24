@@ -3,6 +3,7 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -15,6 +16,7 @@ import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 import { useMemo, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiPlus, FiTwitter } from "react-icons/fi";
@@ -26,6 +28,7 @@ import { AffiliateCodeForm } from "./AddAffiliateCode";
 import "./AffiliatesStats.scss";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
@@ -36,8 +39,6 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
-import useWallet from "lib/wallets/useWallet";
-import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 
 type Props = {
   chainId: number;
@@ -278,30 +279,31 @@ function AffiliatesStats({
               </Button>
             </div>
           }
+          bodyPadding={false}
         >
-          <div className="table-wrapper">
-            <table className="referral-table">
+          <div className="overflow-x-auto">
+            <table className="w-full">
               <thead>
-                <tr>
-                  <th className="table-head" scope="col">
+                <ExchangeTheadTr>
+                  <ExchangeTh scope="col">
                     <Trans>Referral Code</Trans>
-                  </th>
-                  <th className="table-head" scope="col">
+                  </ExchangeTh>
+                  <ExchangeTh scope="col">
                     <Trans>Total Volume</Trans>
-                  </th>
-                  <th className="table-head" scope="col">
+                  </ExchangeTh>
+                  <ExchangeTh scope="col">
                     <Trans>Traders Referred</Trans>
-                  </th>
-                  <th className="table-head" scope="col">
+                  </ExchangeTh>
+                  <ExchangeTh scope="col">
                     <Trans>Total Rebates</Trans>
-                  </th>
-                </tr>
+                  </ExchangeTh>
+                </ExchangeTheadTr>
               </thead>
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <tr key={index}>
-                      <td data-label="Referral Code">
+                    <ExchangeTr key={index} hoverable={false} bordered={false}>
+                      <ExchangeTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
@@ -323,8 +325,8 @@ function AffiliatesStats({
                           </a>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
-                      </td>
-                      <td data-label="Total Volume">
+                      </ExchangeTd>
+                      <ExchangeTd data-label="Total Volume">
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
@@ -336,9 +338,9 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </td>
-                      <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
-                      <td data-label="Total Rebates">
+                      </ExchangeTd>
+                      <ExchangeTd data-label="Traders Referred">{stat.registeredReferralsCount}</ExchangeTd>
+                      <ExchangeTd data-label="Total Rebates">
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
@@ -356,8 +358,8 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </td>
-                    </tr>
+                      </ExchangeTd>
+                    </ExchangeTr>
                   );
                 })}
               </tbody>
@@ -375,24 +377,25 @@ function AffiliatesStats({
           <Card
             title={t`Rebates Distribution History`}
             tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
+            bodyPadding={false}
           >
-            <div className="table-wrapper">
-              <table className="referral-table">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-max">
                 <thead>
-                  <tr>
-                    <th className="table-head" scope="col">
+                  <ExchangeTheadTr>
+                    <ExchangeTh scope="col">
                       <Trans>Date</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Type</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Amount</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Transaction</Trans>
-                    </th>
-                  </tr>
+                    </ExchangeTh>
+                  </ExchangeTheadTr>
                 </thead>
                 <tbody>
                   {currentRebateData.map((rebate, index) => {
@@ -435,10 +438,10 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <tr key={index}>
-                        <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                        <td data-label="Type">{rebateType}</td>
-                        <td data-label="Amount">
+                      <ExchangeTr key={index} hoverable={false} bordered={false}>
+                        <ExchangeTd data-label="Date">{formatDate(rebate.timestamp)}</ExchangeTd>
+                        <ExchangeTd data-label="Type">{rebateType}</ExchangeTd>
+                        <ExchangeTd data-label="Amount">
                           <Tooltip
                             className="whitespace-nowrap"
                             handle={
@@ -488,13 +491,13 @@ function AffiliatesStats({
                               </>
                             )}
                           />
-                        </td>
-                        <td data-label="Transaction">
+                        </ExchangeTd>
+                        <ExchangeTd data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 13)}
                           </ExternalLink>
-                        </td>
-                      </tr>
+                        </ExchangeTd>
+                      </ExchangeTr>
                     );
                   })}
                 </tbody>

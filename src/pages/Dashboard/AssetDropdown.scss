@@ -2,16 +2,6 @@
   position: relative;
 }
 
-.asset-menu-items {
-  position: absolute;
-  border: 1px solid var(--color-gray-800);
-  border-radius: 0.4rem;
-  background: var(--dark-blue);
-  outline: none;
-  z-index: 100;
-  white-space: nowrap;
-}
-
 .center-both {
   display: flex;
   justify-content: center;
@@ -53,33 +43,5 @@
   .asset-item-icon {
     max-height: 1.6rem;
     max-width: 1.6rem;
-  }
-}
-
-@media (max-width: 1100px) {
-  .asset-menu-items {
-    min-width: 18rem;
-    width: auto;
-
-    &.left {
-      right: 0;
-    }
-
-    &.center {
-      transform: translate(-60%, 0);
-    }
-  }
-}
-
-@media (max-width: 400px) {
-  .asset-menu-items {
-    width: 25rem;
-    white-space: normal;
-  }
-}
-
-@media (max-width: 350px) {
-  .asset-menu-items {
-    width: 18rem;
   }
 }

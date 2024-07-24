@@ -1,10 +1,10 @@
+import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { getPlusOrMinusSymbol } from "./utils";
-import { isDevelopment } from "config/env";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -532,4 +532,21 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     ...opts,
     displayDecimals: decimals,
   });
+}
+
+export function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
+  const n = Number(formatAmount(amount, tokenDecimals));
+  const isNegative = n < 0;
+  const absN = Math.abs(n);
+  const sign = showDollar ? "$" : "";
+
+  if (absN >= 1000000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(1)}M`;
+  }
+
+  if (absN >= 1000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(1)}K`;
+  }
+
+  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
 }

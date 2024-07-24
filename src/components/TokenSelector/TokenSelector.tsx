@@ -170,14 +170,14 @@ export default function TokenSelector(props: Props) {
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
-        headerContent={() => (
+        headerContent={
           <SearchInput
             className="mt-15"
             value={searchKeyword}
             setValue={onSearchKeywordChange}
             onKeyDown={_handleKeyDown}
           />
-        )}
+        }
       >
         <div className="TokenSelector-tokens">
           {sortedFilteredTokens.map((token, tokenIndex) => {

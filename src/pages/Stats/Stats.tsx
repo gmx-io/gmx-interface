@@ -17,6 +17,7 @@ import "./Stats.css";
 import Tooltip from "components/Tooltip/Tooltip";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "lib/bigmath";
+import { formatAmountHuman } from "lib/numbers";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
   if (!share || !total) {
@@ -34,18 +35,6 @@ function shareBar(share?: BigNumberish, total?: BigNumberish) {
       <div className="Stats-share-bar-fill" style={style} />
     </div>
   );
-}
-
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
-  const n = Number(formatAmount(amount, tokenDecimals));
-
-  if (n > 1000000) {
-    return `${(n / 1000000).toFixed(1)}M`;
-  }
-  if (n > 1000) {
-    return `${(n / 1000).toFixed(1)}K`;
-  }
-  return n.toFixed(1);
 }
 
 export default function Stats() {
