@@ -246,7 +246,6 @@ msgstr "Comisiones"
 msgid "View status."
 msgstr "Ver estado."
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Buyable"
 msgstr ""
@@ -354,6 +353,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code added!"
 msgstr "¡Código de referido añadido!"
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "SELLABLE"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Treasury"
@@ -606,6 +609,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "MERCADO"
 
@@ -1026,10 +1030,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "Seleccionar reserva"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Liquidity"
-msgstr "Liquidez"
-
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "PESO"
@@ -1447,7 +1447,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "Crear Orden"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Utilization"
 msgstr "Utilización"
@@ -1696,8 +1695,6 @@ msgid "Checking code..."
 msgstr "Comprobando código..."
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Pools"
@@ -2087,7 +2084,6 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "El precio de referencia ha cambiado, considera incrementar el deslizamiento permitido haciendo clic en el icono \"...\" al lado de tu dirección."
 
 #. Total Value Locked
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "TVL"
 msgstr "TVL"
@@ -2703,6 +2699,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -2930,6 +2927,13 @@ msgstr "La orden no se puede ejecutar pues la posición restante sería menor de
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claiming..."
 msgstr "Reclamando..."
+
+#. GM market token selector all markets filter
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "All"
+msgstr "Todo"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3261,6 +3265,7 @@ msgid "The position would be immediately liquidated upon order execution. Try re
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
 msgstr ""
 
@@ -3434,11 +3439,10 @@ msgstr "El precio de ejecución no cumplió la condición de precio aceptable. L
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Net Rate / 1h"
-msgstr "Tasa Neta / 1h"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3533,6 +3537,10 @@ msgstr "Corto"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
+msgstr ""
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "GMX Market Tokens"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3908,7 +3916,6 @@ msgid "Reserved"
 msgstr "Reservado"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -3925,6 +3932,10 @@ msgstr "Precio inferior al de liquidación"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Airdrop"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3966,6 +3977,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Pending GMX approval"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "No markets found."
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -4121,6 +4136,11 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
+
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "Favorites"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
@@ -4458,8 +4478,6 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5041,6 +5059,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "No GM pools found."
 msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.js
@@ -6170,6 +6192,10 @@ msgstr "Falló el Intercambio."
 msgid "Page outdated, please refresh"
 msgstr "Página obsoleta, por favor actualice"
 
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "BUY…"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Adquiera con GLP en Arbitrum"
@@ -6534,7 +6560,6 @@ msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6628,7 +6653,6 @@ msgstr "El tamaño de la orden es mayor que la posición, sólo se ejecutará si
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
@@ -6676,6 +6700,11 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "Términos de Referido"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "No markets matched."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
 msgstr ""
@@ -6704,8 +6733,8 @@ msgid "Referral code submitted!"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr ""
 
@@ -6839,7 +6868,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6960,6 +6988,10 @@ msgstr ""
 #: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "SELL…"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -7361,7 +7393,6 @@ msgstr ""
 msgid "Edit {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Sell"

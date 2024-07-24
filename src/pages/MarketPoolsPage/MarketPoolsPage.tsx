@@ -25,11 +25,6 @@ export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  function buySellActionHandler() {
-    gmSwapBoxRef?.current?.scrollIntoView();
-    window.scrollBy(0, -25); // add some offset
-  }
-
   const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const markets = Object.values(marketsInfoData);
 
@@ -108,11 +103,8 @@ export function MarketPoolsPage() {
         <GmList
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-          marketTokensData={depositMarketTokensData}
-          marketsInfoData={marketsInfoData}
-          tokensData={tokensData}
-          buySellActionHandler={buySellActionHandler}
           shouldScrollToTop={true}
+          isDeposit
         />
       </div>
       <Footer />

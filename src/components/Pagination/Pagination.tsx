@@ -1,10 +1,14 @@
+import cx from "classnames";
+
 import Button from "components/Button/Button";
+
 import "./Pagination.css";
 
 type Props = {
   page: number;
   pageCount: number;
   onPageChange: (page: number) => void;
+  topMargin?: boolean;
 };
 
 function getPageNumbers(current, max = 1) {
@@ -18,7 +22,7 @@ function getPageNumbers(current, max = 1) {
   }
 }
 
-export default function Pagination({ page, pageCount, onPageChange }: Props) {
+export default function Pagination({ page, pageCount, topMargin = true, onPageChange }: Props) {
   if (pageCount <= 1) {
     return <></>;
   }
@@ -36,7 +40,11 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
   });
 
   return (
-    <div className="pagination">
+    <div
+      className={cx("pagination", {
+        "mt-25": topMargin,
+      })}
+    >
       <div className="pagination-buttons">
         <Button variant="secondary" onClick={() => onPageChange(1)} disabled={page <= 1}>
           {"|<"}

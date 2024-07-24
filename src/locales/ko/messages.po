@@ -246,7 +246,6 @@ msgstr "수수료"
 msgid "View status."
 msgstr "상태 보기."
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Buyable"
 msgstr ""
@@ -354,6 +353,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code added!"
 msgstr "추천인 코드가 추가되었습니다!"
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "SELLABLE"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Treasury"
@@ -606,6 +609,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "마켓"
 
@@ -1026,10 +1030,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "풀 선택"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Liquidity"
-msgstr "유동성"
-
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "비중"
@@ -1447,7 +1447,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "주문 생성"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Utilization"
 msgstr "이용률"
@@ -1696,8 +1695,6 @@ msgid "Checking code..."
 msgstr "코드 확인중..."
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Pools"
@@ -2087,7 +2084,6 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
 #. Total Value Locked
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "TVL"
 msgstr "TVL"
@@ -2703,6 +2699,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -2930,6 +2927,13 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claiming..."
 msgstr "수령중..."
+
+#. GM market token selector all markets filter
+#. Chart token selector all markets filter
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "All"
+msgstr "모두"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3261,6 +3265,7 @@ msgid "The position would be immediately liquidated upon order execution. Try re
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
 msgstr ""
 
@@ -3434,11 +3439,10 @@ msgstr "실행 가격이 허용 가능한 가격 조건을 충족하지 않았�
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Net Rate / 1h"
-msgstr "1시간 당 순 수수료율"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3533,6 +3537,10 @@ msgstr "숏"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
+msgstr ""
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "GMX Market Tokens"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3908,7 +3916,6 @@ msgid "Reserved"
 msgstr "리저브 완료"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -3925,6 +3932,10 @@ msgstr "청산가 미만 가격"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Airdrop"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3966,6 +3977,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Pending GMX approval"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "No markets found."
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -4121,6 +4136,11 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
+
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "Favorites"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
@@ -4458,8 +4478,6 @@ msgstr "추천인 코드 업데이트 실패."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5041,6 +5059,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "No GM pools found."
 msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.js
@@ -6170,6 +6192,10 @@ msgstr "스왑 실패."
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "BUY…"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Arbitrum에서 GLP로 베스팅하기"
@@ -6534,7 +6560,6 @@ msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6628,7 +6653,6 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
@@ -6676,6 +6700,11 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "추천 약관"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "No markets matched."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
 msgstr ""
@@ -6704,8 +6733,8 @@ msgid "Referral code submitted!"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr ""
 
@@ -6839,7 +6868,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -6960,6 +6988,10 @@ msgstr ""
 #: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
+
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "SELL…"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -7361,7 +7393,6 @@ msgstr ""
 msgid "Edit {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Sell"

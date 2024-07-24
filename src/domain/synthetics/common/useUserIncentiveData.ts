@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
-import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "./incentivesAirdropMessages";
 
 export type UserIncentiveData = {
   id: string;
@@ -13,19 +12,9 @@ export type UserIncentiveData = {
   transactionHash: string;
 };
 
-const typeIds = Object.keys({
-  ...INCENTIVE_TYPE_MAP,
-  ...INCENTIVE_TOOLTIP_MAP,
-}).join(", ");
-
 const USER_INCENTIVE_QUERY = gql`
   query userIncentiveData($account: String!) {
-    distributions(
-      orderBy: timestamp
-      orderDirection: desc
-      where: { receiver: $account, typeId_in: [${typeIds}] }
-      first: 1000
-    ) {
+    distributions(orderBy: timestamp, orderDirection: desc, where: { receiver: $account }, first: 1000) {
       typeId
       amounts
       amountsInUsd
@@ -42,7 +31,7 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
   const userIncentiveDataCacheKey =
     chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
 
-  async function fetchUserIncentiveData(): Promise<UserIncentiveData[]> {
+  async function fetchUserIncentiveData(): Promise<UserIncentiveData[] | undefined> {
     if (!account) {
       return [];
     }
@@ -52,10 +41,12 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
       variables: { account: account.toLowerCase() },
     });
 
-    return response.data?.distributions as UserIncentiveData[];
+    return response.data?.distributions as UserIncentiveData[] | undefined;
   }
 
-  const { data, error } = useSWR<UserIncentiveData[]>(userIncentiveDataCacheKey, { fetcher: fetchUserIncentiveData });
+  const { data, error } = useSWR<UserIncentiveData[] | undefined>(userIncentiveDataCacheKey, {
+    fetcher: fetchUserIncentiveData,
+  });
 
   return { data, error };
 }

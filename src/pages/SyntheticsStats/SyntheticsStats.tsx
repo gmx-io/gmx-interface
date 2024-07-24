@@ -1,6 +1,6 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { BigNumberish, ethers } from "ethers";
+import { ethers } from "ethers";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 
 import cx from "classnames";
@@ -26,6 +26,7 @@ import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "lib/bigmath";
+import { formatAmountHuman } from "lib/numbers";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -33,21 +34,6 @@ function pow(bn: bigint, exponent: bigint) {
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
   return expandDecimals(afterExponent.toFixed(0), 30);
-}
-
-export function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
-  const n = Number(formatAmount(amount, tokenDecimals));
-  const isNegative = n < 0;
-  const absN = Math.abs(n);
-  const sign = showDollar ? "$" : "";
-
-  if (absN >= 1000000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(1)}M`;
-  }
-  if (absN >= 1000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(1)}K`;
-  }
-  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
 }
 
 function formatFactor(factor: bigint) {

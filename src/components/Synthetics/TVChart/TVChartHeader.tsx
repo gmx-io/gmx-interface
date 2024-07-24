@@ -15,7 +15,7 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatPercentageDisplay, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatPercentageDisplay, formatRatePercentage, formatUsd } from "lib/numbers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce } from "react-use";
 
@@ -23,7 +23,6 @@ import { ReactComponent as LongIcon } from "img/long.svg";
 import { ReactComponent as ShortIcon } from "img/short.svg";
 
 import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
-import { formatAmountHuman } from "pages/SyntheticsStats/SyntheticsStats";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
