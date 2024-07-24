@@ -48,7 +48,7 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
 import { getByKey } from "lib/objects";
 import { TokensData, useTokensDataRequest } from "../tokens";
-import type { Market, MarketInfo, MarketsData, MarketsInfoData } from "./types";
+import type { MarketInfo, MarketsData, MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
@@ -64,40 +64,36 @@ export type MarketsInfoResult = {
 /**
  * Updates frequently
  */
-type MarketValues = Market &
-  Pick<
-    MarketInfo,
-    | "longToken"
-    | "shortToken"
-    | "indexToken"
-    | "longInterestUsd"
-    | "shortInterestUsd"
-    | "longInterestInTokens"
-    | "shortInterestInTokens"
-    | "longPoolAmount"
-    | "shortPoolAmount"
-    | "poolValueMin"
-    | "poolValueMax"
-    | "totalBorrowingFees"
-    | "positionImpactPoolAmount"
-    | "swapImpactPoolAmountLong"
-    | "swapImpactPoolAmountShort"
-    | "pnlLongMax"
-    | "pnlLongMin"
-    | "pnlShortMax"
-    | "pnlShortMin"
-    | "netPnlMax"
-    | "netPnlMin"
-    | "claimableFundingAmountLong"
-    | "claimableFundingAmountShort"
-    | "borrowingFactorPerSecondForLongs"
-    | "borrowingFactorPerSecondForShorts"
-    | "fundingFactorPerSecond"
-    | "longsPayShorts"
-    | "virtualPoolAmountForLongToken"
-    | "virtualPoolAmountForShortToken"
-    | "virtualInventoryForPositions"
-  >;
+type MarketValues = Pick<
+  MarketInfo,
+  | "longInterestUsd"
+  | "shortInterestUsd"
+  | "longInterestInTokens"
+  | "shortInterestInTokens"
+  | "longPoolAmount"
+  | "shortPoolAmount"
+  | "poolValueMin"
+  | "poolValueMax"
+  | "totalBorrowingFees"
+  | "positionImpactPoolAmount"
+  | "swapImpactPoolAmountLong"
+  | "swapImpactPoolAmountShort"
+  | "pnlLongMax"
+  | "pnlLongMin"
+  | "pnlShortMax"
+  | "pnlShortMin"
+  | "netPnlMax"
+  | "netPnlMin"
+  | "claimableFundingAmountLong"
+  | "claimableFundingAmountShort"
+  | "borrowingFactorPerSecondForLongs"
+  | "borrowingFactorPerSecondForShorts"
+  | "fundingFactorPerSecond"
+  | "longsPayShorts"
+  | "virtualPoolAmountForLongToken"
+  | "virtualPoolAmountForShortToken"
+  | "virtualInventoryForPositions"
+>;
 
 /**
  * Updates seldom
@@ -251,7 +247,7 @@ type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { address: account } = useAccount();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -260,7 +256,6 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     account,
     isDependenciesLoading,
     marketsAddresses,
-    pricesUpdatedAt,
     marketsData,
     tokensData,
   });
@@ -280,28 +275,36 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     // Manual merging to avoid cloning tokens as they are sometimes compared by reference
     const data: MarketsInfoData = {};
     for (const marketAddress of marketsAddresses) {
+      const market = marketsData?.[marketAddress];
       const marketValues = marketsValues.data[marketAddress];
       const marketConfig = marketsConfigs.data[marketAddress];
 
-      if (!marketValues || !marketConfig) {
+      if (!market || !marketValues || !marketConfig) {
         continue;
       }
+
+      const longToken = getByKey(tokensData!, market.longTokenAddress)!;
+      const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
+      const indexToken = getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))!;
 
       const fullMarketInfo: MarketInfo = {
         ...marketValues,
         ...marketConfig,
+        ...market,
+        longToken,
+        shortToken,
+        indexToken,
       };
 
       data[marketAddress] = fullMarketInfo;
     }
 
     return data as MarketsInfoData;
-  }, [marketsValues.data, marketsAddresses, marketsConfigs.data]);
+  }, [marketsValues.data, marketsConfigs.data, marketsAddresses, marketsData, tokensData, chainId]);
 
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
-    pricesUpdatedAt,
   };
 }
 
@@ -310,7 +313,6 @@ function useMarketsValuesRequest({
   account,
   isDependenciesLoading,
   marketsAddresses,
-  pricesUpdatedAt,
   marketsData,
   tokensData,
 }: {
@@ -318,17 +320,15 @@ function useMarketsValuesRequest({
   account: string | undefined;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
-  pricesUpdatedAt: number | undefined;
   marketsData: MarketsData | undefined;
   tokensData: TokensData | undefined;
 }) {
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
-    key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account, pricesUpdatedAt],
+    key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account],
 
-    // Refreshed on every prices update
-    refreshInterval: null,
+    refreshInterval: 5000,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
@@ -590,15 +590,7 @@ function useMarketsValuesRequest({
             { poolValue: bigint; totalBorrowingFees: bigint; longPnl: bigint; shortPnl: bigint; netPnl: bigint },
           ];
 
-          const longToken = getByKey(tokensData!, market.longTokenAddress)!;
-          const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
-          const indexToken = getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))!;
-
           acc[marketAddress] = {
-            ...market,
-            longToken,
-            shortToken,
-            indexToken,
             longInterestUsd,
             shortInterestUsd,
             longInterestInTokens,
