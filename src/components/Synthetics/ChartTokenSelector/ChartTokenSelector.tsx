@@ -80,7 +80,7 @@ export default function ChartTokenSelector(props: Props) {
   const poolName = marketInfo ? getMarketPoolName(marketInfo) : null;
 
   return (
-    <Popover className="Synths-ChartTokenSelector items-ce flex">
+    <Popover className="Synths-ChartTokenSelector flex items-center">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (

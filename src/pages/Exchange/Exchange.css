@@ -268,6 +268,14 @@
   font-size: 1.7rem;
 }
 
+.ExchangeChart-top-inner {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-column-gap: 4.65rem;
+  align-items: center;
+  padding-left: 0.9rem;
+}
+
 .ExchangeChart-info-label {
   font-size: 1.25rem;
   opacity: 0.7;
@@ -971,6 +979,12 @@ table.Exchange-list-small td {
 .VersionSwitch-wrapper {
   padding: 1.5rem 0;
   justify-content: flex-end;
+}
+
+.ExchangeChart-header {
+  display: grid;
+  grid-template-columns: auto 116.32px;
+  grid-column-gap: 1rem;
 }
 
 @media (max-width: 1500px) {
