@@ -12,16 +12,8 @@ export type GmTokenFavoritesTabOption = "all" | "favorites";
 export type GmTokensFavoritesContextType = {
   tab: GmTokenFavoritesTabOption;
   setTab: (tab: GmTokenFavoritesTabOption) => void;
-  /**
-   * Wrapped token addresses
-   */
   favoriteTokens: string[];
-  setFavoriteTokens: (
-    /**
-     * Wrapped token addresses
-     */
-    favoriteTokens: string[]
-  ) => void;
+  setFavoriteTokens: (favoriteTokens: string[]) => void;
 };
 
 const context = createContext<GmTokensFavoritesContextType>({
