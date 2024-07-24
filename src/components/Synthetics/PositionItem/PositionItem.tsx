@@ -146,7 +146,7 @@ export function PositionItem(p: Props) {
       <>
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
-            handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
+            handle={<span data-qa="position-collateral-value">{formatUsd(p.position.remainingCollateralUsd)}</span>}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx({ negative: p.position.hasLowCollateral })}
@@ -249,7 +249,7 @@ export function PositionItem(p: Props) {
           />
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-            <span className="edit-icon" onClick={p.onEditCollateralClick}>
+            <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
               <AiOutlineEdit fontSize={16} />
             </span>
           )}
@@ -339,9 +339,12 @@ export function PositionItem(p: Props) {
   function renderLarge() {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
+
+    const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
+
     return (
       <tr
-        data-qa={`position-item-${indexName}-${poolName}-${p.position.isLong ? "long" : "short"}`}
+        data-qa={qaAttr}
         className={cx("Exchange-list-item", {
           "Exchange-list-item-active": isCurrentMarket,
         })}
@@ -464,6 +467,7 @@ export function PositionItem(p: Props) {
               className="Exchange-list-action"
               onClick={p.onClosePositionClick}
               disabled={p.position.sizeInUsd == 0n}
+              data-qa="position-close-button"
             >
               <Trans>Close</Trans>
             </button>

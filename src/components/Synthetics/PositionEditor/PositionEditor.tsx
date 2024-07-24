@@ -606,6 +606,7 @@ export function PositionEditor(p: Props) {
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
+              qa="operation-tabs"
             />
             <SubaccountNavigationButton
               executionFee={executionFee?.feeTokenAmount}

@@ -6,7 +6,6 @@
   max-height: 100vh;
   top: 0;
   bottom: 0;
-  overflow: hidden;
   border: none;
 }
 
@@ -15,8 +14,6 @@
   overscroll-behavior: smooth;
   scrollbar-width: thin;
   padding-right: 0.5rem;
-  max-height: calc(100vh - 13rem);
-  overflow-y: auto;
 }
 
 .TokenSelector-token-name {
@@ -130,7 +127,7 @@
   background: var(--dark-blue-hover);
 }
 
-.TokenSelector-token-row:active {
+.TokenSelector-token-row:active:not(:has(.favorite-star:active)) {
   background: var(--dark-blue-active);
 }
 
@@ -150,7 +147,6 @@
   width: 35.65rem;
   top: 0;
   bottom: 0;
-  overflow: auto;
   border: none;
 }
 
@@ -160,11 +156,6 @@
     min-height: 80vh;
     top: auto;
     bottom: auto;
-  }
-
-  .TokenSelector .Modal .Modal-content .Modal-body {
-    overflow-y: auto;
-    max-height: calc(80vh - 13rem);
   }
 }
 

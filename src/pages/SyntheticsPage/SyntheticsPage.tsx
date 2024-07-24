@@ -239,7 +239,7 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-left">
           <TVChart />
 
-          <div className="Exchange-lists large">
+          <div className="Exchange-lists large" data-qa="trade-table-large">
             <div className="Exchange-list-tab-container">
               <Tab
                 options={tabOptions}
@@ -312,7 +312,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="Exchange-lists small min-w-0">
+        <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
           <div className="Exchange-list-tab-container">
             <Tab
               options={tabOptions}

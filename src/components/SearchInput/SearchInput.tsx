@@ -6,11 +6,15 @@ import cx from "classnames";
 
 type Props = {
   value: string;
-  setValue: (e: any) => void;
-  onKeyDown: (e: any) => void;
+  setValue: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   placeholder?: string;
   size?: "s" | "m";
+  /**
+   * If not provided, will be set to true on small screens
+   */
+  autoFocus?: boolean;
   qa?: string;
 };
 
@@ -24,8 +28,9 @@ export default function SearchInput({
   onKeyDown,
   className,
   placeholder,
+  autoFocus,
   size = "m",
-  qa = "search-input",
+  qa = "token-search-input",
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const classNames = cx("Search-input", `Search-input_size_${size}`, className);
@@ -38,7 +43,7 @@ export default function SearchInput({
         value={value}
         onChange={setValue}
         onKeyDown={onKeyDown}
-        autoFocus={!isSmallerScreen}
+        autoFocus={autoFocus ?? !isSmallerScreen}
         className="Tokenselector-search-input"
         style={STYLE}
       />
