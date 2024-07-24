@@ -22,6 +22,7 @@ type Props = PropsWithChildren<{
   popoverYOffset?: number;
   mobileModalContentPadding?: boolean;
   popoverPlacement?: Placement;
+  subtext?: string;
 }>;
 
 type SelectorContextType = { close: () => void; mobileHeader?: HTMLDivElement };

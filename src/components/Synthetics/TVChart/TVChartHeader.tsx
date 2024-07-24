@@ -246,8 +246,10 @@ function TVChartHeaderInfoDesktop() {
   }, [info?.longOpenInterestPercentage, info?.openInterestShort]);
 
   return (
-    <>
-      <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
+    <div className="Chart-header">
+      <div className="flex items-center justify-center">
+        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
+      </div>
       <div className="Chart-top-scrollable-container">
         <div className="Chart-top-scrollable-fade-overlay">
           <div
@@ -338,7 +340,10 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
       </div>
-    </>
+      <div className="ExchangeChart-info VersionSwitch-wrapper">
+        <VersionSwitch />
+      </div>
+    </div>
   );
 }
 
@@ -360,16 +365,5 @@ export function TVChartHeader({ isMobile }: { isMobile: boolean }) {
     [period, setPeriod]
   );
 
-  if (isMobile) {
-    return <TVChartHeaderInfoMobile />;
-  }
-
-  return (
-    <div className="Chart-header">
-      <TVChartHeaderInfoDesktop />
-      <div className="ExchangeChart-info VersionSwitch-wrapper">
-        <VersionSwitch />
-      </div>
-    </div>
-  );
+  return isMobile ? <TVChartHeaderInfoMobile /> : <TVChartHeaderInfoDesktop />;
 }

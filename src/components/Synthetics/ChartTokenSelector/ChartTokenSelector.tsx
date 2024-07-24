@@ -8,7 +8,10 @@ import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -45,6 +48,9 @@ type Props = {
 export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken } = props;
 
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const poolName = marketInfo ? getMarketPoolName(marketInfo) : null;
+
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
@@ -52,9 +58,14 @@ export default function ChartTokenSelector(props: Props) {
       popoverXOffset={-12}
       label={
         selectedToken ? (
-          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold max-[380px]:text-16">
+          <span className="inline-flex items-center whitespace-nowrap py-5 pl-0 text-[20px] font-bold max-[380px]:text-16">
             <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
-            {selectedToken.symbol} {"/ USD"}
+            <span className="flex flex-col justify-start">
+              <span>
+                {selectedToken.symbol} {"/ USD"}
+              </span>
+              {poolName ? <span className="subtext !ml-0">{`[${poolName}]`}</span> : ""}
+            </span>
           </span>
         ) : (
           "..."
@@ -62,6 +73,7 @@ export default function ChartTokenSelector(props: Props) {
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
+      subtext="[BTC-USDC]"
     >
       <MarketsList options={options} />
     </SelectorBase>
