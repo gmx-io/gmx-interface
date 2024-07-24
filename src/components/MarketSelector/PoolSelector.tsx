@@ -353,11 +353,11 @@ function PoolListItem(props: {
         <div className="Token-balance">
           {(showBalances && balance !== undefined && (
             <div className="Token-text">
-              {balance > 0 &&
-                formatTokenAmount(balance, marketToken?.decimals, "GM", {
-                  useCommas: true,
-                })}
-              {balance == 0n && "-"}
+              {balance > 0
+                ? formatTokenAmount(balance, marketToken?.decimals, "GM", {
+                    useCommas: true,
+                  })
+                : "-"}
             </div>
           )) ||
             null}
