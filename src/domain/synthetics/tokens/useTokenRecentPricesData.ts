@@ -17,7 +17,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
 
   // TODO temp workaround
   const refreshPricesInterval = useMemo(() => {
-    return pathname.startsWith("/leaderboard") || pathname.startsWith("/competitions") ? 60_000 : 5000;
+    return pathname.startsWith("/leaderboard") || pathname.startsWith("/competitions") ? 60_000 : 1000;
   }, [pathname]);
 
   const { data } = useSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
