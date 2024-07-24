@@ -3,6 +3,7 @@ import { BigNumberish } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { useMemo } from "react";
 import "./ShareBar.scss";
+import { formatPercentageDisplay } from "lib/numbers";
 
 const PERCENTAGE_HIDE_THRESHOLD = 25;
 
@@ -51,20 +52,13 @@ export function ShareBar(p: Props) {
       {showPercentage && (
         <div className="ShareBar-fill__percentage">
           <div className="ShareBar-fill__left" style={percentageStyle.leftStyle}>
-            {formatPercentageDisplay(progress)}
+            {formatPercentageDisplay(progress, PERCENTAGE_HIDE_THRESHOLD)}
           </div>
           <div className="ShareBar-fill__right" style={percentageStyle.rightStyle}>
-            {formatPercentageDisplay(100 - progress)}
+            {formatPercentageDisplay(100 - progress, PERCENTAGE_HIDE_THRESHOLD)}
           </div>
         </div>
       )}
     </div>
   );
-}
-
-function formatPercentageDisplay(percentage: number) {
-  if (percentage < PERCENTAGE_HIDE_THRESHOLD) {
-    return "";
-  }
-  return `${percentage}%`;
 }

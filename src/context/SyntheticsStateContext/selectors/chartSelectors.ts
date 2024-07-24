@@ -13,6 +13,7 @@ import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
 import { getFundingFactorPerPeriod } from "../../../domain/synthetics/fees/utils/index";
 import { CHART_PERIODS } from "lib/legacy";
+import { bigMath } from "lib/bigmath";
 
 export const selectChartToken = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -77,6 +78,16 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
   const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);
 
+  const longUsdVolume = marketInfo.longInterestUsd;
+  const totalVolume = marketInfo.longInterestUsd + marketInfo.shortInterestUsd;
+
+  const longOpenInterestPercentage = Math.max(
+    Math.min(Number(bigMath.mulDiv(longUsdVolume, 100n, totalVolume)), 100),
+    0.01
+  );
+
+  const shortOpenInterestPercentage = 100 - longOpenInterestPercentage;
+
   return {
     liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),
     liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false),
@@ -85,5 +96,7 @@ export const selectChartHeaderInfo = createSelector((q) => {
     openInterestLong: marketInfo.longInterestUsd,
     openInterestShort: marketInfo.shortInterestUsd,
     decimals: marketInfo.indexToken.decimals,
+    longOpenInterestPercentage,
+    shortOpenInterestPercentage,
   };
 });

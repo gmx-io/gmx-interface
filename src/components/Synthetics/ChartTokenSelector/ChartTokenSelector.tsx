@@ -8,7 +8,10 @@ import {
   useTradeboxChooseSuitableMarket,
   useTradeboxGetMaxLongShortLiquidityPool,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -73,26 +76,36 @@ export default function ChartTokenSelector(props: Props) {
 
   const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
 
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const poolName = marketInfo ? getMarketPoolName(marketInfo) : null;
+
   return (
-    <Popover className="Synths-ChartTokenSelector">
+    <Popover className="Synths-ChartTokenSelector items-ce flex">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">
-              <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
+              <button
+                className={cx("chart-token-selector inline-flex min-w-16 flex-row items-start gap-4", {
+                  "chart-token-label--active": open,
+                })}
+              >
                 {selectedToken && (
-                  <span className="chart-token-selector--current inline-flex items-center">
-                    <TokenIcon
-                      className="chart-token-current-icon"
-                      symbol={selectedToken.symbol}
-                      displaySize={20}
-                      importSize={24}
-                    />
-                    {selectedToken.symbol} {"/ USD"}
-                  </span>
+                  <TokenIcon
+                    className="chart-token-current-icon"
+                    symbol={selectedToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
                 )}
-                <FaChevronDown fontSize={14} />
+                <span className="flex flex-col items-start">
+                  <span className="flex flex-row items-center gap-4 whitespace-nowrap">
+                    {selectedToken?.symbol} {"/ USD"}
+                    <FaChevronDown fontSize={14} />
+                  </span>
+                  {poolName && <div className="subtext !ml-0 whitespace-nowrap">[{poolName}]</div>}
+                </span>
               </button>
             </Popover.Button>
             <div className="chart-token-menu">

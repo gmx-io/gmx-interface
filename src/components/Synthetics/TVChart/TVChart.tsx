@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TVChartHeader } from "./TVChartHeader";
 
 import "./TVChart.scss";
+import { useMedia } from "react-use";
 
 const DEFAULT_PERIOD = "5m";
 
@@ -145,9 +146,11 @@ export function TVChart() {
     [chartToken]
   );
 
+  const isMobile = useMedia("(max-width: 800px)");
+
   return (
     <div className="ExchangeChart tv">
-      <TVChartHeader isMobile={false} />
+      <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border">
         {chartToken && (
           <TVChartContainer

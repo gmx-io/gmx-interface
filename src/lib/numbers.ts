@@ -533,3 +533,11 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     displayDecimals: decimals,
   });
 }
+
+export function formatPercentageDisplay(percentage: number, hideThreshold?: number) {
+  if (hideThreshold && percentage < hideThreshold) {
+    return "";
+  }
+
+  return `${percentage}%`;
+}
