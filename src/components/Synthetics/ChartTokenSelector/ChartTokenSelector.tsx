@@ -10,6 +10,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import {
   selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -52,7 +53,8 @@ export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken, isMobile } = props;
 
   const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const poolName = marketInfo ? getMarketPoolName(marketInfo) : null;
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
   const handleClassName =
     isMobile === undefined ? undefined : isMobile ? "ChartTokenSelector-mobile" : "ChartTokenSelector-desktop";

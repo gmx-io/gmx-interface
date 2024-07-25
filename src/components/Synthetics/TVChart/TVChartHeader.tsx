@@ -26,6 +26,7 @@ import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 const DEFAULT_PERIOD = "5m";
 
@@ -52,7 +53,15 @@ function TVChartHeaderInfoMobile() {
 
   const info = useSelector(selectChartHeaderInfo);
 
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+
   const [detailsVisible, setDetailsVisible] = useState(false);
+
+  useEffect(() => {
+    if (isSwap) {
+      setDetailsVisible(false);
+    }
+  }, [isSwap]);
 
   const toggleDetailsVisible = useCallback(() => {
     setDetailsVisible((prev) => !prev);
@@ -64,10 +73,16 @@ function TVChartHeaderInfoMobile() {
         <div>
           <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
 
-          <div className="flex cursor-pointer flex-row gap-8" role="button" onClick={toggleDetailsVisible}>
-            <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-500 p-2">
-              {detailsVisible ? <BiChevronDown /> : <BiChevronRight />}
-            </span>
+          <div
+            className="flex cursor-pointer flex-row gap-8"
+            role="button"
+            onClick={isSwap ? undefined : toggleDetailsVisible}
+          >
+            {!isSwap && (
+              <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-500 p-2">
+                {detailsVisible ? <BiChevronDown /> : <BiChevronRight />}
+              </span>
+            )}
             <div className="ExchangeChart-avg-price">
               {formatUsd(avgPrice, {
                 displayDecimals: oraclePriceDecimals,
@@ -178,6 +193,7 @@ function TVChartHeaderInfoDesktop() {
   const dailyVolume = use24hVolume();
 
   const info = useSelector(selectChartHeaderInfo);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const setScrolls = useCallback(() => {
     const scrollable = scrollableRef.current;
@@ -245,6 +261,78 @@ function TVChartHeaderInfoDesktop() {
     return "-";
   }, [info?.longOpenInterestPercentage, info?.openInterestShort]);
 
+  const additionalInfo = useMemo(() => {
+    if (isSwap) {
+      return null;
+    }
+
+    return (
+      <>
+        <div className="ExchangeChart-additional-info">
+          <div className="ExchangeChart-info-label">
+            <Trans>Available Liquidity</Trans>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-4">
+              <LongIcon />
+              {info?.liquidityLong ? formatAmountHuman(info?.liquidityLong, USD_DECIMALS) : "-"}
+            </div>
+            <div className="flex flex-row items-center gap-4">
+              <ShortIcon />
+              {info?.liquidityShort ? formatAmountHuman(info?.liquidityShort, USD_DECIMALS) : "-"}
+            </div>
+          </div>
+        </div>
+
+        <div className="ExchangeChart-additional-info">
+          <div className="ExchangeChart-info-label">
+            <Trans>Net Rate / 1h</Trans>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div className="positive flex flex-row items-center gap-4">
+              <LongIcon className="fill-green-500" />
+              {info?.netRateHourlyLong ? formatRatePercentage(info?.netRateHourlyLong) : "-"}
+            </div>
+            <div className="negative flex flex-row items-center gap-4">
+              <ShortIcon className="fill-red-500" />
+              {info?.netRateHourlyShort ? formatRatePercentage(info?.netRateHourlyShort) : "-"}
+            </div>
+          </div>
+        </div>
+
+        <div className="ExchangeChart-additional-info">
+          <div className="ExchangeChart-info-label">
+            <Trans>Open Interest</Trans>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-4">
+              <LongIcon />
+              {longOIValue}
+            </div>
+            <div className="flex flex-row items-center gap-4">
+              <ShortIcon />
+              {shortOIValue}
+            </div>
+          </div>
+        </div>
+
+        <div className="ExchangeChart-additional-info Chart-24h-low">
+          <div className="ExchangeChart-info-label">24h Volume</div>
+          <div className="Chart-header-value">{dailyVolume ? formatAmountHuman(dailyVolume, USD_DECIMALS) : "-"}</div>
+        </div>
+      </>
+    );
+  }, [
+    info?.liquidityLong,
+    info?.liquidityShort,
+    info?.netRateHourlyLong,
+    info?.netRateHourlyShort,
+    longOIValue,
+    shortOIValue,
+    dailyVolume,
+    isSwap,
+  ]);
+
   return (
     <div className="Chart-header">
       <div className="flex items-center justify-center">
@@ -285,59 +373,7 @@ function TVChartHeaderInfoDesktop() {
               </div>
             </div>
           </div>
-
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">
-              <Trans>Available Liquidity</Trans>
-            </div>
-            <div className="Chart-header-value flex flex-row items-center gap-8">
-              <div className="flex flex-row items-center gap-4">
-                <LongIcon />
-                {info?.liquidityLong ? formatAmountHuman(info?.liquidityLong, USD_DECIMALS) : "-"}
-              </div>
-              <div className="flex flex-row items-center gap-4">
-                <ShortIcon />
-                {info?.liquidityShort ? formatAmountHuman(info?.liquidityShort, USD_DECIMALS) : "-"}
-              </div>
-            </div>
-          </div>
-
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">
-              <Trans>Net Rate / 1h</Trans>
-            </div>
-            <div className="Chart-header-value flex flex-row items-center gap-8">
-              <div className="positive flex flex-row items-center gap-4">
-                <LongIcon className="fill-green-500" />
-                {info?.netRateHourlyLong ? formatRatePercentage(info?.netRateHourlyLong) : "-"}
-              </div>
-              <div className="negative flex flex-row items-center gap-4">
-                <ShortIcon className="fill-red-500" />
-                {info?.netRateHourlyShort ? formatRatePercentage(info?.netRateHourlyShort) : "-"}
-              </div>
-            </div>
-          </div>
-
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">
-              <Trans>Open Interest</Trans>
-            </div>
-            <div className="Chart-header-value flex flex-row items-center gap-8">
-              <div className="flex flex-row items-center gap-4">
-                <LongIcon />
-                {longOIValue}
-              </div>
-              <div className="flex flex-row items-center gap-4">
-                <ShortIcon />
-                {shortOIValue}
-              </div>
-            </div>
-          </div>
-
-          <div className="ExchangeChart-additional-info Chart-24h-low">
-            <div className="ExchangeChart-info-label">24h Volume</div>
-            <div className="Chart-header-value">{dailyVolume ? formatAmountHuman(dailyVolume, USD_DECIMALS) : "-"}</div>
-          </div>
+          {additionalInfo}
         </div>
       </div>
       <div className="ExchangeChart-info VersionSwitch-wrapper">
