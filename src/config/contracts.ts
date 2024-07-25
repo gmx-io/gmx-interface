@@ -189,7 +189,7 @@ const CONTRACTS = {
     SyntheticsReader: "0x5Ca84c34a381434786738735265b9f3FD814b824",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
-    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
   [AVALANCHE]: {
     // avalanche

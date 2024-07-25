@@ -43,7 +43,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
     { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
   ]);
 
-  const blockNumber = result.blockNumber;
+  const blockNumber = Number(result.blockNumber);
 
   const [nonce] = dataStore.interface.decodeFunctionResult("getUint", result.returnData[0].returnData);
   const [blockTimestamp] = multicall.interface.decodeFunctionResult(
