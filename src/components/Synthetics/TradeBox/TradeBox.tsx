@@ -223,6 +223,7 @@ export function TradeBox(p: Props) {
     isLeverageEnabled,
     setIsLeverageEnabled,
     isWrapOrUnwrap,
+    isSwitchTokensAllowed,
     switchTokenAddresses,
     tradeMode,
     tradeType,
@@ -923,7 +924,12 @@ export function TradeBox(p: Props) {
         </BuyInputSection>
 
         <div className="Exchange-swap-ball-container">
-          <button type="button" className="Exchange-swap-ball bg-blue-500" onClick={onSwitchTokens}>
+          <button
+            type="button"
+            disabled={!isSwitchTokensAllowed}
+            className="Exchange-swap-ball bg-blue-500"
+            onClick={onSwitchTokens}
+          >
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
         </div>
@@ -1088,7 +1094,7 @@ export function TradeBox(p: Props) {
             value={
               <MarketSelector
                 label={t`Market`}
-                className="SwapBox-info-dropdown"
+                className="-mr-4"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu

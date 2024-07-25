@@ -2795,13 +2795,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@headlessui/react@npm:1.6.1":
-  version: 1.6.1
-  resolution: "@headlessui/react@npm:1.6.1"
+"@headlessui/react@npm:1.7.19":
+  version: 1.7.19
+  resolution: "@headlessui/react@npm:1.7.19"
+  dependencies:
+    "@tanstack/react-virtual": ^3.0.0-beta.60
+    client-only: ^0.0.1
   peerDependencies:
     react: ^16 || ^17 || ^18
     react-dom: ^16 || ^17 || ^18
-  checksum: e69ac75b71dae4960790ca985a4b1eff4ba0e4a7c9b9d31791a0a0ae618dc125b7decd8801d530b017de02b90150884eb17c1c3dedcf42afc2b42f137e17c870
+  checksum: 2a343a5fcf1f45e870cc94613231b89a8da78114001ffafa4751a0eceae7569ff9237aff1f2aedfa6f6e53ee3bb9ba5e5d19ebf1878fee3ff4f3c733fddc1087
   languageName: node
   linkType: hard
 
@@ -4498,6 +4501,25 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
   checksum: 09589477abf28d742c618d98c6c93d7887250cc718de0ecfeee63570093c1a01ce709dfd1687c30dab48fefcf3f322ba6b0481c710b7db00c3af2423df220140
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-virtual@npm:^3.0.0-beta.60":
+  version: 3.8.2
+  resolution: "@tanstack/react-virtual@npm:3.8.2"
+  dependencies:
+    "@tanstack/virtual-core": 3.8.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: e4c7224e6049bd2127809e32759d9515a42044707063c927beb70f47396b337ffec55597e39f4a91fceda4c377205a304ad6928fd21a52ea3f7731944af1c3af
+  languageName: node
+  linkType: hard
+
+"@tanstack/virtual-core@npm:3.8.2":
+  version: 3.8.2
+  resolution: "@tanstack/virtual-core@npm:3.8.2"
+  checksum: 5e88ca4827e4d664b75b262f0f13cb2ee83828bab10c5287cbaa45d3eec1ed8a7e9e75d615afada5c0bf98d76e6faded818ad270ceff5ffb431a02d67b1a6a61
   languageName: node
   linkType: hard
 
@@ -10984,7 +11006,7 @@ __metadata:
     "@ensdomains/ens-avatar": 1.0.0-alpha.0.ethers.6
     "@floating-ui/dom": 1.6.7
     "@floating-ui/react": 0.26.19
-    "@headlessui/react": 1.6.1
+    "@headlessui/react": 1.7.19
     "@lingui/cli": 4.10.0
     "@lingui/core": 4.10.0
     "@lingui/loader": 4.10.0
@@ -11029,6 +11051,7 @@ __metadata:
     hex-to-rgba: 2.0.1
     html-to-image: ^1.10.8
     husky: 7.0.4
+    immer: 10.1.1
     lint-staged: 12.3.4
     lodash: 4.17.21
     prettier: 3.2.5
@@ -11886,6 +11909,13 @@ __metadata:
   version: 5.3.1
   resolution: "ignore@npm:5.3.1"
   checksum: 71d7bb4c1dbe020f915fd881108cbe85a0db3d636a0ea3ba911393c53946711d13a9b1143c7e70db06d571a5822c0a324a6bcde5c9904e7ca5047f01f1bf8cd3
+  languageName: node
+  linkType: hard
+
+"immer@npm:10.1.1":
+  version: 10.1.1
+  resolution: "immer@npm:10.1.1"
+  checksum: 07c67970b7d22aded73607193d84861bf786f07d47f7d7c98bb10016c7a88f6654ad78ae1e220b3c623695b133aabbf24f5eb8d9e8060cff11e89ccd81c9c10b
   languageName: node
   linkType: hard
 

@@ -7,9 +7,13 @@ type Props = {
   children: ReactNode;
   className?: string;
   tooltipText?: string;
+  /**
+   * @default true
+   */
+  bodyPadding?: boolean;
 };
 
-function Card({ title, children, className, tooltipText }: Props) {
+function Card({ title, children, className, tooltipText, bodyPadding = true }: Props) {
   return (
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
@@ -22,7 +26,7 @@ function Card({ title, children, className, tooltipText }: Props) {
         <div className="card-header">{title}</div>
       )}
       <div className="card-divider"></div>
-      <div className="card-body">{children}</div>
+      <div className={bodyPadding ? "card-body" : ""}>{children}</div>
     </div>
   );
 }

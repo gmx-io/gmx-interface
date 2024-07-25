@@ -9,6 +9,7 @@ import { helperToast } from "lib/helperToast";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
+  SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseDesktopRow,
   SelectorBaseMobileButton,
@@ -34,7 +35,7 @@ type Props = {
 };
 
 export function CollateralSelector(props: Props) {
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
     <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>

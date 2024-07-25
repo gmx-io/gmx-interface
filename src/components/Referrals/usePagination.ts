@@ -1,5 +1,5 @@
 import { usePrevious } from "lib/usePrevious";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type PaginateParams = {
   total: number;
@@ -45,10 +45,13 @@ export default function usePagination<T>(paginationKey: string, items: T[] = [],
     return items.slice(start, end + 1);
   }, [items, currentPage, size]);
 
+  const currentData = useMemo(() => getCurrentData(), [getCurrentData]);
+
   return {
     currentPage,
     setCurrentPage,
     pageCount: totalPages,
     getCurrentData,
+    currentData,
   };
 }

@@ -33,6 +33,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Bitcoin (WBTC)",
       symbol: "BTC",
       assetSymbol: "WBTC",
+      baseSymbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
@@ -1070,7 +1071,11 @@ export function getToken(chainId: number, address: string) {
 export function getTokenBySymbol(
   chainId: number,
   symbol: string,
-  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+  {
+    isSynthetic,
+    version,
+    symbolType = "symbol",
+  }: { isSynthetic?: boolean; version?: "v1" | "v2"; symbolType?: "symbol" | "baseSymbol" } = {}
 ) {
   let tokens = Object.values(TOKENS_MAP[chainId]);
 
@@ -1078,18 +1083,19 @@ export function getTokenBySymbol(
     tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
   }
 
-  if (isSynthetic) {
-    const syntheticToken = tokens.find((token) => {
-      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
+  let token: Token | undefined;
+
+  if (isSynthetic !== undefined) {
+    token = tokens.find((token) => {
+      return token[symbolType]?.toLowerCase() === symbol.toLowerCase() && Boolean(token.isSynthetic) === isSynthetic;
     });
-    if (syntheticToken) {
-      return syntheticToken;
+  } else {
+    if (symbolType === "symbol" && TOKENS_BY_SYMBOL_MAP[chainId][symbol]) {
+      token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
+    } else {
+      token = tokens.find((token) => token[symbolType]?.toLowerCase() === symbol.toLowerCase());
     }
   }
-
-  const token =
-    tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase()) ||
-    TOKENS_BY_SYMBOL_MAP[chainId][symbol];
 
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
@@ -1149,10 +1155,10 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
 export function getTokenBySymbolSafe(
   chainId: number,
   symbol: string,
-  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+  params: Parameters<typeof getTokenBySymbol>[2] = {}
 ) {
   try {
-    return getTokenBySymbol(chainId, symbol, { isSynthetic, version });
+    return getTokenBySymbol(chainId, symbol, params);
   } catch (e) {
     return;
   }
@@ -1160,4 +1166,16 @@ export function getTokenBySymbolSafe(
 
 export function isTokenInList(token: Token, tokenList: Token[]): boolean {
   return tokenList.some((t) => t.address === token.address);
+}
+
+export function isSimilarToken(tokenA: Token, tokenB: Token) {
+  if (tokenA.address === tokenB.address) {
+    return true;
+  }
+
+  if (tokenA.symbol === tokenB.symbol || tokenA.baseSymbol === tokenB.symbol || tokenA.symbol === tokenB.baseSymbol) {
+    return true;
+  }
+
+  return false;
 }

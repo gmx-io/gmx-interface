@@ -250,6 +250,10 @@
   text-align: left;
   white-space: nowrap;
 }
+.referral-table th:last-of-type,
+.referral-table td:last-of-type {
+  text-align: right;
+}
 
 .table-referral-code p {
   margin: 0;
