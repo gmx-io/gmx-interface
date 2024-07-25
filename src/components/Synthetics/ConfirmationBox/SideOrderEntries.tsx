@@ -119,7 +119,7 @@ function SideOrderEntry({
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className="max-w-70 rounded-4 py-2 pr-5 text-right text-14"
+          className="max-w-90 rounded-4 py-2 pr-5 text-right text-14"
         />
 
         {priceError && (
