@@ -66,6 +66,8 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionSeller.scss";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -565,6 +567,11 @@ export function PositionSeller(p: Props) {
 
               <ExchangeInfo.Group>
                 <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
+                <TradeFeesRow {...fees} feesType="decrease" />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>

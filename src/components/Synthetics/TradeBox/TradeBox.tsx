@@ -1302,8 +1302,9 @@ export function TradeBox(p: Props) {
                   <NetworkFeeRow executionFee={executionFee} />
                 </ExchangeInfo.Group>
               )}
-              <ExchangeInfo.Group>
-                {(isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
+
+              {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
+                <ExchangeInfo.Group>
                   <ExchangeInfoRow
                     label={t`Receive`}
                     value={formatTokenAmountWithUsd(
@@ -1313,13 +1314,12 @@ export function TradeBox(p: Props) {
                       collateralToken?.decimals
                     )}
                   />
-                )) ||
-                  null}
-                <MinReceiveRow allowedSlippage={allowedSlippage} />
-              </ExchangeInfo.Group>
+                  <MinReceiveRow allowedSlippage={allowedSlippage} />
+                </ExchangeInfo.Group>
+              )}
 
-              <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>
-              <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>
+              {tradeboxWarningRows && <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>}
+              {triggerConsentRows && <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>}
             </ExchangeInfo>
             <div className="Exchange-swap-button-container">{button}</div>
           </form>

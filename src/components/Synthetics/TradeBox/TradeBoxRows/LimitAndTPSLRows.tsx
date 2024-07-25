@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxSetAdvancedOptions,
@@ -16,6 +15,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 import { SideOrderEntries } from "../components/SideOrderEntries";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function LimitAndTPSLRows() {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
@@ -56,7 +56,7 @@ export function LimitAndTPSLRows() {
             {entriesInfo.totalPnL === 0n ? (
               "-"
             ) : (
-              <Tooltip
+              <TooltipWithPortal
                 handle={`${formatUsd(entriesInfo.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                   signed: true,
                 })})`}
@@ -74,9 +74,9 @@ export function LimitAndTPSLRows() {
                       entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 
                     return (
-                      <div className="mb-5 flex justify-between" key={index}>
+                      <div className="mb-5 flex justify-between whitespace-nowrap" key={index}>
                         {(price && percentage && (
-                          <span className="mr-15">
+                          <span className="mr-15 whitespace-nowrap">
                             At ${price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
                           </span>
                         )) ||

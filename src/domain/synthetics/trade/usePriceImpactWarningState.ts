@@ -72,18 +72,18 @@ export function usePriceImpactWarningState({
 
     if (place === "tradeBox") {
       validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
-      shouldShowWarning = isHighSwapImpact;
       shouldShowWarningForSwap = isHighSwapImpact;
 
       if (!tradeFlags.isSwap) {
         validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
-        shouldShowWarning = isHighPositionImpact;
         shouldShowWarningForPosition = isHighPositionImpact;
 
         if (tradeFlags.isLimit || tradeFlags.isTrigger) {
           shouldShowWarningForPosition = shouldShowWarning && triggerPrice !== undefined;
         }
       }
+
+      shouldShowWarning = shouldShowWarningForPosition || shouldShowWarningForSwap;
     } else if (place === "positionSeller") {
       validationError =
         (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
