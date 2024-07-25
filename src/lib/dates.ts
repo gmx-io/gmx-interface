@@ -93,3 +93,32 @@ export function useDateRange() {
 
   return [startDate, endDate, setDateRange] as const;
 }
+
+export const SECONDS_IN_DAY = 86400;
+
+export function floorTimestamp(timestamp: number, period: "day" | "hour") {
+  const delimiter = period === "day" ? 86400 : 3600;
+  return Math.floor(timestamp / delimiter) * delimiter;
+}
+
+export function getTodayStart() {
+  return floorTimestamp(Date.now() / 1000, "day");
+}
+
+export function getYearStart() {
+  return floorTimestamp(new Date(new Date().getUTCFullYear(), 0, 1, 0, 0, 0, 0).getTime() / 1000, "day");
+}
+
+export function getTimePeriodsInSeconds() {
+  const todayStart = getTodayStart();
+  const todayEnd = todayStart + SECONDS_IN_DAY;
+  const yearStart = getYearStart();
+
+  return {
+    today: [todayStart, todayEnd],
+    yesterday: [todayStart - 1 * SECONDS_IN_DAY, todayStart],
+    week: [todayStart - 7 * SECONDS_IN_DAY, todayEnd],
+    month: [todayStart - 30 * SECONDS_IN_DAY, todayEnd],
+    year: [yearStart, todayEnd],
+  };
+}

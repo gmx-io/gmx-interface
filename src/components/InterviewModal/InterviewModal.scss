@@ -1,0 +1,29 @@
+.InterviewModal {
+  max-width: 38rem;
+  line-height: 1.5;
+  font-size: var(--font-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.InterviewModal-bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.InterviewModal-bullet {
+  line-height: 2rem;
+  font-size: var(--font-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.InterviewModal-bullet-point {
+  flex-shrink: 0;
+  height: 1.2rem;
+  width: 1.2rem;
+}

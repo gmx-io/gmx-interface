@@ -1,6 +1,7 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
+import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -13,12 +14,13 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
+import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { formatDate, getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
@@ -58,6 +60,8 @@ export type SyntheticsState = {
 
     gasLimits: ReturnType<typeof useGasLimits>;
     gasPrice: ReturnType<typeof useGasPrice>;
+
+    lastWeekAccountStats?: PeriodAccountStats;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -139,6 +143,16 @@ export function SyntheticsStateContextProvider({
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const lastWeekPeriod = useMemo(() => getTimePeriodsInSeconds().week, [formatDate(Date.now())]);
+
+  const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
+    account,
+    from: lastWeekPeriod[0],
+    to: lastWeekPeriod[1],
+    enabled: pageType === "trade",
+  });
+
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId);
@@ -174,6 +188,7 @@ export function SyntheticsStateContextProvider({
 
         keepLeverage,
         setKeepLeverage,
+        lastWeekAccountStats,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -203,6 +218,7 @@ export function SyntheticsStateContextProvider({
     gasPrice,
     keepLeverage,
     setKeepLeverage,
+    lastWeekAccountStats,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

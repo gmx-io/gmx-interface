@@ -25,6 +25,7 @@ export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
+export const DEBUG_ACCOUNT_ADDRESS = "debug-account-address";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -42,6 +43,8 @@ export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
 export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";
 export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-wrap-or-unwrap-warn-hidden";
+
+export const INTERVIEW_INVITATION_SHOWN_TIME = "interview-invitation-shown-time";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
