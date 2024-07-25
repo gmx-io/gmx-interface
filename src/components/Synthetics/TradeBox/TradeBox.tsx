@@ -104,7 +104,6 @@ import useWallet from "lib/wallets/useWallet";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
-import { MarketCard } from "../MarketCard/MarketCard";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -154,7 +153,7 @@ export function TradeBox(p: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
-  const { allowedSlippage, setPendingTxns } = p;
+  const { setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
   const history = useHistory();
@@ -1429,9 +1428,6 @@ export function TradeBox(p: Props) {
       </div>
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-      <div className="Exchange-swap-info-group">
-        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
-      </div>
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
