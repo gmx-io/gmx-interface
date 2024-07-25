@@ -354,7 +354,10 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.collateralDeltaUsd =
-      // https://app.asana.com/0/1204313444805313/1207549197964321/f
+      /**
+       * 1. @see https://app.asana.com/0/1204313444805313/1207549197964321/f
+       * 2. leverageWithoutPnl may be zero if sizeInUsd is defaulted to 0n when position not ready yet
+       */
       leverageWithoutPnl !== undefined && leverageWithoutPnl !== 0n
         ? remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl)
         : 0n;

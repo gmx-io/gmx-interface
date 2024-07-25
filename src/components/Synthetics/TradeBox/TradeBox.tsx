@@ -136,6 +136,7 @@ import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 import "./TradeBox.scss";
+import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -189,6 +190,7 @@ export function TradeBox(p: Props) {
   } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
+  const { reset: resetSidecarOrders } = useSidecarOrders();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const minResidualAmount = useMemo(
@@ -723,14 +725,6 @@ export function TradeBox(p: Props) {
     setPendingTxns,
   });
 
-  const onConfirmed = useCallback(() => {
-    if (isMarket) {
-      setStage("processing");
-      return;
-    }
-    setStage("trade");
-  }, [isMarket, setStage]);
-
   const onSubmit = useCallback(() => {
     setStage("processing");
 
@@ -750,7 +744,6 @@ export function TradeBox(p: Props) {
     }
 
     if (subaccount) {
-      onConfirmed();
       setStage("trade");
 
       return;
@@ -758,7 +751,7 @@ export function TradeBox(p: Props) {
 
     txnPromise
       .then(() => {
-        onConfirmed();
+        resetSidecarOrders();
       })
       .finally(() => {
         setStage("trade");
@@ -768,11 +761,11 @@ export function TradeBox(p: Props) {
     isIncrease,
     isSwap,
     isWrapOrUnwrap,
-    onConfirmed,
     openConnectModal,
     setStage,
     tradeboxTransactions,
     subaccount,
+    resetSidecarOrders,
   ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);

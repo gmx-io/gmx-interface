@@ -348,9 +348,16 @@ export function useSidecarOrders() {
     };
   }, [getDecreaseAmountsFromEntry, takeProfitEntriesInfo, canCalculatePnL]);
 
+  const reset = useCallback(() => {
+    limit.reset();
+    stopLoss.reset();
+    takeProfit.reset();
+  }, [limit, stopLoss, takeProfit]);
+
   return {
     stopLoss,
     takeProfit,
     limit,
+    reset,
   };
 }

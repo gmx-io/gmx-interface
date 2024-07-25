@@ -25,7 +25,7 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
   const previousMarketAddress = usePrevious(marketAddress);
   const previousCollateralToken = usePrevious(collateralToken);
 
-  const { stopLoss, takeProfit, limit } = useSidecarOrders();
+  const { reset } = useSidecarOrders();
 
   const shouldResetLimitOrTPSL =
     fromTokenAddress !== previouseFromTokenAddress ||
@@ -37,9 +37,7 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
   useEffect(() => {
     if (shouldResetLimitOrTPSL) {
       setTriggerConsent(false);
-      stopLoss?.reset();
-      takeProfit?.reset();
-      limit?.reset();
+      reset();
     }
-  }, [stopLoss, takeProfit, limit, shouldResetLimitOrTPSL, setTriggerConsent]);
+  }, [reset, shouldResetLimitOrTPSL, setTriggerConsent]);
 }
