@@ -1124,7 +1124,7 @@ export function ConfirmationBox(p: Props) {
                   entriesInfo?.entries?.map((entry, index) => {
                     if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
 
-                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, 2);
+                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, marketDecimals);
                     const percentage =
                       entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 

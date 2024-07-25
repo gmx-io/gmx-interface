@@ -12,6 +12,7 @@ import { SidecarOrderEntryGroup, SidecarOrderEntry } from "domain/synthetics/sid
 import { isIncreaseOrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 const ADD_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-green-500) 15%,#0000)" };
@@ -52,13 +53,17 @@ function SideOrderEntry({
   const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);
   const isLong = entry.order?.isLong;
 
+  const marketPricesDecimals = useSelector(selectSelectedMarketPriceDecimals);
+
   const priceTooltipMsg =
     indexToken &&
     entry.price?.value &&
     entry.sizeUsd?.value &&
     `${isIncrease ? "Increase" : "Decrease"} ${indexToken?.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
       entry.sizeUsd.value
-    )} at ${formatUsd(entry.price.value ?? undefined)}.`;
+    )} at ${formatUsd(entry.price.value ?? undefined, {
+      displayDecimals: marketPricesDecimals,
+    })}.`;
 
   const sizeTooltipMsg =
     sizeError || priceTooltipMsg ? (
@@ -119,7 +124,7 @@ function SideOrderEntry({
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className="max-w-70 rounded-4 py-2 pr-5 text-right text-14"
+          className="max-w-90 rounded-4 py-2 pr-5 text-right text-14"
         />
 
         {priceError && (
