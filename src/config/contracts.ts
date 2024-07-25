@@ -318,7 +318,7 @@ export function getContract(chainId: number, name: string): string {
   return CONTRACTS[chainId][name];
 }
 
-function makeGetContract<T extends unknown & { abi: InterfaceAbi; connect: (address: string) => unknown }>(
+function makeGetContract<T extends { abi: InterfaceAbi; connect: (address: string) => unknown }>(
   name: string,
   factory: T
 ) {
