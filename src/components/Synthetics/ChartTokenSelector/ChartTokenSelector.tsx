@@ -40,31 +40,57 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
+import "./ChartTokenSelector.scss";
+
 type Props = {
   selectedToken: Token | undefined;
   options: Token[] | undefined;
+  isMobile?: boolean;
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken } = props;
+  const { options, selectedToken, isMobile } = props;
 
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const poolName = marketInfo ? getMarketPoolName(marketInfo) : null;
+
+  const handleClassName =
+    isMobile === undefined ? undefined : isMobile ? "ChartTokenSelector-mobile" : "ChartTokenSelector-desktop";
 
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-12}
+      handleClassName={handleClassName}
       label={
         selectedToken ? (
-          <span className="inline-flex items-center whitespace-nowrap py-5 pl-0 text-[20px] font-bold max-[380px]:text-16">
-            <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
-            <span className="flex flex-col justify-start">
+          <span
+            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold max-[380px]:text-16", {
+              "items-start": !isMobile,
+              "items-center": isMobile,
+            })}
+          >
+            <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <span
+              className={cx("flex justify-start", {
+                "flex-col": !isMobile,
+                "flex-row items-center": isMobile,
+              })}
+            >
               <span>
                 {selectedToken.symbol} {"/ USD"}
               </span>
-              {poolName ? <span className="subtext !ml-0">{`[${poolName}]`}</span> : ""}
+              {poolName ? (
+                <span
+                  className={cx("subtext", {
+                    "!ml-0": !isMobile,
+                    "!ml-8": isMobile,
+                  })}
+                >{`[${poolName}]`}</span>
+              ) : (
+                ""
+              )}
             </span>
           </span>
         ) : (

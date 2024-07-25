@@ -161,7 +161,7 @@ function SelectorBaseDesktop(props: Props) {
             ref={refs.setReference}
           >
             {props.label}
-            <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />
+            <BiChevronDown className="SelectorBase-icon -my-5 -mr-4 ml-5 inline-block align-middle text-24" />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>

@@ -62,7 +62,7 @@ function TVChartHeaderInfoMobile() {
     <div className="Chart-header--mobile">
       <div className="Chart-header--mobile-top">
         <div>
-          <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
+          <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
 
           <div className="flex cursor-pointer flex-row gap-8" role="button" onClick={toggleDetailsVisible}>
             <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-500 p-2">
@@ -248,7 +248,7 @@ function TVChartHeaderInfoDesktop() {
   return (
     <div className="Chart-header">
       <div className="flex items-center justify-center">
-        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} />
+        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile={false} />
       </div>
       <div className="Chart-top-scrollable-container">
         <div className="Chart-top-scrollable-fade-overlay">
