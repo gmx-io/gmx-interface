@@ -569,6 +569,7 @@ export function PositionEditor(p: Props) {
       onClick={onSubmit}
       disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
+      qa="confirm-button"
     >
       {error || localizedOperationLabels[operation]}
     </Button>
@@ -597,6 +598,7 @@ export function PositionEditor(p: Props) {
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
+        qa="position-edit-modal"
       >
         {position && (
           <>
@@ -673,6 +675,7 @@ export function PositionEditor(p: Props) {
                   );
                 }
               }}
+              qa="amount-input"
             >
               {availableSwapTokens ? (
                 <TokenSelector

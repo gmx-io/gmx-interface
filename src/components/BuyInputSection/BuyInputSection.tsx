@@ -136,6 +136,7 @@ export default function BuyInputSection(props: Props) {
                 onPercentChange?.(percentage);
                 handleOnBlur();
               }}
+              data-qa={`${qa}-percent-selector-${percentage}`}
             >
               {percentage}%
             </li>
