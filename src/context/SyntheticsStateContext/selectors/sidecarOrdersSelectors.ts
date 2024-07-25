@@ -11,6 +11,7 @@ import {
   selectConfirmationBoxExistingTpOrders,
   selectConfirmationBoxExistingLimitOrders,
 } from "./confirmationBoxSelectors";
+import { selectSelectedMarketPriceDecimals } from "./statsSelectors";
 
 export const selectConfirmationBoxSidecarOrdersSlEntries = (state: SyntheticsState) =>
   state.confirmationBox.sidecarOrders.slEntries;
@@ -95,18 +96,36 @@ export const selectConfirmationBoxSidecarOrdersExistingSlEntries = createSelecto
   const existingSlOrders = q(selectConfirmationBoxExistingSlOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  return prepareInitialEntries({ positionOrders: existingSlOrders, sort: isLong ? "desc" : "asc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingSlOrders,
+    sort: isLong ? "desc" : "asc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
 
 export const selectConfirmationBoxSidecarOrdersExistingTpEntries = createSelector((q) => {
   const existingTpOrders = q(selectConfirmationBoxExistingTpOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  return prepareInitialEntries({ positionOrders: existingTpOrders, sort: isLong ? "asc" : "desc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingTpOrders,
+    sort: isLong ? "asc" : "desc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
 
 export const selectConfirmationBoxSidecarOrdersExistingLimitEntries = createSelector((q) => {
   const existingLimitOrders = q(selectConfirmationBoxExistingLimitOrders);
 
-  return prepareInitialEntries({ positionOrders: existingLimitOrders, sort: "desc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingLimitOrders,
+    sort: "desc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
