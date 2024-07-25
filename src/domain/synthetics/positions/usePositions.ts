@@ -29,17 +29,15 @@ export function usePositions(
   p: {
     marketsInfoData?: MarketsData;
     tokensData?: TokensData;
-    pricesUpdatedAt?: number;
     account: string | null | undefined;
   }
 ): PositionsResult {
-  const { marketsInfoData, tokensData, pricesUpdatedAt, account } = p;
+  const { marketsInfoData, tokensData, account } = p;
 
   const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
-    key: account ? [account, pricesUpdatedAt] : null,
+    key: account ? [account] : null,
 
-    // Refresh on every prices update
-    refreshInterval: null,
+    refreshInterval: 5000,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
@@ -68,10 +66,9 @@ export function usePositions(
   });
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys, pricesUpdatedAt] : null,
+    key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys] : null,
 
-    // Refresh on every prices update
-    refreshInterval: null,
+    refreshInterval: 5000,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

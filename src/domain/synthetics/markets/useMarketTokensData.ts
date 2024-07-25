@@ -21,16 +21,15 @@ type MarketTokensDataResult = {
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
-  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const isDataLoaded = tokensData && marketsAddresses?.length;
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-"), pricesUpdatedAt] : undefined,
+    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
-    // Refresh on every prices update
-    refreshInterval: null,
+    refreshInterval: 5000,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

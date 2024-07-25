@@ -58,7 +58,7 @@ export function hashDataMapAsync<
     if (result === "timeout") {
       delete promises[id];
       // eslint-disable-next-line no-console
-      console.error("[hashDataMapAsync] Worker did not respond in time. Falling back to main thread.");
+      console.error(`[hashDataMapAsync] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`);
       const result = hashDataMap(map);
 
       resolve(result);

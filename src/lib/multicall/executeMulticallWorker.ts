@@ -61,7 +61,10 @@ export async function executeMulticallWorker(
       delete promises[id];
 
       // eslint-disable-next-line no-console
-      console.error("[executeMulticallWorker] Worker did not respond in time. Falling back to main thread.", request);
+      console.error(
+        `[executeMulticallWorker] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`,
+        request
+      );
       try {
         const result = await executeMulticallMainThread(chainId, request);
 
