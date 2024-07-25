@@ -247,7 +247,7 @@ type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { address: account } = useAccount();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -305,6 +305,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
+    pricesUpdatedAt,
   };
 }
 

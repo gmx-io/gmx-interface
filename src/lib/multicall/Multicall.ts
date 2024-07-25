@@ -1,4 +1,5 @@
-import { createPublicClient, http } from "viem";
+import { ClientConfig, createPublicClient, http } from "viem";
+import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
@@ -16,7 +17,13 @@ const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE]: avalanche,
 };
 
-const BATCH_CONFIGS = {
+const BATCH_CONFIGS: Record<
+  number,
+  {
+    http: BatchOptions;
+    client: ClientConfig["batch"];
+  }
+> = {
   [ARBITRUM]: {
     http: {
       batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
