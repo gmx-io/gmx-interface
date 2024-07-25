@@ -83,6 +83,7 @@ export function useAffiliateTier(signer, chainId, account) {
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: 60000,
     }
   );
   return {
@@ -100,6 +101,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
       : null,
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: 60000,
     }
   );
 
@@ -149,14 +151,14 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(signer, ReferralStorage) as any }
+    { fetcher: contractFetcher(signer, ReferralStorage) as any, refreshInterval: 60000 }
   );
 
   const { data: localStorageCodeOwner } = useSWR<string>(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
-    { fetcher: contractFetcher(signer, ReferralStorage) as any }
+    { fetcher: contractFetcher(signer, ReferralStorage) as any, refreshInterval: 60000 }
   );
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
@@ -213,6 +215,7 @@ export function useCodeOwner(signer, chainId, account, code) {
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: 60000,
     }
   );
   return {
@@ -233,6 +236,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
     ],
     {
       fetcher: contractFetcher(library, ReferralStorage) as any,
+      refreshInterval: 60000,
     }
   );
   return {
