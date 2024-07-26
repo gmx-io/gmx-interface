@@ -17,6 +17,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
+import { selectSelectedMarketPriceDecimals } from "../statsSelectors";
 
 export const selectTradeboxExistingSlOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
@@ -131,20 +132,38 @@ export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) =
   const existingSlOrders = q(selectTradeboxExistingSlOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  return prepareInitialEntries({ positionOrders: existingSlOrders, sort: isLong ? "desc" : "asc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingSlOrders,
+    sort: isLong ? "desc" : "asc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
 
 export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) => {
   const existingTpOrders = q(selectTradeboxExistingTpOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  return prepareInitialEntries({ positionOrders: existingTpOrders, sort: isLong ? "asc" : "desc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingTpOrders,
+    sort: isLong ? "asc" : "desc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
 
 export const selectTradeboxSidecarOrdersExistingLimitEntries = createSelector((q) => {
   const existingLimitOrders = q(selectTradeboxExistingLimitOrders);
 
-  return prepareInitialEntries({ positionOrders: existingLimitOrders, sort: "desc" });
+  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
+
+  return prepareInitialEntries({
+    positionOrders: existingLimitOrders,
+    sort: "desc",
+    priceDecimals: selectedMarketDecimals,
+  });
 });
 
 export const selectTradeboxMockPosition = createSelector((q) => {

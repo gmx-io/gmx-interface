@@ -307,11 +307,6 @@ function UnstakeModal(props: {
 
   let amount = parseValue(value, 18);
 
-  const unstakeGmxPercentage =
-    maxAmount !== undefined && maxAmount > 0 && amount !== undefined
-      ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
-      : 0n;
-
   let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
     amount !== undefined &&
@@ -325,11 +320,7 @@ function UnstakeModal(props: {
     }
   }
 
-  const govTokenAmount = useGovTokenAmount(chainId);
-  const votingPowerBurnAmount =
-    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
-      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
-      : 0n;
+  const votingPowerBurnAmount = amount;
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
@@ -1268,7 +1259,6 @@ export default function StakeV2() {
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
   const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<bigint | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1419,6 +1409,13 @@ export default function StakeV2() {
     }
   );
 
+  const { data: sbfGmxBalance } = useSWR(
+    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    {
+      fetcher: contractFetcher(undefined, Token),
+    }
+  );
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1469,6 +1466,13 @@ export default function StakeV2() {
     gmxSupply
   );
 
+  const reservedAmount =
+    (processedData?.gmxInStakedGmx !== undefined &&
+      processedData?.esGmxInStakedGmx !== undefined &&
+      sbfGmxBalance !== undefined &&
+      processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
+    0n;
+
   let totalRewardTokens;
 
   if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
@@ -1491,21 +1495,6 @@ export default function StakeV2() {
   let totalSupplyUsd;
   if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
-  }
-
-  let maxUnstakeableGmx = 0n;
-  if (
-    totalRewardTokens !== undefined &&
-    vestingData &&
-    vestingData.gmxVesterPairAmount !== undefined &&
-    processedData?.bonusGmxInFeeGmx !== undefined
-  ) {
-    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
-    const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = stakedTokens;
-    if (divisor > 0) {
-      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
-    }
   }
 
   const showStakeGmxModal = () => {
@@ -1545,13 +1534,13 @@ export default function StakeV2() {
 
     setIsVesterDepositModalVisible(true);
     setVesterDepositTitle(t`GMX Vault`);
-    setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points");
+    setVesterDepositStakeTokenLabel("staked GMX + esGMX");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
-    setVesterDepositReserveAmount(vestingData.gmxVester.pairAmount);
+    setVesterDepositReserveAmount(reservedAmount);
     setVesterDepositMaxReserveAmount(totalRewardTokens);
     setVesterDepositValue("");
     setVesterDepositAddress(gmxVesterAddress);
@@ -1609,19 +1598,12 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake GMX`);
     let maxAmount = processedData?.gmxInStakedGmx;
-    if (
-      processedData?.gmxInStakedGmx !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < processedData.gmxInStakedGmx
-    ) {
-      maxAmount = maxUnstakeableGmx;
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
     }
+
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("GMX");
     setUnstakeMethodName("unstakeGmx");
@@ -1631,19 +1613,12 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData?.esGmxInStakedGmx;
-    if (
-      maxAmount !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < maxAmount
-    ) {
-      maxAmount = maxUnstakeableGmx;
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
     }
+
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("esGMX");
     setUnstakeMethodName("unstakeEsGmx");
@@ -1760,7 +1735,7 @@ export default function StakeV2() {
         chainId={chainId}
         title={unstakeModalTitle}
         maxAmount={unstakeModalMaxAmount}
-        reservedAmount={unstakeModalReservedAmount}
+        reservedAmount={reservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
         signer={signer}
@@ -2489,8 +2464,7 @@ export default function StakeV2() {
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatKeyAmount(vestingData, "gmxVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(totalRewardTokens, 18, 2, true)}
+                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">

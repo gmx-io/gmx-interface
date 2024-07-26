@@ -1,8 +1,8 @@
-import { Contract } from "ethers";
+import { BaseContract } from "ethers";
 import { helperToast } from "./helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
-import { getGasLimit, setGasPrice } from "./contracts";
+import { getGasLimit, getGasPrice } from "./contracts";
 
 const sentReports: {
   url: string;
@@ -11,7 +11,7 @@ const sentReports: {
 
 export const simulateTxWithTenderly = async (
   chainId: number,
-  contract: Contract,
+  contract: BaseContract,
   account: string,
   method: string,
   params: any,
@@ -37,8 +37,7 @@ export const simulateTxWithTenderly = async (
     throw new Error("No block number found");
   }
 
-  const gasPriceData: any = {};
-  await setGasPrice({}, contract.runner.provider, chainId);
+  const gasPriceData = await getGasPrice(contract.runner.provider, chainId);
 
   let gas: undefined | bigint = undefined;
 
