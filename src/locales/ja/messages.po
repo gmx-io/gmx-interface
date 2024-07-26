@@ -335,6 +335,10 @@ msgstr "ポジション"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
@@ -1768,6 +1772,10 @@ msgstr ""
 msgid "Size"
 msgstr "サイズ"
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -2260,6 +2268,10 @@ msgstr "清算価格を上回る価格"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX product manager"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2974,6 +2986,10 @@ msgstr "ArbitrumでGMXを使ってべスティングする"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Official Telegram account"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3743,6 +3759,10 @@ msgstr "価格インパクト"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
+msgstr ""
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Click here to give us your feedback on GMX"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -5276,6 +5296,10 @@ msgstr ""
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim esGMX"
 msgstr "esGMXの請求"
@@ -5324,6 +5348,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "{0}の注文を作成する"
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Official Discord account: @gmx_feedback"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Limit order"

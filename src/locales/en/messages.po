@@ -335,6 +335,10 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
+msgstr "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
@@ -1768,6 +1772,10 @@ msgstr "Buy GMX on {chainName}"
 msgid "Size"
 msgstr "Size"
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+msgstr "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -2261,6 +2269,10 @@ msgstr "Price above Liq. Price"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX product manager"
+msgstr "Anonymous chat with GMX product manager"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
@@ -2975,6 +2987,10 @@ msgstr "Vest with GMX on Arbitrum"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Official Telegram account"
+msgstr "Official Telegram account"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3747,6 +3763,10 @@ msgstr "Price Impact"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr "Select a token"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Click here to give us your feedback on GMX"
+msgstr "Click here to give us your feedback on GMX"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -5279,6 +5299,10 @@ msgstr "Price above highest Limit Price."
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
+msgstr "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim esGMX"
 msgstr "Claim esGMX"
@@ -5327,6 +5351,10 @@ msgstr "Compounding..."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "Create {0} Order"
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Official Discord account: @gmx_feedback"
+msgstr "Official Discord account: @gmx_feedback"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Limit order"
