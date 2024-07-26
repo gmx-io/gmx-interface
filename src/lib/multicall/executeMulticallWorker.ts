@@ -53,7 +53,7 @@ export async function executeMulticallWorker(
   const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(4000).then(() => "timeout");
+  const escapePromise = sleep(2000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then(async (result) => {
