@@ -132,5 +132,8 @@ export function usePnlSummaryData(chainId: number, account: Address) {
     });
   }, [res.data?.accountPnlSummaryStats, showDebugValues]);
 
-  return { data: transformedData, error: res.error, loading: res.loading };
+  return useMemo(
+    () => ({ data: transformedData, error: res.error, loading: res.loading }),
+    [res.error, res.loading, transformedData]
+  );
 }

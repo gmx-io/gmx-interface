@@ -43,5 +43,5 @@ export function usePeriodAccountStats(
     };
   }, [res.data]);
 
-  return { data: result, error: res.error, loading: res.loading };
+  return useMemo(() => ({ data: result, error: res.error, loading: res.loading }), [res.error, res.loading, result]);
 }

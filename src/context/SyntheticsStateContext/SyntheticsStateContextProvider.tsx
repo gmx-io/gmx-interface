@@ -20,7 +20,7 @@ import { PositionSellerState, usePositionSellerState } from "domain/synthetics/t
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatDate, getTimePeriodsInSeconds } from "lib/dates";
+import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
@@ -144,7 +144,7 @@ export function SyntheticsStateContextProvider({
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const lastWeekPeriod = useMemo(() => getTimePeriodsInSeconds().week, [formatDate(Date.now())]);
+  const lastWeekPeriod = useMemo(() => getTimePeriodsInSeconds().week, []);
 
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
