@@ -11,13 +11,14 @@ export const PERCENTAGE_DECEMALS = 0;
 
 export function getDefaultEntryField(
   decimals: number | undefined,
-  { input, value, error }: Partial<EntryField> = {}
+  { input, value, error }: Partial<EntryField> = {},
+  priceDecimals?: number
 ): EntryField {
   let nextInput = "";
   let nextValue: bigint | null = null;
   let nextError = error ?? null;
 
-  const displayPercentage = Math.min(2, decimals ?? 0);
+  const displayPercentage = priceDecimals ?? Math.min(2, decimals ?? 0);
 
   if (input) {
     nextInput = input;
@@ -50,9 +51,11 @@ export function getDefaultEntry<T extends SidecarOrderEntryBase>(
 export function prepareInitialEntries({
   positionOrders,
   sort = "desc",
+  priceDecimals,
 }: {
   positionOrders: PositionOrderInfo[] | undefined;
   sort: "desc" | "asc";
+  priceDecimals?: number;
 }): undefined | InitialEntry[] {
   if (!positionOrders) return;
 
@@ -67,7 +70,7 @@ export function prepareInitialEntries({
     .map((order) => {
       const entry: InitialEntry = {
         sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
-        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }),
+        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, priceDecimals),
         order,
       };
 
