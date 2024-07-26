@@ -137,6 +137,7 @@ import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContex
 
 import "./TradeBox.scss";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -1275,6 +1276,17 @@ export function TradeBox(p: Props) {
             {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
             <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
+              {isSwap && isLimit && (
+                <ExchangeInfo.Group>
+                  <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
+                    <Trans>
+                      The execution price will constantly vary based on fees and price impact to guarantee that you
+                      receive the minimum receive amount.
+                    </Trans>
+                  </AlertInfo>
+                </ExchangeInfo.Group>
+              )}
+
               <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
               <ExchangeInfo.Group>
                 <TradeBoxOneClickTrading />
