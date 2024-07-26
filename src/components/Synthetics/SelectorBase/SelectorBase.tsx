@@ -12,6 +12,7 @@ import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./SelectorBase.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = PropsWithChildren<{
   handleClassName?: string;
@@ -81,8 +82,17 @@ export function SelectorBaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
     disabled?: boolean;
     disabledMessage?: ReactNode;
+    message?: ReactNode;
   }
 ) {
+  const body = useMemo(() => {
+    if (props.message) {
+      return <TooltipWithPortal content={props.message}>{props.children}</TooltipWithPortal>;
+    }
+
+    return props.children;
+  }, [props.children, props.message]);
+
   if (props.disabled && props.disabledMessage) {
     return (
       <Tooltip
@@ -107,7 +117,7 @@ export function SelectorBaseDesktopRow(
         props.className
       )}
     >
-      {props.children}
+      {body}
     </tr>
   );
 }

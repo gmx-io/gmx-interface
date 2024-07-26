@@ -1221,9 +1221,13 @@ export function TradeBox(p: Props) {
   const buttonContent = (
     <Button
       variant="primary-action"
-      className="w-full"
+      className="mt-4 w-full"
       onClick={onSubmit}
-      disabled={(isSubmitButtonDisabled && !shouldDisableValidationForTesting) || submitButtonState.disabled}
+      disabled={
+        (isSubmitButtonDisabled || submitButtonState.disabled) &&
+        !shouldDisableValidationForTesting &&
+        stage !== "processing"
+      }
     >
       {submitButtonState.text}
     </Button>
@@ -1289,12 +1293,10 @@ export function TradeBox(p: Props) {
                 <TradeBoxAdvancedGroups />
               </ExchangeInfo.Group>
 
-              {feesType && (
-                <ExchangeInfo.Group>
-                  <TradeFeesRow {...fees} feesType={feesType} />
-                  <NetworkFeeRow executionFee={executionFee} />
-                </ExchangeInfo.Group>
-              )}
+              <ExchangeInfo.Group>
+                <TradeFeesRow {...fees} feesType={feesType} />
+                <NetworkFeeRow executionFee={executionFee} />
+              </ExchangeInfo.Group>
 
               {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                 <ExchangeInfo.Group>
@@ -1307,6 +1309,11 @@ export function TradeBox(p: Props) {
                       collateralToken?.decimals
                     )}
                   />
+                </ExchangeInfo.Group>
+              )}
+
+              {isSwap && (
+                <ExchangeInfo.Group>
                   <MinReceiveRow allowedSlippage={allowedSlippage} />
                 </ExchangeInfo.Group>
               )}

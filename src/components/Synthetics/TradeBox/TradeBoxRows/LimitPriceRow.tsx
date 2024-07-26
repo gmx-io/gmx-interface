@@ -28,7 +28,7 @@ export function LimitPriceRow() {
           position="bottom-end"
           handle={formatTokensRatio(fromToken, toToken, triggerRatio) || "-"}
           renderContent={() =>
-            t`Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`
+            t`The execution price for the limit order updates in real-time on the orders tab after order creation to guarantee that you receive the minimum receive amount.`
           }
         />
       );

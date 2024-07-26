@@ -25,6 +25,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 import "./CollateralSelector.scss";
+import { TradeType } from "domain/synthetics/trade";
+import { MarketInfo } from "domain/synthetics/markets";
 
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
@@ -34,17 +36,21 @@ type Props = {
   onSelect: (tokenAddress: string) => void;
 };
 
-export function CollateralSelector(props: Props) {
+export function CollateralSelector(props: Props & { marketInfo?: MarketInfo; tradeType: TradeType }) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
     <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>
-      {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
+      {isMobile ? (
+        <CollateralSelectorMobile {...props} />
+      ) : (
+        <CollateralSelectorDesktop {...props} tradeType={props.tradeType} marketInfo={props.marketInfo} />
+      )}
     </SelectorBase>
   );
 }
 
-function CollateralSelectorDesktop(props: Props) {
+function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; marketInfo?: MarketInfo }) {
   const close = useSelectorClose();
 
   return (
@@ -59,12 +65,14 @@ function CollateralSelectorDesktop(props: Props) {
       <tbody>
         {props.options?.map((option) => (
           <CollateralListItemDesktop
+            tradeType={props.tradeType}
             key={option.address}
             onSelect={() => {
               props.onSelect(option.address);
               close();
             }}
             tokenData={option}
+            marketInfo={props.marketInfo}
           />
         ))}
 
@@ -80,10 +88,14 @@ function CollateralListItemDesktop({
   tokenData,
   onSelect,
   disabled,
+  tradeType,
+  marketInfo,
 }: {
   tokenData: TokenData;
   onSelect: () => void;
   disabled?: boolean;
+  tradeType?: TradeType;
+  marketInfo?: MarketInfo;
 }) {
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -117,7 +129,10 @@ function CollateralListItemDesktop({
   }
 
   return (
-    <SelectorBaseDesktopRow onClick={handleClick}>
+    <SelectorBaseDesktopRow
+      message={marketInfo && tradeType ? getCollateralInHintText(tradeType, tokenData, marketInfo) : undefined}
+      onClick={handleClick}
+    >
       <td className="CollateralSelector-column-pool">
         <TokenIcon
           symbol={tokenData.symbol}

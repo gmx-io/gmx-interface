@@ -163,6 +163,7 @@ export function PositionSellerAdvancedRows(p: Props) {
     <ExpandableRow title={t`Advanced display`} open={open} onToggle={setOpen}>
       {isTrigger && acceptablePriceImpactInputRow}
       {!isTrigger && <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />}
+      <div className="App-card-divider" />
       <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
 
       <div className="PositionEditor-keep-leverage-settings">

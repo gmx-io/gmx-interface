@@ -79,7 +79,7 @@ export function usePriceImpactWarningState({
         shouldShowWarningForPosition = isHighPositionImpact;
 
         if (tradeFlags.isLimit || tradeFlags.isTrigger) {
-          shouldShowWarningForPosition = shouldShowWarning && triggerPrice !== undefined;
+          shouldShowWarningForPosition = triggerPrice !== undefined;
         }
       }
 

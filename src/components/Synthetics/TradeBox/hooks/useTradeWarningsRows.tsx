@@ -61,8 +61,11 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
       return t`High Network Fee not yet acknowledged`;
     }
 
-    if (priceImpactWarningState.shouldShowWarning) {
-      return priceImpactWarningState.isHighPositionImpactAccepted ? undefined : t`Price Impact not yet acknowledged`;
+    if (
+      (priceImpactWarningState.shouldShowWarningForPosition && !priceImpactWarningState.isHighPositionImpactAccepted) ||
+      (priceImpactWarningState.shouldShowWarningForSwap && !priceImpactWarningState.isHighSwapImpactAccepted)
+    ) {
+      return t`Price Impact not yet acknowledged`;
     }
 
     if (needPayTokenApproval && fromToken) {
