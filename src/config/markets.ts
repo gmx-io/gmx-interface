@@ -1,4 +1,4 @@
-import { addDays, isPast, parse } from "date-fns";
+import { parse } from "date-fns";
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
@@ -6,7 +6,7 @@ import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
-const ENOUGH_DAYS_FOR_APY = 7;
+export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 7;
 const DEFAULT_LISTING = {
   listingDate: p("01 Jan 1970"),
 };
@@ -55,7 +55,7 @@ const ENABLED_MARKETS: Record<number, Record<string, MarketUiConfig>> = {
     "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739": DEFAULT_LISTING,
     // PEPE [PEPE-USDC]
     "0x2b477989A149B17073D9C9C82eC9cB03591e20c6": {
-      listingDate: p("17 Jul 2024"),
+      listingDate: p("27 Jul 2024"),
     },
     // WIF [WIF-USDC]
     "0x0418643F94Ef14917f1345cE5C460C37dE463ef7": {
@@ -112,18 +112,14 @@ export function isMarketEnabled(chainId: number, marketAddress: string) {
 }
 
 /**
- * We let the APY to stabilize for a few days before showing it to the user
+ * @returns Date when token was listed on the platform. If the date was not specified in config, returns 01 Jan 1970.
  */
-export function getFutureDateForApyReadiness(chainId: number, marketAddress: string): undefined | Date {
+export function getMarketListingDate(chainId: number, marketAddress: string): Date {
   const tokenListing = ENABLED_MARKETS[chainId]?.[marketAddress];
 
-  if (!tokenListing) return undefined;
-
-  const enoughDateForApy = addDays(tokenListing.listingDate, ENOUGH_DAYS_FOR_APY);
-
-  if (isPast(enoughDateForApy)) {
-    return undefined;
+  if (!tokenListing) {
+    return DEFAULT_LISTING.listingDate;
   }
 
-  return enoughDateForApy;
+  return tokenListing.listingDate;
 }

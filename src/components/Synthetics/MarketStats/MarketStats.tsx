@@ -1,8 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { getFutureDateForApyReadiness } from "config/markets";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -80,9 +80,6 @@ export function MarketStats(p: Props) {
 
   const apy = getByKey(marketsTokensApyData, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-  const futureDateForApyReadiness = !marketToken?.address
-    ? undefined
-    : getFutureDateForApyReadiness(chainId, marketToken.address);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -196,9 +193,7 @@ export function MarketStats(p: Props) {
 
         <CardRow
           label={t`APY`}
-          value={
-            <AprInfo apy={apy} incentiveApr={incentiveApr} futureDateForApyReadiness={futureDateForApyReadiness} />
-          }
+          value={<AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={marketToken?.address ?? zeroAddress} />}
         />
 
         <CardRow

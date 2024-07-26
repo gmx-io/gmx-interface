@@ -4,10 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import { getFutureDateForApyReadiness } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -297,8 +294,6 @@ function useFilterSortTokensInfo({
   orderBy: SortField;
   direction: SortDirection;
 }) {
-  const chainId = useSelector(selectChainId);
-
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
@@ -329,7 +324,6 @@ function useFilterSortTokensInfo({
       const sellableInfo = getSellableMarketToken(marketInfo, market);
       const apr = getByKey(marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-      const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, market.address);
       const indexName = getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -341,11 +335,9 @@ function useFilterSortTokensInfo({
         poolName,
         apr,
         incentiveApr,
-        futureDateForApyReadiness,
       };
     });
   }, [
-    chainId,
     favoriteTokens,
     marketsInfoData,
     marketsTokensAPRData,
@@ -403,7 +395,6 @@ function MarketTokenListItem({
   tdClassName,
   apr,
   incentiveApr,
-  futureDateForApyReadiness,
 }: {
   marketInfo: MarketInfo;
   market: TokenData;
@@ -419,7 +410,6 @@ function MarketTokenListItem({
   tdClassName: string;
   apr: bigint | undefined;
   incentiveApr: bigint | undefined;
-  futureDateForApyReadiness: Date | undefined;
 }) {
   const { indexToken, longToken, shortToken } = marketInfo;
   const iconName = marketInfo.isSpotOnly
@@ -477,12 +467,7 @@ function MarketTokenListItem({
         {formattedSellableAmount}
       </td>
       <td className={tdClassName} onClick={handleSelect}>
-        <AprInfo
-          apy={apr}
-          incentiveApr={incentiveApr}
-          futureDateForApyReadiness={futureDateForApyReadiness}
-          showTooltip={false}
-        />
+        <AprInfo apy={apr} incentiveApr={incentiveApr} tokenAddress={market.address} showTooltip={false} />
       </td>
     </tr>
   );

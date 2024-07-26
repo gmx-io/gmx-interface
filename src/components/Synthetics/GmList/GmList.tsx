@@ -6,7 +6,6 @@ import { useAccount } from "wagmi";
 
 import usePagination from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getFutureDateForApyReadiness } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -185,7 +184,6 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
 
                 const apy = getByKey(marketsTokensApyData, token?.address);
                 const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
-                const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, token.address);
                 const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
                 if (!token || !indexToken || !longToken || !shortToken) {
@@ -259,11 +257,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                     </ExchangeTd>
 
                     <ExchangeTd>
-                      <AprInfo
-                        apy={apy}
-                        incentiveApr={incentiveApr}
-                        futureDateForApyReadiness={futureDateForApyReadiness}
-                      />
+                      <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
                     </ExchangeTd>
 
                     <ExchangeTd className="w-[350px]">
