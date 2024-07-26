@@ -143,7 +143,6 @@ export function SyntheticsStateContextProvider({
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const lastWeekPeriod = useMemo(() => getTimePeriodsInSeconds().week, []);
 
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
