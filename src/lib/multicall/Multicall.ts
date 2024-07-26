@@ -99,7 +99,7 @@ export class Multicall {
 
   static getViemClient(chainId: number, rpcUrl: string) {
     return createPublicClient({
-      transport: http(rpcUrl + "?multicallrequest=hello", {
+      transport: http(rpcUrl, {
         // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
