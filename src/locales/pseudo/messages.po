@@ -520,10 +520,6 @@ msgstr ""
 msgid "Insufficient staked tokens"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "New Collateral"
-#~ msgstr ""
-
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr ""
@@ -764,10 +760,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Buy with {0}"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
-#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding..."
@@ -1988,10 +1980,6 @@ msgstr ""
 msgid "Allow {0} to be spent"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr ""
@@ -2443,10 +2431,6 @@ msgstr ""
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr ""
 
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
-#~ msgstr ""
-
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr ""
@@ -2514,10 +2498,6 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Max leverage without PnL: {0}x"
@@ -2788,10 +2768,6 @@ msgstr ""
 msgid "Claim failed."
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "You have selected {collateralTokenSymbol} as collateral; the liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required and available, you can change the collateral type using the \"Collateral In\" option in the trade box."
-#~ msgstr ""
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
 msgstr ""
@@ -2857,10 +2833,6 @@ msgstr ""
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Collateral value may differ due to different Price Impact at the time of execution."
-#~ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3310,6 +3282,10 @@ msgstr ""
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
+msgid "The execution price for the limit order updates in real-time on the orders tab after order creation to guarantee that you receive the minimum receive amount."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap amount exceeds Available Liquidity."
 msgstr ""
@@ -3390,10 +3366,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
-msgid "Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created."
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -3655,10 +3627,6 @@ msgstr ""
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
@@ -3737,11 +3705,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI Fee"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm {0} Order"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
@@ -4344,10 +4307,6 @@ msgstr ""
 msgid "Order Type"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Decrease size"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr ""
@@ -4363,10 +4322,6 @@ msgstr ""
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Old Collateral"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -4856,10 +4811,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for Open Interest on GMX"
@@ -5452,10 +5403,6 @@ msgstr ""
 msgid "Max Out"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -5818,10 +5765,6 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr ""
 
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "Enable One-Click Trading"
-#~ msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr ""
@@ -6009,10 +5952,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."
@@ -6902,10 +6841,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount."
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
