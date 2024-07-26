@@ -9,7 +9,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcons } from "config/icons";
-import { getFutureDateForApyReadiness } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -143,7 +142,6 @@ export function GmList({
 
                   const apy = getByKey(marketsTokensApyData, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
-                  const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, token.address);
                   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
                   if (!token || !indexToken || !longToken || !shortToken) {
@@ -222,11 +220,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo
-                          apy={apy}
-                          incentiveApr={incentiveApr}
-                          futureDateForApyReadiness={futureDateForApyReadiness}
-                        />
+                        <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
                       </td>
 
                       <td className="GmList-actions">
@@ -268,7 +262,6 @@ export function GmList({
             {sortedMarketsByIndexToken.map((token, index) => {
               const apr = marketsTokensApyData?.[token.address];
               const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
-              const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, token.address);
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
@@ -383,11 +376,7 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        <AprInfo
-                          apy={apr}
-                          incentiveApr={incentiveApr}
-                          futureDateForApyReadiness={futureDateForApyReadiness}
-                        />
+                        <AprInfo apy={apr} incentiveApr={incentiveApr} tokenAddress={token.address} />
                       </div>
                     </div>
 

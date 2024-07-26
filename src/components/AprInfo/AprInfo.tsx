@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { formatDistanceToNowStrict } from "date-fns";
+import { addDays, formatDistanceToNowStrict, isPast } from "date-fns";
 import { useCallback, useMemo } from "react";
 
 import { getIncentivesV2Url } from "config/links";
@@ -7,6 +7,7 @@ import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useInc
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
+import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -14,23 +15,44 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import sparkleIcon from "img/sparkle.svg";
 
+/**
+ * We let the APY to stabilize for a few days before showing it to the user
+ */
+function getIsBaseApyReadyToBeShown(listingDate: Date): boolean {
+  const enoughDateForApy = addDays(listingDate, ENOUGH_DAYS_SINCE_LISTING_FOR_APY);
+
+  return isPast(enoughDateForApy);
+}
+
+function getApyReadyToBeShownDate(listingDate: Date): Date {
+  return addDays(listingDate, ENOUGH_DAYS_SINCE_LISTING_FOR_APY);
+}
+
 export function AprInfo({
   apy,
   incentiveApr,
   showTooltip = true,
-  futureDateForApyReadiness,
+  tokenAddress,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   showTooltip?: boolean;
-  /**
-   * @default undefined meaning that APY is ready to be shown
-   */
-  futureDateForApyReadiness?: Date;
+  tokenAddress: string;
 }) {
   const { chainId } = useChainId();
+
+  const listingDate = getMarketListingDate(chainId, tokenAddress);
+  const isBaseAprReadyToBeShown = getIsBaseApyReadyToBeShown(listingDate);
+  const apyReadyToBeShownDate = useMemo(() => {
+    if (isBaseAprReadyToBeShown) {
+      return undefined;
+    }
+
+    return getApyReadyToBeShownDate(listingDate);
+  }, [isBaseAprReadyToBeShown, listingDate]);
+
   let totalApr = 0n;
-  if (futureDateForApyReadiness) {
+  if (!isBaseAprReadyToBeShown) {
     totalApr = incentiveApr ?? 0n;
   } else {
     totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
@@ -46,14 +68,14 @@ export function AprInfo({
           <StatsTooltipRow
             showDollar={false}
             label={t`Base APY`}
-            value={futureDateForApyReadiness ? t`NA` : `${formatAmount(apy, 28, 2)}%`}
+            value={isBaseAprReadyToBeShown ? `${formatAmount(apy, 28, 2)}%` : t`NA`}
           />
-          {futureDateForApyReadiness && (
+          {!isBaseAprReadyToBeShown && (
             <>
               <br />
               <Trans>
                 The base APY estimate will be available{" "}
-                {formatDistanceToNowStrict(futureDateForApyReadiness, { addSuffix: true })} to ensure accurate data
+                {formatDistanceToNowStrict(apyReadyToBeShownDate as Date, { addSuffix: true })} to ensure accurate data
                 display.
               </Trans>
             </>
@@ -67,15 +89,15 @@ export function AprInfo({
         <StatsTooltipRow
           showDollar={false}
           label={t`Base APY`}
-          value={futureDateForApyReadiness ? t`NA` : `${formatAmount(apy, 28, 2)}%`}
+          value={isBaseAprReadyToBeShown ? `${formatAmount(apy, 28, 2)}%` : t`NA`}
         />
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
         <br />
-        {futureDateForApyReadiness && (
+        {!isBaseAprReadyToBeShown && (
           <>
             <Trans>
               The base APY estimate will be available{" "}
-              {formatDistanceToNowStrict(futureDateForApyReadiness, { addSuffix: true })} to ensure accurate data
+              {formatDistanceToNowStrict(apyReadyToBeShownDate as Date, { addSuffix: true })} to ensure accurate data
               display.
             </Trans>
             <br />
@@ -88,7 +110,15 @@ export function AprInfo({
         </Trans>
       </>
     );
-  }, [airdropTokenTitle, apy, chainId, futureDateForApyReadiness, incentiveApr, isIncentiveActive]);
+  }, [
+    airdropTokenTitle,
+    apy,
+    apyReadyToBeShownDate,
+    chainId,
+    incentiveApr,
+    isBaseAprReadyToBeShown,
+    isIncentiveActive,
+  ]);
 
   const aprNode = useMemo(() => {
     const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;

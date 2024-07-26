@@ -4,10 +4,7 @@ import { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 
-import { getFutureDateForApyReadiness } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -39,7 +36,6 @@ type Props = {
 export default function MarketTokenSelector(props: Props) {
   const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } =
     props;
-  const chainId = useSelector(selectChainId);
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
@@ -67,7 +63,6 @@ export default function MarketTokenSelector(props: Props) {
       const sellableInfo = getSellableMarketToken(marketInfo, market);
       const apr = getByKey(marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-      const futureDateForApyReadiness = getFutureDateForApyReadiness(chainId, market.address);
       const indexName = getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -79,10 +74,9 @@ export default function MarketTokenSelector(props: Props) {
         poolName,
         apr,
         incentiveApr,
-        futureDateForApyReadiness,
       };
     });
-  }, [chainId, filteredTokens, marketsInfoData, marketsTokensAPRData, marketsTokensIncentiveAprData]);
+  }, [filteredTokens, marketsInfoData, marketsTokensAPRData, marketsTokensIncentiveAprData]);
 
   function handleSelectToken(marketTokenAddress: string) {
     history.push({
@@ -164,7 +158,6 @@ export default function MarketTokenSelector(props: Props) {
                           sellableInfo,
                           apr,
                           incentiveApr,
-                          futureDateForApyReadiness,
                           marketInfo,
                           poolName,
                           indexName,
@@ -213,7 +206,7 @@ export default function MarketTokenSelector(props: Props) {
                                 <AprInfo
                                   apy={apr}
                                   incentiveApr={incentiveApr}
-                                  futureDateForApyReadiness={futureDateForApyReadiness}
+                                  tokenAddress={market.address}
                                   showTooltip={false}
                                 />
                               </td>
