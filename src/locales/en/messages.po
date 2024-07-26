@@ -154,6 +154,10 @@ msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tok
 msgid "Withdrawal error."
 msgstr "Withdrawal error."
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+msgstr "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Decentralized<0/>Perpetual Exchange"

@@ -154,6 +154,10 @@ msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>ト�
 msgid "Withdrawal error."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "分散型<0/>パーペチュアル取引所"
