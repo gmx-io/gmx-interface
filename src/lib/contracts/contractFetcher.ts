@@ -17,14 +17,13 @@ export const contractFetcher =
     const hasData = swrCache.get(stableHash(args))?.isLoading === false;
 
     let isInterval = false;
-    if (typeof params.refreshInterval === "number") {
+
+    // Contract fetchers are always called with default or custom refreshInterval, never null.
+    // Thus we can safely assume that refreshInterval is a number or a function.
+    if (typeof SWRConfigProp.refreshInterval === "number") {
       isInterval = true;
-    } else if (params.refreshInterval === undefined) {
-      if (typeof SWRConfigProp.refreshInterval === "number") {
-        isInterval = true;
-      } else if (hasData && SWRConfigProp.refreshInterval?.(swrCache.get(stableHash(args))?.data)) {
-        isInterval = true;
-      }
+    } else if (hasData && SWRConfigProp.refreshInterval?.(swrCache.get(stableHash(args))?.data)) {
+      isInterval = true;
     }
 
     if (hasData && isInterval) {
