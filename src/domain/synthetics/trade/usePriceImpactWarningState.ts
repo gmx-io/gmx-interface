@@ -1,6 +1,4 @@
 import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
-import { selectTradeboxTriggerPrice } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
@@ -26,7 +24,6 @@ export function usePriceImpactWarningState({
   const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
 
   const prevFlags = usePrevious(tradeFlags);
-  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
 
   useEffect(() => {
     if (!shallowEqual(prevFlags, tradeFlags)) {
@@ -75,15 +72,11 @@ export function usePriceImpactWarningState({
       shouldShowWarningForSwap = isHighSwapImpact;
 
       if (!tradeFlags.isSwap) {
-        validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
+        validationError = validationError || (isHighPositionImpact && !isHighPositionImpactAccepted);
         shouldShowWarningForPosition = isHighPositionImpact;
-
-        if (tradeFlags.isLimit || tradeFlags.isTrigger) {
-          shouldShowWarningForPosition = triggerPrice !== undefined;
-        }
       }
 
-      shouldShowWarning = shouldShowWarningForPosition || shouldShowWarningForSwap;
+      shouldShowWarning = isHighSwapImpact || isHighPositionImpact;
     } else if (place === "positionSeller") {
       validationError =
         (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
@@ -111,8 +104,5 @@ export function usePriceImpactWarningState({
     isHighSwapImpactAccepted,
     place,
     tradeFlags.isSwap,
-    tradeFlags.isLimit,
-    tradeFlags.isTrigger,
-    triggerPrice,
   ]);
 }
