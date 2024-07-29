@@ -13,8 +13,7 @@ import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { USD_DECIMALS } from "lib/legacy";
 import { formatAmountHuman, formatPercentageDisplay, formatRatePercentage, formatUsd } from "lib/numbers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce } from "react-use";
@@ -25,10 +24,8 @@ import { ReactComponent as ShortIcon } from "img/short.svg";
 import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
-import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-
-const DEFAULT_PERIOD = "5m";
+import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
@@ -68,7 +65,7 @@ function TVChartHeaderInfoMobile() {
   }, [setDetailsVisible]);
 
   return (
-    <div className="Chart-header--mobile">
+    <div className="Chart-header--mobile mb-10">
       <div className="Chart-header--mobile-top">
         <div>
           <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
@@ -268,7 +265,7 @@ function TVChartHeaderInfoDesktop() {
 
     return (
       <>
-        <div className="ExchangeChart-additional-info">
+        <div>
           <div className="ExchangeChart-info-label">
             <Trans>Available Liquidity</Trans>
           </div>
@@ -284,7 +281,7 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
 
-        <div className="ExchangeChart-additional-info">
+        <div>
           <div className="ExchangeChart-info-label">
             <Trans>Net Rate / 1h</Trans>
           </div>
@@ -300,7 +297,7 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
 
-        <div className="ExchangeChart-additional-info">
+        <div>
           <div className="ExchangeChart-info-label">
             <Trans>Open Interest</Trans>
           </div>
@@ -316,7 +313,7 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
 
-        <div className="ExchangeChart-additional-info Chart-24h-low">
+        <div className="Chart-24h-low">
           <div className="ExchangeChart-info-label">24h Volume</div>
           <div className="Chart-header-value">{dailyVolume ? formatAmountHuman(dailyVolume, USD_DECIMALS) : "-"}</div>
         </div>
@@ -334,7 +331,7 @@ function TVChartHeaderInfoDesktop() {
   ]);
 
   return (
-    <div className="Chart-header">
+    <div className="Chart-header mb-10">
       <div className="flex items-center justify-center">
         <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile={false} />
       </div>
@@ -384,22 +381,5 @@ function TVChartHeaderInfoDesktop() {
 }
 
 export function TVChartHeader({ isMobile }: { isMobile: boolean }) {
-  const { chainId } = useChainId();
-
-  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
-
-  if (!period || !(period in CHART_PERIODS)) {
-    period = DEFAULT_PERIOD;
-  }
-
-  useEffect(
-    function updatePeriod() {
-      if (!period || !(period in CHART_PERIODS)) {
-        setPeriod(DEFAULT_PERIOD);
-      }
-    },
-    [period, setPeriod]
-  );
-
   return isMobile ? <TVChartHeaderInfoMobile /> : <TVChartHeaderInfoDesktop />;
 }

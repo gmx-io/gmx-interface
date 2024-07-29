@@ -306,7 +306,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  top: 1.2rem;
+  top: 0;
   z-index: 1;
   height: 49.6rem;
 }
@@ -1136,7 +1136,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr;
     grid-gap: 1rem;
   }
   .Exchange-swap-market-box {

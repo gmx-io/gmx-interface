@@ -15,7 +15,7 @@ export function use24hVolume() {
   const fetch = useCallback(
     async function call() {
       if (!client || !marketInfo?.indexTokenAddress) {
-        return 0;
+        return;
       }
 
       const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;

@@ -83,15 +83,13 @@ export default function ChartTokenSelector(props: Props) {
               <span>
                 {selectedToken.symbol} {"/ USD"}
               </span>
-              {poolName ? (
+              {poolName && (
                 <span
                   className={cx("subtext", {
                     "!ml-0": !isMobile,
                     "!ml-8": isMobile,
                   })}
                 >{`[${poolName}]`}</span>
-              ) : (
-                ""
               )}
             </span>
           </span>
@@ -101,7 +99,6 @@ export default function ChartTokenSelector(props: Props) {
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
-      subtext="[BTC-USDC]"
     >
       <MarketsList options={options} />
     </SelectorBase>

@@ -146,7 +146,7 @@ export function TVChart() {
     [chartToken]
   );
 
-  const isMobile = useMedia("(max-width: 800px)");
+  const isMobile = useMedia("(max-width: 768px)");
 
   return (
     <div className="ExchangeChart tv">
