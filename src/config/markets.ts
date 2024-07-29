@@ -55,7 +55,7 @@ const ENABLED_MARKETS: Record<number, Record<string, MarketUiConfig>> = {
     "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739": DEFAULT_LISTING,
     // PEPE [PEPE-USDC]
     "0x2b477989A149B17073D9C9C82eC9cB03591e20c6": {
-      listingDate: p("27 Jul 2024"),
+      listingDate: p("17 Jul 2024"),
     },
     // WIF [WIF-USDC]
     "0x0418643F94Ef14917f1345cE5C460C37dE463ef7": {
