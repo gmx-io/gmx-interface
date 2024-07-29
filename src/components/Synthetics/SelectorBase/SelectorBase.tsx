@@ -9,7 +9,7 @@ import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
 import Modal from "components/Modal/Modal";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SelectorBase.scss";
 
@@ -85,14 +85,14 @@ export function SelectorBaseDesktopRow(
 ) {
   if (props.disabled && props.disabledMessage) {
     return (
-      <Tooltip
+      <TooltipWithPortal
         as="tr"
         className={cx("SelectorBaseUtils-row", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
       >
         <div className="SelectorBaseUtils-row-disabled">{props.children}</div>
-      </Tooltip>
+      </TooltipWithPortal>
     );
   }
 
