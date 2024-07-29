@@ -1,32 +1,35 @@
 import { gql } from "@apollo/client";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectTradeboxToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function use24hVolume() {
   const chainId = useSelector(selectChainId);
-  const indexTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const client = getSyntheticsGraphClient(chainId);
 
   const [value, setValue] = useState<bigint>(0n);
 
   const fetch = useCallback(
     async function call() {
-      if (!client || !indexTokenAddress) {
+      if (!client || !marketInfo?.indexTokenAddress) {
         return 0;
       }
 
-      const query = gql(`
-{
+      const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
+      const utcOffsetSecs = new Date().getTimezoneOffset() * 60;
+      const timestamp = LAST_DAY_UNIX_TIMESTAMP + utcOffsetSecs;
+
+      const query = gql(`{
   positionVolumeInfos(
     orderBy: timestamp
     orderDirection: desc
     where: {
       period: "1d",
-      indexToken: "${indexTokenAddress.toLocaleLowerCase()}",
-      timestamp_gt: ${((Date.now() - 24 * 60 * 60 * 1000) / 1000) >> 0}
+      indexToken: "${marketInfo.indexTokenAddress.toLocaleLowerCase()}",
+      timestamp_gt: ${timestamp}
     }
   ) {
     id
@@ -46,7 +49,7 @@ export function use24hVolume() {
 
       setValue(result);
     },
-    [client, indexTokenAddress]
+    [client, marketInfo?.indexTokenAddress]
   );
 
   useEffect(() => {
