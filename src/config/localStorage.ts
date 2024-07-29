@@ -99,7 +99,7 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
 }
 
-const BIBA = "4";
+const BIBA = "5";
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then
 export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: number) {
