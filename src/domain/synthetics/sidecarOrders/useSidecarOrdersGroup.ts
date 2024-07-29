@@ -114,9 +114,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
   useEffect(() => {
     if (isUntouched) {
+      setIsUntouched(prefix, false);
       setEntries(initialState);
     }
-  }, [initialState, setEntries, isUntouched]);
+  }, [initialState, setEntries, isUntouched, setIsUntouched, prefix]);
 
   useEffect(() => {
     setEntries((prevEntries) => prevEntries.map((entry) => errorHandler(entry)));
@@ -190,7 +191,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     [enablePercentage, clampEntryPercentage, setEntries, recalculateEntryByField, errorHandler, prefix, setIsUntouched]
   );
 
-  const reset = useCallback(() => setEntries(initialState), [initialState, setEntries]);
+  const reset = useCallback(() => {
+    setEntries(initialState);
+    setIsUntouched(prefix, true);
+  }, [initialState, setEntries, setIsUntouched, prefix]);
 
   const deleteEntry = useCallback(
     (id: string) => {
