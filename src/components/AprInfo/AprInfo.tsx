@@ -42,14 +42,13 @@ export function AprInfo({
   const { chainId } = useChainId();
 
   const listingDate = getMarketListingDate(chainId, tokenAddress);
-  const isBaseAprReadyToBeShown = getIsBaseApyReadyToBeShown(listingDate);
-  const apyReadyToBeShownDate = useMemo(() => {
-    if (isBaseAprReadyToBeShown) {
-      return undefined;
-    }
-
-    return getApyReadyToBeShownDate(listingDate);
-  }, [isBaseAprReadyToBeShown, listingDate]);
+  const { isBaseAprReadyToBeShown, apyReadyToBeShownDate } = useMemo(
+    () => ({
+      isBaseAprReadyToBeShown: getIsBaseApyReadyToBeShown(listingDate),
+      apyReadyToBeShownDate: getApyReadyToBeShownDate(listingDate),
+    }),
+    [listingDate]
+  );
 
   let totalApr = 0n;
   if (!isBaseAprReadyToBeShown) {
