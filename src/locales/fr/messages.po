@@ -335,10 +335,6 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
-msgstr ""
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
@@ -419,6 +415,10 @@ msgstr "Frais d'ouverture"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Discord account: <0>@gmx_feedback</0>"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2988,10 +2988,6 @@ msgstr "Vester avec GMX sur Arbitrum"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Official Telegram account"
-msgstr ""
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -3759,10 +3755,6 @@ msgstr "Impact sur le prix"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
-msgstr ""
-
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Click here to give us your feedback on GMX"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4772,6 +4764,10 @@ msgstr ""
 msgid "Select a Market"
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
 msgstr "Collatéral min. requis"
@@ -5348,10 +5344,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "Créer un {0} Ordre"
-
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Official Discord account: @gmx_feedback"
-msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Limit order"
@@ -6259,6 +6251,10 @@ msgstr "Page périmée, veuillez rafraîchir"
 msgid "Vest with GLP on Arbitrum"
 msgstr "Vester avec GLP sur Arbitrum"
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Telegram account"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "SOON"
 msgstr ""
@@ -6343,6 +6339,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
+msgstr ""
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts

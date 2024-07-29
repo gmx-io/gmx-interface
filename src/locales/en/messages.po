@@ -335,10 +335,6 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
-msgstr "As a token of our appreciation, you'll receive a reward of <0>100 USDC</0>."
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
@@ -420,6 +416,10 @@ msgstr "Open Fees"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "Realized PnL"
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Discord account: <0>@gmx_feedback</0>"
+msgstr "Discord account: <0>@gmx_feedback</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -2988,10 +2988,6 @@ msgstr "Vest with GMX on Arbitrum"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Official Telegram account"
-msgstr "Official Telegram account"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -3763,10 +3759,6 @@ msgstr "Price Impact"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr "Select a token"
-
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Click here to give us your feedback on GMX"
-msgstr "Click here to give us your feedback on GMX"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4775,6 +4767,10 @@ msgstr "There is no liquidation price, as the position's collateral value will i
 msgid "Select a Market"
 msgstr "Select a Market"
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX"
+msgstr "Give us your feedback on GMX"
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
 msgstr "Min. required Collateral"
@@ -5351,10 +5347,6 @@ msgstr "Compounding..."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "Create {0} Order"
-
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Official Discord account: @gmx_feedback"
-msgstr "Official Discord account: @gmx_feedback"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Limit order"
@@ -6265,6 +6257,10 @@ msgstr "Page outdated, please refresh"
 msgid "Vest with GLP on Arbitrum"
 msgstr "Vest with GLP on Arbitrum"
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Telegram account"
+msgstr "Telegram account"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "SOON"
 msgstr "SOON"
@@ -6350,6 +6346,10 @@ msgstr "Orders <0>({0})</0>"
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
 msgstr "Leftover Collateral not enough to cover fees"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
+msgstr "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a Pay token"

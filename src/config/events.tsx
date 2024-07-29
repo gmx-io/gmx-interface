@@ -1,14 +1,14 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
 import { Trans } from "@lingui/macro";
-import { memo, type JSX } from "react";
+import { type JSX } from "react";
 
 import { ARBITRUM, AVALANCHE } from "./chains";
 import { getIncentivesV2Url } from "./links";
 import { getNormalizedTokenSymbol } from "./tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 
 export type EventData = {
   id: string;
@@ -26,13 +26,6 @@ export type EventData = {
 };
 
 export const homeEventsData: EventData[] = [];
-
-const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
-  <span className="whitespace-nowrap">
-    <TokenIcon className="relative -top-3" symbol={symbol} displaySize={14} importSize={40} />
-    &nbsp;{symbol}
-  </span>
-));
 
 export const appEventsData: EventData[] = [
   {
