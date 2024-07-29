@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -18,9 +18,6 @@ import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
-import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
-import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -54,15 +51,16 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
+import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { bigMath } from "lib/bigmath";
@@ -87,8 +85,6 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { getIncentivesV2Url } from "config/links";
-import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 
 const { ZeroAddress } = ethers;
 
@@ -284,9 +280,7 @@ function UnstakeModal(props: {
   unstakingTokenSymbol: string;
   rewardRouterAddress: string;
   unstakeMethodName: string;
-  multiplierPointsAmount: bigint | undefined;
   reservedAmount: bigint | undefined;
-  bonusGmxInFeeGmx: bigint | undefined;
   setPendingTxns: SetPendingTransactions;
   processedData: any;
   nativeTokenSymbol: string;
@@ -303,9 +297,7 @@ function UnstakeModal(props: {
     unstakingTokenSymbol,
     rewardRouterAddress,
     unstakeMethodName,
-    multiplierPointsAmount,
     reservedAmount,
-    bonusGmxInFeeGmx,
     setPendingTxns,
     processedData,
     nativeTokenSymbol,
@@ -314,44 +306,21 @@ function UnstakeModal(props: {
   const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
-  let burnAmount = 0n;
-
-  const govTokenAmount = useGovTokenAmount(chainId);
-
-  if (
-    multiplierPointsAmount !== undefined &&
-    multiplierPointsAmount > 0 &&
-    amount !== undefined &&
-    amount > 0 &&
-    bonusGmxInFeeGmx !== undefined &&
-    bonusGmxInFeeGmx > 0
-  ) {
-    burnAmount = bigMath.mulDiv(multiplierPointsAmount, amount, bonusGmxInFeeGmx);
-  }
-
-  const unstakeGmxPercentage =
-    maxAmount !== undefined && maxAmount > 0 && amount !== undefined
-      ? bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, maxAmount)
-      : 0n;
 
   let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
     amount !== undefined &&
     amount > 0 &&
-    multiplierPointsAmount !== undefined &&
     processedData.esGmxInStakedGmx !== undefined &&
     processedData.gmxInStakedGmx !== undefined
   ) {
-    const divisor = multiplierPointsAmount + processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+    const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
     if (divisor !== 0n) {
-      unstakeBonusLostPercentage = bigMath.mulDiv(amount + burnAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+      unstakeBonusLostPercentage = bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
     }
   }
 
-  const votingPowerBurnAmount =
-    unstakeGmxPercentage !== undefined && govTokenAmount !== undefined && unstakeGmxPercentage > 0 && govTokenAmount > 0
-      ? bigMath.mulDiv(govTokenAmount, unstakeGmxPercentage, BASIS_POINTS_DIVISOR_BIGINT)
-      : 0n;
+  const votingPowerBurnAmount = amount;
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
@@ -428,23 +397,18 @@ function UnstakeModal(props: {
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
-        {burnAmount > 0 &&
-          unstakeBonusLostPercentage !== undefined &&
+        {unstakeBonusLostPercentage !== undefined &&
           unstakeBonusLostPercentage > 0 &&
           amount !== undefined &&
           maxAmount !== undefined &&
           amount <= maxAmount && (
             <AlertInfo type="warning">
               <Trans>
-                Unstaking will burn&nbsp;
-                <ExternalLink className="inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
-                  {formatAmount(burnAmount, 18, 2, true)} Multiplier Points
-                </ExternalLink>
                 {chainId === ARBITRUM ? (
-                  <span>&nbsp;and {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;</span>
-                ) : (
-                  "."
-                )}
+                  <span>
+                    Unstaking will burn {formatAmount(votingPowerBurnAmount, 18, 2, true)} voting power.&nbsp;
+                  </span>
+                ) : null}
                 <span>
                   You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
                   this action.
@@ -817,7 +781,6 @@ function CompoundModal(props: {
   totalVesterRewards: bigint | undefined;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
-  processedData: any;
 }) {
   const {
     isVisible,
@@ -829,7 +792,6 @@ function CompoundModal(props: {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
-    processedData,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -848,7 +810,6 @@ function CompoundModal(props: {
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
     true
   );
-  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
     true
@@ -920,7 +881,7 @@ function CompoundModal(props: {
         shouldStakeGmx,
         shouldClaimEsGmx || shouldStakeEsGmx,
         shouldStakeEsGmx,
-        shouldStakeMultiplierPoints,
+        true,
         shouldClaimWeth || shouldConvertWeth,
         shouldConvertWeth,
       ],
@@ -960,35 +921,9 @@ function CompoundModal(props: {
     setShouldConvertWeth(value);
   };
 
-  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
-
-  const recommendStakeGmx = useRecommendStakeGmxAmount(
-    {
-      accumulatedGMX: processedData?.totalVesterRewards,
-      accumulatedBnGMX: accumulatedBnGMXAmount,
-      accumulatedEsGMX: processedData?.totalEsGmxRewards,
-      stakedGMX: processedData?.gmxInStakedGmx,
-      stakedBnGMX: processedData?.bnGmxInFeeGmx,
-      stakedEsGMX: processedData?.esGmxInStakedGmx,
-    },
-    {
-      shouldStakeGmx,
-      shouldStakeEsGmx,
-    }
-  );
-
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
-        {recommendStakeGmx > 0 && (
-          <AlertInfo type="info">
-            <Trans>
-              You have reached the maximum Boost Percentage. Stake an additional{" "}
-              {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
-              {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
-            </Trans>
-          </AlertInfo>
-        )}
         {isUndelegatedGovToken ? (
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
@@ -1000,15 +935,6 @@ function CompoundModal(props: {
           </AlertInfo>
         ) : null}
         <div className="CompoundModal-menu">
-          <div>
-            <Checkbox
-              isChecked={shouldStakeMultiplierPoints}
-              setIsChecked={setShouldStakeMultiplierPoints}
-              disabled={true}
-            >
-              <Trans>Stake Multiplier Points</Trans>
-            </Checkbox>
-          </div>
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
               <Trans>Claim GMX Rewards</Trans>
@@ -1275,7 +1201,6 @@ function AffiliateClaimModal(props: {
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
   const incentivesMessage = useMemo(() => {
@@ -1334,7 +1259,6 @@ export default function StakeV2() {
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
   const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<bigint | undefined>(undefined);
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
@@ -1420,7 +1344,6 @@ export default function StakeV2() {
     feeGlpTrackerAddress,
   ];
 
-  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
@@ -1486,9 +1409,12 @@ export default function StakeV2() {
     }
   );
 
-  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
-
-  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+  const { data: sbfGmxBalance } = useSWR(
+    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    {
+      fetcher: contractFetcher(undefined, Token),
+    }
+  );
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
@@ -1536,21 +1462,21 @@ export default function StakeV2() {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
-    stakedBnGmxSupply,
     gmxPrice,
-    gmxSupply,
-    maxBoostBasicPoints === undefined ? undefined : maxBoostBasicPoints / BASIS_POINTS_DIVISOR_BIGINT
+    gmxSupply
   );
 
-  let multiplierPointsAmount: bigint | undefined;
-  if (accumulatedBnGMXAmount !== undefined && processedData?.bnGmxInFeeGmx !== undefined) {
-    multiplierPointsAmount = accumulatedBnGMXAmount + processedData.bnGmxInFeeGmx;
-  }
+  const reservedAmount =
+    (processedData?.gmxInStakedGmx !== undefined &&
+      processedData?.esGmxInStakedGmx !== undefined &&
+      sbfGmxBalance !== undefined &&
+      processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
+    0n;
 
   let totalRewardTokens;
 
-  if (processedData && processedData.bnGmxInFeeGmx !== undefined && processedData.bonusGmxInFeeGmx !== undefined) {
-    totalRewardTokens = processedData.bnGmxInFeeGmx + processedData.bonusGmxInFeeGmx;
+  if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
+    totalRewardTokens = processedData.bonusGmxInFeeGmx;
   }
 
   let totalRewardAndLpTokens = totalRewardTokens ?? 0n;
@@ -1561,8 +1487,6 @@ export default function StakeV2() {
     totalRewardAndLpTokens = totalRewardAndLpTokens + (userTotalGmInfo?.balance ?? 0n);
   }
 
-  const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
-
   let stakedGmxSupplyUsd;
   if (totalGmxStaked !== 0n && gmxPrice) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
@@ -1571,22 +1495,6 @@ export default function StakeV2() {
   let totalSupplyUsd;
   if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
-  }
-
-  let maxUnstakeableGmx = 0n;
-  if (
-    totalRewardTokens !== undefined &&
-    vestingData &&
-    vestingData.gmxVesterPairAmount !== undefined &&
-    multiplierPointsAmount !== undefined &&
-    processedData?.bonusGmxInFeeGmx !== undefined
-  ) {
-    const availableTokens = totalRewardTokens - vestingData.gmxVesterPairAmount;
-    const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount + stakedTokens;
-    if (divisor > 0) {
-      maxUnstakeableGmx = bigMath.mulDiv(availableTokens, stakedTokens, divisor);
-    }
   }
 
   const showStakeGmxModal = () => {
@@ -1626,13 +1534,13 @@ export default function StakeV2() {
 
     setIsVesterDepositModalVisible(true);
     setVesterDepositTitle(t`GMX Vault`);
-    setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points");
+    setVesterDepositStakeTokenLabel("staked GMX + esGMX");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData?.esGmxBalance);
     setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
-    setVesterDepositReserveAmount(vestingData.gmxVester.pairAmount);
+    setVesterDepositReserveAmount(reservedAmount);
     setVesterDepositMaxReserveAmount(totalRewardTokens);
     setVesterDepositValue("");
     setVesterDepositAddress(gmxVesterAddress);
@@ -1690,19 +1598,12 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake GMX`);
     let maxAmount = processedData?.gmxInStakedGmx;
-    if (
-      processedData?.gmxInStakedGmx !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < processedData.gmxInStakedGmx
-    ) {
-      maxAmount = maxUnstakeableGmx;
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
     }
+
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("GMX");
     setUnstakeMethodName("unstakeGmx");
@@ -1712,19 +1613,12 @@ export default function StakeV2() {
     setIsUnstakeModalVisible(true);
     setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData?.esGmxInStakedGmx;
-    if (
-      maxAmount !== undefined &&
-      vestingData &&
-      vestingData.gmxVesterPairAmount > 0 &&
-      maxUnstakeableGmx !== undefined &&
-      maxUnstakeableGmx < maxAmount
-    ) {
-      maxAmount = maxUnstakeableGmx;
+
+    if (maxAmount !== undefined) {
+      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
     }
+
     setUnstakeModalMaxAmount(maxAmount);
-    if (vestingData) {
-      setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
-    }
     setUnstakeValue("");
     setUnstakingTokenSymbol("esGMX");
     setUnstakeMethodName("unstakeEsGmx");
@@ -1774,70 +1668,9 @@ export default function StakeV2() {
     setIsAffiliateClaimModalVisible(true);
   }
 
-  const recommendStakeGmx = useRecommendStakeGmxAmount(
-    {
-      accumulatedGMX: processedData?.totalVesterRewards,
-      accumulatedBnGMX: accumulatedBnGMXAmount,
-      accumulatedEsGMX: processedData?.totalEsGmxRewards,
-      stakedGMX: processedData?.gmxInStakedGmx,
-      stakedBnGMX: processedData?.bnGmxInFeeGmx,
-      stakedEsGMX: processedData?.esGmxInStakedGmx,
-    },
-    {
-      shouldStakeGmx: true,
-      shouldStakeEsGmx: true,
-    }
-  );
-
-  const renderBoostPercentageTooltip = useCallback(() => {
-    return (
-      <div>
-        <Trans>
-          You are earning {formatAmount(processedData?.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
-          using {formatAmount(processedData?.bnGmxInFeeGmx, 18, 4, true)} Staked Multiplier Points.
-        </Trans>
-        <br />
-        <br />
-        {recommendStakeGmx > 0 ? (
-          <Trans>
-            You have reached the maximum Boost Percentage. Stake an additional{" "}
-            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
-            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
-          </Trans>
-        ) : (
-          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
-        )}
-      </div>
-    );
-  }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
-
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.avgGMXAprForNativeToken, 2, 2, true)}%`;
-  }, [processedData?.avgGMXAprForNativeToken]);
-
-  const renderMultiplierPointsLabel = useCallback(() => {
-    return t`Multiplier Points APR`;
-  }, []);
-
-  const renderMultiplierPointsValue = useCallback(() => {
-    return (
-      <Tooltip
-        handle={`100.00%`}
-        position="bottom-end"
-        renderContent={() => {
-          return (
-            <Trans>
-              Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
-          );
-        }}
-      />
-    );
-  }, []);
+    return `${formatAmount(processedData?.gmxAprForNativeToken, 2, 2, true)}%`;
+  }, [processedData?.gmxAprForNativeToken]);
 
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
@@ -1849,10 +1682,6 @@ export default function StakeV2() {
     if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
-    let mpAmountStr;
-    if (processedData?.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx > 0) {
-      mpAmountStr = formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true) + " MP";
-    }
     let glpStr;
     if (processedData?.glpBalance && processedData.glpBalance > 0) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
@@ -1861,7 +1690,7 @@ export default function StakeV2() {
     if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
-    const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
+    const amountStr = [gmxAmountStr, esGmxAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
     earnMsg = (
       <div>
         <Trans>
@@ -1906,15 +1735,13 @@ export default function StakeV2() {
         chainId={chainId}
         title={unstakeModalTitle}
         maxAmount={unstakeModalMaxAmount}
-        reservedAmount={unstakeModalReservedAmount}
+        reservedAmount={reservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
         signer={signer}
         unstakingTokenSymbol={unstakingTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
         unstakeMethodName={unstakeMethodName}
-        multiplierPointsAmount={multiplierPointsAmount}
-        bonusGmxInFeeGmx={bonusGmxInFeeGmx}
         processedData={processedData}
         nativeTokenSymbol={nativeTokenSymbol}
       />
@@ -1962,7 +1789,6 @@ export default function StakeV2() {
       <CompoundModal
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
-        processedData={processedData}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData?.totalVesterRewards}
@@ -2119,7 +1945,7 @@ export default function StakeV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Avg. APR</Trans>
+                  <Trans>APR</Trans>
                 </div>
                 <div>
                   <Tooltip
@@ -2131,27 +1957,6 @@ export default function StakeV2() {
                   />
                 </div>
               </div>
-              {active && (
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Your APR</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
-                      position="bottom-end"
-                      renderContent={() => (
-                        <GMXAprTooltip
-                          processedData={processedData}
-                          nativeTokenSymbol={nativeTokenSymbol}
-                          recommendStakeGmx={recommendStakeGmx}
-                          isUserConnected={true}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Rewards</Trans>
@@ -2192,22 +1997,6 @@ export default function StakeV2() {
                         </>
                       );
                     }}
-                  />
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">{renderMultiplierPointsLabel()}</div>
-                <div>{renderMultiplierPointsValue()}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Boost Percentage</Trans>
-                </div>
-                <div>
-                  <Tooltip
-                    handle={`${formatAmount(processedData?.boostBasisPoints, 2, 2, false)}%`}
-                    position="bottom-end"
-                    renderContent={renderBoostPercentageTooltip}
                   />
                 </div>
               </div>
@@ -2314,18 +2103,6 @@ export default function StakeV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Multiplier Points</Trans>
-                </div>
-                <div>{formatAmount(accumulatedBnGMXAmount, 18, 4, true)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Staked Multiplier Points</Trans>
-                </div>
-                <div>{formatKeyAmount(processedData, "bnGmxInFeeGmx", 18, 4, true)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
                   <Trans>Total</Trans>
                 </div>
                 <div>${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}</div>
@@ -2366,7 +2143,7 @@ export default function StakeV2() {
                   <div className="label">
                     <Trans>Price</Trans>
                   </div>
-                  <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
+                  <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
@@ -2560,7 +2337,7 @@ export default function StakeV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Avg. APR</Trans>
+                  <Trans>APR</Trans>
                 </div>
                 <div>
                   <Tooltip
@@ -2571,31 +2348,6 @@ export default function StakeV2() {
                     )}
                   />
                 </div>
-              </div>
-              {active && (
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Your APR</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
-                      position="bottom-end"
-                      renderContent={() => (
-                        <GMXAprTooltip
-                          processedData={processedData!}
-                          nativeTokenSymbol={nativeTokenSymbol}
-                          recommendStakeGmx={recommendStakeGmx}
-                          isUserConnected={true}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
-              <div className="App-card-row">
-                <div className="label">{renderMultiplierPointsLabel()}</div>
-                <div>{renderMultiplierPointsValue()}</div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
@@ -2616,23 +2368,26 @@ export default function StakeV2() {
                   )
                 </div>
               </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-buttons m-0">
-                {active && (
-                  <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
-                    <Trans>Stake</Trans>
-                  </Button>
-                )}
-                {active && (
-                  <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
-                    <Trans>Unstake</Trans>
-                  </Button>
-                )}
-                {!active && (
-                  <Button variant="secondary" onClick={openConnectModal}>
-                    <Trans> Connect Wallet</Trans>
-                  </Button>
-                )}
+              <div className="App-card-footer">
+                <div className="App-card-divider"></div>
+                <div className="App-card-buttons m-0">
+                  <br />
+                  {active && (
+                    <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
+                      <Trans>Stake</Trans>
+                    </Button>
+                  )}
+                  {active && (
+                    <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
+                      <Trans>Unstake</Trans>
+                    </Button>
+                  )}
+                  {!active && (
+                    <Button variant="secondary" onClick={openConnectModal}>
+                      <Trans> Connect Wallet</Trans>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -2644,9 +2399,7 @@ export default function StakeV2() {
           <GmList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            marketTokensData={marketTokensData}
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
+            isDeposit={false}
             shouldScrollToTop
           />
         </div>
@@ -2700,11 +2453,6 @@ export default function StakeV2() {
                               label="esGMX"
                               value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
                             />
-                            <StatsTooltipRow
-                              showDollar={false}
-                              label="Multiplier Points"
-                              value={formatAmount(processedData?.bnGmxInFeeGmx, 18, 2, true)}
-                            />
                           </>
                         );
                       }}
@@ -2716,8 +2464,7 @@ export default function StakeV2() {
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatKeyAmount(vestingData, "gmxVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(totalRewardTokens, 18, 2, true)}
+                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">

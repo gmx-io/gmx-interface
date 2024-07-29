@@ -83,7 +83,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
       method: "simulateExecuteWithdrawal",
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
-      extraArgs: [SwapPricingType.TwoStep],
+      swapPricingType: SwapPricingType.TwoStep,
     });
   }
 

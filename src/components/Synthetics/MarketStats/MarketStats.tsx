@@ -37,6 +37,8 @@ type Props = {
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
 };
 
+const MARKET_STATS_DECIMALS = 4;
+
 export function MarketStats(p: Props) {
   const {
     marketInfo,
@@ -154,7 +156,7 @@ export function MarketStats(p: Props) {
             <Tooltip
               handle={
                 formatUsd(marketPrice, {
-                  displayDecimals: 3,
+                  displayDecimals: MARKET_STATS_DECIMALS,
                 }) || "..."
               }
               position="bottom-end"

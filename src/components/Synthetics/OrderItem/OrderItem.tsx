@@ -26,7 +26,7 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
@@ -38,6 +38,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SwapMarketLabel } from "../../SwapMarketLabel/SwapMarketLabel";
 import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./OrderItem.scss";
 
 type Props = {
@@ -246,17 +247,23 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [order]);
 
+  const positionOrder = order as PositionOrderInfo;
+  const priceDecimals = useSelector(makeSelectMarketPriceDecimals(positionOrder.marketInfo?.indexTokenAddress));
+
+  const markPriceFormatted = useMemo(() => {
+    return formatUsd(markPrice, { displayDecimals: priceDecimals });
+  }, [markPrice, priceDecimals]);
+
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return markSwapRatioText;
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals = positionOrder?.indexToken?.priceDecimals;
 
     return (
       <Tooltip
-        handle={formatUsd(markPrice, { displayDecimals: priceDecimals })}
+        handle={markPriceFormatted}
         position="bottom-end"
         renderContent={() => {
           return (
@@ -303,7 +310,8 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals = positionOrder?.indexToken?.priceDecimals;
+    const priceDecimals =
+      calculatePriceDecimals(positionOrder?.indexToken?.prices?.minPrice) || positionOrder?.indexToken?.priceDecimals;
     return (
       <Tooltip
         handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
@@ -621,10 +629,11 @@ function getSwapRatioText(order: OrderInfo) {
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
+  const ratioDecimals = calculatePriceDecimals(triggerRatio?.ratio);
   const swapRatioText = `${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,
-    triggerRatio?.smallestToken.isStable ? 2 : 4,
+    ratioDecimals,
     true
   )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 

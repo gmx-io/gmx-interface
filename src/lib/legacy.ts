@@ -1,23 +1,29 @@
-import { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { getContract } from "config/contracts";
+import { ethers } from "ethers";
 import useSWR from "swr";
+import { useEnsName } from "wagmi";
 
-import OrderBookReader from "abis/OrderBookReader.json";
 import OrderBook from "abis/OrderBook.json";
+import OrderBookReader from "abis/OrderBookReader.json";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains";
-import { getServerBaseUrl } from "config/backend";
-import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
-import { getTokenInfo } from "domain/tokens/utils";
-import { getProvider } from "./rpc";
-import { bigNumberify, deserializeBigIntsInObject, expandDecimals, formatAmount } from "./numbers";
-import { isValidToken } from "config/tokens";
-import { useChainId } from "./chains";
-import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
+import { getServerBaseUrl } from "config/backend";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { isValidToken } from "config/tokens";
+import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useChainId } from "./chains";
+import { isValidTimestamp } from "./dates";
+import {
+  bigNumberify,
+  deserializeBigIntsInObject,
+  expandDecimals,
+  formatAmount,
+  calculatePriceDecimals,
+} from "./numbers";
+import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
 
 const { ZeroAddress } = ethers;
@@ -120,7 +126,8 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = (PRECISION * PRECISION) / rate;
   }
-  const rateValue = formatAmount(rate, USD_DECIMALS, tokenA.isStable || tokenA.isUsdg ? 2 : 4, true);
+  const rateDecimals = calculatePriceDecimals(rate);
+  const rateValue = formatAmount(rate, USD_DECIMALS, rateDecimals, true);
   if (opts.omitSymbols) {
     return rateValue;
   }
@@ -749,18 +756,11 @@ export function shortenAddress(address, length, padStart = 1) {
 }
 
 export function useENS(address) {
-  const [ensName, setENSName] = useState<string | undefined>();
-
-  useEffect(() => {
-    async function resolveENS() {
-      if (address) {
-        const provider = new ethers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
-        const name = await provider.lookupAddress(address.toLowerCase());
-        if (name) setENSName(name);
-      }
-    }
-    resolveENS();
-  }, [address]);
+  const ensNameQuery = useEnsName({
+    address,
+    chainId: ETH_MAINNET,
+  });
+  const ensName = ensNameQuery.data || undefined;
 
   return { ensName };
 }
@@ -1170,7 +1170,6 @@ export type ProcessedData = Partial<{
   stakedEsGmxSupplyUsd: bigint;
   esGmxInStakedGmx: bigint;
   esGmxInStakedGmxUsd: bigint;
-  bnGmxInFeeGmx: bigint;
   bonusGmxInFeeGmx: bigint;
   feeGmxSupply: bigint;
   feeGmxSupplyUsd: bigint;
@@ -1178,11 +1177,9 @@ export type ProcessedData = Partial<{
   stakedGmxTrackerRewardsUsd: bigint;
   feeGmxTrackerRewards: bigint;
   feeGmxTrackerRewardsUsd: bigint;
-  boostBasisPoints: bigint;
   stakedGmxTrackerAnnualRewardsUsd: bigint;
   feeGmxTrackerAnnualRewardsUsd: bigint;
   gmxAprTotal: bigint;
-  gmxAprTotalWithBoost: bigint;
   totalGmxRewardsUsd: bigint;
   glpSupply: bigint;
   glpPrice: bigint;
@@ -1208,15 +1205,9 @@ export type ProcessedData = Partial<{
   totalNativeTokenRewards: bigint;
   totalNativeTokenRewardsUsd: bigint;
   totalRewardsUsd: bigint;
-  avgBoostAprForNativeToken: bigint;
-  avgGMXAprForNativeToken: bigint;
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
-  maxGmxAprForNativeToken: bigint;
-  gmxAprForNativeTokenWithBoost: bigint;
-  gmxBoostAprForNativeToken?: bigint;
-  avgBoostMultiplier?: bigint;
 };
 
 export function getProcessedData(
@@ -1228,10 +1219,8 @@ export function getProcessedData(
   aum,
   nativeTokenPrice,
   stakedGmxSupply,
-  stakedBnGmxSupply,
   gmxPrice,
-  gmxSupply,
-  maxBoostMultiplier
+  gmxSupply
 ): ProcessedData | undefined {
   if (
     !balanceData ||
@@ -1242,10 +1231,8 @@ export function getProcessedData(
     !aum ||
     !nativeTokenPrice ||
     !stakedGmxSupply ||
-    !stakedBnGmxSupply ||
     !gmxPrice ||
-    !gmxSupply ||
-    !maxBoostMultiplier
+    !gmxSupply
   ) {
     return undefined;
   }
@@ -1273,7 +1260,6 @@ export function getProcessedData(
   data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx;
   data.esGmxInStakedGmxUsd = mulDiv(depositBalanceData.esGmxInStakedGmx, gmxPrice, expandDecimals(1, 18));
 
-  data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx;
   data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx;
   data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply;
   data.feeGmxSupplyUsd = mulDiv(data.feeGmxSupply, gmxPrice, expandDecimals(1, 18));
@@ -1283,11 +1269,6 @@ export function getProcessedData(
 
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
-
-  data.boostBasisPoints = 0n;
-  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx > 0) {
-    data.boostBasisPoints = mulDiv(data.bnGmxInFeeGmx, BASIS_POINTS_DIVISOR_BIGINT, data.bonusGmxInFeeGmx);
-  }
 
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
@@ -1301,16 +1282,8 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
       : 0n;
-  data.gmxBoostAprForNativeToken = mulDiv(
-    data.gmxAprForNativeToken,
-    data.boostBasisPoints,
-    BASIS_POINTS_DIVISOR_BIGINT
-  );
-  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
-  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken + data.gmxAprForEsGmx;
-  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken + data.gmxBoostAprForNativeToken;
 
-  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken + data.gmxAprForNativeToken * maxBoostMultiplier;
+  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
 
@@ -1364,13 +1337,6 @@ export function getProcessedData(
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
 
-  data.avgBoostMultiplier = stakedBnGmxSupply
-    ? mulDiv(stakedBnGmxSupply, BASIS_POINTS_DIVISOR_BIGINT, stakedGmxSupply + (data?.stakedEsGmxSupply ?? 0n))
-    : undefined;
-
-  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken
-    ? mulDiv(data.gmxAprForNativeToken, data.avgBoostMultiplier, BASIS_POINTS_DIVISOR_BIGINT)
-    : undefined;
   data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
     ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)
     : undefined;

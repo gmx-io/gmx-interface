@@ -29,8 +29,9 @@ export type ModalProps = PropsWithChildren<{
   setIsVisible: (isVisible: boolean) => void;
   zIndex?: number;
   label?: React.ReactNode;
-  headerContent?: () => React.ReactNode;
+  headerContent?: React.ReactNode;
   onAfterOpen?: () => void;
+  contentPadding?: boolean;
 }>;
 
 export default function Modal({
@@ -40,6 +41,7 @@ export default function Modal({
   zIndex,
   children,
   headerContent,
+  contentPadding = true,
   onAfterOpen,
   setIsVisible,
 }: ModalProps) {
@@ -82,7 +84,7 @@ export default function Modal({
             className="Modal-backdrop"
             style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
-          ></div>
+          />
           <div className="Modal-content" onClick={stopPropagation}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
@@ -91,11 +93,11 @@ export default function Modal({
                   <MdClose fontSize={20} className="Modal-close-icon" />
                 </div>
               </div>
-              {headerContent?.()}
+              {headerContent}
             </div>
             <div className="divider" />
-            <RemoveScroll>
-              <div className={cx("Modal-body")} ref={modalRef}>
+            <RemoveScroll className="overflow-auto">
+              <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalRef}>
                 {children}
               </div>
             </RemoveScroll>

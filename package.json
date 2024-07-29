@@ -9,7 +9,7 @@
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
-    "@headlessui/react": "1.6.1",
+    "@headlessui/react": "1.7.19",
     "@lingui/core": "4.10.0",
     "@lingui/react": "4.10.0",
     "@rainbow-me/rainbowkit": "2.0.2",
@@ -40,6 +40,7 @@
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
+    "immer": "10.1.1",
     "lodash": "4.17.21",
     "qrcode.react": "^3.1.0",
     "query-string": "7.1.1",
@@ -68,7 +69,8 @@
     "use-context-selector": "1.4.1",
     "viem": "2.7.20",
     "wagmi": "2.5.7",
-    "web-vitals": "1.1.2"
+    "web-vitals": "1.1.2",
+    "worker-loader": "3.0.8"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9",
@@ -95,7 +97,9 @@
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit",
-    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}"
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
+    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
+    "postinstall": "yarn typechain"
   },
   "eslintConfig": {
     "extends": [
@@ -133,6 +137,7 @@
     "@lingui/cli": "4.10.0",
     "@lingui/loader": "4.10.0",
     "@lingui/macro": "4.10.0",
+    "@typechain/ethers-v6": "0.5.1",
     "@types/react-date-range": "1.4.9",
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
@@ -148,7 +153,8 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
     "react-app-rewired": "2.2.1",
-    "tailwindcss": "3.4.4"
+    "tailwindcss": "3.4.4",
+    "typechain": "8.3.2"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [

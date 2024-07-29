@@ -38,10 +38,10 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
+  convertToUsd,
   formatTokensRatio,
   getNeedTokenApprove,
   useTokensAllowanceData,
-  convertToUsd,
 } from "domain/synthetics/tokens";
 import { TriggerThresholdType, applySlippageToMinOut, applySlippageToPrice } from "domain/synthetics/trade";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -55,13 +55,14 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useSidecarOrders,
-  SidecarOrderEntryGroup,
-  SidecarSlTpOrderEntryValid,
-  SidecarLimitOrderEntryValid,
   SidecarLimitOrderEntry,
+  SidecarLimitOrderEntryValid,
+  SidecarOrderEntryGroup,
   SidecarSlTpOrderEntry,
+  SidecarSlTpOrderEntryValid,
+  useSidecarOrders,
 } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -86,19 +87,20 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { SideOrderEntries } from "./SideOrderEntries";
-import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
-import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { useTradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { SideOrderEntries } from "./SideOrderEntries";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
+  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxFixedTriggerOrderType,
   selectTradeboxFixedTriggerThresholdType,
@@ -109,8 +111,10 @@ import {
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
+  selectTradeboxMaxLiquidityPath,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
+  selectTradeboxSelectedPositionKey,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
@@ -119,15 +123,12 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
-  selectTradeboxSelectedPositionKey,
-  selectTradeboxMaxLiquidityPath,
-  selectTradeboxExecutionPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import "./ConfirmationBox.scss";
-import { bigMath } from "lib/bigmath";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { bigMath } from "lib/bigmath";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
+import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;
@@ -176,6 +177,7 @@ export function ConfirmationBox(p: Props) {
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
+  const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { maxLiquidity: swapLiquidityUsd } = useSelector(selectTradeboxMaxLiquidityPath);
@@ -1122,7 +1124,7 @@ export function ConfirmationBox(p: Props) {
                   entriesInfo?.entries?.map((entry, index) => {
                     if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
 
-                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, 2);
+                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, marketDecimals);
                     const percentage =
                       entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 
@@ -1200,8 +1202,6 @@ export function ConfirmationBox(p: Props) {
     const borrowingRate = getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]) * 100n;
     const fundigRate = getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]) * 100n;
     const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
-    const existingPriceDecimals = existingPosition?.indexToken?.priceDecimals;
-    const toTokenPriceDecimals = toToken?.priceDecimals;
 
     const shouldApplySlippage = isMarket;
     const acceptablePrice =
@@ -1260,7 +1260,7 @@ export function ConfirmationBox(p: Props) {
               label={t`Limit Price`}
               value={
                 formatUsd(triggerPrice, {
-                  displayDecimals: toTokenPriceDecimals,
+                  displayDecimals: marketDecimals,
                 }) || "-"
               }
             />
@@ -1268,7 +1268,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExecutionPriceRow
             tradeFlags={tradeFlags}
-            displayDecimals={toTokenPriceDecimals}
+            displayDecimals={marketDecimals}
             fees={fees}
             executionPrice={executionPrice ?? undefined}
             acceptablePrice={acceptablePrice}
@@ -1282,10 +1282,10 @@ export function ConfirmationBox(p: Props) {
               value={
                 <ValueTransition
                   from={formatUsd(existingPosition.entryPrice, {
-                    displayDecimals: existingPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })}
                   to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                    displayDecimals: toTokenPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })}
                 />
               }
@@ -1300,13 +1300,13 @@ export function ConfirmationBox(p: Props) {
                 from={
                   existingPosition
                     ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                        displayDecimals: existingPriceDecimals,
+                        displayDecimals: marketDecimals,
                       })
                     : undefined
                 }
                 to={
                   formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: toTokenPriceDecimals,
+                    displayDecimals: marketDecimals,
                   }) || "-"
                 }
               />
@@ -1514,8 +1514,6 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTriggerDecreaseSection() {
-    const existingPriceDecimals = existingPosition?.indexToken?.priceDecimals;
-    const toTokenPriceDecimals = toToken?.priceDecimals;
     return (
       <ExchangeInfo>
         {renderMain()}
@@ -1549,7 +1547,7 @@ export function ConfirmationBox(p: Props) {
             value={
               triggerPrice
                 ? `${fixedTriggerThresholdType} ${formatUsd(triggerPrice, {
-                    displayDecimals: toTokenPriceDecimals,
+                    displayDecimals: marketDecimals,
                   })}`
                 : "..."
             }
@@ -1557,7 +1555,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExecutionPriceRow
             tradeFlags={tradeFlags}
-            displayDecimals={toTokenPriceDecimals}
+            displayDecimals={marketDecimals}
             fees={fees}
             executionPrice={executionPrice ?? undefined}
             acceptablePrice={decreaseAmounts?.acceptablePrice}
@@ -1570,13 +1568,11 @@ export function ConfirmationBox(p: Props) {
               value={
                 nextPositionValues?.nextSizeUsd && nextPositionValues.nextSizeUsd > 0 ? (
                   <ValueTransition
-                    from={
-                      formatUsd(existingPosition?.liquidationPrice, {
-                        displayDecimals: existingPriceDecimals,
-                      })!
-                    }
+                    from={formatUsd(existingPosition?.liquidationPrice, {
+                      displayDecimals: marketDecimals,
+                    })}
                     to={formatUsd(nextPositionValues.nextLiqPrice, {
-                      displayDecimals: existingPriceDecimals,
+                      displayDecimals: marketDecimals,
                     })}
                   />
                 ) : (

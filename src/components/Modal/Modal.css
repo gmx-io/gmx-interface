@@ -36,6 +36,8 @@
   overflow: auto;
   background: var(--color-slate-800);
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
 }
 
 .divider {
@@ -57,10 +59,13 @@
 }
 
 .Modal-body {
-  max-height: calc(80vh - 8.5rem);
-  overflow-y: auto;
   /* for scrollbar to have a space on left and right */
   margin: 1.5rem 1rem 1.5rem 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.Modal-body.no-content-padding {
+  margin: 0;
   padding-right: 0.5rem;
 }
 

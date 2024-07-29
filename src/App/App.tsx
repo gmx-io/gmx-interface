@@ -24,13 +24,15 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
+import { GmTokensFavoritesContextProvider } from "domain/synthetics/tokens/useGmTokensFavorites";
+import { IndexTokensFavoritesContextProvider } from "domain/synthetics/tokens/useIndexTokensFavorites";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
-import useWallet from "lib/wallets/useWallet";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
@@ -49,7 +51,7 @@ const SWRConfigProp = {
 };
 
 function App() {
-  const { signer } = useWallet();
+  const signer = useEthersSigner();
   const { chainId } = useChainId();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
@@ -111,6 +113,8 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
+  app = <IndexTokensFavoritesContextProvider>{app}</IndexTokensFavoritesContextProvider>;
+  app = <GmTokensFavoritesContextProvider>{app}</GmTokensFavoritesContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;

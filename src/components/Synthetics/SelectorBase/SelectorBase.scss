@@ -2,6 +2,9 @@
 
 .SelectorBase {
   &-button {
+    display: flex;
+    align-items: center;
+
     cursor: pointer;
 
     &:hover:not(&-disabled) {
@@ -23,26 +26,24 @@
     border-radius: var(--border-radius-sm);
     background-color: var(--dark-blue-bg);
     border: 1px solid var(--color-gray-800);
+    overflow: hidden;
   }
 
   &-mobile-modal {
     .Modal-content {
       top: auto;
       bottom: auto;
-
-      width: 42rem;
       position: absolute;
-      max-height: 100vh;
 
-      @media screen and (max-width: 700px) {
-        bottom: 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+      width: calc(100vw - 2 * var(--default-container-padding-mobile));
 
-        height: 80vh;
+      bottom: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
 
-        @include slide-up;
-      }
+      height: 80vh;
+
+      @include slide-up;
     }
   }
 }

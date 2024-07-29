@@ -1,11 +1,11 @@
 import { Trans } from "@lingui/macro";
 import SpinningLoader from "components/Common/SpinningLoader";
-import { getPriceDecimals } from "config/tokens";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
 import gmxLogo from "img/gmx-logo-with-name.svg";
-import { useChainId } from "lib/chains";
-import { USD_DECIMALS, getHomeUrl } from "lib/legacy";
-import { formatAmount, formatPercentage } from "lib/numbers";
+import { getHomeUrl } from "lib/legacy";
+import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
@@ -37,11 +37,10 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    const { chainId } = useChainId();
     const isMobile = useMedia("(max-width: 400px)");
     const { code, success } = userAffiliateCode;
-    const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
     const homeURL = getHomeUrl();
+    const priceDecimals = useSelector(makeSelectMarketPriceDecimals(indexToken?.address));
     const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
 
     return (
@@ -57,11 +56,19 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
           <div className="prices">
             <div>
               <p>Entry Price</p>
-              <p className="price">${formatAmount(entryPrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
+              <p className="price">
+                {formatUsd(entryPrice, {
+                  displayDecimals: priceDecimals,
+                })}
+              </p>
             </div>
             <div>
               <p>Mark Price</p>
-              <p className="price">${formatAmount(markPrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
+              <p className="price">
+                {formatUsd(markPrice, {
+                  displayDecimals: priceDecimals,
+                })}
+              </p>
             </div>
           </div>
           <div className="referral-code">

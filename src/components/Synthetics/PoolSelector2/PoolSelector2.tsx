@@ -12,6 +12,7 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
+  SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseDesktopRow,
   SelectorBaseMobileButton,
@@ -34,7 +35,7 @@ type Props = {
 };
 
 export function PoolSelector2(props: Props) {
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const disabled = props.options?.length === 1;
 
   return (

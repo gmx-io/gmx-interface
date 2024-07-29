@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
-import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { Config, useConnectorClient } from "wagmi";
 import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
-import { Config, useConnectorClient } from "wagmi";
+
+import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 export function clientToSigner(client: Client<Transport, Chain, Account>) {
   const { account, chain, transport } = client;
@@ -19,5 +20,12 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 /** Hook to convert a Viem Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { data: client } = useConnectorClient<Config>({ chainId });
-  return useMemo(() => (client ? clientToSigner(client) : undefined), [client]);
+
+  return useMemo(() => {
+    if (!client) {
+      return undefined;
+    }
+
+    return clientToSigner(client);
+  }, [client]);
 }
