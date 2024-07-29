@@ -26,7 +26,7 @@ const store: {
   current: {},
 };
 
-async function executeChainsMulticalls() {
+function executeChainsMulticalls() {
   const tasks: Promise<any>[] = [];
 
   throttledExecuteUrgentChainsMulticalls.cancel();
@@ -37,10 +37,9 @@ async function executeChainsMulticalls() {
     const task = executeChainMulticall(chainId, calls);
     tasks.push(task);
   }
-
   store.current = {};
 
-  await Promise.allSettled(tasks);
+  return Promise.allSettled(tasks);
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
@@ -90,7 +89,7 @@ const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMultica
   trailing: true,
 });
 
-export async function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
+export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
   request: TConfig,
   priority: "urgent" | "background" = "urgent"
@@ -172,6 +171,11 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
       if (!call) {
         continue;
       }
+
+      // To reduce duplicate calls, we hash the call data and use it as a unique identifier.
+      // There are two main reasons for this:
+      // 1. Single token backed pools have many pairs with the same method signatures
+      // 2. The majority of pools have USDC as the short token, which means they all have some common calls
 
       const callId = stableHash([callGroup.contractAddress, call.methodName, call.params]);
 

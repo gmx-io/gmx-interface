@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import { stableHash } from "swr/_internal";
 
@@ -6,6 +6,13 @@ import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+
+/**
+ * A global map manages refresh intervals for shared SWR keys to centralize revalidation
+ * and avoid excessive refreshes when `mutate` is called.
+ */
+
+const refreshTimerMap: Record<string, number> = {};
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -37,15 +44,13 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     keepPreviousData: params.keepPreviousData,
   };
 
-  // SWR resets global options if pass undefined explicitly
-  if (params.refreshInterval !== undefined) {
-    swrOpts.refreshInterval = params.refreshInterval || undefined;
-  }
-
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
 
   const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
+    // Manually trigger refetch with `mutate` to bypass waiting for request duration. Set `refreshInterval` to 0.
+    // Reference: https://github.com/vercel/swr/discussions/860#discussioncomment-261823
+    refreshInterval: 0,
     fetcher: async () => {
       performance.mark(`multicall-${name}-start`);
       try {
@@ -109,6 +114,49 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       }
     },
   });
+
+  const defaultConfigRefreshInterval = defaultConfig.refreshInterval;
+
+  useEffect(() => {
+    if (params.refreshInterval === null) {
+      return;
+    }
+
+    if (params.refreshInterval === undefined && defaultConfigRefreshInterval === undefined) {
+      return;
+    }
+
+    const timer = refreshTimerMap[name];
+
+    if (timer) {
+      return;
+    }
+
+    let refreshInterval = 0;
+
+    if (typeof params.refreshInterval === "number") {
+      refreshInterval = params.refreshInterval;
+    } else if (typeof defaultConfigRefreshInterval === "number") {
+      refreshInterval = defaultConfigRefreshInterval;
+    } else if (defaultConfigRefreshInterval && successDataByChainIdRef.current[chainId]) {
+      refreshInterval = defaultConfigRefreshInterval(successDataByChainIdRef.current[chainId]);
+    }
+
+    if (!refreshInterval) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      mutate();
+    }, refreshInterval);
+
+    refreshTimerMap[name] = interval;
+
+    return () => {
+      clearInterval(interval);
+      delete refreshTimerMap[name];
+    };
+  }, [chainId, defaultConfigRefreshInterval, mutate, name, params.refreshInterval]);
 
   return {
     data,
