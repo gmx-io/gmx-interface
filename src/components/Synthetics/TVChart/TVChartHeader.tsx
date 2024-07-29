@@ -2,30 +2,25 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getToken, isChartAvailabeForToken } from "config/tokens";
-import {
-  selectAvailableChartTokens,
-  selectChartHeaderInfo,
-  selectChartToken,
-} from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
-import { formatAmountHuman, formatPercentageDisplay, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce } from "react-use";
 
 import { ReactComponent as LongIcon } from "img/long.svg";
 import { ReactComponent as ShortIcon } from "img/short.svg";
 
-import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
@@ -46,13 +41,12 @@ function TVChartHeaderInfoMobile() {
 
   const avgPrice = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
 
-  const dailyVolume = use24hVolume();
-
-  const info = useSelector(selectChartHeaderInfo);
-
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const [detailsVisible, setDetailsVisible] = useState(false);
+
+  const { liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume } =
+    useChartHeaderFormattedValues();
 
   useEffect(() => {
     if (isSwap) {
@@ -111,11 +105,11 @@ function TVChartHeaderInfoMobile() {
               <div className="flex flex-row items-center gap-8">
                 <div className="flex flex-row items-center gap-8">
                   <LongIcon />
-                  {info?.liquidityLong ? formatAmountHuman(info?.liquidityLong, USD_DECIMALS) : "-"}
+                  {liquidityLong}
                 </div>
                 <div className="flex flex-row items-center gap-8">
                   <ShortIcon />
-                  {info?.liquidityShort ? formatAmountHuman(info?.liquidityShort, USD_DECIMALS) : "-"}
+                  {liquidityShort}
                 </div>
               </div>
             </div>
@@ -127,11 +121,11 @@ function TVChartHeaderInfoMobile() {
               <div className="flex flex-row items-center gap-8">
                 <div className="positive flex flex-row items-center gap-8">
                   <LongIcon className="fill-green-500" />
-                  {info?.netRateHourlyLong ? formatRatePercentage(info?.netRateHourlyLong) : "-"}
+                  {netRateLong}
                 </div>
                 <div className="negative flex flex-row items-center gap-8">
                   <ShortIcon className="fill-red-500" />
-                  {info?.netRateHourlyShort ? formatRatePercentage(info?.netRateHourlyShort) : "-"}
+                  {netRateShort}
                 </div>
               </div>
             </div>
@@ -143,18 +137,19 @@ function TVChartHeaderInfoMobile() {
               </div>
               <div className="flex flex-row items-center gap-8">
                 <div className="flex flex-row items-center gap-8">
-                  <LongIcon /> {info?.openInterestLong ? formatAmountHuman(info?.openInterestLong, USD_DECIMALS) : "-"}
+                  <LongIcon />
+                  {longOIValue}
                 </div>
                 <div className="flex flex-row items-center gap-8">
                   <ShortIcon />
-                  {info?.openInterestShort ? formatAmountHuman(info?.openInterestShort, USD_DECIMALS) : "-"}
+                  {shortOIValue}
                 </div>
               </div>
             </div>
 
             <div className=" Chart-24h-low">
               <div className="ExchangeChart-info-label">24h Volume</div>
-              {dailyVolume ? formatAmountHuman(dailyVolume, USD_DECIMALS) : "-"}
+              {dailyVolume}
             </div>
           </div>
         </div>
@@ -187,9 +182,6 @@ function TVChartHeaderInfoDesktop() {
 
   const avgPrice = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
 
-  const dailyVolume = use24hVolume();
-
-  const info = useSelector(selectChartHeaderInfo);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const setScrolls = useCallback(() => {
@@ -232,31 +224,8 @@ function TVChartHeaderInfoDesktop() {
     };
   }, [scrollRight, maxFadeArea]);
 
-  const longOIValue = useMemo(() => {
-    if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
-      return (
-        <span className="whitespace-nowrap">
-          {formatAmountHuman(info?.openInterestLong, USD_DECIMALS)} (
-          {formatPercentageDisplay(info.longOpenInterestPercentage)})
-        </span>
-      );
-    }
-
-    return "-";
-  }, [info?.longOpenInterestPercentage, info?.openInterestLong]);
-
-  const shortOIValue = useMemo(() => {
-    if (info?.longOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
-      return (
-        <span className="whitespace-nowrap">
-          {formatAmountHuman(info?.openInterestShort, USD_DECIMALS)} (
-          {formatPercentageDisplay(100 - info.longOpenInterestPercentage)})
-        </span>
-      );
-    }
-
-    return "-";
-  }, [info?.longOpenInterestPercentage, info?.openInterestShort]);
+  const { liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume } =
+    useChartHeaderFormattedValues();
 
   const additionalInfo = useMemo(() => {
     if (isSwap) {
@@ -272,15 +241,14 @@ function TVChartHeaderInfoDesktop() {
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">
               <LongIcon />
-              {info?.liquidityLong ? formatAmountHuman(info?.liquidityLong, USD_DECIMALS) : "-"}
+              {liquidityLong}
             </div>
             <div className="flex flex-row items-center gap-4">
               <ShortIcon />
-              {info?.liquidityShort ? formatAmountHuman(info?.liquidityShort, USD_DECIMALS) : "-"}
+              {liquidityShort}
             </div>
           </div>
         </div>
-
         <div>
           <div className="ExchangeChart-info-label">
             <Trans>Net Rate / 1h</Trans>
@@ -288,15 +256,14 @@ function TVChartHeaderInfoDesktop() {
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="positive flex flex-row items-center gap-4">
               <LongIcon className="fill-green-500" />
-              {info?.netRateHourlyLong ? formatRatePercentage(info?.netRateHourlyLong) : "-"}
+              {netRateLong}
             </div>
             <div className="negative flex flex-row items-center gap-4">
               <ShortIcon className="fill-red-500" />
-              {info?.netRateHourlyShort ? formatRatePercentage(info?.netRateHourlyShort) : "-"}
+              {netRateShort}
             </div>
           </div>
         </div>
-
         <div>
           <div className="ExchangeChart-info-label">
             <Trans>Open Interest</Trans>
@@ -312,23 +279,13 @@ function TVChartHeaderInfoDesktop() {
             </div>
           </div>
         </div>
-
         <div className="Chart-24h-low">
           <div className="ExchangeChart-info-label">24h Volume</div>
-          <div className="Chart-header-value">{dailyVolume ? formatAmountHuman(dailyVolume, USD_DECIMALS) : "-"}</div>
+          <div className="Chart-header-value">{dailyVolume}</div>
         </div>
       </>
     );
-  }, [
-    info?.liquidityLong,
-    info?.liquidityShort,
-    info?.netRateHourlyLong,
-    info?.netRateHourlyShort,
-    longOIValue,
-    shortOIValue,
-    dailyVolume,
-    isSwap,
-  ]);
+  }, [liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume, isSwap]);
 
   return (
     <div className="Chart-header mb-10">
