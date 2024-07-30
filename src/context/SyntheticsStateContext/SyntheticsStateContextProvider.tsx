@@ -98,8 +98,11 @@ export function SyntheticsStateContextProvider({
     checkSummedAccount = ethers.getAddress(paramsAccount);
   }
 
-  const account = pageType === "accounts" ? checkSummedAccount : walletAccount;
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
+  const isTradePage = pageType === "trade";
+  const isAccountPage = pageType === "accounts";
+
+  const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
@@ -111,7 +114,7 @@ export function SyntheticsStateContextProvider({
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
     chainId,
-    pageType === "trade"
+    isTradePage
   );
 
   const settings = useSettings();
@@ -131,7 +134,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
-  const tradeboxState = useTradeboxState(chainId, {
+  const tradeboxState = useTradeboxState(chainId, isTradePage, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
