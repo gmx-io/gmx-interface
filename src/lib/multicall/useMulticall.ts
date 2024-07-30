@@ -4,15 +4,23 @@ import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
+import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 
 /**
  * A global map manages refresh intervals for shared SWR keys to centralize revalidation
  * and avoid excessive refreshes when `mutate` is called.
+ *
+ * We store interval in order to keep only the most frequent interval for a key.
  */
-
-const refreshTimerMap: Record<string, number> = {};
+const refreshTimerMap: Record<
+  string,
+  {
+    id: number;
+    interval: number;
+  }
+> = {};
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -54,10 +62,27 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     fetcher: async () => {
       performance.mark(`multicall-${name}-start`);
       try {
-        // prettier-ignore
-        const request = typeof params.request === "function"
-            ? await params.request(chainId, params.key as CacheKey)
-            : params.request;
+        let request: TConfig;
+        {
+          let startTime: number | undefined;
+
+          debugLog(() => {
+            startTime = Date.now();
+          });
+
+          // prettier-ignore
+          request =
+            typeof params.request === "function"
+              ? await params.request(chainId, params.key as CacheKey)
+              : params.request;
+
+          debugLog(() => {
+            const endTime = Date.now();
+            const duration = endTime - (startTime ?? endTime);
+
+            return `Multicall request generation for chainId: ${chainId} took ${duration}ms. Name: ${name}.`;
+          });
+        }
 
         if (Object.keys(request).length === 0) {
           throw new Error(`Multicall request is empty`);
@@ -84,7 +109,22 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           priority = "background";
         }
 
-        responseOrFailure = await executeMulticall(chainId, request, priority);
+        {
+          let startTime: number | undefined;
+
+          debugLog(() => {
+            startTime = Date.now();
+          });
+
+          responseOrFailure = await executeMulticall(chainId, request, priority, name);
+
+          debugLog(() => {
+            const endTime = Date.now();
+            const duration = endTime - (startTime ?? endTime);
+
+            return `Multicall execution and scheduling for chainId: ${chainId} took ${duration}ms. Name: ${name}. Priority: ${priority}.`;
+          });
+        }
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
@@ -126,12 +166,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       return;
     }
 
-    const timer = refreshTimerMap[name];
-
-    if (timer) {
-      return;
-    }
-
     let refreshInterval = 0;
 
     if (typeof params.refreshInterval === "number") {
@@ -146,14 +180,29 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       return;
     }
 
-    const interval = window.setInterval(() => {
+    const timer = refreshTimerMap[name];
+
+    if (timer) {
+      if (timer.interval <= refreshInterval) {
+        // Old interval is shorter or equal, keep it
+        return;
+      } else {
+        // The new interval is shorter, clear the old one
+        clearInterval(timer.interval);
+      }
+    }
+
+    const intervalId = window.setInterval(() => {
       mutate();
     }, refreshInterval);
 
-    refreshTimerMap[name] = interval;
+    refreshTimerMap[name] = {
+      id: intervalId,
+      interval: refreshInterval,
+    };
 
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalId);
       delete refreshTimerMap[name];
     };
   }, [chainId, defaultConfigRefreshInterval, mutate, name, params.refreshInterval]);

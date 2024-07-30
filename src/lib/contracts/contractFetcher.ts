@@ -42,6 +42,7 @@ export const contractFetcher =
       params,
       additionalArgs,
       priority,
+      id,
     });
 
     let shouldCallFallback = true;
@@ -72,6 +73,7 @@ export const contractFetcher =
         params,
         additionalArgs,
         priority,
+        id,
       });
 
       fallbackContractCall
@@ -123,6 +125,7 @@ async function fetchContractData({
   params,
   additionalArgs,
   priority,
+  id,
 }: {
   chainId: number;
   provider: Provider | Signer | undefined;
@@ -133,6 +136,7 @@ async function fetchContractData({
   params: any;
   additionalArgs: any;
   priority: "urgent" | "background";
+  id: string;
 }): Promise<any | undefined> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
@@ -152,7 +156,8 @@ async function fetchContractData({
           },
         },
       },
-      priority
+      priority,
+      id
     );
 
     const outputs = contract.interface.getFunction(method)!.outputs;

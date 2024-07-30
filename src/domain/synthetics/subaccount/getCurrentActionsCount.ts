@@ -12,18 +12,23 @@ export async function getCurrentMaxActionsCount({
   subaccountAddress: string;
   chainId: number;
 }) {
-  const response = await executeMulticall(chainId, {
-    dataStore: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abi: DataStore.abi,
-      calls: {
-        currentActionsCount: {
-          methodName: "getUint",
-          params: [subaccountActionCountKey(accountAddress, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+  const response = await executeMulticall(
+    chainId,
+    {
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: {
+          currentActionsCount: {
+            methodName: "getUint",
+            params: [subaccountActionCountKey(accountAddress, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+          },
         },
       },
     },
-  });
+    undefined,
+    "getCurrentMaxActionsCount"
+  );
   if (response) {
     return BigInt(response.data.dataStore.currentActionsCount.returnValues[0]);
   }
