@@ -58,10 +58,11 @@ export function AprInfo({
   }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData;
+  const isIncentiveActiveForToken = incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
-    if (!isIncentiveActive) {
+    if (!isIncentiveActive || !isIncentiveActiveForToken) {
       return (
         <>
           <StatsTooltipRow
@@ -117,6 +118,7 @@ export function AprInfo({
     incentiveApr,
     isBaseAprReadyToBeShown,
     isIncentiveActive,
+    isIncentiveActiveForToken,
   ]);
 
   const aprNode = useMemo(() => {
@@ -134,7 +136,7 @@ export function AprInfo({
     }
   }, [apy, incentiveApr, totalApr]);
 
-  return showTooltip && incentiveApr !== undefined && incentiveApr > 0 ? (
+  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown) ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode
