@@ -54,8 +54,8 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   ],
   wstETH: [
     {
-      name: "Stargate",
-      generateLink: () => "https://stargate.finance/bridge",
+      name: "Arbitrum",
+      generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
     },
   ],
 };
