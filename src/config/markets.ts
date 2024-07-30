@@ -68,11 +68,17 @@ const ENABLED_MARKETS: Record<number, Record<string, MarketUiConfig>> = {
     // SWAP-ONLY [USDC-DAI]
     "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665": DEFAULT_LISTING,
     // ETH/USD [wstETH-USDe]
-    "0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5": DEFAULT_LISTING,
+    "0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5": {
+      listingDate: p("31 Jul 2024"),
+    },
     // SWAP-ONLY [wstETH-WETH]
-    "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8": DEFAULT_LISTING,
+    "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8": {
+      listingDate: p("31 Jul 2024"),
+    },
     // SWAP-ONLY [USDe-USDC]
-    "0x45aD16Aaa28fb66Ef74d5ca0Ab9751F2817c81a4": DEFAULT_LISTING,
+    "0x45aD16Aaa28fb66Ef74d5ca0Ab9751F2817c81a4": {
+      listingDate: p("31 Jul 2024"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
