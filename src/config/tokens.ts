@@ -317,7 +317,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogwifhat",
     },
     {
-      name: "USDe",
+      name: "Ethena USDe",
       symbol: "USDe",
       address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
       decimals: 18,
