@@ -15,8 +15,8 @@ import {
   MAX_OPEN_INTEREST_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
   MAX_PNL_FACTOR_KEY,
-  MAX_POOL_USD_FOR_DEPOSIT_KEY,
   MAX_POOL_AMOUNT_KEY,
+  MAX_POOL_USD_FOR_DEPOSIT_KEY,
   MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY,
   MAX_POSITION_IMPACT_FACTOR_KEY,
   MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY,
@@ -47,6 +47,7 @@ import { convertTokenAddress } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
 import { getByKey } from "lib/objects";
+import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TokensData, useTokensDataRequest } from "../tokens";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -329,7 +330,7 @@ function useMarketsValuesRequest({
   const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account],
 
-    refreshInterval: 5000,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
@@ -660,7 +661,7 @@ function useMarketsConfigsRequest({
   const marketsConfigsQuery = useMulticall(chainId, "useMarketsConfigsRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses],
 
-    refreshInterval: 60_000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

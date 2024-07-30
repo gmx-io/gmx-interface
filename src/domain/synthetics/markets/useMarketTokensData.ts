@@ -1,5 +1,3 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import TokenAbi from "abis/Token.json";
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
@@ -11,8 +9,13 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+
+import SyntheticsReader from "abis/SyntheticsReader.json";
+import TokenAbi from "abis/Token.json";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -31,7 +34,7 @@ export function useMarketTokensDataRequest(
   const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
-    refreshInterval: 5000,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

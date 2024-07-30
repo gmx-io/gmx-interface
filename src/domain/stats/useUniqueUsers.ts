@@ -1,7 +1,9 @@
+import useSWR from "swr";
+
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";
-import useSWR from "swr";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -33,7 +35,7 @@ export default function useUniqueUsers() {
       return results;
     },
     {
-      refreshInterval: 60000,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
 
