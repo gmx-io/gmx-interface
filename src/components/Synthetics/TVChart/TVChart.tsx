@@ -125,10 +125,21 @@ export function TVChart() {
   }
 
   useEffect(() => {
-    setDataProvider(
-      new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleFetcher: oracleKeeperFetcher })
-    );
-  }, [oracleKeeperFetcher]);
+    if (!chainId) {
+      return;
+    }
+
+    const dataProvider = new SyntheticsTVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V2,
+      oracleFetcher: oracleKeeperFetcher,
+      chainId,
+    });
+    setDataProvider(dataProvider);
+
+    return () => {
+      clearInterval(dataProvider.updateInterval);
+    };
+  }, [oracleKeeperFetcher, chainId]);
 
   useEffect(
     function updatePeriod() {
