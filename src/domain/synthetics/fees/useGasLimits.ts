@@ -11,6 +11,8 @@ import {
   withdrawalGasLimitKey,
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import type { GasLimitsConfig } from "./types";
 
 import DataStore from "abis/DataStore.json";
@@ -19,7 +21,7 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
 
-    refreshInterval: 60000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () => ({
       dataStore: {

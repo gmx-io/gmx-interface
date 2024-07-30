@@ -1,5 +1,6 @@
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import { ethers } from "ethers";
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
 import {
@@ -8,14 +9,17 @@ import {
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
+
+import DataStore from "abis/DataStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -37,7 +41,7 @@ export function usePositions(
   const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
     key: account ? [account] : null,
 
-    refreshInterval: 5000,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
@@ -68,7 +72,7 @@ export function usePositions(
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
     key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys] : null,
 
-    refreshInterval: 5000,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
