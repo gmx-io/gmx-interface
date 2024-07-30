@@ -16,6 +16,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxMockPosition,
+  selectTradeboxSidecarEntriesSetIsUntouched,
   selectTradeboxSidecarOrdersExistingLimitEntries,
   selectTradeboxSidecarOrdersExistingSlEntries,
   selectTradeboxSidecarOrdersExistingTpEntries,
@@ -23,11 +24,12 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { convertToTokenAmount } from "../tokens";
 import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
+import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 
 export * from "./types";
 
@@ -35,6 +37,7 @@ export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
+  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
@@ -49,6 +52,8 @@ export function useSidecarOrders() {
   const existingLimitOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingLimitEntries);
   const existingSlOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
   const existingTpOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
+
+  const doesEntriesChanged = useSidecarOrdersChanged();
 
   const handleLimitErrors = useCallback(
     (entry: SidecarLimitOrderEntry) =>
@@ -353,6 +358,15 @@ export function useSidecarOrders() {
     stopLoss.reset();
     takeProfit.reset();
   }, [limit, stopLoss, takeProfit]);
+
+  useEffect(() => {
+    if (doesEntriesChanged) {
+      reset();
+      setIsUntouched("limit", false);
+      setIsUntouched("sl", false);
+      setIsUntouched("tp", false);
+    }
+  }, [doesEntriesChanged, reset, setIsUntouched]);
 
   return {
     stopLoss,
