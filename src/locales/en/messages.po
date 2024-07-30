@@ -2253,10 +2253,6 @@ msgstr "Price above Liq. Price"
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Anonymous chat with GMX product manager"
-msgstr "Anonymous chat with GMX product manager"
-
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} pool exceeded, try different token"
@@ -4736,10 +4732,6 @@ msgstr "There is no liquidation price, as the position's collateral value will i
 msgid "Select a Market"
 msgstr "Select a Market"
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Give us your feedback on GMX"
-msgstr "Give us your feedback on GMX"
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
 msgstr "Min. required Collateral"
@@ -6823,6 +6815,10 @@ msgstr "Liquidity and trading incentives programs are live on {arbitrumLink} and
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX."
+msgstr "Give us your feedback on GMX."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
 msgstr "Current Borrow Fee / Day"
@@ -7529,6 +7525,10 @@ msgstr "Price Impact Rebate Claimed"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX"
+msgstr "Anonymous chat with GMX"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js

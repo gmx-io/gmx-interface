@@ -2253,10 +2253,6 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr ""
 
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Anonymous chat with GMX product manager"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr ""
@@ -4733,10 +4729,6 @@ msgstr ""
 msgid "Select a Market"
 msgstr ""
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Give us your feedback on GMX"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
 msgstr ""
@@ -6817,6 +6809,10 @@ msgstr ""
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX."
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
 msgstr ""
@@ -7522,6 +7518,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
