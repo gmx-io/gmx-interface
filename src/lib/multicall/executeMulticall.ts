@@ -1,10 +1,12 @@
 import { entries, throttle, values } from "lodash";
 import { stableHash } from "swr/_internal";
 
-import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { isDevelopment } from "config/env";
 
-import { executeMulticallWorker } from "./executeMulticallWorker";
+import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
+import { executeMulticallWorker } from "./executeMulticallWorker";
+import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -19,6 +21,8 @@ type MulticallFetcherConfig = {
     };
   };
 };
+
+const CALL_COUNT_MAIN_THREAD_THRESHOLD = 10;
 
 const store: {
   current: MulticallFetcherConfig;
@@ -65,10 +69,29 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
   let responseOrFailure: MulticallResult<any> | undefined;
 
-  if (callCount > 10) {
-    responseOrFailure = await executeMulticallWorker(chainId, request);
-  } else {
-    responseOrFailure = await executeMulticallMainThread(chainId, request);
+  {
+    let startTime: number | undefined;
+
+    debugLog(() => {
+      startTime = Date.now();
+      const executionIn = callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD ? "worker" : "main thread";
+
+      return `Executing multicall for chainId: ${chainId}. Call count: ${callCount}. Execution in ${executionIn}.`;
+    });
+
+    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD) {
+      responseOrFailure = await executeMulticallWorker(chainId, request);
+    } else {
+      responseOrFailure = await executeMulticallMainThread(chainId, request);
+    }
+
+    debugLog(() => {
+      const executionIn = callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD ? "worker" : "main thread";
+      const endTime = Date.now();
+      const duration = endTime - (startTime ?? endTime);
+
+      return `Multicall execution for chainId: ${chainId} took ${duration}ms in ${executionIn}. Call count: ${callCount}.`;
+    });
   }
 
   if (responseOrFailure) {
@@ -80,11 +103,14 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
   }
 }
 
-const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, 50, {
+const URGENT_WINDOW_MS = 50;
+const BACKGROUND_WINDOW_MS = 2000;
+
+const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, URGENT_WINDOW_MS, {
   leading: false,
   trailing: true,
 });
-const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMulticalls, 2000, {
+const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMulticalls, BACKGROUND_WINDOW_MS, {
   leading: false,
   trailing: true,
 });
@@ -92,7 +118,11 @@ const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMultica
 export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
   request: TConfig,
-  priority: "urgent" | "background" = "urgent"
+  priority: "urgent" | "background" = "urgent",
+  /**
+   * For debugging purposes, you can provide a name to the multicall request.
+   */
+  name?: string
 ): Promise<MulticallResult<TConfig>> {
   let groupNameMapping: {
     // Contract address
@@ -206,6 +236,31 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
       }
     }
   }
+
+  debugLog(() => {
+    let msg = "";
+    for (const [callId, call] of entries(store.current[chainId])) {
+      if (call.hooks.length === 1) {
+        continue;
+      }
+
+      const names = groupNameMapping[call.callData.contractAddress][callId]
+        .map(({ callGroupName, callName }) => `${callGroupName}.${callName}`)
+        .join("\n");
+
+      msg += `Multicall with names:\n${names}\nhas ${call.hooks.length} duplicate calls. Contract address: ${call.callData.contractAddress}. Method name: ${call.callData.methodName}.\n\n`;
+    }
+
+    return msg;
+  });
+
+  if (isDevelopment() && getIsMulticallBatchingDisabled()) {
+    debugLog(() => `Multicall batching disabled, executing immediately. Multicall name: ${name ?? "?"}`);
+    executeChainsMulticalls() as any;
+    return promise as any;
+  }
+
+  debugLog(() => `Multicall with name: ${name ?? "?"} added to queue. Priority: ${priority}`);
 
   if (priority === "urgent") {
     throttledExecuteUrgentChainsMulticalls();

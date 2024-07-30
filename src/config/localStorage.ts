@@ -50,6 +50,8 @@ export const CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "chart-token-selector-fa
 export const GM_TOKEN_SELECTOR_FILTER_TAB_KEY = "gm-token-selector-filter-tab";
 export const GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "gm-token-selector-favorite-tokens";
 
+export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
@@ -117,4 +119,12 @@ export function getSyntheticsReceiveMoneyTokenKey(
   collateralToken: string | undefined
 ) {
   return [chainId, CLOSE_POSITION_RECEIVE_TOKEN_KEY, marketName, direction, collateralToken];
+}
+
+export function getIsMulticallBatchingDisabledKey() {
+  return [DEBUG_MULTICALL_BATCHING_KEY, "disabled"];
+}
+
+export function getMulticallBatchingLoggingEnabledKey() {
+  return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
 }
