@@ -3,7 +3,22 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 
 export type PeriodAccountStats = {
+  closedCount: number;
+  cumsumCollateral: bigint;
+  cumsumSize: bigint;
+  losses: number;
+  maxCapital: bigint;
+  netCapital: bigint;
+  realizedFees: bigint;
+  realizedPnl: bigint;
+  realizedPriceImpact: bigint;
+  startUnrealizedFees: bigint;
+  startUnrealizedPnl: bigint;
+  startUnrealizedPriceImpact: bigint;
+  sumMaxSize: bigint;
   volume: bigint;
+  wins: number;
+  id: string;
 };
 
 export function usePeriodAccountStats(
@@ -16,7 +31,22 @@ export function usePeriodAccountStats(
     gql`
       query PeriodAccountStats($account: String!, $from: Int, $to: Int) {
         periodAccountStats(where: { id_eq: $account, from: $from, to: $to }) {
+          closedCount
+          cumsumCollateral
+          cumsumSize
+          losses
+          maxCapital
+          netCapital
+          realizedFees
+          realizedPnl
+          realizedPriceImpact
+          startUnrealizedFees
+          startUnrealizedPnl
+          startUnrealizedPriceImpact
+          sumMaxSize
           volume
+          wins
+          id
         }
       }
     `,
@@ -35,7 +65,22 @@ export function usePeriodAccountStats(
     }
 
     return {
+      closedCount: stats.closedCount,
+      cumsumCollateral: BigInt(stats.cumsumCollateral),
+      cumsumSize: BigInt(stats.cumsumSize),
+      losses: stats.losses,
+      maxCapital: BigInt(stats.maxCapital),
+      netCapital: BigInt(stats.netCapital),
+      realizedFees: BigInt(stats.realizedFees),
+      realizedPnl: BigInt(stats.realizedPnl),
+      realizedPriceImpact: BigInt(stats.realizedPriceImpact),
+      startUnrealizedFees: BigInt(stats.startUnrealizedFees),
+      startUnrealizedPnl: BigInt(stats.startUnrealizedPnl),
+      startUnrealizedPriceImpact: BigInt(stats.startUnrealizedPriceImpact),
+      sumMaxSize: BigInt(stats.sumMaxSize),
       volume: BigInt(stats.volume),
+      wins: stats.wins,
+      id: stats.id,
     };
   }, [res.data]);
 
