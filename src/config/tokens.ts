@@ -316,6 +316,22 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/33566/standard/dogwifhat.jpg?1702499428",
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogwifhat",
     },
+    {
+      name: "USDe",
+      symbol: "USDe",
+      address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/33613/standard/USDE.png?1716355685",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethena-usde",
+    },
+    {
+      name: "Wrapped stETH",
+      symbol: "wstETH",
+      address: "0x5979D7b546E38E414F7E9822514be443A4800529",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-steth",
+    },
   ],
   [AVALANCHE]: [
     {
