@@ -323,6 +323,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/33613/standard/USDE.png?1716355685",
       coingeckoUrl: "https://www.coingecko.com/en/coins/ethena-usde",
+      isStable: true,
     },
     {
       name: "Wrapped stETH",
