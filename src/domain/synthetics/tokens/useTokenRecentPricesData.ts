@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import useSWR from "swr";
 
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import { TokenPricesData } from "./types";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
+import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
 import { parseContractPrice } from "./utils";
 
 type TokenPricesDataResult = {
@@ -25,7 +25,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
-  const { data } = useSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
+  const { data } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
