@@ -12,7 +12,6 @@ import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SelectorBase.scss";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = PropsWithChildren<{
   handleClassName?: string;
