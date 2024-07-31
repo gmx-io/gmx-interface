@@ -1034,6 +1034,10 @@ msgstr ""
 msgid "Select pool"
 msgstr "풀 선택"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "유동성"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "비중"
@@ -2941,7 +2945,7 @@ msgstr "수령중..."
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
-msgstr "모두"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3445,6 +3449,10 @@ msgstr "실행 가격이 허용 가능한 가격 조건을 충족하지 않았�
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "1시간 당 순 수수료율"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx

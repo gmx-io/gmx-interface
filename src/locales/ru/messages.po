@@ -1034,6 +1034,10 @@ msgstr ""
 msgid "Select pool"
 msgstr "Выбрать пул"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "Ликвидность"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "ВЕС"
@@ -2941,7 +2945,7 @@ msgstr "Утверждение..."
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
-msgstr "Все"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3445,6 +3449,10 @@ msgstr "Цена исполнения не соответствует услов
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "Чистая ставка / 1ч"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx

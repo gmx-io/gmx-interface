@@ -1034,6 +1034,10 @@ msgstr ""
 msgid "Select pool"
 msgstr "プールを選択"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "流動性"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "ウェイト"
@@ -2941,7 +2945,7 @@ msgstr "請求中..."
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
-msgstr "すべて"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3445,6 +3449,10 @@ msgstr "実行価格が許容価格条件を満たしませんでした。条件
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "ネットレート / 1時間"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx

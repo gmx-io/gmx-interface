@@ -1034,6 +1034,10 @@ msgstr "Generating and activating Subaccount"
 msgid "Select pool"
 msgstr "Select pool"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "Liquidity"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "WEIGHT"
@@ -3448,6 +3452,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "Net Rate / 1h"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx

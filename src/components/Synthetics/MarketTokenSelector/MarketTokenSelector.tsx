@@ -467,7 +467,7 @@ function MarketTokenListItem({
         {formattedSellableAmount}
       </td>
       <td className={tdClassName} onClick={handleSelect}>
-        <AprInfo apy={apr} incentiveApr={incentiveApr} tokenAddress={market.address} showTooltip={false} />
+        <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} tokenAddress={market.address} />
       </td>
     </tr>
   );

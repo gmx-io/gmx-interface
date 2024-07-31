@@ -1034,6 +1034,10 @@ msgstr ""
 msgid "Select pool"
 msgstr "Pool wählen"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "Liquidität"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "GEWICHTUNG"
@@ -2941,7 +2945,7 @@ msgstr "Beanspruchen..."
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
 msgid "All"
-msgstr "Alle"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required."
@@ -3445,6 +3449,10 @@ msgstr "Der Ausführungspreis erfüllt die akzeptable Preisbedingung nicht. Der 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "Netto-Rate / 1h"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
