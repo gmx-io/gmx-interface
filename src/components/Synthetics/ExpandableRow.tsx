@@ -81,7 +81,13 @@ export function ExpandableRow({
           }
         />
       )}
-      {open && children}
+      <div
+        className={cx({
+          hidden: !open,
+        })}
+      >
+        {children}
+      </div>
     </>
   );
 }
