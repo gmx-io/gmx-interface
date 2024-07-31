@@ -39,6 +39,8 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
+import "./MarketTokenSelector.scss";
+
 type Props = {
   marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
@@ -467,7 +469,7 @@ function MarketTokenListItem({
         {formattedSellableAmount}
       </td>
       <td className={tdClassName} onClick={handleSelect}>
-        <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
+        <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} tokenAddress={market.address} />
       </td>
     </tr>
   );

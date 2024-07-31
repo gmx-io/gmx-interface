@@ -262,7 +262,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                     </ExchangeTd>
 
                     <ExchangeTd>
-                      <AprInfo apy={apy} incentiveApr={incentiveApr} />
+                      <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
                     </ExchangeTd>
 
                     <ExchangeTd className="w-[350px]">
