@@ -3454,6 +3454,8 @@ msgstr ""
 msgid "Structured Products"
 msgstr ""
 
+#: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -5119,6 +5121,11 @@ msgstr ""
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
+msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The base APY estimate will be available {0} to ensure accurate data display."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
