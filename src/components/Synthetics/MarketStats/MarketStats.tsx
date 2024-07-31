@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
 import {
@@ -82,8 +83,11 @@ export function MarketStats(p: Props) {
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
-  const bridgingOprionsForToken = getBridgingOptionsForToken(longToken?.symbol);
-  const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
+  const bridgingOptionsForLongToken = getBridgingOptionsForToken(longToken?.symbol);
+  const shouldShowMoreInfoForLongToken = Boolean(bridgingOptionsForLongToken);
+
+  const bridgingOptionsForShortToken = getBridgingOptionsForToken(shortToken?.symbol);
+  const shouldShowMoreInfoForShortToken = Boolean(bridgingOptionsForShortToken);
 
   const maxLongTokenValue = useMemo(
     () => [
@@ -190,7 +194,10 @@ export function MarketStats(p: Props) {
           )}
         />
 
-        <CardRow label={t`APY`} value={<AprInfo apy={apy} incentiveApr={incentiveApr} />} />
+        <CardRow
+          label={t`APY`}
+          value={<AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={marketToken?.address ?? zeroAddress} />}
+        />
 
         <CardRow
           label={t`Total Supply`}
@@ -328,7 +335,7 @@ export function MarketStats(p: Props) {
                 longToken?.decimals
               )}
             />
-            {shouldShowMoreInfo && (
+            {shouldShowMoreInfoForLongToken && (
               <CardRow
                 label={t`Read more`}
                 value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
@@ -347,7 +354,7 @@ export function MarketStats(p: Props) {
                 longToken?.decimals
               )}
             />
-            {shouldShowMoreInfo && (
+            {shouldShowMoreInfoForLongToken && (
               <CardRow
                 label={t`Read more`}
                 value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />}
@@ -364,6 +371,12 @@ export function MarketStats(p: Props) {
                 shortToken?.decimals
               )}
             />
+            {shouldShowMoreInfoForShortToken && (
+              <CardRow
+                label={t`Read more`}
+                value={<BridgingInfo chainId={chainId} tokenSymbol={shortToken?.symbol} />}
+              />
+            )}
           </>
         )}
       </div>

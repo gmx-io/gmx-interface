@@ -420,6 +420,10 @@ msgstr "Open Fees"
 msgid "Realized PnL"
 msgstr "Realized PnL"
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Discord account: <0>@gmx_feedback</0>"
+msgstr "Discord account: <0>@gmx_feedback</0>"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -1018,6 +1022,10 @@ msgstr "Generating and activating Subaccount"
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr "Select pool"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Liquidity"
+#~ msgstr "Liquidity"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
@@ -1744,6 +1752,10 @@ msgstr "Buy GMX on {chainName}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Size"
 msgstr "Size"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+msgstr "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -3380,6 +3392,7 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3437,6 +3450,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Net Rate / 1h"
+#~ msgstr "Net Rate / 1h"
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
@@ -3446,6 +3463,8 @@ msgstr "Claim esGMX Rewards"
 msgid "Structured Products"
 msgstr "Structured Products"
 
+#: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -5098,6 +5117,11 @@ msgstr "3rd Place"
 msgid "Claiming failed"
 msgstr "Claiming failed"
 
+#: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The base APY estimate will be available {0} to ensure accurate data display."
+msgstr "The base APY estimate will be available {0} to ensure accurate data display."
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -5221,6 +5245,10 @@ msgstr "Price above highest Limit Price."
 #: src/components/Glp/GlpSwap.js
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
+msgstr "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim esGMX"
@@ -6168,6 +6196,10 @@ msgstr "BUY…"
 msgid "Vest with GLP on Arbitrum"
 msgstr "Vest with GLP on Arbitrum"
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Telegram account"
+msgstr "Telegram account"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "SOON"
 msgstr "SOON"
@@ -6244,6 +6276,10 @@ msgstr "Orders <0>({0})</0>"
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
 msgstr "Leftover Collateral not enough to cover fees"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
+msgstr "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a Pay token"
@@ -6760,6 +6796,10 @@ msgstr "Liquidity and trading incentives programs are live on {arbitrumLink} and
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX."
+msgstr "Give us your feedback on GMX."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
@@ -7466,6 +7506,10 @@ msgstr "Price Impact Rebate Claimed"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX"
+msgstr "Anonymous chat with GMX"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
