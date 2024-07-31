@@ -39,8 +39,6 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
-import "./MarketTokenSelector.scss";
-
 type Props = {
   marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
