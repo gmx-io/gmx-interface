@@ -220,7 +220,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apy={apy} incentiveApr={incentiveApr} />
+                        <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
                       </td>
 
                       <td className="GmList-actions">
@@ -376,7 +376,7 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        <AprInfo apy={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apy={apr} incentiveApr={incentiveApr} tokenAddress={token.address} />
                       </div>
                     </div>
 

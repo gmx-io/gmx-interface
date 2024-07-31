@@ -39,6 +39,14 @@ const TokenSymbolWithIcon = memo(({ symbol }: { symbol: string }) => (
 
 export const appEventsData: EventData[] = [
   {
+    id: "ethena-markets-arbitrum",
+    title: "ETH/USD [wstETH-USDe] market added on Arbitrum",
+    isActive: true,
+    startDate: "30 Jul 2024, 00:00",
+    endDate: "14 Aug 2024, 00:00",
+    bodyText: "Trade ETH/USD or provide liquidity using wstETH or USDe.",
+  },
+  {
     id: "pepe-and-wif-markets-arbitrum",
     title: "PEPE and WIF markets added on Arbitrum",
     isActive: true,

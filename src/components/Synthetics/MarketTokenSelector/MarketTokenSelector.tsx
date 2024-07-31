@@ -1,9 +1,10 @@
-import "./MarketTokenSelector.scss";
-import React, { useMemo, useState } from "react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
+import { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import SearchInput from "components/SearchInput/SearchInput";
+import { useHistory } from "react-router-dom";
+
+import { getNormalizedTokenSymbol } from "config/tokens";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -15,12 +16,14 @@ import {
 } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { getByKey } from "lib/objects";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { useHistory } from "react-router-dom";
+import { getByKey } from "lib/objects";
+
 import { AprInfo } from "components/AprInfo/AprInfo";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import "./MarketTokenSelector.scss";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -200,7 +203,12 @@ export default function MarketTokenSelector(props: Props) {
                                 })}
                               </td>
                               <td>
-                                <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} />
+                                <AprInfo
+                                  apy={apr}
+                                  incentiveApr={incentiveApr}
+                                  tokenAddress={market.address}
+                                  showTooltip={false}
+                                />
                               </td>
                             </Popover.Button>
                           );
