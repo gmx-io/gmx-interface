@@ -1,24 +1,19 @@
-import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { useMemo } from "react";
 import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { formatPercentage, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
-  DEBUG_QUERY,
   GeneralPerformanceDetailsDebugTooltip,
-  PnlSummaryPointDebugFields,
 } from "./generalPerformanceDetailsDebug";
+import { usePnlSummaryData, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
 
 const bucketLabelMap = {
   today: msg`Today`,
@@ -174,93 +169,4 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   );
 }
 
-export type PnlSummaryPoint = {
-  bucketLabel: string;
-  losses: number;
-  pnlBps: bigint;
-  pnlUsd: bigint;
-  realizedPnlUsd: bigint;
-  unrealizedPnlUsd: bigint;
-  startUnrealizedPnlUsd: bigint;
-  volume: bigint;
-  wins: number;
-  winsLossesRatioBps: bigint | undefined;
-  usedCapitalUsd: bigint;
-} & PnlSummaryPointDebugFields;
 
-type PnlSummaryData = PnlSummaryPoint[];
-
-const PROD_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!) {
-    accountPnlSummaryStats(account: $account) {
-      bucketLabel
-      losses
-      pnlBps
-      pnlUsd
-      realizedPnlUsd
-      unrealizedPnlUsd
-      startUnrealizedPnlUsd
-      volume
-      wins
-      winsLossesRatioBps
-      usedCapitalUsd
-    }
-  }
-`;
-
-function usePnlSummaryData(chainId: number, account: Address) {
-  const showDebugValues = useShowDebugValues();
-
-  const res = useGqlQuery(showDebugValues ? DEBUG_QUERY : PROD_QUERY, {
-    client: getSubsquidGraphClient(chainId)!,
-    variables: { account: account },
-  });
-
-  const transformedData: PnlSummaryData = useMemo(() => {
-    if (!res.data?.accountPnlSummaryStats) {
-      return EMPTY_ARRAY;
-    }
-
-    return res.data.accountPnlSummaryStats.map((row: any) => {
-      if (showDebugValues) {
-        return {
-          bucketLabel: row.bucketLabel,
-          losses: row.losses,
-          pnlBps: BigInt(row.pnlBps),
-          pnlUsd: BigInt(row.pnlUsd),
-          realizedPnlUsd: BigInt(row.realizedPnlUsd),
-          unrealizedPnlUsd: BigInt(row.unrealizedPnlUsd),
-          startUnrealizedPnlUsd: BigInt(row.startUnrealizedPnlUsd),
-          volume: BigInt(row.volume),
-          wins: row.wins,
-          winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
-          usedCapitalUsd: BigInt(row.usedCapitalUsd),
-
-          realizedBasePnlUsd: row.realizedBasePnlUsd !== undefined ? BigInt(row.realizedBasePnlUsd) : 0n,
-          realizedFeesUsd: row.realizedFeesUsd !== undefined ? BigInt(row.realizedFeesUsd) : 0n,
-          realizedPriceImpactUsd: row.realizedPriceImpactUsd !== undefined ? BigInt(row.realizedPriceImpactUsd) : 0n,
-          unrealizedBasePnlUsd: row.unrealizedBasePnlUsd !== undefined ? BigInt(row.unrealizedBasePnlUsd) : 0n,
-          unrealizedFeesUsd: row.unrealizedFeesUsd !== undefined ? BigInt(row.unrealizedFeesUsd) : 0n,
-          startUnrealizedBasePnlUsd:
-            row.startUnrealizedBasePnlUsd !== undefined ? BigInt(row.startUnrealizedBasePnlUsd) : 0n,
-          startUnrealizedFeesUsd: row.startUnrealizedFeesUsd !== undefined ? BigInt(row.startUnrealizedFeesUsd) : 0n,
-        };
-      }
-      return {
-        bucketLabel: row.bucketLabel,
-        losses: row.losses,
-        pnlBps: BigInt(row.pnlBps),
-        pnlUsd: BigInt(row.pnlUsd),
-        realizedPnlUsd: BigInt(row.realizedPnlUsd),
-        unrealizedPnlUsd: BigInt(row.unrealizedPnlUsd),
-        startUnrealizedPnlUsd: BigInt(row.startUnrealizedPnlUsd),
-        volume: BigInt(row.volume),
-        wins: row.wins,
-        winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
-        usedCapitalUsd: BigInt(row.usedCapitalUsd),
-      };
-    });
-  }, [res.data?.accountPnlSummaryStats, showDebugValues]);
-
-  return { data: transformedData, error: res.error, loading: res.loading };
-}
