@@ -1,60 +1,64 @@
-import { gql } from "@apollo/client";
+import { useMemo } from "react";
+import useSWR from "swr";
+
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useCallback, useEffect, useState } from "react";
 
-export function use24hVolume() {
-  const chainId = useSelector(selectChainId);
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const client = getSyntheticsGraphClient(chainId);
+import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 
-  const [value, setValue] = useState<bigint>(0n);
+import { getSubgraphUrl } from "config/subgraph";
+import graphqlFetcher from "lib/graphqlFetcher";
 
-  const fetch = useCallback(
-    async function call() {
-      if (!client || !marketInfo?.indexTokenAddress) {
-        return;
-      }
+type PositionVolumeInfosResponse = {
+  positionVolumeInfos: {
+    volumeUsd: number;
+  }[];
+};
 
-      const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-      const utcOffsetSecs = new Date().getTimezoneOffset() * 60;
-      const timestamp = LAST_DAY_UNIX_TIMESTAMP + utcOffsetSecs;
-
-      const query = gql(`{
+const POSITIONS_VOLUME_INFOS_QUERY = `
+query GetPositionVolumeInfos($indexToken: String!, $timestamp: Int!) {
   positionVolumeInfos(
     orderBy: timestamp
     orderDirection: desc
-    where: {
-      period: "1d",
-      indexToken: "${marketInfo.indexTokenAddress.toLocaleLowerCase()}",
-      timestamp_gt: ${timestamp}
-    }
+    where: { period: "1h", indexToken: $indexToken, timestamp_gt: $timestamp }
   ) {
     id
     volumeUsd
     timestamp
     __typename
   }
-}`);
+}`;
 
-      const { data } = await client.query<{
-        positionVolumeInfos: {
-          volumeUsd: number;
-        }[];
-      }>({ query, fetchPolicy: "no-cache" });
+export function use24hVolume() {
+  const chainId = useSelector(selectChainId);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
 
-      const result = data.positionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+  const endpoint = getSubgraphUrl(chainId, "syntheticsStats");
 
-      setValue(result);
+  const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
+  const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
+
+  const variables = {
+    indexToken: marketInfo?.indexTokenAddress.toLocaleLowerCase(),
+    timestamp: timestamp,
+  };
+
+  const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
+    variables.indexToken ? "24hVolume" : null,
+    async () => {
+      if (!endpoint || !variables.indexToken) {
+        return;
+      }
+
+      return await graphqlFetcher<PositionVolumeInfosResponse>(endpoint, POSITIONS_VOLUME_INFOS_QUERY, variables);
     },
-    [client, marketInfo?.indexTokenAddress]
+    {
+      refreshInterval: 60_000,
+    }
   );
 
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return value;
+  return useMemo(() => {
+    return data?.positionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+  }, [data]);
 }

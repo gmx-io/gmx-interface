@@ -41,8 +41,6 @@ import {
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
-import "./ChartTokenSelector.scss";
-
 type Props = {
   selectedToken: Token | undefined;
   options: Token[] | undefined;
@@ -56,8 +54,7 @@ export default function ChartTokenSelector(props: Props) {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const handleClassName =
-    isMobile === undefined ? undefined : isMobile ? "ChartTokenSelector-mobile" : "ChartTokenSelector-desktop";
+  const handleClassName = isMobile === undefined ? undefined : isMobile ? "mt-[0.8rem]" : "!items-start";
 
   return (
     <SelectorBase
@@ -65,10 +62,11 @@ export default function ChartTokenSelector(props: Props) {
       popoverYOffset={16}
       popoverXOffset={-12}
       handleClassName={handleClassName}
+      chevronClassName="mt-[0.4rem]"
       label={
         selectedToken ? (
           <span
-            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold max-[380px]:text-16", {
+            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold", {
               "items-start": !isMobile,
               "items-center": isMobile,
             })}
@@ -85,9 +83,9 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("subtext", {
-                    "!ml-0": !isMobile,
-                    "!ml-8": isMobile,
+                  className={cx("text-[1.2rem] text-gray-300", {
+                    "ml-0": !isMobile,
+                    "ml-8": isMobile,
                   })}
                 >{`[${poolName}]`}</span>
               )}

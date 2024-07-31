@@ -36,7 +36,7 @@
 
 .Chart-header {
   display: grid;
-  grid-template-columns: 155px auto 90px;
+  grid-template-columns: auto auto 90px;
   grid-column-gap: 1rem;
 }
 
@@ -59,7 +59,7 @@
 .Chart-top-scrollable-fade-overlay {
   position: absolute;
   width: 100%;
-  height: calc(100% - 1.4rem);
+  height: calc(100% - 1.2rem);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -95,7 +95,7 @@
   }
 
   .Chart-header {
-    grid-template-columns: 155px auto 100px;
+    grid-template-columns: auto auto 100px;
   }
 }
 

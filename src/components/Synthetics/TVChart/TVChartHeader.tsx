@@ -1,24 +1,27 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken, isChartAvailabeForToken } from "config/tokens";
-import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
-import { Token } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
-import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce } from "react-use";
 
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { getToken, isChartAvailabeForToken } from "config/tokens";
+
+import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
+import { Token } from "domain/tokens";
+
+import { bigMath } from "lib/bigmath";
+import { useChainId } from "lib/chains";
+import { formatUsd } from "lib/numbers";
+
 import { ReactComponent as LongIcon } from "img/long.svg";
 import { ReactComponent as ShortIcon } from "img/short.svg";
-
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
@@ -289,7 +292,7 @@ function TVChartHeaderInfoDesktop() {
 
   return (
     <div className="Chart-header mb-10">
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-start">
         <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile={false} />
       </div>
       <div className="Chart-top-scrollable-container">

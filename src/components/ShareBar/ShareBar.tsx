@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import cx from "classnames";
 import { BigNumberish } from "ethers";
+
 import { bigMath } from "lib/bigmath";
-import { useMemo } from "react";
-import "./ShareBar.scss";
 import { formatPercentageDisplay } from "lib/numbers";
+
+import "./ShareBar.scss";
 
 const PERCENTAGE_HIDE_THRESHOLD = 25;
 

@@ -15,6 +15,7 @@ import "./SelectorBase.scss";
 
 type Props = PropsWithChildren<{
   handleClassName?: string;
+  chevronClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -160,7 +161,9 @@ function SelectorBaseDesktop(props: Props) {
             ref={refs.setReference}
           >
             {props.label}
-            <BiChevronDown className="SelectorBase-icon -my-5 -mr-4 ml-5 inline-block align-middle text-24" />
+            <BiChevronDown
+              className={cx("-my-5 -mr-4 ml-5 inline-block align-middle text-24", props.chevronClassName)}
+            />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
