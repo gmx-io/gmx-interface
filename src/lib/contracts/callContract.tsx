@@ -4,7 +4,7 @@ import { getExplorerUrl } from "config/chains";
 import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, setGasPrice, getBestNonce } from "./utils";
+import { getGasLimit, getGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
@@ -76,13 +76,28 @@ export async function callContract(
     const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
       const txnInstance = { ...txnOpts };
 
-      txnInstance.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
-
       if (!cntrct.runner?.provider) {
         throw new Error("No provider found on contract.");
       }
 
-      await setGasPrice(txnInstance, cntrct.runner.provider, chainId);
+      async function retrieveGasLimit() {
+        return opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
+      }
+
+      const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
+        txnInstance.gasLimit = gasLimit;
+      });
+
+      const gasPriceDataPromise = getGasPrice(cntrct.runner.provider, chainId).then((gasPriceData) => {
+        if (gasPriceData.gasPrice !== undefined) {
+          txnInstance.gasPrice = gasPriceData.gasPrice;
+        } else {
+          txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
+          txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+        }
+      });
+
+      await Promise.all([gasLimitPromise, gasPriceDataPromise]);
 
       return cntrct[method](...params, txnInstance);
     });

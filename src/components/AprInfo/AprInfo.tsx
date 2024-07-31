@@ -11,7 +11,7 @@ import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -126,7 +126,7 @@ export function AprInfo({
 
     if (incentiveApr !== undefined && incentiveApr > 0) {
       return (
-        <div className="flex flex-nowrap">
+        <div className="inline-flex flex-nowrap">
           {node}
           <img className="relative -top-3 h-10" src={sparkleIcon} alt="sparkle" />
         </div>
@@ -137,7 +137,12 @@ export function AprInfo({
   }, [apy, incentiveApr, totalApr]);
 
   return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown) ? (
-    <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
+    <TooltipWithPortal
+      maxAllowedWidth={280}
+      handle={aprNode}
+      position="bottom-end"
+      renderContent={renderTooltipContent}
+    />
   ) : (
     aprNode
   );

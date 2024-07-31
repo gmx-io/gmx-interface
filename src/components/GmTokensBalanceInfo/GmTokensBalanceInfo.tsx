@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip, { TooltipPosition } from "components/Tooltip/Tooltip";
+import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
@@ -145,7 +145,7 @@ export const GmTokensTotalBalanceInfo = ({
   }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
 
   return balance !== undefined && balanceUsd !== undefined ? (
-    <Tooltip
+    <TooltipWithPortal
       handle={label}
       className="normal-case"
       maxAllowedWidth={340}

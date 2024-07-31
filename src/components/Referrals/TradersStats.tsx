@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
@@ -9,6 +10,7 @@ import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
@@ -21,7 +23,6 @@ import ReferralInfoCard from "./ReferralInfoCard";
 import "./TradersStats.scss";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
-import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   referralsData?: TotalReferralsStats;
@@ -196,24 +197,25 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           <Card
             title={t`Rebates Distribution History`}
             tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
+            bodyPadding={false}
           >
-            <div className="table-wrapper">
-              <table className="referral-table">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-max">
                 <thead>
-                  <tr>
-                    <th className="table-head" scope="col">
+                  <ExchangeTheadTr>
+                    <ExchangeTh scope="col">
                       <Trans>Date</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Type</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Amount</Trans>
-                    </th>
-                    <th className="table-head" scope="col">
+                    </ExchangeTh>
+                    <ExchangeTh scope="col">
                       <Trans>Transaction</Trans>
-                    </th>
-                  </tr>
+                    </ExchangeTh>
+                  </ExchangeTheadTr>
                 </thead>
                 <tbody>
                   {currentDiscountDistributions.map((rebate) => {
@@ -243,10 +245,10 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <tr key={rebate.id}>
-                        <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                        <td data-label="Type">V1 Airdrop</td>
-                        <td data-label="Amount" className="Rebate-amount">
+                      <ExchangeTr key={rebate.id} hoverable={false} bordered={false}>
+                        <ExchangeTd data-label="Date">{formatDate(rebate.timestamp)}</ExchangeTd>
+                        <ExchangeTd data-label="Type">V1 Airdrop</ExchangeTd>
+                        <ExchangeTd data-label="Amount" className="Rebate-amount">
                           <Tooltip
                             position="bottom"
                             className="whitespace-nowrap"
@@ -295,13 +297,13 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                               </>
                             )}
                           />
-                        </td>
-                        <td data-label="Transaction">
+                        </ExchangeTd>
+                        <ExchangeTd data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 20)}
                           </ExternalLink>
-                        </td>
-                      </tr>
+                        </ExchangeTd>
+                      </ExchangeTr>
                     );
                   })}
                 </tbody>

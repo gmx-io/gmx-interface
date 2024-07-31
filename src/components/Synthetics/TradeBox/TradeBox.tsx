@@ -1072,7 +1072,7 @@ export function TradeBox(p: Props) {
             value={
               <MarketSelector
                 label={t`Market`}
-                className="SwapBox-info-dropdown"
+                className="-mr-4"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu

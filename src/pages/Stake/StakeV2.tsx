@@ -57,7 +57,7 @@ import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
@@ -1201,7 +1201,6 @@ function AffiliateClaimModal(props: {
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
   const incentivesMessage = useMemo(() => {
@@ -2400,9 +2399,7 @@ export default function StakeV2() {
           <GmList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            marketTokensData={marketTokensData}
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
+            isDeposit={false}
             shouldScrollToTop
           />
         </div>

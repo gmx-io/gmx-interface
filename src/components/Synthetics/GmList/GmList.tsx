@@ -1,17 +1,16 @@
 import { Trans, t } from "@lingui/macro";
-import { AprInfo } from "components/AprInfo/AprInfo";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
-import PageTitle from "components/PageTitle/PageTitle";
-import { GMListSkeleton } from "components/Skeleton/Skeleton";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
+import noop from "lodash/noop";
+import { useCallback, useMemo, useState } from "react";
+import { Address, isAddress, isAddressEqual } from "viem";
+import { useAccount } from "wagmi";
+
+import usePagination from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
   MarketsInfoData,
@@ -21,85 +20,123 @@ import {
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
   getTotalGmInfo,
+  useMarketTokensData,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
-import { useMedia } from "react-use";
+import { sortGmTokensByField } from "./sortGmTokensByField";
+import { sortGmTokensDefault } from "./sortGmTokensDefault";
+
+import { AprInfo } from "components/AprInfo/AprInfo";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
+import Pagination from "components/Pagination/Pagination";
+import SearchInput from "components/SearchInput/SearchInput";
+import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
-import "./GmList.scss";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 
 type Props = {
-  hideTitle?: boolean;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
-  marketTokensData?: TokensData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
-  buySellActionHandler?: () => void;
+  isDeposit: boolean;
 };
 
 const tokenAddressStyle = { fontSize: 5 };
 
-export function GmList({
-  hideTitle,
-  marketTokensData,
-  marketsInfoData,
-  tokensData,
-  marketsTokensApyData,
-  marketsTokensIncentiveAprData,
-  shouldScrollToTop,
-  buySellActionHandler,
-}: Props) {
-  const { chainId } = useChainId();
-  const { active } = useWallet();
+export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified";
+
+export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, shouldScrollToTop, isDeposit }: Props) {
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
+  const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId);
   const userEarnings = useUserEarnings(chainId);
-  const isMobile = useMedia("(max-width: 1100px)");
-  const daysConsidered = useDaysConsideredInMarketsApr();
-  const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const { showDebugValues } = useSettings();
+  const daysConsidered = useDaysConsideredInMarketsApr();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const [searchText, setSearchText] = useState("");
+
+  const isLoading = !marketsInfoData || !marketTokensData;
+
+  const filteredGmTokens = useFilterSortGmPools({
+    marketsInfoData,
+    marketTokensData,
+    orderBy,
+    direction,
+    marketsTokensApyData,
+    searchText,
+    tokensData,
+  });
+
+  const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
+    `${chainId} ${direction} ${orderBy} ${searchText}`,
+    filteredGmTokens,
+    10
+  );
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, active]);
 
-  return (
-    <div className="GMList">
-      {!isMobile && (
-        <div className="token-table-wrapper App-card">
-          {!hideTitle && (
-            <>
-              <div className="App-card-title">
-                <Trans>GM Pools</Trans>
-                <img src={currentIcons.network} width="16" alt="Network Icon" />
-              </div>
-              <div className="App-card-divider"></div>
-            </>
-          )}
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  }, []);
 
-          <table className="token-table">
-            <thead>
-              <tr>
-                <th>
-                  <Trans>MARKET</Trans>
-                </th>
-                <th>
+  return (
+    <div
+      className="rounded-4 bg-slate-800
+                   max-[1164px]:!-mr-[--default-container-padding] max-[1164px]:!rounded-r-0
+                   max-[600px]:!-mr-[--default-container-padding-mobile]"
+    >
+      <div className="flex items-center px-14 py-10">
+        <span className="text-16">
+          <Trans>GM Pools</Trans>
+        </span>
+        <img src={currentIcons.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
+        <SearchInput
+          size="s"
+          value={searchText}
+          setValue={handleSearch}
+          className="*:!text-16"
+          placeholder="Search Market"
+          onKeyDown={noop}
+          autoFocus={false}
+        />
+      </div>
+      <div className="h-1 bg-slate-700"></div>
+      <div className="overflow-x-auto">
+        <table className="w-[max(100%,1100px)]">
+          <thead>
+            <ExchangeTheadTr bordered={false}>
+              <ExchangeTh>
+                <Trans>MARKET</Trans>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
-                </th>
-                <th>
+                </Sorter>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Sorter {...getSorterProps("totalSupply")}>
                   <Trans>TOTAL SUPPLY</Trans>
-                </th>
-                <th>
-                  <Tooltip
+                </Sorter>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Sorter {...getSorterProps("buyable")}>
+                  <TooltipWithPortal
                     handle={<Trans>BUYABLE</Trans>}
                     className="normal-case"
                     position="bottom-end"
@@ -109,123 +146,124 @@ export function GmList({
                       </p>
                     )}
                   />
-                </th>
-                <th>
+                </Sorter>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Sorter {...getSorterProps("wallet")}>
                   <GmTokensTotalBalanceInfo
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
                     userEarnings={userEarnings}
                     label={t`WALLET`}
                   />
-                </th>
-                <th>
-                  <Tooltip
+                </Sorter>
+              </ExchangeTh>
+              <ExchangeTh>
+                <Sorter {...getSorterProps("apy")}>
+                  <TooltipWithPortal
                     handle={t`APY`}
                     className="normal-case"
                     position="bottom-end"
                     renderContent={ApyTooltipContent}
                   />
-                </th>
+                </Sorter>
+              </ExchangeTh>
 
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedMarketsByIndexToken.length ? (
-                sortedMarketsByIndexToken.map((token) => {
-                  const market = getByKey(marketsInfoData, token?.address)!;
+              <ExchangeTh />
+            </ExchangeTheadTr>
+          </thead>
+          <tbody>
+            {currentData.length > 0 &&
+              currentData.map((token) => {
+                const market = getByKey(marketsInfoData, token?.address)!;
 
-                  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-                  const longToken = getTokenData(tokensData, market?.longTokenAddress);
-                  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-                  const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
+                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+                const longToken = getTokenData(tokensData, market?.longTokenAddress);
+                const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+                const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                  const apy = getByKey(marketsTokensApyData, token?.address);
-                  const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
-                  const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
+                const apy = getByKey(marketsTokensApyData, token?.address);
+                const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
-                  if (!token || !indexToken || !longToken || !shortToken) {
-                    return null;
-                  }
+                if (!token || !indexToken || !longToken || !shortToken) {
+                  return null;
+                }
 
-                  const totalSupply = token?.totalSupply;
-                  const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-                  const tokenIconName = market.isSpotOnly
-                    ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-                    : getNormalizedTokenSymbol(indexToken.symbol);
+                const totalSupply = token?.totalSupply;
+                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                const tokenIconName = market.isSpotOnly
+                  ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                  : getNormalizedTokenSymbol(indexToken.symbol);
 
-                  return (
-                    <tr key={token.address}>
-                      <td>
-                        <div className="App-card-title-info">
-                          <div className="App-card-title-info-icon">
-                            <TokenIcon
-                              symbol={tokenIconName}
-                              displaySize={40}
-                              importSize={40}
-                              className="min-h-40 min-w-40"
-                            />
+                return (
+                  <ExchangeTr key={token.address} hoverable={false} bordered={false}>
+                    <ExchangeTd>
+                      <div className="flex">
+                        <div className="mr-8 flex shrink-0 items-center">
+                          <TokenIcon
+                            symbol={tokenIconName}
+                            displaySize={40}
+                            importSize={40}
+                            className="min-h-40 min-w-40"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex text-16">
+                            {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+
+                            <div className="inline-block">
+                              <GmAssetDropdown
+                                token={token}
+                                marketsInfoData={marketsInfoData}
+                                tokensData={tokensData}
+                              />
+                            </div>
                           </div>
-
-                          <div className="App-card-title-info-text">
-                            <div className="App-card-info-title">
-                              {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-
-                              <div className="Asset-dropdown-container">
-                                <GmAssetDropdown
-                                  token={token}
-                                  marketsInfoData={marketsInfoData}
-                                  tokensData={tokensData}
-                                />
-                              </div>
-                            </div>
-                            <div className="App-card-info-subtitle">
-                              [{getMarketPoolName({ longToken, shortToken })}]
-                            </div>
+                          <div className="text-12 tracking-normal text-gray-400">
+                            [{getMarketPoolName({ longToken, shortToken })}]
                           </div>
                         </div>
-                        {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
-                      </td>
-                      <td>
-                        {formatUsd(token.prices?.minPrice, {
-                          displayDecimals: GM_POOL_PRICE_DECIMALS,
-                        })}
-                      </td>
+                      </div>
+                      {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
+                    </ExchangeTd>
+                    <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
 
-                      <td className="GmList-last-column">
-                        {formatTokenAmount(totalSupply, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                        })}
-                        <br />({formatUsd(totalSupplyUsd)})
-                      </td>
-                      <td className="GmList-last-column">
-                        <MintableAmount
-                          mintableInfo={mintableInfo}
-                          market={market}
-                          token={token}
-                          longToken={longToken}
-                          shortToken={shortToken}
-                        />
-                      </td>
+                    <ExchangeTd>
+                      {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                        useCommas: true,
+                        displayDecimals: 2,
+                      })}
+                      <br />({formatUsd(totalSupplyUsd)})
+                    </ExchangeTd>
+                    <ExchangeTd>
+                      <MintableAmount
+                        mintableInfo={mintableInfo}
+                        market={market}
+                        token={token}
+                        longToken={longToken}
+                        shortToken={shortToken}
+                      />
+                    </ExchangeTd>
 
-                      <td>
-                        <GmTokensBalanceInfo
-                          token={token}
-                          daysConsidered={daysConsidered}
-                          oneLine={false}
-                          earnedRecently={marketEarnings?.recent}
-                          earnedTotal={marketEarnings?.total}
-                        />
-                      </td>
+                    <ExchangeTd>
+                      <GmTokensBalanceInfo
+                        token={token}
+                        daysConsidered={daysConsidered}
+                        oneLine={false}
+                        earnedRecently={marketEarnings?.recent}
+                        earnedTotal={marketEarnings?.total}
+                      />
+                    </ExchangeTd>
 
-                      <td>
-                        <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
-                      </td>
+                    <ExchangeTd>
+                      <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
+                    </ExchangeTd>
 
-                      <td className="GmList-actions">
+                    <ExchangeTd className="w-[350px]">
+                      <div className="flex flex-wrap gap-10">
                         <Button
-                          className="GmList-action"
+                          className="flex-grow"
                           variant="secondary"
                           to={`/pools/?market=${market.marketTokenAddress}&operation=buy&scroll=${
                             shouldScrollToTop ? "1" : "0"
@@ -234,7 +272,7 @@ export function GmList({
                           <Trans>Buy</Trans>
                         </Button>
                         <Button
-                          className="GmList-action GmList-last-action"
+                          className="flex-grow"
                           variant="secondary"
                           to={`/pools/?market=${market.marketTokenAddress}&operation=sell&scroll=${
                             shouldScrollToTop ? "1" : "0"
@@ -242,168 +280,120 @@ export function GmList({
                         >
                           <Trans>Sell</Trans>
                         </Button>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <GMListSkeleton />
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {isMobile && (
+                      </div>
+                    </ExchangeTd>
+                  </ExchangeTr>
+                );
+              })}
+            {!currentData.length && !isLoading && (
+              <ExchangeTr hoverable={false} bordered={false}>
+                <ExchangeTd colSpan={7}>
+                  <div className="text-center text-gray-400">
+                    <Trans>No GM pools found.</Trans>
+                  </div>
+                </ExchangeTd>
+              </ExchangeTr>
+            )}
+            {isLoading && <GMListSkeleton />}
+          </tbody>
+        </table>
+      </div>
+      {pageCount > 1 && (
         <>
-          {!hideTitle && <PageTitle title={t`GM Pools`} />}
-
-          <div className="token-grid">
-            {sortedMarketsByIndexToken.map((token, index) => {
-              const apr = marketsTokensApyData?.[token.address];
-              const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
-              const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
-
-              const totalSupply = token?.totalSupply;
-              const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-              const market = getByKey(marketsInfoData, token?.address);
-              const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-              const longToken = getTokenData(tokensData, market?.longTokenAddress);
-              const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-              const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
-
-              if (!indexToken || !longToken || !shortToken || !market) {
-                return null;
-              }
-              const indexName = market && getMarketIndexName(market);
-              const poolName = market && getMarketPoolName(market);
-              const tokenIconName = market.isSpotOnly
-                ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-                : getNormalizedTokenSymbol(indexToken.symbol);
-
-              return (
-                <div className="App-card" key={token.address}>
-                  <div className="App-card-title">
-                    <div className="mobile-token-card">
-                      <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
-                      <div className="token-symbol-text">
-                        <div className="flex items-center">
-                          <span>{indexName && indexName}</span>
-                          <span className="subtext">{poolName && `[${poolName}]`}</span>
-                        </div>
-                      </div>
-                      <div>
-                        <GmAssetDropdown
-                          token={token}
-                          tokensData={tokensData}
-                          marketsInfoData={marketsInfoData}
-                          position={index % 2 !== 0 ? "left" : "right"}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Price</Trans>
-                      </div>
-                      <div>{formatUsdPrice(token.prices?.minPrice)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Total Supply</Trans>
-                      </div>
-                      <div>
-                        {" "}
-                        {formatTokenAmount(totalSupply, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                        })}{" "}
-                        ({formatUsd(totalSupplyUsd)})
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Tooltip
-                          handle={<Trans>Buyable</Trans>}
-                          className="normal-case"
-                          position="bottom-start"
-                          renderContent={() => (
-                            <p className="text-white">
-                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                            </p>
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <MintableAmount
-                          mintableInfo={mintableInfo}
-                          market={market}
-                          token={token}
-                          longToken={longToken}
-                          shortToken={shortToken}
-                        />
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <GmTokensTotalBalanceInfo
-                          balance={userTotalGmInfo?.balance}
-                          balanceUsd={userTotalGmInfo?.balanceUsd}
-                          userEarnings={userEarnings}
-                          tooltipPosition="bottom-start"
-                          label={t`Wallet`}
-                        />
-                      </div>
-                      <div>
-                        <GmTokensBalanceInfo
-                          token={token}
-                          daysConsidered={daysConsidered}
-                          oneLine
-                          earnedRecently={marketEarnings?.recent}
-                          earnedTotal={marketEarnings?.total}
-                        />
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Tooltip
-                          handle={t`APY`}
-                          className="normal-case"
-                          position="bottom-start"
-                          renderContent={ApyTooltipContent}
-                        />
-                      </div>
-                      <div>
-                        <AprInfo apy={apr} incentiveApr={incentiveApr} tokenAddress={token.address} />
-                      </div>
-                    </div>
-
-                    <div className="App-card-divider"></div>
-                    <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
-                      <Button
-                        variant="secondary"
-                        to={`/pools/?market=${market.marketTokenAddress}&operation=buy&scroll=0`}
-                      >
-                        <Trans>Buy</Trans>
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        to={`/pools/?market=${market.marketTokenAddress}&operation=sell&scroll=0`}
-                      >
-                        <Trans>Sell</Trans>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="h-1 bg-slate-700"></div>
+          <div className="py-10">
+            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
           </div>
         </>
       )}
     </div>
   );
+}
+
+function useFilterSortGmPools({
+  marketsInfoData,
+  marketTokensData,
+  orderBy,
+  direction,
+  marketsTokensApyData,
+  searchText,
+  tokensData,
+}: {
+  marketsInfoData: MarketsInfoData | undefined;
+  marketTokensData: TokensData | undefined;
+  orderBy: SortField;
+  direction: SortDirection;
+  marketsTokensApyData: MarketTokensAPRData | undefined;
+  searchText: string;
+  tokensData: TokensData | undefined;
+}) {
+  const sortedGmTokens = useMemo(() => {
+    if (!marketsInfoData || !marketTokensData) {
+      return [];
+    }
+
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return sortGmTokensDefault(marketsInfoData, marketTokensData);
+    }
+
+    return sortGmTokensByField({
+      marketsInfoData,
+      marketTokensData,
+      orderBy,
+      direction,
+      marketsTokensApyData: marketsTokensApyData!,
+    });
+  }, [direction, marketTokensData, marketsInfoData, marketsTokensApyData, orderBy]);
+
+  const filteredGmTokens = useMemo(() => {
+    if (!searchText.trim()) {
+      return sortedGmTokens;
+    }
+
+    return sortedGmTokens.filter((token) => {
+      const market = getByKey(marketsInfoData, token?.address)!;
+      const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+      const longToken = getTokenData(tokensData, market?.longTokenAddress);
+      const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+
+      if (!market || !indexToken || !longToken || !shortToken) {
+        return false;
+      }
+
+      const poolName = market.name;
+
+      const indexSymbol = indexToken.symbol;
+      const indexName = indexToken.name;
+
+      const longSymbol = longToken.symbol;
+      const longName = longToken.name;
+
+      const shortSymbol = shortToken.symbol;
+      const shortName = shortToken.name;
+
+      const marketTokenAddress = market.marketTokenAddress;
+      const indexTokenAddress = market.indexTokenAddress;
+      const longTokenAddress = market.longTokenAddress;
+      const shortTokenAddress = market.shortTokenAddress;
+
+      return (
+        poolName.toLowerCase().includes(searchText.toLowerCase()) ||
+        indexSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        indexName.toLowerCase().includes(searchText.toLowerCase()) ||
+        longSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        longName.toLowerCase().includes(searchText.toLowerCase()) ||
+        shortSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        shortName.toLowerCase().includes(searchText.toLowerCase()) ||
+        (isAddress(searchText) &&
+          (isAddressEqual(marketTokenAddress as Address, searchText) ||
+            isAddressEqual(indexTokenAddress as Address, searchText) ||
+            isAddressEqual(longTokenAddress as Address, searchText) ||
+            isAddressEqual(shortTokenAddress as Address, searchText)))
+      );
+    });
+  }, [marketsInfoData, searchText, sortedGmTokens, tokensData]);
+
+  return filteredGmTokens;
 }
 
 function MintableAmount({
@@ -458,7 +448,7 @@ function MintableAmount({
   );
 
   return (
-    <Tooltip
+    <TooltipWithPortal
       maxAllowedWidth={350}
       handle={
         <>
