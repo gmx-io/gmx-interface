@@ -54,15 +54,16 @@ export default function ChartTokenSelector(props: Props) {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const handleClassName = isMobile === undefined ? undefined : isMobile ? "mt-[0.8rem]" : "!items-start";
+  const handleClassName = isMobile === undefined ? undefined : isMobile ? "mt-8" : undefined;
+  const chevronClassName = isMobile === undefined ? undefined : isMobile ? "mt-4" : "mt-4 self-start";
 
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
       popoverYOffset={16}
-      popoverXOffset={-12}
+      popoverXOffset={0}
       handleClassName={handleClassName}
-      chevronClassName="mt-[0.4rem]"
+      chevronClassName={chevronClassName}
       label={
         selectedToken ? (
           <span
@@ -83,11 +84,13 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("text-[1.2rem] text-gray-300", {
+                  className={cx("text-12 text-gray-300", {
                     "ml-0": !isMobile,
                     "ml-8": isMobile,
                   })}
-                >{`[${poolName}]`}</span>
+                >
+                  [${poolName}]
+                </span>
               )}
             </span>
           </span>

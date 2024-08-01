@@ -62,8 +62,8 @@ function TVChartHeaderInfoMobile() {
   }, [setDetailsVisible]);
 
   return (
-    <div className="Chart-header--mobile mb-10">
-      <div className="Chart-header--mobile-top">
+    <div className="mb-10">
+      <div className="grid grid-cols-[auto_100px]">
         <div>
           <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
 
@@ -151,7 +151,9 @@ function TVChartHeaderInfoMobile() {
             </div>
 
             <div className=" Chart-24h-low">
-              <div className="ExchangeChart-info-label">24h Volume</div>
+              <div className="ExchangeChart-info-label">
+                <Trans>24h Volume</Trans>
+              </div>
               {dailyVolume}
             </div>
           </div>
