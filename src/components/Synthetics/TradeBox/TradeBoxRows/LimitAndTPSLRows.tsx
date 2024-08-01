@@ -45,7 +45,7 @@ export function LimitAndTPSLRows() {
     return (
       <div>
         <ExchangeInfo.Row
-          className="swap-box-info-row"
+          className="swap-box-info-row whitespace-nowrap"
           label={label}
           value={
             <div className="profit-loss-wrapper">

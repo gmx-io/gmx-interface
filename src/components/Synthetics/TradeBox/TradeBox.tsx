@@ -137,6 +137,7 @@ import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContex
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 import "./TradeBox.scss";
+import { sleep } from "lib/sleep";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -747,9 +748,8 @@ export function TradeBox(p: Props) {
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast
        */
-      new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
-        setStage("trade");
-      });
+      await sleep(2000);
+      setStage("trade");
 
       return;
     }

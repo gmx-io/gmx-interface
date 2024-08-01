@@ -9,6 +9,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { InitialEntry } from "./types";
+import { useMemo } from "react";
 
 function isEqualOrders(a?: InitialEntry[], b?: InitialEntry[]) {
   return (
@@ -32,9 +33,18 @@ export function useSidecarOrdersChanged() {
   const previousExistingSlOrderEntries = usePrevious(existingSlOrderEntries);
   const previousExistingTpOrderEntries = usePrevious(existingTpOrderEntries);
 
-  return (
-    !isEqualOrders(previousExistingLimitOrderEntries, existingLimitOrderEntries) ||
-    !isEqualOrders(previousExistingSlOrderEntries, existingSlOrderEntries) ||
-    !isEqualOrders(previousExistingTpOrderEntries, existingTpOrderEntries)
+  return useMemo(
+    () =>
+      !isEqualOrders(previousExistingLimitOrderEntries, existingLimitOrderEntries) ||
+      !isEqualOrders(previousExistingSlOrderEntries, existingSlOrderEntries) ||
+      !isEqualOrders(previousExistingTpOrderEntries, existingTpOrderEntries),
+    [
+      existingLimitOrderEntries,
+      existingSlOrderEntries,
+      existingTpOrderEntries,
+      previousExistingLimitOrderEntries,
+      previousExistingSlOrderEntries,
+      previousExistingTpOrderEntries,
+    ]
   );
 }

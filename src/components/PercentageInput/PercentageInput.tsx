@@ -8,6 +8,7 @@ import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./PercentageInput.scss";
+import { useLatest } from "react-use";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
@@ -78,33 +79,30 @@ export default function PercentageInput({
     }
   }
 
-  useEffect(
-    () => {
-      if (value === undefined) {
-        if (inputValue !== "") {
-          setInputValue("");
-        }
+  const latestInputValue = useLatest(inputValue);
 
-        return;
+  useEffect(() => {
+    if (value === undefined) {
+      if (latestInputValue.current !== "") {
+        setInputValue("");
       }
 
-      const valueText = getValueText(value);
-      const defaultValueText = getValueText(defaultValue);
+      return;
+    }
 
-      if (
-        // When the value is changed from outside we want to keep input empty
-        // if the value is the same as the default value as it means the user
-        // just cleared the input
-        Number.parseFloat(inputValue) !== Number.parseFloat(valueText) &&
-        !(valueText === defaultValueText && inputValue === "")
-      ) {
-        setInputValue(valueText);
-      }
-    },
-    // intentionally keep input value out of dependencies to handle only change value from outside
-    // eslint-disable-next-line
-    [defaultValue, value]
-  );
+    const valueText = getValueText(value);
+    const defaultValueText = getValueText(defaultValue);
+
+    if (
+      // When the value is changed from outside we want to keep input empty
+      // if the value is the same as the default value as it means the user
+      // just cleared the input
+      Number.parseFloat(latestInputValue.current) !== Number.parseFloat(valueText) &&
+      !(valueText === defaultValueText && latestInputValue.current === "")
+    ) {
+      setInputValue(valueText);
+    }
+  }, [defaultValue, value, latestInputValue]);
 
   const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);

@@ -362,6 +362,10 @@ export function useSidecarOrders() {
   useEffect(() => {
     if (doesEntriesChanged) {
       reset();
+      /**
+       * We need to reset the untouched state to false, to prevent next init on [./useSidecarOrdersGroup.ts#L115]
+       * from UI perspective this prevents cursor focus loose without input change
+       */
       setIsUntouched("limit", false);
       setIsUntouched("sl", false);
       setIsUntouched("tp", false);
