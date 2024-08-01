@@ -71,6 +71,7 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
 
 export function useTradeboxState(
   chainId: number,
+  enabled: boolean,
   p: {
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
@@ -137,6 +138,8 @@ export function useTradeboxState(
         return;
       }
 
+      if (!enabled) return;
+
       const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
 
       if (raw) {
@@ -178,6 +181,7 @@ export function useTradeboxState(
       availableIndexTokensAddresses,
       availableTokensOptions.sortedAllMarkets,
       chainId,
+      enabled,
       setStoredOptionsOnChain,
       syncedChainId,
     ]
@@ -363,6 +367,10 @@ export function useTradeboxState(
   }, [setStoredOptions]);
 
   const isSwitchTokensAllowed = useMemo(() => {
+    if (!enabled) {
+      return false;
+    }
+
     if (storedOptions.tradeType === TradeType.Swap) {
       return true;
     }
@@ -396,7 +404,7 @@ export function useTradeboxState(
       isSimilarToken(getToken(chainId, desirablePayAddress), getToken(chainId, nextPayAddress)) ||
       isSimilarToken(getToken(chainId, desirableToAddress), getToken(chainId, nextToAddress))
     );
-  }, [chainId, storedOptions, availableSwapTokenAddresses, availableTokensOptions.sortedAllMarkets]);
+  }, [enabled, storedOptions, chainId, availableSwapTokenAddresses, availableTokensOptions.sortedAllMarkets]);
 
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
@@ -513,6 +521,10 @@ export function useTradeboxState(
 
   useEffect(
     function fallbackStoredOptions() {
+      if (!enabled) {
+        return;
+      }
+
       if (availableSwapTokenAddresses.length === 0 && values(marketAddressIndexTokenMap).length === 0) {
         return;
       }
@@ -523,20 +535,28 @@ export function useTradeboxState(
 
       setStoredOptions((oldState) => ({ ...oldState }));
     },
-    [availableSwapTokenAddresses.length, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
+    [availableSwapTokenAddresses.length, enabled, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );
 
   useEffect(
     function updateTradeMode() {
+      if (!enabled) {
+        return;
+      }
+
       if (tradeType && tradeMode && !avaialbleTradeModes.includes(tradeMode)) {
         setTradeMode(avaialbleTradeModes[0]);
       }
     },
-    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode]
+    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode, enabled]
   );
 
   useEffect(
     function updateSwapTokens() {
+      if (!enabled) {
+        return;
+      }
+
       if (!isSwap || !swapTokens.length) {
         return;
       }
@@ -553,7 +573,7 @@ export function useTradeboxState(
         setToTokenAddress(swapTokens[0].address);
       }
     },
-    [fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
+    [enabled, fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
   );
 
   return {
