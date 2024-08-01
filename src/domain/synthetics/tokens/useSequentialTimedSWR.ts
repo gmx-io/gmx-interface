@@ -7,7 +7,10 @@ import { sequentialTimedScheduler } from "lib/sequentialTimedScheduler";
 export function useSequentialTimedSWR<Data = any, Error = any>(
   key: Key,
   config: Omit<SWRConfiguration<Data, Error, BareFetcher<Data>>, "refreshInterval"> & {
-    refreshInterval?: number;
+    /**
+     * Sequential timing will only be applied if `refreshInterval` is a number or undefined.
+     */
+    refreshInterval?: SWRConfiguration<Data, Error, BareFetcher<Data>>["refreshInterval"];
   }
 ) {
   const defaultConfig = useSWRConfig();
@@ -22,6 +25,10 @@ export function useSequentialTimedSWR<Data = any, Error = any>(
       }
 
       let refreshInterval = config.refreshInterval;
+
+      if (refreshInterval !== undefined && typeof refreshInterval !== "number") {
+        return fetcher(...args);
+      }
 
       if (refreshInterval === undefined && typeof defaultRefreshInterval === "number") {
         refreshInterval = defaultRefreshInterval;
