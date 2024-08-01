@@ -1,9 +1,8 @@
 import { useRef } from "react";
-import { SWRConfiguration, useSWRConfig } from "swr";
+import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import { useSequentialTimedSWR } from "domain/synthetics/tokens/useSequentialTimedSWR";
 
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
@@ -46,7 +45,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
 
-  const { data, mutate } = useSequentialTimedSWR<TResult | undefined>(swrFullKey, {
+  const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
       performance.mark(`multicall-${name}-start`);

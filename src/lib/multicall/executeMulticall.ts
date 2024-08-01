@@ -7,6 +7,7 @@ import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -104,7 +105,7 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 }
 
 const URGENT_WINDOW_MS = 50;
-const BACKGROUND_WINDOW_MS = 2000;
+const BACKGROUND_WINDOW_MS = FREQUENT_UPDATE_INTERVAL - FREQUENT_MULTICALL_REFRESH_INTERVAL;
 
 const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, URGENT_WINDOW_MS, {
   leading: false,

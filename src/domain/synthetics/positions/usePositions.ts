@@ -11,7 +11,7 @@ import {
 } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
@@ -41,7 +41,7 @@ export function usePositions(
   const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
     key: account ? [account] : null,
 
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
@@ -72,7 +72,7 @@ export function usePositions(
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
     key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys] : null,
 
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
