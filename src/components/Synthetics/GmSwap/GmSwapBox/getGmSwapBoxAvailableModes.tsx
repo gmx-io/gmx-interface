@@ -5,7 +5,7 @@ export const getGmSwapBoxAvailableModes = (
   operation: Operation,
   market: Pick<Market, "isSameCollaterals"> | undefined
 ) => {
-  if (market && market.isSameCollaterals) {
+  if ((market && market.isSameCollaterals) || operation === Operation.Shift) {
     return [Mode.Single];
   }
 

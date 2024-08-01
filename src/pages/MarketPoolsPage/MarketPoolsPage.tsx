@@ -25,8 +25,7 @@ export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
-  const markets = Object.values(marketsInfoData);
+  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData } = useMarketsInfoRequest(chainId);
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -84,14 +83,11 @@ export function MarketPoolsPage() {
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
               selectedMarketAddress={selectedMarketKey}
-              markets={markets}
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
               operation={operation}
               mode={mode}
-              setMode={setMode}
-              setOperation={setOperation}
+              onSetMode={setMode}
+              onSetOperation={setOperation}
             />
           </div>
         </div>

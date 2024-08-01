@@ -1,7 +1,7 @@
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
-import { WitdhrawalAmounts } from "../types";
+import { WithdrawalAmounts } from "../types";
 import { bigMath } from "lib/bigmath";
 
 export function getWithdrawalAmounts(p: {
@@ -25,7 +25,7 @@ export function getWithdrawalAmounts(p: {
 
   const totalPoolUsd = longPoolUsd + shortPoolUsd;
 
-  const values: WitdhrawalAmounts = {
+  const values: WithdrawalAmounts = {
     marketTokenAmount: 0n,
     marketTokenUsd: 0n,
     longTokenAmount: 0n,
