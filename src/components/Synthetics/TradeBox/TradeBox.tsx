@@ -743,7 +743,13 @@ export function TradeBox(p: Props) {
     }
 
     if (subaccount) {
-      setStage("trade");
+      /**
+       * Wait 2 seconds to prevent double click on button
+       * waiting for txnPromise may not be enough because it's sometimes resolves very fast
+       */
+      new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+        setStage("trade");
+      });
 
       return;
     }
