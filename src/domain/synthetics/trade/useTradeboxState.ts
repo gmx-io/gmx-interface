@@ -9,6 +9,7 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getToken, isSimilarToken } from "config/tokens";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -24,9 +25,10 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useSidecarOrdersState } from "./useSidecarOrdersState";
 import { MarketInfo } from "domain/synthetics/markets";
 
-type TradeStage = "trade" | "confirmation" | "processing";
+export type TradeStage = "trade" | "processing";
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -38,6 +40,11 @@ type TradeOptions = {
 };
 
 export type TradeboxState = ReturnType<typeof useTradeboxState>;
+
+export interface TradeboxAdvancedOptions {
+  advancedDisplay: boolean;
+  limitOrTPSL: boolean;
+}
 
 type StoredTradeOptions = {
   tradeType: TradeType;
@@ -59,6 +66,7 @@ type StoredTradeOptions = {
       short?: string;
     };
   };
+  advanced?: TradeboxAdvancedOptions;
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -67,6 +75,10 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
   tokens: {},
   markets: {},
   collaterals: {},
+  advanced: {
+    advancedDisplay: false,
+    limitOrTPSL: false,
+  },
 };
 
 export function useTradeboxState(
@@ -131,7 +143,10 @@ export function useTradeboxState(
     [chainId]
   );
 
+  const { savedAllowedSlippage } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
+  const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
+
   useEffect(
     function handleChainChange() {
       if (syncedChainId === chainId) {
@@ -228,6 +243,10 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+
+  const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
+    storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
+  );
 
   const { swapTokens } = availableTokensOptions;
 
@@ -519,6 +538,8 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const sidecarOrders = useSidecarOrdersState();
+
   useEffect(
     function fallbackStoredOptions() {
       if (!enabled) {
@@ -576,6 +597,15 @@ export function useTradeboxState(
     [enabled, fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
   );
 
+  useEffect(() => {
+    setStoredOptionsOnChain((oldState) => {
+      return {
+        ...oldState,
+        advanced: advancedOptions,
+      };
+    });
+  }, [advancedOptions, setStoredOptionsOnChain]);
+
   return {
     tradeType,
     tradeMode,
@@ -588,6 +618,7 @@ export function useTradeboxState(
     collateralToken,
     availableTokensOptions,
     avaialbleTradeModes,
+    sidecarOrders,
     isSwitchTokensAllowed,
     setActivePosition,
     setFromTokenAddress,
@@ -626,6 +657,10 @@ export function useTradeboxState(
     setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
+    advancedOptions,
+    setAdvancedOptions,
+    allowedSlippage,
+    setAllowedSlippage,
   };
 }
 

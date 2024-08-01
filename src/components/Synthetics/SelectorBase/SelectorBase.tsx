@@ -81,8 +81,17 @@ export function SelectorBaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
     disabled?: boolean;
     disabledMessage?: ReactNode;
+    message?: ReactNode;
   }
 ) {
+  const body = useMemo(() => {
+    if (props.message) {
+      return <TooltipWithPortal content={props.message}>{props.children}</TooltipWithPortal>;
+    }
+
+    return props.children;
+  }, [props.children, props.message]);
+
   if (props.disabled && props.disabledMessage) {
     return (
       <TooltipWithPortal
@@ -107,7 +116,7 @@ export function SelectorBaseDesktopRow(
         props.className
       )}
     >
-      {props.children}
+      {body}
     </tr>
   );
 }

@@ -5,10 +5,10 @@ import { useMedia } from "react-use";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxChooseSuitableMarket,
-  useTradeboxGetMaxLongShortLiquidityPool,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { selectTradeboxTradeType } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+  selectTradeboxChooseSuitableMarket,
+  selectTradeboxGetMaxLongShortLiquidityPool,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -86,7 +86,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
 
   const sortedTokens = useFilterSortTokens({ options, searchKeyword, tab, isSwap, favoriteTokens, direction, orderBy });
 
-  const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
+  const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const marketsInfoData = useMarketsInfoData();
 
   const handleMarketSelect = useCallback(
@@ -280,7 +280,7 @@ function useFilterSortTokens({
     [favoriteTokens, isSwap, options, searchKeyword, tab]
   );
 
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const sortedTokens = useMemo(() => {
     if (isSwap || orderBy === "unspecified" || direction === "unspecified") {
@@ -335,7 +335,7 @@ function MarketListItem({
   tdClassName: string;
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
 }) {
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 

@@ -8,6 +8,7 @@ import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./PercentageInput.scss";
+import { useLatest } from "react-use";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
@@ -78,25 +79,30 @@ export default function PercentageInput({
     }
   }
 
+  const latestInputValue = useLatest(inputValue);
+
   useEffect(() => {
     if (value === undefined) {
-      if (inputValue !== "") {
+      if (latestInputValue.current !== "") {
         setInputValue("");
       }
 
       return;
     }
 
+    const valueText = getValueText(value);
+    const defaultValueText = getValueText(defaultValue);
+
     if (
       // When the value is changed from outside we want to keep input empty
       // if the value is the same as the default value as it means the user
       // just cleared the input
-      Number.parseFloat(inputValue) !== Number.parseFloat(getValueText(value)) &&
-      !(getValueText(value) === getValueText(defaultValue) && inputValue === "")
+      Number.parseFloat(latestInputValue.current) !== Number.parseFloat(valueText) &&
+      !(valueText === defaultValueText && latestInputValue.current === "")
     ) {
-      setInputValue(getValueText(value));
+      setInputValue(valueText);
     }
-  }, [defaultValue, inputValue, value]);
+  }, [defaultValue, value, latestInputValue]);
 
   const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
@@ -116,6 +122,14 @@ export default function PercentageInput({
   const id = useMemo(() => Math.random().toString(36), []);
 
   const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
+
+  const onSelectSuggestion = useCallback(
+    (suggestion: number) => () => {
+      onChange(suggestion * 100);
+      setIsPanelVisible(false);
+    },
+    [onChange, setIsPanelVisible]
+  );
 
   return (
     <div className="Percentage-input-wrapper">
@@ -150,14 +164,7 @@ export default function PercentageInput({
       {shouldShowPanel && (
         <ul className="Percentage-list">
           {suggestions.map((slippage) => (
-            <li
-              key={slippage}
-              onMouseDown={() => {
-                setInputValue(String(slippage));
-                onChange(slippage * 100);
-                setIsPanelVisible(false);
-              }}
-            >
+            <li key={slippage} onMouseDown={onSelectSuggestion(slippage)}>
               {slippage}%
             </li>
           ))}

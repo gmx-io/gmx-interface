@@ -173,3 +173,7 @@
     color: var(--color-white);
   }
 }
+
+.SwapBox-info-section .App-card-divider:last-child {
+  display: none;
+}
