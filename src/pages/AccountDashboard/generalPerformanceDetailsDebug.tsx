@@ -1,50 +1,11 @@
-import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
 
+import { PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { PnlSummaryPoint } from "./GeneralPerformanceDetails";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-export type PnlSummaryPointDebugFields = {
-  // #region Debug fields
-  // Present only when showDebugValues is true
-  realizedBasePnlUsd: bigint;
-  realizedFeesUsd: bigint;
-  realizedPriceImpactUsd: bigint;
-  unrealizedBasePnlUsd: bigint;
-  unrealizedFeesUsd: bigint;
-  startUnrealizedBasePnlUsd: bigint;
-  startUnrealizedFeesUsd: bigint;
-  // #endregion
-};
-
-export const DEBUG_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!) {
-    accountPnlSummaryStats(account: $account) {
-      bucketLabel
-      losses
-      pnlBps
-      pnlUsd
-      realizedPnlUsd
-      unrealizedPnlUsd
-      startUnrealizedPnlUsd
-      volume
-      wins
-      winsLossesRatioBps
-      usedCapitalUsd
-
-      realizedBasePnlUsd
-      realizedFeesUsd
-      realizedPriceImpactUsd
-      unrealizedBasePnlUsd
-      unrealizedFeesUsd
-      startUnrealizedBasePnlUsd
-      startUnrealizedFeesUsd
-    }
-  }
-`;
 
 export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummaryPoint }) {
   return (

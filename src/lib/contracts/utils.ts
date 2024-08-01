@@ -8,7 +8,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { BaseContract, Contract, Provider, Wallet } from "ethers";
 import { bigMath } from "lib/bigmath";
 
-export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
+export async function getGasPrice(provider: Provider, chainId: number) {
   let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
   const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] || 0n;
 
@@ -27,9 +27,11 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
         feeData.maxPriorityFeePerGas,
         MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n
       );
-      txnOpts.maxFeePerGas = maxFeePerGas;
-      txnOpts.maxPriorityFeePerGas = maxPriorityFeePerGas + premium;
-      return;
+
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas + premium,
+      };
     }
   }
 
@@ -39,8 +41,10 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
 
   const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] || 0n;
   const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
-  txnOpts.gasPrice = gasPrice + buffer + premium;
-  return;
+
+  return {
+    gasPrice: gasPrice + buffer + premium,
+  };
 }
 
 export async function getGasLimit(

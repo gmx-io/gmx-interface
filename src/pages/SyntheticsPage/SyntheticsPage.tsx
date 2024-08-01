@@ -1,4 +1,4 @@
-import { Plural, Trans, t } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { uniq } from "lodash";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
@@ -37,6 +37,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
+import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -46,6 +47,7 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
+import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 
 export type Props = {
   openSettings: () => void;
@@ -80,6 +82,8 @@ export function SyntheticsPage(p: Props) {
   const setActivePosition = useSelector(selectTradeboxSetActivePosition);
 
   useTradeParamsProcessor();
+
+  const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
   const chartToken = useSelector(selectChartToken);
 
@@ -358,6 +362,8 @@ export function SyntheticsPage(p: Props) {
       />
 
       <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
+
+      <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
 
       <Footer />
     </div>

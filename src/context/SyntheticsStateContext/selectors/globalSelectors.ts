@@ -26,6 +26,8 @@ export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
 export const selectKeepLeverage = (s: SyntheticsState) => s.globals.keepLeverage ?? true;
 export const selectSetKeepLeverage = (s: SyntheticsState) => s.globals.setKeepLeverage;
 
+export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.lastWeekAccountStats;
+
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({

@@ -5,9 +5,9 @@ import openInNewTab from "img/open-new-tab.svg";
 
 type ButtonProps = {
   children: ReactNode;
-  className: string;
+  className?: string;
   to: string;
-  showExternalLinkArrow: boolean;
+  showExternalLinkArrow?: boolean;
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   newTab?: boolean;
   disabled?: boolean;

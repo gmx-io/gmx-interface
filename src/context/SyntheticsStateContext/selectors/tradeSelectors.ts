@@ -475,11 +475,11 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     isPnlInLeverage: boolean;
     receiveTokenAddress: string | undefined;
   }) =>
-    createSelectorDeprecated(
-      [
-        selectPositionConstants,
-        selectMarketsInfoData,
-        selectTokensData,
+    createSelector((q) => {
+      const { minCollateralUsd } = q(selectPositionConstants);
+      const marketsInfoData = q(selectMarketsInfoData);
+      const tokensData = q(selectTokensData);
+      const decreaseAmounts = q(
         makeSelectDecreasePositionAmounts({
           closeSizeUsd,
           collateralTokenAddress,
@@ -491,42 +491,41 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           tradeType,
           triggerPrice,
           receiveTokenAddress,
-        }),
-        selectPositionsInfoData,
-        selectUserReferralInfo,
-      ],
-      ({ minCollateralUsd }, marketsInfoData, tokensData, decreaseAmounts, positionsInfoData, userReferralInfo) => {
-        const tradeFlags = createTradeFlags(tradeType, tradeMode);
-        const marketInfo = getByKey(marketsInfoData, marketAddress);
-        const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
-        const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+        })
+      );
+      const positionsInfoData = q(selectPositionsInfoData);
+      const userReferralInfo = q(selectUserReferralInfo);
 
-        if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
-          return undefined;
-        }
+      const tradeFlags = createTradeFlags(tradeType, tradeMode);
+      const marketInfo = getByKey(marketsInfoData, marketAddress);
+      const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
+      const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
 
-        if (closeSizeUsd === undefined)
-          throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
-
-        if (decreaseAmounts?.acceptablePrice && closeSizeUsd > 0) {
-          return getNextPositionValuesForDecreaseTrade({
-            existingPosition: position,
-            marketInfo,
-            collateralToken,
-            sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-            sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-            estimatedPnl: decreaseAmounts.estimatedPnl,
-            realizedPnl: decreaseAmounts.realizedPnl,
-            collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
-            collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
-            payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
-            payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
-            showPnlInLeverage: isPnlInLeverage,
-            isLong: tradeFlags.isLong,
-            minCollateralUsd,
-            userReferralInfo,
-          });
-        }
+      if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
+        return undefined;
       }
-    )
+
+      if (closeSizeUsd === undefined)
+        throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
+
+      if (decreaseAmounts?.acceptablePrice !== undefined && closeSizeUsd > 0) {
+        return getNextPositionValuesForDecreaseTrade({
+          existingPosition: position,
+          marketInfo,
+          collateralToken,
+          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+          estimatedPnl: decreaseAmounts.estimatedPnl,
+          realizedPnl: decreaseAmounts.realizedPnl,
+          collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
+          collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+          payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+          payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+          showPnlInLeverage: isPnlInLeverage,
+          isLong: tradeFlags.isLong,
+          minCollateralUsd,
+          userReferralInfo,
+        });
+      }
+    })
 );

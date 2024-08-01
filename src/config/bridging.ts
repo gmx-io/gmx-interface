@@ -46,6 +46,18 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: () => "https://portalbridge.com/advanced-tools/#/transfer?sourceChain=solana&targetChain=arbitrum",
     },
   ],
+  USDe: [
+    {
+      name: "Stargate",
+      generateLink: () => "https://stargate.finance/bridge",
+    },
+  ],
+  wstETH: [
+    {
+      name: "Arbitrum",
+      generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
+    },
+  ],
 };
 
 export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {
