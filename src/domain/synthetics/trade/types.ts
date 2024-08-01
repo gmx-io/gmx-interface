@@ -133,7 +133,7 @@ export type DepositAmounts = {
   swapPriceImpactDeltaUsd: bigint;
 };
 
-export type WitdhrawalAmounts = {
+export type WithdrawalAmounts = {
   marketTokenAmount: bigint;
   marketTokenUsd: bigint;
   longTokenAmount: bigint;
