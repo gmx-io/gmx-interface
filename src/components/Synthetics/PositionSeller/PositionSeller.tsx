@@ -344,6 +344,8 @@ export function PositionSeller(p: Props) {
         indexToken: position.indexToken,
         tokensData,
         skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
+        // TODO: in reality this could be true for limit+trigger orders, but we have not yet made a button in position seller for that
+        autoCancel: false,
       },
       {
         setPendingOrder,

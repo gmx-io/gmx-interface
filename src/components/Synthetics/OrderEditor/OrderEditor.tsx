@@ -54,6 +54,7 @@ import Modal from "components/Modal/Modal";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorSizeInputValueState,
@@ -63,9 +64,11 @@ import {
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
+  selectOrderEditorAutoCancel,
   selectOrderEditorDecreaseAmounts,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
+  selectOrderEditorFindSwapPath,
   selectOrderEditorFromToken,
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
@@ -78,7 +81,6 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorFindSwapPath,
   selectOrderEditorToToken,
   selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
@@ -86,11 +88,11 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { bigMath } from "lib/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
 import "./OrderEditor.scss";
-import { bigMath } from "lib/bigmath";
 
 type Props = {
   order: OrderInfo;
@@ -118,6 +120,7 @@ export function OrderEditor(p: Props) {
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
   const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
+  const { autoCancel, setAutoCancel } = useSelector(selectOrderEditorAutoCancel);
 
   const market = useMarketInfo(p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
@@ -222,7 +225,8 @@ export function OrderEditor(p: Props) {
     if (
       sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
       triggerPrice === positionOrder.triggerPrice! &&
-      acceptablePrice === positionOrder.acceptablePrice
+      acceptablePrice === positionOrder.acceptablePrice &&
+      autoCancel === positionOrder.autoCancel
     ) {
       return t`Enter new amount or price`;
     }
@@ -247,7 +251,8 @@ export function OrderEditor(p: Props) {
       if (
         sizeDeltaUsd === (p.order.sizeDeltaUsd ?? 0n) &&
         triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
-        acceptablePrice === positionOrder.acceptablePrice
+        acceptablePrice === positionOrder.acceptablePrice &&
+        autoCancel === positionOrder.autoCancel
       ) {
         return t`Enter a new size or price`;
       }
@@ -439,6 +444,7 @@ export function OrderEditor(p: Props) {
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
+      autoCancel,
     });
 
     if (subaccount) {
@@ -484,6 +490,7 @@ export function OrderEditor(p: Props) {
         setTriggerPriceInputValue(
           formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
         );
+        setAutoCancel(positionOrder.autoCancel);
       }
 
       setIsInited(true);
@@ -493,6 +500,7 @@ export function OrderEditor(p: Props) {
       indexPriceDecimals,
       isInited,
       p.order,
+      setAutoCancel,
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
@@ -616,6 +624,15 @@ export function OrderEditor(p: Props) {
                     <div className="line-divider" />
                   </>
                 )}
+
+                <ToggleSwitch
+                  isChecked={autoCancel}
+                  setIsChecked={setAutoCancel}
+                  className="!mb-5"
+                  textClassName="text-14 text-gray-300"
+                >
+                  <Trans>Auto Cancel</Trans>
+                </ToggleSwitch>
 
                 <ExchangeInfoRow
                   label={t`Acceptable Price`}

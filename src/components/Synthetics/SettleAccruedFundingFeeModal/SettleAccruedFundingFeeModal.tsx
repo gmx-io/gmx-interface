@@ -143,6 +143,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           indexToken: position.indexToken,
           tokensData,
           skipSimulation: true,
+          autoCancel: false,
         };
       }),
       {

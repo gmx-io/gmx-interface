@@ -459,6 +459,7 @@ export function PositionEditor(p: Props) {
           indexToken: position.indexToken,
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
+          autoCancel: false,
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
@@ -496,6 +497,7 @@ export function PositionEditor(p: Props) {
           indexToken: position.indexToken,
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
+          autoCancel: false,
         },
         {
           setPendingTxns,

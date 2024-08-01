@@ -221,7 +221,8 @@ export function TradeBox(p: Props) {
     fromTokenAddress,
     marketInfo,
     toTokenAddress,
-    avaialbleTradeModes: availalbleTradeModes,
+    availableTradeModes,
+    setAutoCancel,
   } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -732,8 +733,10 @@ export function TradeBox(p: Props) {
     setDefaultTriggerAcceptablePriceImpactBps(undefined);
     setFixedTriggerOrderType(undefined);
     setFixedTriggerThresholdType(undefined);
+    setAutoCancel(false);
     setStage("trade");
   }, [
+    setAutoCancel,
     setDefaultTriggerAcceptablePriceImpactBps,
     setFixedTriggerOrderType,
     setFixedTriggerThresholdType,
@@ -1358,7 +1361,7 @@ export function TradeBox(p: Props) {
           />
 
           <Tab
-            options={availalbleTradeModes}
+            options={availableTradeModes}
             optionLabels={localizedTradeModeLabels}
             className="SwapBox-asset-options-tabs"
             type="inline"
