@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import { BASIS_POINTS_DIVISOR_BIGINT, COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -21,13 +21,7 @@ export function CollateralSpreadRow() {
       ? bigMath.mulDiv(collateralSpreadInfo.spread, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals(1, USD_DECIMALS))
       : undefined;
 
-  const initialCollateralSpread = collateralSpreadPercent !== undefined ? collateralSpreadPercent : undefined;
-
-  const isNearZeroFromStart =
-    initialCollateralSpread === 0n &&
-    (collateralSpreadPercent ?? 0) < COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD;
-
-  const showCollateralSpread = !isSwap && isMarket && !isNearZeroFromStart;
+  const showCollateralSpread = !isSwap && isMarket;
 
   if (!showCollateralSpread) {
     return null;
@@ -35,7 +29,7 @@ export function CollateralSpreadRow() {
 
   return (
     <ExchangeInfo.Row label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
-      {formatPercentage(collateralSpreadPercent)}
+      {collateralSpreadPercent !== undefined ? formatPercentage(collateralSpreadPercent) : "-"}
     </ExchangeInfo.Row>
   );
 }
