@@ -7353,6 +7353,7 @@ msgstr "Ордера тейк-профит и стоп-лосс могут бы�
 msgid "Partial Liquidation"
 msgstr "Частичная Ликвидация"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24ч Объём"

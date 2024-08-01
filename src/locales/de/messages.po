@@ -7353,6 +7353,7 @@ msgstr "Take-Profit- und Stop-Loss-Orders können nach der Eröffnung einer Posi
 msgid "Partial Liquidation"
 msgstr "Teilweise Liquidierung"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24h Volumen"

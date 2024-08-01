@@ -7353,6 +7353,7 @@ msgstr "获利和止损订单可以在开仓后设置 <0/><1/>每一行仓位上
 msgid "Partial Liquidation"
 msgstr "部分清偿"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24小时数量"

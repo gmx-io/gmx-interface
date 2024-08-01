@@ -7353,6 +7353,7 @@ msgstr "TP/SL 주문은 포지션을 연 후 가능합니다. <0/><1/>각 행의
 msgid "Partial Liquidation"
 msgstr "부분 청산"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24시간 거래량"

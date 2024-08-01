@@ -7353,6 +7353,7 @@ msgstr ""
 msgid "Partial Liquidation"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr ""

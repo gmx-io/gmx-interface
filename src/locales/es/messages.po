@@ -7353,6 +7353,7 @@ msgstr "Las órdenes de take-profit y stop-loss se pueden poner después de abri
 msgid "Partial Liquidation"
 msgstr "Liquidación Parcial"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24h Volumen"

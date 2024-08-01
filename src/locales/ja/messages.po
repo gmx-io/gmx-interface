@@ -7353,6 +7353,7 @@ msgstr "テイクプロフィット注文とストップロス注文はポジシ
 msgid "Partial Liquidation"
 msgstr "部分的清算"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24時間取引高"
