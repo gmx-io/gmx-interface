@@ -47,7 +47,7 @@ import { convertTokenAddress } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
 import { getByKey } from "lib/objects";
-import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { TokensData, useTokensDataRequest } from "../tokens";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -330,7 +330,7 @@ function useMarketsValuesRequest({
   const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses, account],
 
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

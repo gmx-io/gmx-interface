@@ -9,7 +9,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
@@ -32,7 +32,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
   const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 
