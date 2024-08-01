@@ -499,9 +499,9 @@ export default function Ecosystem() {
 
   return (
     <SEO title={getPageTitle(t`Ecosystem Projects`)}>
-      <div className="default-container page-layout" data-qa="ecosystem">
+      <div className="default-container page-layout">
         <div>
-          <PageTitle showNetworkIcon={false} isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} />
+          <PageTitle showNetworkIcon={false} isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} qa="ecosystem-page" />
           <div className="Ecosystem-projects">
             {gmxPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;

@@ -1844,6 +1844,7 @@ export default function StakeV2() {
       <PageTitle
         isTop
         title={t`Earn`}
+        qa="earn-page"
         subtitle={
           <div>
             <Trans>

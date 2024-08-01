@@ -12,10 +12,10 @@ import "./Buy.css";
 export default function BuyGMXGLP() {
   return (
     <SEO title={getPageTitle(t`Buy GLP or GMX`)}>
-      <div className="BuyGMXGLP page-layout" data-qa="buy">
+      <div className="BuyGMXGLP page-layout">
         <div className="default-container">
           <div className="BuyGMXGLP-container">
-            <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} />
+            <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} qa="buy-page" />
             <TokenCard />
           </div>
         </div>

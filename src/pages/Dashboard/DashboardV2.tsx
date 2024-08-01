@@ -578,7 +578,7 @@ export default function DashboardV2() {
         <PageTitle
           title={t`Stats`}
           isTop
-          qa="dashboard"
+          qa="dashboard-page"
           subtitle={
             <div>
               <Trans>

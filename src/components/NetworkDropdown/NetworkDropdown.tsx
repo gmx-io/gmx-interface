@@ -116,7 +116,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
         <Menu.Button as="div" className="network-dropdown" data-qa="networks-dropdown-handle">
           <NavIcons selectorLabel={selectorLabel} />
         </Menu.Button>
-        <Menu.Items as="div" className="menu-items network-dropdown-items">
+        <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">
             <Trans>Networks</Trans>
           </div>
@@ -189,7 +189,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
 function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
   const { active } = useWallet();
   return (
-    <div className="network-dropdown-items" data-qa="networks-dropdown">
+    <div className="network-dropdown-items">
       <div className="network-dropdown-list">
         <span className="network-dropdown-label">
           <Trans>Networks</Trans>

@@ -169,11 +169,11 @@ export function LeaderboardContainer() {
   }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
 
   return (
-    <div className="GlobalLeaderboards" data-qa="leaderboard">
+    <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
       <div className="Leaderboard-Title default-container">
         <div>
-          <h1 className="text-34 font-bold">
+          <h1 className="text-34 font-bold" data-qa="leaderboard-page">
             {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
           </h1>
           <div className="Leaderboard-Title__description">{description}</div>

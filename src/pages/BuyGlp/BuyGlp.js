@@ -31,7 +31,7 @@ export default function BuyGlp() {
       <PageTitle
         title={t`Buy / Sell GLP`}
         isTop
-        qa="buy-glp"
+        qa="buy-glp-page"
         subtitle={
           <div>
             {incentiveState?.migration?.isActive && (
