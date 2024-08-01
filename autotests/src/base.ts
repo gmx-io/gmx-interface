@@ -1,6 +1,6 @@
 import { BrowserContext, test as baseTest } from "@playwright/test";
 import dappwright, { Dappwright, MetaMaskWallet } from "@tenkeylabs/dappwright";
-import { GmxPage } from "./elements/elements";
+import { GmxApp } from "./elements/page-objects";
 
 import { config } from "dotenv";
 import { mockWeb3 } from "./mocks/web3";
@@ -14,16 +14,19 @@ export const test = baseTest.extend<{
   context: BrowserContext;
   wallet: Dappwright;
   appUrl: string;
-  gmx: GmxPage;
+  gmx: GmxApp;
 }>({
   page: async ({ context }, use) => {
     const page = await context.newPage();
 
     if (!process.env.USE_METAMASK) {
+      /**
+       * @todo Fix this mock to work with rainbowkit
+       */
       await mockWeb3(page, () => {
         Web3Mock.mock({
           blockchain: "ethereum",
-          accounts: { return: ["0xd73b04b0e696b0945283defa3eee453814758f1a"] },
+          accounts: { return: [process.env.ACCOUNT] },
         });
       });
     }
@@ -54,11 +57,10 @@ export const test = baseTest.extend<{
         await metamaskPage.locator('//button/h6[contains(text(), "Switch to Arbitrum One")]').click();
         await metamaskPage.waitForTimeout(1000);
         await metamaskPage.locator('[data-testid="detected-token-banner"] button').click();
-        await metamaskPage.waitForTimeout(2000);
+        await metamaskPage.waitForTimeout(1000);
         await metamaskPage
           .locator('//*[contains(@class, "popover-footer")]/button[contains(text(), "Import")]')
           .click();
-        await metamaskPage.waitForTimeout(2000);
       } else {
         await wallet.addNetwork({
           chainId: 43113,
@@ -72,7 +74,7 @@ export const test = baseTest.extend<{
     console.log("[Preparing GMX App]");
     const page = await ctx.newPage();
     await page.goto(appUrl);
-    const gmx = new GmxPage(page, wallet, appUrl);
+    const gmx = new GmxApp(page, wallet, appUrl);
     await gmx.header.connectWallet();
     await gmx.closeAllToasts();
 
@@ -96,7 +98,7 @@ export const test = baseTest.extend<{
   appUrl: async ({}, use) => use(process.env.GMX_BASE_URL || "https://app.gmx.io"),
 
   gmx: async ({ wallet, page, appUrl }, use) => {
-    const gmx = new GmxPage(page, wallet, appUrl);
+    const gmx = new GmxApp(page, wallet, appUrl);
     await use(gmx);
   },
 });

@@ -379,7 +379,7 @@ class Position extends BasePage {
   }
 }
 
-export class GmxPage extends BasePage {
+export class GmxApp extends BasePage {
   header = new Header(this.page, this.wallet, this.locator("header"));
   tradebox = new Tradebox(this.page, this.wallet, this.locator("tradebox"));
 

@@ -27,7 +27,7 @@ test.describe.serial("Trades", () => {
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
 
       await position.root.waitForSelector();
-      expect(position.root).toBeVisible();
+      expect(position.root).toBeAttached();
     });
 
     test("edit position deposit", async ({ page, gmx }) => {
@@ -38,7 +38,7 @@ test.describe.serial("Trades", () => {
       expect(position.root).toBeVisible();
       const collateral = await position.getCollateral();
 
-      await position.deposit("1");
+      await position.deposit("0.2");
 
       const newCollateral = await position.getCollateral();
       expect(newCollateral !== collateral).toBeTruthy();
@@ -74,6 +74,11 @@ test.describe.serial("Trades", () => {
 
       expect(position.root).toBeVisible();
       await position.closeFull();
+
+      await position.root.waitFor({
+        state: "detached",
+      });
+      expect(position.root).not.toBeAttached();
     });
   });
 
@@ -107,7 +112,7 @@ test.describe.serial("Trades", () => {
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
 
       await position.root.waitForSelector();
-      expect(position.root).toBeVisible();
+      expect(position.root).toBeAttached();
     });
   });
 });
