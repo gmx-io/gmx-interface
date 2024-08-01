@@ -1,4 +1,3 @@
-import { ReactNode, useCallback, useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -29,6 +28,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { ReactNode, useCallback, useMemo } from "react";
 
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
@@ -242,7 +242,7 @@ export function TradeBoxAdvancedGroups() {
       <LeverageInfoRows />
       <EntryPriceRow />
       <ExistingPositionInfoRows />
-      <div className="App-card-divider" />
+      {!isSwap && <div className="App-card-divider" />}
     </ExpandableRow>
   );
 }

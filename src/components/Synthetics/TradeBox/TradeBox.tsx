@@ -724,7 +724,7 @@ export function TradeBox(p: Props) {
     setPendingTxns,
   });
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     setStage("processing");
 
     let txnPromise: Promise<any>;
@@ -1208,11 +1208,7 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="mt-4 w-full"
       onClick={onSubmit}
-      disabled={
-        (isSubmitButtonDisabled || submitButtonState.disabled) &&
-        !shouldDisableValidationForTesting &&
-        stage !== "processing"
-      }
+      disabled={(isSubmitButtonDisabled || submitButtonState.disabled) && !shouldDisableValidationForTesting}
     >
       {submitButtonState.text}
     </Button>
