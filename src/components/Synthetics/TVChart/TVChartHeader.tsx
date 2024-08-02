@@ -24,6 +24,8 @@ import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
@@ -68,16 +70,16 @@ function TVChartHeaderInfoMobile() {
           <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
 
           <div
-            className="flex cursor-pointer flex-row gap-8"
+            className="mt-8 flex cursor-pointer flex-row items-center gap-8"
             role="button"
             onClick={isSwap ? undefined : toggleDetailsVisible}
           >
             {!isSwap && (
-              <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-500 p-2">
-                {detailsVisible ? <BiChevronDown /> : <BiChevronRight />}
+              <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-700">
+                {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
               </span>
             )}
-            <div className="ExchangeChart-avg-price">
+            <div className="ExchangeChart-avg-price mr-4">
               {formatUsd(avgPrice, {
                 displayDecimals: oraclePriceDecimals,
               }) || "..."}
@@ -119,7 +121,9 @@ function TVChartHeaderInfoMobile() {
 
             <div>
               <div className="ExchangeChart-info-label">
-                <Trans>Net Rate / 1h</Trans>
+                <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+                  <Trans>Net Rate / 1h</Trans>
+                </TooltipWithPortal>
               </div>
               <div className="flex flex-row items-center gap-8">
                 <div className="positive flex flex-row items-center gap-8">
@@ -229,8 +233,17 @@ function TVChartHeaderInfoDesktop() {
     };
   }, [scrollRight, maxFadeArea]);
 
-  const { liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume } =
-    useChartHeaderFormattedValues();
+  const {
+    dailyVolume,
+    liquidityLong,
+    liquidityShort,
+    longOIPercentage,
+    longOIValue,
+    netRateLong,
+    netRateShort,
+    shortOIPercentage,
+    shortOIValue,
+  } = useChartHeaderFormattedValues();
 
   const additionalInfo = useMemo(() => {
     if (isSwap) {
@@ -256,7 +269,9 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div>
           <div className="ExchangeChart-info-label">
-            <Trans>Net Rate / 1h</Trans>
+            <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate / 1h</Trans>
+            </TooltipWithPortal>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="positive flex flex-row items-center gap-4">
@@ -270,8 +285,15 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
         <div>
-          <div className="ExchangeChart-info-label">
-            <Trans>Open Interest</Trans>
+          <div className="whitespace-nowrap text-[1.25rem]">
+            <span className="opacity-70">
+              <Trans>Open Interest</Trans>
+              {"("}
+            </span>
+            <span className="positive">{longOIPercentage}</span>
+            <span className="opacity-70">/</span>
+            <span className="negative">{shortOIPercentage}</span>
+            <span className="opacity-70">{")"}</span>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">
@@ -290,7 +312,18 @@ function TVChartHeaderInfoDesktop() {
         </div>
       </>
     );
-  }, [liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume, isSwap]);
+  }, [
+    dailyVolume,
+    isSwap,
+    liquidityLong,
+    liquidityShort,
+    longOIPercentage,
+    longOIValue,
+    netRateLong,
+    netRateShort,
+    shortOIPercentage,
+    shortOIValue,
+  ]);
 
   return (
     <div className="Chart-header mb-10">

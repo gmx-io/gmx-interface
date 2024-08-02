@@ -8,7 +8,7 @@
     cursor: pointer;
 
     &:hover:not(&-disabled) {
-      color: var(--color-blue-300);
+      color: var(--color-blue-300) !important;
     }
 
     &-disabled {

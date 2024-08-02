@@ -84,12 +84,12 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("text-12 text-gray-300", {
+                  className={cx("text-12 font-medium text-gray-300", {
                     "ml-0": !isMobile,
                     "ml-8": isMobile,
                   })}
                 >
-                  [${poolName}]
+                  [{poolName}]
                 </span>
               )}
             </span>

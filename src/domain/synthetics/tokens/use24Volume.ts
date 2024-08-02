@@ -39,13 +39,15 @@ export function use24hVolume() {
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
 
+  const indexTokenAddress = marketInfo?.indexTokenAddress;
+
   const variables = {
-    indexToken: marketInfo?.indexTokenAddress.toLocaleLowerCase(),
+    indexToken: indexTokenAddress?.toLocaleLowerCase(),
     timestamp: timestamp,
   };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    variables.indexToken ? "24hVolume" : null,
+    variables.indexToken ? `24hVolume-${indexTokenAddress}` : null,
     async () => {
       if (!endpoint || !variables.indexToken) {
         return;

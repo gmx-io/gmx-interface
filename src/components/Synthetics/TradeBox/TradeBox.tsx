@@ -80,9 +80,6 @@ import {
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
 import { numericBinarySearch } from "lib/binarySearch";
 import { USD_DECIMALS } from "lib/legacy";
 import {
@@ -118,6 +115,11 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
 import { useHistory } from "react-router-dom";
+
+import { ReactComponent as LongIcon } from "img/long.svg";
+import { ReactComponent as ShortIcon } from "img/short.svg";
+import { ReactComponent as SwapIcon } from "img/swap.svg";
+
 import "./TradeBox.scss";
 
 export type Props = {
@@ -128,9 +130,9 @@ export type Props = {
 };
 
 const tradeTypeIcons = {
-  [TradeType.Long]: longImg,
-  [TradeType.Short]: shortImg,
-  [TradeType.Swap]: swapImg,
+  [TradeType.Long]: <LongIcon />,
+  [TradeType.Short]: <ShortIcon />,
+  [TradeType.Swap]: <SwapIcon />,
 };
 
 const tradeModeLabels = {
