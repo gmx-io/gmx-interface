@@ -96,13 +96,13 @@ function TVChartHeaderInfoMobile() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-start justify-center">
           <VersionSwitch />
         </div>
       </div>
       {detailsVisible && (
         <div className="pt-16">
-          <div className="mb-14 flex flex-row items-center justify-start gap-24">
+          <div className="mb-14 flex flex-row flex-wrap items-center justify-start gap-24">
             <div>
               <div className="ExchangeChart-info-label">
                 <Trans>Available Liquidity</Trans>
