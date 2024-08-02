@@ -67,7 +67,9 @@ function TVChartHeaderInfoMobile() {
     <div className="mb-10">
       <div className="grid grid-cols-[auto_100px]">
         <div>
-          <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
+          <div className="inline-flex">
+            <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
+          </div>
 
           <div
             className="mt-8 flex cursor-pointer flex-row items-center gap-8"
