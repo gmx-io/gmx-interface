@@ -3049,6 +3049,7 @@ msgid "Community-led Telegram groups."
 msgstr "Группы Telegram под руководством сообщества."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr ""
 
@@ -3526,6 +3527,7 @@ msgstr "Цена триггера для ордера."
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3843,6 +3845,7 @@ msgid "Creator"
 msgstr "Создатель"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr ""
 
@@ -4208,6 +4211,7 @@ msgid "Buy order cancelled"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr ""
 
@@ -6425,6 +6429,7 @@ msgstr ""
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6890,6 +6895,7 @@ msgid "Initial collateral"
 msgstr "Первоначальный залог"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 msgstr ""
 

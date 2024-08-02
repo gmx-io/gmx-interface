@@ -3049,6 +3049,7 @@ msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr "{longShortText} {0} Open Interest"
 
@@ -3529,6 +3530,7 @@ msgstr "Trigger price for the order."
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3846,6 +3848,7 @@ msgid "Creator"
 msgstr "Creator"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr "Reserve considers the PnL of Open Positions, while Open Interest does not."
 
@@ -4211,6 +4214,7 @@ msgid "Buy order cancelled"
 msgstr "Buy order cancelled"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr "{longShortText} {0} Reserve"
 
@@ -6431,6 +6435,7 @@ msgstr "Fulfilling Sell request"
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6896,6 +6901,7 @@ msgid "Initial collateral"
 msgstr "Initial collateral"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
