@@ -26,7 +26,7 @@ export function useChartHeaderFormattedValues() {
       ];
     }
 
-    return ["-", null];
+    return ["...", null];
   }, [info?.longOpenInterestPercentage, info?.openInterestLong]);
 
   const [shortOIValue, shortOIPercentage] = useMemo(() => {
@@ -39,7 +39,7 @@ export function useChartHeaderFormattedValues() {
       ];
     }
 
-    return ["-", null];
+    return ["...", null];
   }, [info?.longOpenInterestPercentage, info?.openInterestShort]);
 
   const liquidityLong = useMemo(() => {
@@ -51,8 +51,8 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        className="al-swap"
-        handle={formatAmountHuman(liquidity, USD_DECIMALS) || "..."}
+        disableHandleStyle
+        handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
         position="bottom-end"
         renderContent={() => <AvailableLiquidityTooltip isLong />}
       />
@@ -68,8 +68,8 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        className="al-swap"
-        handle={formatAmountHuman(liquidity, USD_DECIMALS) || "..."}
+        disableHandleStyle
+        handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
         position="bottom-end"
         renderContent={() => <AvailableLiquidityTooltip isLong={false} />}
       />
@@ -85,7 +85,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        className="al-swap"
+        disableHandleStyle
         handle={formatRatePercentage(netRate)}
         position="bottom-end"
         renderContent={() => <NetRate1hTooltip isLong info={info} />}
@@ -102,7 +102,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        className="al-swap"
+        disableHandleStyle
         handle={formatRatePercentage(netRate)}
         position="bottom-end"
         renderContent={() => <NetRate1hTooltip isLong={false} info={info} />}
@@ -110,7 +110,7 @@ export function useChartHeaderFormattedValues() {
     );
   }, [info]);
 
-  const dailyVolume = dailyVolumeValue ? `$${formatAmountHuman(dailyVolumeValue, USD_DECIMALS)}` : "-";
+  const dailyVolume = dailyVolumeValue ? `$${formatAmountHuman(dailyVolumeValue, USD_DECIMALS)}` : "...";
 
   return {
     longOIValue,

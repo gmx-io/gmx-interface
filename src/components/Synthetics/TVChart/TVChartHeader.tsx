@@ -77,7 +77,12 @@ function TVChartHeaderInfoMobile() {
             onClick={isSwap ? undefined : toggleDetailsVisible}
           >
             {!isSwap && (
-              <span className="inline-flex cursor-pointer items-center justify-center rounded-4 bg-slate-700">
+              <span
+                className={cx("inline-flex cursor-pointer items-center justify-center rounded-4", {
+                  "bg-slate-700": !detailsVisible,
+                  "bg-slate-500": detailsVisible,
+                })}
+              >
                 {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
               </span>
             )}
@@ -123,7 +128,7 @@ function TVChartHeaderInfoMobile() {
 
             <div>
               <div className="ExchangeChart-info-label">
-                <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+                <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
                   <Trans>Net Rate / 1h</Trans>
                 </TooltipWithPortal>
               </div>
@@ -271,7 +276,7 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div>
           <div className="ExchangeChart-info-label">
-            <TooltipWithPortal renderContent={renderNetFeeHeaderTooltipContent}>
+            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
@@ -290,7 +295,7 @@ function TVChartHeaderInfoDesktop() {
           <div className="whitespace-nowrap text-[1.25rem]">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
-              {"("}
+              {" ("}
             </span>
             <span className="positive">{longOIPercentage}</span>
             <span className="opacity-70">/</span>
