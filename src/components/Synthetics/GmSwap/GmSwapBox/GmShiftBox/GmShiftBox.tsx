@@ -40,6 +40,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
 import { Swap } from "../Swap";
@@ -349,6 +350,7 @@ export function GmShiftBox({
               uiFee={fees?.uiFee}
               shiftFee={fees?.shiftFee}
             />
+            <NetworkFeeRow executionFee={executionFee} />
           </ExchangeInfo.Group>
         </ExchangeInfo>
         <div className="Exchange-swap-button-container">
