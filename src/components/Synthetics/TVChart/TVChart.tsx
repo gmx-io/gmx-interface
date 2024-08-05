@@ -1,5 +1,8 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import { useEffect, useMemo, useState } from "react";
+import { usePrevious } from "react-use";
+
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
@@ -13,20 +16,22 @@ import { selectAvailableChartTokens, selectChartToken } from "context/Synthetics
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
+
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+
 import "./TVChart.scss";
-import { usePrevious } from "lib/usePrevious";
 
 const DEFAULT_PERIOD = "5m";
 

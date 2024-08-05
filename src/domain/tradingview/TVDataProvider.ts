@@ -1,4 +1,4 @@
-import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
+import { LAST_BAR_FETCH_INTERVAL } from "config/tradingview";
 import { getLimitChartPricesFromStats, TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { CHART_PERIODS } from "lib/legacy";
 import { Bar, FromOldToNewArray } from "./types";
@@ -21,13 +21,6 @@ const initialState = {
   },
 };
 
-/**
- * On initialize TVDataProvider, it will start an interval to update live bars every LAST_BAR_REFRESH_INTERVAL
- * and saving the last bar in liveBars array. If the last bar is the same as the previous one, it will replace it.
- * Otherwise, it will add the new bar to the array.
- *
- * Meanwhile, on any update of chartTokenInfo it will update the last bar with the new price.
- */
 export class TVDataProvider {
   chainId: number | null = null;
   liveBars: Bar[] = [];
@@ -54,7 +47,7 @@ export class TVDataProvider {
 
     this.updateInterval = setInterval(() => {
       this.updateLiveBars();
-    }, LAST_BAR_REFRESH_INTERVAL);
+    }, LAST_BAR_FETCH_INTERVAL);
   }
 
   resetCache() {
@@ -73,23 +66,26 @@ export class TVDataProvider {
       1
     );
 
-    if (prices.length) {
-      const lastBar = prices[0];
+    if (!prices.length) {
+      return;
+    }
 
-      if (lastBar.ticker !== this.currentTicker || lastBar.period !== this.currentPeriod) {
-        return;
-      }
+    const lastBar = prices[0];
 
-      lastBar.ticker = this.currentTicker;
-      lastBar.period = this.currentPeriod;
-      const lastSavedBar = this.liveBars[this.liveBars.length - 1];
+    if (lastBar.ticker !== this.currentTicker || lastBar.period !== this.currentPeriod) {
+      return;
+    }
 
-      if (lastSavedBar && lastBar.time !== lastSavedBar?.time) {
-        this.liveBars.push(lastBar);
-        this.liveBars[0].close = this.liveBars[1].open;
-      } else {
-        this.liveBars = [lastBar];
-      }
+    lastBar.ticker = this.currentTicker;
+    lastBar.period = this.currentPeriod;
+
+    const lastSavedBar = this.liveBars[this.liveBars.length - 1];
+
+    if (lastSavedBar && lastBar.time !== lastSavedBar?.time) {
+      this.liveBars.push(lastBar);
+      this.liveBars[0].close = this.liveBars[1].open;
+    } else {
+      this.liveBars = [lastBar];
     }
   }
 
