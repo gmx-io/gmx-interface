@@ -34,11 +34,14 @@ import {
   PendingDepositData,
   PendingFundingFeeSettlementData,
   PendingOrderData,
-  PendingPositionUpdate,
   PendingPositionsUpdates,
+  PendingPositionUpdate,
+  PendingShiftData,
   PendingWithdrawalData,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
+  ShiftCreatedEventData,
+  ShiftStatuses,
   SyntheticsEventsContextType,
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
@@ -63,6 +66,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
+  const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
@@ -300,6 +304,50 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
     },
 
+    ShiftCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const data: ShiftCreatedEventData = {
+        key: eventData.bytes32Items.items.key,
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        fromMarket: eventData.addressItems.items.fromMarket,
+        toMarket: eventData.addressItems.items.toMarket,
+        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+        minMarketTokens: eventData.uintItems.items.minMarketTokens,
+        updatedAtTime: eventData.uintItems.items.updatedAtTime,
+        executionFee: eventData.uintItems.items.executionFee,
+      };
+
+      if (data.account !== currentAccount) {
+        return;
+      }
+
+      setShiftStatuses((old) =>
+        setByKey(old, data.key, {
+          key: data.key,
+          data,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
+      );
+    },
+
+    ShiftExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (shiftStatuses[key]) {
+        setShiftStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
+    },
+
+    ShiftCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (shiftStatuses[key]) {
+        setShiftStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
+    },
+
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
         positionKey: getPositionKey(
@@ -452,6 +500,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       orderStatuses,
       depositStatuses,
       withdrawalStatuses,
+      shiftStatuses,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -520,6 +569,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           }
         );
       },
+      setPendingShift: (data: PendingShiftData) => {
+        const toastId = Date.now();
+
+        helperToast.success(
+          <GmStatusNotification
+            pendingShiftData={data}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            toastTimestamp={toastId}
+          />,
+          {
+            autoClose: false,
+            toastId,
+          }
+        );
+      },
       async setPendingPosition(update: PendingPositionUpdate) {
         setPendingPositionsUpdates((old) => setByKey(old, update.positionKey, update));
       },
@@ -535,6 +600,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setWithdrawalStatusViewed(key: string) {
         setWithdrawalStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
+
+      setShiftStatusViewed(key: string) {
+        setShiftStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
     };
   }, [
     depositStatuses,
@@ -543,9 +612,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionDecreaseEvents,
     positionIncreaseEvents,
+    setPendingTxns,
+    shiftStatuses,
     tokensData,
     withdrawalStatuses,
-    setPendingTxns,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

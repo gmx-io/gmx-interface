@@ -650,6 +650,79 @@ export function getGmSwapError(p: {
 
   return [undefined];
 }
+export function getGmShiftError({
+  fromMarketInfo,
+  fromToken,
+  fromTokenAmount,
+  fromTokenUsd,
+  toMarketInfo,
+  toToken,
+  toTokenAmount,
+  fees,
+  isHighPriceImpact,
+  isHighPriceImpactAccepted,
+  priceImpactUsd,
+}: {
+  fromMarketInfo: MarketInfo | undefined;
+  fromToken: TokenData | undefined;
+  fromTokenAmount: bigint | undefined;
+  fromTokenUsd: bigint | undefined;
+  toMarketInfo: MarketInfo | undefined;
+  toToken: TokenData | undefined;
+  toTokenAmount: bigint | undefined;
+  fees: GmSwapFees | undefined;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
+  priceImpactUsd: bigint | undefined;
+}) {
+  if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
+    return [t`Loading...`];
+  }
+
+  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
+  if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
+    const { impactAmount } = applySwapImpactWithCap(toMarketInfo, priceImpactUsd);
+    const newPoolAmount = applyDeltaToPoolAmount(toMarketInfo, impactAmount);
+
+    if (!getIsValidPoolAmount(toMarketInfo, newPoolAmount)) {
+      return [t`Max pool amount exceeded`];
+    }
+  }
+
+  if (!getIsValidPoolUsdForDeposit(toMarketInfo)) {
+    return [t`Max pool USD exceeded`];
+  }
+
+  const totalCollateralUsd = fromTokenUsd ?? 0n;
+
+  const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
+
+  if (toTokenAmount !== undefined && toTokenAmount > mintableInfo.mintableAmount) {
+    return [t`Max ${toToken?.symbol} amount exceeded`];
+  }
+
+  const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
+  if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
+    return [t`Fees exceed Pay amount`];
+  }
+
+  if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
+    return [t`Amount should be greater than zero`];
+  }
+
+  if (fromTokenAmount === undefined || fromTokenAmount < 0 || toTokenAmount === undefined || toTokenAmount < 0) {
+    return [t`Enter an amount`];
+  }
+
+  if ((fromTokenAmount ?? 0n) > (fromToken?.balance ?? 0n)) {
+    return [t`Insufficient ${fromToken?.symbol} balance`];
+  }
+
+  return [undefined];
+}
 
 function getIsValidPoolUsdForDeposit(marketInfo: MarketInfo) {
   const tokenIn = getTokenIn(marketInfo);

@@ -12,7 +12,7 @@ import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 
-import { Mode, Operation } from "./GmSwapBox";
+import { Mode, Operation } from "../types";
 
 type SearchParams = {
   market?: string;

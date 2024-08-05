@@ -241,6 +241,7 @@ export type GmSwapFees = {
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
+  shiftFee?: FeeItem;
 };
 
 export type TradeSearchParams = {

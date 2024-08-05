@@ -8,6 +8,7 @@ import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types
 
 export function useDepositWithdrawalAmounts({
   isDeposit,
+  isWithdrawal,
   marketInfo,
   marketToken,
   longTokenInputState,
@@ -15,9 +16,9 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount,
   uiFeeFactor,
   focusedInput,
-  isWithdrawal,
 }: {
   isDeposit: boolean;
+  isWithdrawal: boolean;
   marketInfo: MarketInfo | undefined;
   marketToken: TokenData | undefined;
   longTokenInputState:
@@ -35,7 +36,6 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount: bigint;
   uiFeeFactor: bigint;
   focusedInput: string;
-  isWithdrawal: boolean;
 }): DepositAmounts | WithdrawalAmounts | undefined {
   const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
 

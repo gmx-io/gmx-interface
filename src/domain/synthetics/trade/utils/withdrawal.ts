@@ -1,8 +1,9 @@
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { applyFactor } from "lib/numbers";
-import { WithdrawalAmounts } from "../types";
 import { bigMath } from "lib/bigmath";
+import { applyFactor } from "lib/numbers";
+
+import { WithdrawalAmounts } from "../types";
 
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;
@@ -11,7 +12,8 @@ export function getWithdrawalAmounts(p: {
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
   uiFeeFactor: bigint;
-  strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral";
+  strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
+  forShift?: boolean;
 }) {
   const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, uiFeeFactor, strategy } = p;
 
@@ -48,8 +50,13 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
     values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
 
-    const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
-    const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+    const longSwapFeeUsd = p.forShift
+      ? 0n
+      : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+    const shortSwapFeeUsd = p.forShift
+      ? 0n
+      : applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+
     const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
 
@@ -84,10 +91,23 @@ export function getWithdrawalAmounts(p: {
         longToken.decimals,
         longToken.prices.maxPrice
       )!;
+    } else if (strategy === "byCollaterals") {
+      values.longTokenAmount = longTokenAmount;
+      values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
+      values.shortTokenAmount = shortTokenAmount;
+      values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+
+      values.uiFeeUsd = applyFactor(values.longTokenUsd + values.shortTokenUsd, uiFeeFactor);
+      values.marketTokenUsd += values.uiFeeUsd;
     }
 
-    values.marketTokenUsd = values.longTokenUsd + values.shortTokenUsd;
-    values.swapFeeUsd = applyFactor(values.marketTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+    values.marketTokenUsd = values.marketTokenUsd + values.longTokenUsd + values.shortTokenUsd;
+    if (!p.forShift) {
+      values.swapFeeUsd = applyFactor(
+        values.longTokenUsd + values.shortTokenUsd,
+        p.marketInfo.swapFeeFactorForNegativeImpact
+      );
+    }
 
     values.marketTokenUsd = values.marketTokenUsd + values.swapFeeUsd;
     values.marketTokenAmount = usdToMarketTokenAmount(marketInfo, marketToken, values.marketTokenUsd)!;

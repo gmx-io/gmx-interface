@@ -3,8 +3,10 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { convertTokenAddress } from "config/tokens";
 import {
   PendingDepositData,
+  PendingShiftData,
   PendingWithdrawalData,
   getPendingDepositKey,
+  getPendingShiftKey,
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
@@ -20,32 +22,75 @@ export type Props = {
   toastTimestamp: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
+  pendingShiftData?: PendingShiftData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
 };
+
+function select<A, B, C>(
+  deposit: A,
+  withdrawal: B,
+  shift: C,
+  operation: "deposit" | "withdrawal" | "shift"
+): A | B | C {
+  if (operation === "deposit") {
+    return deposit;
+  } else if (operation === "withdrawal") {
+    return withdrawal;
+  } else {
+    return shift;
+  }
+}
 
 export function GmStatusNotification({
   toastTimestamp,
   pendingDepositData,
   pendingWithdrawalData,
+  pendingShiftData,
   marketsInfoData,
   tokensData,
 }: Props) {
   const { chainId } = useChainId();
-  const { depositStatuses, withdrawalStatuses, setDepositStatusViewed, setWithdrawalStatusViewed } =
-    useSyntheticsEvents();
+  const {
+    depositStatuses,
+    withdrawalStatuses,
+    shiftStatuses,
+    //
+    setDepositStatusViewed,
+    setWithdrawalStatusViewed,
+    setShiftStatusViewed,
+  } = useSyntheticsEvents();
 
-  const isDeposit = Boolean(pendingDepositData);
+  let operation: "deposit" | "withdrawal" | "shift";
+  if (pendingDepositData) {
+    operation = "deposit";
+  } else if (pendingWithdrawalData) {
+    operation = "withdrawal";
+  } else {
+    operation = "shift";
+  }
 
   const [depositStatusKey, setDepositStatusKey] = useState<string>();
   const [withdrawalStatusKey, setWithdrawalStatusKey] = useState<string>();
+  const [shiftStatusKey, setShiftStatusKey] = useState<string>();
 
   const depositStatus = getByKey(depositStatuses, depositStatusKey);
   const withdrawalStatus = getByKey(withdrawalStatuses, withdrawalStatusKey);
+  const shiftStatus = getByKey(shiftStatuses, shiftStatusKey);
 
-  const isCompleted = isDeposit ? Boolean(depositStatus?.executedTxnHash) : Boolean(withdrawalStatus?.executedTxnHash);
+  const isCompleted = select(
+    Boolean(depositStatus?.executedTxnHash),
+    Boolean(withdrawalStatus?.executedTxnHash),
+    Boolean(shiftStatus?.executedTxnHash),
+    operation
+  );
 
-  const hasError = isDeposit ? Boolean(depositStatus?.cancelledTxnHash) : Boolean(withdrawalStatus?.cancelledTxnHash);
+  const hasError = select(
+    Boolean(depositStatus?.cancelledTxnHash),
+    Boolean(withdrawalStatus?.cancelledTxnHash),
+    Boolean(shiftStatus?.cancelledTxnHash),
+    operation
+  );
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
@@ -59,8 +104,14 @@ export function GmStatusNotification({
     }
   }, [pendingWithdrawalData]);
 
+  const pendingShiftKey = useMemo(() => {
+    if (pendingShiftData) {
+      return getPendingShiftKey(pendingShiftData);
+    }
+  }, [pendingShiftData]);
+
   const title = useMemo(() => {
-    if (isDeposit) {
+    if (operation === "deposit") {
       if (!pendingDepositData) {
         return t`Unknown buy GM order`;
       }
@@ -113,7 +164,7 @@ export function GmStatusNotification({
           <span>with {tokensText}</span>
         </Trans>
       );
-    } else {
+    } else if (operation === "withdrawal") {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
       }
@@ -130,15 +181,28 @@ export function GmStatusNotification({
           </div>
         </Trans>
       );
+    } else {
+      if (!pendingShiftData) {
+        return t`Unknown shift GM order`;
+      }
+
+      // const fromToken = getByKey(tokensData, pendingShiftData.fromMarketTokenAddress);
+      // const toToken = getByKey(tokensData, pendingShiftData.toMarketTokenAddress);
+
+      return (
+        <Trans>
+          <div className="inline-flex">Shifting GM</div>
+        </Trans>
+      );
     }
-  }, [chainId, isDeposit, marketsInfoData, pendingDepositData, pendingWithdrawalData, tokensData]);
+  }, [chainId, marketsInfoData, operation, pendingDepositData, pendingShiftData, pendingWithdrawalData, tokensData]);
 
   const creationStatus = useMemo(() => {
     let text = "";
     let status: TransactionStatusType = "loading";
     let createdTxnHash: string | undefined;
 
-    if (isDeposit) {
+    if (operation === "deposit") {
       text = t`Sending Buy request`;
 
       if (depositStatus?.createdTxnHash) {
@@ -146,7 +210,7 @@ export function GmStatusNotification({
         status = "success";
         createdTxnHash = depositStatus?.createdTxnHash;
       }
-    } else {
+    } else if (operation === "withdrawal") {
       text = t`Sending Sell request`;
 
       if (withdrawalStatus?.createdTxnHash) {
@@ -154,17 +218,25 @@ export function GmStatusNotification({
         status = "success";
         createdTxnHash = withdrawalStatus?.createdTxnHash;
       }
+    } else {
+      text = t`Sending Shift request`;
+
+      if (shiftStatus?.createdTxnHash) {
+        text = t`Shift request sent`;
+        status = "success";
+        createdTxnHash = shiftStatus?.createdTxnHash;
+      }
     }
 
     return <TransactionStatus status={status} txnHash={createdTxnHash} text={text} />;
-  }, [depositStatus?.createdTxnHash, isDeposit, withdrawalStatus?.createdTxnHash]);
+  }, [depositStatus?.createdTxnHash, operation, shiftStatus?.createdTxnHash, withdrawalStatus?.createdTxnHash]);
 
   const executionStatus = useMemo(() => {
     let text = "";
     let status: TransactionStatusType = "muted";
     let txnHash: string | undefined;
 
-    if (isDeposit) {
+    if (operation === "deposit") {
       text = t`Fulfilling Buy request`;
 
       if (depositStatus?.createdTxnHash) {
@@ -182,7 +254,7 @@ export function GmStatusNotification({
         status = "error";
         txnHash = depositStatus?.cancelledTxnHash;
       }
-    } else {
+    } else if (operation === "withdrawal") {
       text = t`Fulfilling Sell request`;
 
       if (withdrawalStatus?.createdTxnHash) {
@@ -200,14 +272,43 @@ export function GmStatusNotification({
         status = "error";
         txnHash = withdrawalStatus?.cancelledTxnHash;
       }
+    } else {
+      text = t`Fulfilling Shift request`;
+
+      if (shiftStatus?.createdTxnHash) {
+        status = "loading";
+      }
+
+      if (shiftStatus?.executedTxnHash) {
+        text = t`Shift order executed`;
+        status = "success";
+        txnHash = shiftStatus?.executedTxnHash;
+      }
+
+      if (shiftStatus?.cancelledTxnHash) {
+        text = t`Shift order cancelled`;
+        status = "error";
+        txnHash = shiftStatus?.cancelledTxnHash;
+      }
     }
 
     return <TransactionStatus status={status} txnHash={txnHash} text={text} />;
-  }, [depositStatus, isDeposit, withdrawalStatus]);
+  }, [
+    depositStatus?.cancelledTxnHash,
+    depositStatus?.createdTxnHash,
+    depositStatus?.executedTxnHash,
+    operation,
+    shiftStatus?.cancelledTxnHash,
+    shiftStatus?.createdTxnHash,
+    shiftStatus?.executedTxnHash,
+    withdrawalStatus?.cancelledTxnHash,
+    withdrawalStatus?.createdTxnHash,
+    withdrawalStatus?.executedTxnHash,
+  ]);
 
   useEffect(
     function getStatusKey() {
-      if (isDeposit) {
+      if (operation === "deposit") {
         if (depositStatusKey) {
           return;
         }
@@ -220,7 +321,7 @@ export function GmStatusNotification({
           setDepositStatusKey(matchedStatusKey);
           setDepositStatusViewed(matchedStatusKey);
         }
-      } else {
+      } else if (operation === "withdrawal") {
         if (withdrawalStatusKey) {
           return;
         }
@@ -233,16 +334,33 @@ export function GmStatusNotification({
           setWithdrawalStatusKey(matchedStatusKey);
           setWithdrawalStatusViewed(matchedStatusKey);
         }
+      } else {
+        if (shiftStatusKey) {
+          return;
+        }
+
+        const matchedStatusKey = Object.values(shiftStatuses).find(
+          (status) => !status.isViewed && status.data && getPendingShiftKey(status.data) === pendingShiftKey
+        )?.key;
+
+        if (matchedStatusKey) {
+          setShiftStatusKey(matchedStatusKey);
+          setShiftStatusViewed(matchedStatusKey);
+        }
       }
     },
     [
       depositStatusKey,
       depositStatuses,
-      isDeposit,
+      operation,
       pendingDepositKey,
+      pendingShiftKey,
       pendingWithdrawalKey,
       setDepositStatusViewed,
+      setShiftStatusViewed,
       setWithdrawalStatusViewed,
+      shiftStatusKey,
+      shiftStatuses,
       toastTimestamp,
       withdrawalStatusKey,
       withdrawalStatuses,

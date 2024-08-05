@@ -8,7 +8,7 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
 import { t } from "@lingui/macro";
@@ -93,10 +93,10 @@ export async function createDecreaseOrderTxn(
             maxPrice: p.triggerPrice,
           };
         }
-        await simulateExecuteOrderTxn(chainId, {
+        await simulateExecuteTxn(chainId, {
           account,
           primaryPriceOverrides,
-          createOrderMulticallPayload: simulationEncodedPayload,
+          createMulticallPayload: simulationEncodedPayload,
           value: totalWntAmount,
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,

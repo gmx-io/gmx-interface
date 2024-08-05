@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
+
 import { MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
+import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
 
 export function useUpdateInputAmounts({
@@ -41,7 +43,7 @@ export function useUpdateInputAmounts({
     | undefined;
   isDeposit: boolean;
   focusedInput: string;
-  amounts: import("/root/dev/midas/gmx-interface/src/domain/synthetics/trade/types").DepositAmounts | undefined;
+  amounts: DepositAmounts | WithdrawalAmounts | undefined;
   setMarketTokenInputValue: Dispatch<SetStateAction<string>>;
   marketTokenAmount: bigint;
   isWithdrawal: boolean;
