@@ -54,7 +54,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
         position="bottom-end"
-        renderContent={() => <AvailableLiquidityTooltip isLong />}
+        content={<AvailableLiquidityTooltip isLong />}
       />
     );
   }, [info?.liquidityLong]);
@@ -71,7 +71,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
         position="bottom-end"
-        renderContent={() => <AvailableLiquidityTooltip isLong={false} />}
+        content={<AvailableLiquidityTooltip isLong={false} />}
       />
     );
   }, [info?.liquidityShort]);
@@ -88,7 +88,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={formatRatePercentage(netRate)}
         position="bottom-end"
-        renderContent={() => <NetRate1hTooltip isLong info={info} />}
+        content={<NetRate1hTooltip isLong info={info} />}
       />
     );
   }, [info]);
@@ -105,7 +105,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={formatRatePercentage(netRate)}
         position="bottom-end"
-        renderContent={() => <NetRate1hTooltip isLong={false} info={info} />}
+        content={<NetRate1hTooltip isLong={false} info={info} />}
       />
     );
   }, [info]);

@@ -81,7 +81,6 @@ export default function ChartTokenSelector(props: Props) {
               {poolName && (
                 <span
                   className={cx("text-12 font-normal text-gray-300", {
-                    "ml-0": !isMobile,
                     "ml-8": isMobile,
                   })}
                 >
