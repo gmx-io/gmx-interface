@@ -1,8 +1,10 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
+import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
@@ -15,11 +17,10 @@ import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 
 import "./MarketPoolsPage.scss";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();

@@ -5,9 +5,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useSafeState } from "lib/useSafeState";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { Operation, Mode } from "./GmSwapBox";
 
-export function useGmSwapBoxState(operation: Operation, mode: Mode, marketAddress: string | undefined) {
+import { Operation, Mode } from "../types";
+
+export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode, marketAddress: string | undefined) {
   const isDeposit = operation === Operation.Deposit;
 
   const chainId = useSelector(selectChainId);

@@ -22,6 +22,7 @@ export type GasLimitsConfig = {
   depositSingleToken: bigint;
   depositMultiToken: bigint;
   withdrawalMultiToken: bigint;
+  shift: bigint;
   singleSwap: bigint;
   swapOrder: bigint;
   increaseOrder: bigint;

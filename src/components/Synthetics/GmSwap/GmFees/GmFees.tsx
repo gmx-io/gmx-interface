@@ -18,6 +18,7 @@ type Props = {
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
+  shiftFee?: FeeItem;
   isDeposit: boolean;
 };
 
@@ -77,6 +78,14 @@ export function GmFees(p: Props) {
                   textClassName="text-red-500"
                 />
               )}
+
+              {p.shiftFee !== undefined && (
+                <StatsTooltipRow
+                  label={<Trans>Shift Fee</Trans>}
+                  value={formatDeltaUsd(p.shiftFee.deltaUsd, p.shiftFee.bps)!}
+                  showDollar={false}
+                />
+              )}
             </div>
           )}
         />
@@ -87,7 +96,16 @@ export function GmFees(p: Props) {
         {formatDeltaUsd(totalFeesUsd)}
       </span>
     );
-  }, [p.isDeposit, p.swapFee, p.swapPriceImpact, p.totalFees?.deltaUsd, p.uiFee?.bps, p.uiFee?.deltaUsd, totalFeesUsd]);
+  }, [
+    p.isDeposit,
+    p.shiftFee,
+    p.swapFee,
+    p.swapPriceImpact,
+    p.totalFees?.deltaUsd,
+    p.uiFee?.bps,
+    p.uiFee?.deltaUsd,
+    totalFeesUsd,
+  ]);
 
   return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;
 }

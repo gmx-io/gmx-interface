@@ -1,35 +1,36 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
+
 import { convertTokenAddress } from "config/tokens";
 import { MarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
 import { Token } from "domain/tokens";
 
 export function useUpdateTokens({
+  chainId,
   tokenOptions,
   firstTokenAddress,
   setFirstTokenAddress,
   isSingle,
+  isPair,
   secondTokenAddress,
   marketInfo,
   secondTokenAmount,
   setFocusedInput,
   setSecondTokenAddress,
   setSecondTokenInputValue,
-  isPair,
-  chainId,
 }: {
+  chainId: number;
   tokenOptions: Token[];
   firstTokenAddress: string | undefined;
   setFirstTokenAddress: Dispatch<SetStateAction<string | undefined>>;
   isSingle: boolean;
+  isPair: boolean;
   secondTokenAddress: string | undefined;
   marketInfo: MarketInfo | undefined;
   secondTokenAmount: bigint | undefined;
   setFocusedInput: Dispatch<SetStateAction<"market" | "longCollateral" | "shortCollateral">>;
   setSecondTokenAddress: Dispatch<SetStateAction<string | undefined>>;
   setSecondTokenInputValue: Dispatch<SetStateAction<string>>;
-  isPair: boolean;
-  chainId: number;
 }) {
   useEffect(
     function updateTokens() {
