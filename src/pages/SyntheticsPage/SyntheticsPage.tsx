@@ -5,7 +5,6 @@ import { startTransition, useCallback, useEffect, useMemo, useState } from "reac
 import Helmet from "react-helmet";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
@@ -93,12 +92,6 @@ export function SyntheticsPage(p: Props) {
   const totalClaimables = useSelector(selectClaimablesCount);
 
   const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
-
-  const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  let allowedSlippage = savedAllowedSlippage!;
-  if (isHigherSlippageAllowed) {
-    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
-  }
 
   const {
     isCancelOrdersProcessing,
@@ -210,7 +203,7 @@ export function SyntheticsPage(p: Props) {
         setIsSettling={setIsSettling}
         isSettling={isSettling}
         setPendingTxns={setPendingTxns}
-        allowedSlippage={allowedSlippage}
+        allowedSlippage={savedAllowedSlippage}
       />
     );
   }
@@ -306,12 +299,7 @@ export function SyntheticsPage(p: Props) {
 
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
-            <TradeBox
-              allowedSlippage={allowedSlippage!}
-              isHigherSlippageAllowed={isHigherSlippageAllowed}
-              setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              setPendingTxns={setPendingTxns}
-            />
+            <TradeBox setPendingTxns={setPendingTxns} />
           </div>
         </div>
 
@@ -354,13 +342,9 @@ export function SyntheticsPage(p: Props) {
         </div>
       </div>
 
-      <PositionSeller
-        setPendingTxns={setPendingTxns}
-        isHigherSlippageAllowed={isHigherSlippageAllowed}
-        setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-      />
+      <PositionSeller setPendingTxns={setPendingTxns} />
 
-      <PositionEditor allowedSlippage={allowedSlippage} setPendingTxns={setPendingTxns} />
+      <PositionEditor allowedSlippage={savedAllowedSlippage} setPendingTxns={setPendingTxns} />
 
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
 

@@ -1,17 +1,17 @@
-import { useRef, useMemo, useCallback } from "react";
-import cx from "classnames";
-import { FaPlus } from "react-icons/fa";
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { SidecarOrderEntryGroup, SidecarOrderEntry } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
+import { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
+import { useCallback, useMemo, useRef } from "react";
+import { FaPlus } from "react-icons/fa";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];

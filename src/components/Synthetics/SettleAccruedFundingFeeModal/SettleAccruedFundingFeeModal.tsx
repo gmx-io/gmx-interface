@@ -26,8 +26,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
 
-import "./SettleAccruedFundingFeeModal.scss";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import "./SettleAccruedFundingFeeModal.scss";
 
 type Props = {
   allowedSlippage: number;
@@ -44,7 +44,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const [pristine, setPristine] = useState(true);
+  const [isUntouched, setIsUntouched] = useState(true);
 
   const { executionFee, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -71,9 +71,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!pristine) return;
+    if (!isUntouched) return;
     setPositionKeys(preCheckedPositionKeys);
-  }, [preCheckedPositionKeys, pristine]);
+  }, [preCheckedPositionKeys, isUntouched]);
 
   const selectedPositions = useMemo(
     () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
@@ -84,9 +84,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
-    setPristine(true);
+    setIsUntouched(true);
     onClose();
-  }, [onClose, setPositionKeys, setPristine]);
+  }, [onClose, setPositionKeys, setIsUntouched]);
 
   useEffect(() => {
     if (!isVisible) setIsSubmitting(false);
@@ -100,7 +100,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
-      setPristine(false);
+      setIsUntouched(false);
       if (value) {
         setPositionKeys([...positionKeys, positionKey].filter((key, index, array) => array.indexOf(key) === index));
       } else {

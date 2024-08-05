@@ -13,6 +13,7 @@ import {
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "../types";
@@ -24,7 +25,6 @@ import {
   getTriggerThresholdType,
 } from "./prices";
 import { getSwapStats } from "./swapStats";
-import { bigMath } from "lib/bigmath";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -354,8 +354,11 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.collateralDeltaUsd =
-      // https://app.asana.com/0/1204313444805313/1207549197964321/f
-      leverageWithoutPnl !== undefined
+      /**
+       * 1. @see https://app.asana.com/0/1204313444805313/1207549197964321/f
+       * 2. leverageWithoutPnl may be zero if sizeInUsd is defaulted to 0n when position not ready yet
+       */
+      leverageWithoutPnl !== undefined && leverageWithoutPnl !== 0n
         ? remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl)
         : 0n;
     values.collateralDeltaAmount = convertToTokenAmount(

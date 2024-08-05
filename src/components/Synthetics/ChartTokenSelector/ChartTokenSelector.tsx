@@ -5,10 +5,8 @@ import { useMedia } from "react-use";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useTradeboxChooseSuitableMarket,
-  useTradeboxGetMaxLongShortLiquidityPool,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import {
+  selectTradeboxChooseSuitableMarket,
+  selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxTradeType,
@@ -122,7 +120,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
 
   const sortedTokens = useFilterSortTokens({ options, searchKeyword, tab, isSwap, favoriteTokens, direction, orderBy });
 
-  const chooseSuitableMarket = useTradeboxChooseSuitableMarket();
+  const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const marketsInfoData = useMarketsInfoData();
 
   const handleMarketSelect = useCallback(
@@ -316,7 +314,7 @@ function useFilterSortTokens({
     [favoriteTokens, isSwap, options, searchKeyword, tab]
   );
 
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const sortedTokens = useMemo(() => {
     if (isSwap || orderBy === "unspecified" || direction === "unspecified") {
@@ -371,7 +369,7 @@ function MarketListItem({
   tdClassName: string;
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
 }) {
-  const getMaxLongShortLiquidityPool = useTradeboxGetMaxLongShortLiquidityPool();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 

@@ -35,7 +35,6 @@ import Button from "components/Button/Button";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -80,7 +79,6 @@ import {
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
   selectOrderEditorToToken,
-  selectOrderEditorTradeFlags,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
@@ -91,6 +89,7 @@ import { bigMath } from "lib/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
+
 import "./OrderEditor.scss";
 
 type Props = {
@@ -502,8 +501,6 @@ export function OrderEditor(p: Props) {
     ]
   );
 
-  const tradeFlags = useSelector(selectOrderEditorTradeFlags);
-
   const buttonContent = (
     <Button
       className="w-full"
@@ -538,12 +535,6 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
       >
-        <SubaccountNavigationButton
-          className="PositionEditor-subaccount-button"
-          executionFee={executionFee?.feeTokenAmount}
-          closeConfirmationBox={p.onClose}
-          tradeFlags={tradeFlags}
-        />
         {!isSwapOrderType(p.order.orderType) && (
           <>
             <BuyInputSection

@@ -41,7 +41,7 @@ type Props = {
   fundingFeeRateStr?: string;
   feeDiscountUsd?: bigint;
   isTop?: boolean;
-  feesType: TradeFeesType;
+  feesType: TradeFeesType | null;
   uiFee?: FeeItem;
   uiSwapFee?: FeeItem;
 };
