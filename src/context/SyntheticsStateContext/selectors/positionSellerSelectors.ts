@@ -198,6 +198,7 @@ export const selectPositionSellerMarkPrice = createSelector((q) => {
 
 export const selectPositionSellerFees = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
+  const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const gasLimits = q(selectGasLimits);
   const tokensData = q(selectTokensData);
@@ -217,11 +218,16 @@ export const selectPositionSellerFees = createSelector((q) => {
     decreaseSwapType: decreaseAmounts.decreaseSwapType,
   });
 
-  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+  const collateralDeltaUsd =
+    nextPositionValues?.nextCollateralUsd !== undefined && position?.collateralUsd !== undefined
+      ? nextPositionValues.nextCollateralUsd - position?.collateralUsd
+      : 0n;
 
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
   return {
     fees: getTradeFees({
       initialCollateralUsd: position.collateralUsd,
+      collateralDeltaUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
       positionFeeUsd: decreaseAmounts.positionFeeUsd,

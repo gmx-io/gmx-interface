@@ -24,7 +24,11 @@ export function HighPriceImpactWarning({ priceImpactWarningState, className }: P
           setIsChecked={priceImpactWarningState.setIsHighPositionImpactAccepted}
         >
           <span className="text-14 text-yellow-500">
-            <Trans>Acknowledge high Price Impact</Trans>
+            <Trans>
+              Acknowledge High Price Impact.
+              <br />
+              Check Execution Price before proceeding.
+            </Trans>
           </span>
         </Checkbox>
       )}

@@ -1,4 +1,4 @@
-import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
+import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
 import { bigMath } from "lib/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
@@ -10,12 +10,12 @@ import { TradeFlags } from "./types";
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
 export function usePriceImpactWarningState({
-  positionPriceImpact,
+  positionCollateralPriceImpact,
   swapPriceImpact,
   place,
   tradeFlags,
 }: {
-  positionPriceImpact?: FeeItem;
+  positionCollateralPriceImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
   place: "tradeBox" | "positionSeller";
   tradeFlags: TradeFlags;
@@ -34,9 +34,9 @@ export function usePriceImpactWarningState({
   }, [prevFlags, tradeFlags]);
 
   const isHighPositionImpact = Boolean(
-    positionPriceImpact &&
-      positionPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionPriceImpact.bps) >= HIGH_POSITION_IMPACT_BPS
+    positionCollateralPriceImpact &&
+      positionCollateralPriceImpact.deltaUsd < 0 &&
+      bigMath.abs(positionCollateralPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
   );
 
   const isHighSwapImpact = Boolean(

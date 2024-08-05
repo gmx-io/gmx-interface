@@ -1801,7 +1801,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
@@ -6510,6 +6509,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "发送者已从GMX授权金库中撤回所有代币"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"

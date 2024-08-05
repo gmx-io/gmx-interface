@@ -422,6 +422,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       return getTradeFees({
         initialCollateralUsd: swapAmounts.usdIn,
+        collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapPathStats.swapSteps,
         positionFeeUsd: 0n,
@@ -441,9 +442,17 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       if (!increaseAmounts) return undefined;
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
+      const position = q(selectTradeboxSelectedPosition);
+      const nextPosition = q(selectTradeboxNextPositionValuesForIncrease);
+
+      const collateralDeltaUsd =
+        nextPosition?.nextCollateralUsd !== undefined
+          ? nextPosition?.nextCollateralUsd - (position?.collateralUsd ?? 0n)
+          : 0n;
 
       return getTradeFees({
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
+        collateralDeltaUsd,
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
         positionFeeUsd: increaseAmounts.positionFeeUsd,
@@ -463,9 +472,17 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       if (!decreaseAmounts) return undefined;
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
+      const position = q(selectTradeboxSelectedPosition);
+      const nextPosition = q(selectTradeboxNextPositionValuesForDecrease);
+
+      const collateralDeltaUsd =
+        nextPosition?.nextCollateralUsd !== undefined
+          ? nextPosition?.nextCollateralUsd - (position?.collateralUsd ?? 0n)
+          : 0n;
 
       return getTradeFees({
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
+        collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,

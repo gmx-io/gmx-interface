@@ -1801,7 +1801,6 @@ msgstr "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} e
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
 msgstr "Acknowledge high Price Impact"
 
@@ -6516,6 +6515,10 @@ msgstr "Invalid address. Please make sure you have entered a valid Ethereum addr
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
+msgstr "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
