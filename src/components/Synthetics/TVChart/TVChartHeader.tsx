@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useEffectOnce } from "react-use";
+import { useEffectOnce, useMedia } from "react-use";
 
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getToken, isChartAvailabeForToken } from "config/tokens";
@@ -50,8 +50,17 @@ function TVChartHeaderInfoMobile() {
 
   const [detailsVisible, setDetailsVisible] = useState(false);
 
-  const { liquidityLong, liquidityShort, netRateLong, netRateShort, longOIValue, shortOIValue, dailyVolume } =
-    useChartHeaderFormattedValues();
+  const {
+    dailyVolume,
+    liquidityLong,
+    liquidityShort,
+    longOIPercentage,
+    longOIValue,
+    netRateLong,
+    netRateShort,
+    shortOIPercentage,
+    shortOIValue,
+  } = useChartHeaderFormattedValues();
 
   useEffect(() => {
     if (isSwap) {
@@ -62,6 +71,8 @@ function TVChartHeaderInfoMobile() {
   const toggleDetailsVisible = useCallback(() => {
     setDetailsVisible((prev) => !prev);
   }, [setDetailsVisible]);
+
+  const isSmallMobile = useMedia("(max-width: 400px)");
 
   return (
     <div className="mb-10">
@@ -108,65 +119,68 @@ function TVChartHeaderInfoMobile() {
         </div>
       </div>
       {detailsVisible && (
-        <div className="pt-16">
-          <div className="mb-14 flex flex-row flex-wrap items-center justify-start gap-24">
-            <div>
-              <div className="ExchangeChart-info-label">
-                <Trans>Available Liquidity</Trans>
-              </div>
-              <div className="flex flex-row items-center gap-8">
-                <div className="flex flex-row items-center gap-8">
-                  <LongIcon />
-                  {liquidityLong}
-                </div>
-                <div className="flex flex-row items-center gap-8">
-                  <ShortIcon />
-                  {liquidityShort}
-                </div>
-              </div>
+        <div
+          className={cx("grid gap-14 pt-16", {
+            "grid-cols-1 grid-rows-4": isSmallMobile,
+            "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
+          })}
+        >
+          <div>
+            <div className="ExchangeChart-info-label">
+              <Trans>Available Liquidity</Trans>
             </div>
-
-            <div>
-              <div className="ExchangeChart-info-label">
-                <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
-                  <Trans>Net Rate / 1h</Trans>
-                </TooltipWithPortal>
+            <div className="flex flex-row items-center gap-8">
+              <div className="flex flex-row items-center gap-8">
+                <LongIcon />
+                {liquidityLong}
               </div>
               <div className="flex flex-row items-center gap-8">
-                <div className="positive flex flex-row items-center gap-8">
-                  <LongIcon className="fill-green-500" />
-                  {netRateLong}
-                </div>
-                <div className="negative flex flex-row items-center gap-8">
-                  <ShortIcon className="fill-red-500" />
-                  {netRateShort}
-                </div>
+                <ShortIcon />
+                {liquidityShort}
               </div>
             </div>
           </div>
-          <div className="flex flex-row items-center justify-start gap-24">
-            <div>
-              <div className="ExchangeChart-info-label">
+
+          <div>
+            <div className="ExchangeChart-info-label">
+              <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+                <Trans>Net Rate / 1h</Trans>
+              </TooltipWithPortal>
+            </div>
+            <div className="flex flex-row items-center gap-8">
+              <div>{netRateLong}</div>
+              <div>{netRateShort}</div>
+            </div>
+          </div>
+
+          <div>
+            <div className="whitespace-nowrap text-[1.25rem]">
+              <span className="opacity-70">
                 <Trans>Open Interest</Trans>
+                {" ("}
+              </span>
+              <span className="positive">{longOIPercentage}</span>
+              <span className="opacity-70">/</span>
+              <span className="negative">{shortOIPercentage}</span>
+              <span className="opacity-70">{")"}</span>
+            </div>
+            <div className="flex flex-row items-center gap-8">
+              <div className="flex flex-row items-center gap-8">
+                <LongIcon />
+                {longOIValue}
               </div>
               <div className="flex flex-row items-center gap-8">
-                <div className="flex flex-row items-center gap-8">
-                  <LongIcon />
-                  {longOIValue}
-                </div>
-                <div className="flex flex-row items-center gap-8">
-                  <ShortIcon />
-                  {shortOIValue}
-                </div>
+                <ShortIcon />
+                {shortOIValue}
               </div>
             </div>
+          </div>
 
-            <div className=" Chart-24h-low">
-              <div className="ExchangeChart-info-label">
-                <Trans>24h Volume</Trans>
-              </div>
-              {dailyVolume}
+          <div className=" Chart-24h-low">
+            <div className="ExchangeChart-info-label">
+              <Trans>24h Volume</Trans>
             </div>
+            {dailyVolume}
           </div>
         </div>
       )}
@@ -281,14 +295,8 @@ function TVChartHeaderInfoDesktop() {
             </TooltipWithPortal>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="positive flex flex-row items-center gap-4">
-              <LongIcon className="fill-green-500" />
-              {netRateLong}
-            </div>
-            <div className="negative flex flex-row items-center gap-4">
-              <ShortIcon className="fill-red-500" />
-              {netRateShort}
-            </div>
+            <div>{netRateLong}</div>
+            <div>{netRateShort}</div>
           </div>
         </div>
         <div>

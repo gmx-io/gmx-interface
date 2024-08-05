@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import cx from "classnames";
 
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -11,6 +12,9 @@ import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
+
+import { ReactComponent as LongIcon } from "img/long.svg";
+import { ReactComponent as ShortIcon } from "img/short.svg";
 
 export function useChartHeaderFormattedValues() {
   const dailyVolumeValue = use24hVolume();
@@ -86,7 +90,17 @@ export function useChartHeaderFormattedValues() {
     return (
       <TooltipWithPortal
         disableHandleStyle
-        handle={formatRatePercentage(netRate)}
+        handle={
+          <span
+            className={cx("flex flex-row items-center gap-4", {
+              positive: netRate >= 0n,
+              negative: netRate < 0n,
+            })}
+          >
+            <LongIcon />
+            {formatRatePercentage(netRate)}
+          </span>
+        }
         position="bottom-end"
         content={<NetRate1hTooltip isLong info={info} />}
       />
@@ -103,7 +117,17 @@ export function useChartHeaderFormattedValues() {
     return (
       <TooltipWithPortal
         disableHandleStyle
-        handle={formatRatePercentage(netRate)}
+        handle={
+          <span
+            className={cx("flex flex-row items-center gap-4", {
+              positive: netRate >= 0n,
+              negative: netRate < 0n,
+            })}
+          >
+            <ShortIcon />
+            {formatRatePercentage(netRate)}
+          </span>
+        }
         position="bottom-end"
         content={<NetRate1hTooltip isLong={false} info={info} />}
       />

@@ -262,6 +262,7 @@
 
 .ExchangeChart {
   max-width: 120rem;
+  position: relative;
 }
 
 .ExchangeChart-main-price {
@@ -1146,7 +1147,7 @@ table.Exchange-list-small td {
 
 @media (max-width: 800px) {
   .ExchangeChart-top-inner {
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
   }
 
   .ExchangeChart-additional-info {
@@ -1192,7 +1193,7 @@ table.Exchange-list-small td {
     display: none;
   }
   .ExchangeChart-top-inner {
-    grid-template-columns: auto;
+    grid-template-columns: auto auto;
   }
   .Confirmation-box .Modal-content {
     min-width: 36rem;
