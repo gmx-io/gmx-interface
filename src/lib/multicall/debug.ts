@@ -25,13 +25,18 @@ function getMulticallBatchingLoggingEnabled() {
 
 export function debugLog(messenger: () => string | void) {
   if (isDevelopment() && getMulticallBatchingLoggingEnabled()) {
-    const message = messenger();
+    try {
+      const message = messenger();
 
-    if (!message) {
-      return;
+      if (!message) {
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.debug(`[multicall] ${message}`);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(`[multicall] Error logging message: ${e.message}`);
     }
-
-    // eslint-disable-next-line no-console
-    console.debug(`[multicall] ${message}`);
   }
 }
