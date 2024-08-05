@@ -90,6 +90,16 @@
     }
   }
 
+  &.link {
+    color: var(--color-gray-300);
+    text-decoration: underline;
+    padding: 0;
+
+    &.disabled {
+      text-decoration: none;;
+    }
+  }
+
   &.disabled,
   &:disabled {
     box-shadow: none;

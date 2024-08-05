@@ -2,15 +2,15 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  useTradeboxExistingOrder,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxSelectedPosition,
-  useTradeboxState,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { selectTradeboxAvailableMarketsOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxAvailableMarketsOptions,
+  selectTradeboxExistingOrder,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxSelectedPosition,
+  selectTradeboxState,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
@@ -32,11 +32,11 @@ export const useTradeboxPoolWarnings = (
 ) => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const { marketInfo, setMarketAddress, setCollateralAddress } = useTradeboxState();
-  const { isLong, isIncrease } = useTradeboxTradeFlags();
-  const existingOrder = useTradeboxExistingOrder();
-  const selectedPosition = useTradeboxSelectedPosition();
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const { marketInfo, setMarketAddress, setCollateralAddress } = useSelector(selectTradeboxState);
+  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const existingOrder = useSelector(selectTradeboxExistingOrder);
+  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const hasExistingOrder = Boolean(existingOrder);
   const hasExistingPosition = Boolean(selectedPosition);
   const allMarketStats = useSelector(selectIndexTokenStatsMap);

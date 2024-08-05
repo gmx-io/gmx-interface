@@ -1,11 +1,11 @@
-import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject, useMemo } from "react";
 import cx from "classnames";
+import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject, useMemo } from "react";
 
 import ButtonLink from "./ButtonLink";
 
 import "./Button.scss";
 
-type ButtonVariant = "primary" | "primary-action" | "secondary";
+type ButtonVariant = "primary" | "primary-action" | "secondary" | "link";
 
 type ButtonProps = HTMLProps<HTMLButtonElement> & {
   children: ReactNode;

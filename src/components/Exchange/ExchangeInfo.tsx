@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import ExchangeInfoRow from "./ExchangeInfoRow";
 
 interface ExchangeInfoProps {
   children?: ReactNode;
@@ -56,5 +57,6 @@ function isExchangeInfoGroup(child: ReactNode) {
 }
 
 ExchangeInfo.Group = ExchangeInfoGroup;
+ExchangeInfo.Row = ExchangeInfoRow;
 
 export { ExchangeInfo };
