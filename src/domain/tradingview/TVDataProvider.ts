@@ -75,6 +75,11 @@ export class TVDataProvider {
 
     if (prices.length) {
       const lastBar = prices[0];
+
+      if (lastBar.ticker !== this.currentTicker || lastBar.period !== this.currentPeriod) {
+        return;
+      }
+
       lastBar.ticker = this.currentTicker;
       lastBar.period = this.currentPeriod;
       const lastSavedBar = this.liveBars[this.liveBars.length - 1];
@@ -115,6 +120,8 @@ export class TVDataProvider {
     const barsInfo = this.barsInfo;
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
+        this.liveBars = [];
+
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const lastBar = bars[bars.length - 1];

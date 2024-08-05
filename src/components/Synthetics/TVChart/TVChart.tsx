@@ -26,6 +26,7 @@ import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import "./TVChart.scss";
+import { usePrevious } from "lib/usePrevious";
 
 const DEFAULT_PERIOD = "5m";
 
@@ -123,6 +124,14 @@ export function TVChart() {
   function onSelectChartToken(token: Token) {
     setToTokenAddress(token.address);
   }
+
+  const previousChainId = usePrevious(chainId);
+
+  useEffect(() => {
+    if (chainId !== previousChainId) {
+      clearInterval(dataProvider?.updateInterval);
+    }
+  }, [chainId, previousChainId, dataProvider]);
 
   useEffect(() => {
     if (!chainId) {
