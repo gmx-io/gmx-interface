@@ -270,18 +270,28 @@ export function GmShiftBox({
     if (!selectedToken || selectedToken.balance === undefined) return;
     setSelectedMarketText(formatAmountFree(selectedToken.balance, selectedToken.decimals));
   }, [selectedToken]);
-
   const handleSelectedTokenInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setSelectedMarketText(event.target.value),
     []
   );
-
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
-
   const handleSelectedTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => onSelectMarket(marketInfo.marketTokenAddress),
     [onSelectMarket]
   );
+
+  const handleToTokenInputValueChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => setToMarketText(event.target.value),
+    []
+  );
+  const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
+  const handleToTokenSelectMarket = useCallback(
+    (marketInfo: MarketInfo): void => setToMarketAddress(marketInfo.marketTokenAddress),
+    []
+  );
+  const handleSubmittedOrClosed = useCallback(() => {
+    setIsConfirmationBoxVisible(false);
+  }, []);
 
   return (
     <>
@@ -325,13 +335,13 @@ export function GmShiftBox({
             useCommas: true,
           })}
           inputValue={toMarketText}
-          onInputValueChange={(event) => setToMarketText(event.target.value)}
-          onFocus={() => setFocusedInput("toMarket")}
+          onInputValueChange={handleToTokenInputValueChange}
+          onFocus={handleToTokenFocus}
         >
           <PoolSelector
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
-            onSelectMarket={(marketInfo) => setToMarketAddress(marketInfo.marketTokenAddress)}
+            onSelectMarket={handleToTokenSelectMarket}
             selectedIndexName={toIndexName}
             showAllPools
             isSideMenu
@@ -372,12 +382,8 @@ export function GmShiftBox({
         error={submitState.error}
         operation={Operation.Shift}
         executionFee={executionFee}
-        onSubmitted={() => {
-          setIsConfirmationBoxVisible(false);
-        }}
-        onClose={() => {
-          setIsConfirmationBoxVisible(false);
-        }}
+        onSubmitted={handleSubmittedOrClosed}
+        onClose={handleSubmittedOrClosed}
         shouldDisableValidation={shouldDisableValidationForTesting}
       />
     </>
