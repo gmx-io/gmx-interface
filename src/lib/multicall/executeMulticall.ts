@@ -245,9 +245,10 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
         continue;
       }
 
-      const names = groupNameMapping[call.callData.contractAddress][callId]
-        .map(({ callGroupName, callName }) => `${callGroupName}.${callName}`)
-        .join("\n");
+      const names =
+        groupNameMapping[call.callData.contractAddress]?.[callId]
+          ?.map(({ callGroupName, callName }) => `${callGroupName}.${callName}`)
+          .join("\n") ?? callId;
 
       msg += `Multicall with names:\n${names}\nhas ${call.hooks.length} duplicate calls. Contract address: ${call.callData.contractAddress}. Method name: ${call.callData.methodName}.\n\n`;
     }
