@@ -1,28 +1,20 @@
 import { Trans, t } from "@lingui/macro";
-import { addDays, formatDistanceToNowStrict, isPast } from "date-fns";
+import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
 import { getIncentivesV2Url } from "config/links";
+import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
+import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
-import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
-
-/**
- * We let the APY to stabilize for a few days before showing it to the user
- */
-function getIsBaseApyReadyToBeShown(listingDate: Date): boolean {
-  const enoughDateForApy = addDays(listingDate, ENOUGH_DAYS_SINCE_LISTING_FOR_APY);
-
-  return isPast(enoughDateForApy);
-}
 
 function getApyReadyToBeShownDate(listingDate: Date): Date {
   return addDays(listingDate, ENOUGH_DAYS_SINCE_LISTING_FOR_APY);
