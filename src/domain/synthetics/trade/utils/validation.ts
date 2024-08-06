@@ -656,6 +656,8 @@ export function getGmShiftError({
   fromToken,
   fromTokenAmount,
   fromTokenUsd,
+  fromLongTokenAmount,
+  fromShortTokenAmount,
   toMarketInfo,
   toToken,
   toTokenAmount,
@@ -668,6 +670,8 @@ export function getGmShiftError({
   fromToken: TokenData | undefined;
   fromTokenAmount: bigint | undefined;
   fromTokenUsd: bigint | undefined;
+  fromLongTokenAmount: bigint | undefined;
+  fromShortTokenAmount: bigint | undefined;
   toMarketInfo: MarketInfo | undefined;
   toToken: TokenData | undefined;
   toTokenAmount: bigint | undefined;
@@ -705,8 +709,13 @@ export function getGmShiftError({
 
   const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
 
-  if (toTokenAmount !== undefined && toTokenAmount > mintableInfo.mintableAmount) {
-    return [t`Max ${toToken?.symbol} buyable amount exceeded`];
+  const longExceedCapacity =
+    fromLongTokenAmount !== undefined && fromLongTokenAmount > mintableInfo.longDepositCapacityAmount;
+  const shortExceedCapacity =
+    fromShortTokenAmount !== undefined && fromShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+
+  if (longExceedCapacity || shortExceedCapacity) {
+    return [t`Max ${fromToken?.symbol} buyable amount exceeded`];
   }
 
   const totalCollateralUsd = fromTokenUsd ?? 0n;

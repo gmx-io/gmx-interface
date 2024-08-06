@@ -8,6 +8,8 @@ import { getWithdrawalAmounts } from "./withdrawal";
 type ShiftAmounts = {
   fromTokenAmount: bigint;
   fromTokenUsd: bigint;
+  fromLongTokenAmount: bigint;
+  fromShortTokenAmount: bigint;
   toTokenAmount: bigint;
   toTokenUsd: bigint;
   uiFeeUsd: bigint;
@@ -36,6 +38,8 @@ export function getShiftAmounts({
   const values: ShiftAmounts = {
     fromTokenAmount: 0n,
     fromTokenUsd: 0n,
+    fromLongTokenAmount: 0n,
+    fromShortTokenAmount: 0n,
     toTokenAmount: 0n,
     toTokenUsd: 0n,
     uiFeeUsd: 0n,
@@ -74,6 +78,9 @@ export function getShiftAmounts({
       forShift: true,
     });
 
+    values.fromLongTokenAmount = withdrawalAmounts.longTokenAmount;
+    values.fromShortTokenAmount = withdrawalAmounts.shortTokenAmount;
+
     values.uiFeeUsd = withdrawalAmounts.uiFeeUsd;
     values.swapPriceImpactDeltaUsd = depositAmounts.swapPriceImpactDeltaUsd;
 
@@ -108,6 +115,9 @@ export function getShiftAmounts({
       uiFeeFactor: uiFeeFactor,
       forShift: true,
     });
+
+    values.fromLongTokenAmount = depositAmounts.longTokenAmount;
+    values.fromShortTokenAmount = depositAmounts.shortTokenAmount;
 
     values.uiFeeUsd = withdrawalAmounts.uiFeeUsd;
     values.swapPriceImpactDeltaUsd = depositAmounts.swapPriceImpactDeltaUsd;
