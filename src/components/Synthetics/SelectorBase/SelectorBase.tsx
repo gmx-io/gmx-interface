@@ -170,9 +170,7 @@ function SelectorBaseDesktop(props: Props) {
             ref={refs.setReference}
           >
             {props.label}
-            <BiChevronDown
-              className={cx("-my-5 -mr-4 ml-5 inline-block align-middle text-24", props.chevronClassName)}
-            />
+            <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
@@ -216,7 +214,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />}
+        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 inline-block align-middle text-24" />}
       </div>
       <Modal
         setIsVisible={setIsVisible}
