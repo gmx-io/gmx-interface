@@ -3,7 +3,7 @@ import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { SetPendingShift } from "context/SyntheticsEvents";
+import type { SetPendingShift } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
@@ -52,9 +52,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     },
   ];
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
     await simulateExecuteTxn(chainId, {
