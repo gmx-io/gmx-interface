@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { isAddress } from "ethers";
 import { values } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
@@ -11,8 +11,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
-
-import { Mode, Operation } from "../types";
+import { Mode, Operation } from "./types";
 
 type SearchParams = {
   market?: string;
@@ -27,20 +26,19 @@ export function useUpdateByQueryParams({
   setOperation,
   setMode,
   setFirstTokenAddress,
-  setIndexName,
   onSelectMarket,
 }: {
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
-  setFirstTokenAddress: (address: string | undefined) => void;
-  setIndexName: (indexName: string | undefined) => void;
+  setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
 
   const chainId = useSelector(selectChainId);
-  const markets = values(useSelector(selectMarketsInfoData));
+  const marketsInfo = useSelector(selectMarketsInfoData);
+  const markets = useMemo(() => values(marketsInfo), [marketsInfo]);
 
   useEffect(
     function updateByQueryParams() {
@@ -54,6 +52,8 @@ export function useUpdateByQueryParams({
           finalOperation = Operation.Deposit;
         } else if (operation.toLowerCase() === "sell") {
           finalOperation = Operation.Withdrawal;
+        } else if (operation.toLowerCase() === "shift") {
+          finalOperation = Operation.Shift;
         }
 
         if (finalOperation) {
@@ -68,7 +68,7 @@ export function useUpdateByQueryParams({
         }
       }
 
-      if (fromToken) {
+      if (fromToken && setFirstTokenAddress) {
         const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, {
           version: "v2",
         });
@@ -85,7 +85,6 @@ export function useUpdateByQueryParams({
         if (marketAddress && isAddress(marketAddress)) {
           const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
           if (marketInfo) {
-            setIndexName(getMarketIndexName(marketInfo));
             onSelectMarket(marketInfo.marketTokenAddress);
             const indexName = getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
@@ -112,17 +111,6 @@ export function useUpdateByQueryParams({
         }
       }
     },
-    [
-      //
-      history,
-      onSelectMarket,
-      searchParams,
-      setIndexName,
-      setOperation,
-      setMode,
-      setFirstTokenAddress,
-      chainId,
-      markets,
-    ]
+    [history, onSelectMarket, searchParams, setOperation, setMode, setFirstTokenAddress, chainId, markets, marketsInfo]
   );
 }

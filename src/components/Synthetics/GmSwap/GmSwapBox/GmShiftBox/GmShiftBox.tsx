@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -31,7 +31,8 @@ import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/v
 import { bigMath } from "lib/bigmath";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { Operation } from "../types";
+import { Mode, Operation } from "../types";
+import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAvailableMarkets } from "./useShiftAvailableMarkets";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useUpdateMarkets } from "./useUpdateMarkets";
@@ -48,9 +49,14 @@ import { Swap } from "../Swap";
 export function GmShiftBox({
   selectedMarketAddress,
   onSelectMarket,
+
+  onSetMode,
+  onSetOperation,
 }: {
   selectedMarketAddress: string | undefined;
   onSelectMarket: (marketAddress: string) => void;
+  onSetMode: Dispatch<SetStateAction<Mode>>;
+  onSetOperation: Dispatch<SetStateAction<Operation>>;
 }) {
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
@@ -72,7 +78,7 @@ export function GmShiftBox({
     marketsInfoData,
     depositMarketTokensData
   );
-  const shiftAvailableMarkets = useShiftAvailableMarkets(sortedMarketsInfoByIndexToken);
+  const shiftAvailableMarkets = useShiftAvailableMarkets();
   const shiftAvailableRelatedMarkets = useShiftAvailableRelatedMarkets(
     marketsInfoData,
     sortedMarketsInfoByIndexToken,
@@ -257,6 +263,12 @@ export function GmShiftBox({
     },
     [amounts, focusedInput, selectedToken, toToken]
   );
+
+  useUpdateByQueryParams({
+    onSelectMarket,
+    setMode: onSetMode,
+    setOperation: onSetOperation,
+  });
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {

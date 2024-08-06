@@ -16,10 +16,6 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [indexName, setIndexName] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsDepositIndexTokenKey(chainId),
-    undefined
-  );
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
     undefined
@@ -41,9 +37,6 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
 
     isHighPriceImpactAccepted,
     setIsHighPriceImpactAccepted,
-
-    indexName,
-    setIndexName,
 
     firstTokenAddress,
     setFirstTokenAddress,
