@@ -3,7 +3,6 @@ export function arrayURLFetcher(urlArr) {
   return Promise.all(urlArr.map(fetcher));
 }
 
-export function jsonFetcher(url) {
-  // @ts-ignore
-  return fetch(url).then((res) => res.json());
+export function jsonFetcher<T>(url) {
+  return fetch(url).then((res) => res.json() as Promise<T>);
 }

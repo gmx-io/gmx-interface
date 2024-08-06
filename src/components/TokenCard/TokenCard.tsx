@@ -1,41 +1,54 @@
 import { Trans } from "@lingui/macro";
+import { keys, uniq } from "lodash";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { isHomeSite } from "lib/legacy";
-
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
-import { useChainId } from "lib/chains";
-import { switchNetwork } from "lib/wallets";
-import APRLabel from "../APRLabel/APRLabel";
-import { HeaderLink } from "../Header/HeaderLink";
-import useWallet from "lib/wallets/useWallet";
+import { getIncentivesV2Url } from "config/links";
+import { getMarketListingDate } from "config/markets";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import BannerButton from "components/Banner/BannerButton";
-import Button from "components/Button/Button";
-import { mergeWith } from "lodash";
-import { formatAmount } from "lib/numbers";
+import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { getIncentivesV2Url } from "config/links";
+import { useChainId } from "lib/chains";
+import { isHomeSite } from "lib/legacy";
+import { formatAmount } from "lib/numbers";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
+
+import BannerButton from "components/Banner/BannerButton";
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import APRLabel from "../APRLabel/APRLabel";
+import { HeaderLink } from "../Header/HeaderLink";
+
 import sparkleIcon from "img/sparkle.svg";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
-function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
-  const totalApr = mergeWith(
-    {},
-    apr,
-    incentiveApr,
-    (aprValue, incentiveAprValue) => (aprValue ?? 0n) + (incentiveAprValue ?? 0n)
-  );
-  const aprValues = Object.values(totalApr || {});
+function calculateMaxApr(chainId: number, apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
+  const allKeys = uniq(keys(apr).concat(keys(incentiveApr)));
 
-  const maxApr = aprValues.reduce((max, value) => (value > max ? value : max), aprValues[0]);
+  let maxApr = 0n;
+
+  for (const key of allKeys) {
+    const isBaseApyReadyToBeShown = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key));
+
+    let aprValue = 0n;
+    if (isBaseApyReadyToBeShown) {
+      aprValue = apr[key] ?? 0n;
+    }
+
+    const incentiveAprValue = incentiveApr[key] ?? 0n;
+    const totalApr = aprValue + incentiveAprValue;
+
+    if (totalApr > maxApr) {
+      maxApr = totalApr;
+    }
+  }
 
   return maxApr;
 }
@@ -59,8 +72,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr);
-    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr);
+    const maxArbApy = calculateMaxApr(ARBITRUM, arbApy, arbIncentiveApr);
+    const maxAvaxApy = calculateMaxApr(AVALANCHE, avaxApy, avaxIncentiveApr);
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,

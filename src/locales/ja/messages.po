@@ -1023,10 +1023,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "プールを選択"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Liquidity"
-#~ msgstr "流動性"
-
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "ウェイト"
@@ -3042,6 +3038,7 @@ msgid "Community-led Telegram groups."
 msgstr "コミュニティ主導のTelegramグループ"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr ""
 
@@ -3237,6 +3234,8 @@ msgstr "ファンディング手数料"
 msgid "Approval failed"
 msgstr "承認が失敗しました"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3447,9 +3446,10 @@ msgstr "実行価格が許容価格条件を満たしませんでした。条件
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Net Rate / 1h"
-#~ msgstr "ネットレート / 1時間"
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "Net Rate / 1h"
+msgstr "ネットレート / 1時間"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3520,6 +3520,7 @@ msgstr "注文のトリガー価格"
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3827,6 +3828,7 @@ msgid "Creator"
 msgstr "作成者"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr ""
 
@@ -4167,6 +4169,8 @@ msgstr ""
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "利用可能な流動性"
 
@@ -4193,6 +4197,7 @@ msgid "Buy order cancelled"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr ""
 
@@ -6391,6 +6396,7 @@ msgstr ""
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6855,6 +6861,7 @@ msgid "Initial collateral"
 msgstr "最初の担保"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 msgstr ""
 
@@ -7317,6 +7324,7 @@ msgstr "テイクプロフィット注文とストップロス注文はポジシ
 msgid "Partial Liquidation"
 msgstr "部分的清算"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24時間取引高"
