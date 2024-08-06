@@ -1550,10 +1550,6 @@ msgstr ""
 msgid "Max {0} out"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Shifting GM</0>"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr ""
@@ -7680,6 +7676,10 @@ msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting GM from {fromIndexName} to {toIndexName}"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js

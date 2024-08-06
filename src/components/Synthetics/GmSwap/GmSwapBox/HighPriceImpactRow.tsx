@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+
 import Checkbox from "components/Checkbox/Checkbox";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Tooltip from "components/Tooltip/Tooltip";
