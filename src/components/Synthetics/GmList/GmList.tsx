@@ -10,6 +10,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
@@ -44,7 +45,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
-import { useShiftAvailableMarkets } from "../GmSwap/GmSwapBox/GmShiftBox/useShiftAvailableMarkets";
 
 type Props = {
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -69,7 +69,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchText, setSearchText] = useState("");
-  const shiftAvailableMarkets = useShiftAvailableMarkets();
+  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableMarketAddressSet = useMemo(
     () => new Set(shiftAvailableMarkets.map((m) => m.marketTokenAddress)),
     [shiftAvailableMarkets]

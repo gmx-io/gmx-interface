@@ -9,6 +9,7 @@ import {
   selectGasLimits,
   selectGasPrice,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
@@ -19,7 +20,6 @@ import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
-import { useShiftAvailableMarkets } from "./useShiftAvailableMarkets";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 
@@ -32,10 +32,10 @@ import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
-import { useUpdateTokens } from "./useUpdateTokens";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftFees } from "./useShiftFees";
 import { useShiftSubmitState } from "./useShiftSubmitState";
+import { useUpdateTokens } from "./useUpdateTokens";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -68,7 +68,7 @@ export function GmShiftBox({
     marketsInfoData,
     depositMarketTokensData
   );
-  const shiftAvailableMarkets = useShiftAvailableMarkets();
+  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableRelatedMarkets = useShiftAvailableRelatedMarkets(
     marketsInfoData,
     sortedMarketsInfoByIndexToken,
