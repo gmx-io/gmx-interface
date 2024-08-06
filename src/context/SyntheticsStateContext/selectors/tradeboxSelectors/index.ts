@@ -445,11 +445,9 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
-      const collateralDeltaUsd = increaseAmounts?.initialCollateralUsd ?? 0n;
-
       return getTradeFees({
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
-        collateralDeltaUsd,
+        collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
         positionFeeUsd: increaseAmounts.positionFeeUsd,
