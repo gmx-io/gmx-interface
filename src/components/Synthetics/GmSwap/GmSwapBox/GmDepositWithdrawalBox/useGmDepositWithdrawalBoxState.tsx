@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-import { getSyntheticsDepositIndexTokenKey, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useSafeState } from "lib/useSafeState";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
-import { Operation, Mode } from "../types";
+import { Mode, Operation } from "../types";
 
 export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode, marketAddress: string | undefined) {
   const isDeposit = operation === Operation.Deposit;
