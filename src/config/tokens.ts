@@ -333,6 +333,16 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
       coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-steth",
     },
+    {
+      name: "Shiba Inu",
+      symbol: "SHIB",
+      assetSymbol: "SHIB",
+      address: "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
+      isSynthetic: true,
+    },
   ],
   [AVALANCHE]: [
     {
