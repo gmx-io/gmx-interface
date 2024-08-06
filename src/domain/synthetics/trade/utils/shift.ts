@@ -5,7 +5,7 @@ import type { TokenData } from "domain/synthetics/tokens/types";
 import { getDepositAmounts } from "./deposit";
 import { getWithdrawalAmounts } from "./withdrawal";
 
-type ShiftAmounts = {
+export type ShiftAmounts = {
   fromTokenAmount: bigint;
   fromTokenUsd: bigint;
   fromLongTokenAmount: bigint;

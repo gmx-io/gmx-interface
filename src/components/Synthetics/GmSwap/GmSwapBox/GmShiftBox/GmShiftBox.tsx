@@ -1,35 +1,21 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectAccount,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useHasOutdatedUi } from "domain/legacy";
-import {
-  FeeItem,
-  estimateExecuteShiftGasLimit,
-  getExecutionFee,
-  getFeeItem,
-  getTotalFeeItem,
-} from "domain/synthetics/fees";
-import { estimateShiftOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
-import { GmSwapFees } from "domain/synthetics/trade/types";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { getShiftAmounts } from "domain/synthetics/trade/utils/shift";
-import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
 import { bigMath } from "lib/bigmath";
-import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
@@ -46,6 +32,10 @@ import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
+import { useUpdateTokens } from "./useUpdateTokens";
+import { useShiftAmounts } from "./useShiftAmounts";
+import { useShiftFees } from "./useShiftFees";
+import { useShiftSubmitState } from "./useShiftSubmitState";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -66,10 +56,8 @@ export function GmShiftBox({
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
   const [isConfirmationBoxVisible, setIsConfirmationBoxVisible] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const { openConnectModal } = useConnectModal();
 
   const chainId = useSelector(selectChainId);
-  const account = useSelector(selectAccount);
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
@@ -87,7 +75,6 @@ export function GmShiftBox({
     selectedMarketAddress
   );
   const { shouldDisableValidationForTesting } = useSettings();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const selectedMarketInfo = getByKey(marketsInfoData, selectedMarketAddress);
   const selectedIndexName = selectedMarketInfo ? getMarketIndexName(selectedMarketInfo) : "...";
@@ -96,156 +83,35 @@ export function GmShiftBox({
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
-  const amounts = useMemo(() => {
-    if (!selectedMarketInfo || !selectedToken || !toMarketInfo || !toToken) {
-      return;
-    }
-
-    let fromTokenAmount = 0n;
-    try {
-      fromTokenAmount = parseValue(selectedMarketText, selectedToken.decimals) ?? 0n;
-    } catch {
-      // pass
-    }
-
-    let toTokenAmount = 0n;
-    try {
-      toTokenAmount = parseValue(toMarketText, toToken.decimals) ?? 0n;
-    } catch {
-      // pass
-    }
-
-    const amounts = getShiftAmounts({
-      fromMarketInfo: selectedMarketInfo,
-      fromToken: selectedToken,
-      fromTokenAmount,
-      toMarketInfo,
-      toToken: toToken,
-      toTokenAmount,
-      strategy: focusedInput === "selectedMarket" ? "byFromToken" : "byToToken",
-      uiFeeFactor,
-    });
-
-    return amounts;
-  }, [
-    focusedInput,
+  const amounts = useShiftAmounts({
     selectedMarketInfo,
-    selectedMarketText,
     selectedToken,
     toMarketInfo,
-    toMarketText,
     toToken,
+    selectedMarketText,
+    toMarketText,
+    focusedInput,
     uiFeeFactor,
-  ]);
+  });
 
-  const { fees, executionFee } = useMemo(() => {
-    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts) {
-      return {};
-    }
-
-    const basisUsd = amounts.fromTokenUsd;
-
-    const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const uiFee = getFeeItem(amounts.uiFeeUsd * -1n, basisUsd, {
-      shouldRoundUp: true,
-    });
-    const shiftFee = getFeeItem(0n, basisUsd);
-
-    const totalFees = getTotalFeeItem([swapPriceImpact, uiFee].filter(Boolean) as FeeItem[]);
-    const fees: GmSwapFees = {
-      swapPriceImpact,
-      totalFees,
-      uiFee,
-      shiftFee,
-    };
-
-    const gasLimit = estimateExecuteShiftGasLimit(gasLimits, {
-      callbackGasLimit: 0n,
-    });
-
-    const oraclePriceCount = estimateShiftOraclePriceCount();
-
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
-
-    return {
-      fees,
-      executionFee,
-    };
-  }, [amounts, chainId, gasLimits, gasPrice, tokensData]);
+  const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
   const isHighPriceImpact =
     (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
     bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
 
-  const submitState = useMemo(() => {
-    if (!account) {
-      return {
-        text: t`Connect Wallet`,
-        onSubmit: () => openConnectModal?.(),
-      };
-    }
-
-    const commonError = getCommonError({
-      chainId,
-      isConnected: true,
-      hasOutdatedUi,
-    })[0];
-
-    const shiftError = getGmShiftError({
-      fromMarketInfo: selectedMarketInfo,
-      fromToken: selectedToken,
-      fromTokenAmount: amounts?.fromTokenAmount,
-      fromTokenUsd: amounts?.fromTokenUsd,
-      fromLongTokenAmount: amounts?.fromLongTokenAmount,
-      fromShortTokenAmount: amounts?.fromShortTokenAmount,
-      toMarketInfo: toMarketInfo,
-      toToken: toToken,
-      toTokenAmount: amounts?.toTokenAmount,
-      fees,
-      isHighPriceImpact: isHighPriceImpact,
-      isHighPriceImpactAccepted,
-      priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
-    })[0];
-
-    const error = commonError || shiftError;
-
-    const onSubmit = () => {
-      setIsConfirmationBoxVisible(true);
-    };
-
-    if (error) {
-      return {
-        text: error,
-        error,
-        isDisabled: !shouldDisableValidationForTesting,
-        onSubmit,
-      };
-    }
-
-    return {
-      text: t`Shift GM`,
-      onSubmit,
-    };
-  }, [
-    account,
-    chainId,
-    hasOutdatedUi,
+  const submitState = useShiftSubmitState({
     selectedMarketInfo,
     selectedToken,
-    amounts?.fromTokenAmount,
-    amounts?.fromTokenUsd,
-    amounts?.fromLongTokenAmount,
-    amounts?.fromShortTokenAmount,
-    amounts?.toTokenAmount,
-    amounts?.swapPriceImpactDeltaUsd,
+    amounts,
     toMarketInfo,
     toToken,
     fees,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
-    openConnectModal,
+    setIsConfirmationBoxVisible,
     shouldDisableValidationForTesting,
-  ]);
+  });
 
   useUpdateMarkets({
     marketsInfoData,
@@ -258,28 +124,7 @@ export function GmShiftBox({
     setToMarketAddress,
   });
 
-  useEffect(
-    function updateTokens() {
-      if (!amounts || !selectedToken || !toToken) {
-        return;
-      }
-
-      if (focusedInput === "selectedMarket") {
-        if (amounts.toTokenAmount === 0n) {
-          setToMarketText("");
-        } else {
-          setToMarketText(formatAmountFree(amounts.toTokenAmount, toToken.decimals));
-        }
-      } else {
-        if (amounts.fromTokenAmount === 0n) {
-          setSelectedMarketText("");
-        } else {
-          setSelectedMarketText(formatAmountFree(amounts.fromTokenAmount, selectedToken.decimals));
-        }
-      }
-    },
-    [amounts, focusedInput, selectedToken, toToken]
-  );
+  useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
   useUpdateByQueryParams({
     onSelectMarket,
