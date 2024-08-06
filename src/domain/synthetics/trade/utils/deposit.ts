@@ -136,8 +136,8 @@ export function getDepositAmounts(p: {
 
     if (p.forShift) {
       // Reverse the withdrawal amounts
-      values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
-      values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
+      values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
+      values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
     } else if (includeLongToken && includeShortToken && prevSumUsd > 0) {
       values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, prevLongTokenUsd, prevSumUsd);
       values.shortTokenUsd = values.marketTokenUsd - values.longTokenUsd;
