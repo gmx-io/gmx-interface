@@ -127,15 +127,15 @@ export function getDepositAmounts(p: {
     const prevShortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
     const prevSumUsd = prevLongTokenUsd + prevShortTokenUsd;
 
-    const longPoolAmount = marketInfo.longPoolAmount;
-    const shortPoolAmount = marketInfo.shortPoolAmount;
-
-    const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
-    const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
-    const totalPoolUsd = longPoolUsd + shortPoolUsd;
-
     if (p.forShift) {
       // Reverse the withdrawal amounts
+      const longPoolAmount = marketInfo.longPoolAmount;
+      const shortPoolAmount = marketInfo.shortPoolAmount;
+
+      const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
+      const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+      const totalPoolUsd = longPoolUsd + shortPoolUsd;
+
       values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
       values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
     } else if (includeLongToken && includeShortToken && prevSumUsd > 0) {
