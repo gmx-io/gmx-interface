@@ -1,4 +1,5 @@
 import type { MarketInfo } from "domain/synthetics/markets/types";
+import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import { EMPTY_ARRAY } from "lib/objects";
 
 export function getShiftAvailableMarkets({ markets }: { markets: MarketInfo[] }): MarketInfo[] {
@@ -9,7 +10,7 @@ export function getShiftAvailableMarkets({ markets }: { markets: MarketInfo[] })
   const shiftGroups: { [longShortKey: string]: MarketInfo[] } = {};
 
   for (const marketInfo of markets) {
-    const longShortKey = `${marketInfo.longTokenAddress}-${marketInfo.shortTokenAddress}`;
+    const longShortKey = getMarketPoolName(marketInfo);
 
     if (!shiftGroups[longShortKey]) {
       shiftGroups[longShortKey] = [];
@@ -21,9 +22,10 @@ export function getShiftAvailableMarkets({ markets }: { markets: MarketInfo[] })
   const availableMarkets: MarketInfo[] = [];
 
   for (const marketInfo of markets) {
-    const longShortKey = `${marketInfo.longTokenAddress}-${marketInfo.shortTokenAddress}`;
+    const longShortKey = getMarketPoolName(marketInfo);
 
-    if (shiftGroups[longShortKey].length > 1) {
+    const multipleRelatedMarkets = shiftGroups[longShortKey].length > 1;
+    if (multipleRelatedMarkets) {
       availableMarkets.push(marketInfo);
     }
   }
