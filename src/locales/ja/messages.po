@@ -4763,6 +4763,10 @@ msgstr "移転開始"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge High Price Impact, review execution price."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr ""
@@ -6511,8 +6515,8 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
-msgstr ""
+#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
