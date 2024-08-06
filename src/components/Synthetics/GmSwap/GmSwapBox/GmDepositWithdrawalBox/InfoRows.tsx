@@ -1,18 +1,21 @@
 import { t } from "@lingui/macro";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
-import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { values } from "lodash";
+
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
-import { values } from "lodash";
-import { HighPriceImpactRow } from "../HighPriceImpactRow";
+
 import { showMarketToast } from "../showMarketToast";
+
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { HighPriceImpactRow } from "../HighPriceImpactRow";
 
 export function InfoRows({
   indexName,
