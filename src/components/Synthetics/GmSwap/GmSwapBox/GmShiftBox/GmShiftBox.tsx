@@ -179,7 +179,7 @@ export function GmShiftBox({
       hasOutdatedUi,
     })[0];
 
-    const swapError = getGmShiftError({
+    const shiftError = getGmShiftError({
       fromMarketInfo: selectedMarketInfo,
       fromToken: selectedToken,
       fromTokenAmount: amounts?.fromTokenAmount,
@@ -193,7 +193,7 @@ export function GmShiftBox({
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
     })[0];
 
-    const error = commonError || swapError;
+    const error = commonError || shiftError;
 
     const onSubmit = () => {
       setIsConfirmationBoxVisible(true);
