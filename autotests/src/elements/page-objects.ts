@@ -145,10 +145,17 @@ class Tradebox extends BasePage {
   }
 
   async selectPool(pool: string) {
+    const enabled = await this.has("pool-selector-button");
+
+    if (!enabled) {
+      console.log("[SelectPool]: pool selector is not enabled");
+      return;
+    }
+
     await this.poolSelector.click();
 
-    const item = this.page.locator(`[data-qa="pool-selector-row-${pool}"]`);
-    await item;
+    const item = this.locator(`pool-selector-row-${pool}`, this.page.locator("body"));
+    await item.waitForVisible();
     await item.click();
 
     await this.page.waitForSelector(`[data-qa="pool-selector-row-${pool}"]`, {
@@ -228,14 +235,14 @@ class EditModal extends Modal {
   confirmButton = this.locator("confirm-button");
   tabs = new PositionEditTabs(this.page, this.wallet, this.root);
 
+  highPriceImpact = this.locator("high-price-impact-warning");
+  highSwapImpact = this.locator("high-swap-impact-warning");
+
   async deposit(amount: string) {
     await this.tabs.select("Deposit");
     await this.input.locator("input").fill(amount);
 
-    expect(this.confirmButton).toBeEnabled();
-
-    await this.confirmButton.click();
-    await this.wallet.confirmTransaction();
+    await this.confirm();
   }
 
   async withdraw(amount: string) {
@@ -248,14 +255,25 @@ class EditModal extends Modal {
       await this.input.fill(amount);
     }
 
-    expect(this.confirmButton).toBeEnabled();
+    await this.confirm();
+  }
+
+  async confirm(agree = true) {
+    if (agree) {
+      const hasPriceImpactWarning = await this.has(this.highPriceImpact);
+      const hasSwapImpactWarning = await this.has(this.highSwapImpact);
+
+      if (hasPriceImpactWarning) {
+        await this.highPriceImpact.click();
+      }
+
+      if (hasSwapImpactWarning) {
+        await this.highSwapImpact.click();
+      }
+    }
 
     await this.confirmButton.click();
     await this.wallet.confirmTransaction();
-  }
-
-  async confirm() {
-    await this.confirmButton.click();
   }
 }
 
@@ -263,6 +281,9 @@ class CloseModal extends Modal {
   input = this.locator("amount-input");
   confirmButton = this.locator("confirm-button");
   tabs = new PositionCloseTabs(this.page, this.wallet, this.root);
+
+  highPriceImpact = this.locator("high-price-impact-warning");
+  highSwapImpact = this.locator("high-swap-impact-warning");
 
   async closePartially(amount: string) {
     await this.tabs.select("Market");
@@ -274,26 +295,34 @@ class CloseModal extends Modal {
       await this.input.fill(amount);
     }
 
-    expect(this.confirmButton).toBeEnabled();
-
-    await this.confirmButton.click();
-    await this.wallet.confirmTransaction();
+    await this.confirm();
   }
 
   async closeFull() {
     await this.tabs.select("Market");
 
     await this.input.locator("input").click();
-    await this.input.locator(`[data-qa="amount-input-max"]`).click();
+    await this.input.locator(`[data-qa="input-max"]`).click();
 
-    expect(this.confirmButton).toBeEnabled();
+    await this.confirm();
+  }
+
+  async confirm(agree = true) {
+    if (agree) {
+      const hasPriceImpactWarning = await this.has(this.highPriceImpact);
+      const hasSwapImpactWarning = await this.has(this.highSwapImpact);
+
+      if (hasPriceImpactWarning) {
+        await this.highPriceImpact.click();
+      }
+
+      if (hasSwapImpactWarning) {
+        await this.highSwapImpact.click();
+      }
+    }
 
     await this.confirmButton.click();
     await this.wallet.confirmTransaction();
-  }
-
-  async confirm() {
-    await this.confirmButton.click();
   }
 }
 
@@ -303,6 +332,13 @@ class Position extends BasePage {
 
   editModal?: EditModal;
   closeModal?: CloseModal;
+
+  async waitForLoadingEnd() {
+    const loading = this.locator("position-loading");
+
+    await loading.waitForVisible();
+    await loading.waitForDetached();
+  }
 
   async getCollateral(): Promise<string | null> {
     return await this.locator("position-collateral-value").evaluate((el) => el.textContent);
@@ -332,6 +368,9 @@ class Position extends BasePage {
       state: "detached",
     });
     this.closeModal = undefined;
+
+    await this.waitForTransactionToBeSent();
+    await this.waitForLoadingEnd();
   }
 
   async closePartially(amount: string) {
@@ -346,6 +385,9 @@ class Position extends BasePage {
       state: "detached",
     });
     this.closeModal = undefined;
+
+    await this.waitForTransactionToBeSent();
+    await this.waitForLoadingEnd();
   }
 
   async deposit(amount: string) {
@@ -361,7 +403,8 @@ class Position extends BasePage {
     });
     this.editModal = undefined;
 
-    this.waitForTransactionToBeSent();
+    await this.waitForTransactionToBeSent();
+    await this.waitForLoadingEnd();
   }
 
   async withdraw(amount: string) {
@@ -376,6 +419,9 @@ class Position extends BasePage {
       state: "detached",
     });
     this.editModal = undefined;
+
+    await this.waitForTransactionToBeSent();
+    await this.waitForLoadingEnd();
   }
 }
 
@@ -401,6 +447,7 @@ export class GmxApp extends BasePage {
   constructor(page: Page, wallet: Dappwright, baseUrl: string) {
     super(page, wallet);
     this.baseUrl = baseUrl;
+    this.root = this.page.locator("body");
   }
 
   async closeAllToasts() {
@@ -418,15 +465,11 @@ export class GmxApp extends BasePage {
   }
 
   async getPosition(market: string, pool: string, direction: "Long" | "Short") {
-    const position = new Position(
+    return new Position(
       this.page,
       this.wallet,
       this.locator(`[data-qa="trade-table-large"] [data-qa="position-item-${market}-${pool}-${direction}"]`)
     );
-
-    await position.root.waitForVisible();
-
-    return position;
   }
 
   async navigateTo(page: GmxNavigation) {

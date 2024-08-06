@@ -403,7 +403,9 @@ export function PositionItem(p: Props) {
                 </div>
               )}
             />
-            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+            {p.position.pendingUpdate && (
+              <ImSpinner2 data-qa="position-loading" className="spin position-loading-icon" />
+            )}
           </div>
           <div className="Exchange-list-info-label">
             <span className="muted Position-leverage">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>

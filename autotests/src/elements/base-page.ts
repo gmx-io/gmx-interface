@@ -6,6 +6,7 @@ declare module "@playwright/test" {
     selector: string;
     waitForVisible(): void;
     waitForSelector(): void;
+    waitForDetached(): void;
   }
 }
 
@@ -22,6 +23,16 @@ export class BasePage {
 
       await this.page.waitForSelector(selector, {
         state: "visible",
+      });
+    };
+
+    locator.waitForDetached = async () => {
+      if (process.env.PWDEBUG) {
+        console.log(`Waiting for ${selector} to be detached`);
+      }
+
+      await this.page.waitForSelector(selector, {
+        state: "detached",
       });
     };
 
@@ -52,13 +63,24 @@ export class BasePage {
     }
   }
 
-  locator(selector: string) {
+  locator(selector: string, root?: Locator) {
     const locatorSelector =
       selector.startsWith(".") || selector.startsWith("//") || selector.startsWith("[")
         ? selector
         : `[data-qa="${selector}"]`;
-    const locator = this.root.locator(locatorSelector);
+    const locator = (root ?? this.root).locator(locatorSelector);
     return this.wrapLocatorWithRoot(locator, locatorSelector);
+  }
+
+  async has(locator: string | Locator, timeout = 5000) {
+    const selector = typeof locator === "string" ? this.locator(locator).selector : locator.selector;
+
+    try {
+      await this.page.waitForSelector(selector, { state: "attached", timeout });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async waitForTransactionToBeSent() {

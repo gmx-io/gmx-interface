@@ -157,7 +157,14 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   }, []);
 
   if (props.disabled) {
-    return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+    return (
+      <div
+        data-qa={props.qa ? props.qa + "-button-disabled" : undefined}
+        className="SelectorBase-button SelectorBase-button-disabled"
+      >
+        {props.label}
+      </div>
+    );
   }
 
   return (

@@ -511,12 +511,14 @@ export function PositionSeller(p: Props) {
             Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
+        qa="position-close-modal"
       >
         <Tab
           options={Object.values(OrderOption)}
           option={orderOption}
           optionLabels={localizedOrderOptionLabels}
           onChange={handleSetOrderOption}
+          qa="operation-tabs"
         />
 
         {position && (
@@ -535,6 +537,7 @@ export function PositionSeller(p: Props) {
                   const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
                   setCloseUsdInputValueRaw(formattedAmount);
                 }}
+                qa="amount-input"
               >
                 USD
               </BuyInputSection>
@@ -553,6 +556,7 @@ export function PositionSeller(p: Props) {
                 onInputValueChange={(e) => {
                   setTriggerPriceInputValue(e.target.value);
                 }}
+                qa="trigger-input"
               >
                 USD
               </BuyInputSection>
@@ -595,6 +599,7 @@ export function PositionSeller(p: Props) {
                 disabled={Boolean(error) && !shouldDisableValidationForTesting}
                 onClick={onSubmit}
                 buttonRef={submitButtonRef}
+                qa="confirm-button"
               >
                 {error ||
                   (isTrigger

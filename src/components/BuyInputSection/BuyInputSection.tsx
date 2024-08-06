@@ -118,7 +118,7 @@ export default function BuyInputSection(props: Props) {
             )}
             {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
             {showMaxButton && (
-              <button type="button" className="Exchange-swap-max" onClick={onClickMax}>
+              <button type="button" className="Exchange-swap-max" onClick={onClickMax} data-qa="input-max">
                 <Trans>MAX</Trans>
               </button>
             )}

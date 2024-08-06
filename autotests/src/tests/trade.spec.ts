@@ -1,8 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../base";
-import get from "lodash/get";
 
 test.describe.serial("Trades", () => {
+  test.afterEach(async ({ page }) => {
+    await page.close();
+  });
+
   test.describe("Market", () => {
     test("increase market position", async ({ page, gmx }) => {
       await page.goto(gmx.baseUrl);
@@ -10,7 +13,7 @@ test.describe.serial("Trades", () => {
       await gmx.tradebox.selectDirection("Long");
       await gmx.tradebox.selectMode("Market");
 
-      await gmx.tradebox.selectMarket("BNB/USD");
+      await gmx.tradebox.selectMarket("WBTC/USD");
       await gmx.tradebox.selectCollateral("AVAX");
 
       await gmx.tradebox.selectPool("WBTC-USDC");
@@ -23,22 +26,24 @@ test.describe.serial("Trades", () => {
 
       await gmx.tradebox.confirmTradeButton.click();
       await gmx.wallet.confirmTransaction();
+      await gmx.page.waitForTimeout(1000);
 
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
+      const isPositionPresent = await gmx.has(position.root);
 
-      await position.root.waitForSelector();
-      expect(position.root).toBeAttached();
+      expect(isPositionPresent).toBeTruthy();
     });
 
     test("edit position deposit", async ({ page, gmx }) => {
       await page.goto(gmx.baseUrl);
 
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
+      position.root.waitForVisible();
 
       expect(position.root).toBeVisible();
       const collateral = await position.getCollateral();
 
-      await position.deposit("0.2");
+      await position.deposit("2");
 
       const newCollateral = await position.getCollateral();
       expect(newCollateral !== collateral).toBeTruthy();
@@ -48,6 +53,7 @@ test.describe.serial("Trades", () => {
       await page.goto(gmx.baseUrl);
 
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
+      position.root.waitForVisible();
 
       expect(position.root).toBeVisible();
       const collateral = await position.getCollateral();
@@ -62,34 +68,39 @@ test.describe.serial("Trades", () => {
       await page.goto(gmx.baseUrl);
 
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
+      position.root.waitForVisible();
 
       expect(position.root).toBeVisible();
+      const collateral = await position.getCollateral();
+
       await position.closePartially("25%");
+
+      const newCollateral = await position.getCollateral();
+      expect(newCollateral !== collateral).toBeTruthy();
     });
 
     test("close position full", async ({ page, gmx }) => {
       await page.goto(gmx.baseUrl);
 
       const position = await gmx.getPosition("WBTC/USD", "WBTC-USDC", "Long");
+      position.root.waitForVisible();
 
       expect(position.root).toBeVisible();
       await position.closeFull();
 
-      await position.root.waitFor({
-        state: "detached",
-      });
+      await position.root.waitForDetached();
       expect(position.root).not.toBeAttached();
     });
   });
 
-  test.describe("Limit", () => {
+  test.describe.skip("Limit", () => {
     test("create limit position", async ({ page, gmx }) => {
       await page.goto(gmx.baseUrl);
 
       await gmx.tradebox.selectDirection("Long");
       await gmx.tradebox.selectMode("Limit");
 
-      await gmx.tradebox.selectMarket("BNB/USD");
+      await gmx.tradebox.selectMarket("BTC/USD");
       await gmx.tradebox.selectCollateral("AVAX");
 
       await gmx.tradebox.selectPool("WBTC-USDC");

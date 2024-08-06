@@ -15,6 +15,7 @@ type Props = {
   children?: ReactNode;
   asRow?: boolean;
   isPartialChecked?: boolean;
+  qa?: string;
 };
 
 export default function Checkbox(props: Props) {
@@ -27,6 +28,7 @@ export default function Checkbox(props: Props) {
         setIsChecked?.(!isChecked);
         event.stopPropagation();
       }}
+      data-qa={props.qa}
     >
       <span className="Checkbox-icon-wrapper">
         {isPartialChecked && <PartialCheckedIcon className="App-icon Checkbox-icon" />}
