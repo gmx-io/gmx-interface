@@ -8,6 +8,7 @@ import {
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "domain/synthetics/fees";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import {
   MarketInfo,
@@ -51,6 +52,7 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
+import { bigMath } from "lib/bigmath";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
@@ -442,13 +444,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       if (!increaseAmounts) return undefined;
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
-      const position = q(selectTradeboxSelectedPosition);
-      const nextPosition = q(selectTradeboxNextPositionValuesForIncrease);
 
-      const collateralDeltaUsd =
-        nextPosition?.nextCollateralUsd !== undefined
-          ? nextPosition?.nextCollateralUsd - (position?.collateralUsd ?? 0n)
-          : 0n;
+      const collateralDeltaUsd = increaseAmounts?.initialCollateralUsd ?? 0n;
 
       return getTradeFees({
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
@@ -468,17 +465,18 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
     }
     case "decrease": {
       const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+      const position = q(selectTradeboxSelectedPosition);
 
-      if (!decreaseAmounts) return undefined;
+      if (!decreaseAmounts || !position) return undefined;
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
-      const position = q(selectTradeboxSelectedPosition);
-      const nextPosition = q(selectTradeboxNextPositionValuesForDecrease);
 
-      const collateralDeltaUsd =
-        nextPosition?.nextCollateralUsd !== undefined
-          ? nextPosition?.nextCollateralUsd - (position?.collateralUsd ?? 0n)
-          : 0n;
+      const sizeReductionBps = bigMath.mulDiv(
+        decreaseAmounts.sizeDeltaUsd,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.sizeInUsd
+      );
+      const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
