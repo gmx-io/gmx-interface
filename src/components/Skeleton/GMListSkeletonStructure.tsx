@@ -33,13 +33,7 @@ export default function GMListSkeletonStructure() {
         <Skeleton width={60} count={1} />
       </ExchangeTd>
       <ExchangeTd className="w-[350px]">
-        <Skeleton
-          containerClassName="flex justify-end flex-wrap gap-10"
-          className="flex-grow"
-          width={150}
-          inline
-          count={2}
-        />
+        <Skeleton containerClassName="flex justify-end gap-10" className="flex-grow" width={90} inline count={3} />
       </ExchangeTd>
     </ExchangeTr>
   );

@@ -46,11 +46,11 @@ import { useCallback, useEffect, useMemo } from "react";
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { showMarketToast } from "../showMarketToast";
 import { Mode, Operation } from "../types";
-import { useUpdateInputAmounts } from "../useUpdateInputAmounts";
-import { useUpdateTokens } from "../useUpdateTokens";
+import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
+import { useUpdateTokens } from "./useUpdateTokens";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
-import { useUpdateByQueryParams } from "./useUpdateByQueryParams";
+import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -62,11 +62,10 @@ import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
-  const { selectedMarketAddress, operation, mode, onSetMode, onSetOperation, onSelectMarket } = p;
+  const { selectedMarketAddress: marketAddress, operation, mode, onSetMode, onSetOperation, onSelectMarket } = p;
   const isMetamaskMobile = useIsMetamaskMobile();
   const { openConnectModal } = useConnectModal();
 
-  const marketAddress = selectedMarketAddress;
   const { shouldDisableValidationForTesting } = useSettings();
 
   const { chainId } = useChainId();
@@ -98,8 +97,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setStage,
     isHighPriceImpactAccepted,
     setIsHighPriceImpactAccepted,
-    indexName,
-    setIndexName,
     firstTokenAddress,
     setFirstTokenAddress,
     secondTokenAddress,
@@ -124,6 +121,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const marketTokensData = isDeposit ? depositMarketTokensData : withdrawalMarketTokensData;
 
   const marketInfo = getByKey(marketsInfoData, marketAddress);
+  const indexName = marketInfo && getMarketIndexName(marketInfo);
 
   let firstToken = getTokenData(tokensData, firstTokenAddress);
   let firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
@@ -578,11 +576,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const marketTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
-      setIndexName(getMarketIndexName(marketInfo));
       onMarketChange(marketInfo.marketTokenAddress);
       showMarketToast(marketInfo);
     },
-    [onMarketChange, setIndexName]
+    [onMarketChange]
   );
   // #endregion
   // #region Effects
@@ -602,35 +599,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   });
 
   useEffect(
-    function updateIndexToken() {
-      if (!indexName && sortedMarketsInfoByIndexToken.length) {
-        setIndexName(getMarketIndexName(sortedMarketsInfoByIndexToken[0]));
-      }
-    },
-    [indexName, sortedMarketsInfoByIndexToken, setIndexName]
-  );
-
-  useEffect(
     function updateMarket() {
-      const marketsByIndexName = sortedMarketsInfoByIndexToken.filter(
-        (market) => getMarketIndexName(market) === indexName
-      );
-
-      if (!marketsByIndexName.length) {
-        return;
-      }
-
-      if (!marketAddress || !marketsByIndexName.find((market) => market.marketTokenAddress === marketAddress)) {
-        onMarketChange(marketsByIndexName[0].marketTokenAddress);
+      if (!marketAddress && sortedMarketsInfoByIndexToken.length) {
+        onMarketChange(sortedMarketsInfoByIndexToken[0].marketTokenAddress);
       }
     },
-    [indexName, marketAddress, sortedMarketsInfoByIndexToken, onMarketChange]
+    [marketAddress, onMarketChange, sortedMarketsInfoByIndexToken]
   );
 
   useUpdateByQueryParams({
     setOperation: onSetOperation,
     setMode: onSetMode,
-    setIndexName,
     onSelectMarket,
     setFirstTokenAddress,
   });
@@ -732,6 +711,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               markets={sortedMarketsInfoByIndexToken}
               marketTokensData={marketTokensData}
               isSideMenu
+              showAllPools
               showBalances
               showIndexIcon
               onSelectMarket={marketTokenSelectMarket}
