@@ -34,24 +34,20 @@ export function useUpdateMarkets({
 
       const isSelectedMarketValid = Boolean(
         selectedMarketAddress &&
-          getByKey(marketsInfoData, selectedMarketAddress) &&
           shiftAvailableMarkets.find((market) => market.marketTokenAddress === selectedMarketAddress)
       );
 
       if (!isSelectedMarketValid) {
-        const firstMarketInfo = shiftAvailableMarkets[0];
-        if (!firstMarketInfo) {
-          return;
-        }
-        onSelectMarket(firstMarketInfo.marketTokenAddress);
-        newSelectedMarketAddress = firstMarketInfo.marketTokenAddress;
+        // Parent component should switch tab to withdrawal
+        return;
       }
 
       const isToMarketAvailable = Boolean(toMarketAddress && getByKey(marketsInfoData, toMarketAddress));
       const isToMarketRelated =
         toMarketInfo?.longTokenAddress === selectedMarketInfo?.longTokenAddress &&
         toMarketInfo?.shortTokenAddress === selectedMarketInfo?.shortTokenAddress;
-      const isToMarketValid = isToMarketAvailable && isToMarketRelated;
+      const isToMarketSameAsSelected = toMarketAddress === newSelectedMarketAddress;
+      const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
 
       if (!isToMarketValid) {
         const someAvailableMarket = getShiftAvailableRelatedMarkets({

@@ -9,7 +9,7 @@ export function useShiftAvailableRelatedMarkets(
   sortedMarketsInfoByIndexToken: MarketInfo[],
   marketTokenAddress?: string
 ) {
-  const shiftAvailableMarkets: MarketInfo[] = useMemo(
+  const shiftAvailableRelatedMarkets: MarketInfo[] = useMemo(
     () =>
       getShiftAvailableRelatedMarkets({
         marketsInfoData,
@@ -19,5 +19,5 @@ export function useShiftAvailableRelatedMarkets(
     [marketTokenAddress, marketsInfoData, sortedMarketsInfoByIndexToken]
   );
 
-  return shiftAvailableMarkets;
+  return shiftAvailableRelatedMarkets;
 }

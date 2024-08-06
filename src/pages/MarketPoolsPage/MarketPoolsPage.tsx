@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
+import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
@@ -28,7 +30,7 @@ export function MarketPoolsPage() {
 
   const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);

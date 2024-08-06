@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -19,9 +19,14 @@ import { bigMath } from "lib/bigmath";
 import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";
+
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
+import { useShiftFees } from "./useShiftFees";
+import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
+import { useUpdateTokens } from "./useUpdateTokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -32,10 +37,6 @@ import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
-import { useShiftAmounts } from "./useShiftAmounts";
-import { useShiftFees } from "./useShiftFees";
-import { useShiftSubmitState } from "./useShiftSubmitState";
-import { useUpdateTokens } from "./useUpdateTokens";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -46,8 +47,8 @@ export function GmShiftBox({
 }: {
   selectedMarketAddress: string | undefined;
   onSelectMarket: (marketAddress: string) => void;
-  onSetMode: Dispatch<SetStateAction<Mode>>;
-  onSetOperation: Dispatch<SetStateAction<Operation>>;
+  onSetMode: (mode: Mode) => void;
+  onSetOperation: (operation: Operation) => void;
 }) {
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
