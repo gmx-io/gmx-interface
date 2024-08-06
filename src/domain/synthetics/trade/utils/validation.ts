@@ -6,6 +6,7 @@ import {
   getMaxAllowedLeverageByMinCollateralFactor,
   getMintableMarketTokens,
   getOpenInterestUsd,
+  getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
@@ -696,13 +697,19 @@ export function getGmShiftError({
     return [t`Max pool USD exceeded`];
   }
 
-  const totalCollateralUsd = fromTokenUsd ?? 0n;
+  const sellable = getSellableMarketToken(fromMarketInfo, fromToken);
+
+  if (fromTokenAmount !== undefined && sellable.totalAmount < fromTokenAmount) {
+    return [t`Max ${fromToken?.symbol} sellable amount exceeded`];
+  }
 
   const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
 
   if (toTokenAmount !== undefined && toTokenAmount > mintableInfo.mintableAmount) {
-    return [t`Max ${toToken?.symbol} amount exceeded`];
+    return [t`Max ${toToken?.symbol} buyable amount exceeded`];
   }
+
+  const totalCollateralUsd = fromTokenUsd ?? 0n;
 
   const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
   if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
