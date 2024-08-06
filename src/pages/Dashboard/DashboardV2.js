@@ -35,13 +35,13 @@ import SEO from "components/Common/SEO";
 import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, MORPH_L2, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "config/chains";
 import { getServerUrl } from "config/backend";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
 import { ThemeContext } from "store/theme-provider";
@@ -91,7 +91,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 export default function DashboardV2() {
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
- 
+
   const signer = dynamicContext.signer;
   //const { library } = useWeb3React();
   const { chainId } = useDynamicChainId();
@@ -396,7 +396,7 @@ export default function DashboardV2() {
     },
   ];
 
-  const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
+  const totalStatsStartDate = chainId === MORPH_L2 ? t`15 May 2024` : t`01 Jan 2024`;
 
   let stableGlp = 0;
   let totalGlp = 0;
@@ -680,7 +680,7 @@ export default function DashboardV2() {
                   <div className="label">
                     <Trans>Floor Price Fund</Trans>
                   </div>
-                  <div>${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}</div>
+                  <div>${0}</div>
                 </div>
               </div>
             </div>
@@ -727,12 +727,12 @@ export default function DashboardV2() {
                             renderContent={() => (
                               <>
                                 <StatsTooltipRow
-                                  label={t`Price on Arbitrum`}
+                                  label={t`Price on Morph`}
                                   value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
                                 <StatsTooltipRow
-                                  label={t`Price on Avalanche`}
+                                  label={t`Price on Optimism`}
                                   value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />

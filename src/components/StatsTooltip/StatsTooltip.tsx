@@ -27,7 +27,7 @@ export default function StatsTooltip({
     <>
       <p className="Tooltip-row">
         <span className="label">
-          <Trans>{title} on Arbitrum:</Trans>
+          <Trans>{title} on Morph:</Trans>
         </span>
         <span className="amount">
           {showDollar && "$"}
@@ -37,7 +37,7 @@ export default function StatsTooltip({
       </p>
       <p className="Tooltip-row">
         <span className="label">
-          <Trans>{title} on Avalanche:</Trans>
+          <Trans>{title} on Optimism:</Trans>
         </span>
         <span className="amount">
           {showDollar && "$"}

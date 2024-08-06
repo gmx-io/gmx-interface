@@ -522,28 +522,29 @@ export function useTotalGmxSupply() {
 }
 
 export function useTotalGmxStaked() {
-  const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
-  const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+  const stakedGmxTrackerAddressMorph = getContract(MORPH_L2, "StakedGmxTracker");
+ 
+  const stakedGmxTrackerAddressOptimism = getContract(OPTIMISM_MAINNET, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyMorph, mutate: updateStakedGmxSupplyMorph } = useSWR<BigNumber>(
     [
-      `StakeV2:stakedGmxSupply:${ARBITRUM}`,
-      ARBITRUM,
-      getContract(ARBITRUM, "GMX"),
+      `StakeV2:stakedGmxSupply:${MORPH_L2}`,
+      MORPH_L2,
+      getContract(MORPH_L2, "GMX"),
       "balanceOf",
-      stakedGmxTrackerAddressArbitrum,
+      stakedGmxTrackerAddressMorph,
     ],
     {
       fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
+  const { data: stakedGmxSupplyOptimism, mutate: updateStakedGmxSupplyOptimism } = useSWR<BigNumber>(
     [
-      `StakeV2:stakedGmxSupply:${AVALANCHE}`,
-      AVALANCHE,
-      getContract(AVALANCHE, "GMX"),
+      `StakeV2:stakedGmxSupply:${OPTIMISM_MAINNET}`,
+      OPTIMISM_MAINNET,
+      getContract(OPTIMISM_MAINNET, "GMX"),
       "balanceOf",
-      stakedGmxTrackerAddressAvax,
+      stakedGmxTrackerAddressOptimism,
     ],
     {
       fetcher: dynamicContractFetcher(undefined, Token),
@@ -551,18 +552,18 @@ export function useTotalGmxStaked() {
   );
 
   const mutate = useCallback(() => {
-    updateStakedGmxSupplyArbitrum();
-    updateStakedGmxSupplyAvax();
-  }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
+    updateStakedGmxSupplyMorph();
+    updateStakedGmxSupplyOptimism();
+  }, [updateStakedGmxSupplyMorph, updateStakedGmxSupplyOptimism]);
 
-  if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = bigNumberify(stakedGmxSupplyArbitrum)!.add(stakedGmxSupplyAvax);
+  if (stakedGmxSupplyMorph && stakedGmxSupplyOptimism) {
+    let total = bigNumberify(stakedGmxSupplyMorph)!.add(stakedGmxSupplyOptimism);
     totalStakedGmx.current = total;
   }
 
   return {
-    avax: stakedGmxSupplyAvax,
-    arbitrum: stakedGmxSupplyArbitrum,
+    avax: stakedGmxSupplyOptimism,
+    arbitrum: stakedGmxSupplyMorph,
     total: totalStakedGmx.current,
     mutate,
   };

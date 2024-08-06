@@ -37,16 +37,17 @@ import "./StakeV2.css";
 import SEO from "components/Common/SEO";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getServerUrl } from "config/backend";
-import { callContract,  dynamicContractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { approveTokens } from "domain/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
+import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 
 const { AddressZero } = ethers.constants;
 
@@ -1080,15 +1081,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { gmxPrice } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active
-  );
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let { total: totalGmxStaked } = useTotalGmxStaked();
+  let { total: totalGmxStaked, avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx } = useTotalGmxStaked();
+
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1146,6 +1144,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
+  console.log("iszero", totalGmxStaked.isZero());
   if (!totalGmxStaked.isZero() && gmxPrice) {
     stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
   }
@@ -1611,7 +1610,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <></>
+                        <StatsTooltip
+                          showDollar={false}
+                          title={t`Staked`}
+                          avaxValue={avaxStakedGmx}
+                          arbitrumValue={arbitrumStakedGmx}
+                          total={totalGmxStaked}
+                          decimalsForConversion={18}
+                          symbol="TMX"
+                        />
                       )}
                     />
                   )}
@@ -1967,7 +1974,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <div className="Tab-title-section">
           <div className="Page-title">
             <Trans>Vest</Trans>
@@ -2187,7 +2194,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );
