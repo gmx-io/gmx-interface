@@ -108,9 +108,8 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
 
     if (
       fullCollateralPriceImpactBps !== undefined &&
-      positionPriceImpactDeltaUsd !== undefined &&
-      positionPriceImpactDeltaUsd < 0n &&
-      fullCollateralPriceImpactBps > HIGH_COLLATERAL_IMPACT_BPS
+      fullCollateralPriceImpactBps < 0n &&
+      bigMath.abs(fullCollateralPriceImpactBps) >= HIGH_COLLATERAL_IMPACT_BPS
     ) {
       return "text-yellow-500 !decoration-yellow-500/50";
     }
