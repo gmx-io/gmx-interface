@@ -51,9 +51,9 @@ import Router from "abis/Router.json";
 import Token from "abis/Token.json";
 import WETH from "abis/WETH.json";
 
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
+import { ReactComponent as LongIcon } from "img/long.svg";
+import { ReactComponent as ShortIcon } from "img/short.svg";
+import { ReactComponent as SwapIcon } from "img/swap.svg";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -92,9 +92,9 @@ import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 
 const SWAP_ICONS = {
-  [LONG]: longImg,
-  [SHORT]: shortImg,
-  [SWAP]: swapImg,
+  [LONG]: <LongIcon />,
+  [SHORT]: <ShortIcon />,
+  [SWAP]: <SwapIcon />,
 };
 
 const { ZeroAddress } = ethers;

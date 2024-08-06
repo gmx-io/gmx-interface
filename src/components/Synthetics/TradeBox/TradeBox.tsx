@@ -84,9 +84,6 @@ import {
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
 import { numericBinarySearch } from "lib/binarySearch";
 import { USD_DECIMALS } from "lib/legacy";
 import {
@@ -106,7 +103,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
-import { MarketCard } from "../MarketCard/MarketCard";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -118,6 +114,9 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
 
+import { ReactComponent as LongIcon } from "img/long.svg";
+import { ReactComponent as ShortIcon } from "img/short.svg";
+import { ReactComponent as SwapIcon } from "img/swap.svg";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
@@ -144,9 +143,9 @@ export type Props = {
 };
 
 const tradeTypeIcons = {
-  [TradeType.Long]: longImg,
-  [TradeType.Short]: shortImg,
-  [TradeType.Swap]: swapImg,
+  [TradeType.Long]: <LongIcon />,
+  [TradeType.Short]: <ShortIcon />,
+  [TradeType.Swap]: <SwapIcon />,
 };
 
 const tradeModeLabels = {
@@ -1325,9 +1324,6 @@ export function TradeBox(p: Props) {
       </div>
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-      <div className="Exchange-swap-info-group">
-        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
-      </div>
     </>
   );
 }

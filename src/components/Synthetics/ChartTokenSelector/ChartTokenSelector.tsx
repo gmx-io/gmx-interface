@@ -7,6 +7,8 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import {
   selectTradeboxChooseSuitableMarket,
   selectTradeboxGetMaxLongShortLiquidityPool,
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -40,21 +42,52 @@ import {
 type Props = {
   selectedToken: Token | undefined;
   options: Token[] | undefined;
+  isMobile?: boolean;
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken } = props;
+  const { options, selectedToken, isMobile } = props;
+
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
+
+  const chevronClassName = isMobile === undefined ? undefined : isMobile ? "mt-4" : "mt-4 self-start";
 
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
       popoverYOffset={16}
-      popoverXOffset={-12}
+      popoverXOffset={0}
+      chevronClassName={chevronClassName}
       label={
         selectedToken ? (
-          <span className="inline-flex items-center py-5 pl-5 text-[20px] font-bold max-[380px]:text-16">
-            <TokenIcon className="mr-8" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
-            {selectedToken.symbol} {"/ USD"}
+          <span
+            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold", {
+              "items-start": !isMobile,
+              "items-center": isMobile,
+            })}
+          >
+            <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <span
+              className={cx("flex justify-start", {
+                "flex-col": !isMobile,
+                "flex-row items-center": isMobile,
+              })}
+            >
+              <span>
+                {selectedToken.symbol} {"/ USD"}
+              </span>
+              {poolName && (
+                <span
+                  className={cx("text-12 font-normal text-gray-300", {
+                    "ml-8": isMobile,
+                  })}
+                >
+                  [{poolName}]
+                </span>
+              )}
+            </span>
           </span>
         ) : (
           "..."
