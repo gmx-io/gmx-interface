@@ -1,16 +1,20 @@
 import { gql } from "@apollo/client";
+import { useMemo } from "react";
+import useSWR from "swr";
+
+import { getMarketListingDate } from "config/markets";
+import { bigMath } from "lib/bigmath";
+import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
-import useSWR from "swr";
+
+import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
+import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
-import { bigMath } from "lib/bigmath";
-import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import { useGmMarketsApy } from "./useGmMarketsApy";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -186,6 +190,9 @@ export const useUserEarnings = (chainId: number) => {
         result.allMarkets.recent = result.allMarkets.recent + recentIncome;
 
         if (marketsTokensAPRData && marketTokensData) {
+          const isBaseApyReadyToBeShown = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, marketAddress));
+          if (!isBaseApyReadyToBeShown) return;
+
           const apy = marketsTokensAPRData[marketAddress];
           const token = marketTokensData[marketAddress];
           const balance = token.balance;
