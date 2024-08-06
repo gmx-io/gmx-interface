@@ -4764,8 +4764,8 @@ msgid "One-Click Trading is not available for wrapping or unwrapping native toke
 msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "Acknowledge High Price Impact, review execution price."
-msgstr ""
+#~ msgid "Acknowledge High Price Impact, review execution price."
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -5014,6 +5014,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "Volume échangé par vos traders parrainés."
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact, review execution price."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stablecoin Percentage"
