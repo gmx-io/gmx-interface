@@ -1178,7 +1178,7 @@ table.Exchange-list-small td {
 
 @media (max-width: 550px) {
   .ExchangeChart-top-inner {
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
   }
   .Chart-24h-change {
     display: none;
