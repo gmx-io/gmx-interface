@@ -548,9 +548,11 @@ export function GmConfirmationBox({
               <div>
                 {tokensToApprove.map((address) => {
                   const token = getTokenData(tokensData, address)!;
-                  const marketTokenData =
-                    (address === marketToken?.address || address === fromMarketToken?.address) &&
-                    getByKey(marketsInfoData, marketToken?.address);
+                  let marketTokenData =
+                    address === marketToken?.address && getByKey(marketsInfoData, marketToken?.address);
+                  if (operation === Operation.Shift) {
+                    marketTokenData = getByKey(marketsInfoData, fromMarketToken?.address);
+                  }
 
                   return (
                     <div key={address}>

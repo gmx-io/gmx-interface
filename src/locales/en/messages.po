@@ -1550,10 +1550,6 @@ msgstr "Pair"
 msgid "Max {0} out"
 msgstr "Max {0} out"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Shifting GM</0>"
-msgstr "<0>Shifting GM</0>"
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Updating Subaccount"
 msgstr "Updating Subaccount"
@@ -7687,6 +7683,10 @@ msgstr "Approval was cancelled"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting GM from {fromIndexName} to {toIndexName}"
+msgstr "Shifting GM from {fromIndexName} to {toIndexName}"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"

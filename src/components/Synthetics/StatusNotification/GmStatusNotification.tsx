@@ -186,12 +186,14 @@ export function GmStatusNotification({
         return t`Unknown shift GM order`;
       }
 
-      // const fromToken = getByKey(tokensData, pendingShiftData.fromMarketTokenAddress);
-      // const toToken = getByKey(tokensData, pendingShiftData.toMarketTokenAddress);
+      const fromMarketInfo = getByKey(marketsInfoData, pendingShiftData.fromMarket);
+      const fromIndexName = fromMarketInfo ? getMarketIndexName(fromMarketInfo) : "";
+      const toMarketInfo = getByKey(marketsInfoData, pendingShiftData.toMarket);
+      const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "";
 
       return (
         <Trans>
-          <div className="inline-flex">Shifting GM</div>
+          Shifting GM from {fromIndexName} to {toIndexName}
         </Trans>
       );
     }
