@@ -101,9 +101,19 @@ export function GmShiftBox({
       return;
     }
 
-    let fromTokenAmount = parseValue(selectedMarketText, selectedToken.decimals) ?? 0n;
+    let fromTokenAmount = 0n;
+    try {
+      fromTokenAmount = parseValue(selectedMarketText, selectedToken.decimals) ?? 0n;
+    } catch {
+      // pass
+    }
 
-    let toTokenAmount = parseValue(toMarketText, toToken.decimals) ?? 0n;
+    let toTokenAmount = 0n;
+    try {
+      toTokenAmount = parseValue(toMarketText, toToken.decimals) ?? 0n;
+    } catch {
+      // pass
+    }
 
     const amounts = getShiftAmounts({
       fromMarketInfo: selectedMarketInfo,
