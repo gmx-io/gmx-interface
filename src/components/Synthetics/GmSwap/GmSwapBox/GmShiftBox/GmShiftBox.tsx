@@ -44,6 +44,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
+import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 
 export function GmShiftBox({
@@ -64,6 +65,7 @@ export function GmShiftBox({
   const gmTokenFavoritesContext = useGmTokensFavorites();
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
   const [isConfirmationBoxVisible, setIsConfirmationBoxVisible] = useState(false);
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const { openConnectModal } = useConnectModal();
 
   const chainId = useSelector(selectChainId);
@@ -191,7 +193,7 @@ export function GmShiftBox({
       toTokenAmount: amounts?.toTokenAmount,
       fees,
       isHighPriceImpact: isHighPriceImpact,
-      isHighPriceImpactAccepted: true,
+      isHighPriceImpactAccepted,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
     })[0];
 
@@ -230,6 +232,7 @@ export function GmShiftBox({
     toToken,
     fees,
     isHighPriceImpact,
+    isHighPriceImpactAccepted,
     openConnectModal,
     shouldDisableValidationForTesting,
   ]);
@@ -367,7 +370,7 @@ export function GmShiftBox({
             {...gmTokenFavoritesContext}
           />
         </BuyInputSection>
-        <ExchangeInfo className="mb-6">
+        <ExchangeInfo className={isHighPriceImpact ? undefined : "mb-10"} dividerClassName="App-card-divider">
           <ExchangeInfo.Group>
             <GmFees
               isDeposit={true}
@@ -378,12 +381,18 @@ export function GmShiftBox({
             />
             <NetworkFeeRow executionFee={executionFee} />
           </ExchangeInfo.Group>
+          {isHighPriceImpact && (
+            <HighPriceImpactRow
+              isHighPriceImpactAccepted={isHighPriceImpactAccepted}
+              setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
+              isSingle={true}
+            />
+          )}
         </ExchangeInfo>
-        <div className="Exchange-swap-button-container">
-          <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.isDisabled}>
-            {submitState.text}
-          </Button>
-        </div>
+
+        <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.isDisabled}>
+          {submitState.text}
+        </Button>
       </form>
 
       <GmConfirmationBox
