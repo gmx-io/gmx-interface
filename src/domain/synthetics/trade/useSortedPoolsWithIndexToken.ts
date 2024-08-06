@@ -1,8 +1,10 @@
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import groupBy from "lodash/groupBy";
 import { useMemo } from "react";
-import { MarketInfo, MarketsInfoData } from "../markets";
-import { TokenData, TokensData, convertToUsd } from "../tokens";
+
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+
+import type { MarketInfo, MarketsInfoData } from "../markets";
+import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
 const DEFAULT_VALUE = {
   markets: EMPTY_ARRAY,
