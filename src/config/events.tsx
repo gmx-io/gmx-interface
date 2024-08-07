@@ -35,8 +35,8 @@ export const appEventsData: EventData[] = [
     id: "shib-market-arbitrum",
     title: "SHIB/USD [WETH-USDC] market added on Arbitrum",
     isActive: true,
-    startDate: "06 Aug 2024, 00:00",
-    endDate: "20 Aug 2024, 00:00",
+    startDate: "07 Aug 2024, 00:00",
+    endDate: "21 Aug 2024, 00:00",
     bodyText: "Trade SHIB/USD or provide liquidity using WETH or USDC.",
   },
   {
