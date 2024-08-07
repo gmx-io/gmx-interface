@@ -286,7 +286,7 @@ export function subscribeBars({
       });
       missingBarsInfoRef.current.bars = [];
     } else {
-      tvDataProviderRef.current?.getLiveBar(chainId, ticker, period).then((bar) => {
+      tvDataProviderRef.current?.getLiveBars(chainId, ticker, period)?.forEach((bar) => {
         if (
           bar &&
           bar.ticker === tvDataProviderRef.current?.currentTicker &&

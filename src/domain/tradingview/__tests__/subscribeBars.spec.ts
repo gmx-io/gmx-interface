@@ -97,6 +97,7 @@ describe("subscribeBars", () => {
     let tvDataProvider = new SyntheticsTVDataProvider({
       resolutions: SUPPORTED_RESOLUTIONS_V2,
       oracleFetcher: oracleKeeperFetcher,
+      chainId,
     });
     let tvDataProviderRef = { current: tvDataProvider };
 
