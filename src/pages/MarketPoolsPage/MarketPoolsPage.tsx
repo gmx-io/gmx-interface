@@ -65,10 +65,14 @@ export function MarketPoolsPage() {
           title="V2 Pools"
           isTop
           subtitle={
-            <Trans>
-              Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink> to
-              earn fees from swaps and leverage trading.
-            </Trans>
+            <>
+              <Trans>
+                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
+                to earn fees from swaps and leverage trading.
+              </Trans>
+              <br />
+              <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
+            </>
           }
           qa="pools-page"
         />
