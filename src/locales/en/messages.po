@@ -1023,10 +1023,6 @@ msgstr "Generating and activating Subaccount"
 msgid "Select pool"
 msgstr "Select pool"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Liquidity"
-#~ msgstr "Liquidity"
-
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "WEIGHT"
 msgstr "WEIGHT"
@@ -1801,7 +1797,6 @@ msgstr "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} e
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
 msgstr "Acknowledge high Price Impact"
 
@@ -3042,6 +3037,7 @@ msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr "{longShortText} {0} Open Interest"
 
@@ -3237,6 +3233,8 @@ msgstr "Funding Fees"
 msgid "Approval failed"
 msgstr "Approval failed"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3450,9 +3448,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Net Rate / 1h"
-#~ msgstr "Net Rate / 1h"
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "Net Rate / 1h"
+msgstr "Net Rate / 1h"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3523,6 +3522,7 @@ msgstr "Trigger price for the order."
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3830,6 +3830,7 @@ msgid "Creator"
 msgstr "Creator"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr "Reserve considers the PnL of Open Positions, while Open Interest does not."
 
@@ -4170,6 +4171,8 @@ msgstr "Wallet total accrued Fees"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "Available Liquidity"
 
@@ -4196,6 +4199,7 @@ msgid "Buy order cancelled"
 msgstr "Buy order cancelled"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr "{longShortText} {0} Reserve"
 
@@ -4767,6 +4771,10 @@ msgstr "Begin Transfer"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "Acknowledge High Price Impact, review execution price."
+#~ msgstr "Acknowledge High Price Impact, review execution price."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Insufficient liquidity to swap collateral"
@@ -5014,6 +5022,10 @@ msgstr "Buy GMX using any token from any network:"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact, review execution price."
+msgstr "High price impact, review execution price."
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stablecoin Percentage"
@@ -6397,6 +6409,7 @@ msgstr "Fulfilling Sell request"
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6516,6 +6529,10 @@ msgstr "Invalid address. Please make sure you have entered a valid Ethereum addr
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
+#~ msgstr "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
@@ -6861,6 +6878,7 @@ msgid "Initial collateral"
 msgstr "Initial collateral"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
@@ -7323,6 +7341,7 @@ msgstr "Take-profit and stop-loss orders can be set after opening a position. <0
 msgid "Partial Liquidation"
 msgstr "Partial Liquidation"
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "24h Volume"
 msgstr "24h Volume"

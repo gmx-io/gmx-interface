@@ -1,7 +1,11 @@
 .Exchange {
-  max-width: 155rem;
+  max-width: 160rem;
   margin: auto;
   justify-content: space-between;
+}
+
+.Exchange-left {
+  overflow: hidden;
 }
 
 .Exchange-trigger-order-info {
@@ -54,9 +58,10 @@
   display: grid;
   grid-template-columns: 1fr auto;
   grid-gap: 1.5rem;
-  padding: 3.1rem;
   padding-top: 0rem;
   margin-top: -1.5rem;
+  padding: 0 1rem;
+  overflow: hidden;
 }
 
 .Exchange-position-list-orders {
@@ -256,17 +261,12 @@
 }
 
 .ExchangeChart {
+  max-width: 120rem;
   position: relative;
-  height: 49.6rem;
 }
 
 .ExchangeChart-main-price {
   font-size: 1.7rem;
-}
-
-.ExchangeChart-info-label {
-  font-size: 1.25rem;
-  opacity: 0.7;
 }
 
 .ExchangeChart-top-inner {
@@ -275,6 +275,12 @@
   grid-column-gap: 4.65rem;
   align-items: center;
   padding-left: 0.9rem;
+}
+
+.ExchangeChart-info-label {
+  font-size: 1.25rem;
+  opacity: 0.7;
+  white-space: nowrap;
 }
 
 .ExchangeChart-dollar-sign {
@@ -288,7 +294,6 @@
 }
 
 .ExchangeChart-info {
-  background: var(--dark-blue-bg);
   border-radius: 0.4rem;
   font-size: var(--font-base);
   padding: 0.9rem 0.31rem;
@@ -298,12 +303,13 @@
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
   right: 0;
-  top: 8.2rem;
+  top: 0;
   z-index: 1;
+  height: 49.6rem;
 }
 .ExchangeChart-bottom-controls {
   display: inline-block;
@@ -315,46 +321,6 @@
 
 body.dragging .ExchangeChart iframe {
   pointer-events: none;
-}
-
-.ExchangeChart.tv .ExchangeChart-bottom-header {
-  position: absolute;
-  display: flex;
-  top: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  z-index: 5;
-}
-.ExchangeChart.tv .ExchangeChart-bottom-stats {
-  font-size: var(--font-sm);
-  padding: 0.8rem 0;
-  margin-left: 3.1rem;
-  white-space: nowrap;
-  z-index: 2;
-}
-.ExchangeChart-bottom-stats-label {
-  color: var(--color-gray-300);
-  font-weight: bold;
-}
-.ExchangeChart-bottom-stats-value {
-  display: inline-block;
-  margin-left: 0.31rem;
-  margin-right: 0.8rem;
-}
-.length-5 .ExchangeChart-bottom-stats-value {
-  width: 6.2rem;
-}
-.length-4 .ExchangeChart-bottom-stats-value {
-  width: 5.25rem;
-}
-.length-3 .ExchangeChart-bottom-stats-value {
-  width: 4.35rem;
-}
-.length-2 .ExchangeChart-bottom-stats-value {
-  width: 3.41rem;
-}
-.length-1 .ExchangeChart-bottom-stats-value {
-  width: 2.48rem;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom-content {
@@ -1021,14 +987,15 @@ table.Exchange-list-small td {
   color: var(--color-green-300);
 }
 
+.VersionSwitch-wrapper {
+  padding: 1.5rem 0;
+  justify-content: flex-end;
+}
+
 .ExchangeChart-header {
   display: grid;
   grid-template-columns: auto 116.32px;
   grid-column-gap: 1rem;
-}
-
-.VersionSwitch-wrapper {
-  padding: 1.5rem;
 }
 
 @media (max-width: 1500px) {
@@ -1072,16 +1039,8 @@ table.Exchange-list-small td {
     display: block;
   }
 
-  .ExchangeChart-header {
-    grid-template-columns: auto 103px;
-  }
-
   .VersionSwitch-wrapper {
     padding: 1rem;
-  }
-
-  .ExchangeChart.tv .ExchangeChart-bottom {
-    top: 6rem;
   }
 
   .ExchangeChart-info {
@@ -1120,7 +1079,7 @@ table.Exchange-list-small td {
     display: none;
   }
 
-  .ExchangeChart {
+  .ExchangeChart.tv .ExchangeChart-bottom {
     height: 38.75rem;
   }
 
@@ -1178,7 +1137,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr;
     grid-gap: 1rem;
   }
   .Exchange-swap-market-box {
@@ -1188,7 +1147,7 @@ table.Exchange-list-small td {
 
 @media (max-width: 800px) {
   .ExchangeChart-top-inner {
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
   }
 
   .ExchangeChart-additional-info {
@@ -1219,7 +1178,7 @@ table.Exchange-list-small td {
 
 @media (max-width: 550px) {
   .ExchangeChart-top-inner {
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
   }
   .Chart-24h-change {
     display: none;
@@ -1234,7 +1193,7 @@ table.Exchange-list-small td {
     display: none;
   }
   .ExchangeChart-top-inner {
-    grid-template-columns: auto;
+    grid-template-columns: auto auto;
   }
   .Confirmation-box .Modal-content {
     min-width: 36rem;

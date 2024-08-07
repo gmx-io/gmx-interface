@@ -10,6 +10,7 @@ import { bigMath } from "lib/bigmath";
 import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { memo, useMemo } from "react";
+import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
 
 interface Props {
   tradeFlags: TradeFlags;
@@ -46,6 +47,11 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   const fullPositionPriceImpactBps =
     fees?.positionPriceImpact?.bps !== undefined && fees?.priceImpactDiff?.bps !== undefined
       ? fees.positionPriceImpact.bps - fees.priceImpactDiff.bps
+      : undefined;
+
+  const fullCollateralPriceImpactBps =
+    fees?.positionCollateralPriceImpact?.bps !== undefined && fees?.collateralPriceImpactDiff?.bps !== undefined
+      ? fees.positionCollateralPriceImpact.bps - fees.collateralPriceImpactDiff.bps
       : undefined;
 
   const positionPriceImpactDeltaUsd =
@@ -95,13 +101,29 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     displayDecimals,
   });
 
+  const handleClassName = useMemo(() => {
+    if (positionPriceImpactDeltaUsd !== undefined && positionPriceImpactDeltaUsd > 0n) {
+      return "text-green-500 !decoration-green-500/50";
+    }
+
+    if (
+      fullCollateralPriceImpactBps !== undefined &&
+      fullCollateralPriceImpactBps < 0n &&
+      bigMath.abs(fullCollateralPriceImpactBps) >= HIGH_COLLATERAL_IMPACT_BPS
+    ) {
+      return "text-yellow-500 !decoration-yellow-500/50";
+    }
+
+    return "";
+  }, [positionPriceImpactDeltaUsd, fullCollateralPriceImpactBps]);
+
   return (
     <ExchangeInfoRow label={t`Execution Price`}>
       {executionPrice !== undefined ? (
         <TooltipWithPortal
           maxAllowedWidth={350}
           position="bottom-end"
-          handleClassName={(positionPriceImpactDeltaUsd ?? 0n) > 0n ? "text-green-500 !decoration-green-500/50" : ""}
+          handleClassName={handleClassName}
           handle={formatUsd(executionPrice, {
             displayDecimals,
           })}
@@ -112,19 +134,22 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                 : t`Expected execution price for the order, including the current price impact.`}
               <br />
               <br />
-              {fullPositionPriceImpactBps !== undefined && positionPriceImpactDeltaUsd !== undefined && (
-                <StatsTooltipRow
-                  textClassName={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd)}
-                  label={
-                    <>
-                      <div className="text-white">{t`Price Impact`}:</div>
-                      <div>({formatPercentage(bigMath.abs(fullPositionPriceImpactBps))} of position size)</div>
-                    </>
-                  }
-                  value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
-                  showDollar={false}
-                />
-              )}
+              {fullPositionPriceImpactBps !== undefined &&
+                positionPriceImpactDeltaUsd !== undefined &&
+                fullCollateralPriceImpactBps !== undefined && (
+                  <StatsTooltipRow
+                    textClassName={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd)}
+                    label={
+                      <>
+                        <div className="text-white">{t`Price Impact`}:</div>
+                        <div>({formatPercentage(bigMath.abs(fullPositionPriceImpactBps))} of position size)</div>
+                        <div>({formatPercentage(bigMath.abs(fullCollateralPriceImpactBps))} of collateral)</div>
+                      </>
+                    }
+                    value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
+                    showDollar={false}
+                  />
+                )}
               {fees?.priceImpactDiff !== undefined && bigMath.abs(fees.priceImpactDiff.deltaUsd) > 0 && (
                 <StatsTooltipRow
                   textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
