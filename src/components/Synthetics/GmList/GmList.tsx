@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useMemo, useState } from "react";
 import { Address, isAddress, isAddressEqual } from "viem";
@@ -437,14 +438,19 @@ function GmListItem({
           >
             <Trans>Sell</Trans>
           </Button>
-          <Button
-            className="flex-grow"
-            variant="secondary"
-            to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
-            disabled={!isShiftAvailable}
+          <div
+            className={cx("flex-grow", {
+              invisible: !isShiftAvailable,
+            })}
           >
-            <Trans>Shift</Trans>
-          </Button>
+            <Button
+              className="w-full"
+              variant="secondary"
+              to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
+            >
+              <Trans>Shift</Trans>
+            </Button>
+          </div>
         </div>
       </ExchangeTd>
     </ExchangeTr>
