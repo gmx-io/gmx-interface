@@ -1,9 +1,6 @@
 import { msg } from "@lingui/macro";
-import { useEffect, useMemo } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
@@ -35,6 +32,8 @@ const MODE_LABELS = {
   [Mode.Pair]: msg`Pair`,
 };
 
+const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
+
 export function GmSwapBox(p: GmSwapBoxProps) {
   const { selectedMarketAddress, operation, mode, onSetMode, onSetOperation, onSelectMarket } = p;
 
@@ -43,39 +42,8 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   const marketsInfoData = useMarketsInfoData();
 
   const marketInfo = getByKey(marketsInfoData, marketAddress);
-  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
-
-  const isSelectedMarketShiftAvailable = useMemo(() => {
-    return Boolean(shiftAvailableMarkets?.find((market) => market.marketTokenAddress === selectedMarketAddress));
-  }, [selectedMarketAddress, shiftAvailableMarkets]);
-
-  const availableOperations = useMemo(() => {
-    return [
-      Operation.Deposit,
-      Operation.Withdrawal,
-      {
-        text: Operation.Shift,
-        disabled: !isSelectedMarketShiftAvailable,
-      },
-    ];
-  }, [isSelectedMarketShiftAvailable]);
 
   const availableModes = getGmSwapBoxAvailableModes(operation, marketInfo);
-
-  useEffect(
-    function updateOperation() {
-      const isSelectedMarketShiftAvailable = Boolean(
-        shiftAvailableMarkets?.find((market) => market.marketTokenAddress === selectedMarketAddress)
-      );
-
-      const isShiftOperation = operation === Operation.Shift;
-
-      if (isShiftOperation && !isSelectedMarketShiftAvailable) {
-        onSetOperation(Operation.Deposit);
-      }
-    },
-    [onSetOperation, operation, selectedMarketAddress, shiftAvailableMarkets]
-  );
 
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
@@ -83,7 +51,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   return (
     <div className="App-box GmSwapBox">
       <Tab
-        options={availableOperations}
+        options={OPERATIONS}
         optionLabels={localizedOperationLabels}
         option={operation}
         onChange={onSetOperation}
