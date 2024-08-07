@@ -724,14 +724,16 @@ export function TradeBox(p: Props) {
   });
 
   const onSubmit = useCallback(async () => {
+    if (!account) {
+      openConnectModal?.();
+      return;
+    }
+
     setStage("processing");
 
     let txnPromise: Promise<any>;
 
-    if (!account) {
-      openConnectModal?.();
-      return;
-    } else if (isWrapOrUnwrap) {
+    if (isWrapOrUnwrap) {
       txnPromise = tradeboxTransactions.onSubmitWrapOrUnwrap();
     } else if (isSwap) {
       txnPromise = tradeboxTransactions.onSubmitSwap();
