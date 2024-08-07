@@ -8,7 +8,7 @@ import { PeriodParams } from "charting_library";
 
 const initialState = {
   chainId: null,
-  lastBarRefreshTime: 0,
+  latestBarRefreshTime: 0,
   barsInfo: {
     period: "",
     data: [],
@@ -54,6 +54,12 @@ export class TVDataProvider {
     this.shouldResetCache = true;
   }
 
+  finalize() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+  }
+
   async updateLiveBars() {
     if (!this.chainId || !this.currentTicker || !this.currentPeriod) {
       return;
@@ -70,22 +76,22 @@ export class TVDataProvider {
       return;
     }
 
-    const lastBar = prices[0];
+    const latestBar = prices[0];
 
-    if (lastBar.ticker !== this.currentTicker || lastBar.period !== this.currentPeriod) {
+    if (latestBar.ticker !== this.currentTicker || latestBar.period !== this.currentPeriod) {
       return;
     }
 
-    lastBar.ticker = this.currentTicker;
-    lastBar.period = this.currentPeriod;
+    latestBar.ticker = this.currentTicker;
+    latestBar.period = this.currentPeriod;
 
     const lastSavedBar = this.liveBars[this.liveBars.length - 1];
 
-    if (lastSavedBar && lastBar.time !== lastSavedBar?.time) {
-      this.liveBars.push(lastBar);
+    if (lastSavedBar && latestBar.time !== lastSavedBar?.time) {
+      this.liveBars.push(latestBar);
       this.liveBars[0].close = this.liveBars[1].open;
     } else {
-      this.liveBars = [lastBar];
+      this.liveBars = [latestBar];
     }
   }
 
@@ -120,10 +126,10 @@ export class TVDataProvider {
 
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
-        const lastBar = bars[bars.length - 1];
+        const latestBar = bars[bars.length - 1];
 
-        if (lastBar) {
-          this.liveBars = [{ ...lastBar, ticker, period }];
+        if (latestBar) {
+          this.liveBars = [{ ...latestBar, ticker, period }];
         }
 
         this.barsInfo.data = filledBars;
@@ -207,12 +213,12 @@ export class TVDataProvider {
     if (!ticker || !period || !chainId) return [];
 
     const barsInfo = this.barsInfo;
-    const lastBar = this.liveBars[this.liveBars.length - 1];
+    const latestBar = this.liveBars[this.liveBars.length - 1];
 
     if (
-      !lastBar ||
+      !latestBar ||
       !this.chartTokenInfo?.isChartReady ||
-      barsInfo.ticker !== lastBar.ticker ||
+      barsInfo.ticker !== latestBar.ticker ||
       ticker !== barsInfo.ticker ||
       chainId !== this.chainId
     ) {
@@ -231,12 +237,12 @@ export class TVDataProvider {
   setCurrentChartToken(chartTokenInfo: { price: number; ticker: string; isChartReady: boolean }) {
     this.chartTokenInfo = chartTokenInfo;
 
-    const lastBar = this.liveBars[this.liveBars.length - 1];
+    const latestBar = this.liveBars[this.liveBars.length - 1];
 
-    if (lastBar) {
-      lastBar.close = chartTokenInfo.price;
-      lastBar.high = getMax(lastBar.open, lastBar.high, this.currentPrice);
-      lastBar.low = getMin(lastBar.open, lastBar.low, this.currentPrice);
+    if (latestBar) {
+      latestBar.close = chartTokenInfo.price;
+      latestBar.high = getMax(latestBar.open, latestBar.high, this.currentPrice);
+      latestBar.low = getMin(latestBar.open, latestBar.low, this.currentPrice);
     }
   }
 

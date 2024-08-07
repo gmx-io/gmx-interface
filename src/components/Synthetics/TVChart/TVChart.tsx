@@ -134,7 +134,7 @@ export function TVChart() {
 
   useEffect(() => {
     if (chainId !== previousChainId) {
-      clearInterval(dataProvider?.updateInterval);
+      dataProvider?.finalize();
     }
   }, [chainId, previousChainId, dataProvider]);
 
@@ -151,7 +151,7 @@ export function TVChart() {
     setDataProvider(dataProvider);
 
     return () => {
-      clearInterval(dataProvider.updateInterval);
+      dataProvider.finalize();
     };
   }, [oracleKeeperFetcher, chainId]);
 
