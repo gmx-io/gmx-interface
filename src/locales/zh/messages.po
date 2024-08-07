@@ -627,6 +627,10 @@ msgstr ""
 msgid "Market Orders"
 msgstr "市场订单"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending buy request"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "你可以在这里查看你的提领历史<0></0>"
@@ -897,10 +901,6 @@ msgstr "最低接收"
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated Fee Refund"
 msgstr "估计的费用退款"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Shift request"
-msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Deactivating..."
@@ -1247,10 +1247,6 @@ msgstr "创建交易订单失败"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "图表位置"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Shift request"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -2175,6 +2171,10 @@ msgstr "已存取{0} USD 至 {tokenSymbol} {longOrShortText}"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling sell request"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -3501,6 +3501,10 @@ msgstr "净率 / 1小时"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending sell request"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "结构化产品"
@@ -3895,10 +3899,6 @@ msgstr "输入代码"
 msgid "Execute Take-Profit Order"
 msgstr "执行止盈订单"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Buy request"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr ""
@@ -4199,6 +4199,10 @@ msgstr "执行价格未满足可接受价格条件"
 msgid "Reserve Amount"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling buy request"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "原因: {0}"
@@ -4281,10 +4285,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "交易送出!"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Buy request"
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -4545,6 +4545,10 @@ msgstr "价钱"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending shift request"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4817,10 +4821,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5780,6 +5780,10 @@ msgstr "归属的GMX未被撤回"
 msgid "FEES"
 msgstr "费用"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
@@ -6101,10 +6105,6 @@ msgstr ""
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Sell request"
-msgstr ""
-
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -6418,10 +6418,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "View on Arbitrum"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Sell request"
 msgstr ""
 
 #: src/domain/synthetics/markets/createShiftTxn.ts
@@ -6800,6 +6796,10 @@ msgstr "市场交换失败"
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "只允许使用字母、数字和下底线"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling shift request"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"

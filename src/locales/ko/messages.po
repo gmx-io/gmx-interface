@@ -627,6 +627,10 @@ msgstr ""
 msgid "Market Orders"
 msgstr "시장 주문"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending buy request"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
@@ -897,10 +901,6 @@ msgstr "최소 수취량"
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated Fee Refund"
 msgstr "예상 수수료 환불"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Shift request"
-msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Deactivating..."
@@ -1247,10 +1247,6 @@ msgstr "스왑 주문 생성 실패."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "차트 포지션"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Shift request"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -2175,6 +2171,10 @@ msgstr "{0} USD를 {tokenSymbol} {longOrShortText}으로 입금 완료"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling sell request"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -3501,6 +3501,10 @@ msgstr "1시간 당 순 수수료율"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending sell request"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "구조화금융 프로덕트"
@@ -3895,10 +3899,6 @@ msgstr "코드 입력"
 msgid "Execute Take-Profit Order"
 msgstr "이익 실현 주문 실행"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Buy request"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr ""
@@ -4199,6 +4199,10 @@ msgstr "실행 가격이 허용 가능한 가격 조건을 충족하지 않았�
 msgid "Reserve Amount"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling buy request"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "이유: {0}"
@@ -4281,10 +4285,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "스왑 제출완료"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Buy request"
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -4545,6 +4545,10 @@ msgstr "가격"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending shift request"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4817,10 +4821,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5780,6 +5780,10 @@ msgstr "베스트팅된 GMX에서 인출되지 않은 양"
 msgid "FEES"
 msgstr "수수료"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
@@ -6101,10 +6105,6 @@ msgstr ""
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Sell request"
-msgstr ""
-
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -6418,10 +6418,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "View on Arbitrum"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Sell request"
 msgstr ""
 
 #: src/domain/synthetics/markets/createShiftTxn.ts
@@ -6800,6 +6796,10 @@ msgstr "시장 스왑 실패"
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 가능합니다"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling shift request"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"

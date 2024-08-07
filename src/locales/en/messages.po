@@ -627,6 +627,10 @@ msgstr "Bid Price (Exit)"
 msgid "Market Orders"
 msgstr "Market Orders"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending buy request"
+msgstr "Sending buy request"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "You can check your claim history <0>here</0>."
@@ -897,10 +901,6 @@ msgstr "Min. Receive"
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated Fee Refund"
 msgstr "Estimated Fee Refund"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Shift request"
-msgstr "Fulfilling Shift request"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Deactivating..."
@@ -1247,10 +1247,6 @@ msgstr "Swap Order creation failed."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "Chart positions"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Shift request"
-msgstr "Sending Shift request"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -2176,6 +2172,10 @@ msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr "Receiver has staked GMX/GLP before"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling sell request"
+msgstr "Fulfilling sell request"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{actionDisplay} Order"
@@ -3504,6 +3504,10 @@ msgstr "Net Rate / 1h"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending sell request"
+msgstr "Sending sell request"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "Structured Products"
@@ -3898,10 +3902,6 @@ msgstr "Enter a code"
 msgid "Execute Take-Profit Order"
 msgstr "Execute Take-Profit Order"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Buy request"
-msgstr "Sending Buy request"
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr "Subaccount is updated"
@@ -4202,6 +4202,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition."
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling buy request"
+msgstr "Fulfilling buy request"
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "Reason: {0}"
@@ -4284,10 +4288,6 @@ msgstr "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "Swap submitted!"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Buy request"
-msgstr "Fulfilling Buy request"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -4549,6 +4549,10 @@ msgstr "Price"
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending shift request"
+msgstr "Sending shift request"
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Stake/StakeV1.js
@@ -4821,10 +4825,6 @@ msgstr "One-Click Trading is not available for wrapping or unwrapping native tok
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Insufficient liquidity to swap collateral"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
-msgstr "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -5786,6 +5786,10 @@ msgstr "Vested GMX not withdrawn"
 msgid "FEES"
 msgstr "FEES"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr "TOTAL SUPPLY"
@@ -6107,10 +6111,6 @@ msgstr "Price Impact not yet acknowledged"
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Sell request"
-msgstr "Sending Sell request"
-
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -6425,10 +6425,6 @@ msgstr "Sell GM"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "View on Arbitrum"
 msgstr "View on Arbitrum"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Sell request"
-msgstr "Fulfilling Sell request"
 
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
@@ -6806,6 +6802,10 @@ msgstr "Failed Market Swap"
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling shift request"
+msgstr "Fulfilling shift request"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
