@@ -339,6 +339,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       assetSymbol: "SHIB",
       address: "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
       decimals: 18,
+      priceDecimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
       coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
       isSynthetic: true,
