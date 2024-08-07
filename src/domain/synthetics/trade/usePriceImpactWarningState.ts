@@ -1,4 +1,4 @@
-import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
+import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
 import { bigMath } from "lib/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
@@ -36,7 +36,7 @@ export function usePriceImpactWarningState({
   const isHighPositionImpact = Boolean(
     positionPriceImpact &&
       positionPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionPriceImpact.bps) >= HIGH_POSITION_IMPACT_BPS
+      bigMath.abs(positionPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
   );
 
   const isHighSwapImpact = Boolean(

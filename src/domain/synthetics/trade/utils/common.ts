@@ -52,6 +52,7 @@ export function getTradeFlagsForOrder(order: OrderInfo) {
 export function getTradeFees(p: {
   initialCollateralUsd: bigint;
   sizeDeltaUsd: bigint;
+  collateralDeltaUsd: bigint;
   swapSteps: SwapStats[];
   positionFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
@@ -66,6 +67,7 @@ export function getTradeFees(p: {
   const {
     initialCollateralUsd,
     sizeDeltaUsd,
+    collateralDeltaUsd,
     swapSteps,
     positionFeeUsd,
     swapPriceImpactDeltaUsd,
@@ -109,6 +111,10 @@ export function getTradeFees(p: {
 
   const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
   const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const priceImpactDiff = getFeeItem(priceImpactDiffUsd, sizeDeltaUsd);
+
+  const positionCollateralPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, bigMath.abs(collateralDeltaUsd));
+  const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
@@ -140,7 +146,9 @@ export function getTradeFees(p: {
     swapPriceImpact,
     positionFee: positionFeeBeforeDiscount,
     positionPriceImpact,
-    priceImpactDiff: getFeeItem(priceImpactDiffUsd, sizeDeltaUsd),
+    priceImpactDiff,
+    positionCollateralPriceImpact,
+    collateralPriceImpactDiff,
     borrowFee,
     fundingFee,
     feeDiscountUsd,

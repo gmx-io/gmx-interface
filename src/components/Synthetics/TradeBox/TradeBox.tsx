@@ -281,7 +281,7 @@ export function TradeBox(p: Props) {
   const maxAllowedLeverage = maxLeverage / 2;
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionPriceImpact,
+    positionPriceImpact: fees?.positionCollateralPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     place: "tradeBox",
     tradeFlags,

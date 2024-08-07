@@ -1797,7 +1797,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
@@ -4769,6 +4768,10 @@ msgstr "移転開始"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "Acknowledge High Price Impact, review execution price."
+#~ msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr ""
@@ -5016,6 +5019,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "あなたが紹介したトレーダーによる取引高"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact, review execution price."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Stablecoin Percentage"
@@ -6516,6 +6523,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
