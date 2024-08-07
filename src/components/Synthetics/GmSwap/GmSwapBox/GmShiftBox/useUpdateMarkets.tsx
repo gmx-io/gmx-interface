@@ -38,8 +38,14 @@ export function useUpdateMarkets({
       );
 
       if (!isSelectedMarketValid) {
-        // Parent component should switch tab to withdrawal
-        return;
+        const someAvailableMarket = shiftAvailableMarkets[0];
+
+        if (!someAvailableMarket) {
+          return;
+        }
+
+        newSelectedMarketAddress = someAvailableMarket.marketTokenAddress;
+        onSelectMarket(newSelectedMarketAddress);
       }
 
       const isToMarketAvailable = Boolean(toMarketAddress && getByKey(marketsInfoData, toMarketAddress));
