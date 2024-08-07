@@ -11,7 +11,7 @@ type Props = {
   type?: "block" | "inline";
   className?: string;
   optionLabels?: Record<string | number, ReactNode> | string[];
-  icons?: Record<string, string>;
+  icons?: Record<string, ReactNode>;
 };
 
 export default function Tab(props: Props) {
@@ -30,8 +30,12 @@ export default function Tab(props: Props) {
       {options.map((opt) => {
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
-          <div className={cx("Tab-option", "muted", { active: opt === option })} onClick={() => onClick(opt)} key={opt}>
-            {icons && icons[opt] && <img className="Tab-option-icon inline" src={icons[opt]} alt={String(option)} />}
+          <div
+            className={cx("Tab-option flex items-center justify-center gap-8", "muted", { active: opt === option })}
+            onClick={() => onClick(opt)}
+            key={opt}
+          >
+            {icons && icons[opt] && <span className="mt-2 scale-75">{icons[opt]}</span>}
             {label}
           </div>
         );

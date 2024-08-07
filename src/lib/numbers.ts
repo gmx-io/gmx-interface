@@ -534,6 +534,14 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
   });
 }
 
+export function formatPercentageDisplay(percentage: number, hideThreshold?: number) {
+  if (hideThreshold && percentage < hideThreshold) {
+    return "";
+  }
+
+  return `${percentage}%`;
+}
+
 export function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
   const isNegative = n < 0;

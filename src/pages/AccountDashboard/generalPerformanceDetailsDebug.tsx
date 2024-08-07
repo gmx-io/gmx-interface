@@ -6,7 +6,6 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-
 export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
     <>
