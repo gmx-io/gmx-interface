@@ -10,12 +10,12 @@ import { TradeFlags } from "./types";
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
 export function usePriceImpactWarningState({
-  positionCollateralPriceImpact,
+  positionPriceImpact,
   swapPriceImpact,
   place,
   tradeFlags,
 }: {
-  positionCollateralPriceImpact?: FeeItem;
+  positionPriceImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
   place: "tradeBox" | "positionSeller";
   tradeFlags: TradeFlags;
@@ -34,9 +34,9 @@ export function usePriceImpactWarningState({
   }, [prevFlags, tradeFlags]);
 
   const isHighPositionImpact = Boolean(
-    positionCollateralPriceImpact &&
-      positionCollateralPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionCollateralPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
+    positionPriceImpact &&
+      positionPriceImpact.deltaUsd < 0 &&
+      bigMath.abs(positionPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
   );
 
   const isHighSwapImpact = Boolean(

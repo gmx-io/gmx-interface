@@ -188,7 +188,7 @@ export function PositionSeller(p: Props) {
   );
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionCollateralPriceImpact: fees?.positionCollateralPriceImpact,
+    positionPriceImpact: fees?.positionCollateralPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     place: "positionSeller",
     tradeFlags,
