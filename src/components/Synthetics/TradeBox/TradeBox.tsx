@@ -569,8 +569,6 @@ export function TradeBox(p: Props) {
     detectAndSetAvailableMaxLeverage,
   ]);
 
-  const isSubmitButtonDisabled = account ? Boolean(buttonErrorText) : false;
-
   const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
@@ -612,6 +610,7 @@ export function TradeBox(p: Props) {
     text: submitButtonText,
     isTriggerWarningAccepted: triggerConsent,
     error: buttonErrorText || consentError,
+    account,
   });
 
   const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
@@ -725,14 +724,16 @@ export function TradeBox(p: Props) {
   });
 
   const onSubmit = useCallback(async () => {
+    if (!account) {
+      openConnectModal?.();
+      return;
+    }
+
     setStage("processing");
 
     let txnPromise: Promise<any>;
 
-    if (!account) {
-      openConnectModal?.();
-      return;
-    } else if (isWrapOrUnwrap) {
+    if (isWrapOrUnwrap) {
       txnPromise = tradeboxTransactions.onSubmitWrapOrUnwrap();
     } else if (isSwap) {
       txnPromise = tradeboxTransactions.onSubmitSwap();
@@ -863,11 +864,11 @@ export function TradeBox(p: Props) {
   const handleFormSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+      if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         onSubmit();
       }
     },
-    [isCursorInside, isSubmitButtonDisabled, onSubmit, shouldDisableValidation]
+    [isCursorInside, submitButtonState.disabled, onSubmit, shouldDisableValidation]
   );
 
   function renderTokenInputs() {
@@ -1200,12 +1201,12 @@ export function TradeBox(p: Props) {
   useKey(
     "Enter",
     () => {
-      if (isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+      if (isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         onSubmit();
       }
     },
     {},
-    [isSubmitButtonDisabled, shouldDisableValidation, isCursorInside]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside]
   );
 
   const buttonContent = (
@@ -1213,7 +1214,7 @@ export function TradeBox(p: Props) {
       variant="primary-action"
       className="mt-4 w-full"
       onClick={onSubmit}
-      disabled={(isSubmitButtonDisabled || submitButtonState.disabled) && !shouldDisableValidationForTesting}
+      disabled={submitButtonState.disabled && !shouldDisableValidationForTesting}
     >
       {submitButtonState.text}
     </Button>

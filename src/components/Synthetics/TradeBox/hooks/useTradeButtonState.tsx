@@ -12,17 +12,21 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useMemo } from "react";
 import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWillBeExecuted";
 
+interface TradeboxButtonStateOptions {
+  stage: TradeStage;
+  isTriggerWarningAccepted: boolean;
+  text: string;
+  error?: string;
+  account?: string;
+}
+
 export function useTradeboxButtonState({
   stage,
   isTriggerWarningAccepted,
   text,
   error,
-}: {
-  stage: TradeStage;
-  isTriggerWarningAccepted: boolean;
-  text: string;
-  error: string | undefined;
-}) {
+  account,
+}: TradeboxButtonStateOptions) {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
@@ -34,6 +38,13 @@ export function useTradeboxButtonState({
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   return useMemo(() => {
+    if (!account && error) {
+      return {
+        text: error,
+        disabled: false,
+      };
+    }
+
     if (error) {
       return {
         text: error,
@@ -111,5 +122,6 @@ export function useTradeboxButtonState({
     text,
     isTriggerWarningAccepted,
     error,
+    account,
   ]);
 }
