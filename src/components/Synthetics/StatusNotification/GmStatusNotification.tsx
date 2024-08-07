@@ -188,12 +188,24 @@ export function GmStatusNotification({
 
       const fromMarketInfo = getByKey(marketsInfoData, pendingShiftData.fromMarket);
       const fromIndexName = fromMarketInfo ? getMarketIndexName(fromMarketInfo) : "";
+      const fromPoolName = fromMarketInfo ? getMarketPoolName(fromMarketInfo) : "";
+
       const toMarketInfo = getByKey(marketsInfoData, pendingShiftData.toMarket);
       const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "";
+      const toPoolName = toMarketInfo ? getMarketPoolName(toMarketInfo) : "";
 
       return (
         <Trans>
-          Shifting GM from {fromIndexName} to {toIndexName}
+          Shifting from{" "}
+          <span className="inline-flex items-center">
+            <span>GM: {fromIndexName}</span>
+            <span className="ml-2 text-12 leading-1 text-gray-300">[{fromPoolName}]</span>
+          </span>{" "}
+          to{" "}
+          <span className="inline-flex items-center">
+            <span>GM: {toIndexName}</span>
+            <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>
+          </span>
         </Trans>
       );
     }

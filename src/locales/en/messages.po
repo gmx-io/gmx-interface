@@ -4822,6 +4822,10 @@ msgstr "One-Click Trading is not available for wrapping or unwrapping native tok
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Insufficient liquidity to swap collateral"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+msgstr "Shifting GM from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
@@ -7683,10 +7687,6 @@ msgstr "Approval was cancelled"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting GM from {fromIndexName} to {toIndexName}"
-msgstr "Shifting GM from {fromIndexName} to {toIndexName}"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
