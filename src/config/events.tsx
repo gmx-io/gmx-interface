@@ -37,7 +37,12 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "07 Aug 2024, 00:00",
     endDate: "21 Aug 2024, 00:00",
-    bodyText: "Trade SHIB/USD or provide liquidity using WETH or USDC.",
+    bodyText: (
+      <>
+        Trade SHIB/USD or provide liquidity using <TokenSymbolWithIcon symbol="WETH" /> or{" "}
+        <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
   },
   {
     id: "ethena-markets-arbitrum",
