@@ -61,6 +61,10 @@ const ENABLED_MARKETS: Record<number, Record<string, MarketUiConfig>> = {
     "0x0418643F94Ef14917f1345cE5C460C37dE463ef7": {
       listingDate: p("17 Jul 2024"),
     },
+    // SHIB/USD [WETH-USDC]
+    "0xB62369752D8Ad08392572db6d0cc872127888beD": {
+      listingDate: p("7 Aug 2024"),
+    },
     // SWAP-ONLY [USDC-USDC.e]
     "0x9C2433dFD71096C435Be9465220BB2B189375eA7": DEFAULT_LISTING,
     // SWAP-ONLY [USDC-USDT]
