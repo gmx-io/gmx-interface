@@ -93,7 +93,7 @@ export function useChartHeaderFormattedValues() {
       ];
     }
 
-    return ["-", null];
+    return ["...", null];
   }, [info?.longOpenInterestPercentage, info?.openInterestLong]);
 
   const [shortOIValue, shortOIPercentage] = useMemo(() => {

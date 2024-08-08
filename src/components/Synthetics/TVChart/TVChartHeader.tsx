@@ -134,8 +134,8 @@ function TVChartHeaderInfoMobile() {
           <div className="whitespace-nowrap text-[1.25rem]">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
-              {" ("}
             </span>
+            {" ("}
             <span className="positive">{longOIPercentage}</span>
             <span className="opacity-70">/</span>
             <span className="negative">{shortOIPercentage}</span>
@@ -179,7 +179,7 @@ function TVChartHeaderInfoMobile() {
   ]);
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 bg-slate-800 p-16">
       <div className="grid grid-cols-[auto_100px]">
         <div>
           <div className="inline-flex">
@@ -342,15 +342,11 @@ function TVChartHeaderInfoDesktop() {
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
-            {longOIPercentage && shortOIPercentage && (
-              <>
-                {" ("}
-                <span className="positive">{longOIPercentage}</span>
-                <span className="opacity-70">/</span>
-                <span className="negative">{shortOIPercentage}</span>
-                <span className="opacity-70">{")"}</span>
-              </>
-            )}
+            {" ("}
+            <span className="positive">{longOIPercentage}</span>
+            <span className="opacity-70">/</span>
+            <span className="negative">{shortOIPercentage}</span>
+            <span className="opacity-70">{")"}</span>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">
