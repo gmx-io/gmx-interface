@@ -64,8 +64,8 @@ export default function ChartTokenSelector(props: Props) {
       label={
         selectedToken ? (
           <span
-            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold", {
-              "items-start": !isMobile,
+            className={cx("inline-flex whitespace-nowrap pl-0 text-[20px] font-bold", {
+              "items-start py-5": !isMobile,
               "items-center": isMobile,
             })}
           >
@@ -109,7 +109,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const isSmallMobile = useMedia("(max-width: 450px)");
+  const isSmallMobile = useMedia("(max-width: 475px)");
 
   const close = useSelectorClose();
 
