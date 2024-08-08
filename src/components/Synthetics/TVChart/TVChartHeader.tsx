@@ -14,8 +14,6 @@ import { Token } from "domain/tokens";
 
 import { useChainId } from "lib/chains";
 
-import { ReactComponent as LongIcon } from "img/long.svg";
-import { ReactComponent as ShortIcon } from "img/short.svg";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
@@ -80,13 +78,13 @@ function TVChartHeaderInfoMobile() {
           })}
         >
           <div>
-            <div className="ExchangeChart-info-label">
+            <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
             </div>
             <div>{high24}</div>
           </div>
           <div>
-            <div className="ExchangeChart-info-label">
+            <div className="ExchangeChart-info-label mb-4">
               <Trans>24h Low</Trans>
             </div>
             <div>{low24}</div>
@@ -103,23 +101,17 @@ function TVChartHeaderInfoMobile() {
         })}
       >
         <div>
-          <div className="ExchangeChart-info-label">
+          <div className="ExchangeChart-info-label mb-4">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-8">
-              <LongIcon />
-              {liquidityLong}
-            </div>
-            <div className="flex flex-row items-center gap-8">
-              <ShortIcon />
-              {liquidityShort}
-            </div>
+            <div className="flex flex-row items-center gap-8">{liquidityLong}</div>
+            <div className="flex flex-row items-center gap-8">{liquidityShort}</div>
           </div>
         </div>
 
         <div>
-          <div className="ExchangeChart-info-label">
+          <div className="ExchangeChart-info-label mb-4">
             <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
@@ -131,7 +123,7 @@ function TVChartHeaderInfoMobile() {
         </div>
 
         <div>
-          <div className="whitespace-nowrap text-[1.25rem]">
+          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
@@ -142,19 +134,13 @@ function TVChartHeaderInfoMobile() {
             <span className="opacity-70">{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-8">
-              <LongIcon />
-              {longOIValue}
-            </div>
-            <div className="flex flex-row items-center gap-8">
-              <ShortIcon />
-              {shortOIValue}
-            </div>
+            <div className="flex flex-row items-center gap-8">{longOIValue}</div>
+            <div className="flex flex-row items-center gap-8">{shortOIValue}</div>
           </div>
         </div>
 
         <div className=" Chart-24h-low">
-          <div className="ExchangeChart-info-label">
+          <div className="ExchangeChart-info-label mb-4">
             <Trans>24h Volume</Trans>
           </div>
           {dailyVolume}
@@ -298,13 +284,13 @@ function TVChartHeaderInfoDesktop() {
       return (
         <>
           <div>
-            <div className="ExchangeChart-info-label">
+            <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
             </div>
             <div>{high24}</div>
           </div>
           <div>
-            <div className="ExchangeChart-info-label">
+            <div className="ExchangeChart-info-label mb-4">
               <Trans>24h Low</Trans>
             </div>
             <div>{low24}</div>
@@ -316,22 +302,16 @@ function TVChartHeaderInfoDesktop() {
     return (
       <>
         <div>
-          <div className="ExchangeChart-info-label">
+          <div className="ExchangeChart-info-label mb-4">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">
-              <LongIcon />
-              {liquidityLong}
-            </div>
-            <div className="flex flex-row items-center gap-4">
-              <ShortIcon />
-              {liquidityShort}
-            </div>
+            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
+            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
           </div>
         </div>
         <div>
-          <div className="ExchangeChart-info-label">
+          <div className="ExchangeChart-info-label mb-4">
             <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
@@ -342,7 +322,7 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
         <div>
-          <div className="whitespace-nowrap text-[1.25rem]">
+          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
@@ -353,18 +333,12 @@ function TVChartHeaderInfoDesktop() {
             <span className="opacity-70">{")"}</span>
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">
-              <LongIcon />
-              {longOIValue}
-            </div>
-            <div className="flex flex-row items-center gap-4">
-              <ShortIcon />
-              {shortOIValue}
-            </div>
+            <div className="flex flex-row items-center gap-4">{longOIValue}</div>
+            <div className="flex flex-row items-center gap-4">{shortOIValue}</div>
           </div>
         </div>
         <div className="Chart-24h-low">
-          <div className="ExchangeChart-info-label">24h Volume</div>
+          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
           <div className="Chart-header-value">{dailyVolume}</div>
         </div>
       </>
@@ -408,7 +382,7 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="ExchangeChart-avg-price">{avgPrice}</div>
+            <div className="ExchangeChart-avg-price mb-4">{avgPrice}</div>
             <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
