@@ -667,7 +667,7 @@ function useMarketsConfigsRequest({
 
     request: async () => {
       const request: MarketConfigMulticallRequestConfig = {};
-      const promises = (marketsAddresses || []).map(async (marketAddress) => {
+      for (const marketAddress of marketsAddresses || []) {
         const market = getByKey(marketsData, marketAddress)!;
 
         const hashedKeys = await hashDataMapAsync({
@@ -1063,9 +1063,7 @@ function useMarketsConfigsRequest({
             },
           },
         };
-      });
-
-      await Promise.all(promises);
+      }
 
       return request;
     },
