@@ -135,7 +135,7 @@ function TVChartHeaderInfoMobile() {
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
-            {" ("}
+            <span className="opacity-70">{" ("}</span>
             <span className="positive">{longOIPercentage}</span>
             <span className="opacity-70">/</span>
             <span className="negative">{shortOIPercentage}</span>
@@ -342,7 +342,7 @@ function TVChartHeaderInfoDesktop() {
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
-            {" ("}
+            <span className="opacity-70">{" ("}</span>
             <span className="positive">{longOIPercentage}</span>
             <span className="opacity-70">/</span>
             <span className="negative">{shortOIPercentage}</span>
