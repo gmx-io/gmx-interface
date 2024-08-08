@@ -101,6 +101,11 @@ export function GmShiftBox({
     (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
     bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
 
+  const noAmountSet = amounts?.fromTokenAmount === undefined;
+  const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
+  const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
+  const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
+
   const submitState = useShiftSubmitState({
     selectedMarketInfo,
     selectedToken,
@@ -141,8 +146,9 @@ export function GmShiftBox({
     [submitState]
   );
 
-  const handleSelectedTokenClickTopRightLabel = useCallback(() => {
+  const handleSelectedTokenClickMax = useCallback(() => {
     if (!selectedToken || selectedToken.balance === undefined) return;
+    setFocusedInput("selectedMarket");
     setSelectedMarketText(formatAmountFree(selectedToken.balance, selectedToken.decimals));
   }, [selectedToken]);
   const handleSelectedTokenInputValueChange = useCallback(
@@ -164,6 +170,7 @@ export function GmShiftBox({
     (marketInfo: MarketInfo): void => setToMarketAddress(marketInfo.marketTokenAddress),
     []
   );
+
   const handleSubmittedOrClosed = useCallback(() => {
     setIsConfirmationBoxVisible(false);
   }, []);
@@ -178,7 +185,9 @@ export function GmShiftBox({
           topRightValue={formatTokenAmount(selectedToken?.balance, selectedToken?.decimals, "", {
             useCommas: true,
           })}
-          onClickTopRightLabel={handleSelectedTokenClickTopRightLabel}
+          onClickTopRightLabel={handleSelectedTokenClickMax}
+          showMaxButton={selectedTokenShowMaxButton}
+          onClickMax={handleSelectedTokenClickMax}
           inputValue={selectedMarketText}
           onInputValueChange={handleSelectedTokenInputValueChange}
           onFocus={handleSelectedTokenFocus}
