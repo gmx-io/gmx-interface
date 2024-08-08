@@ -132,6 +132,6 @@ function serializeCustomFields(fields: Record<string, any>) {
       result = result.slice(0, 150);
     }
 
-    return v;
+    return result;
   });
 }
