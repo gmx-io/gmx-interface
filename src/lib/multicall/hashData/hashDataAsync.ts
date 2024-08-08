@@ -51,7 +51,7 @@ export function hashDataMapAsync<
   const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(1000).then(() => "timeout");
+  const escapePromise = sleep(2000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then((result) => {
