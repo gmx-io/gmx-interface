@@ -58,7 +58,8 @@ export default function ChartTokenSelector(props: Props) {
     <SelectorBase
       popoverPlacement="bottom-start"
       popoverYOffset={16}
-      popoverXOffset={0}
+      popoverXOffset={-8}
+      handleClassName={isMobile === false ? "mr-24" : undefined}
       chevronClassName={chevronClassName}
       label={
         selectedToken ? (
