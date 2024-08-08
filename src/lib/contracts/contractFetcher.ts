@@ -62,7 +62,7 @@ export const contractFetcher =
       }
 
       // eslint-disable-next-line no-console
-      console.info("using fallbackProvider for", method);
+      console.info("using fallbackProvider for", method, "because", error);
       const fallbackContractCall = fetchContractData({
         chainId,
         provider: fallbackProvider,
@@ -109,9 +109,10 @@ export const contractFetcher =
           handleFallback(resolve, reject, e);
         });
 
+      const timeout = priority === "urgent" ? 3000 : 7000;
       setTimeout(() => {
         handleFallback(resolve, reject, "contractCall timeout");
-      }, 2000);
+      }, timeout);
     });
   };
 
