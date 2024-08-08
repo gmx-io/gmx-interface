@@ -122,8 +122,14 @@ export function useMetrics() {
 
 function serializeCustomFields(fields: Record<string, any>) {
   return mapValues(fields, (v) => {
+    let result;
+
     if (typeof v === "bigint") {
-      return v.toString();
+      result = v.toString();
+    }
+
+    if (result.length && result.lenth > 150) {
+      result = result.slice(0, 150);
     }
 
     return v;
