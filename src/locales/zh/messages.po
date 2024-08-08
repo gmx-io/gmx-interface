@@ -4088,6 +4088,11 @@ msgstr "活跃总数： {openTotal}, 已执行: {executedTotal}, 已取消: {can
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h Low"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Chain Icon"
@@ -4767,10 +4772,6 @@ msgstr "开始转移"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact, review execution price."
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -6524,10 +6525,6 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "发送者已从GMX授权金库中撤回所有代币"
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
 msgstr "网络错误"
@@ -7162,6 +7159,11 @@ msgstr "交易"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
+msgstr ""
+
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h High"
 msgstr ""
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx

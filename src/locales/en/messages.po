@@ -4091,6 +4091,11 @@ msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancel
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h Low"
+msgstr "24h Low"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Chain Icon"
@@ -4770,10 +4775,6 @@ msgstr "Begin Transfer"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}."
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact, review execution price."
-#~ msgstr "Acknowledge High Price Impact, review execution price."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -6530,10 +6531,6 @@ msgstr "Invalid address. Please make sure you have entered a valid Ethereum addr
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
-#~ msgstr "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
-
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
 msgstr "Incorrect network"
@@ -7169,6 +7166,11 @@ msgstr "Swap"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "long"
+
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h High"
+msgstr "24h High"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
