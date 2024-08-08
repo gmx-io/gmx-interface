@@ -1,11 +1,9 @@
 import { ResolutionString } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import {
-  OracleFetcher,
-  DayPriceCandle,
-  RawIncentivesStats,
-  TickersResponse,
-} from "domain/synthetics/tokens/useOracleKeeperFetcher";
+import { TickersResponse } from "context/OracleKeeperContext/oracleKeeperFetcher";
+import { DayPriceCandle } from "context/OracleKeeperContext/oracleKeeperFetcher";
+import { RawIncentivesStats } from "context/OracleKeeperContext/oracleKeeperFetcher";
+import { OracleFetcher } from "context/OracleKeeperContext/oracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { ethers } from "ethers";
 import { noop } from "lodash";

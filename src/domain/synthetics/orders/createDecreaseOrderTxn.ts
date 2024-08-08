@@ -53,7 +53,8 @@ export async function createDecreaseOrderTxn(
   signer: Signer,
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
-  callbacks: DecreaseOrderCallbacks
+  callbacks: DecreaseOrderCallbacks,
+  metricId?: string
 ) {
   const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
@@ -115,6 +116,7 @@ export async function createDecreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    metricId,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

@@ -79,6 +79,10 @@ import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import "./PositionEditor.scss";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { getPositionOrderMetricId } from "context/MetricsContext/utils";
+import { helperToast } from "lib/helperToast";
+import { isUserRejectedActionError } from "lib/contracts/transactionErrors";
 
 export type Props = {
   allowedSlippage: number;
@@ -111,6 +115,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const metrics = useMetrics();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -320,6 +325,11 @@ export function PositionEditor(p: Props) {
       return;
     }
 
+    metrics.sendMetric({
+      event: "editCollateral.submitted",
+      isError: false,
+    });
+
     if (
       executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
@@ -329,8 +339,33 @@ export function PositionEditor(p: Props) {
       !selectedCollateralAddress ||
       !signer
     ) {
+      helperToast.error(t`Error submitting order`);
+      metrics.sendMetric({
+        event: "editCollateral.fail",
+        isError: true,
+        message: "Error submitting order, missed data",
+      });
       return;
     }
+
+    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
+
+    const metricData = {
+      metricType: "editCollateral",
+      marketAddress: position?.marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: selectedCollateralAddress,
+      initialCollateralDeltaAmount: collateralDeltaAmount,
+      targetCollateralAddress: position?.collateralTokenAddress,
+      collateralDeltaAmount,
+      sizeDeltaUsd: 0n,
+      swapPath: [],
+      isLong: position?.isLong,
+      orderType,
+      executionFee: executionFee?.feeTokenAmount,
+    };
+
+    const metricId = getPositionOrderMetricId(metricData);
+    metrics.setPendingEvent(metricId, metricData);
 
     let txnPromise: Promise<void>;
 
@@ -341,6 +376,7 @@ export function PositionEditor(p: Props) {
         chainId,
         signer,
         subaccount,
+        metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -412,6 +448,28 @@ export function PositionEditor(p: Props) {
       setIsSubmitting(false);
       return;
     }
+
+    txnPromise = txnPromise
+      .then(() => {
+        metrics.sendMetric({
+          event: "editCollateral.sent",
+          isError: false,
+          fields: metrics.getPendingEvent(metricId),
+        });
+        metrics.startTimer(metricId);
+
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        metrics.sendMetric({
+          event: `editCollateral.${isUserRejectedActionError(error) ? "rejected" : "fail"}`,
+          isError: true,
+          message: error.message,
+          fields: metrics.getPendingEvent(metricId, true),
+        });
+
+        throw error;
+      });
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);

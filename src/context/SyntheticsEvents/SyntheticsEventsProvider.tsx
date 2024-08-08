@@ -11,6 +11,7 @@ import {
   isIncreaseOrderType,
   isLiquidationOrderType,
   isMarketOrderType,
+  isSwapOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -43,6 +44,8 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { getPositionOrderMetricId, getSwapOrderMetricId } from "context/MetricsContext/utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -54,6 +57,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
+
+  const metrics = useMetrics();
 
   const { hasV2LostFocus } = useHasLostFocus();
 
@@ -101,6 +106,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
+      const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
+      const metricData = metrics.getPendingEvent(metricId);
+      const metricType = metricData?.metricType || "unknownOrder";
+
+      metrics.sendMetric({
+        event: `${metricType}.created`,
+        isError: false,
+        time: metrics.getTime(metricId),
+        fields: metricData,
+      });
+
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
           key: data.key,
@@ -138,6 +154,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
+      const order = orderStatuses[key]?.data;
+
+      if (order) {
+        const metricId = isSwapOrderType(order.orderType)
+          ? getSwapOrderMetricId(order)
+          : getPositionOrderMetricId(order);
+
+        const metricData = metrics.getPendingEvent(metricId, true);
+        const metricType = metricData?.metricType || "unknownOrder";
+
+        metrics.sendMetric({
+          event: `${metricType}.executed`,
+          isError: false,
+          time: metrics.getTime(metricId, true),
+          fields: metricData,
+        });
+      }
+
       setOrderStatuses((old) => {
         if (!old[key]) return old;
 
@@ -169,6 +203,23 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       });
 
       const order = orderStatuses[key]?.data;
+
+      if (order) {
+        const metricId = isSwapOrderType(order.orderType)
+          ? getSwapOrderMetricId(order)
+          : getPositionOrderMetricId(order);
+
+        const metricData = metrics.getPendingEvent(metricId, true);
+        const metricType = metricData?.metricType || "unknownOrder";
+
+        metrics.sendMetric({
+          event: `${metricType}.fail`,
+          isError: true,
+          message: `Order cancelled, key: ${order.key}, txn: ${txnParams.transactionHash}`,
+          time: metrics.getTime(metricId, true),
+          fields: metricData,
+        });
+      }
 
       // If pending user order is cancelled, reset the pending position state
       if (order && marketsInfoData) {
