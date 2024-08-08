@@ -150,7 +150,7 @@ export function GmConfirmationBox({
           longTokenAmount !== undefined &&
           longTokenAmount > 0 &&
           longToken &&
-          getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
+          getNeedTokenApprove(tokensAllowanceData, longToken.address, longTokenAmount)
         ) {
           addresses.push(longToken.address);
         }
@@ -159,7 +159,7 @@ export function GmConfirmationBox({
           shortTokenAmount !== undefined &&
           shortTokenAmount > 0 &&
           shortToken &&
-          getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
+          getNeedTokenApprove(tokensAllowanceData, shortToken.address, shortTokenAmount)
         ) {
           addresses.push(shortToken.address);
         }
