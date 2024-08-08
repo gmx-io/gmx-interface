@@ -988,8 +988,8 @@ table.Exchange-list-small td {
 }
 
 .VersionSwitch-wrapper {
-  padding: 1.5rem 0;
-  justify-content: flex-end;
+  padding: 1.5rem;
+  justify-content: center;
 }
 
 .ExchangeChart-header {

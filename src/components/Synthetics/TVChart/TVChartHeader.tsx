@@ -7,16 +7,12 @@ import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getToken, isChartAvailabeForToken } from "config/tokens";
 
 import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { Token } from "domain/tokens";
 
-import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 
 import { ReactComponent as LongIcon } from "img/long.svg";
 import { ReactComponent as ShortIcon } from "img/short.svg";
@@ -29,7 +25,7 @@ import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderToo
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
-
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const availableTokens = useSelector(selectAvailableChartTokens);
 
   const { chainId } = useChainId();
@@ -39,23 +35,19 @@ function TVChartHeaderInfoMobile() {
     isChartAvailabeForToken(chainId, token.symbol)
   );
 
-  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
-
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
-  const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-
-  const avgPrice = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
-
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
-
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const {
+    avgPrice,
     dailyVolume,
+    dayPriceDelta,
+    high24,
     liquidityLong,
     liquidityShort,
     longOIPercentage,
     longOIValue,
+    low24,
     netRateLong,
     netRateShort,
     shortOIPercentage,
@@ -74,6 +66,118 @@ function TVChartHeaderInfoMobile() {
 
   const isSmallMobile = useMedia("(max-width: 400px)");
 
+  const details = useMemo(() => {
+    if (!detailsVisible) {
+      return null;
+    }
+
+    if (isSwap) {
+      return (
+        <div
+          className={cx("grid gap-14 pt-16", {
+            "grid-cols-1 grid-rows-2": isSmallMobile,
+            "grid-cols-[repeat(2,_auto)] grid-rows-1": !isSmallMobile,
+          })}
+        >
+          <div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h High</Trans>
+            </div>
+            <div>{high24}</div>
+          </div>
+          <div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h Low</Trans>
+            </div>
+            <div>{low24}</div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={cx("grid gap-14 pt-16", {
+          "grid-cols-1 grid-rows-4": isSmallMobile,
+          "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
+        })}
+      >
+        <div>
+          <div className="ExchangeChart-info-label">
+            <Trans>Available Liquidity</Trans>
+          </div>
+          <div className="flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-8">
+              <LongIcon />
+              {liquidityLong}
+            </div>
+            <div className="flex flex-row items-center gap-8">
+              <ShortIcon />
+              {liquidityShort}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="ExchangeChart-info-label">
+            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate / 1h</Trans>
+            </TooltipWithPortal>
+          </div>
+          <div className="flex flex-row items-center gap-8">
+            <div>{netRateLong}</div>
+            <div>{netRateShort}</div>
+          </div>
+        </div>
+
+        <div>
+          <div className="whitespace-nowrap text-[1.25rem]">
+            <span className="opacity-70">
+              <Trans>Open Interest</Trans>
+              {" ("}
+            </span>
+            <span className="positive">{longOIPercentage}</span>
+            <span className="opacity-70">/</span>
+            <span className="negative">{shortOIPercentage}</span>
+            <span className="opacity-70">{")"}</span>
+          </div>
+          <div className="flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-8">
+              <LongIcon />
+              {longOIValue}
+            </div>
+            <div className="flex flex-row items-center gap-8">
+              <ShortIcon />
+              {shortOIValue}
+            </div>
+          </div>
+        </div>
+
+        <div className=" Chart-24h-low">
+          <div className="ExchangeChart-info-label">
+            <Trans>24h Volume</Trans>
+          </div>
+          {dailyVolume}
+        </div>
+      </div>
+    );
+  }, [
+    dailyVolume,
+    isSwap,
+    liquidityLong,
+    liquidityShort,
+    longOIPercentage,
+    longOIValue,
+    netRateLong,
+    netRateShort,
+    shortOIPercentage,
+    shortOIValue,
+    isSmallMobile,
+    detailsVisible,
+    high24,
+    low24,
+  ]);
+
   return (
     <div className="mb-10">
       <div className="grid grid-cols-[auto_100px]">
@@ -85,111 +189,33 @@ function TVChartHeaderInfoMobile() {
           <div
             className="mt-8 flex cursor-pointer flex-row items-center gap-8"
             role="button"
-            onClick={isSwap ? undefined : toggleDetailsVisible}
+            onClick={toggleDetailsVisible}
           >
-            {!isSwap && (
-              <span
-                className={cx("inline-flex cursor-pointer items-center justify-center rounded-4", {
-                  "bg-slate-700": !detailsVisible,
-                  "bg-slate-500": detailsVisible,
-                })}
-              >
-                {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
-              </span>
-            )}
-            <div className="ExchangeChart-avg-price mr-4">
-              {formatUsd(avgPrice, {
-                displayDecimals: oraclePriceDecimals,
-              }) || "..."}
-            </div>
-            <div className="ExchangeChart-daily-change">
-              <div
-                className={cx({
-                  positive: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage > 0,
-                  negative: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage < 0,
-                })}
-              >
-                {dayPriceDelta?.deltaPercentageStr || "-"}
-              </div>
-            </div>
+            <span
+              className={cx("inline-flex cursor-pointer items-center justify-center rounded-4", {
+                "bg-slate-700": !detailsVisible,
+                "bg-slate-500": detailsVisible,
+              })}
+            >
+              {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
+            </span>
+            <div className="ExchangeChart-avg-price mr-4">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
         </div>
         <div className="flex items-start justify-center">
           <VersionSwitch />
         </div>
       </div>
-      {detailsVisible && (
-        <div
-          className={cx("grid gap-14 pt-16", {
-            "grid-cols-1 grid-rows-4": isSmallMobile,
-            "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
-          })}
-        >
-          <div>
-            <div className="ExchangeChart-info-label">
-              <Trans>Available Liquidity</Trans>
-            </div>
-            <div className="flex flex-row items-center gap-8">
-              <div className="flex flex-row items-center gap-8">
-                <LongIcon />
-                {liquidityLong}
-              </div>
-              <div className="flex flex-row items-center gap-8">
-                <ShortIcon />
-                {liquidityShort}
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="ExchangeChart-info-label">
-              <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
-                <Trans>Net Rate / 1h</Trans>
-              </TooltipWithPortal>
-            </div>
-            <div className="flex flex-row items-center gap-8">
-              <div>{netRateLong}</div>
-              <div>{netRateShort}</div>
-            </div>
-          </div>
-
-          <div>
-            <div className="whitespace-nowrap text-[1.25rem]">
-              <span className="opacity-70">
-                <Trans>Open Interest</Trans>
-                {" ("}
-              </span>
-              <span className="positive">{longOIPercentage}</span>
-              <span className="opacity-70">/</span>
-              <span className="negative">{shortOIPercentage}</span>
-              <span className="opacity-70">{")"}</span>
-            </div>
-            <div className="flex flex-row items-center gap-8">
-              <div className="flex flex-row items-center gap-8">
-                <LongIcon />
-                {longOIValue}
-              </div>
-              <div className="flex flex-row items-center gap-8">
-                <ShortIcon />
-                {shortOIValue}
-              </div>
-            </div>
-          </div>
-
-          <div className=" Chart-24h-low">
-            <div className="ExchangeChart-info-label">
-              <Trans>24h Volume</Trans>
-            </div>
-            {dailyVolume}
-          </div>
-        </div>
-      )}
+      {details}
     </div>
   );
 }
 
 function TVChartHeaderInfoDesktop() {
   const chartToken = useSelector(selectChartToken);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+
   const scrollableRef = useRef<HTMLDivElement | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -205,14 +231,7 @@ function TVChartHeaderInfoDesktop() {
     isChartAvailabeForToken(chainId, token.symbol)
   );
 
-  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
-
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
-  const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-
-  const avgPrice = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
-
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const setScrolls = useCallback(() => {
     const scrollable = scrollableRef.current;
@@ -255,11 +274,15 @@ function TVChartHeaderInfoDesktop() {
   }, [scrollRight, maxFadeArea]);
 
   const {
+    avgPrice,
     dailyVolume,
+    dayPriceDelta,
+    high24,
     liquidityLong,
     liquidityShort,
     longOIPercentage,
     longOIValue,
+    low24,
     netRateLong,
     netRateShort,
     shortOIPercentage,
@@ -268,7 +291,22 @@ function TVChartHeaderInfoDesktop() {
 
   const additionalInfo = useMemo(() => {
     if (isSwap) {
-      return null;
+      return (
+        <>
+          <div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h High</Trans>
+            </div>
+            <div>{high24}</div>
+          </div>
+          <div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h Low</Trans>
+            </div>
+            <div>{low24}</div>
+          </div>
+        </>
+      );
     }
 
     return (
@@ -303,12 +341,16 @@ function TVChartHeaderInfoDesktop() {
           <div className="whitespace-nowrap text-[1.25rem]">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
-              {" ("}
             </span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="opacity-70">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="opacity-70">{")"}</span>
+            {longOIPercentage && shortOIPercentage && (
+              <>
+                {" ("}
+                <span className="positive">{longOIPercentage}</span>
+                <span className="opacity-70">/</span>
+                <span className="negative">{shortOIPercentage}</span>
+                <span className="opacity-70">{")"}</span>
+              </>
+            )}
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">
@@ -338,11 +380,13 @@ function TVChartHeaderInfoDesktop() {
     netRateShort,
     shortOIPercentage,
     shortOIValue,
+    high24,
+    low24,
   ]);
 
   return (
     <div className="Chart-header mb-10">
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-start pl-8">
         <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile={false} />
       </div>
       <div className="Chart-top-scrollable-container">
@@ -364,21 +408,8 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="ExchangeChart-avg-price">
-              {formatUsd(avgPrice, {
-                displayDecimals: oraclePriceDecimals,
-              }) || "..."}
-            </div>
-            <div className="ExchangeChart-daily-change">
-              <div
-                className={cx({
-                  positive: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage > 0,
-                  negative: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage < 0,
-                })}
-              >
-                {dayPriceDelta?.deltaPercentageStr || "-"}
-              </div>
-            </div>
+            <div className="ExchangeChart-avg-price">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
         </div>
