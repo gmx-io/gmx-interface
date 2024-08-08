@@ -15,6 +15,7 @@ import "./SelectorBase.scss";
 
 type Props = PropsWithChildren<{
   handleClassName?: string;
+  chevronClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -81,8 +82,17 @@ export function SelectorBaseDesktopRow(
   props: React.HTMLAttributes<HTMLTableRowElement> & {
     disabled?: boolean;
     disabledMessage?: ReactNode;
+    message?: ReactNode;
   }
 ) {
+  const body = useMemo(() => {
+    if (props.message) {
+      return <TooltipWithPortal content={props.message}>{props.children}</TooltipWithPortal>;
+    }
+
+    return props.children;
+  }, [props.children, props.message]);
+
   if (props.disabled && props.disabledMessage) {
     return (
       <TooltipWithPortal
@@ -107,7 +117,7 @@ export function SelectorBaseDesktopRow(
         props.className
       )}
     >
-      {props.children}
+      {body}
     </tr>
   );
 }
@@ -160,7 +170,7 @@ function SelectorBaseDesktop(props: Props) {
             ref={refs.setReference}
           >
             {props.label}
-            <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />
+            <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
@@ -204,7 +214,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />}
+        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 inline-block align-middle text-24" />}
       </div>
       <Modal
         setIsVisible={setIsVisible}

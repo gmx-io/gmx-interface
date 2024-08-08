@@ -1,33 +1,35 @@
-import { useCallback, useMemo } from "react";
-import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
-import { convertToTokenAmount } from "../tokens";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxMarketInfo,
-  selectTradeboxTradeFlags,
   selectTradeboxCollateralToken,
-  selectTradeboxIncreasePositionAmounts,
-  selectTradeboxTriggerPrice,
-  selectTradeboxMarkPrice,
-  selectTradeboxSelectedPosition,
-  selectTradeboxNextPositionValues,
   selectTradeboxFindSwapPath,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarkPrice,
+  selectTradeboxMarketInfo,
+  selectTradeboxNextPositionValues,
+  selectTradeboxSelectedPosition,
+  selectTradeboxTradeFlags,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
-  selectConfirmationBoxSidecarOrdersExistingSlEntries,
-  selectConfirmationBoxSidecarOrdersExistingTpEntries,
-  selectConfirmationBoxSidecarOrdersExistingLimitEntries,
-} from "context/SyntheticsStateContext/selectors/sidecarOrdersSelectors";
-import { selectConfirmationBoxMockPosition } from "context/SyntheticsStateContext/selectors/confirmationBoxSelectors";
-import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
-import { handleEntryError, getCommonError } from "./utils";
+  selectTradeboxMockPosition,
+  selectTradeboxSidecarEntriesSetIsUntouched,
+  selectTradeboxSidecarOrdersExistingLimitEntries,
+  selectTradeboxSidecarOrdersExistingSlEntries,
+  selectTradeboxSidecarOrdersExistingTpEntries,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
-import { SidecarOrderEntry, SidecarSlTpOrderEntryValid, SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "./types";
+import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
+import { useCallback, useEffect, useMemo } from "react";
+import { convertToTokenAmount } from "../tokens";
+import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
+import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
+import { getCommonError, handleEntryError } from "./utils";
+import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 
 export * from "./types";
 
@@ -35,6 +37,7 @@ export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
+  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
@@ -46,9 +49,11 @@ export function useSidecarOrders() {
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
 
-  const existingLimitOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingLimitEntries);
-  const existingSlOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingSlEntries);
-  const existingTpOrderEntries = useSelector(selectConfirmationBoxSidecarOrdersExistingTpEntries);
+  const existingLimitOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingLimitEntries);
+  const existingSlOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
+  const existingTpOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
+
+  const doesEntriesChanged = useSidecarOrdersChanged();
 
   const handleLimitErrors = useCallback(
     (entry: SidecarLimitOrderEntry) =>
@@ -152,7 +157,7 @@ export function useSidecarOrders() {
     enablePercentage: true,
   });
 
-  const mockPositionInfo = useSelector(selectConfirmationBoxMockPosition);
+  const mockPositionInfo = useSelector(selectTradeboxMockPosition);
 
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
@@ -348,9 +353,29 @@ export function useSidecarOrders() {
     };
   }, [getDecreaseAmountsFromEntry, takeProfitEntriesInfo, canCalculatePnL]);
 
+  const reset = useCallback(() => {
+    limit.reset();
+    stopLoss.reset();
+    takeProfit.reset();
+  }, [limit, stopLoss, takeProfit]);
+
+  useEffect(() => {
+    if (doesEntriesChanged) {
+      reset();
+      /**
+       * We need to reset the untouched state to false, to prevent next init on [./useSidecarOrdersGroup.ts#L115]
+       * from UI perspective this prevents cursor focus loose without input change
+       */
+      setIsUntouched("limit", false);
+      setIsUntouched("sl", false);
+      setIsUntouched("tp", false);
+    }
+  }, [doesEntriesChanged, reset, setIsUntouched]);
+
   return {
     stopLoss,
     takeProfit,
     limit,
+    reset,
   };
 }

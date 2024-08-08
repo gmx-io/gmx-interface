@@ -1,11 +1,11 @@
-import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
+import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
+import { bigMath } from "lib/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
 import { FeeItem } from "../fees";
 import { TradeFlags } from "./types";
-import { bigMath } from "lib/bigmath";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
@@ -17,7 +17,7 @@ export function usePriceImpactWarningState({
 }: {
   positionPriceImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
-  place: "tradeBox" | "positionSeller" | "confirmationBox";
+  place: "tradeBox" | "positionSeller";
   tradeFlags: TradeFlags;
 }) {
   const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
@@ -36,7 +36,7 @@ export function usePriceImpactWarningState({
   const isHighPositionImpact = Boolean(
     positionPriceImpact &&
       positionPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionPriceImpact.bps) >= HIGH_POSITION_IMPACT_BPS
+      bigMath.abs(positionPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
   );
 
   const isHighSwapImpact = Boolean(
@@ -69,14 +69,14 @@ export function usePriceImpactWarningState({
 
     if (place === "tradeBox") {
       validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
-      shouldShowWarning = isHighSwapImpact;
       shouldShowWarningForSwap = isHighSwapImpact;
-    } else if (place === "confirmationBox") {
+
       if (!tradeFlags.isSwap) {
-        validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
-        shouldShowWarning = isHighPositionImpact;
+        validationError = validationError || (isHighPositionImpact && !isHighPositionImpactAccepted);
         shouldShowWarningForPosition = isHighPositionImpact;
       }
+
+      shouldShowWarning = isHighSwapImpact || isHighPositionImpact;
     } else if (place === "positionSeller") {
       validationError =
         (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);

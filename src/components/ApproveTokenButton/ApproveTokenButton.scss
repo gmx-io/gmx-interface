@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: var(--font-sm);
-  direction: ltr !important;
+  flex-direction: row !important;
 }
 
 .ApproveTokenButton-spin {

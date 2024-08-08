@@ -10,9 +10,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import {
-  GeneralPerformanceDetailsDebugTooltip,
-} from "./generalPerformanceDetailsDebug";
+import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
 import { usePnlSummaryData, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
 
 const bucketLabelMap = {
@@ -168,5 +166,3 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
     </tr>
   );
 }
-
-

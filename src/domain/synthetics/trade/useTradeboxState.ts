@@ -9,6 +9,7 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getToken, isSimilarToken } from "config/tokens";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -24,9 +25,10 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
+import { useSidecarOrdersState } from "./useSidecarOrdersState";
 import { MarketInfo } from "domain/synthetics/markets";
 
-type TradeStage = "trade" | "confirmation" | "processing";
+export type TradeStage = "trade" | "processing";
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -38,6 +40,11 @@ type TradeOptions = {
 };
 
 export type TradeboxState = ReturnType<typeof useTradeboxState>;
+
+export interface TradeboxAdvancedOptions {
+  advancedDisplay: boolean;
+  limitOrTPSL: boolean;
+}
 
 type StoredTradeOptions = {
   tradeType: TradeType;
@@ -59,6 +66,7 @@ type StoredTradeOptions = {
       short?: string;
     };
   };
+  advanced?: TradeboxAdvancedOptions;
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -67,10 +75,15 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
   tokens: {},
   markets: {},
   collaterals: {},
+  advanced: {
+    advancedDisplay: false,
+    limitOrTPSL: false,
+  },
 };
 
 export function useTradeboxState(
   chainId: number,
+  enabled: boolean,
   p: {
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
@@ -130,12 +143,17 @@ export function useTradeboxState(
     [chainId]
   );
 
+  const { savedAllowedSlippage } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
+  const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
+
   useEffect(
     function handleChainChange() {
       if (syncedChainId === chainId) {
         return;
       }
+
+      if (!enabled) return;
 
       const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
 
@@ -178,6 +196,7 @@ export function useTradeboxState(
       availableIndexTokensAddresses,
       availableTokensOptions.sortedAllMarkets,
       chainId,
+      enabled,
       setStoredOptionsOnChain,
       syncedChainId,
     ]
@@ -224,6 +243,10 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+
+  const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
+    storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
+  );
 
   const { swapTokens } = availableTokensOptions;
 
@@ -363,6 +386,10 @@ export function useTradeboxState(
   }, [setStoredOptions]);
 
   const isSwitchTokensAllowed = useMemo(() => {
+    if (!enabled) {
+      return false;
+    }
+
     if (storedOptions.tradeType === TradeType.Swap) {
       return true;
     }
@@ -396,7 +423,7 @@ export function useTradeboxState(
       isSimilarToken(getToken(chainId, desirablePayAddress), getToken(chainId, nextPayAddress)) ||
       isSimilarToken(getToken(chainId, desirableToAddress), getToken(chainId, nextToAddress))
     );
-  }, [chainId, storedOptions, availableSwapTokenAddresses, availableTokensOptions.sortedAllMarkets]);
+  }, [enabled, storedOptions, chainId, availableSwapTokenAddresses, availableTokensOptions.sortedAllMarkets]);
 
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
@@ -511,8 +538,14 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const sidecarOrders = useSidecarOrdersState();
+
   useEffect(
     function fallbackStoredOptions() {
+      if (!enabled) {
+        return;
+      }
+
       if (availableSwapTokenAddresses.length === 0 && values(marketAddressIndexTokenMap).length === 0) {
         return;
       }
@@ -523,20 +556,28 @@ export function useTradeboxState(
 
       setStoredOptions((oldState) => ({ ...oldState }));
     },
-    [availableSwapTokenAddresses.length, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
+    [availableSwapTokenAddresses.length, enabled, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );
 
   useEffect(
     function updateTradeMode() {
+      if (!enabled) {
+        return;
+      }
+
       if (tradeType && tradeMode && !avaialbleTradeModes.includes(tradeMode)) {
         setTradeMode(avaialbleTradeModes[0]);
       }
     },
-    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode]
+    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode, enabled]
   );
 
   useEffect(
     function updateSwapTokens() {
+      if (!enabled) {
+        return;
+      }
+
       if (!isSwap || !swapTokens.length) {
         return;
       }
@@ -553,8 +594,17 @@ export function useTradeboxState(
         setToTokenAddress(swapTokens[0].address);
       }
     },
-    [fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
+    [enabled, fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
   );
+
+  useEffect(() => {
+    setStoredOptionsOnChain((oldState) => {
+      return {
+        ...oldState,
+        advanced: advancedOptions,
+      };
+    });
+  }, [advancedOptions, setStoredOptionsOnChain]);
 
   return {
     tradeType,
@@ -568,6 +618,7 @@ export function useTradeboxState(
     collateralToken,
     availableTokensOptions,
     avaialbleTradeModes,
+    sidecarOrders,
     isSwitchTokensAllowed,
     setActivePosition,
     setFromTokenAddress,
@@ -606,6 +657,10 @@ export function useTradeboxState(
     setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
+    advancedOptions,
+    setAdvancedOptions,
+    allowedSlippage,
+    setAllowedSlippage,
   };
 }
 

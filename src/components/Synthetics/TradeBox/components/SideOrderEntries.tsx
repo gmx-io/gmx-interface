@@ -1,18 +1,19 @@
-import { useRef, useMemo, useCallback } from "react";
-import cx from "classnames";
-import { FaPlus } from "react-icons/fa";
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { SidecarOrderEntryGroup, SidecarOrderEntry } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
+import { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
+import { useCallback, useMemo, useRef } from "react";
+import { FaPlus } from "react-icons/fa";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useMedia } from "react-use";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 const ADD_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-green-500) 15%,#0000)" };
@@ -107,8 +108,16 @@ function SideOrderEntry({
   const addRowTooltip = useMemo(() => <span>{t`Add Row`}</span>, []);
   const removeRowTooltip = useMemo(() => <span>{t`Remove Row`}</span>, []);
 
+  const isSmallMobile = useMedia("(max-width: 375px)");
+
   return (
-    <div className={cx("flex flex-row gap-10")} key={entry.id}>
+    <div
+      className={cx("flex flex-row", {
+        "gap-10": !isSmallMobile,
+        "gap-4": isSmallMobile,
+      })}
+      key={entry.id}
+    >
       <div
         className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
           "border-red-500": !!priceError,
@@ -124,7 +133,10 @@ function SideOrderEntry({
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className="max-w-90 rounded-4 py-2 pr-5 text-right text-14"
+          className={cx("rounded-4 py-2 pr-5 text-right text-14", {
+            "max-w-60": isSmallMobile,
+            "max-w-90": !isSmallMobile,
+          })}
         />
 
         {priceError && (

@@ -7,7 +7,6 @@ import { useAccount } from "wagmi";
 import usePagination from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { GM_POOL_PRICE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -26,7 +25,7 @@ import {
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sortGmTokensByField } from "./sortGmTokensByField";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
@@ -228,11 +227,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                       </div>
                       {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
                     </ExchangeTd>
-                    <ExchangeTd>
-                      {formatUsd(token.prices?.minPrice, {
-                        displayDecimals: GM_POOL_PRICE_DECIMALS,
-                      })}
-                    </ExchangeTd>
+                    <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
 
                     <ExchangeTd>
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
@@ -262,7 +257,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                     </ExchangeTd>
 
                     <ExchangeTd>
-                      <AprInfo apy={apy} incentiveApr={incentiveApr} />
+                      <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
                     </ExchangeTd>
 
                     <ExchangeTd className="w-[350px]">

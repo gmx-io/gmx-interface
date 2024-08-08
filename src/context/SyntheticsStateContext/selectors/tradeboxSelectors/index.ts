@@ -1,11 +1,15 @@
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { convertTokenAddress } from "config/tokens";
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "domain/synthetics/fees";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -18,8 +22,8 @@ import {
   SwapAmounts,
   TradeFeesType,
   TradeType,
-  getNextPositionExecutionPrice,
   getMarkPrice,
+  getNextPositionExecutionPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   getTradeFees,
@@ -38,6 +42,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
 } from "../globalSelectors";
+import { selectIsPnlInLeverage } from "../settingsSelectors";
 import {
   createTradeFlags,
   makeSelectDecreasePositionAmounts,
@@ -47,16 +52,13 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
-import { selectIsPnlInLeverage } from "../settingsSelectors";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { bigMath } from "lib/bigmath";
 
-export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
-export * from "./selectTradeboxChooseSuitableMarket";
-export * from "./selectTradeboxAvailableMarketsOptions";
-export * from "./selectTradeboxRelatedMarketsStats";
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
+export * from "./selectTradeboxAvailableMarketsOptions";
+export * from "./selectTradeboxChooseSuitableMarket";
+export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -68,7 +70,7 @@ export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
-export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox.marketInfo;
+export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.marketInfo;
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
@@ -82,10 +84,15 @@ export const selectTradeboxFixedTriggerThresholdType = (s: SyntheticsState) => s
 export const selectTradeboxFixedTriggerOrderType = (s: SyntheticsState) => s.tradebox.fixedTriggerOrderType;
 export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.defaultTriggerAcceptablePriceImpactBps;
+export const selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
+  s.tradebox.setDefaultTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSelectedTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.selectedTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetSelectedAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAcceptablePriceImpactBps;
+export const selectTradeboxSetFixedTriggerOrderType = (s: SyntheticsState) => s.tradebox.setFixedTriggerOrderType;
+export const selectTradeboxSetFixedTriggerThresholdType = (s: SyntheticsState) =>
+  s.tradebox.setFixedTriggerThresholdType;
 export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
@@ -97,6 +104,10 @@ export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebo
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
+export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
+export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
+export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
+export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -413,6 +424,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       return getTradeFees({
         initialCollateralUsd: swapAmounts.usdIn,
+        collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapPathStats.swapSteps,
         positionFeeUsd: 0n,
@@ -435,6 +447,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       return getTradeFees({
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
+        collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
         positionFeeUsd: increaseAmounts.positionFeeUsd,
@@ -450,13 +463,22 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
     }
     case "decrease": {
       const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+      const position = q(selectTradeboxSelectedPosition);
 
-      if (!decreaseAmounts) return undefined;
+      if (!decreaseAmounts || !position) return undefined;
 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
+      const sizeReductionBps = bigMath.mulDiv(
+        decreaseAmounts.sizeDeltaUsd,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.sizeInUsd
+      );
+      const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
+
       return getTradeFees({
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
+        collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
@@ -814,4 +836,18 @@ export const selectTradeboxMarketsSortMap = createSelector((q) => {
     acc[market.indexTokenAddress] = idx;
     return acc;
   }, {});
+});
+
+export const selectTradeboxToToken = createSelector((q) => {
+  const toToken = q(selectTradeboxToTokenAddress);
+  const tokenData = q(selectTokensData);
+
+  return getByKey(tokenData, toToken);
+});
+
+export const selectTradeboxFromToken = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromTokenAddress);
+  const tokenData = q(selectTokensData);
+
+  return getByKey(tokenData, fromToken);
 });
