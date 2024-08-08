@@ -16,7 +16,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
   MarketsInfoData,
-  UserEarningsData,
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
@@ -66,8 +65,6 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId);
   const userEarnings = useUserEarnings(chainId);
-  const { showDebugValues } = useSettings();
-  const daysConsidered = useDaysConsideredInMarketsApr();
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchText, setSearchText] = useState("");
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
@@ -186,14 +183,9 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
               currentData.map((token) => (
                 <GmListItem
                   key={token.address}
-                  marketsInfoData={marketsInfoData}
-                  tokensData={tokensData}
                   token={token}
                   marketsTokensApyData={marketsTokensApyData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-                  userEarnings={userEarnings}
-                  showDebugValues={showDebugValues}
-                  daysConsidered={daysConsidered}
                   shouldScrollToTop={shouldScrollToTop}
                   isShiftAvailable={shiftAvailableMarketAddressSet.has(token.address)}
                 />
@@ -324,28 +316,25 @@ function useFilterSortGmPools({
 }
 
 function GmListItem({
-  marketsInfoData,
-  tokensData,
   token,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
-  userEarnings,
-  showDebugValues,
-  daysConsidered,
   shouldScrollToTop,
   isShiftAvailable,
 }: {
-  marketsInfoData: MarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
-  userEarnings: UserEarningsData | null;
-  showDebugValues: boolean;
-  daysConsidered: number;
   shouldScrollToTop: boolean | undefined;
   isShiftAvailable: boolean;
 }) {
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const userEarnings = useUserEarnings(chainId);
+  const daysConsidered = useDaysConsideredInMarketsApr();
+  const { showDebugValues } = useSettings();
+
   const market = getByKey(marketsInfoData, token?.address)!;
 
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
