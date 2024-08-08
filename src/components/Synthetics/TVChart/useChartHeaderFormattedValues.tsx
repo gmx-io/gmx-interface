@@ -86,9 +86,12 @@ export function useChartHeaderFormattedValues() {
   const [longOIValue, longOIPercentage] = useMemo(() => {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
       return [
-        <span key="long-oi-value" className="whitespace-nowrap">
-          ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
-        </span>,
+        <>
+          <LongIcon />
+          <span key="long-oi-value" className="whitespace-nowrap">
+            ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
+          </span>
+        </>,
         formatPercentageDisplay(info.longOpenInterestPercentage),
       ];
     }
@@ -99,9 +102,12 @@ export function useChartHeaderFormattedValues() {
   const [shortOIValue, shortOIPercentage] = useMemo(() => {
     if (info?.shortOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
       return [
-        <span key="short-oi-value" className="whitespace-nowrap">
-          ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
-        </span>,
+        <>
+          <ShortIcon />
+          <span key="short-oi-value" className="whitespace-nowrap">
+            ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
+          </span>
+        </>,
         formatPercentageDisplay(info.shortOpenInterestPercentage),
       ];
     }
@@ -119,7 +125,11 @@ export function useChartHeaderFormattedValues() {
     return (
       <TooltipWithPortal
         disableHandleStyle
-        handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
+        handle={
+          <span className="flex items-center justify-center gap-4">
+            <LongIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+          </span>
+        }
         position="bottom-end"
         content={<AvailableLiquidityTooltip isLong />}
       />
@@ -136,7 +146,11 @@ export function useChartHeaderFormattedValues() {
     return (
       <TooltipWithPortal
         disableHandleStyle
-        handle={`$${formatAmountHuman(liquidity, USD_DECIMALS)}`}
+        handle={
+          <span className="flex items-center justify-center gap-4">
+            <ShortIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+          </span>
+        }
         position="bottom-end"
         content={<AvailableLiquidityTooltip isLong={false} />}
       />
