@@ -183,7 +183,11 @@ function TVChartHeaderInfoMobile() {
       <div className="grid grid-cols-[auto_100px]">
         <div>
           <div className="inline-flex">
-            <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile />
+            <ChartTokenSelector
+              selectedToken={selectedTokenOption}
+              options={tokenOptions}
+              oneRowLabels={!isSmallMobile}
+            />
           </div>
 
           <div
@@ -383,7 +387,7 @@ function TVChartHeaderInfoDesktop() {
   return (
     <div className="Chart-header mb-10">
       <div className="flex items-center justify-start pl-8">
-        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} isMobile={false} />
+        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} oneRowLabels={false} />
       </div>
       <div className="Chart-top-scrollable-container">
         <div className="Chart-top-scrollable-fade-overlay">
