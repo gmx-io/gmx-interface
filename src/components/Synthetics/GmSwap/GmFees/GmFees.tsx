@@ -68,11 +68,7 @@ export function GmFees(p: Props) {
 
               {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
-                  label={
-                    <>
-                      <Trans>UI Fee</Trans>:
-                    </>
-                  }
+                  label={t`UI Fee`}
                   value={formatDeltaUsd(p.uiFee?.deltaUsd, p.uiFee?.bps)!}
                   showDollar={false}
                   textClassName="text-red-500"
@@ -81,7 +77,7 @@ export function GmFees(p: Props) {
 
               {p.shiftFee !== undefined && (
                 <StatsTooltipRow
-                  label={<Trans>Shift Fee</Trans>}
+                  label={t`Shift Fee`}
                   value={formatDeltaUsd(p.shiftFee.deltaUsd, p.shiftFee.bps)!}
                   showDollar={false}
                 />
