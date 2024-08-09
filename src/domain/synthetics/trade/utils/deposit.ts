@@ -1,9 +1,9 @@
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { DepositAmounts } from "../types";
-import { applyFactor } from "lib/numbers";
 import { bigMath } from "lib/bigmath";
+import { applyFactor } from "lib/numbers";
+import { DepositAmounts } from "../types";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
