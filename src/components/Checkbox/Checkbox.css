@@ -40,13 +40,14 @@
   vertical-align: middle;
   font-size: var(--font-sm);
   text-align: left;
+  flex: 1;
 }
 
 .Checkbox.fullRow {
   width: 100%;
-  display: grid;
+  display: flex;
   grid-template-columns: 1fr auto;
-  direction: rtl;
+  flex-direction: row-reverse;
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }

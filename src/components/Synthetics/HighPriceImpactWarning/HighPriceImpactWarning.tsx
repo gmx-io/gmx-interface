@@ -25,7 +25,7 @@ export function HighPriceImpactWarning({ priceImpactWarningState, className }: P
           qa="high-price-impact-warning"
         >
           <span className="text-14 text-yellow-500">
-            <Trans>Acknowledge high Price Impact</Trans>
+            <Trans>High price impact, review execution price.</Trans>
           </span>
         </Checkbox>
       )}
