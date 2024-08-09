@@ -36,6 +36,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
+import { MetricsContextProvider, useMetrics } from "context/MetricsContext/MetricsContext";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -53,6 +54,7 @@ const SWRConfigProp = {
 function App() {
   const signer = useEthersSigner();
   const { chainId } = useChainId();
+  const metrics = useMetrics();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
@@ -73,6 +75,20 @@ function App() {
                 <br />
               </div>
             );
+
+            if (pendingTxn.metricId) {
+              const metricData = metrics.getPendingEvent(pendingTxn.metricId, true);
+              const metricType = metricData?.metricType || "unknownTxn";
+
+              metrics?.sendMetric({
+                event: `${metricType}.failed`,
+                isError: true,
+                fields: {
+                  metricId: pendingTxn.metricId,
+                  ...(metricData || {}),
+                },
+              });
+            }
           }
 
           if (receipt.status === 1 && pendingTxn.message) {
@@ -103,7 +119,7 @@ function App() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId]);
+  }, [signer, pendingTxns, chainId, metrics]);
 
   useScrollToTop();
 
@@ -115,8 +131,9 @@ function App() {
   let app = <AppRoutes />;
   app = <IndexTokensFavoritesContextProvider>{app}</IndexTokensFavoritesContextProvider>;
   app = <GmTokensFavoritesContextProvider>{app}</GmTokensFavoritesContextProvider>;
-  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <MetricsContextProvider>{app}</MetricsContextProvider>;
+  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;

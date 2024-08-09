@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -14,6 +14,7 @@ import { getByKey } from "lib/objects";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -26,9 +27,11 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
+  const [isLoaded, setIsLoaded] = useState(false);
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
+  const metrics = useMetrics();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -39,6 +42,22 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
+
+  useEffect(() => {
+    metrics.startTimer("positionsList");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (positionsInfoData && !isLoaded) {
+      metrics.sendMetric({
+        event: "positionsListLoad.success",
+        isError: false,
+        time: metrics.getTime("positionsList"),
+      });
+      setIsLoaded(true);
+    }
+  }, [isLoaded, metrics, positionsInfoData]);
 
   return (
     <div>

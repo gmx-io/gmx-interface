@@ -1,17 +1,85 @@
-import { getAccount } from "@wagmi/core";
 import CustomErrors from "abis/CustomErrors.json";
 import { isDevelopment, isLocal } from "config/env";
 import cryptoJs from "crypto-js";
 import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
-import { useEffect } from "react";
-import { extractError } from "./contracts/transactionErrors";
-import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
-import { useLocalStorageSerializeKey } from "./localStorage";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { extractError } from "../../lib/contracts/transactionErrors";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
+import useIsMetamaskMobile from "../../lib/wallets/useIsMetamaskMobile";
+import { useChainId } from "../../lib/chains";
+import { getWalletNames } from "../../lib/wallets/getWalletNames";
+import { getAppVersion } from "../../lib/version";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
+
+export function useUiMetrics() {
+  const { chainId } = useChainId();
+  const fetcher = useOracleKeeperFetcher(chainId);
+  const subaccountAddress = useSubaccountAddress();
+  const isMetamaskMobile = useIsMetamaskMobile();
+
+  const pendingEvents = useRef({});
+  const timers = useRef({});
+
+  const setPendingEvent = useCallback((key: string, eventData: any) => {
+    pendingEvents[key] = eventData;
+    return eventData;
+  }, []);
+
+  const getPendingEvent = useCallback((key: string, clear?: boolean) => {
+    const event = pendingEvents[key];
+
+    if (clear) {
+      pendingEvents[key] = undefined;
+    }
+
+    return event;
+  }, []);
+
+  const sendMetric = useCallback(
+    async function sendMetric(params: {
+      event: string;
+      fields?: any;
+      time?: number;
+      isError: boolean;
+      message?: string;
+    }) {
+      const { time, isError, fields, message, event } = params;
+      const wallets = await getWalletNames();
+
+      const body = {
+        is1ct: Boolean(subaccountAddress),
+        isDev: isDevelopment(),
+        host: window.location.host,
+        url: window.location.href,
+        wallet: wallets.current,
+        event: event,
+        version: getAppVersion(),
+        isError,
+        time,
+        isMetamaskMobile,
+        message,
+        customFields: fields,
+      };
+
+      fetcher.fetchPostReport2(body);
+    },
+    [fetcher, isMetamaskMobile, subaccountAddress]
+  );
+
+  return useMemo(
+    () => ({
+      sendMetric,
+      setPendingEvent,
+      getPendingEvent,
+    }),
+    [getPendingEvent, sendMetric, setPendingEvent]
+  );
+}
 
 export function useErrorReporting(chainId: number) {
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -152,31 +220,3 @@ function hasStack(error: unknown): error is { stack: string } {
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
 }
-
-function getAppVersion() {
-  return process.env.REACT_APP_VERSION;
-}
-
-async function getWalletNames() {
-  try {
-    const walletNames = new Set<string>();
-
-    for (const connector of rainbowKitConfig.connectors) {
-      const isAuthorized = await connector.isAuthorized();
-      if (isAuthorized) {
-        walletNames.add(connector.name);
-      }
-    }
-
-    return { current: getAccount(rainbowKitConfig).connector?.name, authorized: [...walletNames] };
-  } catch (e) {
-    return {
-      current: null,
-      authorized: [],
-      error: true,
-    };
-  }
-}
-
-(window as any).getWalletNames = getWalletNames;
-(window as any).getAppVersion = getAppVersion;

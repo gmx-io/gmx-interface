@@ -26,6 +26,7 @@ export async function callContract(
     failMsg?: string;
     customSigners?: Wallet[];
     setPendingTxns?: (txns: any) => void;
+    metricId?: string;
   }
 ) {
   try {
@@ -126,6 +127,7 @@ export async function callContract(
         hash: res.hash,
         message,
         messageDetails: opts.detailsMsg,
+        metricId: opts.metricId,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

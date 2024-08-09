@@ -81,6 +81,7 @@ export async function createIncreaseOrderTxn({
   chainId,
   signer,
   subaccount,
+  metricId,
   createIncreaseOrderParams: p,
   createDecreaseOrderParams,
   cancelOrderParams,
@@ -89,6 +90,7 @@ export async function createIncreaseOrderTxn({
   chainId: number;
   signer: Signer;
   subaccount: Subaccount;
+  metricId?: string;
   createIncreaseOrderParams: IncreaseOrderParams;
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
@@ -225,6 +227,7 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    metricId,
     setPendingTxns: p.setPendingTxns,
   });
 

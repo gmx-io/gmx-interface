@@ -68,6 +68,10 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import "./PositionSeller.scss";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { getPositionOrderMetricId } from "context/MetricsContext/utils";
+import { helperToast } from "lib/helperToast";
+import { isUserRejectedActionError } from "lib/contracts/transactionErrors";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -87,6 +91,7 @@ export function PositionSeller(p: Props) {
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const tokensData = useTokensData();
+  const metrics = useMetrics();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -273,6 +278,19 @@ export function PositionSeller(p: Props) {
     }
 
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    let metricType: string;
+    if (isTrigger) {
+      metricType = "triggerOrder";
+    } else if (decreaseAmounts?.isFullClose) {
+      metricType = "closePosition";
+    } else {
+      metricType = "decreasePosition";
+    }
+
+    metrics.sendMetric({
+      event: `${metricType}.submitted`,
+      isError: false,
+    });
 
     if (
       !tokensData ||
@@ -284,8 +302,33 @@ export function PositionSeller(p: Props) {
       !signer ||
       !orderType
     ) {
+      helperToast.error(t`Error submitting order`);
+      metrics.sendMetric({
+        event: `${metricType}.fail`,
+        isError: true,
+        message: "Error submitting order, missed data",
+      });
       return;
     }
+
+    const metricData = {
+      metricType,
+      place: "positionSeller",
+      marketAddress: position?.marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: position?.collateralToken?.address,
+      initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
+      swapPath: [],
+      triggerPrice: decreaseAmounts?.triggerPrice,
+      acceptablePrice: decreaseAmounts?.acceptablePrice,
+      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts?.sizeDeltaInTokens,
+      orderType,
+      isLong: position.isLong,
+      executionFee: executionFee?.feeTokenAmount,
+    };
+
+    const metricId = getPositionOrderMetricId(metricData);
+    metrics.setPendingEvent(metricId, metricData);
 
     setIsSubmitting(true);
 
@@ -325,8 +368,29 @@ export function PositionSeller(p: Props) {
         setPendingOrder,
         setPendingTxns,
         setPendingPosition,
-      }
-    );
+      },
+      metricId
+    )
+      .then(() => {
+        metrics.sendMetric({
+          event: `${metricType}.sent`,
+          isError: false,
+          fields: metrics.getPendingEvent(metricId),
+        });
+        metrics.startTimer(metricId);
+
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        metrics.sendMetric({
+          event: `${metricType}.${isUserRejectedActionError(error) ? "rejected" : "fail"}`,
+          isError: true,
+          message: error.message,
+          fields: metrics.getPendingEvent(metricId, true),
+        });
+
+        throw error;
+      });
 
     if (subaccount) {
       onClose();

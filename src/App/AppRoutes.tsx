@@ -13,7 +13,6 @@ import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { useErrorReporting } from "lib/errorReporting";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
 import useRouteQuery from "lib/useRouteQuery";
 
@@ -27,6 +26,7 @@ import { SubaccountModal } from "components/Synthetics/SubaccountModal/Subaccoun
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
+import { useErrorReporting } from "context/MetricsContext/errorReporting";
 
 const Zoom = cssTransition({
   enter: "zoomIn",

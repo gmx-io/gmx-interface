@@ -166,6 +166,10 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
   return { failMsg, autoCloseToast };
 }
 
+export function isUserRejectedActionError(error: Error) {
+  return error.message.toLowerCase().includes("user rejected action");
+}
+
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";
 export function getInvalidNetworkErrorMessage(chainId: number) {
   return (
