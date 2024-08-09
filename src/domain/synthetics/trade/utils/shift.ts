@@ -1,5 +1,5 @@
+import { marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens/types";
 
 import { getDepositAmounts } from "./deposit";
@@ -45,21 +45,19 @@ export function getShiftAmounts({
     uiFeeUsd: 0n,
     swapPriceImpactDeltaUsd: 0n,
   };
-  const fromTokenPrice = getMidPrice(fromToken.prices);
-  const toTokenPrice = getMidPrice(toToken.prices);
 
   if (strategy === "byFromToken") {
     values.fromTokenAmount = fromTokenAmount;
-    values.fromTokenUsd = convertToUsd(fromTokenAmount, fromToken.decimals, fromTokenPrice)!;
+    values.fromTokenUsd = marketTokenAmountToUsd(fromMarketInfo, fromToken, fromTokenAmount);
 
     const withdrawalAmounts = getWithdrawalAmounts({
       marketInfo: fromMarketInfo,
       marketToken: fromToken,
       marketTokenAmount: fromTokenAmount,
-      uiFeeFactor: uiFeeFactor,
       strategy: "byMarketToken",
       longTokenAmount: 0n,
       shortTokenAmount: 0n,
+      uiFeeFactor: uiFeeFactor,
       forShift: true,
     });
 
@@ -85,34 +83,34 @@ export function getShiftAmounts({
     values.swapPriceImpactDeltaUsd = depositAmounts.swapPriceImpactDeltaUsd;
 
     values.toTokenAmount = depositAmounts.marketTokenAmount;
-    values.toTokenUsd = convertToUsd(depositAmounts.marketTokenAmount, toToken.decimals, toTokenPrice)!;
+    values.toTokenUsd = marketTokenAmountToUsd(toMarketInfo, toToken, depositAmounts.marketTokenAmount);
   } else {
     values.toTokenAmount = toTokenAmount;
-    values.toTokenUsd = convertToUsd(toTokenAmount, toToken.decimals, toTokenPrice)!;
-
-    const depositAmounts = getDepositAmounts({
-      marketInfo: toMarketInfo,
-      marketToken: toToken,
-      marketTokenAmount: toTokenAmount,
-      strategy: "byMarketToken",
-      longToken: toMarketInfo.longToken,
-      shortToken: toMarketInfo.shortToken,
-      longTokenAmount: 0n,
-      shortTokenAmount: 0n,
-      includeLongToken: true,
-      includeShortToken: true,
-      uiFeeFactor: 0n,
-      forShift: true,
-    });
+    values.toTokenUsd = marketTokenAmountToUsd(toMarketInfo, toToken, toTokenAmount);
 
     const withdrawalAmounts = getWithdrawalAmounts({
       marketInfo: fromMarketInfo,
       marketToken: fromToken,
-      longTokenAmount: depositAmounts.longTokenAmount,
-      shortTokenAmount: depositAmounts.shortTokenAmount,
-      strategy: "byCollaterals",
-      marketTokenAmount: 0n,
+      strategy: "byMarketToken",
+      marketTokenAmount: usdToMarketTokenAmount(fromMarketInfo, fromToken, values.toTokenUsd),
+      longTokenAmount: 0n,
+      shortTokenAmount: 0n,
       uiFeeFactor: uiFeeFactor,
+      forShift: true,
+    });
+
+    const depositAmounts = getDepositAmounts({
+      marketInfo: toMarketInfo,
+      marketToken: toToken,
+      strategy: "byCollaterals",
+      longToken: toMarketInfo.longToken,
+      longTokenAmount: withdrawalAmounts.longTokenAmount,
+      shortToken: toMarketInfo.shortToken,
+      shortTokenAmount: withdrawalAmounts.shortTokenAmount,
+      marketTokenAmount: 0n,
+      includeLongToken: true,
+      includeShortToken: true,
+      uiFeeFactor: 0n,
       forShift: true,
     });
 
@@ -122,8 +120,11 @@ export function getShiftAmounts({
     values.uiFeeUsd = withdrawalAmounts.uiFeeUsd;
     values.swapPriceImpactDeltaUsd = depositAmounts.swapPriceImpactDeltaUsd;
 
-    values.fromTokenAmount = withdrawalAmounts.marketTokenAmount;
-    values.fromTokenUsd = convertToUsd(withdrawalAmounts.marketTokenAmount, fromToken.decimals, fromTokenPrice)!;
+    // Hack to try to take price impact into account during reverse calculation
+    values.fromTokenAmount =
+      withdrawalAmounts.marketTokenAmount -
+      usdToMarketTokenAmount(fromMarketInfo, fromToken, values.swapPriceImpactDeltaUsd);
+    values.fromTokenUsd = marketTokenAmountToUsd(fromMarketInfo, fromToken, values.fromTokenAmount);
   }
 
   return values;
