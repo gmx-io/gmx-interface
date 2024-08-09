@@ -44,13 +44,20 @@ type Props = {
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
+  marketsTokensLidoAprData?: MarketTokensAPRData;
   // eslint-disable-next-line react/no-unused-prop-types
   currentMarketInfo?: MarketInfo;
 };
 
 export default function MarketTokenSelector(props: Props) {
-  const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } =
-    props;
+  const {
+    marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    marketsTokensAPRData,
+    marketsInfoData,
+    marketTokensData,
+    currentMarketInfo,
+  } = props;
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);
   const poolName = currentMarketInfo && getMarketPoolName(currentMarketInfo);
 
@@ -93,6 +100,7 @@ export default function MarketTokenSelector(props: Props) {
       <MarketTokenSelectorInternal
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensAPRData={marketsTokensAPRData}
+        marketsTokensLidoAprData={marketsTokensLidoAprData}
         marketsInfoData={marketsInfoData}
         marketTokensData={marketTokensData}
         currentMarketInfo={currentMarketInfo}
@@ -104,7 +112,13 @@ export default function MarketTokenSelector(props: Props) {
 type SortField = "buyable" | "sellable" | "apy" | "unspecified";
 
 function MarketTokenSelectorInternal(props: Props) {
-  const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData } = props;
+  const {
+    marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    marketsTokensAPRData,
+    marketsInfoData,
+    marketTokensData,
+  } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -120,6 +134,7 @@ function MarketTokenSelectorInternal(props: Props) {
     favoriteTokens,
     marketsTokensAPRData,
     marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
     orderBy,
     direction,
   });
@@ -281,6 +296,7 @@ function useFilterSortTokensInfo({
   favoriteTokens,
   marketsTokensAPRData,
   marketsTokensIncentiveAprData,
+  marketsTokensLidoAprData,
   orderBy,
   direction,
 }: {
@@ -291,6 +307,7 @@ function useFilterSortTokensInfo({
   favoriteTokens: string[];
   marketsTokensAPRData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   orderBy: SortField;
   direction: SortDirection;
 }) {
@@ -324,6 +341,7 @@ function useFilterSortTokensInfo({
       const sellableInfo = getSellableMarketToken(marketInfo, market);
       const apr = getByKey(marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
+      const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
       const indexName = getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -335,6 +353,7 @@ function useFilterSortTokensInfo({
         poolName,
         apr,
         incentiveApr,
+        lidoApr,
       };
     });
   }, [
@@ -344,6 +363,7 @@ function useFilterSortTokensInfo({
     marketsTokensIncentiveAprData,
     searchKeyword,
     sortedMarketsByIndexToken,
+    marketsTokensLidoAprData,
     tab,
   ]);
 
@@ -395,6 +415,7 @@ function MarketTokenListItem({
   tdClassName,
   apr,
   incentiveApr,
+  lidoApr,
 }: {
   marketInfo: MarketInfo;
   market: TokenData;
@@ -410,6 +431,7 @@ function MarketTokenListItem({
   tdClassName: string;
   apr: bigint | undefined;
   incentiveApr: bigint | undefined;
+  lidoApr: bigint | undefined;
 }) {
   const { indexToken, longToken, shortToken } = marketInfo;
   const iconName = marketInfo.isSpotOnly
@@ -467,7 +489,13 @@ function MarketTokenListItem({
         {formattedSellableAmount}
       </td>
       <td className={tdClassName} onClick={handleSelect}>
-        <AprInfo apy={apr} incentiveApr={incentiveApr} showTooltip={false} tokenAddress={market.address} />
+        <AprInfo
+          apy={apr}
+          incentiveApr={incentiveApr}
+          lidoApr={lidoApr}
+          showTooltip={false}
+          tokenAddress={market.address}
+        />
       </td>
     </tr>
   );

@@ -9,6 +9,7 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import mapValues from "lodash/mapValues";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
+import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
@@ -16,6 +17,8 @@ import { MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
 
@@ -30,7 +33,7 @@ type RawPoolValue = {
 
 type GmTokensAPRResult = {
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
-
+  marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
   avgMarketsApy?: bigint;
 };
@@ -38,6 +41,7 @@ type GmTokensAPRResult = {
 type SwrResult = {
   marketsTokensApyData: MarketTokensAPRData;
   avgMarketsApy: bigint;
+  marketsTokensLidoAprData: MarketTokensAPRData;
 };
 
 function useMarketAddresses(marketsInfoData: MarketsInfoData | undefined) {
@@ -209,6 +213,7 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
     marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr-subsquid").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
+  const lidoApr = useLidoStakeApr();
 
   const { data } = useSWR<SwrResult>(key, {
     fetcher: async (): Promise<SwrResult> => {
@@ -256,6 +261,7 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
 
       if (!responseOrNull) {
         return {
+          marketsTokensLidoAprData: {},
           marketsTokensApyData: {},
           avgMarketsApy: 0n,
         };
@@ -295,6 +301,45 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
         return acc;
       }, {} as MarketTokensAPRData);
 
+      const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
+
+      const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {
+        const marketInfo = getByKey(marketsInfoData, marketAddress);
+        if (!marketInfo || !wstEthToken || lidoApr === undefined) return acc;
+
+        const longTokenData = {
+          address: marketInfo.longTokenAddress,
+          amount: getPoolUsdWithoutPnl(marketInfo, true, "midPrice"),
+        };
+
+        const shortTokenData = {
+          address: marketInfo.shortTokenAddress,
+          amount: getPoolUsdWithoutPnl(marketInfo, false, "midPrice"),
+        };
+
+        const { incentivesedTokenAmountUsd, otherTokenAmountUsd } = [longTokenData, shortTokenData].reduce(
+          (amountAcc, { address, amount }) => {
+            if (address === wstEthToken.address) {
+              amountAcc.incentivesedTokenAmountUsd += amount;
+            } else {
+              amountAcc.otherTokenAmountUsd += amount;
+            }
+            return amountAcc;
+          },
+          { incentivesedTokenAmountUsd: 0n, otherTokenAmountUsd: 0n }
+        );
+
+        const totalPoolAmountUsd = incentivesedTokenAmountUsd + otherTokenAmountUsd;
+
+        if (incentivesedTokenAmountUsd === 0n || totalPoolAmountUsd === 0n) {
+          acc[marketAddress] = 0n;
+        } else {
+          acc[marketAddress] = bigMath.mulDiv(lidoApr, incentivesedTokenAmountUsd, totalPoolAmountUsd);
+        }
+
+        return acc;
+      }, {} as MarketTokensAPRData);
+
       const marketsTokensApyData = mapValues(marketsTokensAPRData, (x) => calculateAPY(x));
 
       const avgMarketsApy =
@@ -303,6 +348,7 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
         }, 0n) / BigInt(marketAddresses.length);
 
       return {
+        marketsTokensLidoAprData,
         avgMarketsApy,
         marketsTokensApyData,
       };
@@ -312,6 +358,7 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
   const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
 
   return {
+    marketsTokensLidoAprData: data?.marketsTokensLidoAprData,
     marketsTokensIncentiveAprData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,

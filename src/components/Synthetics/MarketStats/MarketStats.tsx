@@ -36,6 +36,7 @@ type Props = {
   marketToken?: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  marketsTokensLidoAprData: MarketTokensAPRData | undefined;
 };
 
 const MARKET_STATS_DECIMALS = 4;
@@ -48,6 +49,7 @@ export function MarketStats(p: Props) {
     marketsInfoData,
     marketTokensData,
     marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
   } = p;
   const { chainId } = useChainId();
 
@@ -80,6 +82,7 @@ export function MarketStats(p: Props) {
 
   const apy = getByKey(marketsTokensApyData, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
+  const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -196,7 +199,14 @@ export function MarketStats(p: Props) {
 
         <CardRow
           label={t`APY`}
-          value={<AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={marketToken?.address ?? zeroAddress} />}
+          value={
+            <AprInfo
+              apy={apy}
+              incentiveApr={incentiveApr}
+              lidoApr={lidoApr}
+              tokenAddress={marketToken?.address ?? zeroAddress}
+            />
+          }
         />
 
         <CardRow

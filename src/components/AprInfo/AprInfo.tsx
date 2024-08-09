@@ -9,6 +9,8 @@ import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseA
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
+import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
+import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -23,11 +25,13 @@ function getApyReadyToBeShownDate(listingDate: Date): Date {
 export function AprInfo({
   apy,
   incentiveApr,
+  lidoApr,
   showTooltip = true,
   tokenAddress,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
+  lidoApr: bigint | undefined;
   showTooltip?: boolean;
   tokenAddress: string;
 }) {
@@ -42,65 +46,63 @@ export function AprInfo({
     [listingDate]
   );
 
-  let totalApr = 0n;
-  if (!isBaseAprReadyToBeShown) {
-    totalApr = incentiveApr ?? 0n;
-  } else {
-    totalApr = (apy ?? 0n) + (incentiveApr ?? 0n);
+  let totalApr = (incentiveApr ?? 0n) + (lidoApr ?? 0n);
+  if (isBaseAprReadyToBeShown) {
+    totalApr += apy ?? 0n;
   }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
-  const isIncentiveActive = !!incentivesData;
-  const isIncentiveActiveForToken = incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
+  const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
+  const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
+  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(tokenAddress);
+
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
   const renderTooltipContent = useCallback(() => {
-    if (!isIncentiveActive || !isIncentiveActiveForToken) {
-      return (
-        <>
+    return (
+      <div className="flex flex-col gap-y-14">
+        <div>
           <StatsTooltipRow
             showDollar={false}
             label={t`Base APY`}
             value={isBaseAprReadyToBeShown ? `${formatAmount(apy, 28, 2)}%` : t`NA`}
           />
-          {!isBaseAprReadyToBeShown && (
-            <>
-              <br />
-              <Trans>
-                The base APY estimate will be available{" "}
-                {formatDistanceToNowStrict(apyReadyToBeShownDate as Date, { addSuffix: true })} to ensure accurate data
-                display.
-              </Trans>
-            </>
+          {isIncentiveActive && (
+            <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
           )}
-        </>
-      );
-    }
-
-    return (
-      <>
-        <StatsTooltipRow
-          showDollar={false}
-          label={t`Base APY`}
-          value={isBaseAprReadyToBeShown ? `${formatAmount(apy, 28, 2)}%` : t`NA`}
-        />
-        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
-        <br />
+          {isLidoApr && (
+            <StatsTooltipRow
+              showDollar={false}
+              label={t`wstETH APR`}
+              value={`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}
+            />
+          )}
+        </div>
         {!isBaseAprReadyToBeShown && (
-          <>
+          <div>
             <Trans>
               The base APY estimate will be available{" "}
               {formatDistanceToNowStrict(apyReadyToBeShownDate as Date, { addSuffix: true })} to ensure accurate data
               display.
             </Trans>
-            <br />
-            <br />
-          </>
+          </div>
         )}
-        <Trans>
-          The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
-          <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
-        </Trans>
-      </>
+        {isIncentiveActive && (
+          <div>
+            <Trans>
+              The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+              <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
+            </Trans>
+          </div>
+        )}
+        {isEthenaSatsIncentive && (
+          <div>
+            <Trans>
+              You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the
+              <ExternalLink href={ETHENA_DASHBOARD_URL}>Ethena dashboard</ExternalLink>.
+            </Trans>
+          </div>
+        )}
+      </div>
     );
   }, [
     airdropTokenTitle,
@@ -110,7 +112,9 @@ export function AprInfo({
     incentiveApr,
     isBaseAprReadyToBeShown,
     isIncentiveActive,
-    isIncentiveActiveForToken,
+    lidoApr,
+    isLidoApr,
+    isEthenaSatsIncentive,
   ]);
 
   const aprNode = useMemo(() => {
@@ -128,7 +132,7 @@ export function AprInfo({
     }
   }, [apy, incentiveApr, totalApr]);
 
-  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown) ? (
+  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown || isLidoApr || isEthenaSatsIncentive) ? (
     <TooltipWithPortal
       maxAllowedWidth={280}
       handle={aprNode}
