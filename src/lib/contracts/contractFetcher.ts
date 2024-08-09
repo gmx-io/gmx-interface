@@ -109,7 +109,22 @@ export const contractFetcher =
           handleFallback(resolve, reject, e);
         });
 
-      const timeout = priority === "urgent" ? 3000 : 7000;
+      const isThroughMulticall = ethers.isAddress(arg0);
+      const isUrgent = priority === "urgent";
+
+      let timeout = 2000;
+
+      if (isThroughMulticall) {
+        if (isUrgent) {
+          const workerStartupTimeout = 1000;
+          timeout = timeout + workerStartupTimeout;
+        } else {
+          const workerTimeout = 5000;
+          const mainThreadTimeout = 5000;
+          timeout = workerTimeout + mainThreadTimeout;
+        }
+      }
+
       setTimeout(() => {
         handleFallback(resolve, reject, "contractCall timeout");
       }, timeout);
