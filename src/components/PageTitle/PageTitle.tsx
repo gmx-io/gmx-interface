@@ -12,6 +12,7 @@ type Props = {
   showNetworkIcon?: boolean;
   afterTitle?: ReactNode;
   chainId?: number;
+  qa?: string;
 };
 
 export default function PageTitle({
@@ -22,12 +23,13 @@ export default function PageTitle({
   showNetworkIcon = true,
   afterTitle,
   chainId,
+  qa,
 }: Props) {
   const classNames = cx("Page-title-wrapper", className, { gapTop: !isTop });
   const { chainId: fallbackChainId } = useChainId();
   const currentNetworkIcon = getIcon(chainId ?? fallbackChainId, "network");
   return (
-    <div className={classNames}>
+    <div className={classNames} data-qa={qa}>
       <div className="Page-title-group">
         <h2 className="Page-title__text">{title}</h2>
         {showNetworkIcon && <img className="Page-title__icon" src={currentNetworkIcon} alt="Current Network Icon" />}

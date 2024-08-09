@@ -140,6 +140,7 @@ export function MarketSelector({
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <Modal
+        qa="market-selector-modal"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -177,12 +178,12 @@ export function MarketSelector({
         </div>
       </Modal>
       {selectedMarketLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
           {selectedMarketLabel}
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
           {marketInfo ? getMarketIndexName(marketInfo) : "..."}
           <BiChevronDown className="TokenSelector-caret" />
         </div>
@@ -244,7 +245,11 @@ function MarketListItem(props: {
   }, [balance, balanceUsd, indexName, marketInfo, onSelectOption, state]);
 
   return (
-    <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
+    <div
+      className={cx("TokenSelector-token-row", { disabled: state.disabled })}
+      onClick={handleClick}
+      data-qa={`market-selector-${indexName}`}
+    >
       {state.disabled && state.message && (
         <TooltipWithPortal
           className="TokenSelector-tooltip"

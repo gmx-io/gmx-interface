@@ -93,7 +93,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
           )}
         </AnimatePresence>
       )}
-      <header>
+      <header data-qa="header">
         {!isMobile && (
           <div className="App-header large">
             <div className="App-header-container-left">

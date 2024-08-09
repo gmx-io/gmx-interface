@@ -890,6 +890,7 @@ export function TradeBox(p: Props) {
           onInputValueChange={handleFromInputTokenChange}
           showMaxButton={isNotMatchAvailableBalance}
           onClickMax={onMaxClick}
+          qa="pay"
         >
           {fromTokenAddress && (
             <TokenSelector
@@ -903,6 +904,7 @@ export function TradeBox(p: Props) {
               showSymbolImage={true}
               showTokenImgInDropdown={true}
               extendedSortSequence={sortedLongAndShortTokens}
+              qa="collateral-selector"
             />
           )}
         </BuyInputSection>
@@ -913,6 +915,7 @@ export function TradeBox(p: Props) {
             disabled={!isSwitchTokensAllowed}
             className="Exchange-swap-ball bg-blue-500"
             onClick={onSwitchTokens}
+            data-qa="swap-ball"
           >
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
@@ -930,6 +933,7 @@ export function TradeBox(p: Props) {
             onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}
             preventFocusOnLabelClick="right"
+            qa="swap-receive"
           >
             {toTokenAddress && (
               <TokenSelector
@@ -944,6 +948,7 @@ export function TradeBox(p: Props) {
                 showBalances={true}
                 showTokenImgInDropdown={true}
                 extendedSortSequence={sortedLongAndShortTokens}
+                qa="receive-selector"
               />
             )}
           </BuyInputSection>
@@ -962,6 +967,7 @@ export function TradeBox(p: Props) {
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}
+            qa="buy"
           >
             {toTokenAddress && (
               <MarketSelector
@@ -1003,6 +1009,7 @@ export function TradeBox(p: Props) {
         onClickMax={setMaxCloseSize}
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
+        qa="close"
       >
         USD
       </BuyInputSection>
@@ -1020,6 +1027,7 @@ export function TradeBox(p: Props) {
         onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
+        qa="trigger-price"
       >
         USD
       </BuyInputSection>
@@ -1035,6 +1043,7 @@ export function TradeBox(p: Props) {
         onClickTopRightLabel={handleTriggerMarkPriceClick}
         inputValue={triggerRatioInputValue}
         onInputValueChange={handleTriggerRatioInputChange}
+        qa="trigger-price"
       >
         {markRatio && (
           <>
@@ -1211,6 +1220,7 @@ export function TradeBox(p: Props) {
 
   const buttonContent = (
     <Button
+      qa="confirm-trade-button"
       variant="primary-action"
       className="mt-4 w-full"
       onClick={onSubmit}
@@ -1235,7 +1245,7 @@ export function TradeBox(p: Props) {
   return (
     <>
       <div>
-        <div className={`App-box SwapBox`}>
+        <div data-qa="tradebox" className={`App-box SwapBox`}>
           <Tab
             icons={tradeTypeIcons}
             options={Object.values(TradeType)}
@@ -1243,6 +1253,7 @@ export function TradeBox(p: Props) {
             option={tradeType}
             onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"
+            qa="trade-direction"
           />
 
           <Tab
@@ -1252,8 +1263,8 @@ export function TradeBox(p: Props) {
             type="inline"
             option={tradeMode}
             onChange={onSelectTradeMode}
+            qa="trade-mode"
           />
-
           <form onSubmit={handleFormSubmit} ref={formRef}>
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}

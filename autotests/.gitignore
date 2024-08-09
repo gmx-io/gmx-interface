@@ -1,0 +1,10 @@
+node_modules
+test-results
+.env
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

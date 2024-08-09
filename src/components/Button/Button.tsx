@@ -23,6 +23,7 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   showExternalLinkArrow?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
   slim?: boolean;
+  qa?: string;
 };
 
 export default function Button({
@@ -41,6 +42,7 @@ export default function Button({
   buttonRef,
   showExternalLinkArrow: showExternalLinkArrowOverride,
   slim,
+  qa,
   ...rest
 }: ButtonProps) {
   const classNames = cx("button", variant, className, textAlign, { slim });
@@ -74,6 +76,7 @@ export default function Button({
         showExternalLinkArrow={showExternalLinkArrow}
         disabled={disabled}
         ref={buttonRef}
+        qa={qa}
         {...rest}
       >
         {img}
@@ -84,7 +87,7 @@ export default function Button({
 
   if (onClick) {
     return (
-      <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
+      <button data-qa={qa} ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
         {img}
         {children}
       </button>
@@ -92,7 +95,7 @@ export default function Button({
   }
 
   return (
-    <button ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
+    <button data-qa={qa} ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
       {img}
       {children}
     </button>
