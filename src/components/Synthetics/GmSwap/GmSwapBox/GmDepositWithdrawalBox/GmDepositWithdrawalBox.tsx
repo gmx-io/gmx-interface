@@ -608,6 +608,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   useUpdateByQueryParams({
+    operation,
     setOperation: onSetOperation,
     setMode: onSetMode,
     onSelectMarket,
