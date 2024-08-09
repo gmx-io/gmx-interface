@@ -14,11 +14,6 @@
   background: var(--color-gray-900);
 }
 
-.PositionDropdown-extra-options {
-  position: relative;
-}
-
-.PositionDropdown-extra-options .menu-items {
-  top: 1rem;
-  min-width: max-content;
+.PositionDropdown-menu-items {
+  width: max-content !important;
 }
