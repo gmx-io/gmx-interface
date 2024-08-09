@@ -2,7 +2,7 @@ import { getAccount } from "@wagmi/core";
 import CustomErrors from "abis/CustomErrors.json";
 import { isDevelopment, isLocal } from "config/env";
 import cryptoJs from "crypto-js";
-import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
+import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteTxn";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { useEffect } from "react";

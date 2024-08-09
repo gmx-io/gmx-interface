@@ -1,4 +1,4 @@
-import { PendingDepositData, PendingOrderData, PendingWithdrawalData } from "./types";
+import type { PendingDepositData, PendingOrderData, PendingShiftData, PendingWithdrawalData } from "./types";
 
 export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
   return [
@@ -46,5 +46,15 @@ export function getPendingWithdrawalKey(data: PendingWithdrawalData) {
     data.minLongTokenAmount.toString(),
     data.marketTokenAmount.toString(),
     data.shouldUnwrapNativeToken,
+  ].join(":");
+}
+
+export function getPendingShiftKey(data: PendingShiftData) {
+  return [
+    data.account,
+    data.fromMarket,
+    data.marketTokenAmount.toString(),
+    data.toMarket,
+    data.minMarketTokens.toString(),
   ].join(":");
 }

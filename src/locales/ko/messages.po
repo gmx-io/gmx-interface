@@ -324,6 +324,7 @@ msgid "Cancel Stop-Loss Order"
 msgstr "손절 주문 취소"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool USD exceeded"
 msgstr ""
 
@@ -477,6 +478,10 @@ msgstr "이전 가격"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
 
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 msgstr ""
@@ -626,6 +631,10 @@ msgstr ""
 msgid "Market Orders"
 msgstr "시장 주문"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending buy request"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
 msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
@@ -669,6 +678,10 @@ msgstr "유효하지 않은 슬리피지 값"
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
 msgstr "{0} 가격"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} buyable amount exceeded"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell submitted!"
@@ -720,10 +733,12 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
@@ -1192,6 +1207,11 @@ msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종�
 msgid "Transfer Submitted"
 msgstr "전송 제출 완료"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Shift GM"
+msgstr ""
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Liq. Price."
 msgstr ""
@@ -1273,6 +1293,10 @@ msgstr "수수료"
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V2 Avalanche Fuji"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift order cancelled"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -1566,7 +1590,7 @@ msgstr ""
 msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -1759,7 +1783,8 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/StakeV1.js
@@ -1795,8 +1820,8 @@ msgstr "수령할 수 있는 esGMX가 없습니다"
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
@@ -1947,6 +1972,10 @@ msgstr "귀하의 지갑: {0}"
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} sellable amount exceeded"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "TOKEN"
@@ -2047,6 +2076,10 @@ msgstr "원클릭 트레이딩으로 지갑 서명 팝업을 줄이세요. 이 �
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift order executed"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr ""
@@ -2084,6 +2117,10 @@ msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Shift Fee"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -2138,6 +2175,10 @@ msgstr "{0} USD를 {tokenSymbol} {longOrShortText}으로 입금 완료"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling sell request"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -2788,7 +2829,7 @@ msgstr ""
 msgid "Positions{0}"
 msgstr ""
 
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
 msgstr ""
 
@@ -3187,6 +3228,10 @@ msgstr "Explorer에서 보기"
 msgid "Bonus APR"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift request sent"
+msgstr ""
+
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
@@ -3209,6 +3254,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unsupported network"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Shift"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3453,6 +3503,10 @@ msgstr "1시간 당 순 수수료율"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending sell request"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3729,8 +3783,8 @@ msgstr ""
 msgid "UI Fee"
 msgstr ""
 
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -3848,10 +3902,6 @@ msgstr "코드 입력"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Take-Profit Order"
 msgstr "이익 실현 주문 실행"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Buy request"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
@@ -4153,6 +4203,10 @@ msgstr "실행 가격이 허용 가능한 가격 조건을 충족하지 않았�
 msgid "Reserve Amount"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling buy request"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "이유: {0}"
@@ -4235,10 +4289,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "스왑 제출완료"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Buy request"
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -4381,6 +4431,7 @@ msgstr "스왑 주문 제출 완료!"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "로딩중..."
 
@@ -4498,6 +4549,10 @@ msgstr "가격"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending shift request"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4767,10 +4822,6 @@ msgstr "전송시작"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact, review execution price."
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -5145,6 +5196,7 @@ msgstr "{0} 롱 최대치를 초과했습니다"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr ""
 
@@ -5161,9 +5213,11 @@ msgstr "{formattedNetRate} / 1시간"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
@@ -5464,6 +5518,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5511,6 +5566,10 @@ msgstr "QR 코드 스캔"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims ({totalClaimables})"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Unknown shift GM order"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5725,6 +5784,10 @@ msgstr "베스트팅된 GMX에서 인출되지 않은 양"
 msgid "FEES"
 msgstr "수수료"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
@@ -5834,10 +5897,12 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -5957,6 +6022,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
@@ -6035,15 +6101,12 @@ msgstr "날짜"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending Sell request"
 msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -6299,8 +6362,8 @@ msgstr "{0} 스왑 제출완료!"
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
 msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
@@ -6350,7 +6413,7 @@ msgstr ""
 msgid "GMX community discussion"
 msgstr "GMX 커뮤니티 토론"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -6361,8 +6424,8 @@ msgstr ""
 msgid "View on Arbitrum"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling Sell request"
+#: src/domain/synthetics/markets/createShiftTxn.ts
+msgid "Shift error."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -6421,9 +6484,9 @@ msgstr ""
 msgid "Long"
 msgstr "롱"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -6523,10 +6586,6 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge High Price Impact.<0/>Check Execution Price before proceeding."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
@@ -6664,7 +6723,6 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "구매"
 
@@ -6710,6 +6768,10 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "추천 약관"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Shifting GM..."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
@@ -6727,6 +6789,7 @@ msgstr "최소 목표 수량"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed Pay amount"
 msgstr ""
 
@@ -6737,6 +6800,10 @@ msgstr "시장 스왑 실패"
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 가능합니다"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling shift request"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
@@ -7217,6 +7284,7 @@ msgid "Enter a new size or price"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount exceeded"
 msgstr ""
 
@@ -7516,7 +7584,7 @@ msgstr ""
 msgid "Price Impact Rebate Claimed"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr ""
 

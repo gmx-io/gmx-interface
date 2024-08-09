@@ -23,10 +23,9 @@
   padding: 0.8rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  cursor: pointer;
 }
 
-.Tab.Tab__block .Tab-option:hover {
+.Tab.Tab__block .Tab-option:not(.disabled):hover {
   color: var(--color-white);
   background: var(--color-cold-blue-700);
 }
@@ -54,17 +53,24 @@
 }
 
 .Tab.Tab__inline .Tab-option {
-  cursor: pointer;
   display: inline-block;
   margin-right: 1.5rem;
   font-size: var(--font-base);
 }
 
-.Tab.Tab__inline .Tab-option:hover {
+.Tab.Tab__inline .Tab-option:not(.disabled):hover {
   opacity: 0.8;
 }
 
 .Tab.Tab__inline .Tab-option.active {
   opacity: 1;
   pointer-events: none;
+}
+
+.Tab-option {
+  cursor: pointer;
+}
+
+.Tab-option.disabled {
+  cursor: not-allowed;
 }

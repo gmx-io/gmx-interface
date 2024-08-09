@@ -44,12 +44,12 @@
     padding: 1.65rem 1.6rem;
     line-height: 1;
 
-    &:not([disabled]):hover {
+    &:not([disabled], .disabled):hover {
       background: var(--primary-btn-hover);
       box-shadow: 0 0 0.4rem 0.5rem color-mix(in srgb, var(--color-blue-600) 10%, transparent);
     }
 
-    &:not([disabled]):active {
+    &:not([disabled], .disabled):active {
       background-color: var(--primary-btn-active);
       box-shadow: 0 0 0.4rem 0.6rem color-mix(in srgb, var(--color-blue-600) 10%, transparent);
     }
@@ -81,11 +81,11 @@
       max-width: 0.8rem;
     }
 
-    &:not([disabled]):hover {
+    &:not([disabled], .disabled):hover {
       background-color: #50577e99;
     }
 
-    &:not([disabled]):active {
+    &:not([disabled], .disabled):active {
       background: #50577eb3;
     }
   }

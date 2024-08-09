@@ -1,36 +1,45 @@
-import { Trans, plural, t } from "@lingui/macro";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Modal from "components/Modal/Modal";
+import { Trans, msg, plural, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
+import { uniq } from "lodash";
+import { useMemo, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { useKey } from "react-use";
+
 import { getContract } from "config/contracts";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
+import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
+import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getNeedTokenApprove, getTokenData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { uniq } from "lodash";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
+import { Operation } from "../GmSwapBox/types";
+
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import Modal from "components/Modal/Modal";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { GmFees } from "../GmFees/GmFees";
 
-import Button from "components/Button/Button";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useState } from "react";
 import "./GmConfirmationBox.scss";
-import { useKey } from "react-use";
-import useWallet from "lib/wallets/useWallet";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import { FaArrowRight } from "react-icons/fa";
-import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { usePendingTxns } from "lib/usePendingTxns";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
   isVisible: boolean;
   marketToken?: TokenData;
+  fromMarketToken?: TokenData;
+  fromMarketTokenAmount?: bigint;
+  fromMarketTokenUsd?: bigint;
   longToken?: TokenData;
   shortToken?: TokenData;
   marketTokenAmount: bigint;
@@ -41,11 +50,23 @@ type Props = {
   shortTokenUsd?: bigint;
   fees?: GmSwapFees;
   error?: string;
-  isDeposit: boolean;
+  operation: Operation;
   executionFee?: ExecutionFee;
   onSubmitted: () => void;
   onClose: () => void;
   shouldDisableValidation?: boolean;
+};
+
+const operationTextMap = {
+  [Operation.Deposit]: msg`Buy`,
+  [Operation.Withdrawal]: msg`Sell`,
+  [Operation.Shift]: msg`Shift`,
+};
+
+const processingTextMap = {
+  [Operation.Deposit]: msg`Buying GM...`,
+  [Operation.Withdrawal]: msg`Selling GM...`,
+  [Operation.Shift]: msg`Shifting GM...`,
 };
 
 export function GmConfirmationBox({
@@ -61,17 +82,22 @@ export function GmConfirmationBox({
   shortTokenUsd,
   fees,
   error,
-  isDeposit,
+  operation,
   executionFee,
   onSubmitted,
   onClose,
   shouldDisableValidation,
+  fromMarketToken,
+  fromMarketTokenAmount,
+  fromMarketTokenUsd,
 }: Props) {
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { _ } = useLingui();
   const marketsInfoData = useMarketsInfoData();
   const { tokensData } = useTokensDataRequest(chainId);
-  const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { setPendingDeposit, setPendingWithdrawal, setPendingShift } = useSyntheticsEvents();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, setPendingTxns] = usePendingTxns();
 
@@ -89,15 +115,17 @@ export function GmConfirmationBox({
 
     const addresses: string[] = [];
 
-    if (isDeposit) {
+    if (operation === Operation.Deposit) {
       if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
         addresses.push(longToken.address);
       }
       if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
         addresses.push(shortToken.address);
       }
-    } else {
+    } else if (operation === Operation.Withdrawal) {
       addresses.push(marketToken.address);
+    } else if (operation === Operation.Shift) {
+      addresses.push(fromMarketToken!.address);
     }
 
     return uniq(addresses);
@@ -109,48 +137,71 @@ export function GmConfirmationBox({
     skip: !isVisible,
   });
 
-  const tokensToApprove = (function getTokensToApprove() {
-    const addresses: string[] = [];
+  const tokensToApprove = useMemo(
+    function getTokensToApprove() {
+      const addresses: string[] = [];
 
-    if (!tokensAllowanceData) {
-      return addresses;
-    }
-
-    if (isDeposit) {
-      if (
-        longTokenAmount !== undefined &&
-        longTokenAmount > 0 &&
-        longToken &&
-        getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
-      ) {
-        addresses.push(longToken.address);
+      if (!tokensAllowanceData) {
+        return addresses;
       }
 
-      if (
-        shortTokenAmount !== undefined &&
-        shortTokenAmount > 0 &&
-        shortToken &&
-        getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
-      ) {
-        addresses.push(shortToken.address);
-      }
-    } else {
-      if (
-        marketTokenAmount > 0 &&
-        marketToken &&
-        getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount)
-      ) {
-        addresses.push(marketToken.address);
-      }
-    }
+      if (operation === Operation.Deposit) {
+        if (
+          longTokenAmount !== undefined &&
+          longTokenAmount > 0 &&
+          longToken &&
+          getNeedTokenApprove(tokensAllowanceData, longToken.address, longTokenAmount)
+        ) {
+          addresses.push(longToken.address);
+        }
 
-    return uniq(addresses);
-  })();
+        if (
+          shortTokenAmount !== undefined &&
+          shortTokenAmount > 0 &&
+          shortToken &&
+          getNeedTokenApprove(tokensAllowanceData, shortToken.address, shortTokenAmount)
+        ) {
+          addresses.push(shortToken.address);
+        }
+      } else if (operation === Operation.Withdrawal) {
+        if (
+          marketTokenAmount > 0 &&
+          marketToken &&
+          getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount)
+        ) {
+          addresses.push(marketToken.address);
+        }
+      } else if (operation === Operation.Shift) {
+        if (
+          fromMarketTokenAmount !== undefined &&
+          fromMarketTokenAmount > 0 &&
+          fromMarketToken &&
+          getNeedTokenApprove(tokensAllowanceData, fromMarketToken.address, fromMarketTokenAmount)
+        ) {
+          addresses.push(fromMarketToken.address);
+        }
+      }
+
+      return uniq(addresses);
+    },
+    [
+      fromMarketToken,
+      fromMarketTokenAmount,
+      longToken,
+      longTokenAmount,
+      marketToken,
+      marketTokenAmount,
+      operation,
+      shortToken,
+      shortTokenAmount,
+      tokensAllowanceData,
+    ]
+  );
 
   const longSymbol = market?.isSameCollaterals ? `${longToken?.symbol} Long` : longToken?.symbol;
   const shortSymbol = market?.isSameCollaterals ? `${shortToken?.symbol} Short` : shortToken?.symbol;
 
-  const operationText = isDeposit ? t`Buy` : t`Sell`;
+  const operationText = _(operationTextMap[operation]);
 
   const isAllowanceLoaded = Boolean(tokensAllowanceData);
 
@@ -167,10 +218,12 @@ export function GmConfirmationBox({
 
       let txnPromise: Promise<any>;
 
-      if (isDeposit) {
+      if (operation === Operation.Deposit) {
         txnPromise = onCreateDeposit();
-      } else {
+      } else if (operation === Operation.Withdrawal) {
         txnPromise = onCreateWithdrawal();
+      } else {
+        txnPromise = onCreateShift();
       }
 
       txnPromise
@@ -202,14 +255,14 @@ export function GmConfirmationBox({
 
     if (isSubmitting) {
       return {
-        text: isDeposit ? t`Buying GM...` : t`Selling GM...`,
+        text: _(processingTextMap[operation]),
         disabled: true,
       };
     }
 
     if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
-        const token = getTokenData(tokensData, address)!;
+        const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
         return address === marketToken.address ? "GM" : token?.assetSymbol ?? token?.symbol;
       });
 
@@ -224,7 +277,7 @@ export function GmConfirmationBox({
       };
     }
 
-    const operationText = isDeposit ? t`Buy` : `Sell`;
+    const operationText = _(operationTextMap[operation]);
     const text = t`Confirm ${operationText}`;
 
     return {
@@ -314,6 +367,35 @@ export function GmConfirmationBox({
     });
   }
 
+  function onCreateShift() {
+    if (
+      !signer ||
+      !account ||
+      !fromMarketToken ||
+      !executionFee ||
+      !marketToken ||
+      fromMarketTokenAmount === undefined ||
+      marketTokenAmount === undefined ||
+      !tokensData
+    ) {
+      return Promise.resolve();
+    }
+
+    return createShiftTxn(chainId, signer, {
+      account,
+      fromMarketTokenAddress: fromMarketToken.address,
+      fromMarketTokenAmount: fromMarketTokenAmount,
+      toMarketTokenAddress: marketToken.address,
+      minToMarketTokenAmount: marketTokenAmount,
+      executionFee: executionFee.feeTokenAmount,
+      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      skipSimulation: shouldDisableValidation,
+      tokensData,
+      setPendingTxns,
+      setPendingShift,
+    });
+  }
+
   const renderTokenInfo = ({
     amount,
     className,
@@ -349,7 +431,7 @@ export function GmConfirmationBox({
       <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`}>
         {isVisible && (
           <>
-            {isDeposit && (
+            {operation === Operation.Deposit && (
               <div className="Confirmation-box-main trade-info-wrapper">
                 <div className="trade-info">
                   <Trans>Pay</Trans>{" "}
@@ -388,7 +470,7 @@ export function GmConfirmationBox({
                 </div>
               </div>
             )}
-            {!isDeposit && (
+            {operation === Operation.Withdrawal && (
               <div className="Confirmation-box-main trade-info-wrapper">
                 <div className="trade-info">
                   <Trans>Pay</Trans>{" "}
@@ -427,11 +509,32 @@ export function GmConfirmationBox({
                 </div>
               </div>
             )}
+            {operation === Operation.Shift && (
+              <div className="Confirmation-box-main trade-info-wrapper">
+                <div className="trade-info">
+                  <Trans>Pay</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: fromMarketTokenAmount,
+                    usd: fromMarketTokenUsd,
+                    token: fromMarketToken,
+                  })}
+                </div>
+                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                <div className="trade-info">
+                  <Trans>Receive</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: marketTokenAmount,
+                    usd: marketTokenUsd,
+                    token: marketToken,
+                  })}
+                </div>
+              </div>
+            )}
 
             <div className="line-divider" />
 
             <GmFees
-              isDeposit={isDeposit}
+              isDeposit={operation === Operation.Deposit || operation === Operation.Shift}
               totalFees={fees?.totalFees}
               uiFee={fees?.uiFee}
               swapFee={fees?.swapFee}
@@ -445,8 +548,11 @@ export function GmConfirmationBox({
               <div>
                 {tokensToApprove.map((address) => {
                   const token = getTokenData(tokensData, address)!;
-                  const marketTokenData =
+                  let marketTokenData =
                     address === marketToken?.address && getByKey(marketsInfoData, marketToken?.address);
+                  if (operation === Operation.Shift) {
+                    marketTokenData = getByKey(marketsInfoData, fromMarketToken?.address);
+                  }
 
                   return (
                     <div key={address}>
