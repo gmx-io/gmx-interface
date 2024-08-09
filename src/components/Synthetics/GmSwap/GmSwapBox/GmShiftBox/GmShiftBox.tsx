@@ -133,6 +133,7 @@ export function GmShiftBox({
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
   useUpdateByQueryParams({
+    operation: Operation.Shift,
     onSelectMarket,
     setMode: onSetMode,
     setOperation: onSetOperation,

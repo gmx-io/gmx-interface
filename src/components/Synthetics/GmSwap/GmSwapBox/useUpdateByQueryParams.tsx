@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { helperToast } from "lib/helperToast";
@@ -23,11 +24,13 @@ type SearchParams = {
 };
 
 export function useUpdateByQueryParams({
+  operation: currentOperation,
   setOperation,
   setMode,
   setFirstTokenAddress,
   onSelectMarket,
 }: {
+  operation: Operation;
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
   setFirstTokenAddress?: (address: string | undefined) => void;
@@ -35,6 +38,7 @@ export function useUpdateByQueryParams({
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
+  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
 
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
@@ -97,6 +101,15 @@ export function useUpdateByQueryParams({
                 <span>selected in order form</span>
               </Trans>
             );
+
+            const isCurrentlyShift = currentOperation === Operation.Shift;
+            const isNewMarketShiftAvailable = shiftAvailableMarkets.find(
+              (shiftMarket) => shiftMarket.marketTokenAddress === marketInfo.marketTokenAddress
+            );
+
+            if (isCurrentlyShift && !isNewMarketShiftAvailable) {
+              setOperation(Operation.Deposit);
+            }
           }
         }
 
@@ -111,6 +124,18 @@ export function useUpdateByQueryParams({
         }
       }
     },
-    [history, onSelectMarket, searchParams, setOperation, setMode, setFirstTokenAddress, chainId, markets, marketsInfo]
+    [
+      history,
+      onSelectMarket,
+      searchParams,
+      setOperation,
+      setMode,
+      setFirstTokenAddress,
+      chainId,
+      markets,
+      marketsInfo,
+      currentOperation,
+      shiftAvailableMarkets,
+    ]
   );
 }
