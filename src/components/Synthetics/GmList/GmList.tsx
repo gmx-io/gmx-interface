@@ -47,6 +47,7 @@ import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderLis
 type Props = {
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   isDeposit: boolean;
 };
@@ -55,7 +56,13 @@ const tokenAddressStyle = { fontSize: 5 };
 
 export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified";
 
-export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, shouldScrollToTop, isDeposit }: Props) {
+export function GmList({
+  marketsTokensApyData,
+  marketsTokensIncentiveAprData,
+  marketsTokensLidoAprData,
+  shouldScrollToTop,
+  isDeposit,
+}: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -184,6 +191,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
 
                 const apy = getByKey(marketsTokensApyData, token?.address);
                 const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
                 const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
                 if (!token || !indexToken || !longToken || !shortToken) {
@@ -257,7 +265,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
                     </ExchangeTd>
 
                     <ExchangeTd>
-                      <AprInfo apy={apy} incentiveApr={incentiveApr} tokenAddress={token.address} />
+                      <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} tokenAddress={token.address} />
                     </ExchangeTd>
 
                     <ExchangeTd className="w-[350px]">
