@@ -68,7 +68,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
   return (
-    <div className="App-box GmSwapBox">
+    <div className="App-box GmSwapBox h-full">
       <Tab
         options={availableOperations}
         optionLabels={localizedOperationLabels}
