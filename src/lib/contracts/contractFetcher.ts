@@ -176,17 +176,22 @@ async function fetchContractData({
       id
     );
 
+    if (!result.data.getContractCall.call.success) {
+      const error = result.data.getContractCall.call.error;
+      throw new Error(error);
+    }
+
     const outputs = contract.interface.getFunction(method)!.outputs;
 
     const outputsCount = outputs.length;
 
     const value = result.data?.getContractCall?.call.returnValues;
 
+    const names = outputs.map((output) => output.name);
+
     if (outputsCount === 1 && !outputs[0].isArray()) {
       return value[0];
     }
-
-    const names = outputs.map((output) => output.name);
 
     const dict = Result.fromItems(value as any[], names);
 
