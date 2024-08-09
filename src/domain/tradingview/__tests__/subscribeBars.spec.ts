@@ -64,10 +64,13 @@ class MockOracleKeeperFetcher implements OracleFetcher {
       trading: {
         isActive: true,
         rebatePercent: 0,
+        estimatedRebatePercent: 0,
+        maxRebatePercent: 0,
+        token: "0x912CE59144191C1204E64559FE8253a0e49E6548",
         allocation: "0",
         period: 0,
       },
-    });
+    } satisfies RawIncentivesStats);
   }
 
   fetchPostReport(): Promise<Response> {
