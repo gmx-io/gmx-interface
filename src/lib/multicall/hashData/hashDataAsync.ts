@@ -16,6 +16,9 @@ hashDataWorker.onmessage = (event) => {
   const promise = promises[id];
 
   if (!promise) {
+    // eslint-disable-next-line no-console
+    console.warn(`[hashDataWorker] Received message with unknown id: ${id}`);
+
     return;
   }
 
@@ -48,14 +51,14 @@ export function hashDataMapAsync<
   const { promise, resolve, reject } = promiseWithResolvers();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(1000).then(() => "timeout");
+  const escapePromise = sleep(2000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then((result) => {
     if (result === "timeout") {
       delete promises[id];
       // eslint-disable-next-line no-console
-      console.error("[hashDataMapAsync] Worker did not respond in time. Falling back to main thread.");
+      console.error(`[hashDataMapAsync] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`);
       const result = hashDataMap(map);
 
       resolve(result);

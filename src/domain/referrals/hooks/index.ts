@@ -13,6 +13,7 @@ import { helperToast } from "lib/helperToast";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
 import { getProvider } from "lib/rpc";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import { getReferralsGraphClient } from "lib/subgraph";
 import { UserReferralInfo } from "../types";
@@ -83,6 +84,7 @@ export function useAffiliateTier(signer, chainId, account) {
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
   return {
@@ -100,6 +102,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
       : null,
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
 
@@ -149,14 +152,14 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(signer, ReferralStorage) as any }
+    { fetcher: contractFetcher(signer, ReferralStorage) as any, refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
   const { data: localStorageCodeOwner } = useSWR<string>(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
-    { fetcher: contractFetcher(signer, ReferralStorage) as any }
+    { fetcher: contractFetcher(signer, ReferralStorage) as any, refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
@@ -213,6 +216,7 @@ export function useCodeOwner(signer, chainId, account, code) {
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
   return {
@@ -233,6 +237,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
     ],
     {
       fetcher: contractFetcher(library, ReferralStorage) as any,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
   return {

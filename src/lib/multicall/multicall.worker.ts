@@ -1,5 +1,6 @@
 import type { MulticallRequestConfig } from "./types";
-import { MAX_TIMEOUT, Multicall } from "./utils";
+
+import { Multicall, MAX_TIMEOUT } from "./Multicall";
 
 async function executeMulticall(chainId: number, request: MulticallRequestConfig<any>) {
   const multicall = await Multicall.getInstance(chainId);

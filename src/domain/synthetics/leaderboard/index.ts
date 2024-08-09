@@ -1,8 +1,11 @@
 import { gql } from "@apollo/client";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import useSWR from "swr";
-import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
+
 import { expandDecimals } from "lib/numbers";
+import { getSubsquidGraphClient } from "lib/subgraph";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+
+import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { LeaderboardDataType } from "./types";
 
 export * from "./types";
@@ -277,7 +280,7 @@ export function useLeaderboardData(
       };
     },
     {
-      refreshInterval: 60_000,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
 

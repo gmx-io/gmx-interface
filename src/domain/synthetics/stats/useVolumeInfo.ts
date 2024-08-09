@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
-import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
+
+import { getSyntheticsGraphClient } from "lib/subgraph";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const query = gql`
   query volumeInfo($lastTimestamp: Int!) {
@@ -60,7 +62,7 @@ export default function useVolumeInfo(chainId: number) {
   }
 
   const { data: volumes } = useSWR(["v2VolumeInfos", chainId], fetcher, {
-    refreshInterval: 60000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
   });
 
   return volumes;
