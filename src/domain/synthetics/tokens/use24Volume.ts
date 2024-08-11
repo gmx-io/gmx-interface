@@ -11,22 +11,19 @@ import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";
 
 type PositionVolumeInfosResponse = {
-  positionVolumeInfos: {
+  marketPositionVolumeInfos: {
     volumeUsd: number;
   }[];
 };
 
 const POSITIONS_VOLUME_INFOS_QUERY = `
-query GetPositionVolumeInfos($indexToken: String!, $timestamp: Int!) {
-  positionVolumeInfos(
-    orderBy: timestamp
-    orderDirection: desc
-    where: { period: "1h", indexToken: $indexToken, timestamp_gt: $timestamp }
+query GetMarketPositionVolumeInfos($marketToken: String!, $timestamp: Int!) {
+  marketPositionVolumeInfos(
+    where: { period_eq: "total", marketAddress_eq: $marketToken, timestamp_gt: $timestamp }
   ) {
     id
     volumeUsd
     timestamp
-    __typename
   }
 }`;
 
@@ -34,22 +31,22 @@ export function use24hVolume() {
   const chainId = useSelector(selectChainId);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
 
-  const endpoint = getSubgraphUrl(chainId, "syntheticsStats");
+  const endpoint = getSubgraphUrl(chainId, "subsquid");
 
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
 
-  const indexTokenAddress = marketInfo?.indexTokenAddress;
+  const marketTokenAddress = marketInfo?.marketTokenAddress;
 
   const variables = {
-    indexToken: indexTokenAddress?.toLocaleLowerCase(),
+    marketToken: marketTokenAddress,
     timestamp: timestamp,
   };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    variables.indexToken ? `24hVolume-${indexTokenAddress}` : null,
+    variables.marketToken ? `24hVolume-${marketTokenAddress}` : null,
     async () => {
-      if (!endpoint || !variables.indexToken) {
+      if (!endpoint || !variables.marketToken) {
         return;
       }
 
@@ -61,6 +58,6 @@ export function use24hVolume() {
   );
 
   return useMemo(() => {
-    return data?.positionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+    return data?.marketPositionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
   }, [data]);
 }
