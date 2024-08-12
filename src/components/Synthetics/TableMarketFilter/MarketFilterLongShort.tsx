@@ -182,6 +182,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       return (
         <>
           <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-5" />
+          {market.marketTokenAddress}
           <div className="inline-flex items-center">
             {longOrShortText && <span className="mr-3">{longOrShortText}</span>}
             <span>{indexName}</span>
