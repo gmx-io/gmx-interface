@@ -45,7 +45,12 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
-import { getPositionOrderMetricId, getSwapOrderMetricId } from "context/MetricsContext/utils";
+import {
+  getMetricTypeByOrderType,
+  getPositionOrderMetricId,
+  getSwapOrderMetricId,
+  OrderWsEventMetricData,
+} from "context/MetricsContext/utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -107,14 +112,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
-      const metricData = metrics.getPendingEvent(metricId);
-      const metricType = metricData?.metricType || "unknownOrder";
+      const metricData = metrics.getCachedMetricData(metricId);
+      const metricType = metricData?.metricType || getMetricTypeByOrderType(data);
 
       metrics.sendMetric({
         event: `${metricType}.created`,
         isError: false,
         time: metrics.getTime(metricId),
-        fields: metricData,
+        fields: {
+          ...(metricData || {}),
+          metricType,
+          key: data.key,
+          txnHash: txnParams.transactionHash,
+        } as OrderWsEventMetricData,
       });
 
       setOrderStatuses((old) =>
@@ -161,14 +171,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           ? getSwapOrderMetricId(order)
           : getPositionOrderMetricId(order);
 
-        const metricData = metrics.getPendingEvent(metricId, true);
-        const metricType = metricData?.metricType || "unknownOrder";
+        const metricData = metrics.getCachedMetricData(metricId, true);
+        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
 
         metrics.sendMetric({
           event: `${metricType}.executed`,
           isError: false,
           time: metrics.getTime(metricId, true),
-          fields: metricData,
+          fields: {
+            ...(metricData || {}),
+            metricType,
+            key,
+            txnHash: txnParams.transactionHash,
+          } as OrderWsEventMetricData,
         });
       }
 
@@ -209,15 +224,20 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           ? getSwapOrderMetricId(order)
           : getPositionOrderMetricId(order);
 
-        const metricData = metrics.getPendingEvent(metricId, true);
-        const metricType = metricData?.metricType || "unknownOrder";
+        const metricData = metrics.getCachedMetricData(metricId, true);
+        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
 
         metrics.sendMetric({
-          event: `${metricType}.fail`,
+          event: `${metricType}.failed`,
           isError: true,
-          message: `Order cancelled, key: ${order.key}, txn: ${txnParams.transactionHash}`,
+          message: `Order cancelled`,
           time: metrics.getTime(metricId, true),
-          fields: metricData,
+          fields: {
+            ...(metricData || {}),
+            metricType,
+            key,
+            txnHash: txnParams.transactionHash,
+          } as OrderWsEventMetricData,
         });
       }
 
@@ -485,7 +505,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasV2LostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !wsProvider || !currentAccount || !metrics) {
         return;
       }
 
@@ -495,7 +515,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribe();
       };
     },
-    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus, metrics, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {

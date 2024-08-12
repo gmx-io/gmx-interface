@@ -76,13 +76,19 @@ import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-import "./PositionEditor.scss";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
-import { getPositionOrderMetricId } from "context/MetricsContext/utils";
+import {
+  EditCollateralMetricParams,
+  getPositionOrderMetricId,
+  getTxnErrorMetricsHandler,
+  getTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "context/MetricsContext/utils";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
-import { isUserRejectedActionError } from "lib/contracts/transactionErrors";
+import "./PositionEditor.scss";
 
 export type Props = {
   allowedSlippage: number;
@@ -325,10 +331,25 @@ export function PositionEditor(p: Props) {
       return;
     }
 
-    metrics.sendMetric({
-      event: "editCollateral.submitted",
-      isError: false,
-    });
+    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
+    const metricType = isDeposit ? "depositCollateral" : "withdrawCollateral";
+
+    const metricData: EditCollateralMetricParams = {
+      metricType,
+      account,
+      marketAddress: position?.marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: selectedCollateralAddress,
+      initialCollateralDeltaAmount: collateralDeltaAmount,
+      swapPath: [],
+      isLong: position?.isLong,
+      orderType,
+      executionFee: executionFee?.feeTokenAmount,
+    };
+
+    const metricId = getPositionOrderMetricId({ ...metricData, sizeDeltaUsd: 0n });
+    metrics.setCachedMetricData(metricId, metricData);
+
+    sendOrderSubmittedMetric(metrics, metricId, metricType);
 
     if (
       executionFee?.feeTokenAmount === undefined ||
@@ -340,32 +361,9 @@ export function PositionEditor(p: Props) {
       !signer
     ) {
       helperToast.error(t`Error submitting order`);
-      metrics.sendMetric({
-        event: "editCollateral.fail",
-        isError: true,
-        message: "Error submitting order, missed data",
-      });
+      sendTxnValidationErrorMetric(metrics, metricId, metricType);
       return;
     }
-
-    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
-
-    const metricData = {
-      metricType: "editCollateral",
-      marketAddress: position?.marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: selectedCollateralAddress,
-      initialCollateralDeltaAmount: collateralDeltaAmount,
-      targetCollateralAddress: position?.collateralTokenAddress,
-      collateralDeltaAmount,
-      sizeDeltaUsd: 0n,
-      swapPath: [],
-      isLong: position?.isLong,
-      orderType,
-      executionFee: executionFee?.feeTokenAmount,
-    };
-
-    const metricId = getPositionOrderMetricId(metricData);
-    metrics.setPendingEvent(metricId, metricData);
 
     let txnPromise: Promise<void>;
 
@@ -439,7 +437,8 @@ export function PositionEditor(p: Props) {
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
-        }
+        },
+        metricId
       );
     }
 
@@ -450,26 +449,8 @@ export function PositionEditor(p: Props) {
     }
 
     txnPromise = txnPromise
-      .then(() => {
-        metrics.sendMetric({
-          event: "editCollateral.sent",
-          isError: false,
-          fields: metrics.getPendingEvent(metricId),
-        });
-        metrics.startTimer(metricId);
-
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        metrics.sendMetric({
-          event: `editCollateral.${isUserRejectedActionError(error) ? "rejected" : "fail"}`,
-          isError: true,
-          message: error.message,
-          fields: metrics.getPendingEvent(metricId, true),
-        });
-
-        throw error;
-      });
+      .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
+      .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);

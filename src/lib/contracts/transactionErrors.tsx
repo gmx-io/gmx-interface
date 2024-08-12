@@ -46,7 +46,7 @@ const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
   ],
 };
 
-type TxError = {
+export type TxError = {
   message?: string;
   code?: number;
   data?: any;

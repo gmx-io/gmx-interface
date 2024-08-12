@@ -1,23 +1,34 @@
 import { isDevelopment } from "config/env";
+import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { JSONWithBNParse, JSONWwithBNStringify } from "lib/jsonWithBigint";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import { Context, PropsWithChildren, useMemo, useRef } from "react";
-import { createContext, useContextSelector } from "use-context-selector";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import mapValues from "lodash/mapValues";
+import { Context, PropsWithChildren, useMemo } from "react";
+import { createContext, useContextSelector } from "use-context-selector";
+import { MetricData, MetricEventType } from "./utils";
+
+const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
+
+type CachedMetricData = MetricData & { _metricDataCreated: number; metricId: string };
+type CachedMetricsData = { [key: string]: CachedMetricData };
+type Timers = { [key: string]: number };
 
 export type MetricsContextType = {
   sendMetric: (params: {
-    event: string;
-    fields?: Record<string, any>;
+    event: MetricEventType;
+    fields?: MetricData;
     time?: number;
     isError: boolean;
     message?: string;
   }) => void;
-  setPendingEvent: <T>(metricId: string, eventData: T) => T;
-  getPendingEvent: (metricId: string, clear?: boolean) => any;
+  setCachedMetricData: (metricId: string, metricData: MetricData) => void;
+  getCachedMetricData: (metricId: string, clear?: boolean) => CachedMetricData | undefined;
   startTimer: (metricId: string) => void;
   getTime: (metricId: string, clear?: boolean) => number | undefined;
 };
@@ -28,40 +39,64 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
   const subaccountAddress = useSubaccountAddress();
-
-  const pendingEvents = useRef({});
-  const timers = useRef({});
+  const { showDebugValues } = useSettings();
+  const isMobileMetamask = useIsMetamaskMobile();
 
   const value: MetricsContextType = useMemo(() => {
-    const setPendingEvent = (metricId: string, eventData: any) => {
-      pendingEvents.current[metricId] = { metricId, ...eventData };
+    const setCachedMetricData = (metricId: string, metricData: MetricData) => {
+      const cachedMetricsData = localStorage.getItem(CACHED_METRICS_DATA_KEY);
 
-      return eventData;
+      const metricsData: CachedMetricsData = cachedMetricsData ? JSONWithBNParse(cachedMetricsData) : {};
+
+      metricsData[metricId] = { metricId, _metricDataCreated: Date.now(), ...metricData };
+
+      localStorage.setItem(CACHED_METRICS_DATA_KEY, JSONWwithBNStringify(clearOldMetrics(metricsData)));
     };
 
-    const getPendingEvent = (metricId: string, clear?: boolean) => {
-      const event = pendingEvents.current[metricId];
+    const getCachedMetricData = (metricId: string, clear?: boolean): CachedMetricData | undefined => {
+      const cachedMetricsData = localStorage.getItem(CACHED_METRICS_DATA_KEY);
+
+      if (!cachedMetricsData) {
+        return undefined;
+      }
+
+      const metricsData = JSONWithBNParse(cachedMetricsData);
+
+      const event = metricsData[metricId];
 
       if (clear) {
-        pendingEvents.current[metricId] = undefined;
+        metricsData[metricId] = undefined;
+        localStorage.setItem(CACHED_METRICS_DATA_KEY, JSONWwithBNStringify(clearOldMetrics(metricsData)));
       }
 
       return event;
     };
 
     const startTimer = (metricId: string) => {
-      timers.current[metricId] = Date.now();
+      const storedTimers = localStorage.getItem(METRICS_TIMERS_KEY);
+      const timers = storedTimers ? JSON.parse(storedTimers) : {};
+      timers[metricId] = Date.now();
+
+      localStorage.setItem(METRICS_TIMERS_KEY, JSON.stringify(clearOldTimers(timers)));
     };
 
     const getTime = (metricId: string, clear?: boolean) => {
-      const time = timers.current[metricId];
+      const storedTimers = localStorage.getItem(METRICS_TIMERS_KEY);
+
+      if (!storedTimers) {
+        return undefined;
+      }
+
+      const timers = JSON.parse(storedTimers);
+      const time = timers[metricId];
 
       if (!time) {
         return undefined;
       }
 
       if (clear) {
-        timers.current[metricId] = undefined;
+        timers[metricId] = undefined;
+        localStorage.setItem(METRICS_TIMERS_KEY, JSON.stringify(clearOldTimers(timers)));
       }
 
       return Date.now() - time;
@@ -77,14 +112,18 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       const { time, isError, fields, message, event } = params;
       const wallets = await getWalletNames();
 
-      // eslint-disable-next-line no-console
-      console.log("sendMetric", {
-        time,
-        isError,
-        fields,
-        message,
-        event,
-      });
+      if (showDebugValues) {
+        // eslint-disable-next-line no-console
+        console.log("sendMetric", {
+          event,
+          is1ct: Boolean(subaccountAddress),
+          wallet: wallets.current,
+          time,
+          isError,
+          fields,
+          message,
+        });
+      }
 
       await fetcher.fetchPostReport2({
         is1ct: Boolean(subaccountAddress),
@@ -96,18 +135,23 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
         version: getAppVersion(),
         isError,
         time,
-        customFields: serializeCustomFields({ ...fields, message }),
+        customFields: {
+          ...serializeCustomFields(fields),
+          message,
+          isMobileMetamask,
+          wallets,
+        },
       });
     }
 
     return {
       sendMetric,
-      setPendingEvent,
-      getPendingEvent,
+      setCachedMetricData,
+      getCachedMetricData,
       startTimer,
       getTime,
     };
-  }, [fetcher, subaccountAddress]);
+  }, [fetcher, isMobileMetamask, showDebugValues, subaccountAddress]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
@@ -128,10 +172,34 @@ function serializeCustomFields(fields: Record<string, any>) {
       result = v.toString();
     }
 
-    if (result.length && result.lenth > 150) {
+    if (typeof result === "string" && result.length > 150) {
       result = result.slice(0, 150);
     }
 
     return result;
   });
+}
+
+function clearOldMetrics(metricsData: CachedMetricsData) {
+  const result: { [key: string]: CachedMetricData } = {};
+
+  Object.keys(metricsData).forEach((key) => {
+    if (metricsData[key] && Date.now() - metricsData[key]._metricDataCreated < MAX_METRICS_STORE_TIME) {
+      result[key] = metricsData[key];
+    }
+  });
+
+  return result;
+}
+
+function clearOldTimers(timers: Timers) {
+  const result: { [key: string]: number } = {};
+
+  Object.keys(timers).forEach((key) => {
+    if (Date.now() - timers[key] < MAX_METRICS_STORE_TIME) {
+      result[key] = timers[key];
+    }
+  });
+
+  return result;
 }

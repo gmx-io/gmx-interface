@@ -77,15 +77,17 @@ function App() {
             );
 
             if (pendingTxn.metricId) {
-              const metricData = metrics.getPendingEvent(pendingTxn.metricId, true);
+              const metricData = metrics.getCachedMetricData(pendingTxn.metricId, true);
               const metricType = metricData?.metricType || "unknownTxn";
 
               metrics?.sendMetric({
                 event: `${metricType}.failed`,
                 isError: true,
+                message: "Pending txn error",
                 fields: {
-                  metricId: pendingTxn.metricId,
                   ...(metricData || {}),
+                  metricType,
+                  txnHash: pendingTxn.hash,
                 },
               });
             }
