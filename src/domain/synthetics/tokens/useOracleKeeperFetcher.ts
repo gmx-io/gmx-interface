@@ -47,11 +47,15 @@ export type RawIncentivesStats = {
     period: number;
   }>;
   trading: OnlyWhenActive<{
+    /**
+     * @deprecated use `maxRebatePercent` or `estimatedRebatePercent` instead
+     */
     rebatePercent: number;
+    maxRebatePercent: number;
+    estimatedRebatePercent: number;
     allocation: string;
     period: number;
-    // not yet implemented on keeper side
-    token?: string;
+    token: Address;
   }>;
 };
 
