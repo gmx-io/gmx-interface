@@ -251,7 +251,7 @@ export function GmShiftBox({
             <HighPriceImpactRow
               isHighPriceImpactAccepted={isHighPriceImpactAccepted}
               setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-              isSingle={true}
+              isSingle={false}
             />
           )}
         </ExchangeInfo>
