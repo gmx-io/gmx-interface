@@ -165,7 +165,7 @@ function TVChartHeaderInfoMobile() {
   ]);
 
   return (
-    <div className="mb-10 bg-slate-800 p-16">
+    <div className="mb-10 rounded-4 bg-slate-800 p-16">
       <div className="grid grid-cols-[auto_100px]">
         <div>
           <div className="inline-flex">
@@ -359,7 +359,7 @@ function TVChartHeaderInfoDesktop() {
   ]);
 
   return (
-    <div className="Chart-header mb-10">
+    <div className="Chart-header mb-10 rounded-4">
       <div className="flex items-center justify-start pl-8">
         <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} oneRowLabels={false} />
       </div>

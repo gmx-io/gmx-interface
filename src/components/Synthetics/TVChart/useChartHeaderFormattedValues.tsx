@@ -87,7 +87,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
       return [
         <>
-          <LongIcon />
+          <LongIcon className="opacity-70" />
           <span key="long-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
           </span>
@@ -103,7 +103,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.shortOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
       return [
         <>
-          <ShortIcon />
+          <ShortIcon className="opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
@@ -127,7 +127,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <LongIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <LongIcon className="opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <ShortIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <ShortIcon className="opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
