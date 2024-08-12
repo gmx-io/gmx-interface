@@ -164,8 +164,8 @@ export function useMetrics() {
   return useMetricsSelector((s) => s);
 }
 
-function serializeCustomFields(fields: Record<string, any>) {
-  return mapValues(fields, (v) => {
+function serializeCustomFields(fields: MetricData) {
+  return mapValues(fields, (v: any) => {
     let result;
 
     if (typeof v === "bigint") {
