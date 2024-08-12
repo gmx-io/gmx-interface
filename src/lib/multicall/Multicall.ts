@@ -104,6 +104,7 @@ export class Multicall {
         retryCount: 0,
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
+        timeout: MAX_TIMEOUT,
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,

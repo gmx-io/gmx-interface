@@ -7,6 +7,7 @@ import { promiseWithResolvers } from "lib/utils";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import MulticallWorker from "./multicall.worker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { MAX_TIMEOUT } from "./Multicall";
 
 const executorWorker: Worker = new MulticallWorker();
 
@@ -53,7 +54,9 @@ export async function executeMulticallWorker(
   const { promise, resolve, reject } = promiseWithResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(20_000).then(() => "timeout");
+  const internalMulticallTimeout = MAX_TIMEOUT;
+  const bufferTimeout = 500;
+  const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then(async (result) => {
