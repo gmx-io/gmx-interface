@@ -1,15 +1,12 @@
 import { t } from "@lingui/macro";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
 import {
-  DecreaseOrderMetricParams,
   getPositionOrderMetricId,
   getSwapOrderMetricId,
   getTxnErrorMetricsHandler,
   getTxnSentMetricsHandler,
-  IncreaseOrderMetricParams,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
-  SwapMetricParams,
 } from "context/MetricsContext/utils";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -47,6 +44,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { DecreaseOrderMetricData, IncreaseOrderMetricData, SwapMetricData } from "context/MetricsContext/types";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -93,7 +91,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitSwap() {
       const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
-      const metricData: SwapMetricParams = {
+      const metricData: SwapMetricData = {
         metricType: isLimit ? "limitSwap" : "swap",
         account,
         initialCollateralTokenAddress: fromToken?.address,
@@ -169,7 +167,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitIncreaseOrder() {
       const orderType = isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
 
-      const metricData: IncreaseOrderMetricParams = {
+      const metricData: IncreaseOrderMetricData = {
         metricType: isLimit ? "limitOrder" : "increasePosition",
         account,
         referralCodeForTxn,
@@ -325,7 +323,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitDecreaseOrder() {
       const metricType = fixedTriggerOrderType === OrderType.LimitDecrease ? "takeProfitOrder" : "stopLossOrder";
 
-      const metricData: DecreaseOrderMetricParams = {
+      const metricData: DecreaseOrderMetricData = {
         metricType,
         place: "tradeBox",
         account,

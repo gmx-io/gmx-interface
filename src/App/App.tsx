@@ -78,7 +78,7 @@ function App() {
 
             if (pendingTxn.metricId) {
               const metricData = metrics.getCachedMetricData(pendingTxn.metricId, true);
-              const metricType = metricData?.metricType || "unknownTxn";
+              const metricType = metricData?.metricType || "unknownOrder";
 
               metrics?.sendMetric({
                 event: `${metricType}.failed`,

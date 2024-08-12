@@ -45,12 +45,8 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
-import {
-  getMetricTypeByOrderType,
-  getPositionOrderMetricId,
-  getSwapOrderMetricId,
-  OrderWsEventMetricData,
-} from "context/MetricsContext/utils";
+import { getMetricTypeByOrderType, getPositionOrderMetricId, getSwapOrderMetricId } from "context/MetricsContext/utils";
+import { OrderWsEventMetricData } from "context/MetricsContext/types";
 
 export const SyntheticsEventsContext = createContext({});
 

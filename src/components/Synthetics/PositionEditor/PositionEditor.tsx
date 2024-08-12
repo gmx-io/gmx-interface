@@ -78,13 +78,13 @@ import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
 import { useMetrics } from "context/MetricsContext/MetricsContext";
 import {
-  EditCollateralMetricParams,
   getPositionOrderMetricId,
   getTxnErrorMetricsHandler,
   getTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "context/MetricsContext/utils";
+import { EditCollateralMetricData } from "context/MetricsContext/types";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
@@ -334,7 +334,7 @@ export function PositionEditor(p: Props) {
     const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
     const metricType = isDeposit ? "depositCollateral" : "withdrawCollateral";
 
-    const metricData: EditCollateralMetricParams = {
+    const metricData: EditCollateralMetricData = {
       metricType,
       account,
       marketAddress: position?.marketInfo?.marketTokenAddress,

@@ -66,7 +66,6 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 
 import { useMetrics } from "context/MetricsContext/MetricsContext";
 import {
-  DecreaseOrderMetricParams,
   getPositionOrderMetricId,
   getTxnErrorMetricsHandler,
   getTxnSentMetricsHandler,
@@ -78,6 +77,7 @@ import { helperToast } from "lib/helperToast";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { DecreaseOrderMetricData } from "context/MetricsContext/types";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -294,7 +294,7 @@ export function PositionSeller(p: Props) {
       metricType = "decreasePosition";
     }
 
-    const metricData: DecreaseOrderMetricParams = {
+    const metricData: DecreaseOrderMetricData = {
       metricType,
       hasExistingPosition: true,
       isFullClose: decreaseAmounts?.isFullClose,

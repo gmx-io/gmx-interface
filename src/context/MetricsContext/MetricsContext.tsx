@@ -11,7 +11,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import mapValues from "lodash/mapValues";
 import { Context, PropsWithChildren, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
-import { MetricData, MetricEventType } from "./utils";
+import { MetricData, MetricEventType } from "./types";
 
 const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
 
