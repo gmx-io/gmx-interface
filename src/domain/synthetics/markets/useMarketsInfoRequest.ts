@@ -713,7 +713,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
 
         acc[marketAddress] = {
           ...market,
-          isDisabled: dataStoreValues.isDisabled.returnValues[0],
+          isDisabled: false,
           longToken,
           shortToken,
           indexToken,

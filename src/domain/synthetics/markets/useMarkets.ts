@@ -35,10 +35,6 @@ export function useMarkets(chainId: number): MarketsResult {
     parseResponse: (res) => {
       return res.data.reader.markets.returnValues.reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
-          if (!isMarketEnabled(chainId, marketValues.marketToken)) {
-            return acc;
-          }
-
           try {
             const indexToken = getToken(chainId, convertTokenAddress(chainId, marketValues.indexToken, "native"));
             const longToken = getToken(chainId, marketValues.longToken);
@@ -59,6 +55,16 @@ export function useMarkets(chainId: number): MarketsResult {
               name,
               data: "",
             };
+            acc.marketsData["0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8"] = {
+              marketTokenAddress: "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8",
+              indexTokenAddress: "0x0000000000000000000000000000000000000000",
+              longTokenAddress: "0x5979D7b546E38E414F7E9822514be443A4800529",
+              shortTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+              isSameCollaterals: false,
+              isSpotOnly: false,
+              name: "XYZ",
+              data: "",
+            };
 
             acc.marketsAddresses.push(marketValues.marketToken);
           } catch (e) {
@@ -75,6 +81,6 @@ export function useMarkets(chainId: number): MarketsResult {
 
   return {
     marketsData: data?.marketsData,
-    marketsAddresses: data?.marketsAddresses,
+    marketsAddresses: data?.marketsAddresses.concat("0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8"),
   };
 }
