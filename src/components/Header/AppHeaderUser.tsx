@@ -69,7 +69,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
+        <div data-qa="trade" className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
@@ -99,7 +99,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   return (
     <div className="App-header-user">
-      <div className={cx("App-header-trade-link")}>
+      <div data-qa="trade" className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
@@ -107,7 +107,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
       {showConnectionOptions ? (
         <>
-          <div className="App-header-user-address">
+          <div data-qa="user-address" className="App-header-user-address">
             <AddressDropdown
               account={account}
               accountUrl={accountUrl}

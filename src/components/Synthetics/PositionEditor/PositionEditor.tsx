@@ -509,6 +509,7 @@ export function PositionEditor(p: Props) {
       onClick={onSubmit}
       disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
+      qa="confirm-button"
     >
       {error || localizedOperationLabels[operation]}
     </Button>
@@ -537,6 +538,7 @@ export function PositionEditor(p: Props) {
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
+        qa="position-edit-modal"
       >
         {position && (
           <>
@@ -546,6 +548,7 @@ export function PositionEditor(p: Props) {
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
+              qa="operation-tabs"
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
@@ -605,6 +608,7 @@ export function PositionEditor(p: Props) {
                   );
                 }
               }}
+              qa="amount-input"
             >
               {availableSwapTokens ? (
                 <TokenSelector

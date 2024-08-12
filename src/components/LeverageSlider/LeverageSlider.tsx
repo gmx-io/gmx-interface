@@ -62,6 +62,7 @@ export function LeverageSlider(p: Props) {
         positive: p.isPositive,
         negative: !p.isPositive,
       })}
+      data-qa="leverage-slider"
     >
       <Slider
         min={0}
@@ -97,8 +98,9 @@ const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSl
       visible={dragging}
       placement="top"
       key={index}
+      data-qa={"leverage-slider-tooltip"}
     >
-      <Handle value={value} {...restProps} ref={ref} />
+      <Handle data-qa={"leverage-slider-handle"} value={value} {...restProps} ref={ref} />
     </SliderTooltip>
   );
 });

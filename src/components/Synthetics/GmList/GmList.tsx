@@ -76,6 +76,7 @@ export function GmList({ marketsTokensApyData, marketsTokensIncentiveAprData, sh
     orderBy,
     direction,
     marketsTokensApyData,
+    marketsTokensIncentiveAprData,
     searchText,
     tokensData,
   });
@@ -316,6 +317,7 @@ function useFilterSortGmPools({
   orderBy,
   direction,
   marketsTokensApyData,
+  marketsTokensIncentiveAprData,
   searchText,
   tokensData,
 }: {
@@ -324,9 +326,12 @@ function useFilterSortGmPools({
   orderBy: SortField;
   direction: SortDirection;
   marketsTokensApyData: MarketTokensAPRData | undefined;
+  marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   searchText: string;
   tokensData: TokensData | undefined;
 }) {
+  const chainId = useSelector(selectChainId);
+
   const sortedGmTokens = useMemo(() => {
     if (!marketsInfoData || !marketTokensData) {
       return [];
@@ -337,13 +342,23 @@ function useFilterSortGmPools({
     }
 
     return sortGmTokensByField({
+      chainId,
       marketsInfoData,
       marketTokensData,
       orderBy,
       direction,
-      marketsTokensApyData: marketsTokensApyData!,
+      marketsTokensApyData,
+      marketsTokensIncentiveAprData,
     });
-  }, [direction, marketTokensData, marketsInfoData, marketsTokensApyData, orderBy]);
+  }, [
+    chainId,
+    direction,
+    marketTokensData,
+    marketsInfoData,
+    marketsTokensApyData,
+    marketsTokensIncentiveAprData,
+    orderBy,
+  ]);
 
   const filteredGmTokens = useMemo(() => {
     if (!searchText.trim()) {

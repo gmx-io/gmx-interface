@@ -3,10 +3,13 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getIncentivesV2Url } from "config/links";
 import { getToken } from "config/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
+import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -16,15 +19,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { ARBITRUM } from "config/chains";
-import { getIncentivesV2Url } from "config/links";
-import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import sparkleIcon from "img/sparkle.svg";
-import { bigMath } from "lib/bigmath";
-import "./TradeFeesRow.scss";
 
-const HARDCODED_ESTIMATED_REBATE_PERCENT_ARB = 2500n;
-const HARDCODED_ESTIMATED_REBATE_PERCENT_AVAX = 7500n;
+import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
@@ -59,10 +56,7 @@ export function TradeFeesRow(p: Props) {
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
 
-  const isArbitrum = chainId === ARBITRUM;
-  const estimatedRebatesPercentage = isArbitrum
-    ? HARDCODED_ESTIMATED_REBATE_PERCENT_ARB
-    : HARDCODED_ESTIMATED_REBATE_PERCENT_AVAX;
+  const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
@@ -331,8 +325,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.rebatePercent, 2, 0)}% of the
-        open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of
+        the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -341,7 +335,7 @@ export function TradeFeesRow(p: Props) {
         </span>
       </Trans>
     );
-  }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.rebatePercent]);
+  }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;

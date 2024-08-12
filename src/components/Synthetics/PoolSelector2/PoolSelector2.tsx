@@ -39,7 +39,7 @@ export function PoolSelector2(props: Props) {
   const disabled = props.options?.length === 1;
 
   return (
-    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled}>
+    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled} qa="pool-selector">
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>
   );
@@ -74,6 +74,7 @@ function PoolSelector2Desktop(props: Props) {
             openFees={props.positionStats[option.marketInfo.marketTokenAddress].openFees}
             isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
             liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
+            data-qa="pool-selector-row"
             onSelect={() => {
               props.onSelect(option.marketInfo.marketTokenAddress);
               close();
@@ -118,7 +119,7 @@ function PoolListItemDesktop({
 
   return (
     <SelectorBaseDesktopRow onClick={handleClick}>
-      <td className="PoolSelector2-column-pool">
+      <td className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
         <div className="PoolSelector2-collateral-logos">
           <>
             <TokenIcon
@@ -214,7 +215,7 @@ function PoolListItemMobile({
 
   return (
     <SelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
-      <div className="PoolSelector2-column-pool">
+      <div className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
         <div className="PoolSelector2-collateral-logos">
           <>
             <TokenIcon
