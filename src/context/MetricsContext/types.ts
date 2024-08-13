@@ -1,7 +1,12 @@
 import { OrderType } from "domain/synthetics/orders";
 
-export type MetricEventType = OrderEventType | "positionsListLoad.success";
+export type MetricEventType = OrderEventType | PositionsListEventType;
 export type MetricData = OrderMetricData | OrderWsEventMetricData | PendingTxnErrorMetricData;
+
+export type PositionsListEventType =
+  | "positionsListLoad.start"
+  | "positionsListLoad.success"
+  | "positionsListLoad.timeout";
 
 export type OrderEventType = `${OrderMetricType}.${OrderStageType}`;
 export type OrderStageType = "submitted" | "sent" | "created" | "executed" | "cancelled" | "rejected" | "failed";

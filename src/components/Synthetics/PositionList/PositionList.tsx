@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -15,6 +15,7 @@ import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { useLatest } from "react-use";
 
 type Props = {
@@ -45,13 +46,34 @@ export function PositionList(p: Props) {
   const isLoading = useIsPositionsLoading();
 
   const metricsRef = useLatest(metrics);
+  const metricsTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
+    if (metricsTimeout.current) {
+      return;
+    }
+
     metricsRef.current.startTimer("positionsList");
+
+    metricsRef.current.sendMetric({
+      event: "positionsListLoad.start",
+      isError: false,
+    });
+
+    metricsTimeout.current = setTimeout(() => {
+      metricsRef.current.sendMetric({
+        event: "positionsListLoad.timeout",
+        message: "Positions list was not loaded",
+        isError: true,
+        time: metricsRef.current.getTime("positionsList"),
+      });
+    }, DATA_LOAD_TIMEOUT_FOR_METRICS);
   }, [metricsRef]);
 
   useEffect(() => {
     if (positionsInfoData && !isLoaded) {
+      clearTimeout(metricsTimeout.current);
+
       metrics.sendMetric({
         event: "positionsListLoad.success",
         isError: false,
