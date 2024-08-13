@@ -11,20 +11,12 @@ import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";
 
 type PositionVolumeInfosResponse = {
-  marketPositionVolumeInfos: {
-    volumeUsd: number;
-  }[];
+  positionsVolume24hByMarket: string;
 };
 
 const POSITIONS_VOLUME_INFOS_QUERY = `
-query GetMarketPositionVolumeInfos($marketToken: String!, $timestamp: Int!) {
-  marketPositionVolumeInfos(
-    where: { period_eq: "1h", marketAddress_eq: $marketToken, timestampGroup_gt: $timestamp }
-  ) {
-    id
-    volumeUsd
-    timestampGroup
-  }
+query PositionVolumeInfoResolver($marketAddress: String!, $timestamp: Float!) {
+  positionsVolume24hByMarket(where: {timestamp: $timestamp, marketAddress: $marketAddress})
 }`;
 
 export function use24hVolume() {
@@ -39,14 +31,14 @@ export function use24hVolume() {
   const marketTokenAddress = marketInfo?.marketTokenAddress;
 
   const variables = {
-    marketToken: marketTokenAddress,
+    marketAddress: marketTokenAddress,
     timestamp: timestamp,
   };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    variables.marketToken ? `24hVolume-${marketTokenAddress}` : null,
+    variables.marketAddress ? `24hVolume-${marketTokenAddress}` : null,
     async () => {
-      if (!endpoint || !variables.marketToken) {
+      if (!endpoint || !variables.marketAddress) {
         return;
       }
 
@@ -58,6 +50,6 @@ export function use24hVolume() {
   );
 
   return useMemo(() => {
-    return data?.marketPositionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+    return data?.positionsVolume24hByMarket ? BigInt(data?.positionsVolume24hByMarket) : 0n;
   }, [data]);
 }
