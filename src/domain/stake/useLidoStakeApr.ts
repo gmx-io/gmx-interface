@@ -1,19 +1,22 @@
 import useSWR from "swr";
 import { expandDecimals } from "lib/numbers";
-
-const LIDO_STAKE_APR_URL = "https://eth-api.lido.fi/v1/protocol/steth/apr/sma";
+import { LIDO_STAKE_APR_URL } from "config/lido";
 
 export const LIDO_APR_DECIMALS = 28;
 export const LIDO_APR_DIVISOR = expandDecimals(1, LIDO_APR_DECIMALS);
 
 export function useLidoStakeApr() {
-  const { data: lidoAprResult } = useSWR(["lido-stake-apr"], {
-    fetcher: () => fetch(LIDO_STAKE_APR_URL).then((res) => res.json()),
+  const { data: lidoApr } = useSWR(["lido-stake-apr"], {
+    fetcher: async () => {
+      const lidoResponse = await fetch(LIDO_STAKE_APR_URL).then((res) => res.json());
+
+      if (!lidoResponse?.data.smaApr) {
+        return undefined;
+      }
+
+      return BigInt(Math.ceil(lidoResponse.data.smaApr * Number(LIDO_APR_DIVISOR)));
+    },
   });
 
-  if (!lidoAprResult?.data.smaApr) {
-    return undefined;
-  }
-
-  return BigInt(Math.ceil(lidoAprResult.data.smaApr * Number(LIDO_APR_DIVISOR)));
+  return lidoApr;
 }
