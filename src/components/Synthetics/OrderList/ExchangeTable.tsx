@@ -44,5 +44,13 @@ export const ExchangeTr = forwardRef<
   );
 });
 export function ExchangeTd(props: PropsWithChildren & React.HTMLProps<HTMLTableCellElement>) {
-  return <td {...props} className={cx("px-10 py-14 first-of-type:pl-14 last-of-type:text-right", props.className)} />;
+  return (
+    <td
+      {...props}
+      className={cx(
+        "px-10 py-14 first-of-type:pl-14 last-of-type:pr-14 last-of-type:[&:not(:first-of-type)]:text-right",
+        props.className
+      )}
+    />
+  );
 }

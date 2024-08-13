@@ -50,6 +50,10 @@ const WITHDRAWAL_CREATED_HASH = ethers.id("WithdrawalCreated");
 const WITHDRAWAL_EXECUTED_HASH = ethers.id("WithdrawalExecuted");
 const WITHDRAWAL_CANCELLED_HASH = ethers.id("WithdrawalCancelled");
 
+const SHIFT_CREATED_HASH = ethers.id("ShiftCreated");
+const SHIFT_EXECUTED_HASH = ethers.id("ShiftExecuted");
+const SHIFT_CANCELLED_HASH = ethers.id("ShiftCancelled");
+
 const ORDER_CREATED_HASH = ethers.id("OrderCreated");
 const ORDER_EXECUTED_HASH = ethers.id("OrderExecuted");
 const ORDER_CANCELLED_HASH = ethers.id("OrderCancelled");
@@ -156,15 +160,15 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
   const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
   const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
   return [
-    // DEPOSITS AND WITHDRAWALS
+    // DEPOSITS AND WITHDRAWALS AND SHIFTS
     {
       address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
-    },
-    // NEW CONTRACTS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
+      topics: [
+        EVENT_LOG2_TOPIC,
+        [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH, SHIFT_CREATED_HASH],
+        null,
+        addressHash,
+      ],
     },
     {
       address: getContract(chainId, "EventEmitter"),
@@ -178,7 +182,16 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
       address: getContract(chainId, "EventEmitter"),
       topics: [
         EVENT_LOG2_TOPIC,
-        [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
+        [
+          DEPOSIT_CANCELLED_HASH,
+          DEPOSIT_EXECUTED_HASH,
+
+          WITHDRAWAL_CANCELLED_HASH,
+          WITHDRAWAL_EXECUTED_HASH,
+
+          SHIFT_CANCELLED_HASH,
+          SHIFT_EXECUTED_HASH,
+        ],
         null,
         addressHash,
       ],
