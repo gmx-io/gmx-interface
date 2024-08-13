@@ -16,6 +16,7 @@ export function sortGmTokensByField({
   direction,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
+  marketsTokensLidoAprData,
 }: {
   chainId: number;
   marketsInfoData: MarketsInfoData;
@@ -24,6 +25,7 @@ export function sortGmTokensByField({
   direction: SortDirection;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  marketsTokensLidoAprData: MarketTokensAPRData | undefined;
 }) {
   const gmTokens = values(marketTokensData);
   const directionMultiplier = direction === "asc" ? 1 : -1;
@@ -60,12 +62,16 @@ export function sortGmTokensByField({
 
   if (orderBy === "apy") {
     return gmTokens.sort((a, b) => {
-      let aprA = marketsTokensIncentiveAprData?.[a.address] ?? 0n;
+      const bonusAprA = marketsTokensIncentiveAprData?.[a.address] ?? 0n;
+      const lidoAprA = marketsTokensLidoAprData?.[a.address] ?? 0n;
+      let aprA = bonusAprA + lidoAprA;
       if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, a.address))) {
         aprA += marketsTokensApyData?.[a.address] ?? 0n;
       }
 
-      let aprB = marketsTokensIncentiveAprData?.[b.address] ?? 0n;
+      const bonusAprB = marketsTokensIncentiveAprData?.[b.address] ?? 0n;
+      const lidoAprB = marketsTokensLidoAprData?.[b.address] ?? 0n;
+      let aprB = bonusAprB + lidoAprB;
       if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, b.address))) {
         aprB += marketsTokensApyData?.[b.address] ?? 0n;
       }
