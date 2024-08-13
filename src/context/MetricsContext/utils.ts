@@ -92,7 +92,7 @@ export function sendOrderSubmittedMetric(metrics: MetricsContextType, metricId: 
   metrics.sendMetric({
     event: `${metricType}.submitted`,
     isError: false,
-    fields: metrics.getCachedMetricData(metricId),
+    data: metrics.getCachedMetricData(metricId),
   });
 }
 
@@ -105,7 +105,7 @@ export function sendTxnValidationErrorMetric(
     event: `${metricType}.failed`,
     isError: true,
     message: "Error submitting order, missed data",
-    fields: metrics.getCachedMetricData(metricId, true),
+    data: metrics.getCachedMetricData(metricId, true),
   });
 }
 
@@ -115,7 +115,7 @@ export function getTxnSentMetricsHandler(metrics: MetricsContextType, metricId: 
       event: `${metricType}.sent`,
       isError: false,
       time: metrics.getTime(metricId),
-      fields: metrics.getCachedMetricData(metricId),
+      data: metrics.getCachedMetricData(metricId),
     });
 
     return Promise.resolve();
@@ -130,7 +130,7 @@ export function getTxnErrorMetricsHandler(metrics: MetricsContextType, metricId:
       event: `${metricType}.${isUserRejectedActionError(error as Error) ? "rejected" : "failed"}`,
       isError: true,
       message,
-      fields: metrics.getCachedMetricData(metricId, true),
+      data: metrics.getCachedMetricData(metricId, true),
     });
 
     throw error;

@@ -115,7 +115,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         event: `${metricType}.created`,
         isError: false,
         time: metrics.getTime(metricId),
-        fields: {
+        data: {
           ...(metricData || {}),
           metricType,
           key: data.key,
@@ -174,7 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           event: `${metricType}.executed`,
           isError: false,
           time: metrics.getTime(metricId, true),
-          fields: {
+          data: {
             ...(metricData || {}),
             metricType,
             key,
@@ -228,7 +228,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           isError: true,
           message: `Order cancelled`,
           time: metrics.getTime(metricId, true),
-          fields: {
+          data: {
             ...(metricData || {}),
             metricType,
             key,

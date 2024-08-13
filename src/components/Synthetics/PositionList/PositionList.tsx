@@ -15,6 +15,7 @@ import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { useLatest } from "react-use";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -43,10 +44,11 @@ export function PositionList(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
 
+  const metricsRef = useLatest(metrics);
+
   useEffect(() => {
-    metrics.startTimer("positionsList");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    metricsRef.current.startTimer("positionsList");
+  }, [metricsRef]);
 
   useEffect(() => {
     if (positionsInfoData && !isLoaded) {

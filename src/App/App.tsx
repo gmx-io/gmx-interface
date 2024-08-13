@@ -84,7 +84,7 @@ function App() {
                 event: `${metricType}.failed`,
                 isError: true,
                 message: "Pending txn error",
-                fields: {
+                data: {
                   ...(metricData || {}),
                   metricType,
                   txnHash: pendingTxn.hash,

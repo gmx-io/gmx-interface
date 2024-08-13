@@ -4,7 +4,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { JSONWithBNParse, JSONWwithBNStringify } from "lib/jsonWithBigint";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
@@ -12,6 +11,7 @@ import mapValues from "lodash/mapValues";
 import { Context, PropsWithChildren, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { MetricData, MetricEventType } from "./types";
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
 
@@ -22,7 +22,7 @@ type Timers = { [key: string]: number };
 export type MetricsContextType = {
   sendMetric: (params: {
     event: MetricEventType;
-    fields?: MetricData;
+    data?: MetricData;
     time?: number;
     isError: boolean;
     message?: string;
@@ -46,11 +46,11 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
     const setCachedMetricData = (metricId: string, metricData: MetricData) => {
       const cachedMetricsData = localStorage.getItem(CACHED_METRICS_DATA_KEY);
 
-      const metricsData: CachedMetricsData = cachedMetricsData ? JSONWithBNParse(cachedMetricsData) : {};
+      const metricsData: CachedMetricsData = cachedMetricsData ? deserializeCachedMetricsData(cachedMetricsData) : {};
 
       metricsData[metricId] = { metricId, _metricDataCreated: Date.now(), ...metricData };
 
-      localStorage.setItem(CACHED_METRICS_DATA_KEY, JSONWwithBNStringify(clearOldMetrics(metricsData)));
+      localStorage.setItem(CACHED_METRICS_DATA_KEY, serializeCachedMetricsData(metricsData));
     };
 
     const getCachedMetricData = (metricId: string, clear?: boolean): CachedMetricData | undefined => {
@@ -60,13 +60,13 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
         return undefined;
       }
 
-      const metricsData = JSONWithBNParse(cachedMetricsData);
+      const metricsData = deserializeCachedMetricsData(cachedMetricsData);
 
       const event = metricsData[metricId];
 
       if (clear) {
-        metricsData[metricId] = undefined;
-        localStorage.setItem(CACHED_METRICS_DATA_KEY, JSONWwithBNStringify(clearOldMetrics(metricsData)));
+        delete metricsData[metricId];
+        localStorage.setItem(CACHED_METRICS_DATA_KEY, serializeCachedMetricsData(metricsData));
       }
 
       return event;
@@ -95,7 +95,7 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       }
 
       if (clear) {
-        timers[metricId] = undefined;
+        delete timers[metricId];
         localStorage.setItem(METRICS_TIMERS_KEY, JSON.stringify(clearOldTimers(timers)));
       }
 
@@ -104,12 +104,12 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
 
     async function sendMetric(params: {
       event: string;
-      fields?: any;
+      data?: MetricData;
       time?: number;
       isError: boolean;
       message?: string;
     }) {
-      const { time, isError, fields, message, event } = params;
+      const { time, isError, data, message, event } = params;
       const wallets = await getWalletNames();
 
       if (showDebugValues) {
@@ -120,7 +120,7 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
           wallet: wallets.current,
           time,
           isError,
-          fields,
+          data,
           message,
         });
       }
@@ -136,7 +136,7 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
         isError,
         time,
         customFields: {
-          ...serializeCustomFields(fields),
+          ...(data ? serializeCustomFields(data) : {}),
           message,
           isMobileMetamask,
           wallets,
@@ -178,6 +178,14 @@ function serializeCustomFields(fields: MetricData) {
 
     return result;
   });
+}
+
+function serializeCachedMetricsData(metricsData: CachedMetricsData) {
+  return JSON.stringify(serializeBigIntsInObject(clearOldMetrics(metricsData)));
+}
+
+function deserializeCachedMetricsData(jsonStr: string): CachedMetricsData {
+  return deserializeBigIntsInObject(JSON.parse(jsonStr));
 }
 
 function clearOldMetrics(metricsData: CachedMetricsData) {
