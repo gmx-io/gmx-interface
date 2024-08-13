@@ -56,7 +56,7 @@ export function PositionList(p: Props) {
     metricsRef.current.startTimer("positionsList");
 
     metricsRef.current.sendMetric({
-      event: "positionsListLoad.start",
+      event: "positionsListLoad.started",
       isError: false,
     });
 

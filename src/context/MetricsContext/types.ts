@@ -4,7 +4,7 @@ export type MetricEventType = OrderEventType | PositionsListEventType;
 export type MetricData = OrderMetricData | OrderWsEventMetricData | PendingTxnErrorMetricData;
 
 export type PositionsListEventType =
-  | "positionsListLoad.start"
+  | "positionsListLoad.started"
   | "positionsListLoad.success"
   | "positionsListLoad.timeout";
 
