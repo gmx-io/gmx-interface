@@ -26,4 +26,4 @@ export const HIGH_COLLATERAL_IMPACT_BPS = 500; // 5%
 export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER = 30; // 0.3%
 
-export const HIGH_TRADE_VOLUME_FOR_FEEDBACK = expandDecimals(15, 35);
+export const HIGH_TRADE_VOLUME_FOR_FEEDBACK = expandDecimals(1, 36); // 1m
