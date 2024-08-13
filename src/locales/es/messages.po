@@ -946,7 +946,6 @@ msgid "Collateral"
 msgstr "Garantía"
 
 #: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr ""
 
@@ -3514,7 +3513,6 @@ msgid "Structured Products"
 msgstr "Productos Estructurados"
 
 #: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -4487,6 +4485,10 @@ msgstr ""
 msgid "Execution price for the order."
 msgstr "Precio de ejecución para la orden."
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "wstETH APR"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
 msgstr "Grupo de Telegram"
@@ -4632,6 +4634,10 @@ msgstr "ADVERTENCIA: Altas Comisiones"
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
+msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the<0>Ethena dashboard</0>."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -5177,7 +5183,6 @@ msgstr ""
 msgid "Claiming failed"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The base APY estimate will be available {0} to ensure accurate data display."
 msgstr ""
@@ -5831,6 +5836,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "No se pudo ejecutar el depósito en {0} {longOrShortText}"
+
+#: src/components/AprInfo/AprInfo.tsx
+#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
