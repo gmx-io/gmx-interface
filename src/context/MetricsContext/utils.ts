@@ -111,6 +111,8 @@ export function sendTxnValidationErrorMetric(
 
 export function getTxnSentMetricsHandler(metrics: MetricsContextType, metricId: string, metricType: OrderMetricType) {
   return () => {
+    metrics.startTimer(metricId);
+
     metrics.sendMetric({
       event: `${metricType}.sent`,
       isError: false,
