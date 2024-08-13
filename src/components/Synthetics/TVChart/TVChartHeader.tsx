@@ -14,12 +14,15 @@ import { Token } from "domain/tokens";
 
 import { useChainId } from "lib/chains";
 
-import { BiChevronDown, BiChevronRight } from "react-icons/bi";
+import { BiChevronDown, BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
+
+const MIN_FADE_AREA = 24; //px
+const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
@@ -253,13 +256,13 @@ function TVChartHeaderInfoDesktop() {
 
   const leftStyles = useMemo(() => {
     return {
-      width: `${Math.min(scrollLeft + 8, maxFadeArea)}px`,
+      width: `${Math.max(MIN_FADE_AREA, Math.min(scrollLeft + 8, maxFadeArea))}px`,
     };
   }, [scrollLeft, maxFadeArea]);
 
   const rightStyles = useMemo(() => {
     return {
-      width: `${Math.min(scrollRight + 8, maxFadeArea)}px`,
+      width: `${Math.max(MIN_FADE_AREA, Math.min(scrollRight + 8, maxFadeArea))}px`,
     };
   }, [scrollRight, maxFadeArea]);
 
@@ -277,7 +280,14 @@ function TVChartHeaderInfoDesktop() {
     netRateShort,
     shortOIPercentage,
     shortOIValue,
+    info,
   } = useChartHeaderFormattedValues();
+
+  useEffect(() => {
+    if (info) {
+      setScrolls();
+    }
+  }, [info, setScrolls]);
 
   const additionalInfo = useMemo(() => {
     if (isSwap) {
@@ -358,27 +368,86 @@ function TVChartHeaderInfoDesktop() {
     low24,
   ]);
 
+  const scrollTo = useCallback(
+    (dir: 1 | -1) => () => {
+      if (!scrollableRef.current) {
+        return;
+      }
+
+      let nextNonVisibleElement: Element | undefined;
+
+      const { left: containerLeft, width: containerWidth } = scrollableRef.current.getBoundingClientRect();
+      const containerRight = containerLeft + containerWidth;
+
+      for (const child of scrollableRef.current.children) {
+        const { left: childLeft, right: childRight, width: childWidth } = child.getBoundingClientRect();
+        const childVisibleLeft = Math.max(childLeft, containerLeft);
+        const childVisibleRight = Math.min(childRight, containerRight);
+        const isVisible = childVisibleRight - childVisibleLeft === childWidth;
+
+        if (dir === 1 && childLeft > containerLeft && !isVisible) {
+          nextNonVisibleElement = child;
+          break;
+        } else if (dir === -1 && childRight < containerRight && !isVisible) {
+          nextNonVisibleElement = child;
+        }
+      }
+
+      if (!nextNonVisibleElement) {
+        return;
+      }
+
+      let proposedScrollLeft = dir * nextNonVisibleElement.getBoundingClientRect().width;
+      const nextLeftScroll = scrollableRef.current.scrollLeft + proposedScrollLeft;
+
+      /**
+       * This part is to prevent scrolling to visible area of element bu leaving a small margin to the end (MAX_SCROLL_LEFT_TO_END_AREA),
+       * it's better to scroll to the end in such cases
+       */
+      if (
+        (dir === 1 && containerWidth - nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA) ||
+        (dir === -1 && nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA)
+      ) {
+        proposedScrollLeft = dir * containerWidth;
+      }
+
+      scrollableRef.current.scrollBy({
+        left: proposedScrollLeft,
+        behavior: "smooth",
+      });
+    },
+    []
+  );
+
   return (
     <div className="Chart-header mb-10 rounded-4">
       <div className="flex items-center justify-start pl-8">
         <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} oneRowLabels={false} />
       </div>
-      <div className="Chart-top-scrollable-container">
-        <div className="Chart-top-scrollable-fade-overlay">
+      <div className="relative flex overflow-hidden">
+        <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
           <div
             className={cx("Chart-top-scrollable-fade-left", {
+              "!cursor-default": scrollLeft <= 0,
               "opacity-100": scrollLeft > 0,
               "opacity-0": scrollLeft <= 0,
             })}
             style={leftStyles}
-          ></div>
+            onClick={scrollTo(-1)}
+          >
+            {scrollLeft > 0 && <BiChevronLeft className="opacity-70" size={24} />}
+          </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
+              "!cursor-default": scrollRight <= 0,
               "opacity-100": scrollRight > 0,
               "opacity-0": scrollRight <= 0,
             })}
             style={rightStyles}
-          ></div>
+            onClick={scrollTo(1)}
+          >
+            {scrollRight > 0 && <BiChevronRight className="opacity-70" size={24} />}
+          </div>
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">

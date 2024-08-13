@@ -19,11 +19,11 @@ type PositionVolumeInfosResponse = {
 const POSITIONS_VOLUME_INFOS_QUERY = `
 query GetMarketPositionVolumeInfos($marketToken: String!, $timestamp: Int!) {
   marketPositionVolumeInfos(
-    where: { period_eq: "total", marketAddress_eq: $marketToken, timestamp_gt: $timestamp }
+    where: { period_eq: "1h", marketAddress_eq: $marketToken, timestampGroup_gt: $timestamp }
   ) {
     id
     volumeUsd
-    timestamp
+    timestampGroup
   }
 }`;
 

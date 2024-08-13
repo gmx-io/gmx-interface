@@ -227,5 +227,6 @@ export function useChartHeaderFormattedValues() {
     netRateShort,
     dailyVolume,
     dayPriceDelta,
+    info,
   };
 }
