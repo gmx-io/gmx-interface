@@ -8,7 +8,7 @@ import { promiseWithResolvers } from "lib/utils";
 
 export const hashDataWorker: Worker = new HashDataWorker();
 
-const promises: Record<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }> = {};
+const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
 hashDataWorker.onmessage = (event) => {
   const { id, result, error } = event.data;
@@ -48,7 +48,7 @@ export function hashDataMapAsync<
     map,
   });
 
-  const { promise, resolve, reject } = promiseWithResolvers();
+  const { promise, resolve, reject } = promiseWithResolvers<{ [K in keyof R]: string }>();
   promises[id] = { resolve, reject };
 
   const escapePromise = sleep(2000).then(() => "timeout");

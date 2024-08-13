@@ -1,54 +1,49 @@
 import { useCallback } from "react";
-import useSWR, { Key } from "swr";
-import { BareFetcher, SWRConfiguration, useSWRConfig } from "swr/_internal";
-
-import { sequentialTimedScheduler } from "lib/sequentialTimedScheduler";
+import useSWR from "swr";
+import { BareFetcher, SWRConfiguration } from "swr/_internal";
 
 export function useSequentialTimedSWR<Data = any, Error = any>(
-  key: Key,
+  key: any[] | null | undefined | false,
   config: Omit<SWRConfiguration<Data, Error, BareFetcher<Data>>, "refreshInterval"> & {
-    /**
-     * Sequential timing will only be applied if `refreshInterval` is a number or undefined.
-     */
-    refreshInterval?: SWRConfiguration<Data, Error, BareFetcher<Data>>["refreshInterval"];
+    refreshInterval: number;
   }
 ) {
-  const defaultConfig = useSWRConfig();
-  const defaultRefreshInterval = defaultConfig.refreshInterval;
+  let refreshInterval = config.refreshInterval;
 
-  const wrappedFetcher = useCallback(
-    async (...args) => {
-      const fetcher = config.fetcher;
+  const wrappedFetcher = async (...args) => {
+    const fetcher = config.fetcher!;
 
-      if (!fetcher) {
-        return;
+    const start = Date.now();
+    const result = await fetcher(...args);
+
+    return { result, start };
+  };
+
+  const getRefreshInterval = useCallback(
+    (latestData: { result: Data; start: number }) => {
+      if (!latestData) {
+        return refreshInterval;
       }
 
-      let refreshInterval = config.refreshInterval;
+      const wait = Math.max(refreshInterval - (Date.now() - latestData.start), 1);
 
-      if (refreshInterval !== undefined && typeof refreshInterval !== "number") {
-        return fetcher(...args);
-      }
-
-      if (refreshInterval === undefined && typeof defaultRefreshInterval === "number") {
-        refreshInterval = defaultRefreshInterval;
-      }
-
-      if (refreshInterval === undefined || refreshInterval <= 0) {
-        return fetcher(...args);
-      }
-
-      return sequentialTimedScheduler(() => fetcher(...args), refreshInterval, query.mutate);
+      return wait;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [key]
-  ) as BareFetcher<Data>;
+    [refreshInterval]
+  );
 
-  const query = useSWR<Data, Error>(key, {
+  const query = useSWR(key && [...key, refreshInterval], {
     ...config,
-    refreshInterval: 0,
     fetcher: wrappedFetcher,
+    dedupingInterval: refreshInterval / 2,
+    refreshInterval: getRefreshInterval,
   });
 
-  return query;
+  return {
+    data: query.data?.result as Data | undefined,
+    error: query.error as Error,
+    isLoading: query.isLoading,
+    isValidating: query.isValidating,
+    mutate: query.mutate,
+  };
 }

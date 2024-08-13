@@ -10,7 +10,7 @@ import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 const executorWorker: Worker = new MulticallWorker();
 
-const promises: Record<string, { resolve: (value: unknown) => void; reject: (error: unknown) => void }> = {};
+const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
 executorWorker.onmessage = (event) => {
   const { id, result, error } = event.data;
@@ -50,10 +50,10 @@ export async function executeMulticallWorker(
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 
-  const { promise, resolve, reject } = promiseWithResolvers();
+  const { promise, resolve, reject } = promiseWithResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(2000).then(() => "timeout");
+  const escapePromise = sleep(20_000).then(() => "timeout");
   const race = Promise.race([promise, escapePromise]);
 
   race.then(async (result) => {
