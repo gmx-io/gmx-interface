@@ -4139,6 +4139,11 @@ msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancel
 msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h Low"
+msgstr "24h Low"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Chain Icon"
@@ -7245,6 +7250,11 @@ msgstr "Swap"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "long"
+
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+msgid "24h High"
+msgstr "24h High"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."

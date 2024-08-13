@@ -42,37 +42,38 @@ import {
 type Props = {
   selectedToken: Token | undefined;
   options: Token[] | undefined;
-  isMobile?: boolean;
+  oneRowLabels?: boolean;
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken, isMobile } = props;
+  const { options, selectedToken, oneRowLabels } = props;
 
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const chevronClassName = isMobile === undefined ? undefined : isMobile ? "mt-4" : "mt-4 self-start";
+  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "mt-4" : "mt-4 self-start";
 
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
       popoverYOffset={16}
-      popoverXOffset={0}
+      popoverXOffset={-8}
+      handleClassName={oneRowLabels === false ? "mr-24" : undefined}
       chevronClassName={chevronClassName}
       label={
         selectedToken ? (
           <span
-            className={cx("inline-flex whitespace-nowrap py-5 pl-0 text-[20px] font-bold", {
-              "items-start": !isMobile,
-              "items-center": isMobile,
+            className={cx("inline-flex whitespace-nowrap pl-0 text-[20px] font-bold", {
+              "items-start": !oneRowLabels,
+              "items-center": oneRowLabels,
             })}
           >
             <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             <span
               className={cx("flex justify-start", {
-                "flex-col": !isMobile,
-                "flex-row items-center": isMobile,
+                "flex-col": !oneRowLabels,
+                "flex-row items-center": oneRowLabels,
               })}
             >
               <span>
@@ -81,7 +82,7 @@ export default function ChartTokenSelector(props: Props) {
               {poolName && (
                 <span
                   className={cx("text-12 font-normal text-gray-300", {
-                    "ml-8": isMobile,
+                    "ml-8": oneRowLabels,
                   })}
                 >
                   [{poolName}]

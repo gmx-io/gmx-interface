@@ -1,5 +1,6 @@
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
+import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
 import "./PositionDropdown.css";
 import { HiDotsVertical } from "react-icons/hi";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -26,15 +27,26 @@ export default function PositionDropdown({
   handleLimitIncreaseSize,
   handleTriggerClose,
 }: Props) {
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset({ mainAxis: 10 }), flip(), shift()],
+    placement: "bottom-end",
+    whileElementsMounted: autoUpdate,
+  });
+
   return (
     <Menu>
-      <Menu.Button as="div">
+      <Menu.Button as="div" ref={refs.setReference}>
         <button className="PositionDropdown-dots-icon">
           <HiDotsVertical fontSize={20} fontWeight={700} />
         </button>
       </Menu.Button>
-      <div className="PositionDropdown-extra-options">
-        <Menu.Items as="div" className="menu-items">
+      <FloatingPortal>
+        <Menu.Items
+          as="div"
+          className="PositionDropdown-menu-items menu-items"
+          ref={refs.setFloating}
+          style={floatingStyles}
+        >
           {handleMarketSelect && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketSelect}>
@@ -96,7 +108,7 @@ export default function PositionDropdown({
             </Menu.Item>
           )}
         </Menu.Items>
-      </div>
+      </FloatingPortal>
     </Menu>
   );
 }
