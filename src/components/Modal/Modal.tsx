@@ -32,6 +32,7 @@ export type ModalProps = PropsWithChildren<{
   headerContent?: React.ReactNode;
   onAfterOpen?: () => void;
   contentPadding?: boolean;
+  qa?: string;
 }>;
 
 export default function Modal({
@@ -44,6 +45,7 @@ export default function Modal({
   contentPadding = true,
   onAfterOpen,
   setIsVisible,
+  qa,
 }: ModalProps) {
   const modalRef = useRef(null);
 
@@ -85,7 +87,7 @@ export default function Modal({
             style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
           />
-          <div className="Modal-content" onClick={stopPropagation}>
+          <div className="Modal-content" onClick={stopPropagation} data-qa={qa}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
                 <div className="Modal-title">{label}</div>

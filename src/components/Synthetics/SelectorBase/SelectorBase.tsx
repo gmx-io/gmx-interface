@@ -23,6 +23,7 @@ type Props = PropsWithChildren<{
   popoverYOffset?: number;
   mobileModalContentPadding?: boolean;
   popoverPlacement?: Placement;
+  qa?: string;
 }>;
 
 type SelectorContextType = { close: () => void; mobileHeader?: HTMLDivElement };
@@ -137,7 +138,7 @@ export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {
 }
 //#endregion
 
-function SelectorBaseDesktop(props: Props) {
+function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
@@ -157,7 +158,14 @@ function SelectorBaseDesktop(props: Props) {
   }, []);
 
   if (props.disabled) {
-    return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+    return (
+      <div
+        data-qa={props.qa ? props.qa + "-button-disabled" : undefined}
+        className="SelectorBase-button SelectorBase-button-disabled"
+      >
+        {props.label}
+      </div>
+    );
   }
 
   return (
@@ -168,11 +176,10 @@ function SelectorBaseDesktop(props: Props) {
             as="div"
             className={cx("SelectorBase-button group/selector-base", props.handleClassName)}
             ref={refs.setReference}
+            data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
-            <BiChevronDown
-              className={cx("-my-5 -mr-4 ml-5 inline-block align-middle text-24", props.chevronClassName)}
-            />
+            <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
@@ -216,7 +223,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 ml-5 inline-block align-middle text-24" />}
+        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 inline-block align-middle text-24" />}
       </div>
       <Modal
         setIsVisible={setIsVisible}

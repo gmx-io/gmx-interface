@@ -68,6 +68,7 @@ export function MarketPoolsPage() {
               earn fees from swaps and leverage trading.
             </Trans>
           }
+          qa="pools-page"
         />
 
         <div className="MarketPoolsPage-content">

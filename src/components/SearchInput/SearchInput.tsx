@@ -15,6 +15,7 @@ type Props = {
    * If not provided, will be set to true on small screens
    */
   autoFocus?: boolean;
+  qa?: string;
 };
 
 const STYLE = {
@@ -29,12 +30,14 @@ export default function SearchInput({
   placeholder,
   autoFocus,
   size = "m",
+  qa = "token-search-input",
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const classNames = cx("Search-input", `Search-input_size_${size}`, className);
   return (
     <div className={classNames}>
       <input
+        data-qa={qa}
         type="text"
         placeholder={placeholder ?? t`Search Token`}
         value={value}

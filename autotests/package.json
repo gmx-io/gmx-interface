@@ -1,0 +1,21 @@
+{
+  "name": "gmx-ui-autotests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": " npx playwright test",
+    "postinstall": "npx playwright install"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@depay/web3-mock": "^14.18.0",
+    "@playwright/test": "^1.45.1",
+    "@tenkeylabs/dappwright": "^2.8.5",
+    "dotenv": "16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11"
+  }
+}

@@ -134,6 +134,7 @@ function Referrals() {
               <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
             </Trans>
           }
+          qa="referrals-page"
         />
         <div className="referral-tab-container">
           <Tab

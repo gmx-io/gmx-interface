@@ -4,6 +4,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
+import { bigMath } from "lib/bigmath";
 import {
   selectClosingPositionKey,
   selectPositionsInfoData,
@@ -35,6 +36,7 @@ import { getIsEquivalentTokens } from "domain/tokens";
 import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
@@ -217,11 +219,18 @@ export const selectPositionSellerFees = createSelector((q) => {
     decreaseSwapType: decreaseAmounts.decreaseSwapType,
   });
 
-  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+  const sizeReductionBps = bigMath.mulDiv(
+    decreaseAmounts.sizeDeltaUsd,
+    BASIS_POINTS_DIVISOR_BIGINT,
+    position.sizeInUsd
+  );
+  const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
   return {
     fees: getTradeFees({
       initialCollateralUsd: position.collateralUsd,
+      collateralDeltaUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
       positionFeeUsd: decreaseAmounts.positionFeeUsd,

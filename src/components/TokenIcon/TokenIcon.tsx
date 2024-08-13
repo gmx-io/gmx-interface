@@ -19,7 +19,14 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24 }: Props) {
   const classNames = cx("Token-icon inline", className);
   if (!iconPath) return <></>;
   return (
-    <img className={classNames} src={importImage(iconPath)} alt={symbol} width={displaySize} height={displaySize} />
+    <img
+      data-qa="token-icon"
+      className={classNames}
+      src={importImage(iconPath)}
+      alt={symbol}
+      width={displaySize}
+      height={displaySize}
+    />
   );
 }
 

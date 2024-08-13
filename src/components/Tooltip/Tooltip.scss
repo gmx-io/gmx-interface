@@ -169,10 +169,6 @@ $left-arrow-bg: var(--color-slate-600);
 
 @media (max-width: 700px) {
   .Tooltip-row {
-    display: block;
     margin-bottom: 1rem;
-  }
-  .Tooltip-row > span.label {
-    display: block;
   }
 }

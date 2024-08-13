@@ -11,6 +11,7 @@ type ButtonProps = {
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   newTab?: boolean;
   disabled?: boolean;
+  qa?: string;
 };
 
 export default function ButtonLink({
@@ -21,6 +22,7 @@ export default function ButtonLink({
   showExternalLinkArrow,
   newTab = false,
   disabled = false,
+  qa,
   ...rest
 }: ButtonProps) {
   const classNames = cx(className, { disabled: disabled });
@@ -38,14 +40,14 @@ export default function ButtonLink({
         : {}),
     };
     return (
-      <a {...anchorProps}>
+      <a data-qa={qa} {...anchorProps}>
         {showExternalLinkArrow && <img className="arrow-icon" src={openInNewTab} width="100%" alt="open in new tab" />}
         {children}
       </a>
     );
   }
   return (
-    <Link className={classNames} to={to}>
+    <Link data-qa={qa} className={classNames} to={to}>
       {children}
     </Link>
   );

@@ -121,6 +121,7 @@ export function SettingsModal({
       isVisible={isSettingsVisible}
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
+      qa="settings-modal"
     >
       <div className="App-settings-row">
         <div>

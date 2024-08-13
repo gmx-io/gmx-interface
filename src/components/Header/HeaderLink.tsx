@@ -16,6 +16,7 @@ type Props = {
   onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
   isActive?: NavLinkProps["isActive"];
+  qa?: string;
 };
 
 export function HeaderLink({
@@ -27,6 +28,7 @@ export function HeaderLink({
   showRedirectModal,
   onClick,
   isActive,
+  qa,
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -73,6 +75,7 @@ export function HeaderLink({
       exact={exact}
       to={to}
       onClick={onClick}
+      data-qa={qa}
     >
       {children}
     </NavLink>
