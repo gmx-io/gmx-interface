@@ -22,3 +22,5 @@ export const MARKET_STATS_DECIMALS = 4;
 export const GM_POOL_PRICE_DECIMALS = 4;
 export const GLP_PRICE_DECIMALS = 4;
 export const GMX_PRICE_DECIMALS = 2;
+
+export const DATA_LOAD_TIMEOUT_FOR_METRICS = 10000;

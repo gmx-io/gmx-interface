@@ -1,18 +1,18 @@
+import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder, PendingOrderData } from "context/SyntheticsEvents";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TokensData } from "../tokens";
+import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { t } from "@lingui/macro";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 const { ZeroAddress } = ethers;
 
@@ -30,6 +30,7 @@ export type SwapOrderParams = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
+  metricId: string;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -38,7 +39,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
-
   const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
   const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(
     exchangeRouter,
@@ -61,6 +61,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     isLong: false,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativeReceive,
+    referralCode: p.referralCode,
     txnType: "create",
   };
 
@@ -85,6 +86,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
+    metricId: p.metricId,
   });
 
   if (!subaccount) {
