@@ -2,7 +2,7 @@ import { Trans, msg, plural, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { uniq } from "lodash";
 import { useMemo, useState } from "react";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
 import { useKey } from "react-use";
 
 import { getContract } from "config/contracts";
@@ -412,14 +412,14 @@ export function GmConfirmationBox({
     if (amount === undefined || usd === undefined || !token) return;
     return (
       <div className={className ?? ""}>
-        <div className="trade-token-amount">
+        <div className="text-16">
           <span>
             {formatTokenAmount(amount, token?.decimals, overrideSymbol ?? token?.symbol, {
               useCommas: true,
             })}
           </span>
         </div>
-        <div className="trade-amount-usd">{formatUsd(usd)}</div>
+        <div className="text-14 text-gray-300">{formatUsd(usd)}</div>
       </div>
     );
   };
@@ -431,105 +431,105 @@ export function GmConfirmationBox({
       <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`}>
         {isVisible && (
           <>
-            {operation === Operation.Deposit && (
-              <div className="Confirmation-box-main trade-info-wrapper">
-                <div className="trade-info">
-                  <Trans>Pay</Trans>{" "}
-                  {market?.isSameCollaterals ? (
-                    renderTokenInfo({
-                      amount: longTokenAmount !== undefined ? longTokenAmount + shortTokenAmount! : undefined,
-                      usd: longTokenUsd !== undefined ? longTokenUsd + shortTokenUsd! : undefined,
-                      token: longToken,
-                    })
-                  ) : (
-                    <>
-                      {renderTokenInfo({
-                        amount: longTokenAmount,
-                        usd: longTokenUsd,
+            <div className="mb-23 mt-15 flex flex-col items-center text-center">
+              {operation === Operation.Deposit && (
+                <>
+                  <div className="flex flex-col gap-5">
+                    <Trans>Pay</Trans>
+                    {market?.isSameCollaterals ? (
+                      renderTokenInfo({
+                        amount: longTokenAmount !== undefined ? longTokenAmount + shortTokenAmount! : undefined,
+                        usd: longTokenUsd !== undefined ? longTokenUsd + shortTokenUsd! : undefined,
                         token: longToken,
-                        overrideSymbol: longSymbol,
-                      })}
-                      {renderTokenInfo({
-                        amount: shortTokenAmount,
-                        usd: shortTokenUsd,
-                        token: shortToken,
-                        overrideSymbol: shortSymbol,
-                        className: "mt-5",
-                      })}
-                    </>
-                  )}
-                </div>
-                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-                <div className="trade-info">
-                  <Trans>Receive</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: marketTokenAmount,
-                    usd: marketTokenUsd,
-                    token: marketToken,
-                  })}
-                </div>
-              </div>
-            )}
-            {operation === Operation.Withdrawal && (
-              <div className="Confirmation-box-main trade-info-wrapper">
-                <div className="trade-info">
-                  <Trans>Pay</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: marketTokenAmount,
-                    usd: marketTokenUsd,
-                    token: marketToken,
-                  })}
-                </div>
-                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-                <div className="trade-info">
-                  <Trans>Receive</Trans>{" "}
-                  {market?.isSameCollaterals ? (
-                    renderTokenInfo({
-                      amount: longTokenAmount ? longTokenAmount + shortTokenAmount! : undefined,
-                      usd: longTokenUsd ? longTokenUsd + shortTokenUsd! : undefined,
-                      token: longToken,
-                    })
-                  ) : (
-                    <>
-                      {renderTokenInfo({
-                        amount: longTokenAmount,
-                        usd: longTokenUsd,
+                      })
+                    ) : (
+                      <>
+                        {renderTokenInfo({
+                          amount: longTokenAmount,
+                          usd: longTokenUsd,
+                          token: longToken,
+                          overrideSymbol: longSymbol,
+                        })}
+                        {renderTokenInfo({
+                          amount: shortTokenAmount,
+                          usd: shortTokenUsd,
+                          token: shortToken,
+                          overrideSymbol: shortSymbol,
+                        })}
+                      </>
+                    )}
+                  </div>
+                  <FaArrowDown className="arrow-icon my-8" fontSize={12} color="#ffffffb3" />
+                  <div className="flex flex-col gap-5">
+                    <Trans>Receive</Trans>
+                    {renderTokenInfo({
+                      amount: marketTokenAmount,
+                      usd: marketTokenUsd,
+                      token: marketToken,
+                    })}
+                  </div>
+                </>
+              )}
+              {operation === Operation.Withdrawal && (
+                <>
+                  <div className="flex flex-col gap-5">
+                    <Trans>Pay</Trans>
+                    {renderTokenInfo({
+                      amount: marketTokenAmount,
+                      usd: marketTokenUsd,
+                      token: marketToken,
+                    })}
+                  </div>
+                  <FaArrowDown className="arrow-icon my-8" fontSize={12} color="#ffffffb3" />
+                  <div className="flex flex-col gap-5">
+                    <Trans>Receive</Trans>{" "}
+                    {market?.isSameCollaterals ? (
+                      renderTokenInfo({
+                        amount: longTokenAmount ? longTokenAmount + shortTokenAmount! : undefined,
+                        usd: longTokenUsd ? longTokenUsd + shortTokenUsd! : undefined,
                         token: longToken,
-                        overrideSymbol: longSymbol,
-                      })}
-                      {renderTokenInfo({
-                        amount: shortTokenAmount,
-                        usd: shortTokenUsd,
-                        token: shortToken,
-                        overrideSymbol: shortSymbol,
-                        className: "mt-5",
-                      })}
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-            {operation === Operation.Shift && (
-              <div className="Confirmation-box-main trade-info-wrapper">
-                <div className="trade-info">
-                  <Trans>Pay</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: fromMarketTokenAmount,
-                    usd: fromMarketTokenUsd,
-                    token: fromMarketToken,
-                  })}
-                </div>
-                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-                <div className="trade-info">
-                  <Trans>Receive</Trans>{" "}
-                  {renderTokenInfo({
-                    amount: marketTokenAmount,
-                    usd: marketTokenUsd,
-                    token: marketToken,
-                  })}
-                </div>
-              </div>
-            )}
+                      })
+                    ) : (
+                      <>
+                        {renderTokenInfo({
+                          amount: longTokenAmount,
+                          usd: longTokenUsd,
+                          token: longToken,
+                          overrideSymbol: longSymbol,
+                        })}
+                        {renderTokenInfo({
+                          amount: shortTokenAmount,
+                          usd: shortTokenUsd,
+                          token: shortToken,
+                          overrideSymbol: shortSymbol,
+                        })}
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
+              {operation === Operation.Shift && (
+                <>
+                  <div className="flex flex-col gap-5">
+                    <Trans>Pay</Trans>
+                    {renderTokenInfo({
+                      amount: fromMarketTokenAmount,
+                      usd: fromMarketTokenUsd,
+                      token: fromMarketToken,
+                    })}
+                  </div>
+                  <FaArrowDown className="arrow-icon my-8" fontSize={12} color="#ffffffb3" />
+                  <div className="flex flex-col gap-5">
+                    <Trans>Receive</Trans>
+                    {renderTokenInfo({
+                      amount: marketTokenAmount,
+                      usd: marketTokenUsd,
+                      token: marketToken,
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="line-divider" />
 
