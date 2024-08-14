@@ -22,7 +22,8 @@ import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/Syntheti
 import { Token } from "domain/tokens";
 
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 

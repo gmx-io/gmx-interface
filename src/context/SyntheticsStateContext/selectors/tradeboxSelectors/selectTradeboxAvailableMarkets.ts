@@ -3,7 +3,7 @@ import { selectTradeboxToTokenAddress } from "context/SyntheticsStateContext/sel
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { isMarketIndexToken } from "domain/synthetics/markets";
 import { EMPTY_ARRAY } from "lib/objects";
-import { values } from "lodash";
+import values from "lodash/values";
 
 export const selectTradeboxAvailableMarkets = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);

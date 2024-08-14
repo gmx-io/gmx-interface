@@ -8,11 +8,13 @@ import { getTokenInfo, getUsd } from "domain/tokens";
 
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
+import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DEFAULT_SLIPPAGE_AMOUNT,
   EXCESSIVE_SLIPPAGE_AMOUNT,
+  USD_DECIMALS,
 } from "config/factors";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getToken, getWrappedToken } from "config/tokens";
@@ -22,14 +24,12 @@ import {
   INCREASE,
   LIMIT,
   MIN_PROFIT_TIME,
-  PRECISION,
-  USD_DECIMALS,
   calculatePositionDelta,
   getExchangeRate,
   getExchangeRateDisplay,
 } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
+import { expandDecimals, formatAmount, formatPercentage, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -45,8 +45,6 @@ import FeesTooltip from "./FeesTooltip";
 
 import "./ConfirmationBox.css";
 import { bigMath } from "lib/bigmath";
-
-const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo?.spread && toTokenInfo?.spread) {

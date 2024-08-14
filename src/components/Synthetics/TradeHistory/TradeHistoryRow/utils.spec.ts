@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { formatPositionMessage } from "./utils/position";
 import { formatSwapMessage } from "./utils/swap";
+import { describe, expect, it } from "vitest";
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
@@ -29,7 +30,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("Asia/Dubai");
 
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": ">  $35.0578",
   "action": "Request Market Increase",
   "executionPrice": undefined,
@@ -41,7 +42,7 @@ Object {
   "marketPrice": undefined,
   "poolName": "WAVAX-USDC",
   "price": ">  $35.0578",
-  "priceComment": Array [
+  "priceComment": [
     "Acceptable price for the order.",
   ],
   "priceImpact": undefined,
@@ -52,7 +53,7 @@ Object {
 `);
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  $43.2376",
   "action": "Request Withdraw",
   "executionPrice": undefined,
@@ -64,7 +65,7 @@ Object {
   "marketPrice": undefined,
   "poolName": "WAVAX-USDC",
   "price": "<  $43.2376",
-  "priceComment": Array [
+  "priceComment": [
     "Acceptable price for the order.",
   ],
   "priceImpact": undefined,
@@ -75,7 +76,7 @@ Object {
 `);
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  $0.085151",
   "action": "Request Deposit",
   "executionPrice": undefined,
@@ -87,7 +88,7 @@ Object {
   "marketPrice": undefined,
   "poolName": "ETH-DAI",
   "price": "<  $0.085151",
-  "priceComment": Array [
+  "priceComment": [
     "Acceptable price for the order.",
   ],
   "priceImpact": undefined,
@@ -98,7 +99,7 @@ Object {
 `);
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": ">  $29,700.00",
   "action": "Create Take-Profit Order",
   "executionPrice": undefined,
@@ -110,10 +111,10 @@ Object {
   "marketPrice": undefined,
   "poolName": "BTC-USDC",
   "price": ">  $30,000.00",
-  "priceComment": Array [
+  "priceComment": [
     "Trigger price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": ">  $29,700.00",
     },
@@ -127,7 +128,7 @@ Object {
 `);
 
     expect(formatPositionMessage(cancelOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  $1,645.69",
   "action": "Cancel Limit Order",
   "executionPrice": undefined,
@@ -139,10 +140,10 @@ Object {
   "marketPrice": undefined,
   "poolName": "WETH-USDC",
   "price": "<  $1,629.40",
-  "priceComment": Array [
+  "priceComment": [
     "Trigger price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  $1,645.69",
     },
@@ -156,7 +157,7 @@ Object {
 `);
 
     expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  $1.01",
   "action": "Create Limit Order",
   "executionPrice": undefined,
@@ -168,10 +169,10 @@ Object {
   "marketPrice": undefined,
   "poolName": "BTC-USDC",
   "price": "<  $1.00",
-  "priceComment": Array [
+  "priceComment": [
     "Trigger price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  $1.01",
     },
@@ -185,7 +186,7 @@ Object {
 `);
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": ">  $0.82764",
   "action": "Execute Limit Order",
   "executionPrice": "$0.837",
@@ -197,24 +198,24 @@ Object {
   "marketPrice": "< $0.00001",
   "poolName": "ARB-USDC",
   "price": "< $0.00001",
-  "priceComment": Array [
+  "priceComment": [
     "Mark price for the order.",
     "",
-    Object {
+    {
       "key": "Order Trigger Price",
       "value": ">  $0.83600",
     },
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": ">  $0.82764",
     },
-    Object {
+    {
       "key": "Order Execution Price",
       "value": "$0.837",
     },
-    Object {
+    {
       "key": "Price Impact",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$16.82",
       },
@@ -230,7 +231,7 @@ Object {
 `);
 
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": ">  $26,937.90",
   "action": "Failed Limit Order",
   "actionComment": undefined,
@@ -244,14 +245,14 @@ Object {
   "marketPrice": undefined,
   "poolName": "BTC-USDC",
   "price": "",
-  "priceComment": Array [
+  "priceComment": [
     "Mark price for the order.",
     "",
-    Object {
+    {
       "key": "Order Trigger Price",
       "value": ">  $27,210.00",
     },
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": ">  $26,937.90",
     },
@@ -265,7 +266,7 @@ Object {
 `);
 
     expect(formatPositionMessage(undefinedOrder, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "action": "Create Trigger",
   "executionPrice": undefined,
   "fullMarket": "XRP/USD [WETH-USDC]",
@@ -284,7 +285,7 @@ Object {
 `);
 
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "action": "Liquidated",
   "executionPrice": "$6.106",
   "fullMarket": "LINK/USD [LINK-USDC]",
@@ -298,71 +299,71 @@ Object {
   "pnlState": "error",
   "poolName": "LINK-USDC",
   "price": "$6.0906",
-  "priceComment": Array [
+  "priceComment": [
     "Mark price for the liquidation.",
     "",
     "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
     "",
-    Object {
+    {
       "key": "Order Execution Price",
       "value": "$6.106",
     },
     "",
     "Order execution price takes into account price impact.",
     "",
-    Object {
+    {
       "key": "Initial Collateral",
       "value": "214.779 USDC ($214.77)",
     },
-    Object {
+    {
       "key": "PnL",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$126.31",
       },
     },
-    Object {
+    {
       "key": "Borrow Fee",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "$0.00",
       },
     },
-    Object {
+    {
       "key": "Funding Fee",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "$0.00",
       },
     },
-    Object {
+    {
       "key": "Position Fee",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$4.50",
       },
     },
-    Object {
+    {
       "key": "Price Impact",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$16.82",
       },
     },
     "",
-    Object {
+    {
       "key": "PnL after Fees and Price Impact",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$126.31",
       },
     },
     "",
-    Object {
+    {
       "key": "Leftover Collateral Excluding Impact",
       "value": "$83.95",
     },
-    Object {
+    {
       "key": "Min. required Collateral",
       "value": "$64.41",
     },
@@ -375,7 +376,7 @@ Object {
 `);
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  $1,589.47",
   "action": "Market Increase",
   "executionPrice": "$1,584.74",
@@ -387,20 +388,20 @@ Object {
   "marketPrice": "$4.46",
   "poolName": "WETH-USDC",
   "price": "$4.46",
-  "priceComment": Array [
+  "priceComment": [
     "Mark price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  $1,589.47",
     },
-    Object {
+    {
       "key": "Order Execution Price",
       "value": "$1,584.74",
     },
-    Object {
+    {
       "key": "Price Impact",
-      "value": Object {
+      "value": {
         "state": "error",
         "text": "-$0.08",
       },
@@ -419,7 +420,7 @@ Object {
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": ">  3,327.54 USDC / WETH",
   "action": "Request Market Swap",
   "executionPrice": "...",
@@ -427,7 +428,7 @@ Object {
   "fullMarketNames": undefined,
   "market": "...",
   "price": ">  3,327.54 USDC / WETH",
-  "priceComment": Array [
+  "priceComment": [
     "Acceptable price for the order.",
   ],
   "size": "0.0119 WETH to 39.8800 USDC",
@@ -440,7 +441,7 @@ Object {
 }
 `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  968.043 USDC / ETH",
   "action": "Execute Market Swap",
   "executionPrice": "965.184 USDC / ETH",
@@ -448,10 +449,10 @@ Object {
   "fullMarketNames": undefined,
   "market": "...",
   "price": "965.184 USDC / ETH",
-  "priceComment": Array [
+  "priceComment": [
     "Execution price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  968.043 USDC / ETH",
     },
@@ -467,7 +468,7 @@ Object {
 `);
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  2.2613 WETH / BTC",
   "action": "Execute Limit Swap",
   "executionPrice": "0.81109 WETH / BTC",
@@ -475,10 +476,10 @@ Object {
   "fullMarketNames": undefined,
   "market": "...",
   "price": "0.81109 WETH / BTC",
-  "priceComment": Array [
+  "priceComment": [
     "Execution price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  2.2613 WETH / BTC",
     },
@@ -493,11 +494,11 @@ Object {
 }
 `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
-Object {
+{
   "acceptablePrice": "<  2,054.58 USDC / ETH",
   "action": "Failed Limit Swap",
-  "actionComment": Array [
-    Object {
+  "actionComment": [
+    {
       "state": "error",
       "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
     },
@@ -508,10 +509,10 @@ Object {
   "isActionError": true,
   "market": "...",
   "price": "2,056.13 USDC / ETH",
-  "priceComment": Array [
+  "priceComment": [
     "Execution price for the order.",
     "",
-    Object {
+    {
       "key": "Order Acceptable Price",
       "value": "<  2,054.58 USDC / ETH",
     },

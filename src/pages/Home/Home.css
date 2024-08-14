@@ -11,7 +11,7 @@
   padding-top: 6.2rem;
   position: relative;
   padding-bottom: 6.4rem;
-  background: url("img/Artwork_gmx.svg");
+  background: url("@/img/Artwork_gmx.svg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right;
@@ -187,15 +187,15 @@
 }
 
 .Home-cta-option-arbitrum {
-  background-image: url("img/btn_big_arbitrum.png");
+  background-image: url("@/img/btn_big_arbitrum.png");
 }
 
 .Home-cta-option-bsc {
-  background-image: url("img/btn_big_bsc.png");
+  background-image: url("@/img/btn_big_bsc.png");
 }
 
 .Home-cta-option-ava {
-  background-image: url("img/btn_big_avalanche.png");
+  background-image: url("@/img/btn_big_avalanche.png");
 }
 
 .Home-token-card-section {

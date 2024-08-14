@@ -24,7 +24,8 @@ import {
   getHighExecutionFee,
 } from "config/chains";
 import { getContract } from "config/contracts";
-import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
+import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
@@ -35,7 +36,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import { groupBy } from "lodash";
+import groupBy from "lodash/groupBy";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";

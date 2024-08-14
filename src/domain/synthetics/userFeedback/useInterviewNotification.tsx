@@ -1,5 +1,5 @@
 import { InterviewToast } from "components/InterviewToast/InterviewToast";
-import { HIGH_TRADE_VOLUME_FOR_FEEDBACK } from "config/factors";
+import { HIGH_TRADE_VOLUME_FOR_FEEDBACK } from "config/constants";
 import { INTERVIEW_INVITATION_SHOWN_TIME } from "config/localStorage";
 import { selectLastWeekAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";

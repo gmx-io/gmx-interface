@@ -12,8 +12,9 @@ import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "dom
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
-import { DUST_USD, PRECISION, USD_DECIMALS, isAddressZero } from "lib/legacy";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { DUST_USD, isAddressZero } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
+import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 import { bigMath } from "lib/bigmath";

@@ -32,7 +32,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount, formatAmountFree, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";

@@ -1,6 +1,6 @@
 import { createSelector } from "context/SyntheticsStateContext/utils";
 
-import { HIGH_SPREAD_THRESHOLD } from "config/factors";
+import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   selectTradeboxCollateralToken,
   selectTradeboxMarketInfo,

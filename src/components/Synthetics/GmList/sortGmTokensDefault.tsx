@@ -1,4 +1,5 @@
-import { entries, values } from "lodash";
+import entries from "lodash/entries";
+import values from "lodash/values";
 import type { Address } from "viem";
 
 import type { MarketsInfoData } from "domain/synthetics/markets";

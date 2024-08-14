@@ -14,8 +14,8 @@ import {
   shortenAddress,
   shouldInvertTriggerRatio,
   SWAP,
-  USD_DECIMALS,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import "./OrdersOverview.css";
 import { t, Trans, msg } from "@lingui/macro";

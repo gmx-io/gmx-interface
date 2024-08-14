@@ -1,12 +1,11 @@
-import { uniqueId } from "lodash";
+import uniqueId from "lodash/uniqueId";
 
 import { sleep } from "lib/sleep";
 
-import HashDataWorker from "./hashData.worker";
 import { hashDataMap } from "./hashDataMap";
 import { promiseWithResolvers } from "lib/utils";
 
-export const hashDataWorker: Worker = new HashDataWorker();
+export const hashDataWorker: Worker = new Worker(new URL("./hashData.worker", import.meta.url), { type: "module" });
 
 const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 

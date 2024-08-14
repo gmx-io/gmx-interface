@@ -2,14 +2,14 @@ import { ClientConfig, createPublicClient, http } from "viem";
 import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
-import { isWebWorker } from "config/env";
-import { emitMetricEvent } from "context/MetricsContext/emitMetricEvent";
-import { hashData } from "lib/hash";
-import { sleep } from "lib/sleep";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "@/config/chains";
+import { isWebWorker } from "@/config/env";
+import { emitMetricEvent } from "@/context/MetricsContext/emitMetricEvent";
+import { hashData } from "@/lib/hash";
+import { sleep } from "@/lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "@/abis/CustomErrors.json";
 
 export const MAX_TIMEOUT = 20000;
 

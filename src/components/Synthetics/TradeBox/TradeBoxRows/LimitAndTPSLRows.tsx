@@ -11,7 +11,7 @@ import { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 import { SideOrderEntries } from "../components/SideOrderEntries";

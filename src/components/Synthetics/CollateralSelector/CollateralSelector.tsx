@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { noop } from "lodash";
+import noop from "lodash/noop";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";

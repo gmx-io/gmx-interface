@@ -25,7 +25,8 @@ import {
 import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
-import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 

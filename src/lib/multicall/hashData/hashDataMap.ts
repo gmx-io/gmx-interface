@@ -1,4 +1,4 @@
-import { hashData } from "lib/hash";
+import { hashData } from "@/lib/hash";
 
 export function hashDataMap<
   R extends Record<string, [dataTypes: string[], dataValues: (string | number | bigint | boolean)[]] | undefined>,

@@ -3,7 +3,7 @@ import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import { createPortal } from "react-dom";
-import { noop } from "lodash";
+import noop from "lodash/noop";
 import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";

@@ -6,8 +6,14 @@ import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 import { useLingui } from "@lingui/react";
 
-import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
+import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import {
+  BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  MAX_ALLOWED_LEVERAGE,
+  MAX_LEVERAGE,
+  USD_DECIMALS,
+} from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";

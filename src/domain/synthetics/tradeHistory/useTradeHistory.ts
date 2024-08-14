@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { ethers } from "ethers";
-import { merge } from "lodash";
+import merge from "lodash/merge";
 import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";

@@ -6,7 +6,7 @@ import merge from "lodash/merge";
 import { useMemo } from "react";
 import { WagmiProvider } from "wagmi";
 
-import { rainbowKitConfig } from "./rainbowKitConfig";
+import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 const walletTheme = merge(darkTheme(), {
   colors: {
@@ -37,7 +37,7 @@ const appLocale2RainbowLocaleMap: Record<string, Locale> = {
 export default function WalletProvider({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={rainbowKitConfig}>{children}</WagmiProvider>
+      <WagmiProvider config={getRainbowKitConfig()}>{children}</WagmiProvider>
     </QueryClientProvider>
   );
 }

@@ -48,8 +48,9 @@ function getWinners(
 }
 
 function getWinner(rank: number, competitors: LeaderboardAccount[] | undefined, hasEnded: boolean) {
-  if (!hasEnded) return [];
-  return competitors && competitors.length > 0 ? [competitors[rank - 1]] ?? [] : [];
+  if (!hasEnded || !competitors?.length) return [];
+
+  return [competitors[rank - 1]];
 }
 
 export function CompetitionPrizes({

@@ -2,7 +2,8 @@ import cx from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useChartPrices } from "domain/legacy";
-import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS, INCREASE, SWAP } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";

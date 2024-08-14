@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 
 import Button from "components/Button/Button";
 
-import { ReactComponent as FilterIcon } from "img/ic_filter.svg";
+import FilterIcon from "img/ic_filter.svg?react";
 
 import "./TableFilterBase.scss";
 

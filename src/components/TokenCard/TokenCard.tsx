@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
-import { keys, uniq } from "lodash";
+import keys from "lodash/keys";
+import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 

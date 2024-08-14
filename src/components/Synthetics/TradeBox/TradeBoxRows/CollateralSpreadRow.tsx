@@ -1,12 +1,11 @@
 import { t } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatPercentage } from "lib/numbers";
 
 export function CollateralSpreadRow() {

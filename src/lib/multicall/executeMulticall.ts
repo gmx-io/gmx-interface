@@ -1,4 +1,6 @@
-import { entries, throttle, values } from "lodash";
+import entries from "lodash/entries";
+import throttle from "lodash/throttle";
+import values from "lodash/values";
 import { stableHash } from "swr/_internal";
 
 import { isDevelopment } from "config/env";
