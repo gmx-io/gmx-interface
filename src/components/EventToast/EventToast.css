@@ -80,6 +80,15 @@
   padding: 0 1.5rem;
 }
 
+.single-toast .toast-body a {
+  text-decoration: underline;
+  color: var(--color-gray-300);
+}
+
+.single-toast .toast-body a:hover {
+  color: var(--color-white);
+}
+
 @media screen and (max-width: 500px) {
   .event-toast-container {
     inset: 8rem 1.6rem 0 1.6rem;

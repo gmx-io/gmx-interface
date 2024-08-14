@@ -6,7 +6,7 @@ import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
-export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 7;
+export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 8;
 const DEFAULT_LISTING = {
   listingDate: p("01 Jan 1970"),
 };
@@ -64,6 +64,14 @@ const ENABLED_MARKETS: Record<number, Record<string, MarketUiConfig>> = {
     // SHIB/USD [WETH-USDC]
     "0xB62369752D8Ad08392572db6d0cc872127888beD": {
       listingDate: p("7 Aug 2024"),
+    },
+    // ORDI/USD [wBTC-USDC]
+    "0x93385F7C646A3048051914BDFaC25F4d620aeDF1": {
+      listingDate: p("14 Aug 2024"),
+    },
+    // STX/USD [wBTC-USDC]
+    "0xD9377d9B9a2327C7778867203deeA73AB8a68b6B": {
+      listingDate: p("14 Aug 2024"),
     },
     // SWAP-ONLY [USDC-USDC.e]
     "0x9C2433dFD71096C435Be9465220BB2B189375eA7": DEFAULT_LISTING,
