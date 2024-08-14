@@ -1,15 +1,15 @@
-import { getAccount } from "@wagmi/core";
 import CustomErrors from "abis/CustomErrors.json";
 import { isDevelopment, isLocal } from "config/env";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import cryptoJs from "crypto-js";
-import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteOrderTxn";
+import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteTxn";
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { useEffect } from "react";
-import { extractError } from "./contracts/transactionErrors";
-import { rainbowKitConfig } from "./wallets/rainbowKitConfig";
-import { useLocalStorageSerializeKey } from "./localStorage";
-import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { extractError } from "../../lib/contracts/transactionErrors";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { getAppVersion } from "../../lib/version";
+import { getWalletNames } from "../../lib/wallets/getWalletNames";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
@@ -152,31 +152,3 @@ function hasStack(error: unknown): error is { stack: string } {
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
 }
-
-function getAppVersion() {
-  return process.env.REACT_APP_VERSION;
-}
-
-async function getWalletNames() {
-  try {
-    const walletNames = new Set<string>();
-
-    for (const connector of rainbowKitConfig.connectors) {
-      const isAuthorized = await connector.isAuthorized();
-      if (isAuthorized) {
-        walletNames.add(connector.name);
-      }
-    }
-
-    return { current: getAccount(rainbowKitConfig).connector?.name, authorized: [...walletNames] };
-  } catch (e) {
-    return {
-      current: null,
-      authorized: [],
-      error: true,
-    };
-  }
-}
-
-(window as any).getWalletNames = getWalletNames;
-(window as any).getAppVersion = getAppVersion;

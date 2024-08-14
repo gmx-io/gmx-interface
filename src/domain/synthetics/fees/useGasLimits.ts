@@ -6,6 +6,7 @@ import {
   decreaseOrderGasLimitKey,
   depositGasLimitKey,
   increaseOrderGasLimitKey,
+  shiftGasLimitKey,
   singleSwapGasLimitKey,
   swapOrderGasLimitKey,
   withdrawalGasLimitKey,
@@ -37,6 +38,10 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
           withdrawalMultiToken: {
             methodName: "getUint",
             params: [withdrawalGasLimitKey()],
+          },
+          shift: {
+            methodName: "getUint",
+            params: [shiftGasLimitKey()],
           },
           singleSwap: {
             methodName: "getUint",
@@ -80,6 +85,7 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
         depositSingleToken: getBigInt("depositSingleToken"),
         depositMultiToken: getBigInt("depositMultiToken"),
         withdrawalMultiToken: getBigInt("withdrawalMultiToken"),
+        shift: getBigInt("shift"),
         singleSwap: getBigInt("singleSwap"),
         swapOrder: getBigInt("swapOrder"),
         increaseOrder: getBigInt("increaseOrder"),

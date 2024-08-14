@@ -47,6 +47,7 @@ import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
+import { useMedia } from "react-use";
 
 export type Props = {
   openSettings: () => void;
@@ -65,6 +66,8 @@ export function SyntheticsPage(p: Props) {
   const { account } = useWallet();
   const calcSelector = useCalcSelector();
   const [, setPendingTxns] = usePendingTxns();
+
+  const isMobile = useMedia("(max-width: 1100px)");
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -235,8 +238,78 @@ export function SyntheticsPage(p: Props) {
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart />
+          {!isMobile && (
+            <div className="Exchange-lists large" data-qa="trade-table-large">
+              <div className="Exchange-list-tab-container">
+                <Tab
+                  options={tabOptions}
+                  optionLabels={tabLabels}
+                  option={listSection}
+                  onChange={handleTabChange}
+                  type="inline"
+                  className="Exchange-list-tabs"
+                  qa="exchange-list-tabs"
+                />
+                <div className="align-right Exchange-should-show-position-lines">
+                  {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
+                    <button
+                      className="muted cancel-order-btn text-15"
+                      disabled={isCancelOrdersProcessing}
+                      type="button"
+                      onClick={onCancelSelectedOrders}
+                    >
+                      <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
+                    </button>
+                  )}
+                  <Checkbox
+                    isChecked={shouldShowPositionLines}
+                    setIsChecked={setShouldShowPositionLines}
+                    className={cx("muted chart-positions", { active: shouldShowPositionLines })}
+                  >
+                    <span>
+                      <Trans>Chart positions</Trans>
+                    </span>
+                  </Checkbox>
+                </div>
+              </div>
 
-          <div className="Exchange-lists large">
+              {listSection === ListSection.Positions && (
+                <PositionList
+                  onOrdersClick={handlePositionListOrdersClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  onClosePositionClick={setClosingPositionKey}
+                  openSettings={openSettings}
+                  onCancelOrder={onCancelOrder}
+                />
+              )}
+              {listSection === ListSection.Orders && (
+                <OrderList
+                  selectedOrdersKeys={selectedOrderKeys}
+                  setSelectedOrderKeys={setSelectedOrderKeys}
+                  setPendingTxns={setPendingTxns}
+                  selectedPositionOrderKey={selectedPositionOrderKey}
+                  setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                  marketsDirectionsFilter={marketsDirectionsFilter}
+                  setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                  orderTypesFilter={orderTypesFilter}
+                  setOrderTypesFilter={setOrderTypesFilter}
+                  onCancelSelectedOrders={onCancelSelectedOrders}
+                />
+              )}
+              {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+              {listSection === ListSection.Claims && renderClaims()}
+            </div>
+          )}
+        </div>
+
+        <div className="Exchange-right">
+          <div className="Exchange-swap-box">
+            <TradeBox setPendingTxns={setPendingTxns} />
+          </div>
+        </div>
+
+        {isMobile && (
+          <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
             <div className="Exchange-list-tab-container">
               <Tab
                 options={tabOptions}
@@ -246,29 +319,7 @@ export function SyntheticsPage(p: Props) {
                 type="inline"
                 className="Exchange-list-tabs"
               />
-              <div className="align-right Exchange-should-show-position-lines">
-                {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
-                  <button
-                    className="muted cancel-order-btn text-15"
-                    disabled={isCancelOrdersProcessing}
-                    type="button"
-                    onClick={onCancelSelectedOrders}
-                  >
-                    <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
-                  </button>
-                )}
-                <Checkbox
-                  isChecked={shouldShowPositionLines}
-                  setIsChecked={setShouldShowPositionLines}
-                  className={cx("muted chart-positions", { active: shouldShowPositionLines })}
-                >
-                  <span>
-                    <Trans>Chart positions</Trans>
-                  </span>
-                </Checkbox>
-              </div>
             </div>
-
             {listSection === ListSection.Positions && (
               <PositionList
                 onOrdersClick={handlePositionListOrdersClick}
@@ -295,51 +346,7 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
             {listSection === ListSection.Claims && renderClaims()}
           </div>
-        </div>
-
-        <div className="Exchange-right">
-          <div className="Exchange-swap-box">
-            <TradeBox setPendingTxns={setPendingTxns} />
-          </div>
-        </div>
-
-        <div className="Exchange-lists small min-w-0">
-          <div className="Exchange-list-tab-container">
-            <Tab
-              options={tabOptions}
-              optionLabels={tabLabels}
-              option={listSection}
-              onChange={handleTabChange}
-              type="inline"
-              className="Exchange-list-tabs"
-            />
-          </div>
-          {listSection === ListSection.Positions && (
-            <PositionList
-              onOrdersClick={handlePositionListOrdersClick}
-              onSelectPositionClick={onSelectPositionClick}
-              onClosePositionClick={setClosingPositionKey}
-              openSettings={openSettings}
-              onCancelOrder={onCancelOrder}
-            />
-          )}
-          {listSection === ListSection.Orders && (
-            <OrderList
-              selectedOrdersKeys={selectedOrderKeys}
-              setSelectedOrderKeys={setSelectedOrderKeys}
-              setPendingTxns={setPendingTxns}
-              selectedPositionOrderKey={selectedPositionOrderKey}
-              setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-              marketsDirectionsFilter={marketsDirectionsFilter}
-              setMarketsDirectionsFilter={setMarketsDirectionsFilter}
-              orderTypesFilter={orderTypesFilter}
-              setOrderTypesFilter={setOrderTypesFilter}
-              onCancelSelectedOrders={onCancelSelectedOrders}
-            />
-          )}
-          {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
-          {listSection === ListSection.Claims && renderClaims()}
-        </div>
+        )}
       </div>
 
       <PositionSeller setPendingTxns={setPendingTxns} />

@@ -133,7 +133,7 @@ export type DepositAmounts = {
   swapPriceImpactDeltaUsd: bigint;
 };
 
-export type WitdhrawalAmounts = {
+export type WithdrawalAmounts = {
   marketTokenAmount: bigint;
   marketTokenUsd: bigint;
   longTokenAmount: bigint;
@@ -241,6 +241,7 @@ export type GmSwapFees = {
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
+  shiftFee?: FeeItem;
 };
 
 export type TradeSearchParams = {

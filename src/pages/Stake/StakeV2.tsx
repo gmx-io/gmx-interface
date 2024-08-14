@@ -1345,7 +1345,7 @@ export default function StakeV2() {
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -1819,6 +1819,7 @@ export default function StakeV2() {
       <PageTitle
         isTop
         title={t`Earn`}
+        qa="earn-page"
         subtitle={
           <div>
             <Trans>
@@ -2399,6 +2400,7 @@ export default function StakeV2() {
           <GmList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
             isDeposit={false}
             shouldScrollToTop
           />

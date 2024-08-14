@@ -17,18 +17,18 @@ export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
-type SimulateExecuteOrderParams = {
+type SimulateExecuteParams = {
   account: string;
-  createOrderMulticallPayload: string[];
+  createMulticallPayload: string[];
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: bigint;
-  method?: "simulateExecuteDeposit" | "simulateExecuteWithdrawal" | "simulateExecuteOrder";
+  method?: "simulateExecuteDeposit" | "simulateExecuteWithdrawal" | "simulateExecuteOrder" | "simulateExecuteShift";
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
 };
 
-export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
+export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const dataStoreAddress = getContract(chainId, "DataStore");
@@ -65,7 +65,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
     maxTimestamp: priceTimestamp,
   } as OracleUtils.SimulatePricesParamsStruct;
 
-  let simulationPayloadData = [...p.createOrderMulticallPayload];
+  let simulationPayloadData = [...p.createMulticallPayload];
 
   if (method === "simulateExecuteWithdrawal") {
     if (p.swapPricingType === undefined) {
@@ -86,6 +86,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
   } else if (method === "simulateExecuteOrder") {
     simulationPayloadData.push(
       exchangeRouter.interface.encodeFunctionData("simulateExecuteOrder", [nextKey, simulationPriceParams])
+    );
+  } else if (method === "simulateExecuteShift") {
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteShift", [nextKey, simulationPriceParams])
     );
   } else {
     throw new Error(`Unknown method: ${method}`);

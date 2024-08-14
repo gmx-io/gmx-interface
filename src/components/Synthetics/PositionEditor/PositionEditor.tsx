@@ -76,9 +76,19 @@ import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-import "./PositionEditor.scss";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import {
+  getPositionOrderMetricId,
+  getTxnErrorMetricsHandler,
+  getTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "context/MetricsContext/utils";
+import { EditCollateralMetricData } from "context/MetricsContext/types";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { helperToast } from "lib/helperToast";
+import "./PositionEditor.scss";
 
 export type Props = {
   allowedSlippage: number;
@@ -111,6 +121,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const metrics = useMetrics();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -320,6 +331,26 @@ export function PositionEditor(p: Props) {
       return;
     }
 
+    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
+    const metricType = isDeposit ? "depositCollateral" : "withdrawCollateral";
+
+    const metricData: EditCollateralMetricData = {
+      metricType,
+      account,
+      marketAddress: position?.marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: selectedCollateralAddress,
+      initialCollateralDeltaAmount: collateralDeltaAmount,
+      swapPath: [],
+      isLong: position?.isLong,
+      orderType,
+      executionFee: executionFee?.feeTokenAmount,
+    };
+
+    const metricId = getPositionOrderMetricId({ ...metricData, sizeDeltaUsd: 0n });
+    metrics.setCachedMetricData(metricId, metricData);
+
+    sendOrderSubmittedMetric(metrics, metricId, metricType);
+
     if (
       executionFee?.feeTokenAmount === undefined ||
       !tokensData ||
@@ -329,6 +360,8 @@ export function PositionEditor(p: Props) {
       !selectedCollateralAddress ||
       !signer
     ) {
+      helperToast.error(t`Error submitting order`);
+      sendTxnValidationErrorMetric(metrics, metricId, metricType);
       return;
     }
 
@@ -341,6 +374,7 @@ export function PositionEditor(p: Props) {
         chainId,
         signer,
         subaccount,
+        metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -403,7 +437,8 @@ export function PositionEditor(p: Props) {
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
-        }
+        },
+        metricId
       );
     }
 
@@ -412,6 +447,10 @@ export function PositionEditor(p: Props) {
       setIsSubmitting(false);
       return;
     }
+
+    txnPromise = txnPromise
+      .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
+      .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
@@ -470,6 +509,7 @@ export function PositionEditor(p: Props) {
       onClick={onSubmit}
       disabled={Boolean(error) && !shouldDisableValidationForTesting}
       buttonRef={submitButtonRef}
+      qa="confirm-button"
     >
       {error || localizedOperationLabels[operation]}
     </Button>
@@ -498,6 +538,7 @@ export function PositionEditor(p: Props) {
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
+        qa="position-edit-modal"
       >
         {position && (
           <>
@@ -507,6 +548,7 @@ export function PositionEditor(p: Props) {
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
+              qa="operation-tabs"
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
@@ -566,6 +608,7 @@ export function PositionEditor(p: Props) {
                   );
                 }
               }}
+              qa="amount-input"
             >
               {availableSwapTokens ? (
                 <TokenSelector

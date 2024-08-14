@@ -5,7 +5,7 @@ import { SetPendingOrder, SetPendingPosition, PendingOrderData } from "context/S
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType, OrderTxnType } from "./types";
 import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
 import { getPositionKey } from "../positions";
@@ -81,6 +81,7 @@ export async function createIncreaseOrderTxn({
   chainId,
   signer,
   subaccount,
+  metricId,
   createIncreaseOrderParams: p,
   createDecreaseOrderParams,
   cancelOrderParams,
@@ -89,6 +90,7 @@ export async function createIncreaseOrderTxn({
   chainId: number;
   signer: Signer;
   subaccount: Subaccount;
+  metricId?: string;
   createIncreaseOrderParams: IncreaseOrderParams;
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
@@ -207,11 +209,11 @@ export async function createIncreaseOrderTxn({
   }
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, {
+    await simulateExecuteTxn(chainId, {
       account: p.account,
       tokensData: p.tokensData,
       primaryPriceOverrides,
-      createOrderMulticallPayload: simulationEncodedPayload,
+      createMulticallPayload: simulationEncodedPayload,
       value: totalWntAmount,
       errorTitle: t`Order error.`,
     });
@@ -225,6 +227,7 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    metricId,
     setPendingTxns: p.setPendingTxns,
   });
 

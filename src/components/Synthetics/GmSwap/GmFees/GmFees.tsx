@@ -18,6 +18,7 @@ type Props = {
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
+  shiftFee?: FeeItem;
   isDeposit: boolean;
 };
 
@@ -67,14 +68,18 @@ export function GmFees(p: Props) {
 
               {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
-                  label={
-                    <>
-                      <Trans>UI Fee</Trans>:
-                    </>
-                  }
+                  label={t`UI Fee`}
                   value={formatDeltaUsd(p.uiFee?.deltaUsd, p.uiFee?.bps)!}
                   showDollar={false}
                   textClassName="text-red-500"
+                />
+              )}
+
+              {p.shiftFee !== undefined && (
+                <StatsTooltipRow
+                  label={t`Shift Fee`}
+                  value={formatDeltaUsd(p.shiftFee.deltaUsd, p.shiftFee.bps)!}
+                  showDollar={false}
                 />
               )}
             </div>
@@ -87,7 +92,16 @@ export function GmFees(p: Props) {
         {formatDeltaUsd(totalFeesUsd)}
       </span>
     );
-  }, [p.isDeposit, p.swapFee, p.swapPriceImpact, p.totalFees?.deltaUsd, p.uiFee?.bps, p.uiFee?.deltaUsd, totalFeesUsd]);
+  }, [
+    p.isDeposit,
+    p.shiftFee,
+    p.swapFee,
+    p.swapPriceImpact,
+    p.totalFees?.deltaUsd,
+    p.uiFee?.bps,
+    p.uiFee?.deltaUsd,
+    totalFeesUsd,
+  ]);
 
   return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;
 }

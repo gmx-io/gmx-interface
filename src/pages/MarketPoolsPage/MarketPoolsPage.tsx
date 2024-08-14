@@ -1,8 +1,12 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
+import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
+import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
@@ -15,23 +19,21 @@ import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 
 import "./MarketPoolsPage.scss";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
-  const markets = Object.values(marketsInfoData);
+  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensApyData, marketsTokensIncentiveAprData } = useGmMarketsApy(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData } = useGmMarketsApy(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
@@ -63,17 +65,23 @@ export function MarketPoolsPage() {
           title="V2 Pools"
           isTop
           subtitle={
-            <Trans>
-              Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink> to
-              earn fees from swaps and leverage trading.
-            </Trans>
+            <>
+              <Trans>
+                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
+                to earn fees from swaps and leverage trading.
+              </Trans>
+              <br />
+              <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
+            </>
           }
+          qa="pools-page"
         />
 
         <div className="MarketPoolsPage-content">
           <MarketStats
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
@@ -83,14 +91,11 @@ export function MarketPoolsPage() {
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
               selectedMarketAddress={selectedMarketKey}
-              markets={markets}
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
               operation={operation}
               mode={mode}
-              setMode={setMode}
-              setOperation={setOperation}
+              onSetMode={setMode}
+              onSetOperation={setOperation}
             />
           </div>
         </div>
@@ -103,6 +108,7 @@ export function MarketPoolsPage() {
         <GmList
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
           shouldScrollToTop={true}
           isDeposit
         />
