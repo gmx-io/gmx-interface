@@ -2,6 +2,7 @@
 
 import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
+import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "./chains";
 import { getIncentivesV2Url } from "./links";
@@ -9,7 +10,6 @@ import { getNormalizedTokenSymbol } from "./tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
-import { Link } from "react-router-dom";
 
 export type EventData = {
   id: string;
@@ -40,8 +40,14 @@ export const appEventsData: EventData[] = [
     endDate: "28 Aug 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> ORDI/USD and STX/USD, or <Link to="/pools">provide liquidity</Link> to these
-        pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
+        <Link className="underline opacity-70" to="/trade">
+          Trade
+        </Link>{" "}
+        ORDI/USD and STX/USD, or{" "}
+        <Link className="underline opacity-70" to="/pools">
+          provide liquidity
+        </Link>{" "}
+        to these pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
       </>
     ),
   },
