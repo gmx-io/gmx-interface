@@ -48,6 +48,7 @@ export type PendingTransaction = {
   hash: string;
   message: string;
   messageDetails?: string;
+  metricId?: string;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;

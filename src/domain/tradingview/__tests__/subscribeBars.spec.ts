@@ -1,16 +1,11 @@
 import { ResolutionString } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import {
-  OracleFetcher,
-  DayPriceCandle,
-  RawIncentivesStats,
-  TickersResponse,
-} from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { ethers } from "ethers";
 import { noop } from "lodash";
 import type { Bar, FromNewToOldArray, FromOldToNewArray } from "../types";
 import { subscribeBars } from "../useTVDatafeed";
+import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "domain/synthetics/tokens";
 
 class MockOracleKeeperFetcher implements OracleFetcher {
   url: string;
@@ -74,6 +69,10 @@ class MockOracleKeeperFetcher implements OracleFetcher {
   }
 
   fetchPostReport(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
+
+  fetchPostReport2(): Promise<Response> {
     return Promise.resolve(new Response());
   }
 }
