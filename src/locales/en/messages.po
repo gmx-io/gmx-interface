@@ -5848,10 +5848,6 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Could not execute deposit into {0} {longOrShortText}"
 
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-#~ msgstr "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
