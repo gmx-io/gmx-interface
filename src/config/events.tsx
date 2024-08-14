@@ -9,6 +9,7 @@ import { getNormalizedTokenSymbol } from "./tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+import { Link } from "react-router-dom";
 
 export type EventData = {
   id: string;
@@ -31,6 +32,19 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
+  {
+    id: "ordi-stx-market-arbitrum",
+    title: "ORDI and STX markets added on Arbitrum",
+    isActive: true,
+    startDate: "14 Aug 2024, 00:00",
+    endDate: "28 Aug 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> ORDI/USD and STX/USD, or <Link to="/pools">provide liquidity</Link> to these
+        pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
   {
     id: "shib-market-arbitrum",
     title: "SHIB/USD [WETH-USDC] market added on Arbitrum",
