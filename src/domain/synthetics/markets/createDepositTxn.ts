@@ -5,7 +5,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
-import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
+import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
@@ -95,11 +95,11 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, {
+    await simulateExecuteTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
       tokensData: p.tokensData,
-      createOrderMulticallPayload: encodedPayload,
+      createMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",
       errorTitle: t`Deposit error.`,
       value: wntAmount,

@@ -1,9 +1,9 @@
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { DepositAmounts } from "../types";
-import { applyFactor } from "lib/numbers";
 import { bigMath } from "lib/bigmath";
+import { applyFactor } from "lib/numbers";
+import { DepositAmounts } from "../types";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
@@ -17,6 +17,7 @@ export function getDepositAmounts(p: {
   includeLongToken: boolean;
   includeShortToken: boolean;
   uiFeeFactor: bigint;
+  forShift?: boolean;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -68,7 +69,9 @@ export function getDepositAmounts(p: {
     const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
 
     if (values.longTokenUsd > 0) {
-      const swapFeeUsd = getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd > 0);
+      const swapFeeUsd = p.forShift
+        ? 0n
+        : getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd > 0);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
@@ -89,7 +92,9 @@ export function getDepositAmounts(p: {
     }
 
     if (values.shortTokenUsd > 0) {
-      const swapFeeUsd = getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd > 0);
+      const swapFeeUsd = p.forShift
+        ? 0n
+        : getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd > 0);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -122,7 +127,18 @@ export function getDepositAmounts(p: {
     const prevShortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
     const prevSumUsd = prevLongTokenUsd + prevShortTokenUsd;
 
-    if (includeLongToken && includeShortToken && prevSumUsd > 0) {
+    if (p.forShift) {
+      // Reverse the withdrawal amounts
+      const longPoolAmount = marketInfo.longPoolAmount;
+      const shortPoolAmount = marketInfo.shortPoolAmount;
+
+      const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
+      const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+      const totalPoolUsd = longPoolUsd + shortPoolUsd;
+
+      values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
+      values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
+    } else if (includeLongToken && includeShortToken && prevSumUsd > 0) {
       values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, prevLongTokenUsd, prevSumUsd);
       values.shortTokenUsd = values.marketTokenUsd - values.longTokenUsd;
     } else if (includeLongToken) {
@@ -139,8 +155,10 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd
     );
 
-    const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd > 0);
-    values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
+    if (!p.forShift) {
+      const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd > 0);
+      values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
+    }
 
     const uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;

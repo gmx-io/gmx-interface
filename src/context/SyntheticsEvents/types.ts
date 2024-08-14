@@ -4,6 +4,7 @@ export type SyntheticsEventsContextType = {
   orderStatuses: OrderStatuses;
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;
+  shiftStatuses: ShiftStatuses;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
@@ -12,15 +13,18 @@ export type SyntheticsEventsContextType = {
   setPendingPosition: SetPendingPosition;
   setPendingDeposit: SetPendingDeposit;
   setPendingWithdrawal: SetPendingWithdrawal;
+  setPendingShift: SetPendingShift;
   setOrderStatusViewed: (key: string) => void;
   setDepositStatusViewed: (key: string) => void;
   setWithdrawalStatusViewed: (key: string) => void;
+  setShiftStatusViewed: (key: string) => void;
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
+export type SetPendingShift = (data: PendingShiftData) => void;
 export type SetPendingFundingFeeSettlement = (data: PendingFundingFeeSettlementData) => void;
 
 export type PendingFundingFeeSettlementData = {
@@ -122,6 +126,27 @@ export type PendingWithdrawalData = {
   shouldUnwrapNativeToken: boolean;
 };
 
+export type ShiftCreatedEventData = {
+  key: string;
+  account: string;
+  receiver: string;
+  callbackContract: string;
+  fromMarket: string;
+  toMarket: string;
+  marketTokenAmount: bigint;
+  minMarketTokens: bigint;
+  updatedAtTime: bigint;
+  executionFee: bigint;
+};
+
+export type PendingShiftData = {
+  account: string;
+  fromMarket: string;
+  marketTokenAmount: bigint;
+  toMarket: string;
+  minMarketTokens: bigint;
+};
+
 export type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
@@ -136,6 +161,7 @@ export type MultiTransactionStatus<TEventData> = {
 export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;
 export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData>;
 export type WithdrawalStatus = MultiTransactionStatus<WithdrawalCreatedEventData>;
+export type ShiftStatus = MultiTransactionStatus<ShiftCreatedEventData>;
 
 export type PositionIncreaseEvent = {
   positionKey: string;
@@ -201,6 +227,10 @@ export type DepositStatuses = {
 
 export type WithdrawalStatuses = {
   [key: string]: WithdrawalStatus;
+};
+
+export type ShiftStatuses = {
+  [key: string]: ShiftStatus;
 };
 
 export type PendingPositionsUpdates = {

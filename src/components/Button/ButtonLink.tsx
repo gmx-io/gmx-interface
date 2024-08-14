@@ -14,6 +14,10 @@ type ButtonProps = {
   qa?: string;
 };
 
+function preventClick(e: React.MouseEvent<HTMLElement>) {
+  e.preventDefault();
+}
+
 export default function ButtonLink({
   className,
   to,
@@ -47,7 +51,7 @@ export default function ButtonLink({
     );
   }
   return (
-    <Link data-qa={qa} className={classNames} to={to}>
+    <Link data-qa={qa} className={classNames} to={to} onClick={disabled ? preventClick : onClick}>
       {children}
     </Link>
   );

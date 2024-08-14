@@ -5,7 +5,13 @@ import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/acc
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
+import {
+  MarketsInfoResult,
+  MarketsResult,
+  useMarketTokensDataRequest,
+  useMarkets,
+  useMarketsInfoRequest,
+} from "domain/synthetics/markets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -14,6 +20,7 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
+import { TokensData } from "domain/synthetics/tokens";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
@@ -51,6 +58,7 @@ export type SyntheticsState = {
     positionsConstants: PositionsConstantsResult;
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
+    depositMarketTokensData: TokensData | undefined;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
@@ -112,6 +120,10 @@ export function SyntheticsStateContextProvider({
 
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, {
+    isDeposit: true,
+    account,
+  });
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
@@ -181,6 +193,7 @@ export function SyntheticsStateContextProvider({
         },
         uiFeeFactor,
         userReferralInfo,
+        depositMarketTokensData,
 
         closingPositionKey,
         setClosingPositionKey,
@@ -230,6 +243,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    depositMarketTokensData,
   ]);
 
   latestState = state;

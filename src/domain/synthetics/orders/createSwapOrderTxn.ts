@@ -10,7 +10,7 @@ import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 
@@ -70,10 +70,10 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
   }
 
   if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteOrderTxn(chainId, {
+    await simulateExecuteTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
-      createOrderMulticallPayload: simulationEncodedPayload,
+      createMulticallPayload: simulationEncodedPayload,
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
       errorTitle: t`Order error.`,
