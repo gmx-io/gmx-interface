@@ -41,7 +41,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> ORDI/USD and STX/USD, or <Link to="/pools">provide liquidity</Link> to these
-        pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
+        pools by using <TokenSymbolWithIcon symbol="wBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
       </>
     ),
   },
