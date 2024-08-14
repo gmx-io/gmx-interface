@@ -202,7 +202,7 @@ export class TVDataProvider {
       const bars = await this.getLimitBars(chainId, ticker, period, barsCount);
 
       if (bars && ticker === barsInfo.ticker && period === barsInfo.period) {
-        this.liveBars = bars.slice(-1);
+        this.liveBars = [{ ...bars.slice(-1)[0], ticker, period }];
       }
 
       return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time) as FromOldToNewArray<Bar>;
