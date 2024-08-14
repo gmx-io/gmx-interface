@@ -11,6 +11,7 @@ import {
   isIncreaseOrderType,
   isLiquidationOrderType,
   isMarketOrderType,
+  isSwapOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -34,15 +35,21 @@ import {
   PendingDepositData,
   PendingFundingFeeSettlementData,
   PendingOrderData,
-  PendingPositionUpdate,
   PendingPositionsUpdates,
+  PendingPositionUpdate,
+  PendingShiftData,
   PendingWithdrawalData,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
+  ShiftCreatedEventData,
+  ShiftStatuses,
   SyntheticsEventsContextType,
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { getMetricTypeByOrderType, getPositionOrderMetricId, getSwapOrderMetricId } from "context/MetricsContext/utils";
+import { OrderWsEventMetricData } from "context/MetricsContext/types";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -55,6 +62,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
 
+  const metrics = useMetrics();
+
   const { hasV2LostFocus } = useHasLostFocus();
 
   const { tokensData } = useTokensDataRequest(chainId);
@@ -63,6 +72,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
+  const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
@@ -101,6 +111,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
+      const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
+      const metricData = metrics.getCachedMetricData(metricId);
+      const metricType = metricData?.metricType || getMetricTypeByOrderType(data);
+
+      metrics.sendMetric({
+        event: `${metricType}.created`,
+        isError: false,
+        time: metrics.getTime(metricId),
+        data: {
+          ...(metricData || {}),
+          metricType,
+          key: data.key,
+          txnHash: txnParams.transactionHash,
+        } as OrderWsEventMetricData,
+      });
+
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
           key: data.key,
@@ -138,6 +164,29 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
+      const order = orderStatuses[key]?.data;
+
+      if (order) {
+        const metricId = isSwapOrderType(order.orderType)
+          ? getSwapOrderMetricId(order)
+          : getPositionOrderMetricId(order);
+
+        const metricData = metrics.getCachedMetricData(metricId, true);
+        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
+
+        metrics.sendMetric({
+          event: `${metricType}.executed`,
+          isError: false,
+          time: metrics.getTime(metricId, true),
+          data: {
+            ...(metricData || {}),
+            metricType,
+            key,
+            txnHash: txnParams.transactionHash,
+          } as OrderWsEventMetricData,
+        });
+      }
+
       setOrderStatuses((old) => {
         if (!old[key]) return old;
 
@@ -169,6 +218,28 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       });
 
       const order = orderStatuses[key]?.data;
+
+      if (order) {
+        const metricId = isSwapOrderType(order.orderType)
+          ? getSwapOrderMetricId(order)
+          : getPositionOrderMetricId(order);
+
+        const metricData = metrics.getCachedMetricData(metricId, true);
+        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
+
+        metrics.sendMetric({
+          event: `${metricType}.failed`,
+          isError: true,
+          message: `Order cancelled`,
+          time: metrics.getTime(metricId, true),
+          data: {
+            ...(metricData || {}),
+            metricType,
+            key,
+            txnHash: txnParams.transactionHash,
+          } as OrderWsEventMetricData,
+        });
+      }
 
       // If pending user order is cancelled, reset the pending position state
       if (order && marketsInfoData) {
@@ -297,6 +368,50 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       if (withdrawalStatuses[key]) {
         setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
+    },
+
+    ShiftCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const data: ShiftCreatedEventData = {
+        key: eventData.bytes32Items.items.key,
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        fromMarket: eventData.addressItems.items.fromMarket,
+        toMarket: eventData.addressItems.items.toMarket,
+        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+        minMarketTokens: eventData.uintItems.items.minMarketTokens,
+        updatedAtTime: eventData.uintItems.items.updatedAtTime,
+        executionFee: eventData.uintItems.items.executionFee,
+      };
+
+      if (data.account !== currentAccount) {
+        return;
+      }
+
+      setShiftStatuses((old) =>
+        setByKey(old, data.key, {
+          key: data.key,
+          data,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
+      );
+    },
+
+    ShiftExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (shiftStatuses[key]) {
+        setShiftStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
+    },
+
+    ShiftCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (shiftStatuses[key]) {
+        setShiftStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
 
@@ -434,7 +549,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasV2LostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !wsProvider || !currentAccount || !metrics) {
         return;
       }
 
@@ -444,7 +559,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribe();
       };
     },
-    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus, metrics, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
@@ -452,6 +567,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       orderStatuses,
       depositStatuses,
       withdrawalStatuses,
+      shiftStatuses,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -520,6 +636,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           }
         );
       },
+      setPendingShift: (data: PendingShiftData) => {
+        const toastId = Date.now();
+
+        helperToast.success(
+          <GmStatusNotification
+            pendingShiftData={data}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            toastTimestamp={toastId}
+          />,
+          {
+            autoClose: false,
+            toastId,
+          }
+        );
+      },
       async setPendingPosition(update: PendingPositionUpdate) {
         setPendingPositionsUpdates((old) => setByKey(old, update.positionKey, update));
       },
@@ -535,6 +667,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setWithdrawalStatusViewed(key: string) {
         setWithdrawalStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
+
+      setShiftStatusViewed(key: string) {
+        setShiftStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
     };
   }, [
     depositStatuses,
@@ -543,9 +679,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionDecreaseEvents,
     positionIncreaseEvents,
+    setPendingTxns,
+    shiftStatuses,
     tokensData,
     withdrawalStatuses,
-    setPendingTxns,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

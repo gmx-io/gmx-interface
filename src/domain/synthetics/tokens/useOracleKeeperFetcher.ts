@@ -47,11 +47,15 @@ export type RawIncentivesStats = {
     period: number;
   }>;
   trading: OnlyWhenActive<{
+    /**
+     * @deprecated use `maxRebatePercent` or `estimatedRebatePercent` instead
+     */
     rebatePercent: number;
+    maxRebatePercent: number;
+    estimatedRebatePercent: number;
     allocation: string;
     period: number;
-    // not yet implemented on keeper side
-    token?: string;
+    token: Address;
   }>;
 };
 
@@ -93,6 +97,7 @@ export interface OracleFetcher {
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response>;
+  fetchPostReport2(body: any): Promise<Response>;
 }
 
 class OracleKeeperFetcher implements OracleFetcher {
@@ -187,6 +192,16 @@ class OracleKeeperFetcher implements OracleFetcher {
 
   fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
     return fetch(buildUrl(this.url!, "/report/ui"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  fetchPostReport2(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
+    return fetch(buildUrl(this.url!, "/report/ui2"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

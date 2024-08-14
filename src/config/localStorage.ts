@@ -50,6 +50,9 @@ export const CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "chart-token-selector-fa
 export const GM_TOKEN_SELECTOR_FILTER_TAB_KEY = "gm-token-selector-filter-tab";
 export const GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "gm-token-selector-favorite-tokens";
 
+export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
+export const METRICS_TIMERS_KEY = "metrics-timers-key";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {

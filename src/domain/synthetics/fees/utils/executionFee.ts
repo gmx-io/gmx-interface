@@ -98,6 +98,13 @@ export function estimateExecuteWithdrawalGasLimit(
 }
 
 /**
+ * Copy from contract: `estimateExecuteShiftGasLimit`
+ */
+export function estimateExecuteShiftGasLimit(gasLimits: GasLimitsConfig, shift: { callbackGasLimit?: bigint }) {
+  return gasLimits.shift + (shift.callbackGasLimit ?? 0n);
+}
+
+/**
  * Copy from contract: `estimateExecuteIncreaseOrderGasLimit`
  */
 export function estimateExecuteIncreaseOrderGasLimit(

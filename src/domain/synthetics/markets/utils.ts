@@ -376,7 +376,7 @@ export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: Toke
     return {
       maxLongSellableUsd: 0n,
       maxShortSellableUsd: 0n,
-      total: 0n,
+      totalAmount: 0n,
     };
   }
 

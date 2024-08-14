@@ -7,7 +7,7 @@ import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
 import { TokensData } from "../tokens";
-import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
+import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 import { SwapPricingType } from "../orders";
@@ -75,11 +75,11 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, {
+    await simulateExecuteTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
       tokensData: p.tokensData,
-      createOrderMulticallPayload: encodedPayload,
+      createMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,

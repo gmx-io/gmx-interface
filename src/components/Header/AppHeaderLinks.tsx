@@ -40,32 +40,37 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </div>
       )}
       <div className="App-header-link-container">
-        <HeaderLink to="/dashboard" showRedirectModal={showRedirectModal}>
+        <HeaderLink qa="dashboard" to="/dashboard" showRedirectModal={showRedirectModal}>
           <Trans>Dashboard</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/earn" showRedirectModal={showRedirectModal}>
+        <HeaderLink qa="earn" to="/earn" showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
+        <HeaderLink qa="buy" to="/buy" showRedirectModal={showRedirectModal}>
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/referrals" showRedirectModal={showRedirectModal}>
+        <HeaderLink qa="referrals" to="/referrals" showRedirectModal={showRedirectModal}>
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal} isActive={isLeaderboardActive}>
+        <HeaderLink
+          qa="leaderboard"
+          to="/leaderboard"
+          showRedirectModal={showRedirectModal}
+          isActive={isLeaderboardActive}
+        >
           <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/ecosystem" showRedirectModal={showRedirectModal}>
+        <HeaderLink qa="ecosystem" to="/ecosystem" showRedirectModal={showRedirectModal}>
           <Trans>Ecosystem</Trans>
         </HeaderLink>
       </div>
@@ -84,7 +89,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
-          <a href="#" onClick={openSettings}>
+          <a href="#" data-qa="settings" onClick={openSettings}>
             <Trans>Settings</Trans>
           </a>
         </div>

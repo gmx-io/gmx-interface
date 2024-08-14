@@ -18,9 +18,11 @@ type MarketTokensDataResult = {
   marketTokensData?: TokensData;
 };
 
-export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
-  const { isDeposit } = p;
-  const account = useSelector((s) => s.globals.account);
+export function useMarketTokensDataRequest(
+  chainId: number,
+  p: { isDeposit: boolean; account?: string }
+): MarketTokensDataResult {
+  const { isDeposit, account } = p;
   const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
@@ -136,4 +138,11 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
   return {
     marketTokensData: data,
   };
+}
+
+export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+  const { isDeposit } = p;
+  const account = useSelector((s) => s.globals.account);
+
+  return useMarketTokensDataRequest(chainId, { isDeposit, account });
 }

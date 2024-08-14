@@ -40,7 +40,7 @@ export function CollateralSelector(props: Props & { marketInfo?: MarketInfo; tra
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
-    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`}>
+    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`} qa="collateral-in-selector">
       {isMobile ? (
         <CollateralSelectorMobile {...props} />
       ) : (
@@ -54,7 +54,7 @@ function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; market
   const close = useSelectorClose();
 
   return (
-    <table className="CollateralSelector-table">
+    <table className="CollateralSelector-table" data-qa="collateral-in-selector-table">
       <thead>
         <SelectorBaseTableHeadRow>
           <th>
@@ -115,7 +115,7 @@ function CollateralListItemDesktop({
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
-        <td className="CollateralSelector-column-pool">
+        <td className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           <TokenIcon
             symbol={tokenData.symbol}
             displaySize={24}
@@ -133,7 +133,7 @@ function CollateralListItemDesktop({
       message={marketInfo && tradeType ? getCollateralInHintText(tradeType, tokenData, marketInfo) : undefined}
       onClick={handleClick}
     >
-      <td className="CollateralSelector-column-pool">
+      <td className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
         <TokenIcon
           symbol={tokenData.symbol}
           displaySize={24}
@@ -206,7 +206,7 @@ function CollateralListItemMobile({
 
   return (
     <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
-      <div className="CollateralSelector-column-pool">
+      <div className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
         <TokenIcon
           symbol={tokenData.symbol}
           displaySize={30}

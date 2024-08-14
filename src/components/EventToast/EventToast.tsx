@@ -17,13 +17,13 @@ export default function EventToast({
   toast: Toast;
 }) {
   return (
-    <div className={`single-toast ${toast.visible ? "zoomIn" : "zoomOut"}`} key={id}>
+    <div data-qa="toast" className={`single-toast ${toast.visible ? "zoomIn" : "zoomOut"}`} key={id}>
       <header>
         <div className="toast-title">
           <Icon className="announcement-icon" />
           <p>{event.title}</p>
         </div>
-        <MdOutlineClose onClick={onClick} className="cross-icon" color="white" />
+        <MdOutlineClose onClick={onClick} className="cross-icon" color="white" data-qa="close-toast" />
       </header>
       {Array.isArray(event.bodyText) ? (
         event.bodyText.map((text, i) =>

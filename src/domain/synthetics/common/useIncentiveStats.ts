@@ -60,20 +60,21 @@ export const useTradingIncentives = (chainId: number) => {
       return null;
     }
 
-    const rebatePercent = BigInt(raw.rebatePercent);
-    if (rebatePercent == 0n) return null;
+    const maxRebatePercent = BigInt(raw.maxRebatePercent);
+    if (maxRebatePercent === 0n) return null;
+
+    const estimatedRebatePercent = BigInt(raw.estimatedRebatePercent);
 
     const allocation = BigInt(raw.allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
-
-    const tokenAddress = raw.token ?? (incentiveStats?.lp.isActive ? incentiveStats.lp.token : null);
 
     return {
       allocation,
       period: raw.period,
       nextPeriodStart,
-      rebatePercent,
-      token: tokenAddress,
+      maxRebatePercent,
+      estimatedRebatePercent,
+      token: raw.token,
     };
   }, [incentiveStats, startOfPeriod]);
 };
