@@ -81,12 +81,11 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const longUsdVolume = marketInfo.longInterestUsd;
   const totalVolume = marketInfo.longInterestUsd + marketInfo.shortInterestUsd;
 
-  const longOpenInterestPercentage = Math.max(
-    Math.min(Number(bigMath.mulDiv(longUsdVolume, 100n, totalVolume)), 100),
-    0.01
-  );
+  const longOpenInterestPercentage =
+    totalVolume !== 0n ? Math.max(Math.min(Number(bigMath.mulDiv(longUsdVolume, 100n, totalVolume)), 100), 0.01) : 0;
 
-  const shortOpenInterestPercentage = 100 - longOpenInterestPercentage;
+  const shortOpenInterestPercentage =
+    totalVolume === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
 
   return {
     liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),

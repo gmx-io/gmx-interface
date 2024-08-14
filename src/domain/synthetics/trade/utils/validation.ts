@@ -6,6 +6,7 @@ import {
   getMaxAllowedLeverageByMinCollateralFactor,
   getMintableMarketTokens,
   getOpenInterestUsd,
+  getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
@@ -646,6 +647,94 @@ export function getGmSwapError(p: {
     if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
       return [t`Insufficient ${shortToken?.symbol} liquidity`];
     }
+  }
+
+  return [undefined];
+}
+export function getGmShiftError({
+  fromMarketInfo,
+  fromToken,
+  fromTokenAmount,
+  fromTokenUsd,
+  fromLongTokenAmount,
+  fromShortTokenAmount,
+  toMarketInfo,
+  toToken,
+  toTokenAmount,
+  fees,
+  isHighPriceImpact,
+  isHighPriceImpactAccepted,
+  priceImpactUsd,
+}: {
+  fromMarketInfo: MarketInfo | undefined;
+  fromToken: TokenData | undefined;
+  fromTokenAmount: bigint | undefined;
+  fromTokenUsd: bigint | undefined;
+  fromLongTokenAmount: bigint | undefined;
+  fromShortTokenAmount: bigint | undefined;
+  toMarketInfo: MarketInfo | undefined;
+  toToken: TokenData | undefined;
+  toTokenAmount: bigint | undefined;
+  fees: GmSwapFees | undefined;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
+  priceImpactUsd: bigint | undefined;
+}) {
+  if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
+    return [t`Loading...`];
+  }
+
+  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
+  if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
+    const { impactAmount } = applySwapImpactWithCap(toMarketInfo, priceImpactUsd);
+    const newPoolAmount = applyDeltaToPoolAmount(toMarketInfo, impactAmount);
+
+    if (!getIsValidPoolAmount(toMarketInfo, newPoolAmount)) {
+      return [t`Max pool amount exceeded`];
+    }
+  }
+
+  if (!getIsValidPoolUsdForDeposit(toMarketInfo)) {
+    return [t`Max pool USD exceeded`];
+  }
+
+  const sellable = getSellableMarketToken(fromMarketInfo, fromToken);
+
+  if (fromTokenAmount !== undefined && sellable.totalAmount < fromTokenAmount) {
+    return [t`Max ${fromToken?.symbol} sellable amount exceeded`];
+  }
+
+  const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
+
+  const longExceedCapacity =
+    fromLongTokenAmount !== undefined && fromLongTokenAmount > mintableInfo.longDepositCapacityAmount;
+  const shortExceedCapacity =
+    fromShortTokenAmount !== undefined && fromShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+
+  if (longExceedCapacity || shortExceedCapacity) {
+    return [t`Max ${fromToken?.symbol} buyable amount exceeded`];
+  }
+
+  const totalCollateralUsd = fromTokenUsd ?? 0n;
+
+  const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
+  if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
+    return [t`Fees exceed Pay amount`];
+  }
+
+  if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
+    return [t`Amount should be greater than zero`];
+  }
+
+  if (fromTokenAmount === undefined || fromTokenAmount < 0 || toTokenAmount === undefined || toTokenAmount < 0) {
+    return [t`Enter an amount`];
+  }
+
+  if ((fromTokenAmount ?? 0n) > (fromToken?.balance ?? 0n)) {
+    return [t`Insufficient ${fromToken?.symbol} balance`];
   }
 
   return [undefined];

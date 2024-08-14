@@ -84,6 +84,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error(`Multicall request failed: ${name}`, e);
+        e.message = `Multicall request failed: ${name} ${e.message}`;
 
         throw e;
       } finally {

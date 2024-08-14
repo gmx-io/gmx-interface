@@ -64,10 +64,20 @@ import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import {
+  getPositionOrderMetricId,
+  getTxnErrorMetricsHandler,
+  getTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "context/MetricsContext/utils";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import "./PositionSeller.scss";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { helperToast } from "lib/helperToast";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import "./PositionSeller.scss";
+import { DecreaseOrderMetricData } from "context/MetricsContext/types";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -87,6 +97,7 @@ export function PositionSeller(p: Props) {
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const tokensData = useTokensData();
+  const metrics = useMetrics();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -274,6 +285,40 @@ export function PositionSeller(p: Props) {
 
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
 
+    let metricType;
+    if (orderType === OrderType.LimitDecrease) {
+      metricType = "takeProfitOrder";
+    } else if (orderType === OrderType.StopLossDecrease) {
+      metricType = "stopLossOrder";
+    } else {
+      metricType = "decreasePosition";
+    }
+
+    const metricData: DecreaseOrderMetricData = {
+      metricType,
+      hasExistingPosition: true,
+      isFullClose: decreaseAmounts?.isFullClose,
+      place: "positionSeller",
+      account,
+      marketAddress: position?.marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: position?.collateralToken?.address,
+      initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
+      swapPath: [],
+      triggerPrice: decreaseAmounts?.triggerPrice,
+      acceptablePrice: decreaseAmounts?.acceptablePrice,
+      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts?.sizeDeltaInTokens,
+      orderType,
+      isLong: position?.isLong,
+      executionFee: executionFee?.feeTokenAmount,
+      referralCodeForTxn: userReferralInfo?.referralCodeForTxn,
+    };
+
+    const metricId = getPositionOrderMetricId(metricData);
+    metrics.setCachedMetricData(metricId, metricData);
+
+    sendOrderSubmittedMetric(metrics, metricId, metricType);
+
     if (
       !tokensData ||
       !position ||
@@ -284,6 +329,8 @@ export function PositionSeller(p: Props) {
       !signer ||
       !orderType
     ) {
+      helperToast.error(t`Error submitting order`);
+      sendTxnValidationErrorMetric(metrics, metricId, metricType);
       return;
     }
 
@@ -325,8 +372,11 @@ export function PositionSeller(p: Props) {
         setPendingOrder,
         setPendingTxns,
         setPendingPosition,
-      }
-    );
+      },
+      metricId
+    )
+      .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
+      .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
 
     if (subaccount) {
       onClose();

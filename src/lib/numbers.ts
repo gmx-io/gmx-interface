@@ -215,7 +215,7 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
+  const percentageStr = percentage !== undefined ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
