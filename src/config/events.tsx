@@ -40,14 +40,8 @@ export const appEventsData: EventData[] = [
     endDate: "28 Aug 2024, 00:00",
     bodyText: (
       <>
-        <Link className="underline opacity-70" to="/trade">
-          Trade
-        </Link>{" "}
-        ORDI/USD and STX/USD, or{" "}
-        <Link className="underline opacity-70" to="/pools">
-          provide liquidity
-        </Link>{" "}
-        to these pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
+        <Link to="/trade">Trade</Link> ORDI/USD and STX/USD, or <Link to="/pools">provide liquidity</Link> to these
+        pools by using <TokenSymbolWithIcon symbol="wBTC" /> or U<TokenSymbolWithIcon symbol="USDC" />.
       </>
     ),
   },
