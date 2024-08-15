@@ -5848,10 +5848,6 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Could not execute deposit into {0} {longOrShortText}"
 
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-#~ msgstr "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -7167,6 +7163,10 @@ msgstr "Top-Up"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Ask Price (Exit)"
 msgstr "Ask Price (Exit)"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
+msgstr "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."

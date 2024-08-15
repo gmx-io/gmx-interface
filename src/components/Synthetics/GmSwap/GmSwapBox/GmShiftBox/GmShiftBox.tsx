@@ -106,6 +106,11 @@ export function GmShiftBox({
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
   const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
 
+  const selectedTokenDollarAmount =
+    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? formatUsd(amounts.fromTokenUsd) : "";
+  const toTokenShowDollarAmount =
+    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? formatUsd(amounts.toTokenUsd) : "";
+
   const submitState = useShiftSubmitState({
     selectedMarketInfo,
     selectedToken,
@@ -147,6 +152,11 @@ export function GmShiftBox({
     [submitState]
   );
 
+  const handleClearValues = useCallback(() => {
+    setSelectedMarketText("");
+    setToMarketText("");
+  }, []);
+
   const handleSelectedTokenClickMax = useCallback(() => {
     if (!selectedToken || selectedToken.balance === undefined) return;
     setFocusedInput("selectedMarket");
@@ -158,9 +168,18 @@ export function GmShiftBox({
   );
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
   const handleSelectedTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => onSelectMarket(marketInfo.marketTokenAddress),
-    [onSelectMarket]
+    (marketInfo: MarketInfo): void => {
+      onSelectMarket(marketInfo.marketTokenAddress);
+      handleClearValues();
+    },
+    [handleClearValues, onSelectMarket]
   );
+
+  const handleSwitchSide = useCallback(() => {
+    onSelectMarket(toMarketAddress!);
+    setToMarketAddress(selectedMarketAddress);
+    handleClearValues();
+  }, [handleClearValues, onSelectMarket, selectedMarketAddress, toMarketAddress]);
 
   const handleToTokenInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setToMarketText(event.target.value),
@@ -168,8 +187,11 @@ export function GmShiftBox({
   );
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => setToMarketAddress(marketInfo.marketTokenAddress),
-    []
+    (marketInfo: MarketInfo): void => {
+      setToMarketAddress(marketInfo.marketTokenAddress);
+      handleClearValues();
+    },
+    [handleClearValues]
   );
 
   const handleSubmittedOrClosed = useCallback(() => {
@@ -181,7 +203,7 @@ export function GmShiftBox({
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={formatUsd(amounts?.fromTokenUsd)}
+          topLeftValue={selectedTokenDollarAmount}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(selectedToken?.balance, selectedToken?.decimals, "", {
             useCommas: true,
@@ -206,15 +228,10 @@ export function GmShiftBox({
             {...gmTokenFavoritesContext}
           />
         </BuyInputSection>
-        <Swap
-          onSwitchSide={() => {
-            onSelectMarket(toMarketAddress!);
-            setToMarketAddress(selectedMarketAddress);
-          }}
-        />
+        <Swap onSwitchSide={handleSwitchSide} />
         <BuyInputSection
           topLeftLabel={t`Receive`}
-          topLeftValue={formatUsd(amounts?.toTokenUsd)}
+          topLeftValue={toTokenShowDollarAmount}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
             useCommas: true,
