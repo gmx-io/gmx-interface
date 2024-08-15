@@ -17,10 +17,10 @@ export function getPlusOrMinusSymbol(value?: bigint, opts: { showPlusForZero?: b
   return value === 0n ? (showPlusForZero ? "+" : "") : value < 0n ? "-" : "+";
 }
 
-export function promiseWithResolvers() {
-  let resolve: (value: unknown) => void;
+export function promiseWithResolvers<T = void>() {
+  let resolve: (value: T) => void;
   let reject: (error: unknown) => void;
-  const promise = new Promise((res, rej) => {
+  const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
   });

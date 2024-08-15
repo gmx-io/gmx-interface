@@ -1,11 +1,15 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import { getContract } from "config/contracts";
-import { convertTokenAddress, getToken } from "config/tokens";
-import { isMarketEnabled } from "config/markets";
 import { ethers } from "ethers";
+
+import { getContract } from "config/contracts";
+import { isMarketEnabled } from "config/markets";
+import { convertTokenAddress, getToken } from "config/tokens";
 import { useMulticall } from "lib/multicall";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
+
+import SyntheticsReader from "abis/SyntheticsReader.json";
 
 export type MarketsResult = {
   marketsData?: MarketsData;
@@ -16,9 +20,9 @@ const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
-    key: [chainId],
+    key: [],
 
-    refreshInterval: 60000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () => ({
       reader: {

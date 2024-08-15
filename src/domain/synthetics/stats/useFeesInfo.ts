@@ -1,7 +1,9 @@
 import { gql } from "@apollo/client";
+import useSWR from "swr";
+
 import { useFeesSummary } from "domain/stats";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import useSWR from "swr";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {
@@ -95,7 +97,7 @@ export default function useFeesInfo(chainId: number) {
   }
 
   const { data: feesInfo } = useSWR([`useFeesInfo-${chainId}`, lastUpdatedAt], fetcher, {
-    refreshInterval: 60000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
   });
 
   return feesInfo;
