@@ -64,6 +64,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
+        feedData.current = true;
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
@@ -76,9 +77,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
           }
           missingBarsInfo.current.bars = data;
           missingBarsInfo.current.isFetching = false;
-          feedData.current = true;
         } else {
-          feedData.current = false;
           missingBarsInfo.current.isFetching = false;
           missingBarsInfo.current.bars = [];
         }
