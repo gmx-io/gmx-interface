@@ -5,6 +5,11 @@ import { getFallbackProvider, getProvider } from "../rpc";
 import { executeMulticall } from "lib/multicall";
 import { swrCache, SWRConfigProp } from "App/swrConfig";
 
+const CONTRACT_FETCHER_WORKER_SETUP_TIMEOUT = 1000;
+const CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT = 2000;
+const CONTRACT_FETCHER_WORKER_TIMEOUT = 5000;
+const CONTRACT_FETCHER_MAIN_THREAD_TIMEOUT = 5000;
+
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
@@ -112,16 +117,13 @@ export const contractFetcher =
       const isThroughMulticall = ethers.isAddress(arg0);
       const isUrgent = priority === "urgent";
 
-      let timeout = 2000;
+      let timeout = CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT;
 
       if (isThroughMulticall) {
         if (isUrgent) {
-          const workerStartupTimeout = 1000;
-          timeout = timeout + workerStartupTimeout;
+          timeout = timeout + CONTRACT_FETCHER_WORKER_SETUP_TIMEOUT;
         } else {
-          const workerTimeout = 5000;
-          const mainThreadTimeout = 5000;
-          timeout = workerTimeout + mainThreadTimeout;
+          timeout = CONTRACT_FETCHER_WORKER_TIMEOUT + CONTRACT_FETCHER_MAIN_THREAD_TIMEOUT;
         }
       }
 
