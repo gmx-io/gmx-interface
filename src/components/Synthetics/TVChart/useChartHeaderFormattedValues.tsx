@@ -87,7 +87,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
       return [
         <>
-          <LongIcon className="opacity-70" />
+          <LongIcon width={12} className="relative top-1 opacity-70" />
           <span key="long-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
           </span>
@@ -103,7 +103,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.shortOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
       return [
         <>
-          <ShortIcon className="opacity-70" />
+          <ShortIcon width={12} className="relative top-1 opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
@@ -127,7 +127,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <LongIcon className="opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <ShortIcon className="opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <ShortIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -174,7 +174,7 @@ export function useChartHeaderFormattedValues() {
               negative: netRate < 0n,
             })}
           >
-            <LongIcon />
+            <LongIcon width={12} />
             {formatRatePercentage(netRate)}
           </span>
         }
@@ -201,7 +201,7 @@ export function useChartHeaderFormattedValues() {
               negative: netRate < 0n,
             })}
           >
-            <ShortIcon />
+            <ShortIcon width={12} />
             {formatRatePercentage(netRate)}
           </span>
         }

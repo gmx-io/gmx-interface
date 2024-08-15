@@ -23,6 +23,7 @@ import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderToo
 
 const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
+const MIN_SCROLL_END_SPACE = 5; // px
 
 function TVChartHeaderInfoMobile() {
   const chartToken = useSelector(selectChartToken);
@@ -142,7 +143,7 @@ function TVChartHeaderInfoMobile() {
           </div>
         </div>
 
-        <div className=" Chart-24h-low">
+        <div>
           <div className="ExchangeChart-info-label mb-4">
             <Trans>24h Volume</Trans>
           </div>
@@ -234,7 +235,8 @@ function TVChartHeaderInfoDesktop() {
 
     if (scrollable.scrollWidth > scrollable.clientWidth) {
       setScrollLeft(scrollable.scrollLeft);
-      setScrollRight(scrollable.scrollWidth - scrollable.clientWidth - scrollable.scrollLeft);
+      const right = scrollable.scrollWidth - scrollable.clientWidth - scrollable.scrollLeft;
+      setScrollRight(right < MIN_SCROLL_END_SPACE ? 0 : right);
       setMaxFadeArea(scrollable.clientWidth / 10);
     } else {
       setScrollLeft(0);
@@ -347,7 +349,7 @@ function TVChartHeaderInfoDesktop() {
             <div className="flex flex-row items-center gap-4">{shortOIValue}</div>
           </div>
         </div>
-        <div className="Chart-24h-low">
+        <div>
           <div className="ExchangeChart-info-label mb-4">24h Volume</div>
           <div className="Chart-header-value">{dailyVolume}</div>
         </div>
@@ -415,8 +417,9 @@ function TVChartHeaderInfoDesktop() {
         left: proposedScrollLeft,
         behavior: "smooth",
       });
+      setScrolls();
     },
-    []
+    [scrollableRef, setScrolls]
   );
 
   return (
