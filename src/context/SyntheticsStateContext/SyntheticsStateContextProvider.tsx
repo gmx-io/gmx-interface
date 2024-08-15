@@ -139,7 +139,6 @@ export function SyntheticsStateContextProvider({
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
-    pricesUpdatedAt: marketsInfo.pricesUpdatedAt,
     skipLocalReferralCode,
     tokensData: marketsInfo.tokensData,
   });

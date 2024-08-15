@@ -1,7 +1,9 @@
-import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+
+import DataStore from "abis/DataStore.json";
 
 export type PositionsConstantsResult = {
   minCollateralUsd?: bigint;
@@ -12,7 +14,7 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
   const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
 
-    refreshInterval: 60000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: {
       dataStore: {

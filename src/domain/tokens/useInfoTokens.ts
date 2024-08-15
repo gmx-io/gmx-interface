@@ -1,16 +1,20 @@
-import VaultReader from "abis/VaultReader.json";
+import { Signer } from "ethers";
+import useSWR from "swr";
+
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
-import { Signer } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { contractFetcher } from "lib/contracts";
 import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USDG_ADDRESS, USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import useSWR from "swr";
+import { PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
+
+import VaultReader from "abis/VaultReader.json";
 
 export function useInfoTokens(
   signer: Signer | undefined,
@@ -47,7 +51,7 @@ export function useInfoTokens(
   const { data: indexPrices } = useSWR(indexPricesUrl, {
     // @ts-ignore spread args incorrect type
     fetcher: (url) => fetch(url).then((res) => res.json()),
-    refreshInterval: 500,
+    refreshInterval: PRICES_UPDATE_INTERVAL,
     refreshWhenHidden: true,
   });
 

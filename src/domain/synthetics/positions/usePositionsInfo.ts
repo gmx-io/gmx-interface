@@ -31,7 +31,6 @@ export function usePositionsInfoRequest(
     account: string | null | undefined;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
-    pricesUpdatedAt?: number;
     showPnlInLeverage: boolean;
     skipLocalReferralCode?: boolean;
   }
