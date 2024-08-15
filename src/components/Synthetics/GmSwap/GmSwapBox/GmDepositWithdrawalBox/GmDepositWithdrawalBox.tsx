@@ -433,12 +433,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setMarketTokenInputValue("");
   }, [setFirstTokenInputValue, setMarketTokenInputValue, setSecondTokenInputValue]);
 
-  const onSwitchSide = useCallback(() => {
-    setFocusedInput("market");
-    resetInputs();
-    onSetOperation(operation === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit);
-  }, [operation, resetInputs, setFocusedInput, onSetOperation]);
-
   const onMarketChange = useCallback(
     (marketAddress: string) => {
       resetInputs();
@@ -688,7 +682,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             </BuyInputSection>
           )}
 
-          <Swap onSwitchSide={onSwitchSide} />
+          <Swap />
 
           <BuyInputSection
             topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}

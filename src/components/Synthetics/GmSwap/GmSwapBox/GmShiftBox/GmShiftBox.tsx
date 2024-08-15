@@ -175,12 +175,6 @@ export function GmShiftBox({
     [handleClearValues, onSelectMarket]
   );
 
-  const handleSwitchSide = useCallback(() => {
-    onSelectMarket(toMarketAddress!);
-    setToMarketAddress(selectedMarketAddress);
-    handleClearValues();
-  }, [handleClearValues, onSelectMarket, selectedMarketAddress, toMarketAddress]);
-
   const handleToTokenInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setToMarketText(event.target.value),
     []
@@ -228,7 +222,7 @@ export function GmShiftBox({
             {...gmTokenFavoritesContext}
           />
         </BuyInputSection>
-        <Swap onSwitchSide={handleSwitchSide} />
+        <Swap />
         <BuyInputSection
           topLeftLabel={t`Receive`}
           topLeftValue={toTokenShowDollarAmount}
