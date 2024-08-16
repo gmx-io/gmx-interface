@@ -371,7 +371,7 @@ function TVChartHeaderInfoDesktop() {
   ]);
 
   const scrollTo = useCallback(
-    (dir: 1 | -1) => () => {
+    (dir: 1 | -1) => {
       if (!scrollableRef.current) {
         return;
       }
@@ -403,7 +403,7 @@ function TVChartHeaderInfoDesktop() {
       const nextLeftScroll = scrollableRef.current.scrollLeft + proposedScrollLeft;
 
       /**
-       * This part is to prevent scrolling to visible area of element bu leaving a small margin to the end (MAX_SCROLL_LEFT_TO_END_AREA),
+       * This part is to prevent scrolling to visible area of element but leaving a small margin to the end (MAX_SCROLL_LEFT_TO_END_AREA),
        * it's better to scroll to the end in such cases
        */
       if (
@@ -422,6 +422,9 @@ function TVChartHeaderInfoDesktop() {
     [scrollableRef, setScrolls]
   );
 
+  const scrollToLeft = useCallback(() => scrollTo(-1), [scrollTo]);
+  const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
+
   return (
     <div className="Chart-header mb-10 rounded-4">
       <div className="flex items-center justify-start pl-8">
@@ -436,7 +439,7 @@ function TVChartHeaderInfoDesktop() {
               "opacity-0": scrollLeft <= 0,
             })}
             style={leftStyles}
-            onClick={scrollTo(-1)}
+            onClick={scrollToLeft}
           >
             {scrollLeft > 0 && <BiChevronLeft className="opacity-70" size={24} />}
           </div>
@@ -447,7 +450,7 @@ function TVChartHeaderInfoDesktop() {
               "opacity-0": scrollRight <= 0,
             })}
             style={rightStyles}
-            onClick={scrollTo(1)}
+            onClick={scrollToRight}
           >
             {scrollRight > 0 && <BiChevronRight className="opacity-70" size={24} />}
           </div>

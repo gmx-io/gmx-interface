@@ -8,7 +8,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    subsquid: "https://gmx-test.squids.live/hubert-gmx-arbitrum/v/v1/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
   },
 
   [ARBITRUM_GOERLI]: {
@@ -30,7 +30,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats:
       "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/debug-240418111033-19cbf3f/api",
-    subsquid: "https://gmx-test.squids.live/hubert-gmx-synthetics-fuji/v/v18/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji/graphql",
   },
 
   common: {
