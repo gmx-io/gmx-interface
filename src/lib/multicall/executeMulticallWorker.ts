@@ -1,13 +1,14 @@
 import { uniqueId } from "lodash";
 
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
+import { emitMetricEvent } from "context/MetricsContext/emitMetricEvent";
 import { sleep } from "lib/sleep";
-
 import { promiseWithResolvers } from "lib/utils";
+
+import { MAX_TIMEOUT } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import MulticallWorker from "./multicall.worker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { MAX_TIMEOUT } from "./Multicall";
 
 const executorWorker: Worker = new MulticallWorker();
 
@@ -15,7 +16,7 @@ const promises: Record<string, { resolve: (value: any) => void; reject: (error: 
 
 executorWorker.onmessage = (event) => {
   if ("isMetrics" in event.data) {
-    globalThis.dispatchEvent(new CustomEvent("metrics-mark", { detail: event.data.detail }));
+    emitMetricEvent(event.data.detail);
     return;
   }
 

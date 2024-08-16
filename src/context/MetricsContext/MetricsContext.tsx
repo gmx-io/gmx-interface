@@ -4,14 +4,15 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import mapValues from "lodash/mapValues";
 import { Context, PropsWithChildren, useEffect, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
+import { METRIC_EVENT_NAME } from "./emitMetricEvent";
 import { MetricData, MetricEventType } from "./types";
-import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
 
@@ -166,10 +167,10 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       });
     };
 
-    window.addEventListener("metrics-mark", handler);
+    window.addEventListener(METRIC_EVENT_NAME, handler);
 
     return () => {
-      window.removeEventListener("metrics-mark", handler);
+      window.removeEventListener(METRIC_EVENT_NAME, handler);
     };
   }, [value]);
 

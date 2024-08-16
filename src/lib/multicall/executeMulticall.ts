@@ -2,7 +2,6 @@ import { entries, throttle, values } from "lodash";
 import { stableHash } from "swr/_internal";
 
 import { isDevelopment } from "config/env";
-
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
 
