@@ -14,6 +14,11 @@ const executorWorker: Worker = new MulticallWorker();
 const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
 executorWorker.onmessage = (event) => {
+  if ("isMetrics" in event.data) {
+    globalThis.dispatchEvent(new CustomEvent("metrics-mark", { detail: event.data.detail }));
+    return;
+  }
+
   const { id, result, error } = event.data;
 
   const promise = promises[id];

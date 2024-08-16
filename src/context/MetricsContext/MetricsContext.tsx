@@ -8,7 +8,7 @@ import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import mapValues from "lodash/mapValues";
-import { Context, PropsWithChildren, useMemo } from "react";
+import { Context, PropsWithChildren, useEffect, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { MetricData, MetricEventType } from "./types";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
@@ -152,6 +152,26 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       getTime,
     };
   }, [fetcher, isMobileMetamask, showDebugValues, subaccountAddress]);
+
+  useEffect(() => {
+    const handler: EventListener = (event: Event) => {
+      const { detail } = event as CustomEvent;
+
+      value.sendMetric({
+        event: detail.event,
+        isError: detail.isError,
+        time: detail.time,
+        message: detail.message,
+        data: detail.data,
+      });
+    };
+
+    window.addEventListener("metrics-mark", handler);
+
+    return () => {
+      window.removeEventListener("metrics-mark", handler);
+    };
+  }, [value]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }

@@ -27,6 +27,13 @@ async function run(event) {
   }
 }
 
+globalThis.addEventListener("metrics-mark", (event) => {
+  postMessage({
+    isMetrics: true,
+    detail: (event as CustomEvent).detail,
+  });
+});
+
 // Typescript hack to make it seem this file exports a class
 declare class MulticallWorker extends Worker {
   constructor();

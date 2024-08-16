@@ -45,7 +45,6 @@ import {
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { TokensData, useTokensDataRequest } from "../tokens";
@@ -337,14 +336,14 @@ function useMarketsValuesRequest({
     request: async () => {
       const request: MarketValuesMulticallRequestConfig = {};
 
-      const promises = (marketsAddresses || []).map(async (marketAddress) => {
+      for (const marketAddress of marketsAddresses || []) {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
         if (!marketPrices) {
           // eslint-disable-next-line no-console
           console.warn("missed market prices", market);
-          return;
+          continue;
         }
 
         const marketProps = {
@@ -389,7 +388,7 @@ function useMarketsValuesRequest({
           },
         };
 
-        const hashedKeys = await hashDataMapAsync({
+        const unhashedKeys = {
           longPoolAmount: [
             ["bytes32", "address", "address"],
             [POOL_AMOUNT_KEY, marketAddress, market.longTokenAddress],
@@ -454,81 +453,80 @@ function useMarketsValuesRequest({
             ["bytes32", "address", "address", "bool"],
             [OPEN_INTEREST_IN_TOKENS_KEY, marketAddress, market.shortTokenAddress, false],
           ],
-        });
+        };
 
         request[`${marketAddress}-dataStore`] = {
           contractAddress: dataStoreAddress,
           abi: DataStore.abi,
+          shouldHashParams: true,
           calls: {
             longPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.longPoolAmount],
+              params: [unhashedKeys.longPoolAmount],
             },
             shortPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.shortPoolAmount],
+              params: [unhashedKeys.shortPoolAmount],
             },
             positionImpactPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.positionImpactPoolAmount],
+              params: [unhashedKeys.positionImpactPoolAmount],
             },
             swapImpactPoolAmountLong: {
               methodName: "getUint",
-              params: [hashedKeys.swapImpactPoolAmountLong],
+              params: [unhashedKeys.swapImpactPoolAmountLong],
             },
             swapImpactPoolAmountShort: {
               methodName: "getUint",
-              params: [hashedKeys.swapImpactPoolAmountShort],
+              params: [unhashedKeys.swapImpactPoolAmountShort],
             },
             claimableFundingAmountLong: account
               ? {
                   methodName: "getUint",
-                  params: [hashedKeys.claimableFundingAmountLong],
+                  params: [unhashedKeys.claimableFundingAmountLong],
                 }
               : undefined,
             claimableFundingAmountShort: account
               ? {
                   methodName: "getUint",
-                  params: [hashedKeys.claimableFundingAmountShort],
+                  params: [unhashedKeys.claimableFundingAmountShort],
                 }
               : undefined,
             longInterestUsingLongToken: {
               methodName: "getUint",
-              params: [hashedKeys.longInterestUsingLongToken],
+              params: [unhashedKeys.longInterestUsingLongToken],
             },
             longInterestUsingShortToken: {
               methodName: "getUint",
-              params: [hashedKeys.longInterestUsingShortToken],
+              params: [unhashedKeys.longInterestUsingShortToken],
             },
             shortInterestUsingLongToken: {
               methodName: "getUint",
-              params: [hashedKeys.shortInterestUsingLongToken],
+              params: [unhashedKeys.shortInterestUsingLongToken],
             },
             shortInterestUsingShortToken: {
               methodName: "getUint",
-              params: [hashedKeys.shortInterestUsingShortToken],
+              params: [unhashedKeys.shortInterestUsingShortToken],
             },
             longInterestInTokensUsingLongToken: {
               methodName: "getUint",
-              params: [hashedKeys.longInterestInTokensUsingLongToken],
+              params: [unhashedKeys.longInterestInTokensUsingLongToken],
             },
             longInterestInTokensUsingShortToken: {
               methodName: "getUint",
-              params: [hashedKeys.longInterestInTokensUsingShortToken],
+              params: [unhashedKeys.longInterestInTokensUsingShortToken],
             },
             shortInterestInTokensUsingLongToken: {
               methodName: "getUint",
-              params: [hashedKeys.shortInterestInTokensUsingLongToken],
+              params: [unhashedKeys.shortInterestInTokensUsingLongToken],
             },
             shortInterestInTokensUsingShortToken: {
               methodName: "getUint",
-              params: [hashedKeys.shortInterestInTokensUsingShortToken],
+              params: [unhashedKeys.shortInterestInTokensUsingShortToken],
             },
           },
         };
-      });
-
-      await Promise.all(promises);
+      }
 
       return request;
     },
@@ -670,7 +668,7 @@ function useMarketsConfigsRequest({
       for (const marketAddress of marketsAddresses || []) {
         const market = getByKey(marketsData, marketAddress)!;
 
-        const hashedKeys = await hashDataMapAsync({
+        const unhashedKeys = {
           isDisabled: [
             ["bytes32", "address"],
             [IS_MARKET_DISABLED_KEY, marketAddress],
@@ -863,203 +861,204 @@ function useMarketsConfigsRequest({
             ["bytes32", "address"],
             [VIRTUAL_TOKEN_ID_KEY, market.shortTokenAddress],
           ],
-        });
+        };
 
         request[`${marketAddress}-dataStore`] = {
           contractAddress: dataStoreAddress,
           abi: DataStore.abi,
+          shouldHashParams: true,
           calls: {
             isDisabled: {
               methodName: "getBool",
-              params: [hashedKeys.isDisabled],
+              params: [unhashedKeys.isDisabled],
             },
             maxLongPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.maxLongPoolAmount],
+              params: [unhashedKeys.maxLongPoolAmount],
             },
             maxShortPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.maxShortPoolAmount],
+              params: [unhashedKeys.maxShortPoolAmount],
             },
             maxLongPoolUsdForDeposit: {
               methodName: "getUint",
-              params: [hashedKeys.maxLongPoolUsdForDeposit],
+              params: [unhashedKeys.maxLongPoolUsdForDeposit],
             },
             maxShortPoolUsdForDeposit: {
               methodName: "getUint",
-              params: [hashedKeys.maxShortPoolUsdForDeposit],
+              params: [unhashedKeys.maxShortPoolUsdForDeposit],
             },
             longPoolAmountAdjustment: {
               methodName: "getUint",
-              params: [hashedKeys.longPoolAmountAdjustment],
+              params: [unhashedKeys.longPoolAmountAdjustment],
             },
             shortPoolAmountAdjustment: {
               methodName: "getUint",
-              params: [hashedKeys.shortPoolAmountAdjustment],
+              params: [unhashedKeys.shortPoolAmountAdjustment],
             },
             reserveFactorLong: {
               methodName: "getUint",
-              params: [hashedKeys.reserveFactorLong],
+              params: [unhashedKeys.reserveFactorLong],
             },
             reserveFactorShort: {
               methodName: "getUint",
-              params: [hashedKeys.reserveFactorShort],
+              params: [unhashedKeys.reserveFactorShort],
             },
             openInterestReserveFactorLong: {
               methodName: "getUint",
-              params: [hashedKeys.openInterestReserveFactorLong],
+              params: [unhashedKeys.openInterestReserveFactorLong],
             },
             openInterestReserveFactorShort: {
               methodName: "getUint",
-              params: [hashedKeys.openInterestReserveFactorShort],
+              params: [unhashedKeys.openInterestReserveFactorShort],
             },
             maxOpenInterestLong: {
               methodName: "getUint",
-              params: [hashedKeys.maxOpenInterestLong],
+              params: [unhashedKeys.maxOpenInterestLong],
             },
             maxOpenInterestShort: {
               methodName: "getUint",
-              params: [hashedKeys.maxOpenInterestShort],
+              params: [unhashedKeys.maxOpenInterestShort],
             },
             minPositionImpactPoolAmount: {
               methodName: "getUint",
-              params: [hashedKeys.minPositionImpactPoolAmount],
+              params: [unhashedKeys.minPositionImpactPoolAmount],
             },
             positionImpactPoolDistributionRate: {
               methodName: "getUint",
-              params: [hashedKeys.positionImpactPoolDistributionRate],
+              params: [unhashedKeys.positionImpactPoolDistributionRate],
             },
             borrowingFactorLong: {
               methodName: "getUint",
-              params: [hashedKeys.borrowingFactorLong],
+              params: [unhashedKeys.borrowingFactorLong],
             },
             borrowingFactorShort: {
               methodName: "getUint",
-              params: [hashedKeys.borrowingFactorShort],
+              params: [unhashedKeys.borrowingFactorShort],
             },
             borrowingExponentFactorLong: {
               methodName: "getUint",
-              params: [hashedKeys.borrowingExponentFactorLong],
+              params: [unhashedKeys.borrowingExponentFactorLong],
             },
             borrowingExponentFactorShort: {
               methodName: "getUint",
-              params: [hashedKeys.borrowingExponentFactorShort],
+              params: [unhashedKeys.borrowingExponentFactorShort],
             },
             fundingFactor: {
               methodName: "getUint",
-              params: [hashedKeys.fundingFactor],
+              params: [unhashedKeys.fundingFactor],
             },
             fundingExponentFactor: {
               methodName: "getUint",
-              params: [hashedKeys.fundingExponentFactor],
+              params: [unhashedKeys.fundingExponentFactor],
             },
             fundingIncreaseFactorPerSecond: {
               methodName: "getUint",
-              params: [hashedKeys.fundingIncreaseFactorPerSecond],
+              params: [unhashedKeys.fundingIncreaseFactorPerSecond],
             },
             fundingDecreaseFactorPerSecond: {
               methodName: "getUint",
-              params: [hashedKeys.fundingDecreaseFactorPerSecond],
+              params: [unhashedKeys.fundingDecreaseFactorPerSecond],
             },
             thresholdForStableFunding: {
               methodName: "getUint",
-              params: [hashedKeys.thresholdForStableFunding],
+              params: [unhashedKeys.thresholdForStableFunding],
             },
             thresholdForDecreaseFunding: {
               methodName: "getUint",
-              params: [hashedKeys.thresholdForDecreaseFunding],
+              params: [unhashedKeys.thresholdForDecreaseFunding],
             },
             minFundingFactorPerSecond: {
               methodName: "getUint",
-              params: [hashedKeys.minFundingFactorPerSecond],
+              params: [unhashedKeys.minFundingFactorPerSecond],
             },
             maxFundingFactorPerSecond: {
               methodName: "getUint",
-              params: [hashedKeys.maxFundingFactorPerSecond],
+              params: [unhashedKeys.maxFundingFactorPerSecond],
             },
             maxPnlFactorForTradersLong: {
               methodName: "getUint",
-              params: [hashedKeys.maxPnlFactorForTradersLong],
+              params: [unhashedKeys.maxPnlFactorForTradersLong],
             },
             maxPnlFactorForTradersShort: {
               methodName: "getUint",
-              params: [hashedKeys.maxPnlFactorForTradersShort],
+              params: [unhashedKeys.maxPnlFactorForTradersShort],
             },
             positionFeeFactorForPositiveImpact: {
               methodName: "getUint",
-              params: [hashedKeys.positionFeeFactorForPositiveImpact],
+              params: [unhashedKeys.positionFeeFactorForPositiveImpact],
             },
             positionFeeFactorForNegativeImpact: {
               methodName: "getUint",
-              params: [hashedKeys.positionFeeFactorForNegativeImpact],
+              params: [unhashedKeys.positionFeeFactorForNegativeImpact],
             },
             positionImpactFactorPositive: {
               methodName: "getUint",
-              params: [hashedKeys.positionImpactFactorPositive],
+              params: [unhashedKeys.positionImpactFactorPositive],
             },
             positionImpactFactorNegative: {
               methodName: "getUint",
-              params: [hashedKeys.positionImpactFactorNegative],
+              params: [unhashedKeys.positionImpactFactorNegative],
             },
             maxPositionImpactFactorPositive: {
               methodName: "getUint",
-              params: [hashedKeys.maxPositionImpactFactorPositive],
+              params: [unhashedKeys.maxPositionImpactFactorPositive],
             },
             maxPositionImpactFactorNegative: {
               methodName: "getUint",
-              params: [hashedKeys.maxPositionImpactFactorNegative],
+              params: [unhashedKeys.maxPositionImpactFactorNegative],
             },
             maxPositionImpactFactorForLiquidations: {
               methodName: "getUint",
-              params: [hashedKeys.maxPositionImpactFactorForLiquidations],
+              params: [unhashedKeys.maxPositionImpactFactorForLiquidations],
             },
             minCollateralFactor: {
               methodName: "getUint",
-              params: [hashedKeys.minCollateralFactor],
+              params: [unhashedKeys.minCollateralFactor],
             },
             minCollateralFactorForOpenInterestLong: {
               methodName: "getUint",
-              params: [hashedKeys.minCollateralFactorForOpenInterestLong],
+              params: [unhashedKeys.minCollateralFactorForOpenInterestLong],
             },
             minCollateralFactorForOpenInterestShort: {
               methodName: "getUint",
-              params: [hashedKeys.minCollateralFactorForOpenInterestShort],
+              params: [unhashedKeys.minCollateralFactorForOpenInterestShort],
             },
             positionImpactExponentFactor: {
               methodName: "getUint",
-              params: [hashedKeys.positionImpactExponentFactor],
+              params: [unhashedKeys.positionImpactExponentFactor],
             },
             swapFeeFactorForPositiveImpact: {
               methodName: "getUint",
-              params: [hashedKeys.swapFeeFactorForPositiveImpact],
+              params: [unhashedKeys.swapFeeFactorForPositiveImpact],
             },
             swapFeeFactorForNegativeImpact: {
               methodName: "getUint",
-              params: [hashedKeys.swapFeeFactorForNegativeImpact],
+              params: [unhashedKeys.swapFeeFactorForNegativeImpact],
             },
             swapImpactFactorPositive: {
               methodName: "getUint",
-              params: [hashedKeys.swapImpactFactorPositive],
+              params: [unhashedKeys.swapImpactFactorPositive],
             },
             swapImpactFactorNegative: {
               methodName: "getUint",
-              params: [hashedKeys.swapImpactFactorNegative],
+              params: [unhashedKeys.swapImpactFactorNegative],
             },
             swapImpactExponentFactor: {
               methodName: "getUint",
-              params: [hashedKeys.swapImpactExponentFactor],
+              params: [unhashedKeys.swapImpactExponentFactor],
             },
             virtualMarketId: {
               methodName: "getBytes32",
-              params: [hashedKeys.virtualMarketId],
+              params: [unhashedKeys.virtualMarketId],
             },
             virtualShortTokenId: {
               methodName: "getBytes32",
-              params: [hashedKeys.virtualShortTokenId],
+              params: [unhashedKeys.virtualShortTokenId],
             },
             virtualLongTokenId: {
               methodName: "getBytes32",
-              params: [hashedKeys.virtualLongTokenId],
+              params: [unhashedKeys.virtualLongTokenId],
             },
           },
         };

@@ -1,7 +1,7 @@
-import { OrderType } from "domain/synthetics/orders";
+import type { OrderType } from "domain/synthetics/orders";
 
-export type MetricEventType = OrderEventType | PositionsListEventType;
-export type MetricData = OrderMetricData | OrderWsEventMetricData | PendingTxnErrorMetricData;
+export type MetricEventType = OrderEventType | PositionsListEventType | MulticallEventType;
+export type MetricData = OrderMetricData | OrderWsEventMetricData | PendingTxnErrorMetricData | MulticallMetricData;
 
 export type PositionsListEventType =
   | "positionsListLoad.started"
@@ -84,4 +84,11 @@ export type EditCollateralMetricData = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: bigint | undefined;
+};
+
+export type MulticallEventType = "multicall.timeout";
+
+export type MulticallMetricData = {
+  metricType: "multicall.timeout";
+  isInMainThread: boolean;
 };
