@@ -4,7 +4,7 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { isWebWorker } from "config/env";
-import type { MulticallMetricData } from "context/MetricsContext/types";
+import type { MulticallEventType, MulticallMetricData } from "context/MetricsContext/types";
 import { hashData } from "lib/hash";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
@@ -182,14 +182,13 @@ export class Multicall {
       globalThis.dispatchEvent(
         new CustomEvent("metrics-mark", {
           detail: {
-            event: "multicall-timeout",
+            event: "multicall.timeout" satisfies MulticallEventType,
             isError: true,
             message: _viemError.message.slice(0, 150),
             data: {
               metricType: "multicall.timeout",
               isInMainThread: !isWebWorker,
             } satisfies MulticallMetricData,
-            time: Date.now(),
           },
         })
       );
