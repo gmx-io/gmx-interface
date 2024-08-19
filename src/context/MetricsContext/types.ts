@@ -1,7 +1,12 @@
 import type { OrderType } from "domain/synthetics/orders";
 
 export type MetricEventType = OrderEventType | PositionsListEventType | MulticallEventType;
-export type MetricData = OrderMetricData | OrderWsEventMetricData | PendingTxnErrorMetricData | MulticallMetricData;
+export type MetricData =
+  | OrderMetricData
+  | OrderWsEventMetricData
+  | PendingTxnErrorMetricData
+  | MulticallMetricData
+  | PositionsListMetricData;
 
 export type PositionsListEventType =
   | "positionsListLoad.started"
@@ -91,4 +96,10 @@ export type MulticallEventType = "multicall.timeout";
 export type MulticallMetricData = {
   metricType: "rpcTimeout" | "workerTimeout";
   isInMainThread?: boolean;
+};
+
+export type PositionsListMetricData = {
+  metricType?: undefined;
+  testWorkersLogic: boolean;
+  requestId: string;
 };
