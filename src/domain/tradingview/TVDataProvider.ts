@@ -78,14 +78,18 @@ export class TVDataProvider {
 
     const latestBar = prices[0];
 
-    if (latestBar.ticker !== this.currentTicker || latestBar.period !== this.currentPeriod) {
-      return;
-    }
-
     latestBar.ticker = this.currentTicker;
     latestBar.period = this.currentPeriod;
 
     const lastSavedBar = this.liveBars[this.liveBars.length - 1];
+
+    /**
+     * Clear live bars when ticker changes to prevent incorrect bar creation
+     */
+    if (latestBar && lastSavedBar && latestBar.ticker !== lastSavedBar.ticker) {
+      this.liveBars = [];
+      return;
+    }
 
     if (lastSavedBar && latestBar.time !== lastSavedBar?.time) {
       this.liveBars.push(latestBar);
