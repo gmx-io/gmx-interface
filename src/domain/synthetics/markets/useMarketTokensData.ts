@@ -1,5 +1,3 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import TokenAbi from "abis/Token.json";
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
@@ -11,8 +9,13 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+
+import SyntheticsReader from "abis/SyntheticsReader.json";
+import TokenAbi from "abis/Token.json";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -23,16 +26,15 @@ export function useMarketTokensDataRequest(
   p: { isDeposit: boolean; account?: string }
 ): MarketTokensDataResult {
   const { isDeposit, account } = p;
-  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const isDataLoaded = tokensData && marketsAddresses?.length;
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-"), pricesUpdatedAt] : undefined,
+    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
-    // Refresh on every prices update
-    refreshInterval: null,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
 

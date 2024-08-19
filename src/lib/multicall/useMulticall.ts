@@ -1,11 +1,12 @@
 import { useRef } from "react";
-import useSWR, { SWRConfiguration } from "swr";
+import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
+import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
+import { debugLog } from "./debug";
+import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
-import { executeMulticallWorker } from "./executeMulticallWorker";
-import { executeMulticall } from "./utils";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -27,9 +28,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
-    inWorker?: boolean;
   }
 ) {
+  const defaultConfig = useSWRConfig();
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
@@ -49,20 +50,68 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     fetcher: async () => {
       performance.mark(`multicall-${name}-start`);
       try {
-        // prettier-ignore
-        const request = typeof params.request === "function"
-            ? await params.request(chainId, params.key as CacheKey)
-            : params.request;
+        let request: TConfig;
+        {
+          let startTime: number | undefined;
+
+          debugLog(() => {
+            startTime = Date.now();
+          });
+
+          // prettier-ignore
+          request =
+            typeof params.request === "function"
+              ? await params.request(chainId, params.key as CacheKey)
+              : params.request;
+
+          debugLog(() => {
+            const endTime = Date.now();
+            const duration = endTime - (startTime ?? endTime);
+
+            return `Multicall request generation for chainId: ${chainId} took ${duration}ms. Name: ${name}.`;
+          });
+        }
 
         if (Object.keys(request).length === 0) {
           throw new Error(`Multicall request is empty`);
         }
 
         let responseOrFailure: any;
-        if (params.inWorker) {
-          responseOrFailure = await executeMulticallWorker(chainId, request);
-        } else {
-          responseOrFailure = await executeMulticall(chainId, request);
+
+        let priority: "urgent" | "background" = "urgent";
+
+        const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
+
+        let isInterval = false;
+        if (typeof params.refreshInterval === "number") {
+          isInterval = true;
+        } else if (params.refreshInterval === undefined) {
+          if (typeof defaultConfig.refreshInterval === "number") {
+            isInterval = true;
+          } else if (hasData && defaultConfig.refreshInterval?.(successDataByChainIdRef.current[chainId])) {
+            isInterval = true;
+          }
+        }
+
+        if (hasData && isInterval) {
+          priority = "background";
+        }
+
+        {
+          let startTime: number | undefined;
+
+          debugLog(() => {
+            startTime = Date.now();
+          });
+
+          responseOrFailure = await executeMulticall(chainId, request, priority, name);
+
+          debugLog(() => {
+            const endTime = Date.now();
+            const duration = endTime - (startTime ?? endTime);
+
+            return `Multicall execution and scheduling for chainId: ${chainId} took ${duration}ms. Name: ${name}. Priority: ${priority}.`;
+          });
         }
 
         if (responseOrFailure?.success) {

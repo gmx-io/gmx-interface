@@ -5842,10 +5842,6 @@ msgstr ""
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Einzahlung in {0} {longOrShortText} konnte nicht ausgeführt werden"
 
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

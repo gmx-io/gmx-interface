@@ -1,7 +1,9 @@
+import useSWR from "swr";
+
 import { GMX_STATS_API_URL } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify } from "lib/numbers";
-import useSWR from "swr";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 export function useVolumeInfo() {
   const url = `${GMX_STATS_API_URL}/volume/24h`;
@@ -18,7 +20,7 @@ export function useVolumeInfo() {
       };
     },
     {
-      refreshInterval: 60000,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
 
