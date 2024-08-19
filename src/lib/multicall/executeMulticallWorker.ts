@@ -69,6 +69,13 @@ export async function executeMulticallWorker(
     if (result === "timeout") {
       delete promises[id];
 
+      emitMetricEvent({
+        event: "multicall.timeout",
+        isError: true,
+        data: {
+          metricType: "workerTimeout",
+        },
+      });
       // eslint-disable-next-line no-console
       console.error(
         `[executeMulticallWorker] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`,

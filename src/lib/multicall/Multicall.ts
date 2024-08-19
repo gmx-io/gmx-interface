@@ -184,7 +184,7 @@ export class Multicall {
         isError: true,
         message: _viemError.message.slice(0, 150),
         data: {
-          metricType: "multicall.timeout",
+          metricType: "rpcTimeout",
           isInMainThread: !isWebWorker,
         },
       });

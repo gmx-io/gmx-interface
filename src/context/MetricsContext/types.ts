@@ -89,6 +89,6 @@ export type EditCollateralMetricData = {
 export type MulticallEventType = "multicall.timeout";
 
 export type MulticallMetricData = {
-  metricType: "multicall.timeout";
-  isInMainThread: boolean;
+  metricType: "rpcTimeout" | "workerTimeout";
+  isInMainThread?: boolean;
 };
