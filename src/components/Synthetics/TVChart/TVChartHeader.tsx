@@ -85,13 +85,13 @@ function TVChartHeaderInfoMobile() {
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
             </div>
-            <div>{high24}</div>
+            <div>${high24}</div>
           </div>
           <div>
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h Low</Trans>
             </div>
-            <div>{low24}</div>
+            <div>${low24}</div>
           </div>
         </div>
       );
@@ -299,13 +299,13 @@ function TVChartHeaderInfoDesktop() {
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
             </div>
-            <div>{high24}</div>
+            <div>${high24}</div>
           </div>
           <div>
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h Low</Trans>
             </div>
-            <div>{low24}</div>
+            <div>${low24}</div>
           </div>
         </>
       );

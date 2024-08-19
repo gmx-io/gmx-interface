@@ -103,7 +103,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.shortOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
       return [
         <>
-          <ShortIcon width={12} className="relative top-1 opacity-70" />
+          <ShortIcon width={12} className="relative opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <ShortIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -174,7 +174,7 @@ export function useChartHeaderFormattedValues() {
               negative: netRate < 0n,
             })}
           >
-            <LongIcon width={12} />
+            <LongIcon width={12} className="relative top-1" />
             {formatRatePercentage(netRate)}
           </span>
         }
