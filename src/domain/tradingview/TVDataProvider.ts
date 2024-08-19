@@ -83,6 +83,10 @@ export class TVDataProvider {
 
     const lastSavedBar = this.liveBars[this.liveBars.length - 1];
 
+    if (this.currentPrice) {
+      latestBar.close = this.currentPrice;
+    }
+
     /**
      * Clear live bars when ticker changes to prevent incorrect bar creation
      */
