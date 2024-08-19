@@ -72,6 +72,14 @@ export class BasePage {
     return this.wrapLocatorWithRoot(locator, locatorSelector);
   }
 
+  async allowSpentTokens() {
+    const popup = await this.wallet.page.context().waitForEvent("page");
+    await popup.waitForSelector('[data-testid="page-container-footer-next"]');
+    await popup.click('[data-testid="page-container-footer-next"]');
+    await popup.waitForSelector('[data-testid="page-container-footer-next"]:has-text("Approve")');
+    await popup.click('[data-testid="page-container-footer-next"]:has-text("Approve")');
+  }
+
   async has(locator: string | Locator, timeout = 5000) {
     const selector = typeof locator === "string" ? this.locator(locator).selector : locator.selector;
 

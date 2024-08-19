@@ -27,6 +27,7 @@ interface Props {
    * error message to show in the tooltip when disableCollapseOnError=true
    */
   errorMessage?: ReactNode;
+  qa?: string;
 }
 
 export function ExpandableRow({
@@ -39,6 +40,7 @@ export function ExpandableRow({
   autoExpandOnError = true,
   hideExpand = false,
   errorMessage,
+  qa,
 }: Props) {
   const previousHasError = usePrevious(hasError);
 
@@ -66,6 +68,7 @@ export function ExpandableRow({
     <>
       {!hideExpand && (
         <ExchangeInfo.Row
+          qa={qa}
           className={cx("!items-center", {
             "!mb-12": open,
             "cursor-not-allowed": disabled,

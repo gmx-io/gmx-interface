@@ -457,7 +457,9 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="ExchangeChart-avg-price mb-4">{avgPrice}</div>
+            <div className="ExchangeChart-avg-price mb-4" data-qa="price">
+              {avgPrice}
+            </div>
             <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
           {additionalInfo}

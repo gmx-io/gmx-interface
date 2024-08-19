@@ -137,6 +137,7 @@ function SideOrderEntry({
             "max-w-60": isSmallMobile,
             "max-w-90": !isSmallMobile,
           })}
+          qa="order-entry-price"
         />
 
         {priceError && (
@@ -155,6 +156,7 @@ function SideOrderEntry({
             placeholder="Size"
             suggestionList={SUGGESTION_PERCENTAGE_LIST}
             symbol="%"
+            qa="order-entry-percentage"
           />
           {sizeTooltipMsg && (
             <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
@@ -179,6 +181,7 @@ function SideOrderEntry({
             onValueChange={onSizeUsdValueChange}
             placeholder="Size"
             className="w-81 rounded-4 py-2 pr-5 text-right text-14"
+            qa="order-entry-size"
           />
           {sizeTooltipMsg && (
             <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>

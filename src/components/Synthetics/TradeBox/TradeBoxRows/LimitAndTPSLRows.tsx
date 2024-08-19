@@ -47,6 +47,7 @@ export function LimitAndTPSLRows() {
         <ExchangeInfo.Row
           className="swap-box-info-row whitespace-nowrap"
           label={label}
+          qa={`tradebox-${type}-entries`}
           value={
             <div className="profit-loss-wrapper">
               <SideOrderEntries entriesInfo={entriesInfo} displayMode={type === "limit" ? "sizeUsd" : "percentage"} />
@@ -169,6 +170,7 @@ export function LimitAndTPSLGroup() {
       autoExpandOnError
       errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleLimitOrTPSL}
+      qa="tradebox-limit-tp-sl"
     >
       <LimitAndTPSLRows />
     </ExpandableRow>
