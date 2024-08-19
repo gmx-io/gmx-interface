@@ -8,6 +8,7 @@ import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { promiseWithResolvers } from "lib/utils";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -138,7 +139,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     };
   } = {};
 
-  const { promise, resolve } = Promise.withResolvers();
+  const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
 
   const hook = (data: MulticallResult<any>) => {
     const strippedRenamedData: MulticallResult<any> = {
