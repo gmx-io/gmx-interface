@@ -16,7 +16,7 @@ const FLAG_RATIOS: Record<Flag, number> = {
 
 const flags: Flag[] = Object.keys(FLAG_RATIOS) as Flag[];
 
-let flagTestWorkerLogic = localStorage.getItem(AB_FLAG_STORAGE_KEY);
+let rawAbStorage = localStorage.getItem(AB_FLAG_STORAGE_KEY);
 
 let abStorage: AbStorage;
 
@@ -32,11 +32,11 @@ function initAbStorage() {
   localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
 }
 
-if (flagTestWorkerLogic === null) {
+if (rawAbStorage === null) {
   initAbStorage();
 } else {
   try {
-    abStorage = JSON.parse(flagTestWorkerLogic);
+    abStorage = JSON.parse(rawAbStorage);
 
     let changed = false;
 
