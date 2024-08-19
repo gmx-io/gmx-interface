@@ -187,10 +187,10 @@ export function useMetrics() {
 
 function serializeCustomFields(fields: MetricData) {
   return mapValues(fields, (v: any) => {
-    let result;
+    let result = v;
 
-    if (typeof v === "bigint") {
-      result = v.toString();
+    if (typeof result === "bigint") {
+      result = result.toString();
     }
 
     if (typeof result === "string" && result.length > 150) {
