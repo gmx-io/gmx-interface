@@ -19,7 +19,7 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
   const metricsRef = useLatest(metrics);
 
   useEffect(() => {
-    if (metricsTimeout || positionsInfoData) {
+    if (metricsTimeout || positionsInfoData || isSent) {
       return;
     }
 
