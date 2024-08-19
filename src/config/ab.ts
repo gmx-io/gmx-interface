@@ -16,47 +16,59 @@ const FLAG_RATIOS: Record<Flag, number> = {
 
 const flags: Flag[] = Object.keys(FLAG_RATIOS) as Flag[];
 
-let rawAbStorage = localStorage.getItem(AB_FLAG_STORAGE_KEY);
-
 let abStorage: AbStorage;
 
-function initAbStorage() {
-  abStorage = {} as AbStorage;
+function loadAbStorage(): void {
+  const rawAbStorage = localStorage.getItem(AB_FLAG_STORAGE_KEY);
 
-  for (const flag of flags) {
-    abStorage[flag] = {
-      enabled: Math.random() < FLAG_RATIOS[flag],
-    };
-  }
-
-  localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
-}
-
-if (rawAbStorage === null) {
-  initAbStorage();
-} else {
-  try {
-    abStorage = JSON.parse(rawAbStorage);
-
-    let changed = false;
+  function initAbStorage() {
+    abStorage = {} as AbStorage;
 
     for (const flag of flags) {
-      if (!abStorage[flag]) {
-        abStorage[flag] = {
-          enabled: Math.random() < FLAG_RATIOS[flag],
-        };
-        changed = true;
-      }
+      abStorage[flag] = {
+        enabled: Math.random() < FLAG_RATIOS[flag],
+      };
     }
 
-    if (changed) {
-      localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
-    }
-  } catch {
+    localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
+  }
+
+  if (rawAbStorage === null) {
     initAbStorage();
+  } else {
+    try {
+      abStorage = JSON.parse(rawAbStorage);
+
+      let changed = false;
+
+      for (const flag of flags) {
+        if (!abStorage[flag]) {
+          abStorage[flag] = {
+            enabled: Math.random() < FLAG_RATIOS[flag],
+          };
+          changed = true;
+        }
+      }
+
+      for (const flag of Object.keys(abStorage)) {
+        if (!flags.includes(flag as Flag)) {
+          // @ts-ignore
+          delete abStorage[flag];
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
+      }
+    } catch {
+      initAbStorage();
+    }
   }
 }
 
+loadAbStorage();
+
 export function getIsFlagEnabled(flag: Flag): boolean {
-  return abStorage[flag].enabled;
+  return Boolean(abStorage[flag]?.enabled);
 }
