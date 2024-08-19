@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
+import { buildMarketsConfigsRequest, buildMarketsValuesRequest } from "domain/ab/testWorkerLogic";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -10,7 +11,6 @@ import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib
 import { TokensData, useTokensDataRequest } from "../../tokens";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "../types";
 import { useMarkets } from "../useMarkets";
-import { buildMarketsConfigsRequest, buildMarketsValuesRequest } from "./requestBuilders";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
