@@ -54,10 +54,10 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
     if (positionsInfoData && !isSent) {
       clearTimeout(metricsTimeout);
 
-      metrics.sendMetric({
+      metricsRef.current.sendMetric({
         event: "positionsListLoad.success",
         isError: false,
-        time: metrics.getTime("positionsList", true),
+        time: metricsRef.current.getTime("positionsList", true),
         data: {
           testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
           requestId: requestId!,
@@ -65,5 +65,5 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
       });
       isSent = true;
     }
-  }, [metrics, positionsInfoData]);
+  }, [metricsRef, positionsInfoData]);
 }
