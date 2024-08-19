@@ -33,6 +33,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { SWRConfigProp } from "./swrConfig";
+import type { OrderMetricType } from "context/MetricsContext/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
@@ -71,7 +72,7 @@ function App() {
 
             if (pendingTxn.metricId) {
               const metricData = metrics.getCachedMetricData(pendingTxn.metricId, true);
-              const metricType = metricData?.metricType || "unknownOrder";
+              const metricType = (metricData?.metricType as OrderMetricType) || "unknownOrder";
 
               metrics?.sendMetric({
                 event: `${metricType}.failed`,

@@ -49,7 +49,7 @@ import {
 } from "./types";
 import { useMetrics } from "context/MetricsContext/MetricsContext";
 import { getMetricTypeByOrderType, getPositionOrderMetricId, getSwapOrderMetricId } from "context/MetricsContext/utils";
-import { OrderWsEventMetricData } from "context/MetricsContext/types";
+import { OrderMetricType, OrderWsEventMetricData } from "context/MetricsContext/types";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -113,7 +113,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
       const metricData = metrics.getCachedMetricData(metricId);
-      const metricType = metricData?.metricType || getMetricTypeByOrderType(data);
+      const metricType = (metricData?.metricType as OrderMetricType) || getMetricTypeByOrderType(data);
 
       metrics.sendMetric({
         event: `${metricType}.created`,
@@ -172,7 +172,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         const metricData = metrics.getCachedMetricData(metricId, true);
-        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
+        const metricType = (metricData?.metricType as OrderMetricType) || getMetricTypeByOrderType(order);
 
         metrics.sendMetric({
           event: `${metricType}.executed`,
@@ -225,7 +225,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         const metricData = metrics.getCachedMetricData(metricId, true);
-        const metricType = metricData?.metricType || getMetricTypeByOrderType(order);
+        const metricType = (metricData?.metricType as OrderMetricType) || getMetricTypeByOrderType(order);
 
         metrics.sendMetric({
           event: `${metricType}.failed`,

@@ -55,6 +55,8 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 
+export const AB_FLAG_STORAGE_KEY = "ab-flags";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {

@@ -4,14 +4,15 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import mapValues from "lodash/mapValues";
-import { Context, PropsWithChildren, useMemo } from "react";
+import { Context, PropsWithChildren, useEffect, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
+import { METRIC_EVENT_NAME } from "./emitMetricEvent";
 import { MetricData, MetricEventType } from "./types";
-import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
 
@@ -153,6 +154,26 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
     };
   }, [fetcher, isMobileMetamask, showDebugValues, subaccountAddress]);
 
+  useEffect(() => {
+    const handler: EventListener = (event: Event) => {
+      const { detail } = event as CustomEvent;
+
+      value.sendMetric({
+        event: detail.event,
+        isError: detail.isError,
+        time: detail.time,
+        message: detail.message,
+        data: detail.data,
+      });
+    };
+
+    window.addEventListener(METRIC_EVENT_NAME, handler);
+
+    return () => {
+      window.removeEventListener(METRIC_EVENT_NAME, handler);
+    };
+  }, [value]);
+
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
@@ -166,10 +187,10 @@ export function useMetrics() {
 
 function serializeCustomFields(fields: MetricData) {
   return mapValues(fields, (v: any) => {
-    let result;
+    let result = v;
 
-    if (typeof v === "bigint") {
-      result = v.toString();
+    if (typeof result === "bigint") {
+      result = result.toString();
     }
 
     if (typeof result === "string" && result.length > 150) {
