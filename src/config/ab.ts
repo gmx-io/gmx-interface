@@ -11,7 +11,7 @@ type AbStorage = {
 };
 
 const RATIOS: Record<Flag, number> = {
-  testWorkerLogic: 0.25,
+  testWorkerLogic: 0.5,
 };
 
 const flags: Flag[] = ["testWorkerLogic"];
