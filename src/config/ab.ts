@@ -18,20 +18,20 @@ const flags: Flag[] = Object.keys(FLAG_RATIOS) as Flag[];
 
 let abStorage: AbStorage;
 
+function initAbStorage() {
+  abStorage = {} as AbStorage;
+
+  for (const flag of flags) {
+    abStorage[flag] = {
+      enabled: Math.random() < FLAG_RATIOS[flag],
+    };
+  }
+
+  localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
+}
+
 function loadAbStorage(): void {
   const rawAbStorage = localStorage.getItem(AB_FLAG_STORAGE_KEY);
-
-  function initAbStorage() {
-    abStorage = {} as AbStorage;
-
-    for (const flag of flags) {
-      abStorage[flag] = {
-        enabled: Math.random() < FLAG_RATIOS[flag],
-      };
-    }
-
-    localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
-  }
 
   if (rawAbStorage === null) {
     initAbStorage();
