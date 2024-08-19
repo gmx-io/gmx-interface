@@ -557,8 +557,8 @@ function ApyTooltipContent() {
     <p className="text-white">
       <Trans>
         <p className="mb-12">
-          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
-          borrowing fee. It excludes:
+          The APY is an estimate based on the fees collected over the past seven days, including borrowing fees and
+          price impact amounts. It excludes:
         </p>
         <ul className="mb-8 list-disc">
           <li className="p-2">price changes of the underlying token(s)</li>
