@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useState } from "react";
 
-import { getIsFlagEnabled } from "config/ab";
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -15,9 +14,6 @@ import { getByKey } from "lib/objects";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import { useLatest } from "react-use";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -30,11 +26,9 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
-  const [isLoaded, setIsLoaded] = useState(false);
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
-  const metrics = useMetrics();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -45,58 +39,6 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
-
-  const metricsRef = useLatest(metrics);
-  const metricsTimeout = useRef<NodeJS.Timeout>();
-  const requestIdRef = useRef<string>();
-
-  useEffect(() => {
-    if (metricsTimeout.current) {
-      return;
-    }
-
-    metricsRef.current.startTimer("positionsList");
-
-    requestIdRef.current = Date.now().toString() + "_" + Math.trunc(Math.random() * 1000000).toString();
-    metricsRef.current.sendMetric({
-      event: "positionsListLoad.started",
-      isError: false,
-      data: {
-        testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-        requestId: requestIdRef.current,
-      },
-    });
-
-    metricsTimeout.current = setTimeout(() => {
-      metricsRef.current.sendMetric({
-        event: "positionsListLoad.timeout",
-        message: "Positions list was not loaded",
-        isError: true,
-        time: metricsRef.current.getTime("positionsList"),
-        data: {
-          testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestIdRef.current!,
-        },
-      });
-    }, DATA_LOAD_TIMEOUT_FOR_METRICS);
-  }, [metricsRef]);
-
-  useEffect(() => {
-    if (positionsInfoData && !isLoaded) {
-      clearTimeout(metricsTimeout.current);
-
-      metrics.sendMetric({
-        event: "positionsListLoad.success",
-        isError: false,
-        time: metrics.getTime("positionsList"),
-        data: {
-          testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestIdRef.current!,
-        },
-      });
-      setIsLoaded(true);
-    }
-  }, [isLoaded, metrics, positionsInfoData]);
 
   return (
     <div>

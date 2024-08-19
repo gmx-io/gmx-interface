@@ -10,11 +10,11 @@ type AbStorage = {
   [key in Flag]: AbFlag;
 };
 
-const FLAG_RATIOS: Record<Flag, number> = {
+const abFlagsConfig: Record<Flag, number> = {
   testWorkerLogic: 0.5,
 };
 
-const flags: Flag[] = Object.keys(FLAG_RATIOS) as Flag[];
+const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];
 
 let abStorage: AbStorage;
 
@@ -23,7 +23,7 @@ function initAbStorage() {
 
   for (const flag of flags) {
     abStorage[flag] = {
-      enabled: Math.random() < FLAG_RATIOS[flag],
+      enabled: Math.random() < abFlagsConfig[flag],
     };
   }
 
@@ -44,7 +44,7 @@ function loadAbStorage(): void {
       for (const flag of flags) {
         if (!abStorage[flag]) {
           abStorage[flag] = {
-            enabled: Math.random() < FLAG_RATIOS[flag],
+            enabled: Math.random() < abFlagsConfig[flag],
           };
           changed = true;
         }
