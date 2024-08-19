@@ -139,7 +139,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     };
   } = {};
 
-  const { promise, resolve } = promiseWithResolvers();
+  const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
 
   const hook = (data: MulticallResult<any>) => {
     const strippedRenamedData: MulticallResult<any> = {
