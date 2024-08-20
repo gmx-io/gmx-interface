@@ -193,7 +193,7 @@ function buildFeeder({
           }
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
-
+          lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
           onHistoryCallback(bars, { noData });
         } catch {
@@ -265,6 +265,9 @@ export function subscribeBars({
   if (intervalRef.current !== undefined) {
     clearInterval(intervalRef.current);
     intervalRef.current = undefined;
+    if (tvDataProviderRef.current?.liveBars) {
+      tvDataProviderRef.current.liveBars = [];
+    }
   }
 
   const handleInterval = () => {
@@ -290,7 +293,7 @@ export function subscribeBars({
           bar &&
           bar.ticker === tvDataProviderRef.current?.currentTicker &&
           bar.period === tvDataProviderRef.current?.currentPeriod &&
-          bar.time >= lastBarTimeRef.current
+          (!lastBarTimeRef.current || bar.time >= lastBarTimeRef.current)
         ) {
           lastBarTimeRef.current = bar.time;
           onRealtimeCallback(formatTimeInBarToMs(bar));

@@ -57,6 +57,7 @@ export class TVDataProvider {
   finalize() {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
+      this.liveBars = [];
     }
   }
 
@@ -88,9 +89,13 @@ export class TVDataProvider {
     }
 
     /**
-     * Clear live bars when ticker changes to prevent incorrect bar creation
+     * Clear live bars when ticker or period changes to prevent incorrect bar creation
      */
-    if (latestBar && lastSavedBar && latestBar.ticker !== lastSavedBar.ticker) {
+    if (
+      latestBar &&
+      lastSavedBar &&
+      (latestBar.ticker !== lastSavedBar.ticker || latestBar.period !== lastSavedBar.period)
+    ) {
       this.liveBars = [];
       return;
     }
