@@ -320,7 +320,7 @@ export default function ExchangeTVChart(props) {
 
   return (
     <div className="ExchangeChart tv" ref={ref}>
-      <div className="ExchangeChart-header mb-10 bg-slate-800">
+      <div className="ExchangeChart-header mb-10 rounded-4 bg-slate-800">
         <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
             <ChartTokenSelector

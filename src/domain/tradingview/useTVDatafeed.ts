@@ -64,6 +64,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
+        feedData.current = true;
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
@@ -76,9 +77,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
           }
           missingBarsInfo.current.bars = data;
           missingBarsInfo.current.isFetching = false;
-          feedData.current = true;
         } else {
-          feedData.current = false;
           missingBarsInfo.current.isFetching = false;
           missingBarsInfo.current.bars = [];
         }
@@ -194,7 +193,7 @@ function buildFeeder({
           }
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
-
+          lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
           onHistoryCallback(bars, { noData });
         } catch {
@@ -270,6 +269,7 @@ export function subscribeBars({
   if (intervalRef.current !== undefined) {
     clearInterval(intervalRef.current[listenerGuid]);
     delete intervalRef.current[listenerGuid];
+    tvDataProviderRef.current?.clearLiveBars();
   }
 
   const handleInterval = () => {
@@ -290,12 +290,12 @@ export function subscribeBars({
       });
       missingBarsInfoRef.current.bars = [];
     } else {
-      tvDataProviderRef.current?.getLiveBar(chainId, ticker, period).then((bar) => {
+      tvDataProviderRef.current?.getLiveBars(chainId, ticker, period)?.forEach((bar) => {
         if (
           bar &&
           bar.ticker === tvDataProviderRef.current?.currentTicker &&
           bar.period === tvDataProviderRef.current?.currentPeriod &&
-          bar.time >= lastBarTimeRef.current
+          (!lastBarTimeRef.current || bar.time >= lastBarTimeRef.current)
         ) {
           lastBarTimeRef.current = bar.time;
           onRealtimeCallback(formatTimeInBarToMs(bar));
@@ -304,8 +304,7 @@ export function subscribeBars({
     }
   };
 
-  if (!isStable) {
-    intervalRef.current = intervalRef.current || {};
+  if (!isStable && intervalRef.current) {
     intervalRef.current[listenerGuid] = window.setInterval(handleInterval, 500);
   }
 }
