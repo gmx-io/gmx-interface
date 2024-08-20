@@ -7158,6 +7158,10 @@ msgstr ""
 msgid "Ask Price (Exit)"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""

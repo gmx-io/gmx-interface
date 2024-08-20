@@ -428,7 +428,7 @@ function GmListItem({
       </ExchangeTd>
 
       <ExchangeTd className="w-[350px]">
-        <div className="flex flex-wrap gap-10">
+        <div className="grid grid-cols-3 gap-10">
           <Button
             className="flex-grow"
             variant="secondary"
@@ -443,19 +443,25 @@ function GmListItem({
           >
             <Trans>Sell</Trans>
           </Button>
-          <div
-            className={cx("flex-grow", {
-              invisible: !isShiftAvailable,
-            })}
+
+          <TooltipWithPortal
+            disabled={isShiftAvailable}
+            content={t`Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees.`}
+            disableHandleStyle
+            handleClassName="block"
+            position="bottom-end"
           >
             <Button
-              className="w-full"
+              className={cx("w-full", {
+                "!opacity-30": !isShiftAvailable,
+              })}
               variant="secondary"
               to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
+              disabled={!isShiftAvailable}
             >
               <Trans>Shift</Trans>
             </Button>
-          </div>
+          </TooltipWithPortal>
         </div>
       </ExchangeTd>
     </ExchangeTr>
