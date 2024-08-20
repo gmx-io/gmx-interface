@@ -31,8 +31,8 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
   initSwapMetricData,
@@ -132,8 +132,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingOrder,
         metricId,
       })
-        .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
     },
     [
       isLimit,
@@ -270,8 +270,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
         })),
       })
-        .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
     },
     [
       isLimit,
@@ -376,8 +376,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         },
         metricId
       )
-        .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
     },
     [
       account,

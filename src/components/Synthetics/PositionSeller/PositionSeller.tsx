@@ -67,8 +67,8 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { helperToast } from "lib/helperToast";
 import {
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   initDecreaseOrderMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
@@ -355,8 +355,8 @@ export function PositionSeller(p: Props) {
       },
       metricId
     )
-      .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
 
     if (subaccount) {
       onClose();

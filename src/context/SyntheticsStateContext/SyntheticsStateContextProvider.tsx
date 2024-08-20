@@ -184,7 +184,7 @@ export function SyntheticsStateContextProvider({
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   useMeasureLoadTime({
-    isLoaded: Boolean(positionsInfoData),
+    isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
     startEvent: "positionsListLoad.started",
     successEvent: "positionsListLoad.success",

@@ -449,7 +449,7 @@ export function sendTxnValidationErrorMetric(metricId: string, metricType: Order
   });
 }
 
-export function getTxnSentMetricsHandler(metricId: string, metricType: OrderMetricType) {
+export function makeTxnSentMetricsHandler(metricId: string, metricType: OrderMetricType) {
   return () => {
     metrics.startTimer(metricId);
 
@@ -464,7 +464,7 @@ export function getTxnSentMetricsHandler(metricId: string, metricType: OrderMetr
   };
 }
 
-export function getTxnErrorMetricsHandler(metricId: string, metricType: OrderMetricType) {
+export function makeTxnErrorMetricsHandler(metricId: string, metricType: OrderMetricType) {
   return (error: Error | TxError) => {
     const errorData = prepareErrorMetricData(error);
 
@@ -484,7 +484,6 @@ export function getTxnErrorMetricsHandler(metricId: string, metricType: OrderMet
 
 export function sendOrderCreatedMetric(metricId: string, metricType: OrderMetricType) {
   const metricData = metrics.getCachedMetricData(metricId);
-
   metrics.pushEvent({
     event: `${metricType}.created`,
     isError: false,

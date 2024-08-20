@@ -80,8 +80,8 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import {
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
@@ -441,8 +441,8 @@ export function PositionEditor(p: Props) {
     }
 
     txnPromise = txnPromise
-      .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);

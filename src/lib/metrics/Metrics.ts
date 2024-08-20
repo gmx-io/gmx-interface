@@ -13,6 +13,7 @@ import { getWalletNames } from "lib/wallets/getWalletNames";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { useEffect } from "react";
 import { prepareErrorMetricData } from "./errorReporting";
+import useIsWindowVisible from "lib/useIsWindowVisible";
 import { METRIC_WINDOW_EVENT_NAME, MetricData, MetricEventType } from "./types";
 
 type MetricEventParams = {
@@ -33,6 +34,7 @@ type Timers = { [key: string]: number };
 
 type GlobalMetricData = {
   isMobileMetamask?: boolean;
+  isWindowVisible?: boolean;
 };
 
 export function useConfigureMetrics() {
@@ -40,6 +42,7 @@ export function useConfigureMetrics() {
   const fetcher = useOracleKeeperFetcher(chainId);
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
+  const isWindowVisible = useIsWindowVisible();
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -57,8 +60,8 @@ export function useConfigureMetrics() {
   }, [showDebugValues]);
 
   useEffect(() => {
-    metrics.setGlobalMetricData({ isMobileMetamask });
-  }, [isMobileMetamask]);
+    metrics.setGlobalMetricData({ isMobileMetamask, isWindowVisible });
+  }, [isMobileMetamask, isWindowVisible]);
 }
 
 export class Metrics {

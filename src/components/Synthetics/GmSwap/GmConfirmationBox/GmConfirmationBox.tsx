@@ -32,20 +32,16 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { GmFees } from "../GmFees/GmFees";
 
-import "./GmConfirmationBox.scss";
-import { ShiftGmMetricData, SwapGmMetricData as SwapGmMetricData } from "lib/metrics/types";
+import { helperToast } from "lib/helperToast";
 import {
-  formatAmountForMetrics,
-  getGMSwapMetricId,
-  getRequestId,
-  getShiftGMMetricId,
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
+  initGMSwapMetricData,
+  initShiftGmMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { helperToast } from "lib/helperToast";
-import { metrics } from "lib/metrics";
+import "./GmConfirmationBox.scss";
 
 type Props = {
   isVisible: boolean;
@@ -311,23 +307,19 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    const metricData: SwapGmMetricData = {
-      metricType: "buyGM",
-      requestId: getRequestId(),
-      initialLongTokenAddress: longToken?.address,
-      initialShortTokenAddress: shortToken?.address,
-      marketAddress: marketToken?.address,
-      marketName: market?.name,
-      executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-      longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
-      shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
-      marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
-    };
-    const { metricType } = metricData;
-    const metricId = getGMSwapMetricId({ ...metricData, marketTokenAmount });
-    metrics.setCachedMetricData(metricId, metricData);
+    const { metricId, metricData } = initGMSwapMetricData({
+      longToken,
+      shortToken,
+      isDeposit: true,
+      executionFee,
+      marketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
+    });
 
-    sendOrderSubmittedMetric(metricId, metricType);
+    sendOrderSubmittedMetric(metricId, metricData.metricType);
 
     if (
       !account ||
@@ -339,7 +331,7 @@ export function GmConfirmationBox({
       !signer
     ) {
       helperToast.error(t`Error submitting deposit`);
-      sendTxnValidationErrorMetric(metricId, metricType);
+      sendTxnValidationErrorMetric(metricId, metricData.metricType);
       return Promise.resolve();
     }
 
@@ -365,28 +357,24 @@ export function GmConfirmationBox({
       setPendingTxns,
       setPendingDeposit,
     })
-      .then(getTxnSentMetricsHandler(metricId, metricType))
-      .catch(getTxnErrorMetricsHandler(metricId, metricType));
+      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
   }
 
   function onCreateWithdrawal() {
-    const metricData: SwapGmMetricData = {
-      metricType: "sellGM",
-      requestId: getRequestId(),
-      initialLongTokenAddress: undefined,
-      initialShortTokenAddress: undefined,
-      marketAddress: marketToken?.address,
-      marketName: market?.name,
-      executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-      longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
-      shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
-      marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
-    };
-    const { metricType } = metricData;
-    const metricId = getGMSwapMetricId({ ...metricData, marketTokenAmount });
-    metrics.setCachedMetricData(metricId, metricData);
+    const { metricId, metricData } = initGMSwapMetricData({
+      longToken,
+      shortToken,
+      isDeposit: false,
+      executionFee,
+      marketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
+    });
 
-    sendOrderSubmittedMetric(metricId, metricType);
+    sendOrderSubmittedMetric(metricId, metricData.metricType);
 
     if (
       !account ||
@@ -399,7 +387,7 @@ export function GmConfirmationBox({
       !signer
     ) {
       helperToast.error(t`Error submitting withdrawal`);
-      sendTxnValidationErrorMetric(metricId, metricType);
+      sendTxnValidationErrorMetric(metricId, metricData.metricType);
       return Promise.resolve();
     }
 
@@ -420,27 +408,20 @@ export function GmConfirmationBox({
       setPendingTxns,
       setPendingWithdrawal,
     })
-      .then(getTxnSentMetricsHandler(metricId, metricType))
-      .catch(getTxnErrorMetricsHandler(metricId, metricType));
+      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
   }
 
   function onCreateShift() {
-    const metricData: ShiftGmMetricData = {
-      metricType: "shiftGM",
-      requestId: getRequestId(),
-      fromMarketAddress: fromMarketToken?.address,
-      fromMarketName: getByKey(marketsInfoData, fromMarketToken?.address)?.name,
-      toMarketName: getByKey(marketsInfoData, marketToken?.address)?.name,
-      toMarketAddress: marketToken?.address,
-      minToMarketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
-      executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    };
-    const { metricType } = metricData;
-    const metricId = getShiftGMMetricId(metricData);
+    const { metricId, metricData } = initShiftGmMetricData({
+      executionFee,
+      fromMarketInfo: getByKey(marketsInfoData, fromMarketToken?.address),
+      toMarketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      minMarketTokenAmount: marketTokenAmount,
+    });
 
-    metrics.setCachedMetricData(metricId, metricData);
-
-    sendOrderSubmittedMetric(metricId, metricType);
+    sendOrderSubmittedMetric(metricId, metricData.metricType);
 
     if (
       !signer ||
@@ -453,7 +434,7 @@ export function GmConfirmationBox({
       !tokensData
     ) {
       helperToast.error(t`Error submitting shift`);
-      sendTxnValidationErrorMetric(metricId, metricType);
+      sendTxnValidationErrorMetric(metricId, metricData.metricType);
       return Promise.resolve();
     }
 
@@ -470,8 +451,8 @@ export function GmConfirmationBox({
       setPendingTxns,
       setPendingShift,
     })
-      .then(getTxnSentMetricsHandler(metricId, metricType))
-      .catch(getTxnErrorMetricsHandler(metricId, metricType));
+      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
   }
 
   const renderTokenInfo = ({
