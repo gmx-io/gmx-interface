@@ -17,7 +17,7 @@ export type MetricEventParams = {
   isError: boolean;
 };
 
-const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
+const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
 const MAX_QUEUE_LENGTH = 500;
 const RETRY_INTERVAL = 2000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
@@ -138,11 +138,9 @@ export class Metrics {
 
     const { time, isError, data, event } = params;
     const wallets = await getWalletNames();
-    const is1ct = (data as { is1ct: boolean })?.is1ct || false;
 
     await this.fetcher?.fetchPostReport2(
       {
-        is1ct,
         isDev: isDevelopment(),
         host: window.location.host,
         url: window.location.href,
@@ -186,7 +184,7 @@ export class Metrics {
           REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
           REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
         },
-        isDevelopment: isDevelopment(),
+        isDev: isDevelopment(),
         host: window.location.host,
         url: window.location.href,
         wallets: await getWalletNames(),

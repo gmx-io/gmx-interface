@@ -91,7 +91,6 @@ export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
 }
 
 type PostReport2Body = {
-  is1ct: boolean;
   isDev: boolean;
   host: string;
   url: string;
