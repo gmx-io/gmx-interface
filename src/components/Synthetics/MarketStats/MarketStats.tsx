@@ -136,6 +136,7 @@ export function MarketStats(p: Props) {
   return (
     <div className="App-card MarketStats-card">
       <MarketTokenSelector
+        chainId={chainId}
         marketTokensData={marketTokensData}
         marketsInfoData={marketsInfoData}
         marketsTokensAPRData={marketsTokensApyData}
