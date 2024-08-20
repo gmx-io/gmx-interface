@@ -186,6 +186,7 @@ export function SyntheticsStateContextProvider({
   useMeasureLoadTime({
     isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
+    skip: !account,
     startEvent: "positionsListLoad.started",
     successEvent: "positionsListLoad.success",
     failEvent: "positionsListLoad.failed",

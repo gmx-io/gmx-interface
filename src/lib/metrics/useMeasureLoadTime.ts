@@ -6,7 +6,7 @@ import { getRequestId } from "./utils";
 import { metrics } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 
-const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeout?: number } } = {};
+const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeoutId?: number; started: boolean } } = {};
 
 export function useMeasureLoadTime({
   isLoaded,
@@ -18,6 +18,7 @@ export function useMeasureLoadTime({
   timeout = DATA_LOAD_TIMEOUT_FOR_METRICS,
   timerLabel,
   metricData,
+  skip,
 }: {
   isLoaded: boolean;
   error: Error | undefined;
@@ -28,6 +29,7 @@ export function useMeasureLoadTime({
   timeout?: number;
   timerLabel: string;
   metricData?: MetricData;
+  skip?: boolean;
 }) {
   const metricDataRef = useLatest(metricData);
 
@@ -35,7 +37,7 @@ export function useMeasureLoadTime({
   const measure = MEASUREMENTS[timerLabel];
 
   useEffect(() => {
-    if (measure.timeout || measure.sent) {
+    if (skip || measure.requestId || measure.sent) {
       return;
     }
 
@@ -51,7 +53,7 @@ export function useMeasureLoadTime({
       } as MetricData,
     });
 
-    measure.timeout = window.setTimeout(() => {
+    measure.timeoutId = window.setTimeout(() => {
       metrics.pushEvent({
         event: timeoutEvent,
         isError: true,
@@ -62,11 +64,11 @@ export function useMeasureLoadTime({
         } as MetricData,
       });
     }, timeout);
-  }, [measure, metricDataRef, startEvent, timeout, timeoutEvent, timerLabel]);
+  }, [measure, metricDataRef, skip, startEvent, timeout, timeoutEvent, timerLabel]);
 
   useEffect(() => {
-    if (error && !measure.sent) {
-      clearTimeout(measure.timeout);
+    if (error && !measure.sent && measure.requestId) {
+      clearTimeout(measure.timeoutId);
 
       const errorData = prepareErrorMetricData(error);
 
@@ -85,8 +87,8 @@ export function useMeasureLoadTime({
   }, [error, failEvent, measure, metricDataRef, timerLabel]);
 
   useEffect(() => {
-    if (isLoaded && !measure.sent) {
-      clearTimeout(measure.timeout);
+    if (isLoaded && !measure.sent && measure.requestId) {
+      clearTimeout(measure.timeoutId);
 
       metrics.pushEvent({
         event: successEvent,
@@ -99,5 +101,5 @@ export function useMeasureLoadTime({
       });
       measure.sent = true;
     }
-  }, [metricDataRef, isLoaded, successEvent, timerLabel, measure.sent, measure.timeout, measure.requestId, measure]);
+  }, [metricDataRef, isLoaded, successEvent, timerLabel, measure.sent, measure.timeoutId, measure.requestId, measure]);
 }

@@ -15,6 +15,8 @@ import { useEffect } from "react";
 import { prepareErrorMetricData } from "./errorReporting";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import { METRIC_WINDOW_EVENT_NAME, MetricData, MetricEventType } from "./types";
+import { sleep } from "lib/sleep";
+import useWallet from "lib/wallets/useWallet";
 
 type MetricEventParams = {
   event: MetricEventType;
@@ -35,11 +37,13 @@ type Timers = { [key: string]: number };
 type GlobalMetricData = {
   isMobileMetamask?: boolean;
   isWindowVisible?: boolean;
+  isAuthorised?: boolean;
 };
 
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
+  const { active } = useWallet();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
@@ -60,8 +64,8 @@ export function useConfigureMetrics() {
   }, [showDebugValues]);
 
   useEffect(() => {
-    metrics.setGlobalMetricData({ isMobileMetamask, isWindowVisible });
-  }, [isMobileMetamask, isWindowVisible]);
+    metrics.setGlobalMetricData({ isMobileMetamask, isWindowVisible, isAuthorised: active });
+  }, [active, isMobileMetamask, isWindowVisible]);
 }
 
 export class Metrics {
@@ -84,6 +88,10 @@ export class Metrics {
 
   setFetcher = (fetcher: OracleFetcher) => {
     this.fetcher = fetcher;
+
+    if (this.queue.length > 0 && !this.isProcessing) {
+      this._processQueue();
+    }
   };
 
   setDebug = (val: boolean) => {
@@ -97,54 +105,59 @@ export class Metrics {
   pushEvent = (params: MetricEventParams) => {
     this.queue.push(params);
 
-    if (!this.isProcessing) {
+    if (this.fetcher && !this.isProcessing) {
       this._processQueue();
     }
   };
 
-  _processQueue = (retriesLeft = 10) => {
+  _processQueue = (retriesLeft = 10): Promise<void> => {
     if (retriesLeft === 0) {
       this.isProcessing = false;
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Retries exhausted");
       }
-      return;
+      return Promise.resolve();
     }
 
-    if (this.eventIndex >= this.queue.length) {
-      this.eventIndex = 0;
-      this.queue = [];
+    if (this.queue.length === 0) {
       this.isProcessing = false;
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Queue processed ");
       }
-      return;
+      return Promise.resolve();
     }
 
-    if (this.eventIndex >= MAX_QUEUE_LENGTH) {
-      this.eventIndex = 0;
-      this.queue = this.queue.slice(MAX_QUEUE_LENGTH);
+    // Avoid infinite queue growth
+    if (this.queue.length >= MAX_QUEUE_LENGTH) {
+      this.queue = this.queue.slice(MAX_QUEUE_LENGTH - 1);
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Slice queue");
       }
     }
 
-    this.isProcessing = true;
+    const ev = this.queue.shift();
 
-    const ev = this.queue[this.eventIndex];
+    if (!ev) {
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("Metrics: No event to process");
+      }
+      return Promise.resolve();
+    }
+
+    this.isProcessing = true;
 
     if (this.debug) {
       // eslint-disable-next-line no-console
-      console.log(`Metrics: Sending event ${this.eventIndex}`, this.queue);
+      console.log(`Metrics: Sending event, queue length: ${this.queue.length}`);
     }
 
-    this._sendMetric(ev)
+    return this._sendMetric(ev)
       .then(() => {
-        this.eventIndex++;
-        this._processQueue();
+        return this._processQueue();
       })
       .catch((error) => {
         if (this.debug) {
@@ -152,9 +165,9 @@ export class Metrics {
           console.error(`Metrics: Error sending metric, retries left: ${retriesLeft}`, error);
         }
 
-        window.setTimeout(() => {
-          this._processQueue(retriesLeft - 1);
-        }, RETRY_INTERVAL);
+        this.queue.unshift(ev);
+
+        return sleep(RETRY_INTERVAL).then(() => this._processQueue(retriesLeft - 1));
       });
   };
 
