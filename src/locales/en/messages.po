@@ -3468,6 +3468,10 @@ msgstr ""
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting deposit"
+msgstr "Error submitting deposit"
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
@@ -3776,6 +3780,10 @@ msgstr "Price Impact"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr "Select a token"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting shift"
+msgstr "Error submitting shift"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4743,6 +4751,10 @@ msgstr "Supply"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
 msgstr "LONG LIQ."
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting withdrawal"
+msgstr "Error submitting withdrawal"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
