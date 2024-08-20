@@ -182,10 +182,10 @@ export class Multicall {
       emitMetricEvent({
         event: "multicall.timeout",
         isError: true,
-        message: _viemError.message.slice(0, 150),
         data: {
           metricType: "rpcTimeout",
           isInMainThread: !isWebWorker,
+          errorMessage: _viemError.message.slice(0, 150),
         },
       });
 

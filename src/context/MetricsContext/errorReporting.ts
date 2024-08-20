@@ -6,7 +6,12 @@ import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteTx
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { useEffect } from "react";
-import { extractError } from "../../lib/contracts/transactionErrors";
+import {
+  extractError,
+  getIsUserError,
+  getIsUserRejectedError,
+  TxErrorType,
+} from "../../lib/contracts/transactionErrors";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { getAppVersion } from "../../lib/version";
 import { getWalletNames } from "../../lib/wallets/getWalletNames";
@@ -46,12 +51,7 @@ function subscribeToErrorEvents(fetcher: OracleFetcher, showDebugValues: boolean
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-async function sendErrorToServer(
-  fetcher: OracleFetcher,
-  error: unknown,
-  errorSource: string,
-  showDebugValues: boolean
-) {
+export function prepareErrorMetricData(error: unknown) {
   // all human readable details are in info field
   const errorInfo = (error as any)?.info?.error;
 
@@ -60,7 +60,10 @@ async function sendErrorToServer(
   let errorStackHash: string | undefined = undefined;
   let errorName: string | undefined = undefined;
   let contractError: string | undefined = undefined;
-  let txError: any = undefined;
+  let txErrorType: TxErrorType | undefined = undefined;
+  let txErrorData: any = undefined;
+  let isUserError: boolean | undefined = undefined;
+  let isUserRejectedError: boolean | undefined = undefined;
 
   try {
     errorMessage = hasMessage(errorInfo)
@@ -80,12 +83,15 @@ async function sendErrorToServer(
     }
 
     try {
-      txError = errorInfo ? extractError(errorInfo as any) : extractError(error as any);
+      const txError = errorInfo ? extractError(errorInfo as any) : extractError(error as any);
 
       if (txError && txError.length) {
         const [message, type, errorData] = txError;
         errorMessage = message;
-        txError = { type, errorData };
+        txErrorType = type || undefined;
+        txErrorData = errorData;
+        isUserError = type ? getIsUserError(type) : false;
+        isUserRejectedError = type ? getIsUserRejectedError(type) : false;
       }
     } catch (e) {
       //
@@ -109,6 +115,33 @@ async function sendErrorToServer(
     errorStackHash = cryptoJs.SHA256(errorStack).toString(cryptoJs.enc.Hex);
   }
 
+  return {
+    errorMessage,
+    errorStack,
+    errorStackHash,
+    errorName,
+    contractError,
+    isUserError,
+    isUserRejectedError,
+    txErrorType,
+    txErrorData,
+  };
+}
+
+export async function sendErrorToServer(
+  fetcher: OracleFetcher,
+  error: unknown,
+  errorSource: string,
+  showDebugValues: boolean
+) {
+  const errorData = prepareErrorMetricData(error);
+
+  if (!errorData) {
+    return;
+  }
+
+  const { errorMessage, errorStack, errorStackHash, errorName, contractError, txErrorType, txErrorData } = errorData;
+
   const body = {
     report: {
       errorMessage,
@@ -117,7 +150,10 @@ async function sendErrorToServer(
       errorStackHash,
       errorName,
       contractError,
-      txError,
+      txError: {
+        type: txErrorType,
+        errorData: txErrorData,
+      },
       env: {
         REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
         REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,

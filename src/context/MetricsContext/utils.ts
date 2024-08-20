@@ -1,5 +1,9 @@
+import { EventLogData } from "context/SyntheticsEvents";
 import { OrderType } from "domain/synthetics/orders";
-import { extractError, isUserRejectedActionError, TxError } from "lib/contracts/transactionErrors";
+import { TxError } from "lib/contracts/transactionErrors";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatTokenAmount, roundToOrder } from "lib/numbers";
+import { prepareErrorMetricData } from "./errorReporting";
 import { MetricsContextType } from "./MetricsContext";
 import { OrderMetricType } from "./types";
 
@@ -44,47 +48,60 @@ export function getMetricTypeByOrderType(p: {
   return "stopLossOrder";
 }
 
+export function getGMSwapMetricId(p: {
+  initialLongTokenAddress: string | undefined;
+  initialShortTokenAddress: string | undefined;
+  marketAddress: string | undefined;
+  marketTokenAmount: bigint | undefined;
+}) {
+  return [
+    "GMSwap",
+    p.initialLongTokenAddress || "initialLongTokenAddress",
+    p.initialShortTokenAddress || "initialShortTokenAddress",
+    p.marketAddress || "marketTokenAddress",
+    p.marketTokenAmount?.toString || "marketTokenAmount",
+  ].join(":");
+}
+
+export function getShiftGMMetricId(p: { fromMarketAddress: string | undefined; toMarketAddress: string | undefined }) {
+  return ["shiftGM", p.fromMarketAddress || "fromMarketAddress", p.toMarketAddress || "toMarketAddress"].join(":");
+}
+
 export function getSwapOrderMetricId(p: {
-  account: string | undefined;
   initialCollateralTokenAddress: string | undefined;
-  initialCollateralDeltaAmount: bigint | undefined;
   swapPath: string[] | undefined;
-  executionFee: bigint | undefined;
   orderType: OrderType | undefined;
+  initialCollateralDeltaAmount: bigint | undefined;
+  minOutputAmount: bigint | undefined;
 }) {
   return [
     "swap",
-    p.account || "account",
     p.initialCollateralTokenAddress || "initialColltateralTokenAddress",
-    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
     p.swapPath?.join("-") || "swapPath",
-    p.executionFee?.toString() || "executionFee",
     p.orderType || "orderType",
+    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
+    p.minOutputAmount?.toString() || "minOutputAmount",
   ].join(":");
 }
 
 export function getPositionOrderMetricId(p: {
-  account: string | undefined;
   marketAddress: string | undefined;
   initialCollateralTokenAddress: string | undefined;
-  initialCollateralDeltaAmount: bigint | undefined;
   swapPath: string[] | undefined;
-  sizeDeltaUsd: bigint | undefined;
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
-  executionFee: bigint | undefined;
+  sizeDeltaUsd: bigint | undefined;
+  initialCollateralDeltaAmount: bigint | undefined;
 }) {
   return [
     "position",
-    p.account || "account",
     p.marketAddress || "marketAddress",
     p.initialCollateralTokenAddress || "initialCollateralTokenAddress",
-    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
     p.swapPath?.join("-") || "swapPath",
-    p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
     p.isLong || "isLong",
     p.orderType || "orderType",
-    p.executionFee?.toString() || "executionFee",
+    p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
+    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
   ].join(":");
 }
 
@@ -104,8 +121,11 @@ export function sendTxnValidationErrorMetric(
   metrics.sendMetric({
     event: `${metricType}.failed`,
     isError: true,
-    message: "Error submitting order, missed data",
-    data: metrics.getCachedMetricData(metricId, true),
+    data: {
+      errorContext: "submit",
+      errorMessage: "Error submitting order, missed data",
+      ...(metrics.getCachedMetricData(metricId, true) || {}),
+    },
   });
 }
 
@@ -126,15 +146,85 @@ export function getTxnSentMetricsHandler(metrics: MetricsContextType, metricId: 
 
 export function getTxnErrorMetricsHandler(metrics: MetricsContextType, metricId: string, metricType: OrderMetricType) {
   return (error: Error | TxError) => {
-    const [message] = extractError(error);
+    const errorData = prepareErrorMetricData(error);
 
     metrics.sendMetric({
-      event: `${metricType}.${isUserRejectedActionError(error as Error) ? "rejected" : "failed"}`,
+      event: `${metricType}.${errorData?.isUserRejectedError ? "rejected" : "failed"}`,
       isError: true,
-      message,
-      data: metrics.getCachedMetricData(metricId, true),
+      data: {
+        errorContext: "sending",
+        ...(errorData || {}),
+        ...(metrics.getCachedMetricData(metricId, true) || {}),
+      },
     });
 
     throw error;
   };
+}
+
+export function sendOrderCreatedMetric(metrics: MetricsContextType, metricId: string, metricType: OrderMetricType) {
+  const metricData = metrics.getCachedMetricData(metricId);
+
+  if (!metricData) {
+    return;
+  }
+
+  metrics.sendMetric({
+    event: `${metricType}.created`,
+    isError: false,
+    time: metrics.getTime(metricId),
+    data: metricData,
+  });
+}
+
+export function sendOrderExecutedMetric(metrics: MetricsContextType, metricId: string, metricType: OrderMetricType) {
+  const metricData = metrics.getCachedMetricData(metricId, true);
+
+  if (!metricData) {
+    return;
+  }
+
+  metrics.sendMetric({
+    event: `${metricType}.executed`,
+    isError: false,
+    time: metrics.getTime(metricId, true),
+    data: metricData,
+  });
+}
+
+export function sendOrderCancelledMetric(
+  metrics: MetricsContextType,
+  metricId: string,
+  metricType: OrderMetricType,
+  eventData: EventLogData
+) {
+  const metricData = metrics.getCachedMetricData(metricId, true);
+
+  if (!metricData) {
+    return;
+  }
+
+  metrics.sendMetric({
+    event: `${metricType}.failed`,
+    isError: true,
+    time: metrics.getTime(metricId, true),
+    data: {
+      ...(metricData || {}),
+      errorMessage: `${metricType} cancelled`,
+      reason: eventData.stringItems.items.reason,
+      errorContext: "execution",
+    },
+  });
+}
+
+export function formatAmountForMetrics(amount?: bigint, decimals = USD_DECIMALS) {
+  if (amount === undefined) {
+    return undefined;
+  }
+
+  return formatTokenAmount(roundToOrder(amount), decimals);
+}
+
+export function getRequestId() {
+  return `${Date.now()}_${Math.round(Math.random() * 10000000)}`;
 }

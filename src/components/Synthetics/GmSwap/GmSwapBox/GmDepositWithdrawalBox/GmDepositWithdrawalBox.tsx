@@ -22,7 +22,7 @@ import {
   estimateDepositOraclePriceCount,
   estimateWithdrawalOraclePriceCount,
 } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import {
@@ -76,7 +76,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   // #endregion
   // #region Selectors

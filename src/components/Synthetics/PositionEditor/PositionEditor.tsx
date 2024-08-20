@@ -78,7 +78,9 @@ import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
 import { useMetrics } from "context/MetricsContext/MetricsContext";
 import {
+  formatAmountForMetrics,
   getPositionOrderMetricId,
+  getRequestId,
   getTxnErrorMetricsHandler,
   getTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
@@ -336,17 +338,26 @@ export function PositionEditor(p: Props) {
 
     const metricData: EditCollateralMetricData = {
       metricType,
-      account,
       marketAddress: position?.marketInfo?.marketTokenAddress,
+      isStandalone: true,
+      marketName: position?.marketInfo?.name,
       initialCollateralTokenAddress: selectedCollateralAddress,
-      initialCollateralDeltaAmount: collateralDeltaAmount,
+      initialCollateralSymbol: collateralToken?.symbol,
+      initialCollateralDeltaAmount: formatAmountForMetrics(collateralDeltaAmount, collateralToken?.decimals),
       swapPath: [],
       isLong: position?.isLong,
       orderType,
-      executionFee: executionFee?.feeTokenAmount,
+      executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+      is1ct: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
+      requestId: getRequestId(),
     };
 
-    const metricId = getPositionOrderMetricId({ ...metricData, sizeDeltaUsd: 0n });
+    const metricId = getPositionOrderMetricId({
+      ...metricData,
+      sizeDeltaUsd: 0n,
+      initialCollateralDeltaAmount: collateralDeltaAmount,
+    });
+
     metrics.setCachedMetricData(metricId, metricData);
 
     sendOrderSubmittedMetric(metrics, metricId, metricType);

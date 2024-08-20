@@ -38,6 +38,7 @@ import type { OrderMetricType } from "context/MetricsContext/types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AppRoutes } from "./AppRoutes";
 import { MetricsContextProvider, useMetrics } from "context/MetricsContext/MetricsContext";
+import { MetricEventType } from "context/MetricsContext/types";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -77,11 +78,10 @@ function App() {
               metrics?.sendMetric({
                 event: `${metricType}.failed`,
                 isError: true,
-                message: "Pending txn error",
                 data: {
                   ...(metricData || {}),
                   metricType,
-                  txnHash: pendingTxn.hash,
+                  errorMessage: "Pending txn error",
                 },
               });
             }

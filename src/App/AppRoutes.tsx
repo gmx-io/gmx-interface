@@ -41,8 +41,6 @@ export function AppRoutes() {
   const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
-  const { chainId } = useChainId();
-  useErrorReporting(chainId);
 
   useEventToast();
   const query = useRouteQuery();

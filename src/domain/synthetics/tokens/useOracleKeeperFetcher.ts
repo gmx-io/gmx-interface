@@ -201,6 +201,7 @@ class OracleKeeperFetcher implements OracleFetcher {
   }
 
   fetchPostReport2(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
+    console.log("BODYY", body);
     return fetch(buildUrl(this.url!, "/report/ui2"), {
       method: "POST",
       headers: {

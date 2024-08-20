@@ -12,6 +12,7 @@ import { parseContractPrice } from "./utils";
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
   updatedAt?: number;
+  error?: Error;
 };
 
 export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
@@ -25,7 +26,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
-  const { data } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
+  const { data, error } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
@@ -65,5 +66,6 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   return {
     pricesData: data?.pricesData,
     updatedAt: data?.updatedAt,
+    error,
   };
 }

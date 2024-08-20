@@ -4,14 +4,18 @@ import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import DataStore from "abis/DataStore.json";
+import { useMemo } from "react";
 
 export type PositionsConstantsResult = {
-  minCollateralUsd?: bigint;
-  minPositionSizeUsd?: bigint;
+  positionsConstants: {
+    minCollateralUsd?: bigint;
+    minPositionSizeUsd?: bigint;
+  };
+  error?: Error;
 };
 
 export function usePositionsConstantsRequest(chainId: number): PositionsConstantsResult {
-  const { data } = useMulticall(chainId, "usePositionsConstants", {
+  const { data, error } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -40,5 +44,11 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
     },
   });
 
-  return data || {};
+  return useMemo(
+    () => ({
+      positionsConstants: data || {},
+      error,
+    }),
+    [data, error]
+  );
 }

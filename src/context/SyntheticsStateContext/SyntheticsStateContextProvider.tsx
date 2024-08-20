@@ -1,10 +1,12 @@
+import { getIsFlagEnabled } from "config/ab";
 import { getKeepLeverageKey } from "config/localStorage";
+import { useMeasureLoadTime } from "context/MetricsContext/useMeasureLoadTime";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -33,7 +35,6 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
-import { usePositionListMetrics } from "./hooks/metricsHooks";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
 export type SyntheticsPageType =
@@ -56,7 +57,7 @@ export type SyntheticsState = {
     positionsInfo: PositionsInfoResult;
     account: string | undefined;
     ordersInfo: AggregatedOrdersDataResult;
-    positionsConstants: PositionsConstantsResult;
+    positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
@@ -75,6 +76,10 @@ export type SyntheticsState = {
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
     claimablePositionPriceImpactFees: RebateInfoItem[];
+  };
+  errors?: {
+    marketsInfoError?: Error;
+    positionsInfoError?: Error;
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
@@ -125,8 +130,8 @@ export function SyntheticsStateContextProvider({
     isDeposit: true,
     account,
   });
-  const positionsConstants = usePositionsConstantsRequest(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
@@ -136,7 +141,11 @@ export function SyntheticsStateContextProvider({
 
   const settings = useSettings();
 
-  const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
+  const {
+    isLoading,
+    positionsInfoData,
+    error: positionsInfoError,
+  } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -177,6 +186,32 @@ export function SyntheticsStateContextProvider({
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
+  const errors = useMemo(() => {
+    const errors: SyntheticsState["errors"] = {
+      marketsInfoError: marketsInfo.error,
+      positionsInfoError,
+    };
+
+    if (Object.values(errors).filter(Boolean).length > 0) {
+      return errors;
+    }
+
+    return undefined;
+  }, [marketsInfo.error, positionsInfoError]);
+
+  useMeasureLoadTime({
+    isLoaded: Boolean(positionsInfoData),
+    error: positionsInfoError || marketsInfo.error,
+    startEvent: "positionsListLoad.started",
+    successEvent: "positionsListLoad.success",
+    failEvent: "positionsListLoad.failed",
+    timeoutEvent: "positionsListLoad.timeout",
+    timerLabel: "positionsListLoad",
+    metricData: {
+      testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
+    },
+  });
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -205,6 +240,7 @@ export function SyntheticsStateContextProvider({
         setKeepLeverage,
         lastWeekAccountStats,
       },
+      errors,
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
@@ -228,12 +264,14 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
+    depositMarketTokensData,
     closingPositionKey,
     gasLimits,
     gasPrice,
     keepLeverage,
     setKeepLeverage,
     lastWeekAccountStats,
+    errors,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,
@@ -243,10 +281,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
-    depositMarketTokensData,
   ]);
-
-  usePositionListMetrics(state);
 
   latestState = state;
 

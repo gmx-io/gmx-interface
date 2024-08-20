@@ -1,7 +1,6 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountAddress } from "context/SubaccountContext/SubaccountContext";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
@@ -12,6 +11,7 @@ import mapValues from "lodash/mapValues";
 import { Context, PropsWithChildren, useEffect, useMemo } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { METRIC_EVENT_NAME } from "./emitMetricEvent";
+import { sendErrorToServer, useErrorReporting } from "./errorReporting";
 import { MetricData, MetricEventType } from "./types";
 
 const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
@@ -19,19 +19,15 @@ const MAX_METRICS_STORE_TIME = 1000 * 60 * 30; // 30 min
 type CachedMetricData = MetricData & { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
+type MetricParams = { event: MetricEventType; data?: MetricData; time?: number; isError: boolean };
 
 export type MetricsContextType = {
-  sendMetric: (params: {
-    event: MetricEventType;
-    data?: MetricData;
-    time?: number;
-    isError: boolean;
-    message?: string;
-  }) => void;
+  sendMetric: (params: MetricParams) => void;
   setCachedMetricData: (metricId: string, metricData: MetricData) => void;
   getCachedMetricData: (metricId: string, clear?: boolean) => CachedMetricData | undefined;
   startTimer: (metricId: string) => void;
   getTime: (metricId: string, clear?: boolean) => number | undefined;
+  reportError: (error: unknown, errorSource: string) => void;
 };
 
 const context = createContext<MetricsContextType | null>(null);
@@ -39,9 +35,10 @@ const context = createContext<MetricsContextType | null>(null);
 export function MetricsContextProvider({ children }: PropsWithChildren) {
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
-  const subaccountAddress = useSubaccountAddress();
   const { showDebugValues } = useSettings();
   const isMobileMetamask = useIsMetamaskMobile();
+
+  useErrorReporting(chainId);
 
   const value: MetricsContextType = useMemo(() => {
     const setCachedMetricData = (metricId: string, metricData: MetricData) => {
@@ -103,31 +100,25 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       return Date.now() - time;
     };
 
-    async function sendMetric(params: {
-      event: string;
-      data?: MetricData;
-      time?: number;
-      isError: boolean;
-      message?: string;
-    }) {
-      const { time, isError, data, message, event } = params;
+    async function sendMetric(params: MetricParams) {
+      const { time, isError, data, event } = params;
       const wallets = await getWalletNames();
+      const is1ct = (data as { is1ct: boolean })?.is1ct || false;
 
       if (showDebugValues) {
         // eslint-disable-next-line no-console
         console.log("sendMetric", {
           event,
-          is1ct: Boolean(subaccountAddress),
           wallet: wallets.current,
           time,
           isError,
+          is1ct,
           data,
-          message,
         });
       }
 
       await fetcher.fetchPostReport2({
-        is1ct: Boolean(subaccountAddress),
+        is1ct,
         isDev: isDevelopment(),
         host: window.location.host,
         url: window.location.href,
@@ -138,11 +129,14 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
         time,
         customFields: {
           ...(data ? serializeCustomFields(data) : {}),
-          message,
           isMobileMetamask,
           wallets,
         },
       });
+    }
+
+    function reportError(error: unknown, errorSource: string) {
+      sendErrorToServer(fetcher, error, errorSource, showDebugValues);
     }
 
     return {
@@ -151,8 +145,9 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
       getCachedMetricData,
       startTimer,
       getTime,
+      reportError,
     };
-  }, [fetcher, isMobileMetamask, showDebugValues, subaccountAddress]);
+  }, [fetcher, isMobileMetamask, showDebugValues]);
 
   useEffect(() => {
     const handler: EventListener = (event: Event) => {
@@ -162,7 +157,6 @@ export function MetricsContextProvider({ children }: PropsWithChildren) {
         event: detail.event,
         isError: detail.isError,
         time: detail.time,
-        message: detail.message,
         data: detail.data,
       });
     };

@@ -393,6 +393,11 @@ export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
+export function roundToOrder(n: bigint) {
+  const decimals = n.toString().length - 1;
+  return (n / expandDecimals(1, decimals)) * expandDecimals(1, decimals);
+}
+
 export function minBigNumber(...args: bigint[]) {
   if (!args.length) return undefined;
 
