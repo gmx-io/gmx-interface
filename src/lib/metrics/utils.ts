@@ -9,7 +9,7 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "d
 import { TxError } from "lib/contracts/transactionErrors";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatTokenAmount, roundToOrder } from "lib/numbers";
-import { metrics, SubmittedOrderEvent, ValidationErrorEvent } from ".";
+import { metrics, SubmittedOrderEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
   DecreaseOrderMetricData,
@@ -431,7 +431,7 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
     return;
   }
 
-  metrics.pushEvent<ValidationErrorEvent>({
+  metrics.pushEvent({
     event: `${metricData.metricType}.failed`,
     isError: true,
     data: {
