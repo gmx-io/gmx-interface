@@ -61,7 +61,7 @@ export class Metrics {
   };
 
   // Require Generic type to be specified
-  pushEvent = <T extends MetricEventParams = never, P extends T = T>(params: P) => {
+  pushEvent = <T extends MetricEventParams = never>(params: T) => {
     this.queue.push(params);
 
     if (this.fetcher && !this.isProcessing) {
@@ -239,9 +239,7 @@ export class Metrics {
   };
 
   // Require Generic type to be specified
-  setCachedMetricData = <TData extends { metricId: string } = never, P extends TData = TData>(
-    metricData: P
-  ): P & CachedMetricData => {
+  setCachedMetricData = <TData extends { metricId: string } = never>(metricData: TData): TData & CachedMetricData => {
     const { metricId } = metricData;
 
     const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
@@ -258,10 +256,10 @@ export class Metrics {
   };
 
   // Require Generic type to be specified
-  getCachedMetricData = <TData extends { metricId: string } = never, P extends TData = TData>(
-    metricId: P["metricId"],
+  getCachedMetricData = <TData extends { metricId: string } = never>(
+    metricId: TData["metricId"],
     clear?: boolean
-  ): (CachedMetricData & P) | undefined => {
+  ): (CachedMetricData & TData) | undefined => {
     const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
 
     if (!cachedMetricsData) {
@@ -276,7 +274,7 @@ export class Metrics {
       setStorageItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
     }
 
-    return event as CachedMetricData & P;
+    return event as CachedMetricData & TData;
   };
 
   startTimer = (label: string, fromLocalStorage = true) => {
