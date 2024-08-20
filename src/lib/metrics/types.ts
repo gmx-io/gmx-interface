@@ -129,6 +129,7 @@ export type MulticallEventType = "multicall.timeout";
 export type MulticallMetricData = {
   metricType: "rpcTimeout" | "workerTimeout";
   isInMainThread?: boolean;
+  errorMessage: string;
 };
 
 export type PositionsListMetricData = {
