@@ -44,7 +44,7 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
         time: metricsRef.current.getTime("positionsList"),
         data: {
           testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestId!,
+          requestId,
         },
       });
     }, DATA_LOAD_TIMEOUT_FOR_METRICS);
@@ -60,7 +60,7 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
         time: metricsRef.current.getTime("positionsList", true),
         data: {
           testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestId!,
+          requestId,
         },
       });
       isSent = true;
