@@ -33,8 +33,8 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
-import { usePositionListMetrics } from "./hooks/metricsHooks";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { usePositionListMetrics } from "./hooks/metricsHooks";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -177,6 +177,8 @@ export function SyntheticsStateContextProvider({
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
+  usePositionListMetrics(positionsInfoData);
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -245,8 +247,6 @@ export function SyntheticsStateContextProvider({
     confirmationBoxState,
     depositMarketTokensData,
   ]);
-
-  usePositionListMetrics(state);
 
   latestState = state;
 

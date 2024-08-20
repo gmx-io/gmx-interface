@@ -1,44 +1,42 @@
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import type { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { useLatest } from "react-use";
-import { useEffect, useRef, useState } from "react";
 import { getIsFlagEnabled } from "config/ab";
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
-import { selectPositionsInfoData } from "../selectors/globalSelectors";
+import { useMetrics } from "context/MetricsContext/MetricsContext";
+import { PositionsInfoData } from "domain/synthetics/positions";
+import { useEffect } from "react";
+import { useLatest } from "react-use";
 
 function getRandomRequestId() {
   return Date.now().toString() + "_" + Math.trunc(Math.random() * 1000000).toString();
 }
 
-export function usePositionListMetrics(state: SyntheticsState) {
+// Ensure we send metrics only once per session
+let isSent = false;
+let requestId: string;
+let metricsTimeout: number;
+
+export function usePositionListMetrics(positionsInfoData: PositionsInfoData | undefined) {
   const metrics = useMetrics();
   const metricsRef = useLatest(metrics);
-  const metricsTimeout = useRef<NodeJS.Timeout>();
-  const requestIdRef = useRef<string>();
-
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const positionsInfoData = selectPositionsInfoData(state);
 
   useEffect(() => {
-    if (metricsTimeout.current || positionsInfoData) {
+    if (metricsTimeout || positionsInfoData || isSent) {
       return;
     }
 
     metricsRef.current.startTimer("positionsList");
 
-    requestIdRef.current = getRandomRequestId();
+    requestId = getRandomRequestId();
 
     metricsRef.current.sendMetric({
       event: "positionsListLoad.started",
       isError: false,
       data: {
         testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-        requestId: requestIdRef.current,
+        requestId,
       },
     });
 
-    metricsTimeout.current = setTimeout(() => {
+    metricsTimeout = window.setTimeout(() => {
       metricsRef.current.sendMetric({
         event: "positionsListLoad.timeout",
         message: "Positions list was not loaded",
@@ -46,26 +44,26 @@ export function usePositionListMetrics(state: SyntheticsState) {
         time: metricsRef.current.getTime("positionsList"),
         data: {
           testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestIdRef.current!,
+          requestId,
         },
       });
     }, DATA_LOAD_TIMEOUT_FOR_METRICS);
   }, [metricsRef, positionsInfoData]);
 
   useEffect(() => {
-    if (positionsInfoData && !isLoaded) {
-      clearTimeout(metricsTimeout.current);
+    if (positionsInfoData && !isSent) {
+      clearTimeout(metricsTimeout);
 
-      metrics.sendMetric({
+      metricsRef.current.sendMetric({
         event: "positionsListLoad.success",
         isError: false,
-        time: metrics.getTime("positionsList"),
+        time: metricsRef.current.getTime("positionsList", true),
         data: {
           testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-          requestId: requestIdRef.current!,
+          requestId,
         },
       });
-      setIsLoaded(true);
+      isSent = true;
     }
-  }, [isLoaded, metrics, positionsInfoData]);
+  }, [metricsRef, positionsInfoData]);
 }
