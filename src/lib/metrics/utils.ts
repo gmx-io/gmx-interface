@@ -258,13 +258,13 @@ export function initEditCollateralMetricData({
   executionFee,
   subaccount,
 }: {
-  collateralToken?: TokenData;
-  executionFee?: ExecutionFee;
+  collateralToken: TokenData | undefined;
+  executionFee: ExecutionFee | undefined;
   selectedCollateralAddress: string | undefined;
   collateralDeltaAmount: bigint | undefined;
-  orderType: OrderType;
-  marketInfo?: MarketInfo;
-  subaccount?: Subaccount;
+  orderType: OrderType | undefined;
+  marketInfo: MarketInfo | undefined;
+  subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
 }) {
   const metricData: EditCollateralMetricData = {

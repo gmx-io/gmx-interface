@@ -78,10 +78,6 @@ export type SyntheticsState = {
     accruedPositionPriceImpactFees: RebateInfoItem[];
     claimablePositionPriceImpactFees: RebateInfoItem[];
   };
-  errors?: {
-    marketsInfoError?: Error;
-    positionsInfoError?: Error;
-  };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
@@ -187,19 +183,6 @@ export function SyntheticsStateContextProvider({
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  const errors = useMemo(() => {
-    const errors: SyntheticsState["errors"] = {
-      marketsInfoError: marketsInfo.error,
-      positionsInfoError,
-    };
-
-    if (Object.values(errors).filter(Boolean).length > 0) {
-      return errors;
-    }
-
-    return undefined;
-  }, [marketsInfo.error, positionsInfoError]);
-
   useMeasureLoadTime({
     isLoaded: Boolean(positionsInfoData),
     error: positionsInfoError || marketsInfo.error,
@@ -241,7 +224,6 @@ export function SyntheticsStateContextProvider({
         setKeepLeverage,
         lastWeekAccountStats,
       },
-      errors,
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
@@ -272,7 +254,6 @@ export function SyntheticsStateContextProvider({
     keepLeverage,
     setKeepLeverage,
     lastWeekAccountStats,
-    errors,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

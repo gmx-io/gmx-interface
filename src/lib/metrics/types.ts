@@ -57,6 +57,7 @@ export type OrderMetricData =
 export type PendingTxnErrorMetricData = {
   metricType: OrderMetricType;
   errorMessage: string;
+  requestId: string;
 };
 
 export type SwapMetricData = {
