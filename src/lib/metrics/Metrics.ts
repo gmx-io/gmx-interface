@@ -135,7 +135,7 @@ export class Metrics {
 
     if (this.debug) {
       // eslint-disable-next-line no-console
-      console.error(`Metrics: Sending event ${this.eventIndex}`, this.queue);
+      console.log(`Metrics: Sending event ${this.eventIndex}`, this.queue);
     }
 
     this._sendMetric(ev)
@@ -159,6 +159,7 @@ export class Metrics {
     if (!this.fetcher) {
       throw new Error("Metrics: Fetcher is not initialized to send metric");
     }
+
     const { time, isError, data, event } = params;
     const wallets = await getWalletNames();
     const is1ct = (data as { is1ct: boolean })?.is1ct || false;
