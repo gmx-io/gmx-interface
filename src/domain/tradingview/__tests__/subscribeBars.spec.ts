@@ -90,9 +90,13 @@ describe("subscribeBars", () => {
   }) {
     const chainId = 421614;
     const originalTimeoutId = window.setTimeout(noop, 1000);
+    const originalTimeoutGuid = "ETH_#_USD_#_5";
+
     let onRealtimeCallback: jest.Mock;
     let feedDataRef = { current: true };
-    let intervalRef: { current: undefined | number } = { current: originalTimeoutId };
+    let intervalRef: { current: Record<string, number> | undefined } = {
+      current: { [originalTimeoutGuid]: originalTimeoutId },
+    };
     let lastBarTimeRef = { current: 0 };
     let missingBarsInfoRef = { current: opts?.missingBarsInfoRef ?? { bars: [], isFetching: false } };
     let oracleKeeperFetcher = new MockOracleKeeperFetcher();
@@ -118,10 +122,12 @@ describe("subscribeBars", () => {
         isStable: false,
       },
       tvDataProviderRef,
+      listenerGuid: originalTimeoutGuid,
     });
 
     return {
       originalTimeoutId,
+      originalTimeoutGuid,
       feedDataRef,
       intervalRef,
       lastBarTimeRef,
@@ -134,7 +140,7 @@ describe("subscribeBars", () => {
   }
 
   function dispose(barsSubscriber: ReturnType<typeof reset>) {
-    window.clearInterval(barsSubscriber.intervalRef.current);
+    window.clearInterval(barsSubscriber.intervalRef.current?.[barsSubscriber.originalTimeoutGuid]);
   }
 
   afterEach(() => {
@@ -145,8 +151,8 @@ describe("subscribeBars", () => {
     const context = reset();
 
     // not equal to originalTimeoutId
-    expect(context.intervalRef.current).not.toBe(context.originalTimeoutId);
-    expect(typeof context.intervalRef.current).toBe("number");
+    expect(context.originalTimeoutId).not.toBe(context.intervalRef.current?.[context.originalTimeoutGuid]);
+    expect(typeof context.intervalRef.current?.[context.originalTimeoutGuid]).toBe("number");
 
     dispose(context);
   });
@@ -159,7 +165,7 @@ describe("subscribeBars", () => {
       },
     });
 
-    expect(context.intervalRef.current).toBeUndefined();
+    expect(context.intervalRef.current?.[context.originalTimeoutGuid]).toBeUndefined();
 
     dispose(context);
   });
