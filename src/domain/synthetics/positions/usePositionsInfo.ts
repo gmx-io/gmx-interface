@@ -23,7 +23,6 @@ import {
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
-  isLoaded?: boolean;
 };
 
 export function usePositionsInfoRequest(
