@@ -12,7 +12,7 @@ function getRandomRequestId() {
 // Ensure we send metrics only once per session
 let isSent = false;
 let requestId: string;
-let metricsTimeout: NodeJS.Timeout;
+let metricsTimeout: number;
 
 export function usePositionListMetrics(positionsInfoData: PositionsInfoData | undefined) {
   const metrics = useMetrics();
@@ -36,7 +36,7 @@ export function usePositionListMetrics(positionsInfoData: PositionsInfoData | un
       },
     });
 
-    metricsTimeout = setTimeout(() => {
+    metricsTimeout = window.setTimeout(() => {
       metricsRef.current.sendMetric({
         event: "positionsListLoad.timeout",
         message: "Positions list was not loaded",
