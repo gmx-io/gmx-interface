@@ -1,11 +1,12 @@
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { useEffect } from "react";
 import { useLatest } from "react-use";
-import { useMetrics } from "./MetricsContext";
-import { MetricEventType } from "./types";
+import { MetricData, MetricEventType } from "./types";
 import { getRequestId } from "./utils";
+import { metrics } from ".";
+import { prepareErrorMetricData } from "./errorReporting";
 
-const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeout?: NodeJS.Timeout } } = {};
+const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeout?: number } } = {};
 
 export function useMeasureLoadTime({
   isLoaded,
@@ -26,11 +27,8 @@ export function useMeasureLoadTime({
   timeoutEvent: MetricEventType;
   timeout?: number;
   timerLabel: string;
-  metricData?: any;
+  metricData?: MetricData;
 }) {
-  const metrics = useMetrics();
-
-  const metricsRef = useLatest(metrics);
   const metricDataRef = useLatest(metricData);
 
   MEASUREMENTS[timerLabel] = MEASUREMENTS[timerLabel] || {};
@@ -42,72 +40,64 @@ export function useMeasureLoadTime({
     }
 
     measure.requestId = getRequestId();
-    metricsRef.current.startTimer(timerLabel);
+    metrics.startTimer(timerLabel);
 
-    metricsRef.current.sendMetric({
+    metrics.pushEvent({
       event: startEvent,
       isError: false,
       data: {
         ...(metricDataRef.current || {}),
         requestId: measure.requestId,
-      },
+      } as MetricData,
     });
 
-    measure.timeout = setTimeout(() => {
-      metricsRef.current.sendMetric({
+    measure.timeout = window.setTimeout(() => {
+      metrics.pushEvent({
         event: timeoutEvent,
         isError: true,
-        time: metricsRef.current.getTime(timerLabel),
+        time: metrics.getTime(timerLabel),
         data: {
           ...(metricDataRef.current || {}),
           requestId: measure.requestId,
-        },
+        } as MetricData,
       });
     }, timeout);
-  }, [measure, metricDataRef, metricsRef, startEvent, timeout, timeoutEvent, timerLabel]);
+  }, [measure, metricDataRef, startEvent, timeout, timeoutEvent, timerLabel]);
 
   useEffect(() => {
     if (error && !measure.sent) {
       clearTimeout(measure.timeout);
 
-      metrics.sendMetric({
+      const errorData = prepareErrorMetricData(error);
+
+      metrics.pushEvent({
         event: failEvent,
         isError: true,
         time: metrics.getTime(timerLabel, true),
         data: {
           ...(metricDataRef.current || {}),
-          errorMessage: error.message,
+          ...errorData,
           requestId: measure.requestId,
-        },
+        } as MetricData,
       });
       measure.sent = true;
     }
-  }, [error, failEvent, measure, metricDataRef, metrics, timerLabel]);
+  }, [error, failEvent, measure, metricDataRef, timerLabel]);
 
   useEffect(() => {
     if (isLoaded && !measure.sent) {
       clearTimeout(measure.timeout);
 
-      metrics.sendMetric({
+      metrics.pushEvent({
         event: successEvent,
         isError: false,
         time: metrics.getTime(timerLabel, true),
         data: {
           ...(metricDataRef.current || {}),
           requestId: measure.requestId,
-        },
+        } as MetricData,
       });
       measure.sent = true;
     }
-  }, [
-    metricDataRef,
-    metrics,
-    isLoaded,
-    successEvent,
-    timerLabel,
-    measure.sent,
-    measure.timeout,
-    measure.requestId,
-    measure,
-  ]);
+  }, [metricDataRef, isLoaded, successEvent, timerLabel, measure.sent, measure.timeout, measure.requestId, measure]);
 }

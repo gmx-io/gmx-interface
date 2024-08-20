@@ -90,6 +90,19 @@ export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
   }, [chainId, forceIncentivesActive, oracleKeeperIndex, setOracleKeeperInstancesConfig]);
 }
 
+type PostReport2Body = {
+  is1ct: boolean;
+  isDev: boolean;
+  host: string;
+  url: string;
+  wallet?: string | null;
+  event: string;
+  version?: string;
+  isError: boolean;
+  time?: number;
+  customFields: object;
+};
+
 export interface OracleFetcher {
   readonly url: string;
   fetchTickers(): Promise<TickersResponse>;
@@ -97,7 +110,7 @@ export interface OracleFetcher {
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response>;
-  fetchPostReport2(body: any): Promise<Response>;
+  fetchPostReport2(body: PostReport2Body, debug: boolean): Promise<Response>;
 }
 
 class OracleKeeperFetcher implements OracleFetcher {
@@ -200,8 +213,12 @@ class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostReport2(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
-    console.log("BODYY", body);
+  fetchPostReport2(body: PostReport2Body, debug): Promise<Response> {
+    if (debug) {
+      // eslint-disable-next-line no-console
+      console.log("sendMetric", body.event, body);
+    }
+
     return fetch(buildUrl(this.url!, "/report/ui2"), {
       method: "POST",
       headers: {

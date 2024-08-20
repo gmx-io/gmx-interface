@@ -1,7 +1,6 @@
 import { uniqueId } from "lodash";
 
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
-import { emitMetricEvent } from "context/MetricsContext/emitMetricEvent";
 import { sleep } from "lib/sleep";
 import { promiseWithResolvers } from "lib/utils";
 
@@ -9,6 +8,7 @@ import { MAX_TIMEOUT } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import MulticallWorker from "./multicall.worker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+// import { Metrics } from "context/MetricsContext/Metrics";
 
 const executorWorker: Worker = new MulticallWorker();
 
@@ -16,7 +16,7 @@ const promises: Record<string, { resolve: (value: any) => void; reject: (error: 
 
 executorWorker.onmessage = (event) => {
   if ("isMetrics" in event.data) {
-    emitMetricEvent(event.data.detail);
+    // Metrics.emitMetricEvent(event.data.detail);
     return;
   }
 
@@ -69,13 +69,13 @@ export async function executeMulticallWorker(
     if (result === "timeout") {
       delete promises[id];
 
-      emitMetricEvent({
-        event: "multicall.timeout",
-        isError: true,
-        data: {
-          metricType: "workerTimeout",
-        },
-      });
+      // Metrics.emitMetricEvent({
+      //   event: "multicall.timeout",
+      //   isError: true,
+      //   data: {
+      //     metricType: "workerTimeout",
+      //   },
+      // });
       // eslint-disable-next-line no-console
       console.error(
         `[executeMulticallWorker] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`,

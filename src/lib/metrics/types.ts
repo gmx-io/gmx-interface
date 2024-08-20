@@ -1,8 +1,15 @@
 import { TxErrorType } from "lib/contracts/transactionErrors";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 
+export const METRIC_WINDOW_EVENT_NAME = "send-metric";
+
 export type MetricEventType = OrderEventType | PositionsListEventType | MulticallEventType;
-export type MetricData = OrderMetricData | PendingTxnErrorMetricData | MulticallMetricData | ErrorMetricData;
+export type MetricData =
+  | OrderMetricData
+  | PendingTxnErrorMetricData
+  | MulticallMetricData
+  | ErrorMetricData
+  | BaseMetricData;
 
 export type MetricDataKey = string;
 
@@ -49,6 +56,7 @@ export type OrderMetricData =
 
 export type PendingTxnErrorMetricData = {
   metricType: OrderMetricType;
+  errorMessage: string;
 };
 
 export type SwapMetricData = {
@@ -162,6 +170,13 @@ export type ErrorMetricData = {
   contractError?: string;
   isUserError?: boolean;
   isUserRejectedError?: boolean;
+  reason?: string;
   txErrorType?: TxErrorType;
-  txErrorData?: any;
-} & any;
+  txErrorData?: unknown;
+} & object;
+
+export type BaseMetricData = {
+  requestId?: string;
+  metricType?: MetricType;
+  metricId?: string;
+};

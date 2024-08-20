@@ -1,6 +1,6 @@
 import { getIsFlagEnabled } from "config/ab";
 import { getKeepLeverageKey } from "config/localStorage";
-import { useMeasureLoadTime } from "context/MetricsContext/useMeasureLoadTime";
+import { useMeasureLoadTime } from "lib/metrics/useMeasureLoadTime";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
@@ -36,6 +36,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { MetricData } from "lib/metrics/types";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -209,7 +210,7 @@ export function SyntheticsStateContextProvider({
     timerLabel: "positionsListLoad",
     metricData: {
       testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-    },
+    } as MetricData,
   });
 
   const state = useMemo(() => {

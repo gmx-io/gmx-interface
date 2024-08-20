@@ -6,15 +6,11 @@ import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteTx
 import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { useEffect } from "react";
-import {
-  extractError,
-  getIsUserError,
-  getIsUserRejectedError,
-  TxErrorType,
-} from "../../lib/contracts/transactionErrors";
-import { useLocalStorageSerializeKey } from "../../lib/localStorage";
-import { getAppVersion } from "../../lib/version";
-import { getWalletNames } from "../../lib/wallets/getWalletNames";
+import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "../contracts/transactionErrors";
+import { useLocalStorageSerializeKey } from "../localStorage";
+import { getAppVersion } from "../version";
+import { getWalletNames } from "../wallets/getWalletNames";
+import { ErrorMetricData } from "./types";
 
 const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
 
@@ -51,7 +47,7 @@ function subscribeToErrorEvents(fetcher: OracleFetcher, showDebugValues: boolean
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-export function prepareErrorMetricData(error: unknown) {
+export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefined {
   // all human readable details are in info field
   const errorInfo = (error as any)?.info?.error;
 

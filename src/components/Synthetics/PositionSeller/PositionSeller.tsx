@@ -12,7 +12,7 @@ import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
@@ -64,22 +64,18 @@ import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import {
-  formatAmountForMetrics,
-  getPositionOrderMetricId,
-  getRequestId,
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "context/MetricsContext/utils";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { helperToast } from "lib/helperToast";
+import {
+  getTxnErrorMetricsHandler,
+  getTxnSentMetricsHandler,
+  initDecreaseOrderMetricData,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics/utils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { DecreaseOrderMetricData } from "context/MetricsContext/types";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -99,7 +95,6 @@ export function PositionSeller(p: Props) {
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const tokensData = useTokensData();
-  const metrics = useMetrics();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -287,54 +282,22 @@ export function PositionSeller(p: Props) {
 
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
 
-    let metricType;
-    if (orderType === OrderType.LimitDecrease) {
-      metricType = "takeProfitOrder";
-    } else if (orderType === OrderType.StopLossDecrease) {
-      metricType = "stopLossOrder";
-    } else {
-      metricType = "decreasePosition";
-    }
-
-    const metricData: DecreaseOrderMetricData = {
-      metricType,
-      isStandalone: true,
+    const { metricData, metricId } = initDecreaseOrderMetricData({
+      collateralToken: position?.collateralToken,
+      decreaseAmounts,
       hasExistingPosition: true,
+      executionFee,
+      orderType: orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
-      isFullClose: decreaseAmounts?.isFullClose,
-      place: "positionSeller",
-      marketAddress: position?.marketInfo?.marketTokenAddress,
-      marketName: position?.marketInfo?.name,
-      initialCollateralTokenAddress: position?.collateralToken?.address,
-      initialCollateralSymbol: position?.collateralToken.symbol,
-      initialCollateralDeltaAmount: formatAmountForMetrics(
-        decreaseAmounts?.collateralDeltaUsd,
-        position?.collateralToken.decimals
-      ),
-      swapPath: swapAmounts?.swapPathStats?.swapPath,
-      sizeDeltaUsd: formatAmountForMetrics(decreaseAmounts?.sizeDeltaUsd),
-      sizeDeltaInTokens: formatAmountForMetrics(
-        decreaseAmounts?.sizeDeltaInTokens,
-        position?.marketInfo?.indexToken.decimals
-      ),
-      triggerPrice: isTrigger ? formatUsd(triggerPrice) : undefined,
-      acceptablePrice: formatUsd(decreaseAmounts?.acceptablePrice),
+      subaccount,
+      triggerPrice,
+      marketInfo: position?.marketInfo,
+      allowedSlippage,
       isLong: position?.isLong,
-      orderType,
-      decreaseSwapType: decreaseAmounts?.decreaseSwapType,
-      executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-      is1ct: Boolean(subaccount && position?.collateralTokenAddress !== NATIVE_TOKEN_ADDRESS),
-      requestId: getRequestId(),
-    };
-
-    const metricId = getPositionOrderMetricId({
-      ...metricData,
-      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-      initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
+      place: "positionSeller",
     });
-    metrics.setCachedMetricData(metricId, metricData);
 
-    sendOrderSubmittedMetric(metrics, metricId, metricType);
+    sendOrderSubmittedMetric(metricId, metricData.metricType);
 
     if (
       !tokensData ||
@@ -347,7 +310,7 @@ export function PositionSeller(p: Props) {
       !orderType
     ) {
       helperToast.error(t`Error submitting order`);
-      sendTxnValidationErrorMetric(metrics, metricId, metricType);
+      sendTxnValidationErrorMetric(metricId, metricData.metricType);
       return;
     }
 
@@ -392,8 +355,8 @@ export function PositionSeller(p: Props) {
       },
       metricId
     )
-      .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
-      .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
+      .then(getTxnSentMetricsHandler(metricId, metricData.metricType))
+      .catch(getTxnErrorMetricsHandler(metricId, metricData.metricType));
 
     if (subaccount) {
       onClose();

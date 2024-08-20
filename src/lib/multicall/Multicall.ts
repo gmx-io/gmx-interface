@@ -4,12 +4,12 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { isWebWorker } from "config/env";
-import { emitMetricEvent } from "context/MetricsContext/emitMetricEvent";
 import { hashData } from "lib/hash";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
+// import { Metrics } from "context/MetricsContext/Metrics";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -179,15 +179,15 @@ export class Multicall {
       sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
-      emitMetricEvent({
-        event: "multicall.timeout",
-        isError: true,
-        data: {
-          metricType: "rpcTimeout",
-          isInMainThread: !isWebWorker,
-          errorMessage: _viemError.message.slice(0, 150),
-        },
-      });
+      // Metrics.emitMetricEvent({
+      //   event: "multicall.timeout",
+      //   isError: true,
+      //   data: {
+      //     metricType: "rpcTimeout",
+      //     isInMainThread: !isWebWorker,
+      //     errorMessage: _viemError.message.slice(0, 150),
+      //   },
+      // });
 
       // eslint-disable-next-line no-console
       console.groupCollapsed("multicall error:");
