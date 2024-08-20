@@ -69,10 +69,10 @@ export type SwapMetricData = {
   initialCollateralSymbol: string | undefined;
   toTokenAddress: string | undefined;
   toTokenSymbol: string | undefined;
-  initialCollateralDeltaAmount: string | undefined;
-  minOutputAmount: string | undefined;
+  initialCollateralDeltaAmount: number | undefined;
+  minOutputAmount: number | undefined;
   swapPath: string[] | undefined;
-  executionFee: string | undefined;
+  executionFee: number | undefined;
   allowedSlippage: number | undefined;
   orderType: OrderType | undefined;
 };
@@ -84,15 +84,15 @@ export type PositionOrderMetricParams = {
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
-  initialCollateralDeltaAmount: string | undefined;
+  initialCollateralDeltaAmount: number | undefined;
   swapPath: string[] | undefined;
-  sizeDeltaUsd: string | undefined;
-  sizeDeltaInTokens: string | undefined;
-  triggerPrice: string | undefined;
-  acceptablePrice: string | undefined;
+  sizeDeltaUsd: number | undefined;
+  sizeDeltaInTokens: number | undefined;
+  triggerPrice: number | undefined;
+  acceptablePrice: number | undefined;
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
-  executionFee: string | undefined;
+  executionFee: number | undefined;
   is1ct: boolean;
   requestId: string;
 };
@@ -116,11 +116,11 @@ export type EditCollateralMetricData = {
   marketName: string | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
-  initialCollateralDeltaAmount: string | undefined;
+  initialCollateralDeltaAmount: number | undefined;
   swapPath: [];
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
-  executionFee: string | undefined;
+  executionFee: number | undefined;
   is1ct: boolean;
   requestId: string;
 };
@@ -146,10 +146,10 @@ export type SwapGmMetricData = {
   initialShortTokenAddress: string | undefined;
   marketAddress: string | undefined;
   marketName: string | undefined;
-  executionFee: string | undefined;
-  longTokenAmount: string | undefined;
-  shortTokenAmount: string | undefined;
-  marketTokenAmount: string | undefined;
+  executionFee: number | undefined;
+  longTokenAmount: number | undefined;
+  shortTokenAmount: number | undefined;
+  marketTokenAmount: number | undefined;
 };
 
 export type ShiftGmMetricData = {
@@ -159,8 +159,8 @@ export type ShiftGmMetricData = {
   fromMarketName: string | undefined;
   toMarketAddress: string | undefined;
   toMarketName: string | undefined;
-  minToMarketTokenAmount: string | undefined;
-  executionFee: string | undefined;
+  minToMarketTokenAmount: number | undefined;
+  executionFee: number | undefined;
 };
 
 export type ErrorMetricData = {

@@ -8,7 +8,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatTokenAmount, formatUsd, roundToOrder } from "lib/numbers";
+import { formatTokenAmount, roundToOrder } from "lib/numbers";
 import { metrics } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
@@ -150,8 +150,8 @@ export function initIncreaseOrderMetricData({
     swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
     sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd),
     sizeDeltaInTokens: formatAmountForMetrics(increaseAmounts?.sizeDeltaInTokens, marketInfo?.indexToken.decimals),
-    triggerPrice: formatUsd(triggerPrice),
-    acceptablePrice: formatUsd(increaseAmounts?.acceptablePrice),
+    triggerPrice: formatAmountForMetrics(triggerPrice, USD_DECIMALS, false),
+    acceptablePrice: formatAmountForMetrics(increaseAmounts?.acceptablePrice, USD_DECIMALS, false),
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
@@ -225,8 +225,8 @@ export function initDecreaseOrderMetricData({
     swapPath: [],
     sizeDeltaUsd: formatAmountForMetrics(decreaseAmounts?.sizeDeltaUsd),
     sizeDeltaInTokens: formatAmountForMetrics(decreaseAmounts?.sizeDeltaInTokens, marketInfo?.indexToken.decimals),
-    triggerPrice: formatUsd(triggerPrice),
-    acceptablePrice: formatUsd(decreaseAmounts?.acceptablePrice),
+    triggerPrice: formatAmountForMetrics(triggerPrice, USD_DECIMALS, false),
+    acceptablePrice: formatAmountForMetrics(decreaseAmounts?.acceptablePrice, USD_DECIMALS, false),
     isLong,
     orderType,
     decreaseSwapType: decreaseAmounts?.decreaseSwapType,
@@ -494,7 +494,6 @@ export function sendOrderCreatedMetric(metricId: string, metricType: OrderMetric
 
 export function sendOrderExecutedMetric(metricId: string, metricType: OrderMetricType) {
   const metricData = metrics.getCachedMetricData(metricId, true);
-
   metrics.pushEvent({
     event: `${metricType}.executed`,
     isError: false,
@@ -523,12 +522,19 @@ export function sendOrderCancelledMetric(metricId: string, metricType: OrderMetr
   });
 }
 
-export function formatAmountForMetrics(amount?: bigint, decimals = USD_DECIMALS) {
+export function formatAmountForMetrics(amount?: bigint, decimals = USD_DECIMALS, round = true) {
   if (amount === undefined) {
     return undefined;
   }
 
-  return formatTokenAmount(roundToOrder(amount), decimals);
+  const value = round ? roundToOrder(amount) : amount;
+  const str = formatTokenAmount(value, decimals);
+
+  if (!str) {
+    return undefined;
+  }
+
+  return parseFloat(str);
 }
 
 export function getRequestId() {
