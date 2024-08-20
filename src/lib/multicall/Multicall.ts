@@ -10,6 +10,7 @@ import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { MulticallTimeoutEvent } from "lib/metrics";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -180,7 +181,7 @@ export class Multicall {
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
 
-      emitMetricEvent({
+      emitMetricEvent<MulticallTimeoutEvent>({
         event: "multicall.timeout",
         isError: true,
         data: {

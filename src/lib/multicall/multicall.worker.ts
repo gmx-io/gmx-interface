@@ -1,4 +1,4 @@
-import { METRIC_WINDOW_EVENT_NAME } from "lib/metrics/types";
+import { METRIC_WINDOW_EVENT_NAME } from "lib/metrics/emitMetricEvent";
 import { MAX_TIMEOUT, Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 

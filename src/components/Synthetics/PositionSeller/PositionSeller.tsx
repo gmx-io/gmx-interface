@@ -282,7 +282,7 @@ export function PositionSeller(p: Props) {
 
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
 
-    const { metricData, metricId } = initDecreaseOrderMetricData({
+    const metricData = initDecreaseOrderMetricData({
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
@@ -297,7 +297,7 @@ export function PositionSeller(p: Props) {
       place: "positionSeller",
     });
 
-    sendOrderSubmittedMetric(metricId, metricData.metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       !tokensData ||
@@ -310,7 +310,7 @@ export function PositionSeller(p: Props) {
       !orderType
     ) {
       helperToast.error(t`Error submitting order`);
-      sendTxnValidationErrorMetric(metricId, metricData.metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
 
@@ -353,10 +353,10 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       },
-      metricId
+      metricData.metricId
     )
-      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
 
     if (subaccount) {
       onClose();

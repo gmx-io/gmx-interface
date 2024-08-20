@@ -25,7 +25,7 @@ import { SubaccountModal } from "components/Synthetics/SubaccountModal/Subaccoun
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-import { useConfigureMetrics } from "lib/metrics/Metrics";
+import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 
 const Zoom = cssTransition({
   enter: "zoomIn",

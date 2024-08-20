@@ -9,6 +9,7 @@ import { MAX_TIMEOUT } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import MulticallWorker from "./multicall.worker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 
 const executorWorker: Worker = new MulticallWorker();
 
@@ -16,7 +17,7 @@ const promises: Record<string, { resolve: (value: any) => void; reject: (error: 
 
 executorWorker.onmessage = (event) => {
   if ("isMetrics" in event.data) {
-    emitMetricEvent(event.data.detail);
+    emitMetricEvent<MetricEventParams>(event.data.detail);
     return;
   }
 
@@ -69,11 +70,13 @@ export async function executeMulticallWorker(
     if (result === "timeout") {
       delete promises[id];
 
-      emitMetricEvent({
+      emitMetricEvent<MulticallTimeoutEvent>({
         event: "multicall.timeout",
         isError: true,
         data: {
           metricType: "workerTimeout",
+          isInMainThread: true,
+          errorMessage: `Worker did not respond in time. Falling back to main thread.`,
         },
       });
       // eslint-disable-next-line no-console

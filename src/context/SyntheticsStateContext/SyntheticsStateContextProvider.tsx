@@ -1,6 +1,4 @@
-import { getIsFlagEnabled } from "config/ab";
 import { getKeepLeverageKey } from "config/localStorage";
-import { useMeasureLoadTime } from "lib/metrics/useMeasureLoadTime";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
@@ -31,12 +29,12 @@ import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { MetricData } from "lib/metrics/types";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -187,14 +185,7 @@ export function SyntheticsStateContextProvider({
     isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
     skip: !account,
-    startEvent: "positionsListLoad.started",
-    successEvent: "positionsListLoad.success",
-    failEvent: "positionsListLoad.failed",
-    timeoutEvent: "positionsListLoad.timeout",
-    timerLabel: "positionsListLoad",
-    metricData: {
-      testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
-    } as MetricData,
+    metricType: "positionsListLoad",
   });
 
   const state = useMemo(() => {

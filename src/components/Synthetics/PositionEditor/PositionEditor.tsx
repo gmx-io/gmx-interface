@@ -330,7 +330,7 @@ export function PositionEditor(p: Props) {
 
     const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
 
-    const { metricData, metricId } = initEditCollateralMetricData({
+    const metricData = initEditCollateralMetricData({
       collateralToken,
       executionFee,
       selectedCollateralAddress,
@@ -341,7 +341,7 @@ export function PositionEditor(p: Props) {
       isLong: position?.isLong,
     });
 
-    sendOrderSubmittedMetric(metricId, metricData.metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       executionFee?.feeTokenAmount === undefined ||
@@ -353,7 +353,7 @@ export function PositionEditor(p: Props) {
       !signer
     ) {
       helperToast.error(t`Error submitting order`);
-      sendTxnValidationErrorMetric(metricId, metricData.metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
 
@@ -366,7 +366,7 @@ export function PositionEditor(p: Props) {
         chainId,
         signer,
         subaccount,
-        metricId,
+        metricId: metricData.metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -430,7 +430,7 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         },
-        metricId
+        metricData.metricId
       );
     }
 
@@ -441,8 +441,8 @@ export function PositionEditor(p: Props) {
     }
 
     txnPromise = txnPromise
-      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);

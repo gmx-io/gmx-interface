@@ -307,7 +307,7 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    const { metricId, metricData } = initGMSwapMetricData({
+    const metricData = initGMSwapMetricData({
       longToken,
       shortToken,
       isDeposit: true,
@@ -319,7 +319,7 @@ export function GmConfirmationBox({
       marketTokenAmount,
     });
 
-    sendOrderSubmittedMetric(metricId, metricData.metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       !account ||
@@ -331,7 +331,7 @@ export function GmConfirmationBox({
       !signer
     ) {
       helperToast.error(t`Error submitting deposit`);
-      sendTxnValidationErrorMetric(metricId, metricData.metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -354,15 +354,16 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       skipSimulation: shouldDisableValidation,
       tokensData,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingDeposit,
     })
-      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   function onCreateWithdrawal() {
-    const { metricId, metricData } = initGMSwapMetricData({
+    const metricData = initGMSwapMetricData({
       longToken,
       shortToken,
       isDeposit: false,
@@ -374,7 +375,7 @@ export function GmConfirmationBox({
       marketTokenAmount,
     });
 
-    sendOrderSubmittedMetric(metricId, metricData.metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       !account ||
@@ -387,7 +388,7 @@ export function GmConfirmationBox({
       !signer
     ) {
       helperToast.error(t`Error submitting withdrawal`);
-      sendTxnValidationErrorMetric(metricId, metricData.metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -405,15 +406,16 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       tokensData,
       skipSimulation: shouldDisableValidation,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingWithdrawal,
     })
-      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   function onCreateShift() {
-    const { metricId, metricData } = initShiftGmMetricData({
+    const metricData = initShiftGmMetricData({
       executionFee,
       fromMarketInfo: getByKey(marketsInfoData, fromMarketToken?.address),
       toMarketInfo: getByKey(marketsInfoData, marketToken?.address),
@@ -421,7 +423,7 @@ export function GmConfirmationBox({
       minMarketTokenAmount: marketTokenAmount,
     });
 
-    sendOrderSubmittedMetric(metricId, metricData.metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       !signer ||
@@ -434,7 +436,7 @@ export function GmConfirmationBox({
       !tokensData
     ) {
       helperToast.error(t`Error submitting shift`);
-      sendTxnValidationErrorMetric(metricId, metricData.metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -448,11 +450,12 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       skipSimulation: shouldDisableValidation,
       tokensData,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingShift,
     })
-      .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-      .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   const renderTokenInfo = ({

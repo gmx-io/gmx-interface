@@ -1,40 +1,34 @@
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { useEffect } from "react";
-import { useLatest } from "react-use";
-import { MetricData, MetricEventType } from "./types";
-import { getRequestId } from "./utils";
-import { metrics } from ".";
-import { prepareErrorMetricData } from "./errorReporting";
+import { metrics } from "lib/metrics";
+import { prepareErrorMetricData } from "lib/metrics/errorReporting";
+import {
+  LoadingFailedEvent,
+  LoadingStartEvent,
+  LoadingSuccessEvent,
+  LoadingTimeoutEvent,
+  MeasureMetricType,
+} from "lib/metrics/types";
+import { getRequestId } from "lib/metrics/utils";
 
-const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeoutId?: number; started: boolean } } = {};
+const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeoutId?: number } } = {};
+const fromLocalStorage = false;
 
 export function useMeasureLoadTime({
+  metricType,
   isLoaded,
   error,
-  startEvent,
-  successEvent,
-  failEvent,
-  timeoutEvent,
   timeout = DATA_LOAD_TIMEOUT_FOR_METRICS,
-  timerLabel,
-  metricData,
   skip,
 }: {
   isLoaded: boolean;
   error: Error | undefined;
-  startEvent: MetricEventType;
-  successEvent: MetricEventType;
-  failEvent: MetricEventType;
-  timeoutEvent: MetricEventType;
+  metricType: MeasureMetricType;
   timeout?: number;
-  timerLabel: string;
-  metricData?: MetricData;
   skip?: boolean;
 }) {
-  const metricDataRef = useLatest(metricData);
-
-  MEASUREMENTS[timerLabel] = MEASUREMENTS[timerLabel] || {};
-  const measure = MEASUREMENTS[timerLabel];
+  MEASUREMENTS[metricType] = MEASUREMENTS[metricType] || {};
+  const measure = MEASUREMENTS[metricType];
 
   useEffect(() => {
     if (skip || measure.requestId || measure.sent) {
@@ -42,29 +36,27 @@ export function useMeasureLoadTime({
     }
 
     measure.requestId = getRequestId();
-    metrics.startTimer(timerLabel);
+    metrics.startTimer(metricType, false);
 
-    metrics.pushEvent({
-      event: startEvent,
+    metrics.pushEvent<LoadingStartEvent>({
+      event: `${metricType}.started`,
       isError: false,
       data: {
-        ...(metricDataRef.current || {}),
         requestId: measure.requestId,
-      } as MetricData,
+      },
     });
 
     measure.timeoutId = window.setTimeout(() => {
-      metrics.pushEvent({
-        event: timeoutEvent,
+      metrics.pushEvent<LoadingTimeoutEvent>({
+        event: `${metricType}.timeout`,
         isError: true,
-        time: metrics.getTime(timerLabel),
+        time: metrics.getTime(metricType, false, fromLocalStorage),
         data: {
-          ...(metricDataRef.current || {}),
           requestId: measure.requestId,
-        } as MetricData,
+        },
       });
     }, timeout);
-  }, [measure, metricDataRef, skip, startEvent, timeout, timeoutEvent, timerLabel]);
+  }, [measure, metricType, skip, timeout]);
 
   useEffect(() => {
     if (error && !measure.sent && measure.requestId) {
@@ -72,34 +64,32 @@ export function useMeasureLoadTime({
 
       const errorData = prepareErrorMetricData(error);
 
-      metrics.pushEvent({
-        event: failEvent,
+      metrics.pushEvent<LoadingFailedEvent>({
+        event: `${metricType}.failed`,
         isError: true,
-        time: metrics.getTime(timerLabel, true),
+        time: metrics.getTime(metricType, true, fromLocalStorage),
         data: {
-          ...(metricDataRef.current || {}),
           ...errorData,
           requestId: measure.requestId,
-        } as MetricData,
+        },
       });
       measure.sent = true;
     }
-  }, [error, failEvent, measure, metricDataRef, timerLabel]);
+  }, [error, measure, metricType]);
 
   useEffect(() => {
     if (isLoaded && !measure.sent && measure.requestId) {
       clearTimeout(measure.timeoutId);
 
-      metrics.pushEvent({
-        event: successEvent,
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: `${metricType}.success`,
         isError: false,
-        time: metrics.getTime(timerLabel, true),
+        time: metrics.getTime(metricType, true, fromLocalStorage),
         data: {
-          ...(metricDataRef.current || {}),
           requestId: measure.requestId,
-        } as MetricData,
+        },
       });
       measure.sent = true;
     }
-  }, [metricDataRef, isLoaded, successEvent, timerLabel, measure.sent, measure.timeoutId, measure.requestId, measure]);
+  }, [isLoaded, measure.sent, measure.timeoutId, measure.requestId, measure, metricType]);
 }

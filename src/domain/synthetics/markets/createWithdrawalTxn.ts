@@ -26,6 +26,7 @@ type Params = {
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
+  metricId?: string;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -91,6 +92,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    metricId: p.metricId,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({

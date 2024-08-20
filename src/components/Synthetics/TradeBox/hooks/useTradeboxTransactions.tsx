@@ -88,7 +88,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitSwap() {
       const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
-      const { metricId, metricData } = initSwapMetricData({
+      const metricData = initSwapMetricData({
         fromToken,
         toToken,
         hasReferralCode: Boolean(referralCodeForTxn),
@@ -99,7 +99,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         subaccount,
       });
 
-      sendOrderSubmittedMetric(metricId, metricData.metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !account ||
@@ -112,7 +112,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricId, metricData.metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -130,10 +130,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         tokensData,
         setPendingTxns,
         setPendingOrder,
-        metricId,
+        metricId: metricData.metricId,
       })
-        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
@@ -158,7 +158,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitIncreaseOrder() {
       const orderType = isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
 
-      const { metricId, metricData } = initIncreaseOrderMetricData({
+      const metricData = initIncreaseOrderMetricData({
         fromToken,
         increaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
@@ -172,7 +172,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLong,
       });
 
-      sendOrderSubmittedMetric(metricId, metricData.metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !tokensData ||
@@ -186,7 +186,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricId, metricData.metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -205,7 +205,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         chainId,
         signer,
         subaccount,
-        metricId,
+        metricId: metricData.metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -270,8 +270,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
         })),
       })
-        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
@@ -304,9 +304,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const onSubmitDecreaseOrder = useCallback(
     function onSubmitDecreaseOrder() {
-      const metricType = fixedTriggerOrderType === OrderType.LimitDecrease ? "takeProfitOrder" : "stopLossOrder";
-
-      const { metricData, metricId } = initDecreaseOrderMetricData({
+      const metricData = initDecreaseOrderMetricData({
         collateralToken,
         decreaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
@@ -321,7 +319,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         place: "tradeBox",
       });
 
-      sendOrderSubmittedMetric(metricId, metricData.metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !account ||
@@ -337,7 +335,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricId, metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -374,10 +372,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
-        metricId
+        metricData.metricId
       )
-        .then(makeTxnSentMetricsHandler(metricId, metricData.metricType))
-        .catch(makeTxnErrorMetricsHandler(metricId, metricData.metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       account,

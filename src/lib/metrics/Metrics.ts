@@ -1,26 +1,18 @@
 import { isDevelopment, isLocal } from "config/env";
-import {
-  METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY,
-  METRICS_TIMERS_KEY,
-  SHOW_DEBUG_VALUES_KEY,
-} from "config/localStorage";
-import { OracleFetcher, useOracleKeeperFetcher } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
+import { OracleFetcher } from "domain/synthetics/tokens";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
+import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { useEffect } from "react";
 import { prepareErrorMetricData } from "./errorReporting";
-import useIsWindowVisible from "lib/useIsWindowVisible";
-import { METRIC_WINDOW_EVENT_NAME, MetricData, MetricEventType } from "./types";
-import { sleep } from "lib/sleep";
-import useWallet from "lib/wallets/useWallet";
+import { GlobalMetricData } from "./types";
+import { METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
+import { getStorageItem, setStorageItem } from "./storage";
 
-type MetricEventParams = {
-  event: MetricEventType;
-  data?: MetricData;
+export type MetricEventParams = {
+  event: string;
+  data?: object;
   time?: number;
   isError: boolean;
 };
@@ -30,48 +22,14 @@ const MAX_QUEUE_LENGTH = 500;
 const RETRY_INTERVAL = 2000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 
-type CachedMetricData = MetricData & { _metricDataCreated: number; metricId: string };
+type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
-
-type GlobalMetricData = {
-  isMobileMetamask?: boolean;
-  isWindowVisible?: boolean;
-  isAuthorised?: boolean;
-};
-
-export function useConfigureMetrics() {
-  const { chainId } = useChainId();
-  const fetcher = useOracleKeeperFetcher(chainId);
-  const { active } = useWallet();
-  const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
-  const isMobileMetamask = useIsMetamaskMobile();
-  const isWindowVisible = useIsWindowVisible();
-
-  useEffect(() => {
-    metrics.subscribeToEvents();
-    return () => {
-      metrics.unsubscribeFromEvents();
-    };
-  }, []);
-
-  useEffect(() => {
-    metrics.setFetcher(fetcher);
-  }, [fetcher]);
-
-  useEffect(() => {
-    metrics.setDebug(showDebugValues || false);
-  }, [showDebugValues]);
-
-  useEffect(() => {
-    metrics.setGlobalMetricData({ isMobileMetamask, isWindowVisible, isAuthorised: active });
-  }, [active, isMobileMetamask, isWindowVisible]);
-}
 
 export class Metrics {
   fetcher?: OracleFetcher;
   debug = false;
-  globalMetricData: GlobalMetricData = {};
+  globalMetricData: GlobalMetricData = {} as GlobalMetricData;
   queue: MetricEventParams[] = [];
   eventIndex = 0;
   isProcessing = false;
@@ -102,7 +60,8 @@ export class Metrics {
     this.globalMetricData = { ...this.globalMetricData, ...meta };
   };
 
-  pushEvent = (params: MetricEventParams) => {
+  // Require Generic type to be specified
+  pushEvent = <T extends MetricEventParams = never, P extends T = T>(params: P) => {
     this.queue.push(params);
 
     if (this.fetcher && !this.isProcessing) {
@@ -117,6 +76,7 @@ export class Metrics {
         // eslint-disable-next-line no-console
         console.log("Metrics: Retries exhausted");
       }
+
       return Promise.resolve();
     }
 
@@ -259,7 +219,7 @@ export class Metrics {
 
   handleWindowEvent = (event: Event) => {
     const { detail } = event as CustomEvent;
-    this.pushEvent(detail);
+    this.pushEvent<MetricEventParams>(detail);
   };
 
   handleError = (event) => {
@@ -278,17 +238,31 @@ export class Metrics {
     }
   };
 
-  setCachedMetricData = (metricId: string, metricData: MetricData) => {
-    const cachedMetricsData = localStorage.getItem(CACHED_METRICS_DATA_KEY);
+  // Require Generic type to be specified
+  setCachedMetricData = <TData extends { metricId: string } = never, P extends TData = TData>(
+    metricData: P
+  ): P & CachedMetricData => {
+    const { metricId } = metricData;
+
+    const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
     const metricsData: CachedMetricsData = cachedMetricsData
       ? this.deserializeCachedMetricsData(cachedMetricsData)
       : {};
-    metricsData[metricId] = { metricId, _metricDataCreated: Date.now(), ...metricData };
-    localStorage.setItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
+
+    const cached = { _metricDataCreated: Date.now(), ...metricData };
+    metricsData[metricId] = cached;
+
+    setStorageItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
+
+    return cached;
   };
 
-  getCachedMetricData = (metricId: string, clear?: boolean): CachedMetricData | undefined => {
-    const cachedMetricsData = localStorage.getItem(CACHED_METRICS_DATA_KEY);
+  // Require Generic type to be specified
+  getCachedMetricData = <TData extends { metricId: string } = never, P extends TData = TData>(
+    metricId: P["metricId"],
+    clear?: boolean
+  ): (CachedMetricData & P) | undefined => {
+    const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
 
     if (!cachedMetricsData) {
       return undefined;
@@ -299,38 +273,38 @@ export class Metrics {
 
     if (clear) {
       delete metricsData[metricId];
-      localStorage.setItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
+      setStorageItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
     }
 
-    return event;
+    return event as CachedMetricData & P;
   };
 
-  startTimer = (metricId: string) => {
-    const storedTimers = localStorage.getItem(METRICS_TIMERS_KEY);
+  startTimer = (label: string, fromLocalStorage = true) => {
+    const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
     const timers = storedTimers ? JSON.parse(storedTimers) : {};
 
-    timers[metricId] = Date.now();
+    timers[label] = Date.now();
 
-    localStorage.setItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
+    setStorageItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
   };
 
-  getTime = (metricId: string, clear?: boolean) => {
-    const storedTimers = localStorage.getItem(METRICS_TIMERS_KEY);
+  getTime = (label: string, clear?: boolean, fromLocalStorage = true) => {
+    const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
 
     if (!storedTimers) {
       return undefined;
     }
 
     const timers = JSON.parse(storedTimers);
-    const time = timers[metricId];
+    const time = timers[label];
 
     if (!time) {
       return undefined;
     }
 
     if (clear) {
-      delete timers[metricId];
-      localStorage.setItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
+      delete timers[label];
+      setStorageItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
     }
 
     return Date.now() - time;
@@ -368,7 +342,7 @@ export class Metrics {
     return result;
   };
 
-  serializeCustomFields = (fields: MetricData) => {
+  serializeCustomFields = (fields: object) => {
     return Object.entries(fields).reduce((acc, [key, value]) => {
       if (BANNED_CUSTOM_FIELDS.includes(key)) {
         return acc;

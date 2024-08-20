@@ -9,15 +9,22 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "d
 import { TxError } from "lib/contracts/transactionErrors";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatTokenAmount, roundToOrder } from "lib/numbers";
-import { metrics } from ".";
+import { metrics, SubmittedOrderEvent, ValidationErrorEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
-  ErrorMetricData,
   IncreaseOrderMetricData,
-  MetricData,
+  OrderCancelledEvent,
+  OrderCreatedEvent,
+  OrderExecutedEvent,
+  OrderMetricData,
+  OrderMetricId,
   OrderMetricType,
+  OrderSentEvent,
+  OrderStage,
+  OrderTxnFailedEvent,
+  PendingTxnErrorEvent,
   ShiftGmMetricData,
   SwapGmMetricData,
   SwapMetricData,
@@ -83,7 +90,14 @@ export function initSwapMetricData({
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
 }) {
-  const metricData: SwapMetricData = {
+  return metrics.setCachedMetricData<SwapMetricData>({
+    metricId: getSwapOrderMetricId({
+      initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
+      swapPath: swapAmounts?.swapPathStats?.swapPath,
+      orderType,
+      initialCollateralDeltaAmount: swapAmounts?.amountIn,
+      executionFee: executionFee?.feeTokenAmount,
+    }),
     metricType: orderType === OrderType.LimitSwap ? "limitSwap" : "swap",
     initialCollateralTokenAddress: fromToken?.address,
     hasReferralCode,
@@ -98,20 +112,7 @@ export function initSwapMetricData({
     orderType,
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
-  };
-
-  const metricId = getSwapOrderMetricId({
-    ...metricData,
-    minOutputAmount: swapAmounts?.minOutputAmount,
-    initialCollateralDeltaAmount: swapAmounts?.amountIn,
   });
-
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
 }
 
 export function initIncreaseOrderMetricData({
@@ -138,7 +139,18 @@ export function initIncreaseOrderMetricData({
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
 }) {
-  const metricData: IncreaseOrderMetricData = {
+  return metrics.setCachedMetricData<IncreaseOrderMetricData>({
+    metricId: getPositionOrderMetricId({
+      marketAddress: marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
+      swapPath: increaseAmounts?.swapPathStats?.swapPath,
+      isLong,
+      orderType,
+      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+      initialCollateralDeltaAmount: increaseAmounts?.initialCollateralAmount,
+    }),
+    requestId: getRequestId(),
+    is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     metricType: orderType === OrderType.LimitIncrease ? "limitOrder" : "increasePosition",
     hasReferralCode,
     hasExistingPosition,
@@ -155,21 +167,7 @@ export function initIncreaseOrderMetricData({
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
-    requestId: getRequestId(),
-  };
-  const metricId = getPositionOrderMetricId({
-    ...metricData,
-    sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-    initialCollateralDeltaAmount: increaseAmounts?.initialCollateralAmount,
   });
-
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
 }
 
 export function initDecreaseOrderMetricData({
@@ -207,7 +205,16 @@ export function initDecreaseOrderMetricData({
     metricType = "decreasePosition";
   }
 
-  const metricData: DecreaseOrderMetricData = {
+  return metrics.setCachedMetricData<DecreaseOrderMetricData>({
+    metricId: getPositionOrderMetricId({
+      marketAddress: marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
+      swapPath: [],
+      isLong,
+      orderType,
+      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+      initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
+    }),
     metricType,
     place,
     isStandalone: true,
@@ -233,19 +240,7 @@ export function initDecreaseOrderMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     is1ct: Boolean(subaccount),
     requestId: getRequestId(),
-  };
-
-  const metricId = getPositionOrderMetricId({
-    ...metricData,
-    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-    initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
   });
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
 }
 
 export function initEditCollateralMetricData({
@@ -267,7 +262,16 @@ export function initEditCollateralMetricData({
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
 }) {
-  const metricData: EditCollateralMetricData = {
+  return metrics.setCachedMetricData<EditCollateralMetricData>({
+    metricId: getPositionOrderMetricId({
+      marketAddress: marketInfo?.marketTokenAddress,
+      initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
+      swapPath: [],
+      isLong,
+      orderType,
+      sizeDeltaUsd: 0n,
+      initialCollateralDeltaAmount: collateralDeltaAmount,
+    }),
     metricType: orderType === OrderType.MarketIncrease ? "depositCollateral" : "withdrawCollateral",
     marketAddress: marketInfo?.marketTokenAddress,
     isStandalone: true,
@@ -281,20 +285,7 @@ export function initEditCollateralMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     is1ct: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
-  };
-
-  const metricId = getPositionOrderMetricId({
-    ...metricData,
-    sizeDeltaUsd: 0n,
-    initialCollateralDeltaAmount: collateralDeltaAmount,
   });
-
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
 }
 
 export function initGMSwapMetricData({
@@ -318,25 +309,22 @@ export function initGMSwapMetricData({
   shortTokenAmount: bigint | undefined;
   marketTokenAmount: bigint | undefined;
 }) {
-  const metricData: SwapGmMetricData = {
+  return metrics.setCachedMetricData<SwapGmMetricData>({
+    metricId: getGMSwapMetricId({
+      marketAddress: marketInfo?.marketTokenAddress,
+      executionFee: executionFee?.feeTokenAmount,
+    }),
     metricType: isDeposit ? "buyGM" : "sellGM",
     requestId: getRequestId(),
-    initialLongTokenAddress: undefined,
-    initialShortTokenAddress: undefined,
+    initialLongTokenAddress: longToken?.address,
+    initialShortTokenAddress: shortToken?.address,
     marketAddress: marketInfo?.marketTokenAddress,
     marketName: marketInfo?.name,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
     shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
     marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
-  };
-  const metricId = getGMSwapMetricId({ ...metricData, marketTokenAmount });
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
+  });
 }
 
 export function initShiftGmMetricData({
@@ -352,7 +340,12 @@ export function initShiftGmMetricData({
   minMarketTokenAmount: bigint | undefined;
   marketToken: TokenData | undefined;
 }) {
-  const metricData: ShiftGmMetricData = {
+  return metrics.setCachedMetricData<ShiftGmMetricData>({
+    metricId: getShiftGMMetricId({
+      fromMarketAddress: fromMarketInfo?.marketTokenAddress,
+      toMarketAddress: toMarketInfo?.marketTokenAddress,
+      executionFee: executionFee?.feeTokenAmount,
+    }),
     metricType: "shiftGM",
     requestId: getRequestId(),
     fromMarketAddress: fromMarketInfo?.marketTokenAddress,
@@ -361,34 +354,22 @@ export function initShiftGmMetricData({
     toMarketAddress: toMarketInfo?.marketTokenAddress,
     minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, marketToken?.decimals),
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-  };
-  const metricId = getShiftGMMetricId(metricData);
-
-  metrics.setCachedMetricData(metricId, metricData);
-
-  return {
-    metricData,
-    metricId,
-  };
+  });
 }
 
 export function getGMSwapMetricId(p: {
-  initialLongTokenAddress: string | undefined;
-  initialShortTokenAddress: string | undefined;
   marketAddress: string | undefined;
-  marketTokenAmount: bigint | undefined;
-}) {
-  return [
-    "GMSwap",
-    p.initialLongTokenAddress || "initialLongTokenAddress",
-    p.initialShortTokenAddress || "initialShortTokenAddress",
-    p.marketAddress || "marketTokenAddress",
-    p.marketTokenAmount?.toString || "marketTokenAmount",
-  ].join(":");
+  executionFee: bigint | undefined;
+}): SwapGmMetricData["metricId"] {
+  return `gm:${[p.marketAddress || "marketTokenAddress", p.executionFee?.toString || "marketTokenAmount"].join(":")}`;
 }
 
-export function getShiftGMMetricId(p: { fromMarketAddress: string | undefined; toMarketAddress: string | undefined }) {
-  return ["shiftGM", p.fromMarketAddress || "fromMarketAddress", p.toMarketAddress || "toMarketAddress"].join(":");
+export function getShiftGMMetricId(p: {
+  fromMarketAddress: string | undefined;
+  toMarketAddress: string | undefined;
+  executionFee: bigint | undefined;
+}): ShiftGmMetricData["metricId"] {
+  return `shift:${[p.fromMarketAddress || "fromMarketAddress", p.toMarketAddress || "toMarketAddress", p.executionFee?.toString() || "marketTokenAmount"].join(":")}`;
 }
 
 export function getSwapOrderMetricId(p: {
@@ -396,16 +377,15 @@ export function getSwapOrderMetricId(p: {
   swapPath: string[] | undefined;
   orderType: OrderType | undefined;
   initialCollateralDeltaAmount: bigint | undefined;
-  minOutputAmount: bigint | undefined;
-}) {
-  return [
-    "swap",
+  executionFee: bigint | undefined;
+}): SwapMetricData["metricId"] {
+  return `swap:${[
     p.initialCollateralTokenAddress || "initialColltateralTokenAddress",
     p.swapPath?.join("-") || "swapPath",
     p.orderType || "orderType",
     p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
-    p.minOutputAmount?.toString() || "minOutputAmount",
-  ].join(":");
+    p.executionFee?.toString() || "executionFee",
+  ].join(":")}`;
 }
 
 export function getPositionOrderMetricId(p: {
@@ -416,9 +396,8 @@ export function getPositionOrderMetricId(p: {
   orderType: OrderType | undefined;
   sizeDeltaUsd: bigint | undefined;
   initialCollateralDeltaAmount: bigint | undefined;
-}) {
-  return [
-    "position",
+}): IncreaseOrderMetricData["metricId"] {
+  return `position:${[
     p.marketAddress || "marketAddress",
     p.initialCollateralTokenAddress || "initialCollateralTokenAddress",
     p.swapPath?.join("-") || "swapPath",
@@ -426,55 +405,83 @@ export function getPositionOrderMetricId(p: {
     p.orderType || "orderType",
     p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
     p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
-  ].join(":");
+  ].join(":")}`;
 }
 
-export function sendOrderSubmittedMetric(metricId: string, metricType: OrderMetricType) {
-  metrics.pushEvent({
-    event: `${metricType}.submitted`,
+export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendOrderSubmittedMetric");
+    return;
+  }
+
+  metrics.pushEvent<SubmittedOrderEvent>({
+    event: `${metricData?.metricType}.submitted`,
     isError: false,
-    data: metrics.getCachedMetricData(metricId),
+    data: metricData,
   });
 }
 
-export function sendTxnValidationErrorMetric(metricId: string, metricType: OrderMetricType) {
-  metrics.pushEvent({
-    event: `${metricType}.failed`,
+export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendTxnValidationErrorMetric");
+    return;
+  }
+
+  metrics.pushEvent<ValidationErrorEvent>({
+    event: `${metricData.metricType}.failed`,
     isError: true,
     data: {
       errorContext: "submit",
       errorMessage: "Error submitting order, missed data",
-      ...(metrics.getCachedMetricData(metricId, true) || {}),
-    } as MetricData,
+      ...metricData,
+    },
   });
 }
 
-export function makeTxnSentMetricsHandler(metricId: string, metricType: OrderMetricType) {
+export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
   return () => {
+    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+    if (!metricData) {
+      metrics._sendError("Order metric data not found", "makeTxnSentMetricsHandler");
+      return;
+    }
+
     metrics.startTimer(metricId);
 
-    metrics.pushEvent({
-      event: `${metricType}.sent`,
+    metrics.pushEvent<OrderSentEvent>({
+      event: `${metricData.metricType}.sent`,
       isError: false,
-      time: metrics.getTime(metricId),
-      data: metrics.getCachedMetricData(metricId),
+      time: metrics.getTime(metricId)!,
+      data: metricData,
     });
 
     return Promise.resolve();
   };
 }
 
-export function makeTxnErrorMetricsHandler(metricId: string, metricType: OrderMetricType) {
+export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
   return (error: Error | TxError) => {
+    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+    if (!metricData) {
+      metrics._sendError("Order metric data not found", "makeTxnErrorMetricsHandler");
+      return;
+    }
+
     const errorData = prepareErrorMetricData(error);
 
-    metrics.pushEvent({
-      event: `${metricType}.${errorData?.isUserRejectedError ? "rejected" : "failed"}`,
+    metrics.pushEvent<OrderTxnFailedEvent>({
+      event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
       isError: true,
       data: {
         errorContext: "sending",
         ...(errorData || {}),
-        ...(metrics.getCachedMetricData(metricId, true) || {}),
+        ...metricData,
       },
     });
 
@@ -482,43 +489,77 @@ export function makeTxnErrorMetricsHandler(metricId: string, metricType: OrderMe
   };
 }
 
-export function sendOrderCreatedMetric(metricId: string, metricType: OrderMetricType) {
-  const metricData = metrics.getCachedMetricData(metricId);
-  metrics.pushEvent({
-    event: `${metricType}.created`,
+export function sendPendingOrderTxnErrorMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId, true);
+  const metricType = (metricData as OrderMetricData)?.metricType || "unknownOrder";
+
+  if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendPendingOrderTxnErrorMetric");
+    return;
+  }
+
+  metrics.pushEvent<PendingTxnErrorEvent>({
+    event: `${metricType}.failed`,
+    isError: true,
+    time: metrics.getTime(metricId, true),
+    data: {
+      ...(metricData || {}),
+      errorContext: "minting",
+      errorMessage: "Pending txn error",
+    },
+  });
+}
+
+export function sendOrderCreatedMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendOrderCreatedMetric");
+    return;
+  }
+
+  metrics.pushEvent<OrderCreatedEvent>({
+    event: `${metricData.metricType}.created`,
     isError: false,
     time: metrics.getTime(metricId),
     data: metricData,
   });
 }
 
-export function sendOrderExecutedMetric(metricId: string, metricType: OrderMetricType) {
-  const metricData = metrics.getCachedMetricData(metricId, true);
-  metrics.pushEvent({
-    event: `${metricType}.executed`,
+export function sendOrderExecutedMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendOrderExecutedMetric");
+    return;
+  }
+
+  metrics.pushEvent<OrderExecutedEvent>({
+    event: `${metricData.metricType}.executed`,
     isError: false,
     time: metrics.getTime(metricId, true),
     data: metricData,
   });
 }
 
-export function sendOrderCancelledMetric(metricId: string, metricType: OrderMetricType, eventData: EventLogData) {
-  const metricData = metrics.getCachedMetricData(metricId, true);
+export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: EventLogData) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
+    metrics._sendError("Order metric data not found", "sendOrderCancelledMetric");
     return;
   }
 
-  metrics.pushEvent({
-    event: `${metricType}.failed`,
+  metrics.pushEvent<OrderCancelledEvent>({
+    event: `${metricData.metricType}.failed`,
     isError: true,
     time: metrics.getTime(metricId, true),
     data: {
       ...(metricData || {}),
-      errorMessage: `${metricType} cancelled`,
+      errorMessage: `${metricData.metricType} cancelled`,
       reason: eventData.stringItems.items.reason,
       errorContext: "execution",
-    } as ErrorMetricData,
+    },
   });
 }
 

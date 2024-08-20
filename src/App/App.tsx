@@ -29,14 +29,13 @@ import { IndexTokensFavoritesContextProvider } from "domain/synthetics/tokens/us
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import type { OrderMetricData } from "lib/metrics/types";
 import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { SWRConfigProp } from "./swrConfig";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { metrics } from "lib/metrics";
+import { sendPendingOrderTxnErrorMetric } from "lib/metrics";
 import { AppRoutes } from "./AppRoutes";
 
 // @ts-ignore
@@ -70,18 +69,7 @@ function App() {
             );
 
             if (pendingTxn.metricId) {
-              const metricData = metrics.getCachedMetricData(pendingTxn.metricId, true);
-              const metricType = (metricData as OrderMetricData)?.metricType || "unknownOrder";
-
-              metrics.pushEvent({
-                event: `${metricType}.failed`,
-                isError: true,
-                data: {
-                  ...(metricData || {}),
-                  metricType,
-                  errorMessage: "Pending txn error",
-                },
-              });
+              sendPendingOrderTxnErrorMetric(pendingTxn.metricId);
             }
           }
 

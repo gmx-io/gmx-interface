@@ -1,24 +1,18 @@
-import { METRIC_WINDOW_EVENT_NAME, MetricData, MetricEventType } from "./types";
+import { MetricEventParams } from "./Metrics";
 
-export function emitMetricEvent({
+export const METRIC_WINDOW_EVENT_NAME = "send-metric";
+
+export function emitMetricEvent<T extends MetricEventParams = never, P extends T = T>({
   event,
   data,
   time,
   isError,
-  message,
-}: {
-  event: MetricEventType;
-  data?: MetricData;
-  time?: number;
-  isError: boolean;
-  message?: string;
-}) {
+}: P) {
   globalThis.dispatchEvent(
     new CustomEvent(METRIC_WINDOW_EVENT_NAME, {
       detail: {
         event: event,
         isError: isError,
-        message: message,
         data: data,
         time: time,
       },
