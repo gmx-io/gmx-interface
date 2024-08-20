@@ -8,7 +8,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
   oracleKeeperFetcher: OracleFetcher;
 
-  constructor(params: { resolutions: { [key: number]: string }; oracleFetcher: OracleFetcher }) {
+  constructor(params: { resolutions: { [key: number]: string }; oracleFetcher: OracleFetcher; chainId: number }) {
     super(params);
     this.oracleKeeperFetcher = params.oracleFetcher;
   }
