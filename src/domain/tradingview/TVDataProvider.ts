@@ -61,6 +61,10 @@ export class TVDataProvider {
     }
   }
 
+  clearLiveBars() {
+    this.liveBars = [];
+  }
+
   async updateLiveBars() {
     if (!this.chainId || !this.currentTicker || !this.currentPeriod) {
       return;
