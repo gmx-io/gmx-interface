@@ -28,7 +28,8 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { USD_DECIMALS, getPositionKey } from "lib/legacy";
+import { getPositionKey } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";

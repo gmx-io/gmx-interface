@@ -7,7 +7,7 @@ import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";

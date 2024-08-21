@@ -1,7 +1,30 @@
 {
-  "name": "gambit-interface",
+  "name": "gmx-interface",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "VITE_APP_VERSION=$(git rev-parse HEAD) vite --port 3010 --host",
+    "start-home": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-home vite --port 3010",
+    "start-app": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app vite --port 3011",
+    "build": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build",
+    "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build",
+    "build-app": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "lint": "node node_modules/.bin/eslint src",
+    "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
+    "pre-commit": "vitest run && yarn run lint",
+    "prepare": "husky install && yarn lingui:prepare",
+    "extract": "NODE_ENV=development lingui extract --clean",
+    "compile": "lingui compile",
+    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
+    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
+    "postinstall": "yarn typechain"
+  },
   "dependencies": {
     "@apollo/client": "3.5.6",
     "@binance/w3w-utils": "1.1.4",
@@ -11,6 +34,7 @@
     "@floating-ui/react": "0.26.19",
     "@headlessui/react": "1.7.19",
     "@lingui/core": "4.10.0",
+    "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
     "@rainbow-me/rainbowkit": "2.0.2",
     "@tanstack/react-query": "5.25.0",
@@ -55,7 +79,6 @@
     "react-loading-skeleton": "3.3.1",
     "react-remove-scroll": "2.5.5",
     "react-router-dom": "5.3.4",
-    "react-scripts": "5.0.1",
     "react-select": "5.2.1",
     "react-tabs": "3.2.3",
     "react-toastify": "10.0.5",
@@ -76,30 +99,6 @@
     "react-error-overlay": "6.0.9",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8"
-  },
-  "scripts": {
-    "start": "REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3010 react-app-rewired start",
-    "start-home": "yarn lingui:prepare && REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3010 env-cmd -e development-home react-app-rewired start",
-    "start-app": "yarn lingui:prepare && REACT_APP_VERSION=$(git rev-parse HEAD) PORT=3011 env-cmd -e development-app react-app-rewired start",
-    "start-win": "set PORT=3010&react-app-rewired start",
-    "build": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false react-app-rewired build",
-    "build-home": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
-    "build-app": "REACT_APP_VERSION=$(git rev-parse HEAD) INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
-    "test": "react-app-rewired test",
-    "test:ci": "react-app-rewired test --watchAll=false",
-    "eject": "react-scripts eject",
-    "lint": "node node_modules/.bin/eslint src",
-    "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
-    "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install && yarn lingui:prepare",
-    "extract": "NODE_ENV=development lingui extract --clean",
-    "compile": "lingui compile",
-    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
-    "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit",
-    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
-    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
-    "postinstall": "yarn typechain"
   },
   "eslintConfig": {
     "extends": [
@@ -124,23 +123,19 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "./jest-env.js"
-    ],
-    "globalSetup": "./jest-global-setup.js",
-    "prettierPath": null
-  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@lingui/cli": "4.10.0",
     "@lingui/loader": "4.10.0",
-    "@lingui/macro": "4.10.0",
+    "@lingui/vite-plugin": "4.11.3",
     "@typechain/ethers-v6": "0.5.1",
     "@types/react-date-range": "1.4.9",
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "@vitest/web-worker": "2.0.5",
+    "autoprefixer": "10.4.20",
+    "babel-plugin-macros": "3.1.0",
     "buffer": "6.0.3",
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
@@ -148,13 +143,19 @@
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-perf": "3.3.2",
+    "happy-dom": "14.12.3",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
+    "postcss": "8.4.41",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
-    "react-app-rewired": "2.2.1",
+    "rollup-plugin-visualizer": "5.12.0",
     "tailwindcss": "3.4.4",
-    "typechain": "8.3.2"
+    "typechain": "8.3.2",
+    "vite": "5.4.0",
+    "vite-plugin-svgr": "4.2.0",
+    "vite-tsconfig-paths": "5.0.1",
+    "vitest": "2.0.5"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [

@@ -35,7 +35,7 @@ type Props = {
 
 export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
   const { chainId } = useChainId();
-  const intervalRef = useRef<number | undefined>();
+  const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
   const lastBarTime = useRef<number>(0);
   const missingBarsInfo = useRef({
@@ -64,6 +64,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
+        feedData.current = true;
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
@@ -76,9 +77,7 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
           }
           missingBarsInfo.current.bars = data;
           missingBarsInfo.current.isFetching = false;
-          feedData.current = true;
         } else {
-          feedData.current = false;
           missingBarsInfo.current.isFetching = false;
           missingBarsInfo.current.bars = [];
         }
@@ -132,7 +131,7 @@ function buildFeeder({
   stableTokens: string[];
   supportedResolutions: { [key: string]: string };
   tvDataProviderRef: MutableRefObject<TVDataProvider | undefined>;
-  intervalRef: MutableRefObject<number | undefined>;
+  intervalRef: MutableRefObject<Record<string, number> | undefined>;
   missingBarsInfoRef: MutableRefObject<{
     bars: FromOldToNewArray<Bar>;
     isFetching: boolean;
@@ -194,7 +193,7 @@ function buildFeeder({
           }
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
-
+          lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
           onHistoryCallback(bars, { noData });
         } catch {
@@ -204,7 +203,8 @@ function buildFeeder({
       async subscribeBars(
         symbolInfo: SymbolInfo,
         resolution: ResolutionString,
-        onRealtimeCallback: SubscribeBarsCallback
+        onRealtimeCallback: SubscribeBarsCallback,
+        listenerGuid: string
       ) {
         await subscribeBars({
           symbolInfo,
@@ -217,6 +217,7 @@ function buildFeeder({
           intervalRef,
           supportedResolutions,
           tvDataProviderRef,
+          listenerGuid,
         });
       },
       unsubscribeBars: (id) => {
@@ -224,7 +225,7 @@ function buildFeeder({
         const ticker = id.split("_")[0];
         const isStable = stableTokens.includes(ticker);
         if (!isStable && intervalRef.current) {
-          clearInterval(intervalRef.current);
+          clearInterval(intervalRef.current[id]);
         }
       },
     },
@@ -242,6 +243,7 @@ export function subscribeBars({
   tvDataProviderRef,
   lastBarTimeRef,
   missingBarsInfoRef,
+  listenerGuid,
 }: {
   symbolInfo: Pick<SymbolInfo, "ticker" | "isStable">;
   resolution: ResolutionString;
@@ -249,13 +251,14 @@ export function subscribeBars({
   chainId: number;
   supportedResolutions: { [key: string]: string };
   tvDataProviderRef: MutableRefObject<TVDataProvider | undefined>;
-  intervalRef: MutableRefObject<number | undefined>;
+  intervalRef: MutableRefObject<Record<string, number> | undefined>;
   missingBarsInfoRef: MutableRefObject<{
     bars: FromOldToNewArray<Bar>;
     isFetching: boolean;
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
+  listenerGuid: string;
 }) {
   const period = supportedResolutions[resolution];
   const { ticker, isStable } = symbolInfo;
@@ -264,8 +267,9 @@ export function subscribeBars({
   }
 
   if (intervalRef.current !== undefined) {
-    clearInterval(intervalRef.current);
-    intervalRef.current = undefined;
+    clearInterval(intervalRef.current[listenerGuid]);
+    delete intervalRef.current[listenerGuid];
+    tvDataProviderRef.current?.clearLiveBars();
   }
 
   const handleInterval = () => {
@@ -286,12 +290,12 @@ export function subscribeBars({
       });
       missingBarsInfoRef.current.bars = [];
     } else {
-      tvDataProviderRef.current?.getLiveBar(chainId, ticker, period).then((bar) => {
+      tvDataProviderRef.current?.getLiveBars(chainId, ticker, period)?.forEach((bar) => {
         if (
           bar &&
           bar.ticker === tvDataProviderRef.current?.currentTicker &&
           bar.period === tvDataProviderRef.current?.currentPeriod &&
-          bar.time >= lastBarTimeRef.current
+          (!lastBarTimeRef.current || bar.time >= lastBarTimeRef.current)
         ) {
           lastBarTimeRef.current = bar.time;
           onRealtimeCallback(formatTimeInBarToMs(bar));
@@ -300,7 +304,7 @@ export function subscribeBars({
     }
   };
 
-  if (!isStable) {
-    intervalRef.current = window.setInterval(handleInterval, 500);
+  if (!isStable && intervalRef.current) {
+    intervalRef.current[listenerGuid] = window.setInterval(handleInterval, 500);
   }
 }

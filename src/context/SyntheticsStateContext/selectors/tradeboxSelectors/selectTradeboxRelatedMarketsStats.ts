@@ -1,4 +1,6 @@
-import { fromPairs, keyBy, values } from "lodash";
+import fromPairs from "lodash/fromPairs";
+import keyBy from "lodash/keyBy";
+import values from "lodash/values";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {

@@ -39,7 +39,7 @@ import { PositionOrderInfo } from "domain/synthetics/orders/types";
 import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
 import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
@@ -47,7 +47,8 @@ import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { keyBy, values } from "lodash";
+import keyBy from "lodash/keyBy";
+import values from "lodash/values";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {

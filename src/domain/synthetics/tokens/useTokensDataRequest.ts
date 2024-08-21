@@ -7,14 +7,23 @@ import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 type TokensDataResult = {
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
+  error?: Error;
 };
 
 export function useTokensDataRequest(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData } = useTokenBalances(chainId);
-  const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(chainId);
+  const { balancesData, error: balancesError } = useTokenBalances(chainId);
+  const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
+
+  const error = balancesError || pricesError;
 
   return useMemo(() => {
+    if (error) {
+      return {
+        error,
+      };
+    }
+
     const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
 
     if (!pricesData) {
@@ -43,5 +52,5 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
       }, {} as TokensData),
       pricesUpdatedAt,
     };
-  }, [chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs]);
+  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs]);
 }

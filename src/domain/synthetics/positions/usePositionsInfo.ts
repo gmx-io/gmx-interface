@@ -4,7 +4,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
@@ -23,6 +23,7 @@ import {
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
+  error?: Error;
 };
 
 export function usePositionsInfoRequest(
@@ -38,12 +39,24 @@ export function usePositionsInfoRequest(
   const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
 
   const { signer } = useWallet();
-  const { positionsData } = usePositions(chainId, p);
-  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { positionsData, error: positionsError } = usePositions(chainId, p);
+  const {
+    positionsConstants: { minCollateralUsd },
+    error: positionsConstantsError,
+  } = usePositionsConstantsRequest(chainId);
+  const { uiFeeFactor, error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
+  const error = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
+
   return useMemo(() => {
+    if (error) {
+      return {
+        isLoading: false,
+        error,
+      };
+    }
+
     if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
@@ -214,5 +227,14 @@ export function usePositionsInfoRequest(
       positionsInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, minCollateralUsd, positionsData, showPnlInLeverage, tokensData, userReferralInfo, uiFeeFactor]);
+  }, [
+    error,
+    marketsInfoData,
+    tokensData,
+    positionsData,
+    minCollateralUsd,
+    userReferralInfo,
+    uiFeeFactor,
+    showPnlInLeverage,
+  ]);
 }

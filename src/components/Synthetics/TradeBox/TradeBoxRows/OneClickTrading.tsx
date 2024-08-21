@@ -28,7 +28,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import CloseIcon from "img/navbutton-close.svg";
+import closeIcon from "img/navbutton-close.svg";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
@@ -168,7 +168,7 @@ export function TradeBoxOneClickTrading() {
             </Button>
             {onCloseClick && (
               <img
-                src={CloseIcon}
+                src={closeIcon}
                 onClick={onCloseClick}
                 alt="close"
                 className="TradeBox-close-icon relative top-2 h-18 w-18 cursor-pointer"

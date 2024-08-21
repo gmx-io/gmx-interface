@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { noop } from "lodash";
+import noop from "lodash/noop";
 import { useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 

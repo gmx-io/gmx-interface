@@ -2,8 +2,6 @@ import React, { useState, useMemo } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  PRECISION,
-  USD_DECIMALS,
   SWAP,
   DECREASE,
   INCREASE,
@@ -13,13 +11,14 @@ import {
   getExchangeRateDisplay,
   calculatePositionDelta,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "domain/legacy";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "config/contracts";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo } from "domain/tokens/utils";
-import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmount, formatAmountFree, parseValue, PRECISION } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";

@@ -12,9 +12,9 @@ import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   SECONDS_PER_YEAR,
-  USD_DECIMALS,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";

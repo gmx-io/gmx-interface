@@ -1,7 +1,8 @@
-import { getContract } from "config/contracts";
+import { getContract } from "@/config/contracts";
 import { ethers } from "ethers";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
+import mapKeys from "lodash/mapKeys";
 
 import OrderBook from "abis/OrderBook.json";
 import OrderBookReader from "abis/OrderBookReader.json";
@@ -16,12 +17,14 @@ import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
+import { USD_DECIMALS } from "config/factors";
 import {
   bigNumberify,
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
   calculatePriceDecimals,
+  PRECISION,
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
@@ -38,11 +41,9 @@ export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const SECONDS_PER_YEAR = 31536000n;
 export const USDG_DECIMALS = 18;
-export const USD_DECIMALS = 30;
 export const DEPOSIT_FEE = 30n;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
-export const PRECISION = expandDecimals(1, 30);
 export const GLP_DECIMALS = 18;
 export const GMX_DECIMALS = 18;
 export const GM_DECIMALS = 18;
@@ -80,12 +81,14 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;
 
+export const TOKEN_IMG_DIR = "/src/img/";
+
 export function deserialize(data) {
   return deserializeBigIntsInObject(data);
 }
 
 export function isHomeSite() {
-  return process.env.REACT_APP_IS_HOME_SITE === "true";
+  return import.meta.env.VITE_APP_IS_HOME_SITE === "true";
 }
 
 export function getMarginFee(sizeDelta: bigint) {
@@ -1388,17 +1391,22 @@ export function getTradePageUrl() {
   return "https://app.gmx.io/#/trade";
 }
 
-export function importImage(name) {
-  let tokenImage = "";
+// Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs
+const imageStaticMap = mapKeys(
+  import.meta.glob("@/img/*.*", {
+    query: "?url",
+    import: "default",
+    eager: true,
+  }),
+  (_, key) => key.split("/").pop()
+);
 
-  try {
-    tokenImage = require("img/" + name);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+export function importImage(name) {
+  if (name in imageStaticMap) {
+    return imageStaticMap[name] as string;
   }
 
-  return tokenImage;
+  throw new Error(`Image ${name} not found`);
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {

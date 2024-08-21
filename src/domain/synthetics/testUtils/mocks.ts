@@ -1,6 +1,6 @@
 import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 
 export function usdToToken(usd: number, token: TokenData) {

@@ -5,8 +5,8 @@ import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl 
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
-import { CHART_PERIODS, PRECISION } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals } from "lib/numbers";
+import { CHART_PERIODS } from "lib/legacy";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals, PRECISION } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";

@@ -6,7 +6,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
 
 import { formatUsdPrice, calculatePriceDecimals } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 

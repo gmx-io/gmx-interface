@@ -22,13 +22,13 @@ import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
-  USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getPageTitle,
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import useSWR from "swr";
 

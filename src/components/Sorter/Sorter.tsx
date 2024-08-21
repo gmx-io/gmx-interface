@@ -1,9 +1,9 @@
 import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useRef, useState } from "react";
 
-import { ReactComponent as IcSortable } from "img/ic_sortable.svg";
-import { ReactComponent as IcSortedAsc } from "img/ic_sorted_asc.svg";
-import { ReactComponent as IcSortedDesc } from "img/ic_sorted_desc.svg";
+import IcSortable from "img/ic_sortable.svg?react";
+import IcSortedAsc from "img/ic_sorted_asc.svg?react";
+import IcSortedDesc from "img/ic_sorted_desc.svg?react";
 
 export type SortDirection = "asc" | "desc" | "unspecified";
 

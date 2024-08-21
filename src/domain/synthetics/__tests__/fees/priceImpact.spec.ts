@@ -2,6 +2,7 @@ import { applyImpactFactor } from "domain/synthetics/fees";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { expandDecimals } from "lib/numbers";
+import { describe, expect, it } from "vitest";
 
 describe("applyImpactFactor", () => {
   for (const [diffUsd, exponentFactor, impactFactor, expected] of [

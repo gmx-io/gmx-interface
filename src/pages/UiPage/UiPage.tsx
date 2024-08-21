@@ -1,14 +1,22 @@
-import { camelCase, entries, upperFirst } from "lodash";
+import camelCase from "lodash/camelCase";
+import entries from "lodash/entries";
+import upperFirst from "lodash/upperFirst";
+import mapKeys from "lodash/mapKeys";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-// @ts-ignore
-const iconsContext = require.context("img", true, /img\/ic_.+\.svg$/);
+const iconsContext = mapKeys(
+  import.meta.glob("@/img/ic_*.svg", {
+    query: "?url",
+    import: "default",
+    eager: true,
+  }),
+  (_, key) => key.split("/").pop()
+);
 
-// @ts-ignore
-const icons = iconsContext.keys().map((rawPath) => {
+const icons = Object.keys(iconsContext).map((rawPath) => {
   let name = camelCase(rawPath.match(/ic_(.+)\.svg$/)?.[1]) + "Icon";
 
   if (/[0-9]/.test(name[0])) {
@@ -21,17 +29,21 @@ const icons = iconsContext.keys().map((rawPath) => {
     path: rawPath,
     name: name,
     importUrl: `import ${name} from "${rawPath}";`,
-    importSvg: `import { ReactComponent as ${componentName} } from "${rawPath}";`,
-    src: iconsContext(rawPath),
+    importSvg: `import ${componentName} from "${rawPath}";`,
+    src: iconsContext[rawPath],
   };
 }) as { src: string; name: string; path: string; importUrl: string; importSvg: string }[];
 
-// @ts-ignore
-const otherImagesContext = require.context("img", true, /img\/.+\.(png|jpg|jpeg|gif|svg)$/);
+const otherImagesContext = mapKeys(
+  import.meta.glob("@/img/**/*.{png,jpg,jpeg,gif,svg}", {
+    query: "?url",
+    import: "default",
+    eager: true,
+  }),
+  (_, key) => key.split("/").pop()
+);
 
-// @ts-ignore
-const otherImages = otherImagesContext
-  .keys()
+const otherImages = Object.keys(otherImagesContext)
   .filter((key) => !key.includes("/ic_"))
   .map((key) => {
     let name = camelCase(key.match(/img\/(.+)\.(png|jpg|jpeg|gif|svg)$/)?.[1]) + "Image";
@@ -44,7 +56,7 @@ const otherImages = otherImagesContext
       path: key,
       name: name,
       importUrl: `import ${name} from "${key}";`,
-      src: otherImagesContext(key),
+      src: otherImagesContext[key],
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 

@@ -9,6 +9,7 @@ export type UserReferralInfo = {
   totalRebateFactor: bigint;
   discountShare: bigint;
   discountFactor: bigint;
+  error?: Error;
 };
 
 export enum RebateDistributionType {

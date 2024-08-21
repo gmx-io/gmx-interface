@@ -1,6 +1,7 @@
 import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { fillBarGaps } from "../requests";
 import type { Bar, FromOldToNewArray } from "../types";
+import { vi, describe, expect, it, beforeAll, afterEach } from "vitest";
 
 describe("fillBarGaps", () => {
   let originalDateNow: () => number;
@@ -47,7 +48,7 @@ describe("fillBarGaps", () => {
   it("works with two prices", () => {
     const firstPointSec = 1711000000 + TIMEZONE_OFFSET_SEC;
     const secondPointSec = 1711000020 + TIMEZONE_OFFSET_SEC;
-    Date.now = jest.fn(() => (secondPointSec - TIMEZONE_OFFSET_SEC) * 1000);
+    Date.now = vi.fn(() => (secondPointSec - TIMEZONE_OFFSET_SEC) * 1000);
 
     const input: FromOldToNewArray<Bar> = [
       {

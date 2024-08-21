@@ -1,7 +1,6 @@
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
-import { PRECISION } from "lib/legacy";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
 import { FeeItem } from "../types";
 import { SwapStats } from "domain/synthetics/trade";
 import { bigMath } from "lib/bigmath";

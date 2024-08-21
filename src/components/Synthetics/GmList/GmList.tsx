@@ -428,7 +428,7 @@ function GmListItem({
       </ExchangeTd>
 
       <ExchangeTd className="w-[350px]">
-        <div className="flex flex-wrap gap-10">
+        <div className="grid grid-cols-3 gap-10">
           <Button
             className="flex-grow"
             variant="secondary"
@@ -443,19 +443,25 @@ function GmListItem({
           >
             <Trans>Sell</Trans>
           </Button>
-          <div
-            className={cx("flex-grow", {
-              invisible: !isShiftAvailable,
-            })}
+
+          <TooltipWithPortal
+            disabled={isShiftAvailable}
+            content={t`Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees.`}
+            disableHandleStyle
+            handleClassName="block"
+            position="bottom-end"
           >
             <Button
-              className="w-full"
+              className={cx("w-full", {
+                "!opacity-30": !isShiftAvailable,
+              })}
               variant="secondary"
               to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
+              disabled={!isShiftAvailable}
             >
               <Trans>Shift</Trans>
             </Button>
-          </div>
+          </TooltipWithPortal>
         </div>
       </ExchangeTd>
     </ExchangeTr>
@@ -557,8 +563,8 @@ function ApyTooltipContent() {
     <p className="text-white">
       <Trans>
         <p className="mb-12">
-          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
-          borrowing fee. It excludes:
+          The APY is an estimate based on the fees collected over the past seven days, including borrowing fees and
+          price impact amounts. It excludes:
         </p>
         <ul className="mb-8 list-disc">
           <li className="p-2">price changes of the underlying token(s)</li>

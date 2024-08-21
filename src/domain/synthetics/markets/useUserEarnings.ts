@@ -4,7 +4,8 @@ import useSWR from "swr";
 
 import { getMarketListingDate } from "config/markets";
 import { bigMath } from "lib/bigmath";
-import { GMX_DECIMALS, USD_DECIMALS } from "lib/legacy";
+import { GMX_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";

@@ -4,6 +4,7 @@ import { expandDecimals } from "lib/numbers";
 import { MarketInfo } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { describe, expect, it } from "vitest";
 
 const closeSizeUsd = BigInt(99);
 

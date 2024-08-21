@@ -1,8 +1,8 @@
 import { getAccount } from "@wagmi/core";
-import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
 export function getRealChainId() {
-  const chainId = getAccount(rainbowKitConfig).chainId;
+  const chainId = getAccount(getRainbowKitConfig()).chainId;
 
   return chainId;
 }

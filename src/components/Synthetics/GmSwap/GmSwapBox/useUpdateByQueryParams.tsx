@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { isAddress } from "ethers";
-import { values } from "lodash";
+import values from "lodash/values";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
