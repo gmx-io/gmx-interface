@@ -16,6 +16,7 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
+  error?: Error;
 };
 
 /**
@@ -203,8 +204,8 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { address: account } = useAccount();
-  const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
+  const { marketsData, marketsAddresses, error: marketsError } = useMarkets(chainId);
+  const { tokensData, pricesUpdatedAt, error: tokensDataError } = useTokensDataRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -259,10 +260,13 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     return data as MarketsInfoData;
   }, [marketsValues.data, marketsConfigs.data, marketsAddresses, marketsData, tokensData, chainId]);
 
+  const error = marketsError || tokensDataError || marketsValues.error || marketsConfigs.error;
+
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
     pricesUpdatedAt,
+    error,
   };
 }
 

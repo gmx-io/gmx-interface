@@ -180,10 +180,13 @@ export class Metrics {
           type: txErrorType,
           errorData: txErrorData,
         },
-        env: {
-          VITE_APP_IS_HOME_SITE: process.env.VITE_APP_IS_HOME_SITE ?? null,
-          VITE_APP_VERSION: process.env.VITE_APP_VERSION ?? null,
-        },
+        env:
+          typeof process !== "undefined"
+            ? {
+                VITE_APP_IS_HOME_SITE: process.env.VITE_APP_IS_HOME_SITE ?? null,
+                VITE_APP_VERSION: process.env.VITE_APP_VERSION ?? null,
+              }
+            : {},
         isDev: isDevelopment(),
         host: window.location.host,
         url: window.location.href,

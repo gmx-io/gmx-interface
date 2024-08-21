@@ -184,7 +184,7 @@ export function SyntheticsStateContextProvider({
   useMeasureLoadTime({
     isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
-    skip: !account,
+    skip: !account || pageType !== "trade",
     metricType: "positionsListLoad",
   });
 
