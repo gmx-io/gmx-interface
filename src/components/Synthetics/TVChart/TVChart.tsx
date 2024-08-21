@@ -1,4 +1,7 @@
 import { t } from "@lingui/macro";
+import { useEffect, useMemo, useState } from "react";
+import { usePrevious, useMedia } from "react-use";
+
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, getPriceDecimals } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
@@ -11,20 +14,22 @@ import { selectChartToken } from "context/SyntheticsStateContext/selectors/chart
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
+
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+
 import { TVChartHeader } from "./TVChartHeader";
 
 import "./TVChart.scss";
-import { useMedia } from "react-use";
 
 const DEFAULT_PERIOD = "5m";
 
@@ -116,11 +121,30 @@ export function TVChart() {
     setToTokenAddress(token.address);
   }
 
+  const previousChainId = usePrevious(chainId);
+
   useEffect(() => {
-    setDataProvider(
-      new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleFetcher: oracleKeeperFetcher })
-    );
-  }, [oracleKeeperFetcher]);
+    if (chainId !== previousChainId) {
+      dataProvider?.finalize();
+    }
+  }, [chainId, previousChainId, dataProvider]);
+
+  useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+
+    const dataProvider = new SyntheticsTVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V2,
+      oracleFetcher: oracleKeeperFetcher,
+      chainId,
+    });
+    setDataProvider(dataProvider);
+
+    return () => {
+      dataProvider.finalize();
+    };
+  }, [oracleKeeperFetcher, chainId]);
 
   useEffect(
     function updatePeriod() {

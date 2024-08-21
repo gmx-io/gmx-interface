@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { useAllPositions } from "domain/legacy";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import "./PositionsOverview.css";
 import { formatAmount } from "lib/numbers";

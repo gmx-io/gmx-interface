@@ -1,6 +1,7 @@
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { deserializeBigIntsInObject } from "lib/numbers";
+import { describe, expect, it } from "vitest";
 
 import mockData from "./marketsInfoDataToIndexTokensStats.data.json";
 

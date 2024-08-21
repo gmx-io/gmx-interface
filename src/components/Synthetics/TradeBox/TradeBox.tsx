@@ -85,7 +85,7 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import {
   formatAmount,
   formatAmountFree,
@@ -114,9 +114,9 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useCursorInside } from "lib/useCursorInside";
 
-import { ReactComponent as LongIcon } from "img/long.svg";
-import { ReactComponent as ShortIcon } from "img/short.svg";
-import { ReactComponent as SwapIcon } from "img/swap.svg";
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+import SwapIcon from "img/swap.svg?react";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";

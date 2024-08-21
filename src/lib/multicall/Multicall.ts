@@ -9,8 +9,8 @@ import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { MulticallTimeoutEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 
 export const MAX_TIMEOUT = 20000;
 

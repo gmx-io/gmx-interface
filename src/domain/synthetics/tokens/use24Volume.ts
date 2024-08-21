@@ -11,45 +11,34 @@ import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";
 
 type PositionVolumeInfosResponse = {
-  positionVolumeInfos: {
-    volumeUsd: number;
-  }[];
+  positionsVolume24hByMarket: string;
 };
 
 const POSITIONS_VOLUME_INFOS_QUERY = `
-query GetPositionVolumeInfos($indexToken: String!, $timestamp: Int!) {
-  positionVolumeInfos(
-    orderBy: timestamp
-    orderDirection: desc
-    where: { period: "1h", indexToken: $indexToken, timestamp_gt: $timestamp }
-  ) {
-    id
-    volumeUsd
-    timestamp
-    __typename
-  }
+query PositionVolumeInfoResolver($marketAddress: String!, $timestamp: Float!) {
+  positionsVolume24hByMarket(where: {timestamp: $timestamp, marketAddress: $marketAddress})
 }`;
 
 export function use24hVolume() {
   const chainId = useSelector(selectChainId);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
 
-  const endpoint = getSubgraphUrl(chainId, "syntheticsStats");
+  const endpoint = getSubgraphUrl(chainId, "subsquid");
 
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
 
-  const indexTokenAddress = marketInfo?.indexTokenAddress;
+  const marketTokenAddress = marketInfo?.marketTokenAddress;
 
   const variables = {
-    indexToken: indexTokenAddress?.toLocaleLowerCase(),
+    marketAddress: marketTokenAddress,
     timestamp: timestamp,
   };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    variables.indexToken ? `24hVolume-${indexTokenAddress}` : null,
+    variables.marketAddress ? `24hVolume-${marketTokenAddress}` : null,
     async () => {
-      if (!endpoint || !variables.indexToken) {
+      if (!endpoint || !variables.marketAddress) {
         return;
       }
 
@@ -61,6 +50,6 @@ export function use24hVolume() {
   );
 
   return useMemo(() => {
-    return data?.positionVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+    return data?.positionsVolume24hByMarket ? BigInt(data?.positionsVolume24hByMarket) : 0n;
   }, [data]);
 }

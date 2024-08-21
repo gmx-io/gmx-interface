@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { values } from "lodash";
+import values from "lodash/values";
 import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 

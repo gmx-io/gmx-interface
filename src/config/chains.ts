@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
-import { sample } from "lodash";
+import sample from "lodash/sample";
 import type { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 
 const { parseEther } = ethers;
 
-export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;
-export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
+export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
+export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;
 
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;

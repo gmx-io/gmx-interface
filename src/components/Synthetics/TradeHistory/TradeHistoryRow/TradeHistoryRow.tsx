@@ -24,7 +24,7 @@ import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 import "./TradeHistoryRow.scss";
 

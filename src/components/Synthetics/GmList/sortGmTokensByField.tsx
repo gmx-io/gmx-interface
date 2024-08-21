@@ -1,4 +1,4 @@
-import { values } from "lodash";
+import values from "lodash/values";
 
 import type { SortDirection } from "components/Sorter/Sorter";
 import { getMarketListingDate } from "config/markets";

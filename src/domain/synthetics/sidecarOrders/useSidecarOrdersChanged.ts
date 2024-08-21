@@ -1,5 +1,5 @@
 import { usePrevious } from "react-use";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 
 import {
   selectTradeboxSidecarOrdersExistingLimitEntries,

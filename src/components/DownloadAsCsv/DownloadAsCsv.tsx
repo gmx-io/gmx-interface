@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { downloadAsCsv } from "lib/csv";
 
-import DownloadIcon from "img/ic_download.svg";
+import downloadIcon from "img/ic_download.svg";
 
 type Props<T> = {
   data: T[];
@@ -21,5 +21,5 @@ export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: 
     return null;
   }
 
-  return <img className={cx("clickable", className)} src={DownloadIcon} alt="Download as CSV" onClick={onClick} />;
+  return <img className={cx("clickable", className)} src={downloadIcon} alt="Download as CSV" onClick={onClick} />;
 }

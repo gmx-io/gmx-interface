@@ -26,7 +26,8 @@ import {
   getSwapPathOutputAddresses,
   getTradeFlagsForOrder,
 } from "domain/synthetics/trade";
-import { USD_DECIMALS, getPositionKey } from "lib/legacy";
+import { getPositionKey } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";

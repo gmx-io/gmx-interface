@@ -1,7 +1,8 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
-import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { adjustForDecimals } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
+import { expandDecimals, formatAmount, PRECISION } from "lib/numbers";
 import { TokenData, TokenPrices, TokensAllowanceData, TokensData, TokensRatio } from "./types";
 
 export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {

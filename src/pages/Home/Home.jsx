@@ -12,7 +12,8 @@ import tradingIcon from "img/ic_trading.svg";
 
 import useSWR from "swr";
 
-import { USD_DECIMALS, getTotalVolumeSum } from "lib/legacy";
+import { getTotalVolumeSum } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { useUserStat } from "domain/legacy";
 

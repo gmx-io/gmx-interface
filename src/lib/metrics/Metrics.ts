@@ -181,8 +181,8 @@ export class Metrics {
           errorData: txErrorData,
         },
         env: {
-          REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
-          REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
+          VITE_APP_IS_HOME_SITE: process.env.VITE_APP_IS_HOME_SITE ?? null,
+          VITE_APP_VERSION: process.env.VITE_APP_VERSION ?? null,
         },
         isDev: isDevelopment(),
         host: window.location.host,

@@ -136,6 +136,7 @@ export function MarketStats(p: Props) {
   return (
     <div className="App-card MarketStats-card">
       <MarketTokenSelector
+        chainId={chainId}
         marketTokensData={marketTokensData}
         marketsInfoData={marketsInfoData}
         marketsTokensAPRData={marketsTokensApyData}
@@ -171,8 +172,9 @@ export function MarketStats(p: Props) {
                 return (
                   <div>
                     <Trans>
-                      GM token pricing includes price impact pool amounts, the pending PnL of open positions, and
-                      borrowing fees. It excludes funding fees, which are exchanged between traders.
+                      GM token pricing is affected by the backing tokens, fees and price impact amounts collected, the
+                      pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged
+                      between traders.
                       <br />
                       <br />
                       <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#token-pricing">

@@ -1,4 +1,5 @@
 import { METRIC_WINDOW_EVENT_NAME } from "lib/metrics/emitMetricEvent";
+
 import { MAX_TIMEOUT, Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
@@ -33,10 +34,3 @@ globalThis.addEventListener(METRIC_WINDOW_EVENT_NAME, (event) => {
     detail: (event as CustomEvent).detail,
   });
 });
-
-// Typescript hack to make it seem this file exports a class
-declare class MulticallWorker extends Worker {
-  constructor();
-}
-
-export default MulticallWorker;

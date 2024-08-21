@@ -1,7 +1,7 @@
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS, PRECISION } from "lib/legacy";
+import { CHART_PERIODS } from "lib/legacy";
 import { ethers } from "ethers";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
 
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
@@ -676,7 +676,7 @@ export function SyntheticsStats() {
                   bigMath.mulDiv(
                     market.positionImpactPoolDistributionRate * 86400n * 365n,
                     market.indexToken.prices.minPrice,
-                    (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n) ?? 0n
+                    (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n)
                   ) * 100n;
 
                 const reservedPositivePriceImpactUsd = getPriceImpactUsd({

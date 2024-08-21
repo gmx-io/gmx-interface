@@ -5,7 +5,7 @@ import { getTokenBySymbol } from "config/tokens";
 // Warning: do not import through reexport, it will break jest
 import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";

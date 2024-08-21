@@ -7,7 +7,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
@@ -25,8 +25,8 @@ import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
 import { getToken } from "config/tokens";
 
-import { ReactComponent as LongIcon } from "img/long.svg";
-import { ReactComponent as ShortIcon } from "img/short.svg";
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
 
 export function useChartHeaderFormattedValues() {
   const dailyVolumeValue = use24hVolume();
@@ -87,7 +87,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
       return [
         <>
-          <LongIcon />
+          <LongIcon width={12} className="relative top-1 opacity-70" />
           <span key="long-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
           </span>
@@ -103,7 +103,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.shortOpenInterestPercentage !== undefined && info.openInterestShort !== undefined) {
       return [
         <>
-          <ShortIcon />
+          <ShortIcon width={12} className="relative opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap">
             ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
@@ -127,7 +127,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <LongIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
         disableHandleStyle
         handle={
           <span className="flex items-center justify-center gap-4">
-            <ShortIcon />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -174,7 +174,7 @@ export function useChartHeaderFormattedValues() {
               negative: netRate < 0n,
             })}
           >
-            <LongIcon />
+            <LongIcon width={12} className="relative top-1" />
             {formatRatePercentage(netRate)}
           </span>
         }
@@ -201,7 +201,7 @@ export function useChartHeaderFormattedValues() {
               negative: netRate < 0n,
             })}
           >
-            <ShortIcon />
+            <ShortIcon width={12} />
             {formatRatePercentage(netRate)}
           </span>
         }
@@ -227,5 +227,6 @@ export function useChartHeaderFormattedValues() {
     netRateShort,
     dailyVolume,
     dayPriceDelta,
+    info,
   };
 }

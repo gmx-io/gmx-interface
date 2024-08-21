@@ -1,5 +1,5 @@
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
-import { invert } from "lodash";
+import invert from "lodash/invert";
 
 export const NETWORK_QUERY_PARAM = "network";
 export const VERSION_QUERY_PARAM = "v";

@@ -1,5 +1,4 @@
 const { ESLintUtils } = require("@typescript-eslint/experimental-utils");
-const jsxUtils = require("eslint-plugin-react/lib/util/jsx");
 
 const createRule = ESLintUtils.RuleCreator((name) => `https://example.com/rule/${name}`);
 

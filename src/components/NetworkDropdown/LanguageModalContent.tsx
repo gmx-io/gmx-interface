@@ -12,7 +12,6 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
   return (
     <>
       {Object.keys(locales).map((item) => {
-        const image = importImage(`flag_${item}.svg`);
         return (
           <div
             key={item}
@@ -28,7 +27,7 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
                 {isTestLanguage(item) ? (
                   "🫐"
                 ) : (
-                  <img className="network-dropdown-icon" src={image} alt={locales[item]} />
+                  <img className="network-dropdown-icon" src={importImage(`flag_${item}.svg`)} alt={locales[item]} />
                 )}
               </div>
               <span className="language-item">{locales[item]}</span>

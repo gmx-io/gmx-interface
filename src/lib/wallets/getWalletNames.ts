@@ -1,5 +1,5 @@
 import { getAccount } from "@wagmi/core";
-import { rainbowKitConfig } from "./rainbowKitConfig";
+import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 export type WalletNames = {
   current: string | undefined | null;
@@ -11,14 +11,14 @@ export async function getWalletNames(): Promise<WalletNames> {
   try {
     const walletNames = new Set<string>();
 
-    for (const connector of rainbowKitConfig.connectors) {
+    for (const connector of getRainbowKitConfig().connectors) {
       const isAuthorized = await connector.isAuthorized();
       if (isAuthorized) {
         walletNames.add(connector.name);
       }
     }
 
-    return { current: getAccount(rainbowKitConfig).connector?.name, authorized: [...walletNames], error: false };
+    return { current: getAccount(getRainbowKitConfig()).connector?.name, authorized: [...walletNames], error: false };
   } catch (e) {
     return {
       current: null,

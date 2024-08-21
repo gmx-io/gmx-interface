@@ -1,1 +1,8 @@
 autotests/
+
+postcss.config.js
+tailwind.config.js
+vite.config.ts
+vitest-env.js
+vitest.global-setup.js
+eslint-local-rules.cjs

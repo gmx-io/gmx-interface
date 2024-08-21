@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, PRECISION } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
+import { PRECISION } from "lib/numbers";
 
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 

@@ -1,7 +1,7 @@
 import { MessageDescriptor, i18n } from "@lingui/core";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isDevelopment } from "config/env";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
@@ -25,7 +25,8 @@ export function isTestLanguage(locale: string) {
 }
 
 export async function dynamicActivate(locale: string) {
-  const { messages } = await import(`@lingui/loader!locales/${locale}/messages.po`);
+  const { messages } = await import(`../locales/${locale}/messages.po`);
+
   if (!isTestLanguage(locale)) {
     localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
   }

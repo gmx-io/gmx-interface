@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
-import { toPairs, values } from "lodash";
+import toPairs from "lodash/toPairs";
+import values from "lodash/values";
 import { BiErrorCircle } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 

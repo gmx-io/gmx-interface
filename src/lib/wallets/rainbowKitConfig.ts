@@ -10,6 +10,7 @@ import {
   trustWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import once from "lodash/once";
 import { isDevelopment } from "config/env";
 import { http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
@@ -42,15 +43,17 @@ const othersWalletList: WalletList = [
   },
 ];
 
-export const rainbowKitConfig = getDefaultConfig({
-  appName: APP_NAME,
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  chains: [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
-  transports: {
-    [arbitrum.id]: http(),
-    [avalanche.id]: http(),
-    [arbitrumGoerli.id]: http(),
-    [avalancheFuji.id]: http(),
-  },
-  wallets: [...popularWalletList, ...othersWalletList],
-});
+export const getRainbowKitConfig = once(() =>
+  getDefaultConfig({
+    appName: APP_NAME,
+    projectId: WALLET_CONNECT_PROJECT_ID,
+    chains: [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
+    transports: {
+      [arbitrum.id]: http(),
+      [avalanche.id]: http(),
+      [arbitrumGoerli.id]: http(),
+      [avalancheFuji.id]: http(),
+    },
+    wallets: [...popularWalletList, ...othersWalletList],
+  })
+);

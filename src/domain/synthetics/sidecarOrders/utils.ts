@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
-import { uniqueId } from "lodash";
-import { USD_DECIMALS } from "lib/legacy";
+import uniqueId from "lodash/uniqueId";
+import { USD_DECIMALS } from "config/factors";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";

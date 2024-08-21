@@ -3,7 +3,7 @@ import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types
 import { isIncreaseOrderType, isSwapOrderType } from "./utils";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { getByKey } from "lib/objects";
 import { bigMath } from "lib/bigmath";
 

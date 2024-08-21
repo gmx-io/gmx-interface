@@ -3,7 +3,7 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 
 import "./NotifyButton.scss";
 
-import { ReactComponent as BellIcon } from "img/bell.svg";
+import BellIcon from "img/bell.svg?react";
 
 export const NotifyButton = memo(function NotifyButton() {
   const { openNotifyModal } = useNotifyModalState();

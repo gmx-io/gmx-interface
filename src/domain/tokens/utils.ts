@@ -5,15 +5,14 @@ import {
   DUST_BNB,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
-  PRECISION,
   TAX_BASIS_POINTS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  USD_DECIMALS,
   adjustForDecimals,
   getFeeBasisPoints,
 } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { USD_DECIMALS } from "config/factors";
+import { expandDecimals, PRECISION } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 

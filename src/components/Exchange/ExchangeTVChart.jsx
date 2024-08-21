@@ -2,7 +2,8 @@ import cx from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useChartPrices } from "domain/legacy";
-import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS, INCREASE, SWAP } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
@@ -320,7 +321,7 @@ export default function ExchangeTVChart(props) {
 
   return (
     <div className="ExchangeChart tv" ref={ref}>
-      <div className="ExchangeChart-header mb-10 bg-slate-800">
+      <div className="ExchangeChart-header mb-10 rounded-4 bg-slate-800">
         <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
             <ChartTokenSelector

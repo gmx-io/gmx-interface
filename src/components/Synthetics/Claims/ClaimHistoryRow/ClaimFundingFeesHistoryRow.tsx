@@ -21,7 +21,7 @@ import {
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;

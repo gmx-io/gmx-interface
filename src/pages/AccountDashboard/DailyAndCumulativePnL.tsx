@@ -21,7 +21,7 @@ import type { FromOldToNewArray } from "domain/tradingview/types";
 import { formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { bigintToNumber, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";

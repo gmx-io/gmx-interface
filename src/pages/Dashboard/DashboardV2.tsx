@@ -8,7 +8,8 @@ import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
+import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, getPageTitle } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -64,7 +65,7 @@ import {
 import { EMPTY_OBJECT } from "lib/objects";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
-import { groupBy } from "lodash";
+import groupBy from "lodash/groupBy";
 import AssetDropdown from "./AssetDropdown";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
