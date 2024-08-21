@@ -46,6 +46,8 @@ export function useMeasureLoadTime({
         if (measure.requestId && window.location.hash !== measure.location) {
           clearTimeout(measure.timeoutId);
           measure.done = true;
+          // reset timer
+          metrics.getTime(metricType, true, fromLocalStorage);
         }
       };
     },
