@@ -3,6 +3,9 @@ import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
+import { isWebWorker } from "config/env";
+import { emitMetricEvent } from "context/MetricsContext/emitMetricEvent";
+import { hashData } from "lib/hash";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -158,11 +161,15 @@ export class Multicall {
           callKey,
         });
 
+        const args = call.shouldHashParams
+          ? call.params?.map((keyValue: any[]) => hashData(keyValue[0], keyValue[1]))
+          : call.params;
+
         encodedPayload.push({
           address: contractCallConfig.contractAddress,
           functionName: call.methodName,
           abi,
-          args: call.params,
+          args,
         });
       });
     });
@@ -172,6 +179,15 @@ export class Multicall {
       sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
+      emitMetricEvent({
+        event: "multicall.timeout",
+        isError: true,
+        message: _viemError.message.slice(0, 150),
+        data: {
+          metricType: "rpcTimeout",
+          isInMainThread: !isWebWorker,
+        },
+      });
 
       // eslint-disable-next-line no-console
       console.groupCollapsed("multicall error:");
