@@ -4491,6 +4491,10 @@ msgstr ""
 msgid "CONCLUDED"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Collateral Delta"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL after fees and price impact."
 msgstr ""
