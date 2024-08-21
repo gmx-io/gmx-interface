@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import { getExcessiveExecutionFee } from "config/chains";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { useMemo, useState } from "react";
 

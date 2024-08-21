@@ -7,7 +7,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
@@ -25,8 +25,8 @@ import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
 import { getToken } from "config/tokens";
 
-import { ReactComponent as LongIcon } from "img/long.svg";
-import { ReactComponent as ShortIcon } from "img/short.svg";
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
 
 export function useChartHeaderFormattedValues() {
   const dailyVolumeValue = use24hVolume();

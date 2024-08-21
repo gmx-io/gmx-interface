@@ -19,7 +19,6 @@ import {
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   MARKET,
-  PRECISION,
   SHORT,
   STOP,
   SWAP,
@@ -27,7 +26,6 @@ import {
   SWAP_ORDER_OPTIONS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  USD_DECIMALS,
   adjustForDecimals,
   calculatePositionDelta,
   getExchangeRate,
@@ -37,8 +35,13 @@ import {
   getPositionKey,
   isTriggerRatioInverted,
 } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import {
+  USD_DECIMALS,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  BASIS_POINTS_DIVISOR,
+  MAX_ALLOWED_LEVERAGE,
+} from "config/factors";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tab from "../Tab/Tab";
@@ -51,9 +54,9 @@ import Router from "abis/Router.json";
 import Token from "abis/Token.json";
 import WETH from "abis/WETH.json";
 
-import { ReactComponent as LongIcon } from "img/long.svg";
-import { ReactComponent as ShortIcon } from "img/short.svg";
-import { ReactComponent as SwapIcon } from "img/swap.svg";
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+import SwapIcon from "img/swap.svg?react";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -73,7 +76,15 @@ import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils"
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  limitDecimals,
+  parseValue,
+  PRECISION,
+} from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";

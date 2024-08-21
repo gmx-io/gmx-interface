@@ -19,7 +19,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigMath } from "lib/bigmath";
 

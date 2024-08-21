@@ -1,6 +1,6 @@
 import { Trans, msg, plural, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { uniq } from "lodash";
+import uniq from "lodash/uniq";
 import { useMemo, useState } from "react";
 import { FaArrowDown } from "react-icons/fa";
 import { useKey } from "react-use";

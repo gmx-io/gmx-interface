@@ -25,7 +25,7 @@ import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 

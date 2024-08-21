@@ -13,10 +13,3 @@ async function run(event) {
   });
   return;
 }
-
-// Typescript hack to make it seem this file exports a class
-declare class HashDataWorker extends Worker {
-  constructor();
-}
-
-export default HashDataWorker;

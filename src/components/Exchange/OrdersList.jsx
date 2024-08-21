@@ -5,12 +5,12 @@ import {
   SWAP,
   INCREASE,
   DECREASE,
-  USD_DECIMALS,
   getOrderError,
   getExchangeRateDisplay,
   getExchangeRate,
   getPositionForOrder,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { handleCancelOrder } from "domain/legacy";
 import { getContract } from "config/contracts";
 

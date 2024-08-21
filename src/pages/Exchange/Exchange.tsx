@@ -13,7 +13,6 @@ import {
   MARKET,
   SHORT,
   SWAP,
-  USD_DECIMALS,
   getDeltaStr,
   getFundingFee,
   getPageTitle,
@@ -21,6 +20,7 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { getContract } from "config/contracts";
 

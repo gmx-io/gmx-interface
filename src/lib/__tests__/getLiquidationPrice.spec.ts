@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { formatAmount } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { describe, expect, it } from "vitest";
 
 describe("getLiquidationPrice", function () {
   const cases = [

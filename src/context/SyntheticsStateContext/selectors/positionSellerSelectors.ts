@@ -1,6 +1,6 @@
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";

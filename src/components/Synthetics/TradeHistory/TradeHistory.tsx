@@ -27,7 +27,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboar
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
 import downloadIcon from "img/ic_download_simple.svg";
-import { ReactComponent as PnlAnalysisIcon } from "img/ic_pnl_analysis_20.svg";
+import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 
 import "./TradeHistorySynthetics.scss";
 

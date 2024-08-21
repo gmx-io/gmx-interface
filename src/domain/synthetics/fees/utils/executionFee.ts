@@ -3,7 +3,7 @@ import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "con
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { applyFactor, expandDecimals } from "lib/numbers";
 import { ExecutionFee, GasLimitsConfig } from "../types";
 

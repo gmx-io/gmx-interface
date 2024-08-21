@@ -44,7 +44,10 @@
       "react/jsx-handler-names": "off",
       "react/display-name": "off",
       "local-rules/no-bigint-negation": "off",
-      "local-rules/no-logical-bigint": "off"
+      "local-rules/no-logical-bigint": "off",
+      "no-restricted-imports": ["error", {
+        "paths": ["lodash"]
+      }]
     },
     "env": {
       "browser": true,

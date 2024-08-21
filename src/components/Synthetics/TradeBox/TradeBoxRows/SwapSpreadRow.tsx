@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import { HIGH_SPREAD_THRESHOLD } from "config/factors";
+import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   selectTradeboxFromToken,
   selectTradeboxMarketInfo,
@@ -10,7 +10,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSpread } from "domain/tokens";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
 import { useMemo } from "react";
 

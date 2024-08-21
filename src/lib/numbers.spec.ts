@@ -1,5 +1,5 @@
-import { PRECISION } from "./legacy";
-import { bigintToNumber, numberToBigint, formatUsdPrice } from "./numbers";
+import { bigintToNumber, numberToBigint, formatUsdPrice, PRECISION } from "./numbers";
+import { describe, expect, it } from "vitest";
 
 describe("numbers.ts", () => {
   it("bigintToNumber", () => {

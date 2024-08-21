@@ -1,4 +1,4 @@
-import { expandDecimals } from "lib/numbers";
+export const USD_DECIMALS = 30;
 
 export const BASIS_POINTS_DIVISOR = 10000;
 export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
@@ -12,7 +12,6 @@ export const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR;
  */
 export const MAX_ALLOWED_LEVERAGE = 50 * BASIS_POINTS_DIVISOR;
 
-export const HIGH_SPREAD_THRESHOLD = expandDecimals(1, 28); // 1%
 export const COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD = 5; // 0.05%
 
 export const DEFAULT_SLIPPAGE_AMOUNT = 30; // 0.3%
@@ -25,5 +24,3 @@ export const HIGH_POSITION_IMPACT_BPS = 50; // 0.5%
 export const HIGH_COLLATERAL_IMPACT_BPS = 500; // 5%
 export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER = 30; // 0.3%
-
-export const HIGH_TRADE_VOLUME_FOR_FEEDBACK = expandDecimals(1_000_000, 30); // 1m

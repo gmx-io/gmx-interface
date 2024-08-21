@@ -13,6 +13,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
+import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -34,10 +35,8 @@ import {
   DUST_USD,
   MARKET,
   MIN_PROFIT_TIME,
-  PRECISION,
   STOP,
   USDG_DECIMALS,
-  USD_DECIMALS,
   adjustForDecimals,
   calculatePositionDelta,
   getDeltaStr,
@@ -46,6 +45,7 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -54,6 +54,7 @@ import {
   formatAmountFree,
   formatPercentage,
   parseValue,
+  PRECISION,
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -73,8 +74,6 @@ import { useLocalizedMap } from "lib/i18n";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
-
-const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS) / 100n; // 1%;
 
 const ORDER_OPTION_LABELS = {
   [MARKET]: msg`Market`,

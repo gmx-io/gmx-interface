@@ -119,8 +119,8 @@ async function sendErrorToServer(
       contractError,
       txError,
       env: {
-        REACT_APP_IS_HOME_SITE: process.env.REACT_APP_IS_HOME_SITE ?? null,
-        REACT_APP_VERSION: process.env.REACT_APP_VERSION ?? null,
+        VITE_APP_IS_HOME_SITE: import.meta.env.VITE_APP_IS_HOME_SITE ?? null,
+        VITE_APP_VERSION: import.meta.env.VITE_APP_VERSION ?? null,
       },
       isDevelopment: isDevelopment(),
       host: window.location.host,
