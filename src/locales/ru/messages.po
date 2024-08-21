@@ -3471,6 +3471,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Vesting Status"
+msgstr "<<<<<<< HEAD"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting deposit"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -3780,6 +3784,10 @@ msgstr "Влияние цены"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting shift"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4747,6 +4755,10 @@ msgstr "Обеспечение"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
+msgstr "<<<<<<< HEAD"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting withdrawal"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
@@ -5849,10 +5861,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Не удалось выполнить пополнение счета в {0} {longOrShortText}"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx

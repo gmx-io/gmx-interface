@@ -45,7 +45,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
 
-  const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
+  const { data, mutate, error } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
       performance.mark(`multicall-${name}-start`);
@@ -147,5 +147,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     data,
     mutate,
     isLoading: Boolean(swrFullKey) && !data,
+    error: error as Error | undefined,
   };
 }

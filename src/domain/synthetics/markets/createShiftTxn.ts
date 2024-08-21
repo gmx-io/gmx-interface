@@ -22,6 +22,7 @@ type Params = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
+  metricId?: string;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
 };
@@ -70,6 +71,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     value: p.executionFee,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    metricId: p.metricId,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingShift({

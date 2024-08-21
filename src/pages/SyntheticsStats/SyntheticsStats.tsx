@@ -66,7 +66,9 @@ export function SyntheticsStats() {
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstantsRequest(chainId);
+  const {
+    positionsConstants: { minCollateralUsd, minPositionSizeUsd },
+  } = usePositionsConstantsRequest(chainId);
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {

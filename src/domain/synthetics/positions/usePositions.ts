@@ -26,6 +26,7 @@ const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 type PositionsResult = {
   positionsData?: PositionsData;
   allPossiblePositionsKeys?: string[];
+  error?: Error;
 };
 
 export function usePositions(
@@ -38,29 +39,33 @@ export function usePositions(
 ): PositionsResult {
   const { marketsInfoData, tokensData, account } = p;
 
-  const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
-    key: account ? [account] : null,
+  const { data: existingPositionsKeysSet, error: existingPositionsKeysError } = useMulticall(
+    chainId,
+    "usePositions-keys",
+    {
+      key: account ? [account] : null,
 
-    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-    clearUnusedKeys: true,
-    keepPreviousData: true,
+      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+      clearUnusedKeys: true,
+      keepPreviousData: true,
 
-    request: () => ({
-      dataStore: {
-        contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
-        calls: {
-          keys: {
-            methodName: "getBytes32ValuesAt",
-            params: [accountPositionListKey(account!), 0, 1000],
+      request: () => ({
+        dataStore: {
+          contractAddress: getContract(chainId, "DataStore"),
+          abi: DataStore.abi,
+          calls: {
+            keys: {
+              methodName: "getBytes32ValuesAt",
+              params: [accountPositionListKey(account!), 0, 1000],
+            },
           },
         },
+      }),
+      parseResponse: (res) => {
+        return new Set(res.data.dataStore.keys.returnValues as string[]);
       },
-    }),
-    parseResponse: (res) => {
-      return new Set(res.data.dataStore.keys.returnValues as string[]);
-    },
-  });
+    }
+  );
 
   const keysAndPrices = useKeysAndPricesParams({
     marketsInfoData,
@@ -69,7 +74,7 @@ export function usePositions(
     existingPositionsKeysSet,
   });
 
-  const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
+  const { data: positionsData, error: positionsError } = useMulticall(chainId, "usePositionsData", {
     key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -142,6 +147,7 @@ export function usePositions(
 
   return {
     positionsData: optimisticPositionsData,
+    error: positionsError || existingPositionsKeysError,
   };
 }
 

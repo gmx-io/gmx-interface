@@ -1,4 +1,4 @@
-import { METRIC_EVENT_NAME } from "@/context/MetricsContext/emitMetricEvent";
+import { METRIC_WINDOW_EVENT_NAME } from "@/lib/metrics/emitMetricEvent";
 
 import { MAX_TIMEOUT, Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
@@ -28,7 +28,7 @@ async function run(event) {
   }
 }
 
-globalThis.addEventListener(METRIC_EVENT_NAME, (event) => {
+globalThis.addEventListener(METRIC_WINDOW_EVENT_NAME, (event) => {
   postMessage({
     isMetrics: true,
     detail: (event as CustomEvent).detail,

@@ -3473,6 +3473,10 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting deposit"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr "{longOrShortText} {sizeInToken} {0} (${1})를 ${2} 가격에서 증가시키는 액티브한 지정가 주문이 존재합니다."
@@ -3780,6 +3784,10 @@ msgstr "가격 영향"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting shift"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4747,6 +4755,10 @@ msgstr "공급량"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Error submitting withdrawal"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
@@ -5849,10 +5861,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "{0} {longOrShortText}의 입글을 실행시키지 못했습니다"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the <0>Ethena dashboard</0>."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx

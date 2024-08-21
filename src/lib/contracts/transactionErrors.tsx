@@ -6,24 +6,36 @@ import { getNativeToken } from "config/tokens";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 
-export const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
-export const USER_DENIED = "USER_DENIED";
-export const SLIPPAGE = "SLIPPAGE";
-export const RPC_ERROR = "RPC_ERROR";
-export const NETWORK_CHANGED = "NETWORK_CHANGED";
+export enum TxErrorType {
+  NotEnoughFunds = "NOT_ENOUGH_FUNDS",
+  UserDenied = "USER_DENIED",
+  Slippage = "SLIPPAGE",
+  RpcError = "RPC_ERROR",
+  NetworkChanged = "NETWORK_CHANGED",
+  Expired = "EXPIRED",
+}
 
 type ErrorPattern = { msg?: string; code?: number };
 
-const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
-  [NOT_ENOUGH_FUNDS]: [
+const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
+  [TxErrorType.NotEnoughFunds]: [
     { msg: "insufficient funds for gas" },
     { msg: "not enough funds for gas" },
     { msg: "failed to execute call with revert code InsufficientGasFunds" },
   ],
-  [USER_DENIED]: [{ msg: "User denied transaction signature" }],
-  [SLIPPAGE]: [{ msg: "Router: mark price lower than limit" }, { msg: "Router: mark price higher than limit" }],
-  [NETWORK_CHANGED]: [{ msg: "underlying network changed" }],
-  [RPC_ERROR]: [
+  [TxErrorType.UserDenied]: [
+    { msg: "User denied transaction signature" },
+    { msg: "User rejected" },
+    { msg: "user rejected action" },
+    { msg: "Signing aborted by user" },
+  ],
+  [TxErrorType.Slippage]: [
+    { msg: "Router: mark price lower than limit" },
+    { msg: "Router: mark price higher than limit" },
+  ],
+  [TxErrorType.NetworkChanged]: [{ msg: "network changed" }, { msg: "Invalid network" }],
+  [TxErrorType.Expired]: [{ msg: "Request expired" }],
+  [TxErrorType.RpcError]: [
     // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
     { code: -32700 }, // Parse error: Invalid JSON
     { code: -32600 }, // Invalid request: JSON is not a valid request object
@@ -53,7 +65,7 @@ export type TxError = {
   error?: any;
 };
 
-export function extractError(ex: TxError) {
+export function extractError(ex: TxError): [string, TxErrorType | null, any] | [] {
   if (!ex) {
     return [];
   }
@@ -89,7 +101,7 @@ export function extractError(ex: TxError) {
       const matchMessage = pattern.msg && message && message.includes(pattern.msg);
 
       if (matchCode || matchMessage) {
-        return [message, type, ex.data];
+        return [message, type as TxErrorType, ex.data];
       }
     }
   }
@@ -105,7 +117,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
   let autoCloseToast: any = 5000;
 
   switch (type) {
-    case NOT_ENOUGH_FUNDS:
+    case TxErrorType.NotEnoughFunds:
       failMsg = (
         <Trans>
           There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
@@ -117,16 +129,16 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
         </Trans>
       );
       break;
-    case NETWORK_CHANGED:
+    case TxErrorType.NetworkChanged:
       failMsg = getInvalidNetworkErrorMessage(chainId);
       break;
-    case USER_DENIED:
+    case TxErrorType.UserDenied:
       failMsg = t`Transaction was cancelled.`;
       break;
-    case SLIPPAGE:
+    case TxErrorType.Slippage:
       failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
       break;
-    case RPC_ERROR: {
+    case TxErrorType.RpcError: {
       autoCloseToast = false;
 
       const originalError = errorData?.error?.message || errorData?.message || message;
@@ -166,8 +178,14 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
   return { failMsg, autoCloseToast };
 }
 
-export function isUserRejectedActionError(error: Error) {
-  return error.message.toLowerCase().includes("user rejected action");
+export function getIsUserRejectedError(errorType: TxErrorType) {
+  return errorType === TxErrorType.UserDenied;
+}
+
+export function getIsUserError(errorType: TxErrorType) {
+  return [TxErrorType.UserDenied, TxErrorType.NetworkChanged, TxErrorType.Expired, TxErrorType.NotEnoughFunds].includes(
+    errorType
+  );
 }
 
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";

@@ -1,13 +1,4 @@
 import { t } from "@lingui/macro";
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import {
-  getPositionOrderMetricId,
-  getSwapOrderMetricId,
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "context/MetricsContext/utils";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -39,12 +30,20 @@ import {
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import {
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
+  initDecreaseOrderMetricData,
+  initIncreaseOrderMetricData,
+  initSwapMetricData,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { DecreaseOrderMetricData, IncreaseOrderMetricData, SwapMetricData } from "context/MetricsContext/types";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -85,30 +84,22 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
-  const metrics = useMetrics();
-
   const onSubmitSwap = useCallback(
     function onSubmitSwap() {
       const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
-      const metricData: SwapMetricData = {
-        metricType: isLimit ? "limitSwap" : "swap",
-        account,
-        initialCollateralTokenAddress: fromToken?.address,
-        toTokenAddress: toToken?.address,
-        initialCollateralDeltaAmount: swapAmounts?.amountIn,
-        minOutputAmount: swapAmounts?.minOutputAmount,
-        swapPath: swapAmounts?.swapPathStats?.swapPath,
-        executionFee: executionFee?.feeTokenAmount,
+      const metricData = initSwapMetricData({
+        fromToken,
+        toToken,
+        hasReferralCode: Boolean(referralCodeForTxn),
+        swapAmounts,
+        executionFee,
         allowedSlippage,
         orderType,
-      };
+        subaccount,
+      });
 
-      const { metricType } = metricData;
-      const metricId = getSwapOrderMetricId(metricData);
-
-      metrics.setCachedMetricData(metricId, metricData);
-      sendOrderSubmittedMetric(metrics, metricId, metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !account ||
@@ -121,7 +112,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metrics, metricId, metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -139,10 +130,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         tokensData,
         setPendingTxns,
         setPendingOrder,
-        metricId,
+        metricId: metricData.metricId,
       })
-        .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
-        .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
@@ -152,7 +143,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       swapAmounts,
       executionFee,
       allowedSlippage,
-      metrics,
+
       tokensData,
       signer,
       chainId,
@@ -167,29 +158,21 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitIncreaseOrder() {
       const orderType = isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
 
-      const metricData: IncreaseOrderMetricData = {
-        metricType: isLimit ? "limitOrder" : "increasePosition",
-        account,
-        referralCodeForTxn,
+      const metricData = initIncreaseOrderMetricData({
+        fromToken,
+        increaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
-        marketAddress: marketInfo?.marketTokenAddress,
-        initialCollateralTokenAddress: fromToken?.address,
-        initialCollateralDeltaAmount: increaseAmounts?.initialCollateralAmount,
-        swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
-        sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens,
-        triggerPrice: isLimit ? triggerPrice : 0n,
-        acceptablePrice: increaseAmounts?.acceptablePrice,
-        isLong,
+        executionFee,
         orderType,
-        executionFee: executionFee?.feeTokenAmount,
-      };
-      const { metricType } = metricData;
-      const metricId = getPositionOrderMetricId(metricData);
+        hasReferralCode: Boolean(referralCodeForTxn),
+        subaccount,
+        triggerPrice,
+        allowedSlippage,
+        marketInfo,
+        isLong,
+      });
 
-      metrics.setCachedMetricData(metricId, metricData);
-
-      sendOrderSubmittedMetric(metrics, metricId, metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !tokensData ||
@@ -203,7 +186,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metrics, metricId, metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -222,7 +205,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         chainId,
         signer,
         subaccount,
-        metricId,
+        metricId: metricData.metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -287,8 +270,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
         })),
       })
-        .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
-        .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
@@ -302,7 +285,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       triggerPrice,
       isLong,
       executionFee,
-      metrics,
+
       tokensData,
       signer,
       allowedSlippage,
@@ -321,32 +304,22 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const onSubmitDecreaseOrder = useCallback(
     function onSubmitDecreaseOrder() {
-      const metricType = fixedTriggerOrderType === OrderType.LimitDecrease ? "takeProfitOrder" : "stopLossOrder";
-
-      const metricData: DecreaseOrderMetricData = {
-        metricType,
-        place: "tradeBox",
-        account,
-        referralCodeForTxn,
-        isFullClose: decreaseAmounts?.isFullClose,
+      const metricData = initDecreaseOrderMetricData({
+        collateralToken,
+        decreaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
-        marketAddress: marketInfo?.marketTokenAddress,
-        initialCollateralTokenAddress: collateralToken?.address,
-        initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
-        swapPath: [],
-        triggerPrice: decreaseAmounts?.triggerPrice,
-        acceptablePrice: decreaseAmounts?.acceptablePrice,
-        sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-        sizeDeltaInTokens: decreaseAmounts?.sizeDeltaInTokens,
+        executionFee,
         orderType: fixedTriggerOrderType,
+        hasReferralCode: Boolean(referralCodeForTxn),
+        subaccount,
+        triggerPrice,
+        marketInfo,
+        allowedSlippage,
         isLong,
-        executionFee: executionFee?.feeTokenAmount,
-      };
+        place: "tradeBox",
+      });
 
-      const metricId = getPositionOrderMetricId(metricData);
-      metrics.setCachedMetricData(metricId, metricData);
-
-      sendOrderSubmittedMetric(metrics, metricId, metricType);
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !account ||
@@ -362,7 +335,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         typeof allowedSlippage !== "number"
       ) {
         helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metrics, metricId, metricType);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -399,10 +372,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
-        metricId
+        metricData.metricId
       )
-        .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
-        .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       account,
@@ -415,7 +388,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       fixedTriggerThresholdType,
       isLong,
       marketInfo,
-      metrics,
       referralCodeForTxn,
       selectedPosition,
       setPendingOrder,
@@ -424,6 +396,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       signer,
       subaccount,
       tokensData,
+      triggerPrice,
     ]
   );
 

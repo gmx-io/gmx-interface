@@ -33,11 +33,10 @@ import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { SWRConfigProp } from "./swrConfig";
-import type { OrderMetricType } from "context/MetricsContext/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { sendPendingOrderTxnErrorMetric } from "lib/metrics";
 import { AppRoutes } from "./AppRoutes";
-import { MetricsContextProvider, useMetrics } from "context/MetricsContext/MetricsContext";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -48,7 +47,6 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
 function App() {
   const signer = useEthersSigner();
   const { chainId } = useChainId();
-  const metrics = useMetrics();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
@@ -71,19 +69,7 @@ function App() {
             );
 
             if (pendingTxn.metricId) {
-              const metricData = metrics.getCachedMetricData(pendingTxn.metricId, true);
-              const metricType = (metricData?.metricType as OrderMetricType) || "unknownOrder";
-
-              metrics?.sendMetric({
-                event: `${metricType}.failed`,
-                isError: true,
-                message: "Pending txn error",
-                data: {
-                  ...(metricData || {}),
-                  metricType,
-                  txnHash: pendingTxn.hash,
-                },
-              });
+              sendPendingOrderTxnErrorMetric(pendingTxn.metricId);
             }
           }
 
@@ -115,7 +101,7 @@ function App() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId, metrics]);
+  }, [signer, pendingTxns, chainId]);
 
   useScrollToTop();
 
@@ -128,7 +114,6 @@ function App() {
   app = <IndexTokensFavoritesContextProvider>{app}</IndexTokensFavoritesContextProvider>;
   app = <GmTokensFavoritesContextProvider>{app}</GmTokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
-  app = <MetricsContextProvider>{app}</MetricsContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;

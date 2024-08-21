@@ -42,6 +42,7 @@ import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
 import { bigMath } from "lib/bigmath";
+import { OrderMetricId } from "lib/metrics";
 
 export * from "./prices";
 
@@ -49,7 +50,7 @@ export type PendingTransaction = {
   hash: string;
   message: string;
   messageDetails?: string;
-  metricId?: string;
+  metricId?: OrderMetricId;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
