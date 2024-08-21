@@ -71,21 +71,20 @@ export class Metrics {
 
   _processQueue = (retriesLeft = 10): Promise<void> => {
     if (retriesLeft === 0) {
-      this.isProcessing = false;
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Retries exhausted");
       }
-
+      this.isProcessing = false;
       return Promise.resolve();
     }
 
     if (this.queue.length === 0) {
-      this.isProcessing = false;
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Queue processed ");
       }
+      this.isProcessing = false;
       return Promise.resolve();
     }
 
@@ -105,6 +104,7 @@ export class Metrics {
         // eslint-disable-next-line no-console
         console.log("Metrics: No event to process");
       }
+      this.isProcessing = false;
       return Promise.resolve();
     }
 
