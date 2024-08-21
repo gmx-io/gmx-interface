@@ -7,7 +7,6 @@ import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
-import { USD_DECIMALS } from "lib/legacy";
 import { formatTokenAmount, roundToOrder } from "lib/numbers";
 import { metrics, SubmittedOrderEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
@@ -29,6 +28,7 @@ import {
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
+import { USD_DECIMALS } from "@/config/factors";
 
 export function getMetricTypeByOrderType(p: {
   orderType: OrderType;
