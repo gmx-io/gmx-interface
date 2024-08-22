@@ -2360,6 +2360,10 @@ msgstr "생성중..."
 msgid "Withdrawing from Subaccount"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settling Position Fees"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Minimum received"
 msgstr "최소량 수치 완료"
@@ -4877,10 +4881,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} {1} for{2} USDG"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Positions' Fees"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
