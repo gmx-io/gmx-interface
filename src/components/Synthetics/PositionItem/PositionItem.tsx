@@ -415,6 +415,10 @@ export function PositionItem(p: Props) {
           </div>
         </td>
         <td>
+          {formatUsd(p.position.sizeInUsd)}
+          <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+        </td>
+        <td>
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -435,10 +439,6 @@ export function PositionItem(p: Props) {
               )}
             </>
           )}
-        </td>
-        <td>
-          {formatUsd(p.position.sizeInUsd)}
-          <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </td>
         <td>
           {/* collateral */}
@@ -546,6 +546,12 @@ export function PositionItem(p: Props) {
               </div>
               <div className="App-card-row">
                 <div className="label">
+                  <Trans>Size</Trans>
+                </div>
+                <div>{formatUsd(p.position.sizeInUsd)}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
                   <Trans>Net Value</Trans>
                 </div>
                 <div>{renderNetValue()}</div>
@@ -566,12 +572,6 @@ export function PositionItem(p: Props) {
                     {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                   </span>
                 </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Size</Trans>
-                </div>
-                <div>{formatUsd(p.position.sizeInUsd)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
