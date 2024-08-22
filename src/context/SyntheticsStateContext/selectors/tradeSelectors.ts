@@ -1,4 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
+import { OrderType } from "domain/synthetics/orders";
 import {
   FindSwapPath,
   TradeFlags,
@@ -14,6 +15,7 @@ import {
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
   getSwapPathStats,
+  getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
@@ -327,6 +329,15 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
       ) => {
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+        let triggerOrderType: OrderType | undefined =
+          position &&
+          getTriggerDecreaseOrderType({
+            isLong: tradeFlags.isLong,
+            markPrice: position.markPrice,
+            triggerPrice: triggerPrice ?? 0n,
+          });
+
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
         const receiveToken = collateralTokenAddress ? getByKey(tokensData, receiveTokenAddress) : undefined;
@@ -356,6 +367,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           minPositionSizeUsd,
           uiFeeFactor,
           receiveToken,
+          triggerOrderType,
         });
       }
     )

@@ -115,19 +115,19 @@ export function getDecreasePositionAmounts(p: {
   values.decreaseSwapType = getDecreaseSwapType(pnlToken, collateralToken, receiveToken);
 
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
-  const isTrigger = Boolean(triggerPrice !== undefined && triggerPrice > 0);
+  const isTrigger = orderType !== undefined;
 
-  if (triggerPrice !== undefined && triggerPrice > 0) {
+  if (orderType) {
     values.triggerPrice = triggerPrice;
-    values.indexPrice = triggerPrice;
+    values.indexPrice = triggerPrice ?? markPrice;
 
     values.collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice
+      ? triggerPrice ?? markPrice
       : collateralToken.prices.minPrice;
 
     values.triggerOrderType ||= getTriggerDecreaseOrderType({
       markPrice: isLimit ? limitPrice ?? 0n : markPrice,
-      triggerPrice,
+      triggerPrice: triggerPrice ?? markPrice,
       isLong,
     });
 
