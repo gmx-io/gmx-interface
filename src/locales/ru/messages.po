@@ -47,8 +47,8 @@ msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} mar
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "PRICE"
 msgstr "ЦЕНА"
@@ -196,8 +196,9 @@ msgstr "Активировать отправку рычага."
 msgid "Show error"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/Synthetics/PoolsList/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -249,6 +250,7 @@ msgid "View status."
 msgstr "Посмотреть статус"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Buyable"
 msgstr ""
 
@@ -533,6 +535,10 @@ msgstr "Добавить в MetaMask"
 msgid "Insufficient staked tokens"
 msgstr ""
 
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a Pool"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Нажмите [Создать кошелек], чтобы начать использовать ваш Web3 кошелек."
@@ -614,7 +620,6 @@ msgstr ""
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "РЫНОК"
@@ -971,6 +976,10 @@ msgstr "Стакинг принята! <0>Смотреть статус.</0>"
 msgid "Short Liq."
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/MarketDescription.tsx
+msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Buy Fee"
 msgstr ""
@@ -1031,6 +1040,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
+msgstr ""
+
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
+msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1096,6 +1109,10 @@ msgstr "Лонгин..."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
+
+#: src/components/Synthetics/MarketStats/MarketDescription.tsx
+msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -1448,6 +1465,10 @@ msgstr "РЫНКИ"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
 msgstr ""
 
@@ -1713,7 +1734,6 @@ msgstr ""
 msgid "Checking code..."
 msgstr "Проверка кода..."
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Pools"
@@ -2743,6 +2763,7 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2882,6 +2903,7 @@ msgid "Direction"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
 
@@ -2941,6 +2963,10 @@ msgstr ""
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+msgid "AMOUNT"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -3041,7 +3067,7 @@ msgstr "Принять, что исполнение ордеров не гара
 msgid "Select a market"
 msgstr ""
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
@@ -3083,6 +3109,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount activation failed"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+msgid "COMP."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3255,8 +3285,8 @@ msgstr ""
 msgid "Unsupported network"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "Shift"
 msgstr ""
 
@@ -3314,8 +3344,8 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "BUYABLE"
 msgstr ""
 
@@ -3932,7 +3962,7 @@ msgid "Stake failed"
 msgstr "Стакинг не прошла"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "WALLET"
 msgstr "КОШЕЛЁК"
 
@@ -3959,7 +3989,7 @@ msgstr ""
 msgid "Reserved"
 msgstr "Зарезервировано"
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -4002,7 +4032,7 @@ msgstr "Чистая ставка шортов / 1ч"
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr ""
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 msgstr ""
 
@@ -4056,6 +4086,7 @@ msgstr "Сети"
 msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "ПУЛ"
@@ -4160,6 +4191,7 @@ msgid "Fees generated by GMX"
 msgstr "Комиссионные, сгенерированные GMX"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM can be sold for {0} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
 
@@ -4214,7 +4246,7 @@ msgstr ""
 msgid "Reason: {0}"
 msgstr "Причина: {0}"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Wallet total accrued Fees"
 msgstr ""
 
@@ -4537,6 +4569,7 @@ msgstr "Обновление реферального кода не прошло
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -4793,8 +4826,8 @@ msgid "There is no liquidation price, as the position's collateral value will in
 msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Select a Market"
-msgstr ""
+#~ msgid "Select a Market"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
@@ -4843,7 +4876,7 @@ msgstr ""
 msgid "Market Decrease"
 msgstr "Уменьшение рынка"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Wallet 365d expected Fees"
 msgstr ""
 
@@ -5127,13 +5160,17 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "No GM pools found."
 msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Вернуться к </0><1>Домашняя страница</1> <2>или </2> <3> Торговля</3>"
+
+#: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
+msgid "Bridge {tokenSymbol} to {chainName} with"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -5388,7 +5425,7 @@ msgstr "Исполнение лимитного обмена"
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr "msgstr"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
@@ -5412,7 +5449,7 @@ msgstr "Экосистема"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "Высокое Скольжение USDG, Лонг в Любом случае"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Wallet total"
 msgstr ""
 
@@ -5735,8 +5772,9 @@ msgstr "Купить / Продать GLP"
 msgid "Open {0} in Explorer"
 msgstr "Открыть {0} в Explorer"
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/Synthetics/PoolsList/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -5798,7 +5836,7 @@ msgstr "СБОРЫ"
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
 
@@ -5944,6 +5982,10 @@ msgstr "Данные по Бессрочным контрактам GMX"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Positions"
+msgstr ""
+
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
+msgid "Pools"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -6154,6 +6196,7 @@ msgid "Trigger Price"
 msgstr "Цена триггера"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Sellable"
 msgstr ""
 
@@ -6262,6 +6305,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "Обмен не выполнен"
+
+#: src/components/Synthetics/MarketStats/MarketDescription.tsx
+msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -6392,6 +6439,7 @@ msgid "GLP to GM Airdrop"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 msgstr ""
 
@@ -6642,6 +6690,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.tsx
@@ -6733,8 +6782,8 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "Размер ордера больше позиции, будет исполнен только при увеличении позиции."
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "Buy"
 msgstr "Купить"
 
@@ -6821,9 +6870,9 @@ msgstr ""
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "APY"
 msgstr ""
 
@@ -6963,6 +7012,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -7125,6 +7175,10 @@ msgstr "Бонусные токены"
 msgid "Transaction failed"
 msgstr "Транзакция не прошла"
 
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+msgid "COLLATERAL"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.tsx
 msgid "Depositing..."
@@ -7146,7 +7200,7 @@ msgstr "Чистая ставка"
 msgid "2nd Place"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/PoolsList/ApyTooltipContent.tsx
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 msgstr ""
 
@@ -7207,11 +7261,11 @@ msgstr ""
 msgid "About"
 msgstr "О проекте"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Total accrued Fees"
 msgstr ""
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr ""
 
@@ -7339,7 +7393,7 @@ msgstr ""
 msgid "Last 30d"
 msgstr ""
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/PoolsList/TokensBalanceInfo.tsx
 msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
 msgstr ""
 
@@ -7493,8 +7547,8 @@ msgstr ""
 msgid "Edit {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PoolsList/PoolsList.tsx
 msgid "Sell"
 msgstr ""
 
