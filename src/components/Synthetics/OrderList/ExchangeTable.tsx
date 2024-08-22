@@ -1,17 +1,25 @@
 import cx from "classnames";
 import { PropsWithChildren, forwardRef } from "react";
 
+interface ExchangeTdThProps extends PropsWithChildren, React.HTMLProps<HTMLTableCellElement> {
+  padding?: Padding;
+}
+
 export function ExchangeTable(props: PropsWithChildren & React.HTMLProps<HTMLTableElement>) {
   return <table {...props} className="w-full rounded-4 bg-slate-800" />;
 }
-export function ExchangeTh(props: PropsWithChildren & React.HTMLProps<HTMLTableCellElement>) {
+export function ExchangeTh(props: ExchangeTdThProps) {
+  const { padding = "all", ...rest } = props;
+
   return (
     <th
-      {...props}
-      className={cx(
-        "px-10 py-14 text-left font-normal uppercase text-gray-300 first-of-type:pl-14 last-of-type:text-right",
-        props.className
-      )}
+      {...rest}
+      className={cx("text-left font-normal uppercase text-gray-300 last-of-type:text-right", props.className, {
+        "px-10 py-14 first-of-type:pl-14 last-of-type:pr-14": padding === "all",
+        "px-10 first-of-type:pl-14 last-of-type:pr-14": padding === "horizontal",
+        "py-14": padding === "vertical",
+        "p-0": padding === "none",
+      })}
     />
   );
 }
@@ -43,14 +51,20 @@ export const ExchangeTr = forwardRef<
     />
   );
 });
-export function ExchangeTd(props: PropsWithChildren & React.HTMLProps<HTMLTableCellElement>) {
+
+type Padding = "all" | "horizontal" | "vertical" | "none";
+
+export function ExchangeTd(props: ExchangeTdThProps) {
+  const { padding = "all", ...rest } = props;
   return (
     <td
-      {...props}
-      className={cx(
-        "px-10 py-14 first-of-type:pl-14 last-of-type:pr-14 last-of-type:[&:not(:first-of-type)]:text-right",
-        props.className
-      )}
+      {...rest}
+      className={cx("last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
+        "px-10 py-14 first-of-type:pl-14 last-of-type:pr-14": padding === "all",
+        "px-10 first-of-type:pl-14 last-of-type:pr-14": padding === "horizontal",
+        "py-14": padding === "vertical",
+        "p-0": padding === "none",
+      })}
     />
   );
 }

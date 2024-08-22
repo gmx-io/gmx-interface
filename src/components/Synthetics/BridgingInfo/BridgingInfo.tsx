@@ -9,7 +9,7 @@ type Props = {
   tokenSymbol?: string;
 };
 
-export default function BridgingInfo(props: Props) {
+export default function BridgingInfoG(props: Props) {
   const { chainId, tokenSymbol } = props;
   const chainName = getChainName(chainId);
   const bridgingOptions = getBridgingOptionsForToken(tokenSymbol);
@@ -38,5 +38,29 @@ export default function BridgingInfo(props: Props) {
         </>
       )}
     />
+  );
+}
+
+export function BridgingInfo(props: Props) {
+  const { chainId, tokenSymbol } = props;
+  const chainName = getChainName(chainId);
+  const bridgingOptions = getBridgingOptionsForToken(tokenSymbol);
+
+  if (!tokenSymbol || !bridgingOptions) return null;
+
+  return (
+    <p className="opacity-70">
+      <Trans>
+        Bridge {tokenSymbol} to {chainName} with
+      </Trans>{" "}
+      {bridgingOptions.map((option, i) => {
+        const bridgeLink = option.generateLink(chainId);
+        return (
+          <ExternalLink key={i} href={bridgeLink}>
+            {option?.name}
+          </ExternalLink>
+        );
+      })}
+    </p>
   );
 }

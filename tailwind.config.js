@@ -89,6 +89,7 @@ module.exports = {
     borderRadius: merge(fromPairs(range(0, 96 + 1).map((borderRadius) => [borderRadius, `${borderRadius}px`])), {
       full: "9999px",
     }),
+    borderWidth: fromPairs(range(0, 8).map((borderWidth) => [borderWidth, `${borderWidth}px`])),
     fontSize: {
       12: "1.2rem",
       14: "1.4rem",

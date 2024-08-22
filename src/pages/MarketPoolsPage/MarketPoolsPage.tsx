@@ -17,11 +17,11 @@ import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import { GmList } from "components/Synthetics/GmList/GmList";
+import { PoolsList } from "components/Synthetics/PoolsList/PoolsList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 
+import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 import "./MarketPoolsPage.scss";
 
 export function MarketPoolsPage() {
@@ -33,7 +33,8 @@ export function MarketPoolsPage() {
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData } = useGmMarketsApy(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData, glvApyInfoData } =
+    useGmMarketsApy(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
@@ -77,11 +78,11 @@ export function MarketPoolsPage() {
           qa="pools-page"
         />
 
-        <div className="MarketPoolsPage-content">
-          <MarketStats
+        <div className="MarketPoolsPage-content gap-12">
+          <MarketStatsWithComposition
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            // marketsTokensLidoAprData={marketsTokensLidoAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
@@ -102,10 +103,11 @@ export function MarketPoolsPage() {
 
         <div className="Tab-title-section">
           <div className="Page-title">
-            <Trans>Select a Market</Trans>
+            <Trans>Select a Pool</Trans>
           </div>
         </div>
-        <GmList
+        <PoolsList
+          glvMarketsTokensApyData={glvApyInfoData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}

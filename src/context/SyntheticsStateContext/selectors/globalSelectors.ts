@@ -15,6 +15,18 @@ export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userRefe
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 
+export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvPoolsInfo;
+export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+export const selectPoolsData = createSelector((q) => {
+  const glvPoolsInfo = q(selectGlvInfo);
+  const marketsInfoData = q(selectMarketsInfoData);
+
+  return {
+    ...glvPoolsInfo,
+    ...marketsInfoData,
+  };
+});
+
 export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
 export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;
 

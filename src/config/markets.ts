@@ -2,7 +2,7 @@ import { parse } from "date-fns";
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
@@ -147,3 +147,13 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
 
   return tokenListing.listingDate;
 }
+
+export const GLV_MARKETS = {
+  [ARBITRUM]: {},
+  [ARBITRUM_GOERLI]: {},
+  [AVALANCHE]: {},
+  [AVALANCHE_FUJI]: {
+    "0xDD06Cd6694FeB4222FD1a4146d118078D672d7EB": "High Caps",
+  },
+  default: "GLV",
+} as const;

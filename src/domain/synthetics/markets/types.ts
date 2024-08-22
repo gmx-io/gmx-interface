@@ -1,4 +1,5 @@
 import { TokenData } from "domain/synthetics/tokens";
+import { GlvPoolInfo } from "../tokens/useGlvPools";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -131,6 +132,10 @@ export type MarketsData = {
 
 export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;
+};
+
+export type PoolsInfoData = {
+  [marketAddress: string]: MarketInfo | GlvPoolInfo;
 };
 
 export type MarketTokensAPRData = {

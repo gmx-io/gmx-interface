@@ -9,33 +9,32 @@ import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { useCallback, useMemo } from "react";
+import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
-export const GmTokensBalanceInfo = ({
+export const TokensBalanceInfo = ({
   token,
   earnedTotal,
   earnedRecently,
   daysConsidered,
-  oneLine = false,
+  isGlv = false,
 }: {
   token: TokenData;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
-  oneLine?: boolean;
+  isGlv?: boolean;
 }) => {
   const content = (
-    <>
-      {formatTokenAmount(token.balance, token.decimals, "GM", {
+    <TokenValuesInfoCell
+      token={formatTokenAmount(token.balance, token.decimals, token.symbol, {
         useCommas: true,
         displayDecimals: 2,
         fallbackToZero: true,
       })}
-      {oneLine ? " " : <br />}(
-      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+      usd={formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
         fallbackToZero: true,
       })}
-      )
-    </>
+    />
   );
 
   const renderTooltipContent = useCallback(() => {
@@ -65,14 +64,22 @@ export const GmTokensBalanceInfo = ({
       </>
     );
   }, [daysConsidered, earnedRecently, earnedTotal]);
-  if (earnedTotal === undefined && earnedRecently === undefined) {
+
+  if ((earnedTotal === undefined && earnedRecently === undefined) || isGlv) {
     return content;
   }
 
-  return <TooltipWithPortal renderContent={renderTooltipContent} handle={content} position="bottom-end" />;
+  return (
+    <TooltipWithPortal
+      renderContent={renderTooltipContent}
+      handle={content}
+      handleClassName="!block"
+      position="bottom-end"
+    />
+  );
 };
 
-export const GmTokensTotalBalanceInfo = ({
+export const TokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
   userEarnings,
@@ -148,6 +155,7 @@ export const GmTokensTotalBalanceInfo = ({
     <TooltipWithPortal
       handle={label}
       className="normal-case"
+      handleClassName="!block"
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}

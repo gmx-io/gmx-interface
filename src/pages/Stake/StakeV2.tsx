@@ -45,7 +45,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { GmList } from "components/Synthetics/GmList/GmList";
+import { PoolsList } from "components/Synthetics/PoolsList/PoolsList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
@@ -1345,7 +1345,8 @@ export default function StakeV2() {
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData } = useGmMarketsApy(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData, glvApyInfoData } =
+    useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -2397,10 +2398,11 @@ export default function StakeV2() {
 
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
-          <GmList
+          <PoolsList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvMarketsTokensApyData={glvApyInfoData}
             isDeposit={false}
             shouldScrollToTop
           />

@@ -1,8 +1,8 @@
-import { ethers, ContractRunner, Contract, InterfaceAbi } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
 const { ZeroAddress } = ethers;
 
@@ -304,6 +304,7 @@ const CONTRACTS = {
     SyntheticsReader: "0xD52216D3A57F7eb1126498f00A4771553c737AE4",
     SyntheticsRouter: "0x5e7d61e4C52123ADF651961e4833aCc349b61491",
     Timelock: ZeroAddress,
+    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },

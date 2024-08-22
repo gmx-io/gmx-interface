@@ -7,8 +7,10 @@ import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { MarketInfo, PoolsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
+import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import useWallet, { WalletClient } from "lib/wallets/useWallet";
@@ -21,22 +23,24 @@ import "./GmAssetDropdown.scss";
 
 type Props = {
   token?: TokenData;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: PoolsInfoData;
   position?: Placement;
   tokensData?: TokensData;
 };
 
-function renderMarketName(market?: MarketInfo) {
+function renderMarketName(market?: MarketInfo | GlvPoolInfo) {
   if (!market) {
     return null;
   }
 
-  const marketName = market.isSpotOnly ? "SWAP" : getMarketIndexName(market);
+  const isGlvMarket = isGlv(market);
+
+  const marketName = market.isSpotOnly ? "SWAP" : isGlvMarket ? market.name : getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
 
   return (
     <>
-      GM: {marketName}
+      {isGlvMarket ? "GLV" : "GM"}: {marketName}
       <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>
       </span>

@@ -34,6 +34,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { GlvPoolsData, useGlvPoolsInfo } from "domain/synthetics/tokens/useGlvPools";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -59,6 +60,7 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
+    glvInfo: ReturnType<typeof useGlvPoolsInfo>;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
@@ -133,6 +135,14 @@ export function SyntheticsStateContextProvider({
     isTradePage
   );
 
+  const isPoolsPage = pageType === "pools" || pageType === "dashboard";
+  const glvInfo = useGlvPoolsInfo(isPoolsPage, {
+    marketsInfoData: marketsInfo.marketsInfoData,
+    tokensData: marketsInfo.tokensData,
+    chainId: chainId,
+    account: account,
+  });
+
   const settings = useSettings();
 
   const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
@@ -186,6 +196,7 @@ export function SyntheticsStateContextProvider({
         marketsInfo,
         ordersInfo,
         positionsConstants,
+        glvInfo,
         positionsInfo: {
           isLoading,
           positionsInfoData,
@@ -243,6 +254,7 @@ export function SyntheticsStateContextProvider({
     positionEditorState,
     confirmationBoxState,
     depositMarketTokensData,
+    glvInfo,
   ]);
 
   latestState = state;

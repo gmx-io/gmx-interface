@@ -21,6 +21,8 @@ import { getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -31,7 +33,8 @@ type RawPoolValue = {
   poolValue: string;
 };
 
-type GmTokensAPRResult = {
+type GmGlvTokensAPRResult = {
+  glvApyInfoData: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
@@ -202,9 +205,10 @@ function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData
   return marketTokensAPRData;
 }
 
-export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
+export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const glvPoolsInfo = useSelector(selectGlvInfo);
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
   const client = getSubsquidGraphClient(chainId);
@@ -357,7 +361,34 @@ export function useGmMarketsApy(chainId: number): GmTokensAPRResult {
 
   const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
 
+  const glvApyInfoData = useMemo(() => {
+    if (!glvPoolsInfo || !data?.marketsTokensApyData) {
+      return {};
+    }
+
+    return Object.values(glvPoolsInfo).reduce((acc, { markets, indexTokenAddress }) => {
+      // @todo recheck when will buy something
+      const marketData = markets.map((market) => {
+        const apy = data.marketsTokensApyData[market.address];
+        const marketBalance = market.gmBalance;
+        const amountUsd = marketBalance * (marketTokensData?.[market.address].prices.minPrice ?? 0n);
+
+        return {
+          apy,
+          amountUsd,
+        };
+      });
+
+      const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
+      const sumApys = marketData.reduce((acc, { amountUsd, apy }) => acc + amountUsd * apy, 0n);
+
+      acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+      return acc;
+    }, {});
+  }, [glvPoolsInfo, data?.marketsTokensApyData, marketTokensData]);
+
   return {
+    glvApyInfoData,
     marketsTokensLidoAprData: data?.marketsTokensLidoAprData,
     marketsTokensIncentiveAprData,
     avgMarketsApy: data?.avgMarketsApy,
