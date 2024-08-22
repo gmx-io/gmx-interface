@@ -180,13 +180,10 @@ export class Metrics {
           type: txErrorType,
           errorData: txErrorData,
         },
-        env:
-          typeof process !== "undefined"
-            ? {
-                VITE_APP_IS_HOME_SITE: process.env.VITE_APP_IS_HOME_SITE ?? null,
-                VITE_APP_VERSION: process.env.VITE_APP_VERSION ?? null,
-              }
-            : {},
+        env: {
+          VITE_APP_IS_HOME_SITE: import.meta.env.VITE_APP_IS_HOME_SITE ?? null,
+          VITE_APP_VERSION: import.meta.env.VITE_APP_VERSION ?? null,
+        },
         isDev: isDevelopment(),
         host: window.location.host,
         url: window.location.href,
@@ -278,7 +275,7 @@ export class Metrics {
     return event as CachedMetricData & TData;
   };
 
-  startTimer = (label: string, fromLocalStorage = true) => {
+  startTimer = (label: string, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
     const timers = storedTimers ? JSON.parse(storedTimers) : {};
 
@@ -287,7 +284,7 @@ export class Metrics {
     setStorageItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
   };
 
-  getTime = (label: string, clear?: boolean, fromLocalStorage = true) => {
+  getTime = (label: string, clear?: boolean, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
 
     if (!storedTimers) {
