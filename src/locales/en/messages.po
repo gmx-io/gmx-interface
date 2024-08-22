@@ -2360,6 +2360,10 @@ msgstr "Creating..."
 msgid "Withdrawing from Subaccount"
 msgstr "Withdrawing from Subaccount"
 
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settling Position Fees"
+msgstr "Settling Position Fees"
+
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Minimum received"
 msgstr "Minimum received"
@@ -4877,10 +4881,6 @@ msgstr "Governance Alerts"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "Swap {0} {1} for{2} USDG"
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Positions' Fees"
-msgstr "Settling Positions' Fees"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You can get a {0} / 1h better net rate in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
