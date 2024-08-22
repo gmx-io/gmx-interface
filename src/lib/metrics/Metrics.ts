@@ -275,7 +275,7 @@ export class Metrics {
     return event as CachedMetricData & TData;
   };
 
-  startTimer = (label: string, fromLocalStorage = true) => {
+  startTimer = (label: string, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
     const timers = storedTimers ? JSON.parse(storedTimers) : {};
 
@@ -284,7 +284,7 @@ export class Metrics {
     setStorageItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
   };
 
-  getTime = (label: string, clear?: boolean, fromLocalStorage = true) => {
+  getTime = (label: string, clear?: boolean, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
 
     if (!storedTimers) {
