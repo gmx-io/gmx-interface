@@ -875,10 +875,15 @@ export function TradeBox(p: Props) {
   );
 
   const handleLeverageInputBlur = useCallback(() => {
+    if (leverageOption === 0) {
+      setLeverageOption(leverageSliderMarks[0]);
+      return;
+    }
+
     if (leverageInputValue === "" && leverageOption !== undefined) {
       setLeverageInputValue(leverageOption.toString());
     }
-  }, [leverageInputValue, leverageOption, setLeverageInputValue]);
+  }, [leverageInputValue, leverageOption, leverageSliderMarks, setLeverageInputValue, setLeverageOption]);
 
   function renderTokenInputs() {
     return (

@@ -42,12 +42,14 @@ export function LeverageSlider(p: Props) {
     return { marksLabel, keyValueMap, valueKeyMap };
   }, [finalMarks]);
 
-  const sliderValue = valueKeyMap[value ?? 0] ?? sliderValueToSliderKey(keyValueMap, value ?? 0);
+  const sliderValue =
+    value === undefined ? valueKeyMap[finalMarks[0]] : valueKeyMap[value] ?? sliderValueToSliderKey(keyValueMap, value);
+
   const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
     (value: number) => {
-      const truncatedValue = Math.trunc(value ?? 0);
+      const truncatedValue = Math.trunc(value ?? DEFAULT_LEVERAGE_KEY);
       onChange(keyValueMap[truncatedValue] ?? DEFAULT_LEVERAGE_KEY);
     },
     [onChange, keyValueMap]
@@ -144,7 +146,7 @@ function sliderValueToSliderKey(keyValueMap: { [key: number]: number }, value: n
 
   const leftValue = sortedValues[leftIndex - 1];
   if (leftValue === undefined) {
-    return DEFAULT_LEVERAGE_KEY;
+    return sortedValues[0];
   }
 
   let rightIndex = sortedValues.findLastIndex((val) => val <= value);
@@ -160,7 +162,7 @@ function sliderValueToSliderKey(keyValueMap: { [key: number]: number }, value: n
   const rightValue = sortedValues[rightIndex];
 
   if (rightValue === undefined) {
-    return DEFAULT_LEVERAGE_KEY;
+    return sortedValues[sortedValues.length - 1];
   }
 
   return (value - leftValue) / (rightValue - leftValue) + leftIndex;
