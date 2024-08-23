@@ -462,6 +462,10 @@ msgstr "Market Swap"
 msgid "Trade History"
 msgstr "Trade History"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
+msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
@@ -970,6 +974,10 @@ msgstr "Sell GLP"
 msgid "Stake submitted! <0>View status.</0>"
 msgstr "Stake submitted! <0>View status.</0>"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
+msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
@@ -1100,10 +1108,6 @@ msgstr "Longing..."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Total Rebates"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
-msgstr "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min order: {0}"
@@ -1840,10 +1844,6 @@ msgstr "Enter and exit positions with minimal spread and low price impact. Get t
 msgid "STIP.b trading incentives"
 msgstr "STIP.b trading incentives"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
-msgstr "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
@@ -1877,6 +1877,10 @@ msgstr "Approving {0}..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Positive funding fees can be claimed under the claims tab."
+msgstr "Positive funding fees can be claimed under the claims tab."
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -5101,6 +5105,12 @@ msgstr "Price above lowest Limit Price."
 msgid "Limit Increase"
 msgstr "Limit Increase"
 
+#: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/PositionsList.jsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Use the edit collateral icon to deposit or withdraw collateral."
+msgstr "Use the edit collateral icon to deposit or withdraw collateral."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
 msgstr "Buy GMX using any token from any network:"
@@ -5191,10 +5201,6 @@ msgstr "Increase Size (Market)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Couldn't find a swap path with enough liquidity"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
-msgstr "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5438,6 +5444,10 @@ msgstr "Ecosystem"
 #: src/components/Exchange/SwapBox.jsx
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
+msgstr "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet total"
@@ -5996,6 +6006,10 @@ msgstr "Leftover Collateral Excluding Impact"
 msgid "Edit {0} {1}"
 msgstr "Edit {0} {1}"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+msgstr "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "Transfer {nativeTokenSymbol}"
@@ -6326,12 +6340,6 @@ msgstr "Leaderboard for traders on GMX V2."
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Withdraw"
 msgstr "Failed Withdraw"
-
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
-msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
@@ -7088,6 +7096,10 @@ msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is cal
 msgid "Accrued"
 msgstr "Accrued"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liquidation price is influenced by fees and collateral value."
+msgstr "Liquidation price is influenced by fees and collateral value."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "No data available"
@@ -7561,6 +7573,10 @@ msgstr "Max. Leverage exceeded"
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price is above Mark Price"
 msgstr "Price is above Mark Price"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+msgstr "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

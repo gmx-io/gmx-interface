@@ -235,14 +235,16 @@ export function PositionItem(p: Props) {
                     textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
-                  <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                  <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
                   <br />
                   <br />
                   <Trans>
-                    Negative Funding Fees are settled against the collateral automatically and will influence the
-                    liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any
-                    action on the position.
+                    Negative funding fees and borrow fees are settled against the collateral automatically and will
+                    influence the time to liquidation, as shown under the liquidation price tooltip.
                   </Trans>
+                  <br />
+                  <br />
+                  <Trans>Positive funding fees can be claimed under the claims tab.</Trans>
                 </>
               );
             }}
@@ -275,13 +277,17 @@ export function PositionItem(p: Props) {
 
     if (p.position.liquidationPrice === undefined) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
-        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
+        const symbol = p.position.collateralToken.symbol;
+        const indexName = getMarketIndexName(p.position.marketInfo);
+        liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price.`;
       } else if (
         p.position.isLong &&
         p.position.collateralToken.isStable &&
         p.position.collateralUsd >= p.position.sizeInUsd
       ) {
-        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will cover any negative PnL.`;
+        const symbol = p.position.collateralToken.symbol;
+        const indexName = getMarketIndexName(p.position.marketInfo);
+        liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price.`;
       }
     }
 
@@ -290,20 +296,31 @@ export function PositionItem(p: Props) {
         {liqPriceWarning && <div>{liqPriceWarning}</div>}
         {estimatedLiquidationHours ? (
           <div>
-            <div>
-              {!liqPriceWarning && "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."}
-            </div>
+            {!liqPriceWarning && (
+              <>
+                <Trans>Liquidation price is influenced by fees and collateral value.</Trans>
+                <br />
+              </>
+            )}
+            <br />
+            {liqPriceWarning ? (
+              <Trans>
+                This position could still be liquidated, excluding any price movement, due to funding and borrowing fee
+                rates reducing the position's collateral over time.
+              </Trans>
+            ) : (
+              <Trans>
+                This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates
+                reducing the position's collateral over time.
+              </Trans>
+            )}
+            <br />
             <br />
             <StatsTooltipRow
-              label={"Estimated time to Liquidation"}
+              label={"Estimated Time to Liquidation"}
               value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
               showDollar={false}
             />
-            <br />
-            <div>
-              Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
-              excluding any price movement.
-            </div>
           </div>
         ) : (
           ""
