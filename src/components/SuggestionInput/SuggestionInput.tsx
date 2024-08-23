@@ -1,5 +1,5 @@
 import "./SuggestionInput.scss";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 
@@ -11,6 +11,7 @@ type Props = {
   symbol?: string;
   isError?: boolean;
   inputClassName?: string;
+  onBlur?: () => void;
 };
 
 export default function SuggestionInput({
@@ -21,7 +22,9 @@ export default function SuggestionInput({
   symbol,
   isError,
   inputClassName,
+  onBlur,
 }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -35,14 +38,19 @@ export default function SuggestionInput({
       setIsPanelVisible(false);
     }
   }
+  function handleBlur() {
+    setIsPanelVisible(false);
+    onBlur?.();
+  }
 
   return (
     <div className="Suggestion-input-wrapper">
-      <div className={cx("Suggestion-input", { "input-error": isError })}>
+      <div className={cx("Suggestion-input", { "input-error": isError })} onClick={() => inputRef.current?.focus()}>
         <NumberInput
-          className={inputClassName}
+          inputRef={inputRef}
+          className={cx(inputClassName, "outline-none")}
           onFocus={() => setIsPanelVisible(true)}
-          onBlur={() => setIsPanelVisible(false)}
+          onBlur={handleBlur}
           value={value ?? ""}
           placeholder={placeholder}
           onValueChange={handleChange}

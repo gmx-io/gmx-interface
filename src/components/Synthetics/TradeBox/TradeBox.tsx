@@ -1,5 +1,6 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import cx from "classnames";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
@@ -18,7 +19,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -85,7 +86,6 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
-import { USD_DECIMALS } from "config/factors";
 import {
   formatAmount,
   formatAmountFree,
@@ -110,8 +110,10 @@ import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { sleep } from "lib/sleep";
 import { useCursorInside } from "lib/useCursorInside";
 
 import LongIcon from "img/long.svg?react";
@@ -132,11 +134,10 @@ import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 
 import "./TradeBox.scss";
-import { sleep } from "lib/sleep";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -219,6 +220,8 @@ export function TradeBox(p: Props) {
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
+    leverageInputValue,
+    setLeverageInputValue,
     leverageOption,
     setLeverageOption,
     isLeverageEnabled,
@@ -871,6 +874,12 @@ export function TradeBox(p: Props) {
     [isCursorInside, submitButtonState.disabled, onSubmit, shouldDisableValidation]
   );
 
+  const handleLeverageInputBlur = useCallback(() => {
+    if (leverageInputValue === "" && leverageOption !== undefined) {
+      setLeverageInputValue(leverageOption.toString());
+    }
+  }, [leverageInputValue, leverageOption, setLeverageInputValue]);
+
   function renderTokenInputs() {
     return (
       <>
@@ -1064,6 +1073,17 @@ export function TradeBox(p: Props) {
               className="Exchange-leverage-slider-settings"
               isChecked={isLeverageEnabled ?? false}
               setIsChecked={setIsLeverageEnabled}
+              beforeSwitchContent={
+                <div className={cx({ invisible: !isLeverageEnabled })}>
+                  <SuggestionInput
+                    inputClassName="w-40 text-right"
+                    value={leverageInputValue}
+                    setValue={setLeverageInputValue}
+                    onBlur={handleLeverageInputBlur}
+                    symbol="x"
+                  />
+                </div>
+              }
             >
               <span className="muted">
                 <Trans>Leverage slider</Trans>

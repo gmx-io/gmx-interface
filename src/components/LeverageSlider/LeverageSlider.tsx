@@ -19,7 +19,7 @@ type HandleProps = {
   value: number;
   dragging: boolean;
   index: number;
-  keyValueMap: { [key: number]: number };
+  displayValue: number;
 };
 
 function getMarksWithLabel(marks: number[]) {
@@ -42,19 +42,20 @@ export function LeverageSlider(p: Props) {
     return { marksLabel, keyValueMap, valueKeyMap };
   }, [finalMarks]);
 
-  const sliderValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
+  const sliderValue = valueKeyMap[value ?? 0] ?? sliderValueToSliderKey(keyValueMap, value ?? 0);
   const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
     (value: number) => {
-      onChange(keyValueMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY);
+      const truncatedValue = Math.trunc(value ?? 0);
+      onChange(keyValueMap[truncatedValue] ?? DEFAULT_LEVERAGE_KEY);
     },
     [onChange, keyValueMap]
   );
 
   const customHandle = useMemo(() => {
-    return (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
-  }, [keyValueMap]);
+    return (props: any) => <LeverageSliderHandle {...props} displayValue={value} />;
+  }, [value]);
 
   return (
     <div
@@ -67,7 +68,7 @@ export function LeverageSlider(p: Props) {
       <Slider
         min={0}
         max={max}
-        step={1}
+        step={0.1}
         marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
@@ -78,11 +79,9 @@ export function LeverageSlider(p: Props) {
 }
 
 const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSliderHandle(
-  { value, dragging, index, keyValueMap, ...restProps },
+  { value, dragging, index, displayValue, ...restProps },
   ref
 ) {
-  const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
-
   useEffect(() => {
     if (dragging) {
       document.body.classList.add("dragging");
@@ -126,4 +125,43 @@ function generateKeyValueMap(marks: number[]) {
   const valueKeyMap = Object.fromEntries(values.map((value, index) => [value, index]));
 
   return { keyValueMap, valueKeyMap };
+}
+
+function sliderValueToSliderKey(keyValueMap: { [key: number]: number }, value: number): number {
+  const sortedValues = Array.from({
+    length: Object.keys(keyValueMap).length,
+  }).map((_, index) => keyValueMap[index]);
+
+  let leftIndex = sortedValues.findIndex((val) => val >= value);
+  if (leftIndex !== -1) {
+    if (sortedValues[leftIndex] === value) {
+      return leftIndex;
+    }
+    leftIndex -= 1;
+  } else {
+    leftIndex = 0;
+  }
+
+  const leftValue = sortedValues[leftIndex - 1];
+  if (leftValue === undefined) {
+    return DEFAULT_LEVERAGE_KEY;
+  }
+
+  let rightIndex = sortedValues.findLastIndex((val) => val <= value);
+  if (rightIndex !== -1) {
+    if (sortedValues[rightIndex] === value) {
+      return rightIndex;
+    }
+    rightIndex += 1;
+  } else {
+    rightIndex = sortedValues.length - 1;
+  }
+
+  const rightValue = sortedValues[rightIndex];
+
+  if (rightValue === undefined) {
+    return DEFAULT_LEVERAGE_KEY;
+  }
+
+  return (value - leftValue) / (rightValue - leftValue) + leftIndex;
 }
