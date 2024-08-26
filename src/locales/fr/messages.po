@@ -74,6 +74,10 @@ msgstr ""
 msgid "Position Fee"
 msgstr "Frais de position"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What would have made your rating a 9 or 10?"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
 msgstr ""
@@ -623,6 +627,10 @@ msgstr ""
 msgid "MARKET"
 msgstr "MARCHÉ"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What did you like the most about our service?"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -634,6 +642,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Ordres de marché"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we address your concerns and improve your experience?"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1146,6 +1158,10 @@ msgstr "Tableau de bord"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What issues did you encounter that led to your rating?"
 msgstr ""
 
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -2573,6 +2589,10 @@ msgstr ""
 msgid "AUM"
 msgstr "ASG"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "No likely"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -2663,6 +2683,10 @@ msgstr "Acheter {swapTokenSymbol} sur 1inch"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we continue to meet your expectations?"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -2783,6 +2807,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake failed."
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Submitting..."
 msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -4854,6 +4882,10 @@ msgstr "Commencer le transfert"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "How likely are you to recommend our service to a friend or colleague?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr ""
@@ -5412,6 +5444,7 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Submit"
 msgstr "Soumettre"
@@ -6038,6 +6071,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6825,6 +6862,10 @@ msgstr ""
 msgid "Failed Market Swap"
 msgstr "Échange de marché échoué"
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Error occurred. Please try again"
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Les lettres, les chiffres et les caractères de soulignement sont autorisés."
@@ -7522,6 +7563,10 @@ msgstr ""
 msgid "short"
 msgstr ""
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Very likely"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/hooks/useTriggerOrdersConsent.tsx
 msgid "I am aware of the trigger orders"
@@ -7622,6 +7667,7 @@ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impa
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
+#: src/components/NpsModal/NpsModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr ""
 

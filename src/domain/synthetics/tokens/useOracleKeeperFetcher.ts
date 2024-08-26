@@ -8,6 +8,8 @@ import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { NpsSurveyResult } from "domain/synthetics/userFeedback";
+import { isLocal } from "@/config/env";
 
 export type TickersResponse = {
   minPrice: string;
@@ -59,6 +61,10 @@ export type RawIncentivesStats = {
   }>;
 };
 
+export type UserFeedbackBody = {
+  feedback: NpsSurveyResult;
+};
+
 function parseOracleCandle(rawCandle: number[]): Bar {
   const [timestamp, open, high, low, close] = rawCandle;
 
@@ -108,8 +114,8 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response>;
-  fetchPostReport2(body: PostReport2Body, debug: boolean): Promise<Response>;
+  fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response>;
+  fetchPostFeedback(body: UserFeedbackBody, debug: boolean): Promise<Response>;
 }
 
 class OracleKeeperFetcher implements OracleFetcher {
@@ -212,13 +218,32 @@ class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostReport2(body: PostReport2Body, debug): Promise<Response> {
+  fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console
       console.log("sendMetric", body.event, body);
     }
 
-    return fetch(buildUrl(this.url!, "/report/ui2"), {
+    if (isLocal()) {
+      return Promise.resolve(new Response());
+    }
+
+    return fetch(buildUrl(this.url!, "/report/ui/event"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  fetchPostFeedback(body: UserFeedbackBody, debug): Promise<Response> {
+    if (debug) {
+      // eslint-disable-next-line no-console
+      console.log("sendFeedback", body);
+    }
+
+    return fetch(buildUrl(this.url!, "/report/ui/feedback"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

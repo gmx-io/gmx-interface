@@ -34,6 +34,7 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
+import { NpsModal } from "@/components/NpsModal/NpsModal";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
@@ -354,7 +355,7 @@ export function SyntheticsPage(p: Props) {
       <PositionEditor allowedSlippage={savedAllowedSlippage} setPendingTxns={setPendingTxns} />
 
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
-
+      <NpsModal />
       <Footer />
     </div>
   );

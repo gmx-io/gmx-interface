@@ -44,6 +44,7 @@ export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-nat
 export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-wrap-or-unwrap-warn-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME = "interview-invitation-shown-time";
+export const NPS_SURVEY_SHOWN_TIME = "nps-survey-shown-time";
 export const CHART_TOKEN_SELECTOR_FILTER_TAB_KEY = "chart-token-selector-filter-tab";
 export const CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "chart-token-selector-favorite-tokens";
 

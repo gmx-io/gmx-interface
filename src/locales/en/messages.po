@@ -74,6 +74,10 @@ msgstr "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3
 msgid "Position Fee"
 msgstr "Position Fee"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What would have made your rating a 9 or 10?"
+msgstr "What would have made your rating a 9 or 10?"
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
 msgstr "Subaccount generation failed"
@@ -623,6 +627,10 @@ msgstr "Claim {totalUsd}"
 msgid "MARKET"
 msgstr "MARKET"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What did you like the most about our service?"
+msgstr "What did you like the most about our service?"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
@@ -634,6 +642,10 @@ msgstr "Bid Price (Exit)"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Market Orders"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we address your concerns and improve your experience?"
+msgstr "How can we address your concerns and improve your experience?"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1147,6 +1159,10 @@ msgstr "Dashboard"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr "Swap Price Impact"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What issues did you encounter that led to your rating?"
+msgstr "What issues did you encounter that led to your rating?"
 
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "No PnLs found"
@@ -2573,6 +2589,10 @@ msgstr "V1 Arbitrum"
 msgid "AUM"
 msgstr "AUM"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "No likely"
+msgstr "No likely"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -2664,6 +2684,10 @@ msgstr "Buy {swapTokenSymbol} on 1inch"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
 msgstr "PnL (%)"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we continue to meet your expectations?"
+msgstr "How can we continue to meet your expectations?"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
@@ -2784,6 +2808,10 @@ msgstr "Lev."
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake failed."
 msgstr "Stake failed."
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Submitting..."
+msgstr "Submitting..."
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
@@ -4857,6 +4885,10 @@ msgstr "Begin Transfer"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "How likely are you to recommend our service to a friend or colleague?"
+msgstr "How likely are you to recommend our service to a friend or colleague?"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Insufficient liquidity to swap collateral"
@@ -5415,6 +5447,7 @@ msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
+#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Submit"
 msgstr "Submit"
@@ -6045,6 +6078,10 @@ msgstr "Copy error"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What areas can we improve to make your experience better?"
+msgstr "What areas can we improve to make your experience better?"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -6831,6 +6868,10 @@ msgstr "Fees exceed Pay amount"
 msgid "Failed Market Swap"
 msgstr "Failed Market Swap"
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Error occurred. Please try again"
+msgstr "Error occurred. Please try again"
+
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
@@ -7528,6 +7569,10 @@ msgstr "Сonvert {0} to {1}"
 msgid "short"
 msgstr "short"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Very likely"
+msgstr "Very likely"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/hooks/useTriggerOrdersConsent.tsx
 msgid "I am aware of the trigger orders"
@@ -7628,6 +7673,7 @@ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impa
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 
 #: src/components/InterviewModal/InterviewModal.tsx
+#: src/components/NpsModal/NpsModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
 
