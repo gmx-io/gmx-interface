@@ -35,7 +35,7 @@ type Props = {
 
 export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
   const { chainId } = useChainId();
-  const intervalRef = useRef<number | undefined>();
+  const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
   const lastBarTime = useRef<number>(0);
   const missingBarsInfo = useRef({
@@ -131,7 +131,7 @@ function buildFeeder({
   stableTokens: string[];
   supportedResolutions: { [key: string]: string };
   tvDataProviderRef: MutableRefObject<TVDataProvider | undefined>;
-  intervalRef: MutableRefObject<number | undefined>;
+  intervalRef: MutableRefObject<Record<string, number> | undefined>;
   missingBarsInfoRef: MutableRefObject<{
     bars: FromOldToNewArray<Bar>;
     isFetching: boolean;
@@ -203,7 +203,8 @@ function buildFeeder({
       async subscribeBars(
         symbolInfo: SymbolInfo,
         resolution: ResolutionString,
-        onRealtimeCallback: SubscribeBarsCallback
+        onRealtimeCallback: SubscribeBarsCallback,
+        listenerGuid: string
       ) {
         await subscribeBars({
           symbolInfo,
@@ -216,6 +217,7 @@ function buildFeeder({
           intervalRef,
           supportedResolutions,
           tvDataProviderRef,
+          listenerGuid,
         });
       },
       unsubscribeBars: (id) => {
@@ -223,7 +225,7 @@ function buildFeeder({
         const ticker = id.split("_")[0];
         const isStable = stableTokens.includes(ticker);
         if (!isStable && intervalRef.current) {
-          clearInterval(intervalRef.current);
+          clearInterval(intervalRef.current[id]);
         }
       },
     },
@@ -241,6 +243,7 @@ export function subscribeBars({
   tvDataProviderRef,
   lastBarTimeRef,
   missingBarsInfoRef,
+  listenerGuid,
 }: {
   symbolInfo: Pick<SymbolInfo, "ticker" | "isStable">;
   resolution: ResolutionString;
@@ -248,13 +251,14 @@ export function subscribeBars({
   chainId: number;
   supportedResolutions: { [key: string]: string };
   tvDataProviderRef: MutableRefObject<TVDataProvider | undefined>;
-  intervalRef: MutableRefObject<number | undefined>;
+  intervalRef: MutableRefObject<Record<string, number> | undefined>;
   missingBarsInfoRef: MutableRefObject<{
     bars: FromOldToNewArray<Bar>;
     isFetching: boolean;
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
+  listenerGuid: string;
 }) {
   const period = supportedResolutions[resolution];
   const { ticker, isStable } = symbolInfo;
@@ -263,11 +267,9 @@ export function subscribeBars({
   }
 
   if (intervalRef.current !== undefined) {
-    clearInterval(intervalRef.current);
-    intervalRef.current = undefined;
-    if (tvDataProviderRef.current?.liveBars) {
-      tvDataProviderRef.current.liveBars = [];
-    }
+    clearInterval(intervalRef.current[listenerGuid]);
+    delete intervalRef.current[listenerGuid];
+    tvDataProviderRef.current?.clearLiveBars();
   }
 
   const handleInterval = () => {
@@ -302,7 +304,7 @@ export function subscribeBars({
     }
   };
 
-  if (!isStable) {
-    intervalRef.current = window.setInterval(handleInterval, 500);
+  if (!isStable && intervalRef.current) {
+    intervalRef.current[listenerGuid] = window.setInterval(handleInterval, 500);
   }
 }

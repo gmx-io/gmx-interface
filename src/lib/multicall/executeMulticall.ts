@@ -1,13 +1,16 @@
-import { entries, throttle, values } from "lodash";
+import entries from "lodash/entries";
+import throttle from "lodash/throttle";
+import values from "lodash/values";
 import { stableHash } from "swr/_internal";
 
 import { isDevelopment } from "config/env";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { promiseWithResolvers } from "lib/utils";
 
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -17,6 +20,7 @@ type MulticallFetcherConfig = {
         abi: any;
         methodName: string;
         params: any[];
+        shouldHashParams?: boolean;
       };
       hooks: ((data: MulticallResult<any>) => void)[];
     };
@@ -65,6 +69,7 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
     request[call.callData.contractAddress].calls[callId] = {
       methodName: call.callData.methodName,
       params: call.callData.params,
+      shouldHashParams: call.callData.shouldHashParams,
     };
   }
 
@@ -138,7 +143,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     };
   } = {};
 
-  const { promise, resolve } = Promise.withResolvers();
+  const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
 
   const hook = (data: MulticallResult<any>) => {
     const strippedRenamedData: MulticallResult<any> = {
@@ -208,7 +213,8 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
       // 1. Single token backed pools have many pairs with the same method signatures
       // 2. The majority of pools have USDC as the short token, which means they all have some common calls
 
-      const callId = stableHash([callGroup.contractAddress, call.methodName, call.params]);
+      const shouldHashParams = call.shouldHashParams ?? callGroup.shouldHashParams;
+      const callId = stableHash([callGroup.contractAddress, call.methodName, call.params, shouldHashParams]);
 
       if (!groupNameMapping[callGroup.contractAddress][callId]) {
         groupNameMapping[callGroup.contractAddress][callId] = [];
@@ -229,6 +235,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
             abi: callGroup.abi,
             methodName: call.methodName,
             params: call.params,
+            shouldHashParams,
           },
           hooks: [hook],
         };

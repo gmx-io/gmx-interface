@@ -82,7 +82,10 @@ function injectColorsPlugin({ addBase, theme }) {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),

@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { USD_DECIMALS, CHART_PERIODS } from "lib/legacy";
+import { CHART_PERIODS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { GMX_STATS_API_URL } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";

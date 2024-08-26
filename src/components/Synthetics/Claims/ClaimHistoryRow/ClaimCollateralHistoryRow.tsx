@@ -21,7 +21,7 @@ import {
   formatTradeActionTimestampISO,
 } from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
-import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;

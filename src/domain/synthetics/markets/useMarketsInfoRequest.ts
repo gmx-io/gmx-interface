@@ -45,7 +45,7 @@ import {
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { hashDataMapAsync } from "lib/multicall/hashData/hashDataAsync";
+import { hashDataMapAsync } from "lib/multicall/hashData/hashDataMapAsync";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { TokensData, useTokensDataRequest } from "../tokens";
@@ -60,6 +60,7 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
+  error?: Error;
 };
 
 /**
@@ -151,7 +152,7 @@ type MarketConfig = Pick<
   | "virtualShortTokenId"
 >;
 
-type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
+export type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
   [key: `${string}-reader`]: {
     calls: Record<
       "marketInfo" | "marketTokenPriceMax" | "marketTokenPriceMin",
@@ -186,7 +187,7 @@ type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
   };
 }>;
 
-type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
+export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
   [key: `${string}-dataStore`]: {
     calls: Record<
       | "isDisabled"
@@ -247,8 +248,8 @@ type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { address: account } = useAccount();
-  const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
+  const { marketsData, marketsAddresses, error: marketsError } = useMarkets(chainId);
+  const { tokensData, pricesUpdatedAt, error: tokensDataError } = useTokensDataRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -303,10 +304,13 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     return data as MarketsInfoData;
   }, [marketsValues.data, marketsConfigs.data, marketsAddresses, marketsData, tokensData, chainId]);
 
+  const error = marketsError || tokensDataError || marketsValues.error || marketsConfigs.error;
+
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
     pricesUpdatedAt,
+    error,
   };
 }
 

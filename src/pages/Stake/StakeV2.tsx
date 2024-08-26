@@ -22,13 +22,13 @@ import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
-  USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getPageTitle,
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import useSWR from "swr";
 
@@ -45,7 +45,6 @@ import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { PoolsList } from "components/Synthetics/PoolsList/PoolsList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
@@ -85,6 +84,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import { GmList } from "@/components/Synthetics/GmList/GmList";
 
 const { ZeroAddress } = ethers;
 
@@ -2398,7 +2398,7 @@ export default function StakeV2() {
 
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
-          <PoolsList
+          <GmList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}

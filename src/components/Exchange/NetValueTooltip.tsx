@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { Position } from "domain/positions/types";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
 import { useMemo } from "react";
 

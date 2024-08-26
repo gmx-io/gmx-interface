@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
   OrderType,
@@ -21,7 +21,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import {
   formatAmount,
   formatAmountFree,
@@ -159,7 +159,7 @@ export function OrderEditor(p: Props) {
   const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
   const acceptablePriceImpactBps = useSelector(selectOrderEditorAcceptablePriceImpactBps);

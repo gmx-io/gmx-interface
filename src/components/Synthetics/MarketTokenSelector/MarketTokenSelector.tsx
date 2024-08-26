@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
+import { getMarketListingDate } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import {
   MarketInfo,
@@ -14,11 +15,16 @@ import {
   getMintableMarketTokens,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
+import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
+import {
+  indexTokensFavoritesTabOptionLabels,
+  indexTokensFavoritesTabOptions,
+} from "domain/synthetics/tokens/useIndexTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -29,10 +35,6 @@ import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sort
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
-  indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
-import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseMobileHeaderContent,
@@ -41,6 +43,7 @@ import {
 import { getGlvMarketBadgeName, isGlv } from "domain/synthetics/markets/glv";
 
 type Props = {
+  chainId: number;
   marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
@@ -52,6 +55,7 @@ type Props = {
 
 export default function MarketTokenSelector(props: Props) {
   const {
+    chainId,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
     marketsTokensAPRData,
@@ -115,6 +119,7 @@ export default function MarketTokenSelector(props: Props) {
       mobileModalContentPadding={false}
     >
       <MarketTokenSelectorInternal
+        chainId={chainId}
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensAPRData={marketsTokensAPRData}
         marketsTokensLidoAprData={marketsTokensLidoAprData}
@@ -130,6 +135,7 @@ type SortField = "buyable" | "sellable" | "apy" | "unspecified";
 
 function MarketTokenSelectorInternal(props: Props) {
   const {
+    chainId,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
     marketsTokensAPRData,
@@ -144,6 +150,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const { tab, setTab, favoriteTokens, setFavoriteTokens } = useGmTokensFavorites();
 
   const sortedTokensInfo = useFilterSortTokensInfo({
+    chainId,
     sortedMarketsByIndexToken,
     searchKeyword,
     tab,
@@ -306,6 +313,7 @@ function MarketTokenSelectorInternal(props: Props) {
 }
 
 function useFilterSortTokensInfo({
+  chainId,
   sortedMarketsByIndexToken,
   searchKeyword,
   tab,
@@ -317,6 +325,7 @@ function useFilterSortTokensInfo({
   orderBy,
   direction,
 }: {
+  chainId: number;
   sortedMarketsByIndexToken: TokenData[];
   searchKeyword: string;
   tab: GmTokenFavoritesTabOption;
@@ -405,14 +414,22 @@ function useFilterSortTokensInfo({
       }
 
       if (orderBy === "apy") {
-        const aprA = a.apr ?? 0n;
-        const aprB = b.apr ?? 0n;
+        let aprA = a.incentiveApr ?? 0n;
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, a.marketInfo.marketTokenAddress))) {
+          aprA += a.apr ?? 0n;
+        }
+
+        let aprB = b.incentiveApr ?? 0n;
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, b.marketInfo.marketTokenAddress))) {
+          aprB += b.apr ?? 0n;
+        }
+
         return aprA > aprB ? directionMultiplier : -directionMultiplier;
       }
 
       return 0;
     });
-  }, [filteredTokensInfo, orderBy, direction]);
+  }, [orderBy, direction, filteredTokensInfo, chainId]);
 
   return sortedTokensInfo;
 }

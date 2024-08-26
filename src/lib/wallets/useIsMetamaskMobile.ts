@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+export function getIsMobileUserAgent(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 export default function useIsMetamaskMobile(): boolean {
   const [isMetamaskMobile, setIsMetamaskMobile] = useState(false);
   useEffect(() => {
@@ -15,7 +19,7 @@ export default function useIsMetamaskMobile(): boolean {
     function handleEthereum() {
       const { ethereum } = window;
       if (ethereum && ethereum.isMetaMask) {
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        if (getIsMobileUserAgent()) {
           setIsMetamaskMobile(true);
         }
       } else {

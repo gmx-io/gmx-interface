@@ -1,6 +1,6 @@
 import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { uniq } from "lodash";
+import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 

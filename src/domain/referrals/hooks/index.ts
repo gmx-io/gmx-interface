@@ -35,11 +35,17 @@ export function useUserReferralInfoRequest(
     skipLocalReferralCode
   );
 
-  const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
-  const { affiliateTier: tierId } = useAffiliateTier(signer, chainId, codeOwner);
-  const { totalRebate, discountShare } = useTiers(signer, chainId, tierId);
-  const { discountShare: customDiscountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
+  const { codeOwner, error: codeOwnerError } = useCodeOwner(signer, chainId, account, userReferralCode);
+  const { affiliateTier: tierId, error: tierError } = useAffiliateTier(signer, chainId, codeOwner);
+  const { totalRebate, discountShare, error: tiersError } = useTiers(signer, chainId, tierId);
+  const { discountShare: customDiscountShare, error: discountShareError } = useReferrerDiscountShare(
+    signer,
+    chainId,
+    codeOwner
+  );
   const finalDiscountShare = (customDiscountShare ?? 0n) > 0 ? customDiscountShare : discountShare;
+
+  const error = codeOwnerError || tierError || tiersError || discountShareError;
 
   return useMemo(() => {
     if (
@@ -65,6 +71,7 @@ export function useUserReferralInfoRequest(
       totalRebateFactor: basisPointsToFloat(totalRebate),
       discountShare: finalDiscountShare,
       discountFactor: basisPointsToFloat(finalDiscountShare),
+      error,
     };
   }, [
     userReferralCode,
@@ -75,12 +82,17 @@ export function useUserReferralInfoRequest(
     finalDiscountShare,
     referralCodeForTxn,
     attachedOnChain,
+    error,
   ]);
 }
 
 export function useAffiliateTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<bigint>(
+  const {
+    data: affiliateTier,
+    mutate: mutateReferrerTier,
+    error,
+  } = useSWR<bigint>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
@@ -90,13 +102,14 @@ export function useAffiliateTier(signer, chainId, account) {
   return {
     affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
     mutateReferrerTier,
+    error,
   };
 }
 
 export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?: BigNumberish) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
-  const { data: [totalRebate, discountShare] = [] } = useSWR<bigint[]>(
+  const { data: [totalRebate, discountShare] = [], error } = useSWR<bigint[]>(
     tierLevel !== undefined
       ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
       : null,
@@ -109,6 +122,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   return {
     totalRebate,
     discountShare,
+    error,
   };
 }
 
@@ -150,12 +164,12 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 export function useUserReferralCode(signer, chainId, account, skipLocalReferralCode = false) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: onChainCode } = useSWR<string>(
+  const { data: onChainCode, error: onChainCodeError } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
     { fetcher: contractFetcher(signer, ReferralStorage) as any, refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
-  const { data: localStorageCodeOwner } = useSWR<string>(
+  const { data: localStorageCodeOwner, error: localStorageCodeOwnerError } = useSWR<string>(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
@@ -184,8 +198,16 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
       userReferralCode,
       userReferralCodeString,
       referralCodeForTxn,
+      error: onChainCodeError | localStorageCodeOwnerError,
     };
-  }, [localStorageCode, localStorageCodeOwner, onChainCode, skipLocalReferralCode]);
+  }, [
+    localStorageCode,
+    localStorageCodeOwner,
+    localStorageCodeOwnerError,
+    onChainCode,
+    onChainCodeError,
+    skipLocalReferralCode,
+  ]);
 
   return {
     userReferralCode,
@@ -212,7 +234,11 @@ export function useReferrerTier(signer, chainId, account) {
 
 export function useCodeOwner(signer, chainId, account, code) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR<string>(
+  const {
+    data: codeOwner,
+    mutate: mutateCodeOwner,
+    error,
+  } = useSWR<string>(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(signer, ReferralStorage) as any,
@@ -222,12 +248,17 @@ export function useCodeOwner(signer, chainId, account, code) {
   return {
     codeOwner,
     mutateCodeOwner,
+    error,
   };
 }
 
 export function useReferrerDiscountShare(library, chainId, owner) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: discountShare, mutate: mutateDiscountShare } = useSWR<bigint | undefined>(
+  const {
+    data: discountShare,
+    mutate: mutateDiscountShare,
+    error,
+  } = useSWR<bigint | undefined>(
     owner && [
       `ReferralStorage:referrerDiscountShares`,
       chainId,
@@ -243,6 +274,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
   return {
     discountShare,
     mutateDiscountShare,
+    error,
   };
 }
 

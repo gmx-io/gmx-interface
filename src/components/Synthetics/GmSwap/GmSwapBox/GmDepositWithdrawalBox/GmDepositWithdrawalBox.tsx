@@ -7,7 +7,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import {
@@ -70,7 +70,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   // #endregion
   // #region Selectors
   const marketsInfoData = useSelector(selectPoolsData);
@@ -388,12 +388,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     setMarketTokenInputValue("");
   }, [setFirstTokenInputValue, setMarketTokenInputValue, setSecondTokenInputValue]);
 
-  const onSwitchSide = useCallback(() => {
-    setFocusedInput("market");
-    resetInputs();
-    onSetOperation(operation === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit);
-  }, [operation, resetInputs, setFocusedInput, onSetOperation]);
-
   const onMarketChange = useCallback(
     (marketAddress: string) => {
       resetInputs();
@@ -651,7 +645,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
             </BuyInputSection>
           )}
 
-          <Swap onSwitchSide={onSwitchSide} />
+          <Swap />
 
           <BuyInputSection
             topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}

@@ -2,10 +2,11 @@ import { ResolutionString } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { ethers } from "ethers";
-import { noop } from "lodash";
+import noop from "lodash/noop";
 import type { Bar, FromNewToOldArray, FromOldToNewArray } from "../types";
 import { subscribeBars } from "../useTVDatafeed";
 import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "domain/synthetics/tokens";
+import { vi, describe, expect, it, afterEach, Mock } from "vitest";
 
 class MockOracleKeeperFetcher implements OracleFetcher {
   url: string;
@@ -90,9 +91,13 @@ describe("subscribeBars", () => {
   }) {
     const chainId = 421614;
     const originalTimeoutId = window.setTimeout(noop, 1000);
-    let onRealtimeCallback: jest.Mock;
+    const originalTimeoutGuid = "ETH_#_USD_#_5";
+
+    let onRealtimeCallback: Mock;
     let feedDataRef = { current: true };
-    let intervalRef: { current: undefined | number } = { current: originalTimeoutId };
+    let intervalRef: { current: Record<string, number> | undefined } = {
+      current: { [originalTimeoutGuid]: originalTimeoutId },
+    };
     let lastBarTimeRef = { current: 0 };
     let missingBarsInfoRef = { current: opts?.missingBarsInfoRef ?? { bars: [], isFetching: false } };
     let oracleKeeperFetcher = new MockOracleKeeperFetcher();
@@ -103,7 +108,7 @@ describe("subscribeBars", () => {
     });
     let tvDataProviderRef = { current: tvDataProvider };
 
-    onRealtimeCallback = jest.fn();
+    onRealtimeCallback = vi.fn();
 
     subscribeBars({
       chainId,
@@ -119,10 +124,12 @@ describe("subscribeBars", () => {
         isStable: false,
       },
       tvDataProviderRef,
+      listenerGuid: originalTimeoutGuid,
     });
 
     return {
       originalTimeoutId,
+      originalTimeoutGuid,
       feedDataRef,
       intervalRef,
       lastBarTimeRef,
@@ -135,19 +142,19 @@ describe("subscribeBars", () => {
   }
 
   function dispose(barsSubscriber: ReturnType<typeof reset>) {
-    window.clearInterval(barsSubscriber.intervalRef.current);
+    window.clearInterval(barsSubscriber.intervalRef.current?.[barsSubscriber.originalTimeoutGuid]);
   }
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it("should should clear and set new intervalRef.current to a number", () => {
+  it("should clear and set new intervalRef.current not to be undefined", () => {
     const context = reset();
 
     // not equal to originalTimeoutId
-    expect(context.intervalRef.current).not.toBe(context.originalTimeoutId);
-    expect(typeof context.intervalRef.current).toBe("number");
+    expect(context.originalTimeoutId).not.toBe(context.intervalRef.current?.[context.originalTimeoutGuid]);
+    expect(typeof context.intervalRef.current?.[context.originalTimeoutGuid]).not.toBe(undefined);
 
     dispose(context);
   });
@@ -160,13 +167,13 @@ describe("subscribeBars", () => {
       },
     });
 
-    expect(context.intervalRef.current).toBeUndefined();
+    expect(context.intervalRef.current?.[context.originalTimeoutGuid]).toBeUndefined();
 
     dispose(context);
   });
 
   it("should call onRealtimeCallback after 500ms when missing data is present", async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     const context = reset({
       missingBarsInfoRef: {
@@ -183,7 +190,7 @@ describe("subscribeBars", () => {
       },
     });
 
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
 
     expect(context.onRealtimeCallback).toHaveBeenCalled();
 
@@ -191,11 +198,11 @@ describe("subscribeBars", () => {
   });
 
   it("should call console.error when bars are out of ascending order", async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     // @ts-ignore
     // eslint-disable-next-line no-console
-    console.error = jest.spyOn(console, "error").mockImplementation(noop);
+    console.error = vi.spyOn(console, "error").mockImplementation(noop);
 
     const context = reset({
       missingBarsInfoRef: {
@@ -219,7 +226,7 @@ describe("subscribeBars", () => {
       },
     });
 
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
 
     // eslint-disable-next-line no-console
     expect(console.error).toHaveBeenCalledWith(
@@ -227,15 +234,15 @@ describe("subscribeBars", () => {
     );
 
     dispose(context);
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should not call console.error when bars are in ascending order", async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     // @ts-ignore
     // eslint-disable-next-line no-console
-    console.error = jest.spyOn(console, "error").mockImplementation(noop);
+    console.error = vi.spyOn(console, "error").mockImplementation(noop);
 
     const context = reset({
       missingBarsInfoRef: {
@@ -259,12 +266,12 @@ describe("subscribeBars", () => {
       },
     });
 
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
 
     // eslint-disable-next-line no-console
     expect(console.error).not.toHaveBeenCalled();
 
     dispose(context);
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

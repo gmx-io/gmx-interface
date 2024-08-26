@@ -19,7 +19,7 @@ import {
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
-import { uniq } from "lodash";
+import uniq from "lodash/uniq";
 import { useCallback, useMemo, useState } from "react";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";

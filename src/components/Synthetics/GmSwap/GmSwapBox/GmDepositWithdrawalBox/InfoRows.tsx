@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { values } from "lodash";
+import values from "lodash/values";
 
 import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";

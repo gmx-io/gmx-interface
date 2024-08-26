@@ -1,5 +1,6 @@
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { getSwapPathOutputAddresses } from "./swapStats";
+import { describe, expect, it } from "vitest";
 
 const someWrappedToken = "0x0000000000000000000000000000000000000001";
 const someNativeToken = "0x0000000000000000000000000000000000000000";

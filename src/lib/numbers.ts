@@ -1,10 +1,11 @@
 import { isDevelopment } from "config/env";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
-import { PRECISION, USD_DECIMALS } from "./legacy";
 import { getPlusOrMinusSymbol } from "./utils";
+
+export const PRECISION = expandDecimals(1, 30);
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -391,6 +392,11 @@ export function basisPointsToFloat(basisPoints: bigint) {
 
 export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
+}
+
+export function roundToOrder(n: bigint) {
+  const decimals = n.toString().length - 1;
+  return (n / expandDecimals(1, decimals)) * expandDecimals(1, decimals);
 }
 
 export function minBigNumber(...args: bigint[]) {

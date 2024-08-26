@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import cx from "classnames";
 
-import { ReactComponent as InfoIconComponent } from "img/ic_info.svg";
-import { ReactComponent as WarnIconComponent } from "img/ic_warn.svg";
+import InfoIconComponent from "img/ic_info.svg?react";
+import WarnIconComponent from "img/ic_warn.svg?react";
 
 import "./AlertInfo.scss";
 

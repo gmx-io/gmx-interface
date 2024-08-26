@@ -2,11 +2,15 @@ import { ClientConfig, createPublicClient, http } from "viem";
 import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
-import { sleep } from "lib/sleep";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "@/config/chains";
+import { isWebWorker } from "@/config/env";
+import { hashData } from "@/lib/hash";
+import { sleep } from "@/lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "@/abis/CustomErrors.json";
+import { MulticallTimeoutEvent } from "@/lib/metrics";
+import { emitMetricEvent } from "@/lib/metrics/emitMetricEvent";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -158,11 +162,15 @@ export class Multicall {
           callKey,
         });
 
+        const args = call.shouldHashParams
+          ? call.params?.map((keyValue: any[]) => hashData(keyValue[0], keyValue[1]))
+          : call.params;
+
         encodedPayload.push({
           address: contractCallConfig.contractAddress,
           functionName: call.methodName,
           abi,
-          args: call.params,
+          args,
         });
       });
     });
@@ -172,6 +180,16 @@ export class Multicall {
       sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
+
+      emitMetricEvent<MulticallTimeoutEvent>({
+        event: "multicall.timeout",
+        isError: true,
+        data: {
+          metricType: "rpcTimeout",
+          isInMainThread: !isWebWorker,
+          errorMessage: _viemError.message.slice(0, 150),
+        },
+      });
 
       // eslint-disable-next-line no-console
       console.groupCollapsed("multicall error:");

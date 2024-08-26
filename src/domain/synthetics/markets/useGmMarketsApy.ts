@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
 import { bigMath } from "lib/bigmath";
-import { CHART_PERIODS, GM_DECIMALS, PRECISION } from "lib/legacy";
+import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
+import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import mapValues from "lodash/mapValues";

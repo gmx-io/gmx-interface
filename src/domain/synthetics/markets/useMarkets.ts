@@ -14,12 +14,13 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 export type MarketsResult = {
   marketsData?: MarketsData;
   marketsAddresses?: string[];
+  error?: Error | undefined;
 };
 
 const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
-  const { data } = useMulticall(chainId, "useMarketsData", {
+  const { data, error } = useMulticall(chainId, "useMarketsData", {
     key: [],
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -80,5 +81,6 @@ export function useMarkets(chainId: number): MarketsResult {
   return {
     marketsData: data?.marketsData,
     marketsAddresses: data?.marketsAddresses,
+    error,
   };
 }

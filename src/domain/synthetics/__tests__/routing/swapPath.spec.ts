@@ -1,6 +1,7 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
 import { MarketEdge, SwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "domain/synthetics/trade";
+import { describe, expect, it } from "vitest";
 
 const marketsKeys = [
   "AVAX-AVAX-USDC",

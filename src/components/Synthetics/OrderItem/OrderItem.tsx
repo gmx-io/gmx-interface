@@ -25,7 +25,8 @@ import {
 import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
-import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
@@ -126,6 +127,13 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 
   const wrappedToken = getWrappedToken(chainId);
 
+  function getCollateralLabel() {
+    if (isDecreaseOrderType(positionOrder.orderType)) {
+      return t`Collateral Delta`;
+    }
+    return t`Collateral`;
+  }
+
   function getCollateralText() {
     const collateralUsd = convertToUsd(
       positionOrder.initialCollateralDeltaAmount,
@@ -139,8 +147,13 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       positionOrder.targetCollateralToken.prices.minPrice
     );
 
+    const decreaseMultiplier = isDecreaseOrderType(positionOrder.orderType) ? -1n : 1n;
+
+    const signedTargetCollateralAmount =
+      targetCollateralAmount !== undefined ? targetCollateralAmount * decreaseMultiplier : undefined;
+
     const tokenAmountText = formatTokenAmount(
-      targetCollateralAmount,
+      signedTargetCollateralAmount,
       positionOrder.targetCollateralToken?.decimals,
       positionOrder.targetCollateralToken.isNative ? wrappedToken.symbol : positionOrder.targetCollateralToken.symbol
     );
@@ -155,7 +168,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       position="bottom-start"
       content={
         <>
-          <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
+          <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
 
           {isCollateralSwap && (
             <div className="OrderItem-tooltip-row">

@@ -1,5 +1,6 @@
 import { TradeType } from "domain/synthetics/trade/types";
 import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
+import { describe, expect, it } from "vitest";
 
 type Input = Parameters<typeof chooseSuitableMarket>[0];
 

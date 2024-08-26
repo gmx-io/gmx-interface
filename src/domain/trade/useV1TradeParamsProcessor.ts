@@ -6,7 +6,8 @@ import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 import { useEffect, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { isMatch, pickBy } from "lodash";
+import isMatch from "lodash/isMatch";
+import pickBy from "lodash/pickBy";
 
 type TradeOptions = {
   fromTokenAddress?: string;

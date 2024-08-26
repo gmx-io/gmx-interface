@@ -17,6 +17,8 @@
 # production
 /build
 
+/stats.html
+
 # misc
 .DS_Store
 .env.local

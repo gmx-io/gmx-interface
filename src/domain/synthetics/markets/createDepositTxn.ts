@@ -27,6 +27,7 @@ type Params = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
+  metricId?: string;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -113,6 +114,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
+    metricId: p.metricId,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({

@@ -6,6 +6,12 @@ export type SkipKey = null | undefined | false;
 export type ContractCallConfig = {
   methodName: string;
   params: any[];
+  /**
+   * Makes the multicall request hash each param before sending them.
+   *
+   * Takes precedence over the call `shouldHashParams` option.
+   */
+  shouldHashParams?: boolean;
 };
 
 export type ContractCallsConfig<T extends { calls: any }> = {
@@ -14,6 +20,10 @@ export type ContractCallsConfig<T extends { calls: any }> = {
   calls: {
     [callKey in keyof T["calls"]]: ContractCallConfig | SkipKey;
   };
+  /**
+   * Makes the multicall request hash each param before sending them.
+   */
+  shouldHashParams?: boolean;
 };
 
 export type MulticallRequestConfig<T extends { [key: string]: any }> = {

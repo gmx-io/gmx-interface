@@ -44,7 +44,14 @@
       "react/jsx-handler-names": "off",
       "react/display-name": "off",
       "local-rules/no-bigint-negation": "off",
-      "local-rules/no-logical-bigint": "off"
+      "local-rules/no-logical-bigint": "off",
+      "no-restricted-imports": ["error", {
+        "paths": ["lodash"]
+      }],
+      "no-restricted-globals": ["error", {
+        "name": "process",
+        "message": "Don't use `process` in client code"
+      }]
     },
     "env": {
       "browser": true,
@@ -52,7 +59,6 @@
       "es2020": true
     },
     "globals": {
-      "process": true,
       "TradingView": true
     },
     "settings": {

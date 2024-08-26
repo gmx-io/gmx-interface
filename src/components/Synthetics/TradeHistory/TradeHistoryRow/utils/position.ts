@@ -7,7 +7,6 @@ import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory/types";
-import { PRECISION } from "lib/legacy";
 import {
   BN_NEGATIVE_ONE,
   BN_ONE,
@@ -17,6 +16,7 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  PRECISION,
 } from "lib/numbers";
 
 import { actionTextMap, getActionTitle } from "../../keys";

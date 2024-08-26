@@ -11,6 +11,7 @@ import Token from "abis/Token.json";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
+  error?: Error;
 };
 
 export function useTokenBalances(
@@ -26,7 +27,7 @@ export function useTokenBalances(
 
   const account = overrideAccount ?? currentAccount;
 
-  const { data } = useMulticall(chainId, "useTokenBalances", {
+  const { data, error } = useMulticall(chainId, "useTokenBalances", {
     key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
 
     refreshInterval,
@@ -74,5 +75,6 @@ export function useTokenBalances(
 
   return {
     balancesData: data,
+    error,
   };
 }

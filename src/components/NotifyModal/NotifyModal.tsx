@@ -8,9 +8,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import "./NotifyModal.scss";
 
-import { ReactComponent as NotifiLogoIcon } from "img/notifi-logo.svg";
-import { ReactComponent as ArrowBulletIcon } from "img/arrow-bullet.svg";
-import { ReactComponent as ExternalLinkIcon } from "img/external-link.svg";
+import NotifiLogoIcon from "img/notifi-logo.svg?react";
+import ArrowBulletIcon from "img/arrow-bullet.svg?react";
+import ExternalLinkIcon from "img/external-link.svg?react";
 
 export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();

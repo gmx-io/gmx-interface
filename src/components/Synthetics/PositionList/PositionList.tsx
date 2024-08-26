@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -14,9 +14,6 @@ import { getByKey } from "lib/objects";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
-import { useLatest } from "react-use";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -29,11 +26,9 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
-  const [isLoaded, setIsLoaded] = useState(false);
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
-  const metrics = useMetrics();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -44,44 +39,6 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
-
-  const metricsRef = useLatest(metrics);
-  const metricsTimeout = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    if (metricsTimeout.current) {
-      return;
-    }
-
-    metricsRef.current.startTimer("positionsList");
-
-    metricsRef.current.sendMetric({
-      event: "positionsListLoad.started",
-      isError: false,
-    });
-
-    metricsTimeout.current = setTimeout(() => {
-      metricsRef.current.sendMetric({
-        event: "positionsListLoad.timeout",
-        message: "Positions list was not loaded",
-        isError: true,
-        time: metricsRef.current.getTime("positionsList"),
-      });
-    }, DATA_LOAD_TIMEOUT_FOR_METRICS);
-  }, [metricsRef]);
-
-  useEffect(() => {
-    if (positionsInfoData && !isLoaded) {
-      clearTimeout(metricsTimeout.current);
-
-      metrics.sendMetric({
-        event: "positionsListLoad.success",
-        isError: false,
-        time: metrics.getTime("positionsList"),
-      });
-      setIsLoaded(true);
-    }
-  }, [isLoaded, metrics, positionsInfoData]);
 
   return (
     <div>
@@ -116,10 +73,10 @@ export function PositionList(p: Props) {
               <Trans>Position</Trans>
             </th>
             <th>
-              <Trans>Net Value</Trans>
+              <Trans>Size</Trans>
             </th>
             <th>
-              <Trans>Size</Trans>
+              <Trans>Net Value</Trans>
             </th>
             <th>
               <Trans>Collateral</Trans>

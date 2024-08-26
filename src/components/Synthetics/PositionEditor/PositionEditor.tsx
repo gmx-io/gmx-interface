@@ -76,18 +76,16 @@ import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-import { useMetrics } from "context/MetricsContext/MetricsContext";
-import {
-  getPositionOrderMetricId,
-  getTxnErrorMetricsHandler,
-  getTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "context/MetricsContext/utils";
-import { EditCollateralMetricData } from "context/MetricsContext/types";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
+import {
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
+  initEditCollateralMetricData,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics/utils";
 import "./PositionEditor.scss";
 
 export type Props = {
@@ -121,7 +119,6 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
-  const metrics = useMetrics();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -332,24 +329,19 @@ export function PositionEditor(p: Props) {
     }
 
     const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
-    const metricType = isDeposit ? "depositCollateral" : "withdrawCollateral";
 
-    const metricData: EditCollateralMetricData = {
-      metricType,
-      account,
-      marketAddress: position?.marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: selectedCollateralAddress,
-      initialCollateralDeltaAmount: collateralDeltaAmount,
-      swapPath: [],
-      isLong: position?.isLong,
+    const metricData = initEditCollateralMetricData({
+      collateralToken,
+      executionFee,
+      selectedCollateralAddress,
+      marketInfo: position?.marketInfo,
+      collateralDeltaAmount,
+      subaccount,
       orderType,
-      executionFee: executionFee?.feeTokenAmount,
-    };
+      isLong: position?.isLong,
+    });
 
-    const metricId = getPositionOrderMetricId({ ...metricData, sizeDeltaUsd: 0n });
-    metrics.setCachedMetricData(metricId, metricData);
-
-    sendOrderSubmittedMetric(metrics, metricId, metricType);
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       executionFee?.feeTokenAmount === undefined ||
@@ -361,7 +353,7 @@ export function PositionEditor(p: Props) {
       !signer
     ) {
       helperToast.error(t`Error submitting order`);
-      sendTxnValidationErrorMetric(metrics, metricId, metricType);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
 
@@ -374,7 +366,7 @@ export function PositionEditor(p: Props) {
         chainId,
         signer,
         subaccount,
-        metricId,
+        metricId: metricData.metricId,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -438,7 +430,7 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         },
-        metricId
+        metricData.metricId
       );
     }
 
@@ -449,8 +441,8 @@ export function PositionEditor(p: Props) {
     }
 
     txnPromise = txnPromise
-      .then(getTxnSentMetricsHandler(metrics, metricId, metricType))
-      .catch(getTxnErrorMetricsHandler(metrics, metricId, metricType));
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);

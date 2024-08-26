@@ -4,7 +4,7 @@ import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -29,6 +29,7 @@ import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -56,7 +57,7 @@ export type SyntheticsState = {
     positionsInfo: PositionsInfoResult;
     account: string | undefined;
     ordersInfo: AggregatedOrdersDataResult;
-    positionsConstants: PositionsConstantsResult;
+    positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
@@ -136,8 +137,8 @@ export function SyntheticsStateContextProvider({
     account,
     glvMarketsData: glvInfo.glvPoolsInfo,
   });
-  const positionsConstants = usePositionsConstantsRequest(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
@@ -147,7 +148,11 @@ export function SyntheticsStateContextProvider({
 
   const settings = useSettings();
 
-  const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
+  const {
+    isLoading,
+    positionsInfoData,
+    error: positionsInfoError,
+  } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -187,6 +192,13 @@ export function SyntheticsStateContextProvider({
   const gasPrice = useGasPrice(chainId);
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+
+  useMeasureLoadTime({
+    isLoaded: Boolean(positionsInfoData && !isLoading),
+    error: positionsInfoError || marketsInfo.error,
+    skip: !account,
+    metricType: "positionsListLoad",
+  });
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -240,6 +252,7 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
+    depositMarketTokensData,
     closingPositionKey,
     gasLimits,
     gasPrice,
@@ -255,7 +268,6 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
-    depositMarketTokensData,
     glvInfo,
   ]);
 

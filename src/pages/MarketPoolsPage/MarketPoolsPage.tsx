@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositGlvMarketKey, getSyntheticsDepositMarketKey } from "config/localStorage";
@@ -8,25 +8,24 @@ import {
   selectPoolsData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
+import { useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { EMPTY_OBJECT, getByKey } from "lib/objects";
+import { getByKey } from "lib/objects";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import { PoolsList } from "components/Synthetics/PoolsList/PoolsList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { GmList } from "@/components/Synthetics/GmList/GmList";
 
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 import "./MarketPoolsPage.scss";
-import { isGlv } from "domain/synthetics/markets/glv";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -118,7 +117,7 @@ export function MarketPoolsPage() {
             <Trans>Select a Pool</Trans>
           </div>
         </div>
-        <PoolsList
+        <GmList
           glvMarketsTokensApyData={glvApyInfoData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}

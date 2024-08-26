@@ -1,19 +1,25 @@
-import { uniqueId } from "lodash";
+import uniqueId from "lodash/uniqueId";
 
-import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
-import { sleep } from "lib/sleep";
+import { PRODUCTION_PREVIEW_KEY } from "@/config/localStorage";
+import { sleep } from "@/lib/sleep";
+import { promiseWithResolvers } from "@/lib/utils";
 
-import { promiseWithResolvers } from "lib/utils";
-import { executeMulticallMainThread } from "./executeMulticallMainThread";
-import MulticallWorker from "./multicall.worker";
-import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { emitMetricEvent } from "@/lib/metrics/emitMetricEvent";
 import { MAX_TIMEOUT } from "./Multicall";
+import { executeMulticallMainThread } from "./executeMulticallMainThread";
+import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { MetricEventParams, MulticallTimeoutEvent } from "@/lib/metrics";
 
-const executorWorker: Worker = new MulticallWorker();
+const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
 const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
 executorWorker.onmessage = (event) => {
+  if ("isMetrics" in event.data) {
+    emitMetricEvent<MetricEventParams>(event.data.detail);
+    return;
+  }
+
   const { id, result, error } = event.data;
 
   const promise = promises[id];
@@ -63,6 +69,15 @@ export async function executeMulticallWorker(
     if (result === "timeout") {
       delete promises[id];
 
+      emitMetricEvent<MulticallTimeoutEvent>({
+        event: "multicall.timeout",
+        isError: true,
+        data: {
+          metricType: "workerTimeout",
+          isInMainThread: true,
+          errorMessage: `Worker did not respond in time. Falling back to main thread.`,
+        },
+      });
       // eslint-disable-next-line no-console
       console.error(
         `[executeMulticallWorker] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`,

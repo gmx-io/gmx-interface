@@ -1,6 +1,7 @@
 import { bigMath } from "./bigmath";
 import { numericBinarySearch, bigNumberBinarySearch } from "./binarySearch";
 import { expandDecimals } from "./numbers";
+import { describe, expect, it } from "vitest";
 
 describe("numericBinarySearch", () => {
   it(`1..50 check`, () => {

@@ -177,7 +177,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
-    <StatusNotification title={t`Settling Positions' Fees`} hasError={hasError}>
+    <StatusNotification title={t`Settling Position Fees`} hasError={hasError}>
       {creationStatus}
       {executionStatuses}
     </StatusNotification>

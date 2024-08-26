@@ -12,10 +12,10 @@ import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
 
-import { USD_DECIMALS } from "lib/legacy";
 import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
+import { USD_DECIMALS } from "@/config/factors";
 
 interface CompositionTableGmProps {
   marketInfo?: MarketInfo | GlvPoolInfo;

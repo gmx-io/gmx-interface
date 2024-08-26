@@ -1,6 +1,6 @@
 import { Trans, msg, plural, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { uniq } from "lodash";
+import uniq from "lodash/uniq";
 import { useMemo, useState } from "react";
 import { FaArrowDown } from "react-icons/fa";
 import { useKey } from "react-use";
@@ -32,6 +32,15 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { GmFees } from "../GmFees/GmFees";
 
+import { helperToast } from "lib/helperToast";
+import {
+  initGMSwapMetricData,
+  initShiftGmMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics/utils";
 import "./GmConfirmationBox.scss";
 
 type Props = {
@@ -298,6 +307,20 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
+    const metricData = initGMSwapMetricData({
+      longToken,
+      shortToken,
+      isDeposit: true,
+      executionFee,
+      marketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
+    });
+
+    sendOrderSubmittedMetric(metricData.metricId);
+
     if (
       !account ||
       !executionFee ||
@@ -307,6 +330,8 @@ export function GmConfirmationBox({
       !tokensData ||
       !signer
     ) {
+      helperToast.error(t`Error submitting deposit`);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -329,12 +354,29 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       skipSimulation: shouldDisableValidation,
       tokensData,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingDeposit,
-    });
+    })
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   function onCreateWithdrawal() {
+    const metricData = initGMSwapMetricData({
+      longToken,
+      shortToken,
+      isDeposit: false,
+      executionFee,
+      marketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
+    });
+
+    sendOrderSubmittedMetric(metricData.metricId);
+
     if (
       !account ||
       !market ||
@@ -345,6 +387,8 @@ export function GmConfirmationBox({
       !tokensData ||
       !signer
     ) {
+      helperToast.error(t`Error submitting withdrawal`);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -362,12 +406,25 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       tokensData,
       skipSimulation: shouldDisableValidation,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingWithdrawal,
-    });
+    })
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   function onCreateShift() {
+    const metricData = initShiftGmMetricData({
+      executionFee,
+      fromMarketInfo: getByKey(marketsInfoData, fromMarketToken?.address),
+      toMarketInfo: getByKey(marketsInfoData, marketToken?.address),
+      marketToken,
+      minMarketTokenAmount: marketTokenAmount,
+    });
+
+    sendOrderSubmittedMetric(metricData.metricId);
+
     if (
       !signer ||
       !account ||
@@ -378,6 +435,8 @@ export function GmConfirmationBox({
       marketTokenAmount === undefined ||
       !tokensData
     ) {
+      helperToast.error(t`Error submitting shift`);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.resolve();
     }
 
@@ -391,9 +450,12 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       skipSimulation: shouldDisableValidation,
       tokensData,
+      metricId: metricData.metricId,
       setPendingTxns,
       setPendingShift,
-    });
+    })
+      .then(makeTxnSentMetricsHandler(metricData.metricId))
+      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
   }
 
   const renderTokenInfo = ({

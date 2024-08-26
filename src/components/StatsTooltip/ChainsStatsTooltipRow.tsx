@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import "./StatsTooltip.css";
 import { formatAmount } from "lib/numbers";
 
