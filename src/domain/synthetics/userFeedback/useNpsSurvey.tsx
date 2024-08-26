@@ -1,5 +1,5 @@
 import { RatingToast } from "@/components/RatingToast/RatingToast";
-import { NPS_SURVEY_SHOWN_TIME } from "config/localStorage";
+import { NPS_SURVEY_SHOWN_TIME_KEY } from "config/localStorage";
 import {
   selectAccountStats,
   selectLastMonthAccountStats,
@@ -32,7 +32,7 @@ export function useNpsSurvey() {
   const accountStats = useSelector(selectAccountStats);
 
   const [npsSurveyShownTime, setNpsSurveyShownTime] = useLocalStorageSerializeKey<number | undefined>(
-    NPS_SURVEY_SHOWN_TIME,
+    NPS_SURVEY_SHOWN_TIME_KEY,
     undefined
   );
 
