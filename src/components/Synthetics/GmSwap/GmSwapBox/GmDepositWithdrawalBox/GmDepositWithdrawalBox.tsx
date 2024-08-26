@@ -1,27 +1,12 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHasOutdatedUi } from "domain/legacy";
-import {
-  FeeItem,
-  estimateExecuteDepositGasLimit,
-  estimateExecuteWithdrawalGasLimit,
-  getExecutionFee,
-  getFeeItem,
-  getTotalFeeItem,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
-import {
-  estimateDepositOraclePriceCount,
-  estimateWithdrawalOraclePriceCount,
-} from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
@@ -32,44 +17,53 @@ import {
 } from "domain/synthetics/markets/utils";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
-import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
+import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo } from "react";
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { showMarketToast } from "../showMarketToast";
 import { Mode, Operation } from "../types";
-import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
-import { useUpdateTokens } from "./useUpdateTokens";
+import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
+import { useUpdateTokens } from "./useUpdateTokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
+import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
 import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
+import { useFees } from "./useFees";
+import { useSubmitButtonState } from "./useSubmitButtonState";
 
-export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
-  const { selectedMarketAddress: marketAddress, operation, mode, onSetMode, onSetOperation, onSelectMarket } = p;
+export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: GlvPoolInfo }) {
+  const {
+    selectedMarketAddress: marketAddress,
+    operation,
+    mode,
+    onSetMode,
+    onSetOperation,
+    onSelectMarket,
+    selectedGlvGmMarket,
+    onSelectGlvGmMarket,
+  } = p;
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { openConnectModal } = useConnectModal();
 
   const { shouldDisableValidationForTesting } = useSettings();
-
   const { chainId } = useChainId();
-  const { account } = useWallet();
 
   // #region Requests
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -77,10 +71,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
   // #endregion
   // #region Selectors
-  const marketsInfoData = useMarketsInfoData();
+  const marketsInfoData = useSelector(selectPoolsData);
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     marketsInfoData,
     depositMarketTokensData
@@ -93,8 +86,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
     focusedInput,
     setFocusedInput,
-    stage,
-    setStage,
     isHighPriceImpactAccepted,
     setIsHighPriceImpactAccepted,
     firstTokenAddress,
@@ -121,6 +112,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const marketTokensData = isDeposit ? depositMarketTokensData : withdrawalMarketTokensData;
 
   const marketInfo = getByKey(marketsInfoData, marketAddress);
+  const isGlvMarket = marketInfo && isGlv(marketInfo);
+
   const indexName = marketInfo && getMarketIndexName(marketInfo);
 
   let firstToken = getTokenData(tokensData, firstTokenAddress);
@@ -211,6 +204,26 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
       const result = [longToken];
 
+      if (isGlvMarket) {
+        return [
+          longToken,
+          shortToken,
+          ...marketInfo.markets
+            .map((m) => {
+              const token = marketTokensData?.[m.address];
+              const market = marketsInfoData[m.address];
+
+              if (token) {
+                return {
+                  ...token,
+                  name: market.name,
+                };
+              }
+            })
+            .filter(Boolean as unknown as <T>(x: T | undefined) => x is T),
+        ];
+      }
+
       if (longToken.address !== shortToken.address) {
         result.push(shortToken);
       }
@@ -223,32 +236,57 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
       return result;
     },
-    [marketInfo, tokensData]
+    [marketInfo, tokensData, isGlvMarket, marketTokensData, marketsInfoData]
   );
 
-  const marketToken = getTokenData(
-    isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    marketInfo?.marketTokenAddress
-  );
-  const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0)!;
-  const marketTokenUsd = convertToUsd(
-    marketTokenAmount,
-    marketToken?.decimals,
-    isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
-  )!;
+  /**
+   * Here and following we use `underlyingGmMarket` to get the correct market info for GLV markets
+   * because we need to use actual GM market data to calculate fees, errors and so on,
+   * but here marketInfo may be a Vault market
+   */
+  const { underlyingGmMarket, marketToken, marketTokenUsd, marketTokenAmount } = useMemo(() => {
+    const realGmMarket = isGlvMarket && selectedGlvGmMarket ? marketsInfoData[selectedGlvGmMarket] : marketInfo;
+
+    const marketToken = getTokenData(
+      isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
+      realGmMarket?.marketTokenAddress
+    );
+    const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0)!;
+    const marketTokenUsd = convertToUsd(
+      marketTokenAmount,
+      marketToken?.decimals,
+      isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
+    )!;
+
+    return {
+      underlyingGmMarket: realGmMarket,
+      marketToken,
+      marketTokenAmount,
+      marketTokenUsd,
+    };
+  }, [
+    isGlvMarket,
+    marketInfo,
+    marketsInfoData,
+    selectedGlvGmMarket,
+    depositMarketTokensData,
+    withdrawalMarketTokensData,
+    marketTokenInputValue,
+    isDeposit,
+  ]);
 
   const { longCollateralLiquidityUsd, shortCollateralLiquidityUsd } = useMemo(() => {
-    if (!marketInfo) return {};
+    if (!marketInfo || isGlvMarket) return {};
 
     return {
       longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, true),
       shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, false),
     };
-  }, [marketInfo]);
+  }, [marketInfo, isGlvMarket]);
 
   const amounts = useDepositWithdrawalAmounts({
     isDeposit,
-    marketInfo,
+    marketInfo: underlyingGmMarket,
     marketToken,
     longTokenInputState,
     shortTokenInputState,
@@ -258,127 +296,44 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isWithdrawal,
   });
 
-  const { fees, executionFee } = useMemo(() => {
-    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts) {
-      return {};
-    }
-
-    const basisUsd = isDeposit
-      ? (amounts?.longTokenUsd ?? 0n) + (amounts?.shortTokenUsd ?? 0n)
-      : amounts?.marketTokenUsd || 0n;
-
-    const swapFee = getFeeItem(amounts.swapFeeUsd * -1n, basisUsd);
-    const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const uiFee = getFeeItem(amounts.uiFeeUsd * -1n, basisUsd, {
-      shouldRoundUp: true,
-    });
-
-    const totalFees = getTotalFeeItem([swapPriceImpact, swapFee, uiFee].filter(Boolean) as FeeItem[]);
-    const fees: GmSwapFees = {
-      swapFee,
-      swapPriceImpact,
-      totalFees,
-      uiFee,
-    };
-
-    const gasLimit = isDeposit
-      ? estimateExecuteDepositGasLimit(gasLimits, {
-          initialLongTokenAmount: amounts.longTokenAmount,
-          initialShortTokenAmount: amounts.shortTokenAmount,
-        })
-      : estimateExecuteWithdrawalGasLimit(gasLimits, {});
-
-    const oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
-
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
-
-    return {
-      fees,
-      executionFee,
-    };
-  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData]);
+  const { fees, executionFee } = useFees({
+    amounts,
+    chainId,
+    gasLimits,
+    gasPrice,
+    isDeposit,
+    tokensData,
+  });
 
   const isHighPriceImpact =
     (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
     bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
 
-  const submitState = useMemo(() => {
-    const commonError = getCommonError({
-      chainId,
-      isConnected: true,
-      hasOutdatedUi,
-    })[0];
-
-    const swapError = getGmSwapError({
-      isDeposit,
-      marketInfo,
-      marketToken,
-      longToken: longTokenInputState?.token,
-      shortToken: shortTokenInputState?.token,
-      marketTokenAmount,
-      marketTokenUsd: amounts?.marketTokenUsd,
-      longTokenAmount: amounts?.longTokenAmount,
-      shortTokenAmount: amounts?.shortTokenAmount,
-      longTokenUsd: amounts?.longTokenUsd,
-      shortTokenUsd: amounts?.shortTokenUsd,
-      longTokenLiquidityUsd: longCollateralLiquidityUsd,
-      shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
-      fees,
-      isHighPriceImpact: Boolean(isHighPriceImpact),
-      isHighPriceImpactAccepted,
-      priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
-    })[0];
-
-    const error = commonError || swapError;
-
-    if (!account) {
-      return {
-        text: t`Connect Wallet`,
-        onSubmit: () => openConnectModal?.(),
-      };
-    }
-
-    const onSubmit = () => {
-      setStage("confirmation");
-    };
-
-    if (error) {
-      return {
-        text: error,
-        error,
-        isDisabled: !shouldDisableValidationForTesting,
-        onSubmit,
-      };
-    }
-
-    return {
-      text: isDeposit ? t`Buy GM` : t`Sell GM`,
-      onSubmit,
-    };
-  }, [
-    chainId,
-    hasOutdatedUi,
-    isDeposit,
-    marketInfo,
-    marketToken,
-    longTokenInputState?.token,
-    shortTokenInputState?.token,
-    marketTokenAmount,
-    amounts?.marketTokenUsd,
-    amounts?.longTokenAmount,
-    amounts?.shortTokenAmount,
-    amounts?.longTokenUsd,
-    amounts?.shortTokenUsd,
-    longCollateralLiquidityUsd,
-    shortCollateralLiquidityUsd,
+  const submitState = useSubmitButtonState({
+    amounts,
+    executionFee,
     fees,
+    isDeposit,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
-    account,
-    openConnectModal,
-    setStage,
-    shouldDisableValidationForTesting,
-  ]);
+    marketInfo: underlyingGmMarket,
+    marketToken: marketToken!,
+    operation,
+    shouldDisableValidation: shouldDisableValidationForTesting,
+    tokensData,
+    longToken: longTokenInputState?.token,
+    shortToken: shortTokenInputState?.token,
+    marketTokenAmount,
+    marketTokenUsd: amounts?.marketTokenUsd,
+    longTokenAmount: amounts?.longTokenAmount,
+    shortTokenAmount: amounts?.shortTokenAmount,
+    longTokenUsd: amounts?.longTokenUsd,
+    shortTokenUsd: amounts?.shortTokenUsd,
+    longTokenLiquidityUsd: longCollateralLiquidityUsd,
+    shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
+    marketTokensData,
+    isGlv: Boolean(isGlvMarket),
+  });
 
   const firstTokenShowMaxButton =
     (isDeposit &&
@@ -445,6 +400,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       onSelectMarket(marketAddress);
     },
     [onSelectMarket, resetInputs]
+  );
+
+  const onGmPoolChange = useCallback(
+    (marketAddress: string) => {
+      onSelectGlvGmMarket?.(marketAddress);
+    },
+    [onSelectGlvGmMarket]
   );
 
   const onMaxClickFirstToken = useCallback(() => {
@@ -524,7 +486,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      submitState.onSubmit();
+      submitState.onSubmit?.();
     },
     [submitState]
   );
@@ -630,6 +592,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     chainId,
   });
   // #endregion
+
   return (
     <>
       <form onSubmit={handleFormSubmit}>
@@ -648,7 +611,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             onInputValueChange={handleFirstTokenInputValueChange}
             onClickMax={onMaxClickFirstToken}
           >
-            {firstTokenAddress && isSingle && isDeposit ? (
+            {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
               <TokenSelector
                 label={isDeposit ? t`Pay` : t`Receive`}
                 chainId={chainId}
@@ -727,11 +690,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           marketTokensData={marketTokensData}
           isDeposit={isDeposit}
           fees={fees}
+          marketInfo={marketInfo}
           executionFee={executionFee}
           isHighPriceImpact={isHighPriceImpact}
+          selectedGlvGmMarket={selectedGlvGmMarket}
           isHighPriceImpactAccepted={isHighPriceImpactAccepted}
           setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
           isSingle={isSingle}
+          onGmPoolChange={onGmPoolChange}
           onMarketChange={onMarketChange}
         />
 
@@ -740,36 +706,12 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             className="w-full"
             variant="primary-action"
             onClick={submitState.onSubmit}
-            disabled={submitState.isDisabled}
+            disabled={submitState.disabled}
           >
             {submitState.text}
           </Button>
         </div>
       </form>
-
-      <GmConfirmationBox
-        isVisible={stage === "confirmation"}
-        marketToken={marketToken!}
-        longToken={longTokenInputState?.token}
-        shortToken={shortTokenInputState?.token}
-        marketTokenAmount={amounts?.marketTokenAmount ?? 0n}
-        marketTokenUsd={amounts?.marketTokenUsd ?? 0n}
-        longTokenAmount={amounts?.longTokenAmount}
-        longTokenUsd={amounts?.longTokenUsd}
-        shortTokenAmount={amounts?.shortTokenAmount}
-        shortTokenUsd={amounts?.shortTokenUsd}
-        fees={fees!}
-        error={submitState.error}
-        operation={operation}
-        executionFee={executionFee}
-        onSubmitted={() => {
-          setStage("swap");
-        }}
-        onClose={() => {
-          setStage("swap");
-        }}
-        shouldDisableValidation={shouldDisableValidationForTesting}
-      />
     </>
   );
 }

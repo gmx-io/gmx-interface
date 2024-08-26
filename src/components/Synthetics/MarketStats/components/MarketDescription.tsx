@@ -1,8 +1,7 @@
 import { Trans } from "@lingui/macro";
 
 import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
-
-import "./MarketStats.scss";
+import { isGlv } from "domain/synthetics/markets/glv";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -39,6 +38,15 @@ export function MarketDescription({ marketInfo }: Props) {
       <Trans>
         This token automatically accrues fees from leverage trading and swaps for the {getMarketIndexName(marketInfo)}{" "}
         market. It is also exposed to {composition} as per the composition displayed.
+      </Trans>
+    );
+  }
+
+  if (isGlv(marketInfo)) {
+    text = (
+      <Trans>
+        This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
+        from the included markets.
       </Trans>
     );
   }

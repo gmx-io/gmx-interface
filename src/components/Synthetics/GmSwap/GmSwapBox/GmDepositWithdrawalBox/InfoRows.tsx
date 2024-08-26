@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { values } from "lodash";
 
-import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { TokensData } from "domain/synthetics/tokens";
@@ -12,9 +12,14 @@ import { showMarketToast } from "../showMarketToast";
 
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { GmPoolsSelector } from "components/MarketSelector/GmSelectorForGlv";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { MarketInfo } from "domain/synthetics/markets";
+import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { useCallback } from "react";
+import { isGlv } from "../../../../../domain/synthetics/markets/glv";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 
 export function InfoRows({
@@ -24,11 +29,14 @@ export function InfoRows({
   isDeposit,
   fees,
   executionFee,
+  marketInfo,
   isHighPriceImpact,
   isHighPriceImpactAccepted,
   setIsHighPriceImpactAccepted,
   isSingle,
   onMarketChange,
+  onGmPoolChange,
+  selectedGlvGmMarket,
 }: {
   indexName: string | undefined;
   marketAddress: string | undefined;
@@ -36,14 +44,24 @@ export function InfoRows({
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
+  marketInfo: MarketInfo | GlvPoolInfo | undefined;
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
   setIsHighPriceImpactAccepted: (val: boolean) => void;
   isSingle: boolean;
   onMarketChange: (marketAddress: string) => void;
+  onGmPoolChange?: (marketAddress: string) => void;
+  selectedGlvGmMarket?: string;
 }) {
   const gmTokenFavoritesContext = useGmTokensFavorites();
-  const markets = values(useSelector(selectMarketsInfoData));
+  const markets = values(useSelector(selectPoolsData));
+
+  const onSelectGmMarket = useCallback(
+    (marketInfo: MarketInfo) => {
+      onGmPoolChange?.(marketInfo.marketTokenAddress);
+    },
+    [onGmPoolChange]
+  );
 
   return (
     <ExchangeInfo className="GmSwapBox-info-section" dividerClassName="App-card-divider">
@@ -52,21 +70,38 @@ export function InfoRows({
           className="SwapBox-info-row"
           label={t`Pool`}
           value={
-            <PoolSelector
-              label={t`Pool`}
-              className="-mr-4"
-              selectedIndexName={indexName}
-              selectedMarketAddress={marketAddress}
-              markets={markets}
-              marketTokensData={marketTokensData}
-              isSideMenu
-              showBalances
-              onSelectMarket={(marketInfo) => {
-                onMarketChange(marketInfo.marketTokenAddress);
-                showMarketToast(marketInfo);
-              }}
-              {...gmTokenFavoritesContext}
-            />
+            marketInfo && isGlv(marketInfo) ? (
+              <GmPoolsSelector
+                label={t`Pool`}
+                className="-mr-4"
+                isDeposit={isDeposit}
+                selectedIndexName={indexName}
+                selectedMarketAddress={selectedGlvGmMarket}
+                markets={markets}
+                glvMarketInfo={marketInfo}
+                marketTokensData={marketTokensData}
+                isSideMenu
+                showBalances
+                onSelectGmMarket={onSelectGmMarket}
+                {...gmTokenFavoritesContext}
+              />
+            ) : (
+              <PoolSelector
+                label={t`Pool`}
+                className="-mr-4"
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={markets}
+                marketTokensData={marketTokensData}
+                isSideMenu
+                showBalances
+                onSelectMarket={(marketInfo) => {
+                  onMarketChange(marketInfo.marketTokenAddress);
+                  showMarketToast(marketInfo);
+                }}
+                {...gmTokenFavoritesContext}
+              />
+            )
           }
         />
       </ExchangeInfo.Group>

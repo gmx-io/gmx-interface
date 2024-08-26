@@ -9,6 +9,9 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { useMulticall } from "lib/multicall";
+
+import GlvRouter from "abis/GlvRouter.json";
 
 type Params = {
   account: string;
@@ -126,3 +129,104 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     });
   });
 }
+
+// interface GlvParams {
+//   account: account,
+//   glv: params.glv,
+//   receiver: params.receiver,
+//   callbackContract: params.callbackContract,
+//   uiFeeReceiver: params.uiFeeReceiver,
+//   market: params.market,
+//   initialLongToken: params.initialLongToken,
+//   initialShortToken: params.initialShortToken,
+//   longTokenSwapPath: params.longTokenSwapPath,
+//   shortTokenSwapPath: params.shortTokenSwapPath
+
+// export async function createGlvDepositTxn(chainId: number, signer: Signer, p: GlvParams) {
+//   const contract = getContract(chainId, "GlvRouter");
+//   return useMulticall(chainId, "createGlvDepositTxn", {
+//     refreshInterval: null,
+//     key: ["createGlvDepositTxn"],
+//     request: () => {
+//       return {
+//         glvs: {
+//           contractAddress: contract,
+//           abi: GlvRouter.abi,
+//           calls: {
+//             list: {
+//               methodName: "createGlvDeposit",
+//               // {
+//               //   "internalType": "address",
+//               //   "name": "receiver",
+//               //   "type": "address"
+//               // },
+//               // {
+//               //   "internalType": "address",
+//               //   "name": "callbackContract",
+//               //   "type": "address"
+//               // },
+//               // {
+//               //   "internalType": "address",
+//               //   "name": "uiFeeReceiver",
+//               //   "type": "address"
+//               // },
+//               // {
+//               //   "internalType": "address",
+//               //   "name": "market",
+//               //   "type": "address"
+//               // },
+//               // {
+//               //   "internalType": "address",
+//               //   "name": "glv",
+//               //   "type": "address"
+//               // },
+//               // {
+//               //   "internalType": "address[]",
+//               //   "name": "longTokenSwapPath",
+//               //   "type": "address[]"
+//               // },
+//               // {
+//               //   "internalType": "address[]",
+//               //   "name": "shortTokenSwapPath",
+//               //   "type": "address[]"
+//               // },
+//               // {
+//               //   "internalType": "uint256",
+//               //   "name": "minLongTokenAmount",
+//               //   "type": "uint256"
+//               // },
+//               // {
+//               //   "internalType": "uint256",
+//               //   "name": "minShortTokenAmount",
+//               //   "type": "uint256"
+//               // },
+//               // {
+//               //   "internalType": "bool",
+//               //   "name": "shouldUnwrapNativeToken",
+//               //   "type": "bool"
+//               // },
+//               // {
+//               //   "internalType": "uint256",
+//               //   "name": "executionFee",
+//               //   "type": "uint256"
+//               // },
+//               // {
+//               //   "internalType": "uint256",
+//               //   "name": "callbackGasLimit",
+//               //   "type": "uint256"
+//               // }
+//               params: [{
+//                 receiver: p.account,
+//               }
+
+//               ],
+//             },
+//           },
+//         },
+//       };
+//     },
+//     parseResponse(result) {
+//       return result.data.glvs.list.returnValues as GlvList;
+//     },
+//   });
+// }

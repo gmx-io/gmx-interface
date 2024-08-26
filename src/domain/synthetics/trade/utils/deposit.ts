@@ -4,6 +4,7 @@ import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "doma
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
+import { isGlv } from "../../markets/glv";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;

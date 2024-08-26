@@ -69,6 +69,8 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
     whileElementsMounted: autoUpdate,
   });
 
+  const contractSymbol = market && isGlv(market) ? `${market.indexToken.contractSymbol}` : undefined;
+
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
       <Menu>
@@ -91,7 +93,13 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               </ExternalLink>
             </Menu.Item>
           )}
-          <AddToWalletButton active={active} walletClient={walletClient} token={token} marketName={marketName} />
+          <AddToWalletButton
+            contractSymbol={contractSymbol}
+            active={active}
+            walletClient={walletClient}
+            token={token}
+            marketName={marketName}
+          />
           {active && shortToken && walletClient && (
             <AddToWalletButton
               active={active}
@@ -119,11 +127,13 @@ function AddToWalletButton({
   walletClient,
   token,
   marketName,
+  contractSymbol,
 }: {
   active?: boolean;
   walletClient: WalletClient;
   token?: TokenData;
   marketName: ReactNode;
+  contractSymbol?: string;
 }) {
   if (!active || !walletClient?.watchAsset || !token) {
     return null;
@@ -139,7 +149,7 @@ function AddToWalletButton({
             type: "ERC20",
             options: {
               address,
-              symbol: explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
+              symbol: contractSymbol ?? explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
               decimals,
               image: imageUrl,
             },

@@ -1,5 +1,9 @@
+import { getMaxUsdBuyableAmountInMarket, isGlv } from "domain/synthetics/markets/glv";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelectorDeprecated, createSelector } from "../utils";
+import { createSelectorDeprecated, createSelector, createSelectorFactory } from "../utils";
+import { bigintToNumber } from "lib/numbers";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { TokensData } from "domain/synthetics/tokens";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;

@@ -1,7 +1,7 @@
+import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { getBridgingOptionsForToken } from "config/bridging";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -9,13 +9,11 @@ import {
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
-  getMintableMarketTokens,
   getPoolUsdWithoutPnl,
-  getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { BN_ZERO, formatAmountHuman, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -25,13 +23,17 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { TOKEN_COLOR_MAP } from "config/tokens";
+import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
-import { bigMath } from "lib/bigmath";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { zeroAddress } from "viem";
 import "./MarketStats.scss";
-import { MarketDescription } from "./MarketDescription";
+import { CompositionBar } from "./components/CompositionBar";
+import { CompositionTableGm } from "./components/CompositionTable";
+import { MarketDescription } from "./components/MarketDescription";
+import { useMarketMintableTokens } from "./hooks/useMarketMintableTokens";
+import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
+import { useMedia } from "react-use";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -40,6 +42,8 @@ type Props = {
   marketToken?: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
 };
 
 export function MarketStatsWithComposition(p: Props) {
@@ -50,8 +54,12 @@ export function MarketStatsWithComposition(p: Props) {
     marketsInfoData,
     marketTokensData,
     marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    glvMarketsTokensApyData,
   } = p;
   const { chainId } = useChainId();
+
+  const isGlvMarket = marketInfo && isGlv(marketInfo);
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
@@ -60,10 +68,10 @@ export function MarketStatsWithComposition(p: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
+  const { longToken, shortToken } = marketInfo || {};
 
-  const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
-  const sellableInfo = marketInfo && marketToken ? getSellableMarketToken(marketInfo, marketToken) : undefined;
+  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken);
+  const sellableInfo = useMarketSellableToken(marketInfo, marketToken, marketTokensData);
 
   const maxLongSellableTokenAmount = convertToTokenAmount(
     sellableInfo?.maxLongSellableUsd,
@@ -77,16 +85,12 @@ export function MarketStatsWithComposition(p: Props) {
     shortToken?.prices.minPrice
   );
 
-  const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
-  const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
-
   const apy = getByKey(marketsTokensApyData, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
+  const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
+
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
-
-  const bridgingOprionsForToken = getBridgingOptionsForToken(longToken?.symbol);
-  const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
 
   const maxLongTokenValue = useMemo(
     () => [
@@ -129,9 +133,166 @@ export function MarketStatsWithComposition(p: Props) {
     ]
   );
 
+  const buyableRow = useMemo(() => {
+    const buyableInfo = mintableInfo
+      ? formatTokenAmountWithUsd(
+          mintableInfo.mintableAmount,
+          mintableInfo.mintableUsd,
+          isGlvMarket ? marketToken?.symbol : marketToken?.symbol,
+          marketToken?.decimals,
+          {
+            displayDecimals: 0,
+          }
+        )
+      : "...";
+
+    if (isGlvMarket) {
+      return <CardRow label={t`Buyable`} value={buyableInfo} />;
+    }
+
+    return (
+      <CardRow
+        label={t`Buyable`}
+        value={
+          mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
+            <Tooltip
+              disabled={isGlvMarket}
+              maxAllowedWidth={350}
+              handle={buyableInfo}
+              position="bottom-end"
+              content={
+                <div>
+                  {marketInfo?.isSameCollaterals ? (
+                    <Trans>
+                      {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified buying
+                      caps.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for this
+                      market up to the specified buying caps.
+                    </Trans>
+                  )}
+
+                  <br />
+                  <br />
+
+                  <StatsTooltipRow
+                    label={t`Max ${marketInfo?.longToken.symbol}`}
+                    value={maxLongTokenValue}
+                    showDollar={false}
+                  />
+                  <br />
+                  <StatsTooltipRow
+                    label={t`Max ${marketInfo?.shortToken.symbol}`}
+                    value={maxShortTokenValue}
+                    showDollar={false}
+                  />
+                </div>
+              }
+            />
+          ) : (
+            "..."
+          )
+        }
+      />
+    );
+  }, [isGlvMarket, marketInfo, marketToken, marketTotalSupplyUsd, mintableInfo, maxLongTokenValue, maxShortTokenValue]);
+
+  const sellableRow = useMemo(() => {
+    const sellableValue = sellableInfo
+      ? formatTokenAmountWithUsd(
+          sellableInfo?.totalAmount,
+          sellableInfo?.totalUsd,
+          marketToken?.symbol,
+          marketToken?.decimals,
+          {
+            displayDecimals: 0,
+          }
+        )
+      : "...";
+
+    if (isGlvMarket) {
+      return <CardRow label={t`Sellable`} value={sellableValue} />;
+    }
+
+    return (
+      <CardRow
+        label={t`Sellable`}
+        value={
+          <Tooltip
+            maxAllowedWidth={300}
+            handle={sellableValue}
+            position="bottom-end"
+            content={
+              <div>
+                {marketInfo?.isSameCollaterals ? (
+                  <Trans>
+                    GM can be sold for {longToken?.symbol} for this market up to the specified selling caps. The
+                    remaining tokens in the pool are reserved for currently open positions.
+                  </Trans>
+                ) : (
+                  <Trans>
+                    GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the specified
+                    selling caps. The remaining tokens in the pool are reserved for currently open positions.
+                  </Trans>
+                )}
+                <br />
+                <br />
+                <StatsTooltipRow
+                  label={t`Max ${marketInfo?.longToken.symbol}`}
+                  value={formatTokenAmountWithUsd(
+                    maxLongSellableTokenAmount,
+                    sellableInfo?.maxLongSellableUsd,
+                    longToken?.symbol,
+                    longToken?.decimals
+                  )}
+                  showDollar={false}
+                />
+                {!marketInfo?.isSameCollaterals && (
+                  <StatsTooltipRow
+                    label={t`Max ${marketInfo?.shortToken.symbol}`}
+                    value={formatTokenAmountWithUsd(
+                      maxShortSellableTokenAmount,
+                      sellableInfo?.maxShortSellableUsd,
+                      shortToken?.symbol,
+                      shortToken?.decimals
+                    )}
+                    showDollar={false}
+                  />
+                )}
+              </div>
+            }
+          />
+        }
+      />
+    );
+  }, [
+    marketInfo,
+    longToken,
+    shortToken,
+    marketToken,
+    sellableInfo,
+    maxLongSellableTokenAmount,
+    maxShortSellableTokenAmount,
+    isGlvMarket,
+  ]);
+
+  const canFitCompositionOnRow = useMedia("(min-width: 1200px)");
+
   return (
-    <div className="App-card flex flex-grow flex-row">
-      <div className="max-w-[36.6rem] pr-20">
+    <div
+      className={cx("flex flex-grow bg-slate-800", {
+        "flex-row": canFitCompositionOnRow,
+        "flex-col": !canFitCompositionOnRow,
+      })}
+    >
+      <div
+        className={cx("p-20", {
+          "max-w-[36.6rem]": canFitCompositionOnRow,
+          "w-[100%]": !canFitCompositionOnRow,
+        })}
+      >
         <MarketTokenSelector
           marketTokensData={marketTokensData}
           marketsInfoData={marketsInfoData}
@@ -142,19 +303,36 @@ export function MarketStatsWithComposition(p: Props) {
         <div className="App-card-divider" />
         <div className="App-card-content">
           <MarketDescription marketInfo={marketInfo} />
-          <CardRow
-            label={t`Market`}
-            value={
-              indexName && poolName ? (
-                <div className="flex items-start">
-                  <span>{indexName}</span>
-                  <span className="subtext gm-market-name">[{poolName}]</span>
-                </div>
-              ) : (
-                "..."
-              )
-            }
-          />
+          {isGlvMarket ? (
+            <CardRow
+              label={t`Vault`}
+              value={
+                marketInfo.name && poolName ? (
+                  <div className="flex items-start">
+                    <span>{marketInfo.name}</span>
+                    <span className="subtext gm-market-name">[{poolName}]</span>
+                  </div>
+                ) : (
+                  "..."
+                )
+              }
+            />
+          ) : (
+            <CardRow
+              label={t`Market`}
+              value={
+                indexName && poolName ? (
+                  <div className="flex items-start">
+                    <span>{indexName}</span>
+                    <span className="subtext gm-market-name">[{poolName}]</span>
+                  </div>
+                ) : (
+                  "..."
+                )
+              }
+            />
+          )}
+
           <CardRow
             label={t`Price`}
             value={
@@ -187,265 +365,139 @@ export function MarketStatsWithComposition(p: Props) {
 
           <CardRow
             label={t`Wallet`}
-            value={formatTokenAmountWithUsd(
-              marketBalance ?? 0n,
-              marketBalanceUsd ?? 0n,
-              "GM",
-              marketToken?.decimals ?? 18
-            )}
-          />
-
-          {/* <CardRow label={t`APY`} value={<AprInfo apy={apy} incentiveApr={incentiveApr} />} /> */}
-
-          <CardRow
-            label={t`Total Supply`}
             value={
-              marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
-                ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken?.decimals, {
-                    displayDecimals: 0,
-                  })
+              marketToken
+                ? formatTokenAmountWithUsd(
+                    marketBalance ?? 0n,
+                    marketBalanceUsd ?? 0n,
+                    isGlvMarket ? "GLV" : "GM",
+                    marketToken?.decimals ?? 18
+                  )
                 : "..."
             }
           />
 
           <CardRow
-            label={t`Buyable`}
+            label={t`APY`}
             value={
-              mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
-                <Tooltip
-                  maxAllowedWidth={350}
-                  handle={formatTokenAmountWithUsd(
-                    mintableInfo.mintableAmount,
-                    mintableInfo.mintableUsd,
-                    "GM",
-                    marketToken?.decimals,
-                    {
-                      displayDecimals: 0,
-                    }
-                  )}
-                  position="bottom-end"
-                  content={
-                    <div>
-                      {marketInfo?.isSameCollaterals ? (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified
-                          buying caps.
-                        </Trans>
-                      ) : (
-                        <Trans>
-                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
-                          this market up to the specified buying caps.
-                        </Trans>
-                      )}
-
-                      <br />
-                      <br />
-
-                      <StatsTooltipRow
-                        label={t`Max ${marketInfo?.longToken.symbol}`}
-                        value={maxLongTokenValue}
-                        showDollar={false}
-                      />
-                      <br />
-                      <StatsTooltipRow
-                        label={t`Max ${marketInfo?.shortToken.symbol}`}
-                        value={maxShortTokenValue}
-                        showDollar={false}
-                      />
-                    </div>
-                  }
-                />
+              isGlvMarket ? (
+                glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress]?.toString() ?? <>...</>
               ) : (
-                "..."
+                <AprInfo
+                  apy={apy}
+                  incentiveApr={incentiveApr}
+                  lidoApr={lidoApr}
+                  tokenAddress={marketToken?.address ?? zeroAddress}
+                />
               )
             }
           />
 
           <CardRow
-            label={t`Sellable`}
+            label={t`Total Supply`}
             value={
-              <Tooltip
-                maxAllowedWidth={300}
-                handle={formatTokenAmountWithUsd(
-                  sellableInfo?.totalAmount,
-                  sellableInfo?.totalUsd,
-                  "GM",
-                  marketToken?.decimals,
-                  {
-                    displayDecimals: 0,
-                  }
-                )}
-                position="bottom-end"
-                content={
-                  <div>
-                    {marketInfo?.isSameCollaterals ? (
-                      <Trans>
-                        GM can be sold for {longToken?.symbol} for this market up to the specified selling caps. The
-                        remaining tokens in the pool are reserved for currently open positions.
-                      </Trans>
-                    ) : (
-                      <Trans>
-                        GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the
-                        specified selling caps. The remaining tokens in the pool are reserved for currently open
-                        positions.
-                      </Trans>
-                    )}
-                    <br />
-                    <br />
-                    <StatsTooltipRow
-                      label={t`Max ${marketInfo?.longToken.symbol}`}
-                      value={formatTokenAmountWithUsd(
-                        maxLongSellableTokenAmount,
-                        sellableInfo?.maxLongSellableUsd,
-                        longToken?.symbol,
-                        longToken?.decimals
-                      )}
-                      showDollar={false}
-                    />
-                    {!marketInfo?.isSameCollaterals && (
-                      <StatsTooltipRow
-                        label={t`Max ${marketInfo?.shortToken.symbol}`}
-                        value={formatTokenAmountWithUsd(
-                          maxShortSellableTokenAmount,
-                          sellableInfo?.maxShortSellableUsd,
-                          shortToken?.symbol,
-                          shortToken?.decimals
-                        )}
-                        showDollar={false}
-                      />
-                    )}
-                  </div>
-                }
-              />
+              marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
+                ? formatTokenAmountWithUsd(
+                    marketTotalSupply,
+                    marketTotalSupplyUsd,
+                    isGlvMarket ? "GLV" : "GM",
+                    marketToken?.decimals,
+                    {
+                      displayDecimals: 0,
+                    }
+                  )
+                : "..."
             }
           />
+
+          {sellableRow}
+          {buyableRow}
+
+          {isGlvMarket && (
+            <>
+              <CardRow
+                label={t`Last Rebalance`}
+                value={
+                  marketInfo?.shiftLastExecutedAt === 0n ? "-" : marketInfo?.shiftLastExecutedAt.toString() ?? "..."
+                }
+              />
+              <CardRow
+                label={t`Rebalance Frequency`}
+                value={secondsToHumanReadableDuration(marketInfo?.shiftMinInterval) ?? "..."}
+              />
+            </>
+          )}
+
           <div className="App-card-divider" />
           <BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />
         </div>
       </div>
-      <div className="border-l-1 flex-grow border-l-slate-700 pl-20">
-        <p>Composition</p>
-        <CompositionBar
-          data={[
-            {
-              value: longPoolAmountUsd,
-              color: longToken
-                ? TOKEN_COLOR_MAP[longToken?.symbol] || TOKEN_COLOR_MAP.default
-                : TOKEN_COLOR_MAP.default,
-            },
-            {
-              value: longPoolAmountUsd,
-              color: shortToken
-                ? TOKEN_COLOR_MAP[shortToken?.symbol] || TOKEN_COLOR_MAP.default
-                : TOKEN_COLOR_MAP.default,
-            },
-          ]}
-        />
-        <CompositionTableGm
-          data={[
-            {
-              token: longToken,
-              amount: longPoolAmount,
-              amountUsd: longPoolAmountUsd,
-              prefix: "Long",
-            },
-            {
-              token: shortToken,
-              amount: shortPoolAmount,
-              amountUsd: shortPoolAmountUsd,
-              prefix: "Short",
-            },
-          ].filter(Boolean)}
-        />
+      <div
+        className={cx("flex-grow", {
+          "border-l-1 border-l-slate-700": canFitCompositionOnRow,
+          "mt-20 border-t-1 border-t-slate-700": !canFitCompositionOnRow,
+        })}
+      >
+        <div className="p-20">
+          <p>Composition</p>
+          <CompositionBar marketInfo={marketInfo} />
+          <CompositionTableGm marketInfo={marketInfo} />
+        </div>
       </div>
     </div>
   );
 }
 
-interface CompositionBarProps {
-  data: {
-    color: string;
-    value?: bigint;
-  }[];
-}
+/**
+ *
+ * @returns every N weeks, days, hours, minutes, and seconds
+ */
+function secondsToHumanReadableDuration(s: bigint, roundUpTo?: "minutes" | "hours" | "days" | "weeks"): string {
+  const secs = Number(s);
 
-function CompositionBar({ data }: CompositionBarProps) {
-  const sum = data.reduce((acc, { value }) => acc + (value ?? 0n), 0n);
-  const percents = data.map(({ value }) => (value === undefined ? 0n : bigMath.mulDiv(value, 100n, sum)));
+  const weeks = Math.floor(secs / 604800);
+  const days = Math.floor((secs % 604800) / 86400);
+  const hours = Math.floor((secs % 86400) / 3600);
+  const minutes = Math.floor((secs % 3600) / 60);
+  const seconds = secs % 60;
 
-  return (
-    <div className="relative mt-10 h-8 overflow-hidden rounded-2">
-      {data.map(({ color, value }, index) => {
-        if (value === undefined) {
-          return null;
-        }
-        const widthPc = percents[index].toString();
-        const previousWidthPc = index ? percents[index - 1]?.toString() : "0";
+  const parts = (() => {
+    const parts: string[] = [];
 
-        return (
-          <div
-            key={`comp-pc-${index}`}
-            className="[&:not(:last-child)]:border-r-1 absolute left-0 top-0 h-8 border-slate-800"
-            style={{ width: `${widthPc}%`, backgroundColor: color, left: previousWidthPc + "%" }}
-          />
-        );
-      })}
-    </div>
-  );
-}
+    if (weeks) {
+      parts.push(weeks > 1 ? t`${weeks} weeks` : t`week`);
+    }
+    if (roundUpTo === "weeks") {
+      return parts;
+    }
 
-interface CompositionTableGmProps {
-  data: { prefix: string; amountUsd?: bigint; token?: TokenData; amount?: bigint }[];
-}
+    if (days) {
+      parts.push(days > 1 ? t`${days} days` : t`day`);
+    }
+    if (roundUpTo === "days") {
+      return parts;
+    }
 
-export function CompositionTableGm({ data }: CompositionTableGmProps) {
-  const sum = data.reduce((acc, { amountUsd }) => acc + (amountUsd ?? 0n), 0n);
+    if (hours) {
+      parts.push(hours > 1 ? t`${hours} hours` : t`hour`);
+    }
+    if (roundUpTo === "hours") {
+      return parts;
+    }
 
-  return (
-    <table className="w-[100%]">
-      <thead>
-        <ExchangeTheadTr bordered={false}>
-          <ExchangeTh padding="vertical">
-            <Trans>COLLATERAL</Trans>
-          </ExchangeTh>
-          <ExchangeTh padding="vertical">
-            <Trans>AMOUNT</Trans>
-          </ExchangeTh>
-          <ExchangeTh padding="vertical">
-            <Trans>COMP.</Trans>
-          </ExchangeTh>
-        </ExchangeTheadTr>
-      </thead>
-      <tbody>
-        {data.map(({ token, prefix, amountUsd, amount }, index) => {
-          if (amount === undefined || amountUsd === undefined || !token) {
-            return null;
-          }
+    if (minutes) {
+      parts.push(minutes > 1 ? t`${minutes} minutes` : t`minute`);
+    }
+    if (roundUpTo === "minutes") {
+      return parts;
+    }
 
-          return (
-            <ExchangeTr key={`comp-data-${token.address}-${index}`} hoverable={false} bordered={false}>
-              <ExchangeTd className="py-6" padding="none">
-                <span className="flex flex-row items-center gap-8">
-                  <span
-                    className="inline-block h-10 w-10 rounded-10"
-                    style={{ backgroundColor: TOKEN_COLOR_MAP[token.symbol] ?? TOKEN_COLOR_MAP.default }}
-                  />
-                  <TokenIcon symbol={token.symbol} displaySize={24} />
-                  <span>
-                    {prefix}: {token.symbol}
-                  </span>
-                </span>
-              </ExchangeTd>
-              <ExchangeTd className="py-6" padding="none">
-                {formatAmountHuman(amount, token.decimals)}
-              </ExchangeTd>
-              <ExchangeTd className="py-6" padding="none">
-                {bigMath.mulDiv(amountUsd, 100n, sum).toString()}
-              </ExchangeTd>
-            </ExchangeTr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
+    if (seconds) {
+      parts.push(seconds > 1 ? t`${seconds} seconds` : t`second`);
+    }
+
+    return parts;
+  })();
+
+  return t`Every` + " " + parts.join(" ");
 }

@@ -41,7 +41,7 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getBuyableAmountGlv, getGlvMarketBadgeName, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getGlvMarketBadgeName, isGlv } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { ApyTooltipContent } from "./ApyTooltipContent";
@@ -275,6 +275,7 @@ function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      glvMarketsTokensApyData,
     });
   }, [
     chainId,
@@ -283,6 +284,7 @@ function useFilterSortPools({
     poolsInfo,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
+    glvMarketsTokensApyData,
     marketsTokensLidoAprData,
     orderBy,
   ]);
@@ -466,7 +468,7 @@ function PoolsListItem({
       <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
       <ExchangeTd>
         <TokenValuesInfoCell
-          token={formatTokenAmount(totalSupply, token.decimals, "GM", {
+          token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {
             useCommas: true,
             displayDecimals: 2,
           })}
@@ -475,7 +477,7 @@ function PoolsListItem({
       </ExchangeTd>
       <ExchangeTd>
         {isGlvMarket ? (
-          <MintableAmount mintableInfo={getBuyableAmountGlv(market)} market={market} token={token} />
+          <MintableAmount mintableInfo={getMintableInfoGlv(market)} market={market} token={token} />
         ) : (
           <MintableAmount
             mintableInfo={mintableInfo}

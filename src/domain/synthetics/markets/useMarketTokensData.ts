@@ -16,6 +16,9 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
+import { GlvPoolsData } from "../tokens/useGlvPools";
+import { useMemo } from "react";
+import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -23,13 +26,13 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string }
+  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvPoolsData }
 ): MarketTokensDataResult {
-  const { isDeposit, account } = p;
+  const { isDeposit, account, glvMarketsData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
-  const isDataLoaded = tokensData && marketsAddresses?.length;
+  const isDataLoaded = tokensData && marketsAddresses?.length && Object.values(glvMarketsData).length > 0;
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
@@ -137,14 +140,28 @@ export function useMarketTokensDataRequest(
       }, {} as TokensData),
   });
 
+  const enrichedData = useMemo(() => {
+    if (!data || !glvMarketsData || Object.values(glvMarketsData).length === 0) {
+      return data;
+    }
+
+    const result = { ...data };
+    Object.values(glvMarketsData).forEach((glvMarket) => {
+      result[glvMarket.indexTokenAddress] = glvMarket.indexToken;
+    });
+
+    return result;
+  }, [data, glvMarketsData]);
+
   return {
-    marketTokensData: data,
+    marketTokensData: enrichedData,
   };
 }
 
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
+  const glvMarketsData = useSelector(selectGlvInfo);
 
-  return useMarketTokensDataRequest(chainId, { isDeposit, account });
+  return useMarketTokensDataRequest(chainId, { isDeposit, account, glvMarketsData: glvMarketsData });
 }

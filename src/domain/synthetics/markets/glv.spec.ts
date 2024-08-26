@@ -7,7 +7,7 @@ import { bigMath } from "lib/bigmath";
 
 import { convertToUsd } from "../tokens/utils";
 
-export function getBuyableAmountGlv(glv: GlvPoolInfo) {
+export function getMintableInfoGlv(glv: GlvPoolInfo) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {

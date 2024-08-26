@@ -38,6 +38,7 @@ import {
   SelectorBaseMobileHeaderContent,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
+import { getGlvMarketBadgeName, isGlv } from "domain/synthetics/markets/glv";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -66,6 +67,8 @@ export default function MarketTokenSelector(props: Props) {
       getNormalizedTokenSymbol(currentMarketInfo.shortToken.symbol)
     : currentMarketInfo?.indexToken.symbol;
 
+  const isGlvMarket = currentMarketInfo && isGlv(currentMarketInfo);
+
   return (
     <SelectorBase
       handleClassName="inline-block"
@@ -76,10 +79,24 @@ export default function MarketTokenSelector(props: Props) {
         <div className="inline-flex items-center">
           {currentMarketInfo ? (
             <>
-              <TokenIcon className="mr-8" symbol={iconName} displaySize={30} importSize={40} />
+              <TokenIcon
+                className="mr-12"
+                symbol={iconName}
+                displaySize={30}
+                importSize={40}
+                badge={
+                  isGlvMarket
+                    ? getGlvMarketBadgeName(currentMarketInfo.name)
+                    : ([currentMarketInfo.longToken.symbol, currentMarketInfo.shortToken.symbol] as const)
+                }
+              />
               <div>
                 <div className="flex items-center text-16">
-                  <span>GM{indexName && `: ${indexName}`}</span>
+                  {isGlvMarket ? (
+                    <span>GLV: {currentMarketInfo.name}</span>
+                  ) : (
+                    <span>GM{indexName && `: ${indexName}`}</span>
+                  )}
                   <span className="ml-3 text-12 text-gray-300 group-hover/selector-base:text-[color:inherit]">
                     {poolName && `[${poolName}]`}
                   </span>

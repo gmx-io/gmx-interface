@@ -542,19 +542,24 @@ export function formatPercentageDisplay(percentage: number, hideThreshold?: numb
   return `${percentage}%`;
 }
 
-export function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
+export function formatAmountHuman(
+  amount: BigNumberish | undefined,
+  tokenDecimals: number,
+  showDollar = false,
+  displayDecimals = 1
+) {
   const n = Number(formatAmount(amount, tokenDecimals));
   const isNegative = n < 0;
   const absN = Math.abs(n);
   const sign = showDollar ? "$" : "";
 
   if (absN >= 1000000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(1)}M`;
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(displayDecimals)}M`;
   }
 
   if (absN >= 1000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(1)}K`;
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(displayDecimals)}K`;
   }
 
-  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
+  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
 }

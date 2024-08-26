@@ -4,6 +4,7 @@ import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import { isGlv } from "../markets/glv";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -43,6 +44,10 @@ export function useAvailableTokenOptions(
     const shortTokensWithPoolValue: { [address: string]: bigint } = {};
 
     for (const marketInfo of marketsInfo) {
+      if (isGlv(marketInfo)) {
+        continue;
+      }
+
       const longToken = marketInfo.longToken;
       const shortToken = marketInfo.shortToken;
       const indexToken = marketInfo.indexToken;

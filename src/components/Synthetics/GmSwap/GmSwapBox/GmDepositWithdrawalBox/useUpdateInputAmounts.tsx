@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
+import { isGlv } from "domain/synthetics/markets/glv";
 import { MarketInfo } from "domain/synthetics/markets/types";
-import { TokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
 
@@ -67,9 +68,23 @@ export function useUpdateInputAmounts({
           }
 
           if (amounts) {
-            setMarketTokenInputValue(
-              amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
-            );
+            if (isGlv(marketInfo)) {
+              const glvPrice = isDeposit
+                ? marketInfo.indexToken.prices.maxPrice
+                : marketInfo.indexToken.prices.minPrice;
+              const gmUsdAmount = amounts.marketTokenUsd;
+              const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
+
+              setMarketTokenInputValue(
+                glvAmount !== undefined && glvAmount > 0
+                  ? formatAmountFree(glvAmount, marketInfo.indexToken.decimals)
+                  : ""
+              );
+            } else {
+              setMarketTokenInputValue(
+                amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+              );
+            }
           }
         } else if (focusedInput === "market") {
           if (marketTokenAmount <= 0) {
@@ -80,10 +95,18 @@ export function useUpdateInputAmounts({
 
           if (amounts) {
             if (longToken) {
+              let longTokenAmountToSet = amounts.longTokenAmount;
+
+              if (isGlv(marketInfo)) {
+                amounts.longTokenUsd;
+                // @todo
+              }
+
               longTokenInputState?.setValue(
-                amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, longToken.decimals) : ""
               );
             }
+
             if (shortToken) {
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""

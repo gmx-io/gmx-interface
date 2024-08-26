@@ -133,6 +133,10 @@ const CONTRACTS = {
     SyntheticsRouter: "0xa960786Bc30F8587279df6116F9E0B15C5b034dE",
     Timelock: ZeroAddress,
 
+    // @todo
+    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
+    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
+
     Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
   },
   [ARBITRUM]: {
@@ -189,6 +193,9 @@ const CONTRACTS = {
     ShiftVault: "0xfe99609C4AA83ff6816b64563Bdffd7fa68753Ab",
     SyntheticsReader: "0x5Ca84c34a381434786738735265b9f3FD814b824",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
+    // @todo
+    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
+    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
@@ -247,6 +254,9 @@ const CONTRACTS = {
     ShiftVault: "0x7fC46CCb386e9bbBFB49A2639002734C3Ec52b39",
     SyntheticsReader: "0xBAD04dDcc5CC284A86493aFA75D2BEb970C72216",
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
+    // @todo
+    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
+    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
@@ -304,7 +314,9 @@ const CONTRACTS = {
     SyntheticsReader: "0xD52216D3A57F7eb1126498f00A4771553c737AE4",
     SyntheticsRouter: "0x5e7d61e4C52123ADF651961e4833aCc349b61491",
     Timelock: ZeroAddress,
+
     GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
+    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },

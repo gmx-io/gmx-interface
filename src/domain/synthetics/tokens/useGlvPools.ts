@@ -10,9 +10,9 @@ import {
   glvShiftMinIntervalKey,
   isGlvMarketDisabledKey,
 } from "config/dataStore";
-import { getTokenBySymbol, TOKENS } from "config/tokens";
+import { getTokenBySymbol } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { getGlvMarketName, MarketInfo, MarketsInfoData } from "../markets";
+import { getContractMarketPrices, getGlvMarketName, MarketInfo, MarketsInfoData } from "../markets";
 import { TokenData, TokensData } from "./types";
 
 export type GlvList = {
@@ -30,13 +30,16 @@ export type GlvPoolsData = {
 
 export interface GlvPoolInfo extends MarketInfo {
   isGlv: true;
+  indexToken: TokenData & {
+    contractSymbol: string;
+  };
   marketTokenAddress: string;
   indexTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;
   markets: GlvMarket[];
-  glvShiftLastExecutedAt: bigint;
-  glvShiftMinInterval: bigint;
+  shiftLastExecutedAt: bigint;
+  shiftMinInterval: bigint;
 }
 
 export interface GlvMarket {
@@ -109,6 +112,11 @@ export function useGlvPoolsInfo(
         }
 
         const request = glvs.reduce((acc, { glv, markets }) => {
+          const contractGlvPrices = getContractMarketPrices(tokensData, {
+            longTokenAddress: glv.longToken,
+            shortTokenAddress: glv.shortToken,
+          });
+
           acc[glv.glvToken + "-prices"] = {
             contractAddress: glvReaderAddress,
             abi: GlvReader.abi,
@@ -119,13 +127,12 @@ export function useGlvPoolsInfo(
                   dataStoreAddress,
                   markets,
                   markets.map((market) => {
-                    return [
-                      marketsInfoData[market].indexToken.prices.minPrice,
-                      marketsInfoData[market].indexToken.prices.maxPrice,
-                    ];
+                    const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
+
+                    return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
                   }),
-                  [tokensData[glv.longToken].prices.maxPrice, tokensData[glv.longToken].prices.minPrice],
-                  [tokensData[glv.shortToken].prices.maxPrice, tokensData[glv.shortToken].prices.minPrice],
+                  [contractGlvPrices?.longTokenPrice!.max, contractGlvPrices?.longTokenPrice!.min],
+                  [contractGlvPrices?.shortTokenPrice!.max, contractGlvPrices?.shortTokenPrice!.min],
                   glv.glvToken,
                   false,
                 ],
@@ -136,13 +143,12 @@ export function useGlvPoolsInfo(
                   dataStoreAddress,
                   markets,
                   markets.map((market) => {
-                    return [
-                      marketsInfoData[market].indexToken.prices.minPrice,
-                      marketsInfoData[market].indexToken.prices.maxPrice,
-                    ];
+                    const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
+
+                    return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
                   }),
-                  [tokensData[glv.longToken].prices.maxPrice, tokensData[glv.longToken].prices.minPrice],
-                  [tokensData[glv.shortToken].prices.maxPrice, tokensData[glv.shortToken].prices.minPrice],
+                  [contractGlvPrices?.longTokenPrice!.max, contractGlvPrices?.longTokenPrice!.min],
+                  [contractGlvPrices?.shortTokenPrice!.max, contractGlvPrices?.shortTokenPrice!.min],
                   glv.glvToken,
                   true,
                 ],
@@ -161,6 +167,10 @@ export function useGlvPoolsInfo(
               balance: {
                 methodName: "balanceOf",
                 params: [account],
+              },
+              symbol: {
+                methodName: "symbol",
+                params: [],
               },
             },
           };
@@ -235,24 +245,28 @@ export function useGlvPoolsInfo(
 
           const tokenConfig = getTokenBySymbol(chainId, "GLV");
 
-          const indexToken: TokenData = {
+          const indexToken: TokenData & {
+            contractSymbol: string;
+          } = {
             ...tokenConfig,
             address: glv.glvToken,
             prices: {
-              minPrice: priceMin,
-              maxPrice: priceMax,
+              minPrice: priceMin, // 10n ** BigInt(18),
+              maxPrice: priceMax, // 10n ** BigInt(18),
             },
             totalSupply: totalSupply,
             // @todo
-            usdAmountMax: usdAmountMax,
-            usdAmountMin: usdAmountMin,
+            // usdAmountMax: usdAmountMax,
+            // usdAmountMin: usdAmountMin,
             balance: data[glv.glvToken + "-tokenData"].balance.returnValues[0],
-            ...data[glv.glvToken + "-tokenData"].returnValues,
+            contractSymbol: data[glv.glvToken + "-tokenData"].symbol.returnValues[0],
           };
 
           result[glv.glvToken] = {
             ...glv,
             ...data[glv.glvToken + "-info"].returnValues,
+            shiftLastExecutedAt: data[glv.glvToken + "-info"].glvShiftLastExecutedAt.returnValues[0],
+            shiftMinInterval: data[glv.glvToken + "-info"].glvShiftMinInterval.returnValues[0],
             isGlv: true,
             indexToken: indexToken,
             longToken: tokensData[glv.longToken],
@@ -267,17 +281,21 @@ export function useGlvPoolsInfo(
             isDisabled: markets.every(
               (market) => data[glv.glvToken + "-" + market + "-info"].isGlvMarketDisabled.returnValues[0]
             ),
-            markets: markets.map((market) => {
-              const marketData = data[glv.glvToken + "-" + market + "-info"];
-              const marketBalance = data[glv.glvToken + "-" + market + "-gm-balance"].balance.returnValues[0];
-              return {
-                address: market,
-                isDisabled: marketData.isGlvMarketDisabled.returnValues[0],
-                maxMarketTokenBalanceUsd: marketData.maxMarketTokenBalanceUsd.returnValues[0],
-                glvMaxMarketTokenBalanceAmount: marketData.glvMaxMarketTokenBalanceAmount.returnValues[0],
-                gmBalance: marketBalance,
-              };
-            }),
+            markets: markets
+              .map((market) => {
+                const marketData = data[glv.glvToken + "-" + market + "-info"];
+                const marketBalance = data[glv.glvToken + "-" + market + "-gm-balance"].balance.returnValues[0];
+                return {
+                  address: market,
+                  isDisabled: marketData.isGlvMarketDisabled.returnValues[0],
+                  maxMarketTokenBalanceUsd: marketData.maxMarketTokenBalanceUsd.returnValues[0],
+                  glvMaxMarketTokenBalanceAmount: marketData.glvMaxMarketTokenBalanceAmount.returnValues[0],
+                  gmBalance: marketBalance,
+                };
+              })
+              .sort((a, b) => {
+                return a.gmBalance > b.gmBalance ? -1 : 1;
+              }),
           };
         });
         return result;

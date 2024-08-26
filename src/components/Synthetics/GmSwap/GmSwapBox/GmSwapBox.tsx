@@ -1,7 +1,6 @@
 import { msg } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalizedMap } from "lib/i18n";
@@ -10,9 +9,13 @@ import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 import { Mode, Operation } from "./types";
 
 import Tab from "components/Tab/Tab";
-import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
+import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { isGlv } from "domain/synthetics/markets/glv";
+
+import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
 
 export type GmSwapBoxProps = {
@@ -22,11 +25,19 @@ export type GmSwapBoxProps = {
   mode: Mode;
   onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
+  selectedGlvGmMarket?: string;
+  onSelectGlvGmMarket?: (marketAddress: string) => void;
 };
 
-const OPERATION_LABELS = {
+const OPERATION_LABELS_GM = {
   [Operation.Deposit]: msg`Buy GM`,
   [Operation.Withdrawal]: msg`Sell GM`,
+  [Operation.Shift]: msg`Shift GM`,
+};
+
+const OPERATION_LABELS_GLV = {
+  [Operation.Deposit]: msg`Buy GLV`,
+  [Operation.Withdrawal]: msg`Sell GLV`,
   [Operation.Shift]: msg`Shift GM`,
 };
 
@@ -38,13 +49,21 @@ const MODE_LABELS = {
 const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
 
 export function GmSwapBox(p: GmSwapBoxProps) {
-  const { selectedMarketAddress, operation, mode, onSetMode, onSetOperation, onSelectMarket } = p;
+  const {
+    selectedMarketAddress,
+    operation,
+    mode,
+    onSetMode,
+    onSetOperation,
+    onSelectMarket,
+    selectedGlvGmMarket,
+    onSelectGlvGmMarket,
+  } = p;
 
   const marketAddress = selectedMarketAddress;
 
-  const marketsInfoData = useMarketsInfoData();
+  const marketsInfoData = useSelector(selectPoolsData);
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
-
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
   const availableOperations = useMemo(() => {
@@ -64,7 +83,14 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   }, [marketAddress, shiftAvailableMarkets]);
   const availableModes = getGmSwapBoxAvailableModes(operation, marketInfo);
 
-  const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const localizedOperationLabelsGM = useLocalizedMap(OPERATION_LABELS_GM);
+  const localizedOperationLabelsGLV = useLocalizedMap(OPERATION_LABELS_GLV);
+
+  const localizedOperationLabels = useMemo(
+    () => (marketInfo && isGlv(marketInfo) ? localizedOperationLabelsGLV : localizedOperationLabelsGM),
+    [marketInfo, localizedOperationLabelsGM, localizedOperationLabelsGLV]
+  );
+
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
   return (
@@ -89,7 +115,10 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal
           selectedMarketAddress={selectedMarketAddress}
+          glvMarket={marketInfo as GlvPoolInfo}
           onSelectMarket={onSelectMarket}
+          selectedGlvGmMarket={selectedGlvGmMarket}
+          onSelectGlvGmMarket={onSelectGlvGmMarket}
           operation={operation}
           mode={mode}
           onSetMode={onSetMode}

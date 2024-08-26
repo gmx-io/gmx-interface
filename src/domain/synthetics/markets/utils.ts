@@ -444,19 +444,26 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {
+export function getContractMarketPrices(
+  tokensData: TokensData,
+  market: Pick<Partial<Market>, "longTokenAddress" | "shortTokenAddress" | "indexTokenAddress">
+): ContractMarketPrices | undefined {
   const indexToken = getByKey(tokensData, market.indexTokenAddress);
   const longToken = getByKey(tokensData, market.longTokenAddress);
   const shortToken = getByKey(tokensData, market.shortTokenAddress);
 
-  if (!indexToken || !longToken || !shortToken) {
+  if (
+    (market.indexTokenAddress && !indexToken) ||
+    (market.longTokenAddress && !longToken) ||
+    (market.shortTokenAddress && !shortToken)
+  ) {
     return undefined;
   }
 
   return {
-    indexTokenPrice: convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
-    longTokenPrice: convertToContractTokenPrices(longToken.prices, longToken.decimals),
-    shortTokenPrice: convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
+    indexTokenPrice: indexToken && convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
+    longTokenPrice: longToken && convertToContractTokenPrices(longToken.prices, longToken.decimals),
+    shortTokenPrice: shortToken && convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
   };
 }
 

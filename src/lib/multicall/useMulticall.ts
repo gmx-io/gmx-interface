@@ -121,7 +121,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         const response = successDataByChainIdRef.current[chainId];
 
         if (!response) {
-          console.log("----------->", responseOrFailure);
           throw new Error(`Multicall response is empty`);
         }
 

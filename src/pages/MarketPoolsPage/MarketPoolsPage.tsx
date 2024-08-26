@@ -1,9 +1,12 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
-import { getSyntheticsDepositMarketKey } from "config/localStorage";
-import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getSyntheticsDepositGlvMarketKey, getSyntheticsDepositMarketKey } from "config/localStorage";
+import {
+  selectDepositMarketTokensData,
+  selectPoolsData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData, useMarketsInfoRequest, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
@@ -23,12 +26,13 @@ import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 import "./MarketPoolsPage.scss";
+import { isGlv } from "domain/synthetics/markets/glv";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData } = useMarketsInfoRequest(chainId);
+  const marketsInfoData = useSelector(selectPoolsData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -39,24 +43,29 @@ export function MarketPoolsPage() {
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
 
-  const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
+  const [selectedMarketGmKey, setSelectedMarketGmKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
     undefined
   );
 
+  const [selectedGlvGmMarketKey, setSelectedGlvGmMarketKey] = useLocalStorageSerializeKey<string | undefined>(
+    getSyntheticsDepositGlvMarketKey(chainId),
+    undefined
+  );
+
   useEffect(() => {
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketKey));
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketGmKey));
 
     if (!newAvailableModes.includes(mode)) {
       setMode(newAvailableModes[0]);
     }
-  }, [marketsInfoData, mode, operation, selectedMarketKey]);
+  }, [marketsInfoData, mode, operation, selectedMarketGmKey]);
 
-  const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
+  const marketInfo = getByKey(marketsInfoData, selectedMarketGmKey);
 
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    selectedMarketKey
+    selectedMarketGmKey
   );
 
   return (
@@ -82,17 +91,20 @@ export function MarketPoolsPage() {
           <MarketStatsWithComposition
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            // marketsTokensLidoAprData={marketsTokensLidoAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
             marketToken={marketToken}
+            glvMarketsTokensApyData={glvApyInfoData}
           />
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
-              selectedMarketAddress={selectedMarketKey}
-              onSelectMarket={setSelectedMarketKey}
+              selectedMarketAddress={selectedMarketGmKey}
+              onSelectMarket={setSelectedMarketGmKey}
+              selectedGlvGmMarket={selectedGlvGmMarketKey}
+              onSelectGlvGmMarket={setSelectedGlvGmMarketKey}
               operation={operation}
               mode={mode}
               onSetMode={setMode}

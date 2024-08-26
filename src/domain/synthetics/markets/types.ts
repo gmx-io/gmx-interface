@@ -158,15 +158,15 @@ export type UserEarningsData = {
 };
 
 export type ContractMarketPrices = {
-  indexTokenPrice: {
+  indexTokenPrice?: {
     min: bigint;
     max: bigint;
   };
-  longTokenPrice: {
+  longTokenPrice?: {
     min: bigint;
     max: bigint;
   };
-  shortTokenPrice: {
+  shortTokenPrice?: {
     min: bigint;
     max: bigint;
   };

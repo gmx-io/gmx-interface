@@ -122,9 +122,19 @@ export function SyntheticsStateContextProvider({
 
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
+
+  const isPoolsPage = pageType === "pools" || pageType === "dashboard";
+  const glvInfo = useGlvPoolsInfo(isPoolsPage, {
+    marketsInfoData: marketsInfo.marketsInfoData,
+    tokensData: marketsInfo.tokensData,
+    chainId: chainId,
+    account: account,
+  });
+
   const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, {
     isDeposit: true,
     account,
+    glvMarketsData: glvInfo.glvPoolsInfo,
   });
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
@@ -134,14 +144,6 @@ export function SyntheticsStateContextProvider({
     chainId,
     isTradePage
   );
-
-  const isPoolsPage = pageType === "pools" || pageType === "dashboard";
-  const glvInfo = useGlvPoolsInfo(isPoolsPage, {
-    marketsInfoData: marketsInfo.marketsInfoData,
-    tokensData: marketsInfo.tokensData,
-    chainId: chainId,
-    account: account,
-  });
 
   const settings = useSettings();
 
