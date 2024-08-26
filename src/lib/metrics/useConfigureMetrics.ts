@@ -1,4 +1,4 @@
-import { getIsFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -38,7 +38,7 @@ export function useConfigureMetrics() {
       isMobileMetamask,
       isWindowVisible,
       isAuthorised: active,
-      testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
+      abFlags: getAbFlags(),
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
     });

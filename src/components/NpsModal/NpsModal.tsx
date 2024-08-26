@@ -1,5 +1,5 @@
-import { MAX_FEEDBACK_LENGTH } from "@/config/ui";
-import { Answer, getQuestionsByRating, useNpsSurvey } from "@/domain/synthetics/userFeedback";
+import { MAX_FEEDBACK_LENGTH } from "config/ui";
+import { Answer, getQuestionsByRating, useNpsSurvey } from "domain/synthetics/userFeedback";
 import { t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";

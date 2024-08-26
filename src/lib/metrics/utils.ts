@@ -28,7 +28,7 @@ import {
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
-import { USD_DECIMALS } from "@/config/factors";
+import { USD_DECIMALS } from "config/factors";
 
 export function getMetricTypeByOrderType(p: {
   orderType: OrderType;

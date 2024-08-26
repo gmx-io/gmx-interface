@@ -2,15 +2,17 @@ import { ClientConfig, createPublicClient, http } from "viem";
 import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "@/config/chains";
-import { isWebWorker } from "@/config/env";
-import { hashData } from "@/lib/hash";
-import { sleep } from "@/lib/sleep";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
+import { isWebWorker } from "config/env";
+import { hashData } from "lib/hash";
+import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "@/abis/CustomErrors.json";
-import { MulticallTimeoutEvent } from "@/lib/metrics";
-import { emitMetricEvent } from "@/lib/metrics/emitMetricEvent";
+import CustomErrors from "abis/CustomErrors.json";
+import { MulticallTimeoutEvent, MulticallErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
+import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -83,17 +85,18 @@ export class Multicall {
     [chainId: number]: Multicall | undefined;
   } = {};
 
-  static async getInstance(chainId: number) {
+  static async getInstance(chainId: number, abFlags: Record<string, boolean>) {
     let instance = Multicall.instances[chainId];
 
     if (!instance || instance.chainId !== chainId) {
       const rpcUrl = getRpcUrl(chainId);
+      const fallbackRpcUrl = getFallbackRpcUrl(chainId);
 
-      if (!rpcUrl) {
+      if (!rpcUrl || !fallbackRpcUrl) {
         return undefined;
       }
 
-      instance = new Multicall(chainId, rpcUrl);
+      instance = new Multicall(chainId, rpcUrl, fallbackRpcUrl, abFlags);
 
       Multicall.instances[chainId] = instance;
     }
@@ -116,13 +119,42 @@ export class Multicall {
     });
   }
 
-  viemClient: ReturnType<typeof Multicall.getViemClient>;
+  fallbackRpcSwitcher = new SlidingWindowFallbackSwitcher({
+    fallbackTimeout: 60 * 1000, // 1 minute
+    restoreTimeout: 5 * 60 * 1000, // 5 minutes
+    eventsThreshold: 3,
+    onFallback: () => {
+      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
+        event: `multicall.${isWebWorker ? "worker" : "mainThread"}.fallbackRpcMode.on`,
+        abFlags: this.abFlags,
+      });
+    },
+    onRestore: () => {
+      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
+        event: `multicall.${isWebWorker ? "worker" : "mainThread"}.fallbackRpcMode.off`,
+        abFlags: this.abFlags,
+      });
+    },
+  });
+
+  getClient: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
 
   constructor(
     public chainId: number,
-    public rpcUrl: string
+    public rpcUrl: string,
+    public fallbackRpcUrl: string,
+    private abFlags: Record<string, boolean>
   ) {
-    this.viemClient = Multicall.getViemClient(chainId, rpcUrl);
+    const client = Multicall.getViemClient(chainId, rpcUrl);
+    const fallbackClient = Multicall.getViemClient(chainId, fallbackRpcUrl);
+
+    this.getClient = function getViemClient({ forceFallback = false } = {}) {
+      if (forceFallback || this.fallbackRpcSwitcher?.isFallbackMode) {
+        return fallbackClient;
+      }
+
+      return client;
+    };
   }
 
   async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
@@ -175,21 +207,67 @@ export class Multicall {
       });
     });
 
-    const response: any = await Promise.race([
-      this.viemClient.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
-    ]).catch((_viemError) => {
-      const e = new Error(_viemError.message.slice(0, 150));
+    const client = this.getClient();
+    const isFallbackMode = this.fallbackRpcSwitcher?.isFallbackMode;
 
-      emitMetricEvent<MulticallTimeoutEvent>({
-        event: "multicall.timeout",
-        isError: true,
-        data: {
-          metricType: "rpcTimeout",
-          isInMainThread: !isWebWorker,
-          errorMessage: _viemError.message.slice(0, 150),
-        },
+    const sendCounterEvent = (event: string, isFallback?: boolean) => {
+      const environment = isWebWorker ? "worker" : "mainThread";
+      const fallback = isFallback || isFallbackMode ? ".fallback" : "";
+
+      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
+        event: `multicall.${environment}${fallback}.${event}`,
+        abFlags: this.abFlags,
       });
+    };
+
+    const processResponse = (response: any) => {
+      const multicallResult: MulticallResult<any> = {
+        success: true,
+        errors: {},
+        data: {},
+      };
+
+      response.forEach(({ result, status, error }, i) => {
+        const { contractKey, callKey } = originalKeys[i];
+
+        if (status === "success") {
+          let values: any;
+
+          if (Array.isArray(result) || typeof result === "object") {
+            values = result;
+          } else {
+            values = [result];
+          }
+
+          multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
+          multicallResult.data[contractKey][callKey] = {
+            contractKey,
+            callKey,
+            returnValues: values,
+            success: true,
+          };
+        } else {
+          multicallResult.success = false;
+
+          multicallResult.errors[contractKey] = multicallResult.errors[contractKey] || {};
+          multicallResult.errors[contractKey][callKey] = error;
+
+          multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
+          multicallResult.data[contractKey][callKey] = {
+            contractKey,
+            callKey,
+            returnValues: [],
+            success: false,
+            error: error,
+          };
+        }
+      });
+
+      return multicallResult;
+    };
+
+    const fallbackMulticall = (e: Error) => {
+      sendCounterEvent("request", true);
 
       // eslint-disable-next-line no-console
       console.groupCollapsed("multicall error:");
@@ -198,72 +276,90 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      const rpcUrl = getFallbackRpcUrl(this.chainId);
-
-      if (!rpcUrl) {
-        throw e;
+      if (!isFallbackMode && this.abFlags?.testRpcWindowFallback) {
+        this.fallbackRpcSwitcher?.trigger();
       }
-
-      const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
 
       // eslint-disable-next-line no-console
       console.debug(`using multicall fallback for chain ${this.chainId}`);
 
-      return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
-        const e = new Error(_viemError.message.slice(0, 150));
-        // eslint-disable-next-line no-console
-        console.groupCollapsed("multicall fallback error:");
-        // eslint-disable-next-line no-console
-        console.error(e);
-        // eslint-disable-next-line no-console
-        console.groupEnd();
+      return this.getClient({ forceFallback: true })
+        .multicall({ contracts: encodedPayload as any })
+        .catch((_viemError) => {
+          const e = new Error(_viemError.message.slice(0, 150));
+          // eslint-disable-next-line no-console
+          console.groupCollapsed("multicall fallback error:");
+          // eslint-disable-next-line no-console
+          console.error(e);
+          // eslint-disable-next-line no-console
+          console.groupEnd();
 
-        throw e;
-      });
-    });
+          emitMetricEvent<MulticallErrorEvent>({
+            event: "multicall.error",
+            isError: true,
+            data: {
+              isFallbackRequest: true,
+              isInMainThread: !isWebWorker,
+              errorMessage: _viemError.message.slice(0, 150),
+            },
+          });
 
-    const multicallResult: MulticallResult<any> = {
-      success: true,
-      errors: {},
-      data: {},
+          sendCounterEvent("error", true);
+
+          throw e;
+        });
     };
 
-    response.forEach(({ result, status, error }, i) => {
-      const { contractKey, callKey } = originalKeys[i];
+    sendCounterEvent("request");
 
-      if (status === "success") {
-        let values: any;
+    const result: any = await Promise.race([
+      client.multicall({ contracts: encodedPayload as any }),
+      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
+    ])
+      .then(processResponse)
+      .catch((_viemError) => {
+        const e = new Error(_viemError.message.slice(0, 150));
 
-        if (Array.isArray(result) || typeof result === "object") {
-          values = result;
-        } else {
-          values = [result];
-        }
+        emitMetricEvent<MulticallTimeoutEvent>({
+          event: "multicall.timeout",
+          isError: true,
+          data: {
+            metricType: "rpcTimeout",
+            isInMainThread: !isWebWorker,
+            isFallbackRequest: isFallbackMode,
+            errorMessage: _viemError.message.slice(0, 150),
+          },
+        });
 
-        multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
-        multicallResult.data[contractKey][callKey] = {
-          contractKey,
-          callKey,
-          returnValues: values,
-          success: true,
-        };
-      } else {
-        multicallResult.success = false;
+        sendCounterEvent("timeout");
 
-        multicallResult.errors[contractKey] = multicallResult.errors[contractKey] || {};
-        multicallResult.errors[contractKey][callKey] = error;
+        return fallbackMulticall(e).then(processResponse);
+      });
 
-        multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
-        multicallResult.data[contractKey][callKey] = {
-          contractKey,
-          callKey,
-          returnValues: [],
-          success: false,
-          error: error,
-        };
-      }
+    if (result.success) {
+      return result;
+    }
+
+    emitMetricEvent<MulticallErrorEvent>({
+      event: "multicall.error",
+      isError: true,
+      data: {
+        isFallbackRequest: isFallbackMode,
+        isInMainThread: !isWebWorker,
+        errorMessage: "multicall error",
+      },
     });
 
-    return multicallResult;
+    sendCounterEvent("error");
+
+    if (this.abFlags?.testRpcWindowFallback) {
+      if (!isFallbackMode) {
+        this.fallbackRpcSwitcher?.trigger();
+      }
+
+      return await fallbackMulticall(new Error("multicall fallback error")).then(processResponse);
+    }
+
+    return result;
   }
 }

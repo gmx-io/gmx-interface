@@ -35,7 +35,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { AccountStats } from "@/domain/synthetics/accountStats";
+import { AccountStats } from "domain/synthetics/accountStats";
 
 export type SyntheticsPageType =
   | "accounts"

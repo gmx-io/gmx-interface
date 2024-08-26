@@ -82,7 +82,7 @@ export const contractFetcher =
       });
 
       fallbackContractCall
-        ?.then((result) => resolve(result))
+        .then((result) => resolve(result))
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error("fallback fetcher error", id, contractInfo.contractName, method, e);

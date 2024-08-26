@@ -34,7 +34,7 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
-import { NpsModal } from "@/components/NpsModal/NpsModal";
+import { NpsModal } from "components/NpsModal/NpsModal";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";

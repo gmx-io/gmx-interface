@@ -3,7 +3,8 @@ import { useChainId } from "lib/chains";
 import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
+import { useOracleKeeperFetcher } from "../tokens";
+import type { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();

@@ -1,6 +1,6 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
-import { OracleFetcher } from "domain/synthetics/tokens";
+import { OracleFetcher } from "lib/oracleKeeperFetcher";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
