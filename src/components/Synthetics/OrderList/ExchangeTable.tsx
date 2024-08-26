@@ -30,7 +30,7 @@ export function ExchangeTheadTr({
 }
 export const ExchangeTr = forwardRef<
   HTMLTableRowElement,
-  PropsWithChildren<{ hoverable?: boolean; bordered?: boolean }> & React.HTMLProps<HTMLTableRowElement>
+  PropsWithChildren<{ hoverable?: boolean; bordered?: boolean; qa?: string }> & React.HTMLProps<HTMLTableRowElement>
 >(function ExchangeTrInternal({ hoverable = true, bordered = true, ...props }, ref) {
   return (
     <tr
@@ -40,6 +40,7 @@ export const ExchangeTr = forwardRef<
         "border-b border-slate-700 last-of-type:border-b-0": bordered,
         "hover:bg-cold-blue-900": hoverable,
       })}
+      data-qa={props.qa}
     />
   );
 });

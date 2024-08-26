@@ -11,6 +11,7 @@ type Props = {
   symbol?: string;
   isError?: boolean;
   inputClassName?: string;
+  qa?: string;
 };
 
 export default function SuggestionInput({
@@ -21,6 +22,7 @@ export default function SuggestionInput({
   symbol,
   isError,
   inputClassName,
+  qa,
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
@@ -46,6 +48,7 @@ export default function SuggestionInput({
           value={value ?? ""}
           placeholder={placeholder}
           onValueChange={handleChange}
+          qa={qa}
         />
         <label>
           <span>{symbol}</span>
