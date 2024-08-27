@@ -358,12 +358,6 @@ body.dragging .ExchangeChart iframe {
   bottom: auto;
 }
 
-.PositionEditor .Modal-content .Modal-body {
-  overscroll-behavior: smooth;
-  max-height: calc(80vh - 8.525rem);
-  overflow-y: auto;
-}
-
 .PositionEditor .Tab {
   margin-bottom: 1.05rem;
 }

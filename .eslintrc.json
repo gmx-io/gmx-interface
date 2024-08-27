@@ -47,6 +47,10 @@
       "local-rules/no-logical-bigint": "off",
       "no-restricted-imports": ["error", {
         "paths": ["lodash"]
+      }],
+      "no-restricted-globals": ["error", {
+        "name": "process",
+        "message": "Don't use `process` in client code"
       }]
     },
     "env": {
@@ -55,7 +59,6 @@
       "es2020": true
     },
     "globals": {
-      "process": true,
       "TradingView": true
     },
     "settings": {

@@ -127,6 +127,13 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 
   const wrappedToken = getWrappedToken(chainId);
 
+  function getCollateralLabel() {
+    if (isDecreaseOrderType(positionOrder.orderType)) {
+      return t`Collateral Delta`;
+    }
+    return t`Collateral`;
+  }
+
   function getCollateralText() {
     const collateralUsd = convertToUsd(
       positionOrder.initialCollateralDeltaAmount,
@@ -140,8 +147,13 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       positionOrder.targetCollateralToken.prices.minPrice
     );
 
+    const decreaseMultiplier = isDecreaseOrderType(positionOrder.orderType) ? -1n : 1n;
+
+    const signedTargetCollateralAmount =
+      targetCollateralAmount !== undefined ? targetCollateralAmount * decreaseMultiplier : undefined;
+
     const tokenAmountText = formatTokenAmount(
-      targetCollateralAmount,
+      signedTargetCollateralAmount,
       positionOrder.targetCollateralToken?.decimals,
       positionOrder.targetCollateralToken.isNative ? wrappedToken.symbol : positionOrder.targetCollateralToken.symbol
     );
@@ -156,7 +168,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       position="bottom-start"
       content={
         <>
-          <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
+          <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
 
           {isCollateralSwap && (
             <div className="OrderItem-tooltip-row">
