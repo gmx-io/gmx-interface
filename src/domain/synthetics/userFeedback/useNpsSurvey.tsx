@@ -15,6 +15,7 @@ import { formatAmountForMetrics } from "@/lib/metrics";
 import { USD_DECIMALS } from "@/config/factors";
 import { useShowDebugValues } from "@/context/SyntheticsStateContext/hooks/settingsHooks";
 import useWallet from "@/lib/wallets/useWallet";
+import { differenceInDays } from "date-fns";
 
 type Answer = {
   questionType: string;
@@ -78,7 +79,7 @@ export function useNpsSurvey() {
   useEffect(
     function showNpsToast() {
       const isConditionsMet = accountStats?.closedCount && accountStats.closedCount >= 3;
-      const isAlreadyShown = Boolean(npsSurveyShownTime);
+      const isAlreadyShown = npsSurveyShownTime && differenceInDays(npsSurveyShownTime, Date.now()) < 30;
 
       if (!isConditionsMet || isAlreadyShown || isModalVisible) {
         return;
