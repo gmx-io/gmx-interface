@@ -130,7 +130,7 @@ export function useNpsSurvey() {
   useEffect(
     function showNpsToast() {
       const isConditionsMet = isTriggerActionPerformed && accountStats?.closedCount && accountStats.closedCount >= 3;
-      const isAlreadyShown = npsSurveyShownTime && differenceInDays(npsSurveyShownTime, Date.now()) < 30;
+      const isAlreadyShown = npsSurveyShownTime && differenceInDays(Date.now(), npsSurveyShownTime) < 30;
 
       if (!isConditionsMet || isAlreadyShown || isModalVisible) {
         return;

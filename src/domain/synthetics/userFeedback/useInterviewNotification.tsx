@@ -20,7 +20,7 @@ export function useInterviewNotification() {
     function showInterviewToast() {
       const isHighTradeVolume = lastWeekAccountStats && lastWeekAccountStats.volume >= HIGH_TRADE_VOLUME_FOR_FEEDBACK;
       const isAlreadyShown =
-        interviewInvitationShownTime && differenceInDays(interviewInvitationShownTime, Date.now()) < 30;
+        interviewInvitationShownTime && differenceInDays(Date.now(), interviewInvitationShownTime) < 30;
 
       if (!isHighTradeVolume || isAlreadyShown) {
         return;
