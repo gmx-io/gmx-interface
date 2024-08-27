@@ -58,6 +58,7 @@
     "env-cmd": "^10.1.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-recommended": "4.1.0",
+    "eslint-plugin-es-x": "8.0.0",
     "eth-testing": "1.9.1",
     "ethers": "6.12.1",
     "framer-motion": "11.1.9",
