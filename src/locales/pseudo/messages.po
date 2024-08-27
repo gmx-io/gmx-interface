@@ -22,6 +22,10 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Not likely"
+msgstr ""
+
 #: src/pages/Home/Home.jsx
 msgid "Available on your preferred network"
 msgstr ""
@@ -2385,6 +2389,10 @@ msgstr ""
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Enter your feedback here"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2590,8 +2598,8 @@ msgid "AUM"
 msgstr ""
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "No likely"
-msgstr ""
+#~ msgid "No likely"
+#~ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
@@ -2810,6 +2818,7 @@ msgid "Stake failed."
 msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr ""
 
@@ -3449,6 +3458,10 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Markets"
+msgstr ""
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -4223,6 +4236,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Trades"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Enter your answer here"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -5446,6 +5463,7 @@ msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr ""
 
@@ -6017,6 +6035,10 @@ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}"
+msgstr ""
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "We Value Your Feedback"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -6723,6 +6745,10 @@ msgstr ""
 msgid "Staked"
 msgstr ""
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave feedback"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -6863,6 +6889,7 @@ msgid "Failed Market Swap"
 msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
 msgstr ""
 

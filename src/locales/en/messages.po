@@ -22,6 +22,10 @@ msgstr "Unrealized Base PnL"
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Not likely"
+msgstr "Not likely"
+
 #: src/pages/Home/Home.jsx
 msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
@@ -2385,6 +2389,10 @@ msgstr "Minimum received"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Enter your feedback here"
+msgstr "Enter your feedback here"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2590,8 +2598,8 @@ msgid "AUM"
 msgstr "AUM"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "No likely"
-msgstr "No likely"
+#~ msgid "No likely"
+#~ msgstr "No likely"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
@@ -2810,6 +2818,7 @@ msgid "Stake failed."
 msgstr "Stake failed."
 
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "Submitting..."
 
@@ -3450,6 +3459,10 @@ msgstr "Collateral In"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Markets"
 msgstr "GM Markets"
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
+msgstr "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
@@ -4227,6 +4240,10 @@ msgstr "There may not be sufficient liquidity to execute your order when the Min
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Trades"
 msgstr "Total Trades"
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Enter your answer here"
+msgstr "Enter your answer here"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake GMX"
@@ -5449,6 +5466,7 @@ msgstr "{daysConsidered}d accrued Fees"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "Submit"
 
@@ -6024,6 +6042,10 @@ msgstr "Leftover Collateral Excluding Impact"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}"
 msgstr "Edit {0} {1}"
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "We Value Your Feedback"
+msgstr "We Value Your Feedback"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -6729,6 +6751,10 @@ msgstr "Disable order validations"
 msgid "Staked"
 msgstr "Staked"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave feedback"
+msgstr "Leave feedback"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
@@ -6869,6 +6895,7 @@ msgid "Failed Market Swap"
 msgstr "Failed Market Swap"
 
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
 msgstr "Error occurred. Please try again"
 
