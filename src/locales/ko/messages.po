@@ -1279,6 +1279,10 @@ msgstr "스왑 주문 생성 실패."
 msgid "Chart positions"
 msgstr "차트 포지션"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time.>>>>>>> a370b6cabf22a25f334eb2d7728d48c7e68fd52c"
+#~ msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "주문은 가격 조건 및 유동성 충분 요건이 만족하는 경우에만 실행됩니다"
@@ -5069,6 +5073,10 @@ msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합�
 msgid "Longs Net Rate / 1h"
 msgstr "롱 포지션 순 수수료율 / 1시간"
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+#~ msgid "We Value Your Feedback======="
+#~ msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -6049,15 +6057,14 @@ msgstr "영향 없는 담보 잔액"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
-<<<<<<< HEAD
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
-=======
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
->>>>>>> a370b6cabf22a25f334eb2d7728d48c7e68fd52c
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx

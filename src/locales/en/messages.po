@@ -6061,6 +6061,10 @@ msgstr "Edit {0} {1}"
 msgid "We Value Your Feedback"
 msgstr "We Value Your Feedback"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+msgstr "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "Transfer {nativeTokenSymbol}"
