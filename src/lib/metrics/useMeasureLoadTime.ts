@@ -1,5 +1,4 @@
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
-import { useEffect } from "react";
 import { metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import {
@@ -10,8 +9,11 @@ import {
   MeasureMetricType,
 } from "lib/metrics/types";
 import { getRequestId } from "lib/metrics/utils";
+import { useEffect } from "react";
 
-const MEASUREMENTS: { [key: string]: { requestId: string; sent?: boolean; timeoutId?: number } } = {};
+const MEASUREMENTS: {
+  [key: string]: { requestId: string; done?: boolean; timeoutId?: number; location: string };
+} = {};
 const fromLocalStorage = false;
 
 export function useMeasureLoadTime({
@@ -30,66 +32,97 @@ export function useMeasureLoadTime({
   MEASUREMENTS[metricType] = MEASUREMENTS[metricType] || {};
   const measure = MEASUREMENTS[metricType];
 
-  useEffect(() => {
-    if (skip || measure.requestId || measure.sent) {
-      return;
-    }
+  useEffect(
+    function onLocationChangeEff() {
+      if (skip) {
+        return;
+      }
 
-    measure.requestId = getRequestId();
-    metrics.startTimer(metricType, false);
+      if (!measure.location) {
+        measure.location = window.location.hash;
+      }
 
-    metrics.pushEvent<LoadingStartEvent>({
-      event: `${metricType}.started`,
-      isError: false,
-      data: {
-        requestId: measure.requestId,
-      },
-    });
+      return () => {
+        if (measure.requestId && window.location.hash !== measure.location) {
+          clearTimeout(measure.timeoutId);
+          measure.done = true;
+          // reset timer
+          metrics.getTime(metricType, true, fromLocalStorage);
+        }
+      };
+    },
+    [measure, metricType, skip]
+  );
 
-    measure.timeoutId = window.setTimeout(() => {
-      metrics.pushEvent<LoadingTimeoutEvent>({
-        event: `${metricType}.timeout`,
-        isError: true,
-        time: metrics.getTime(metricType, false, fromLocalStorage),
-        data: {
-          requestId: measure.requestId,
-        },
-      });
-    }, timeout);
-  }, [measure, metricType, skip, timeout]);
+  useEffect(
+    function startEff() {
+      if (skip || measure.requestId || measure.done) {
+        return;
+      }
 
-  useEffect(() => {
-    if (error && !measure.sent && measure.requestId) {
-      clearTimeout(measure.timeoutId);
+      measure.requestId = getRequestId();
+      metrics.startTimer(metricType, false);
 
-      const errorData = prepareErrorMetricData(error);
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: `${metricType}.failed`,
-        isError: true,
-        time: metrics.getTime(metricType, true, fromLocalStorage),
-        data: {
-          ...errorData,
-          requestId: measure.requestId,
-        },
-      });
-      measure.sent = true;
-    }
-  }, [error, measure, metricType]);
-
-  useEffect(() => {
-    if (isLoaded && !measure.sent && measure.requestId) {
-      clearTimeout(measure.timeoutId);
-
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: `${metricType}.success`,
+      metrics.pushEvent<LoadingStartEvent>({
+        event: `${metricType}.started`,
         isError: false,
-        time: metrics.getTime(metricType, true, fromLocalStorage),
         data: {
           requestId: measure.requestId,
         },
       });
-      measure.sent = true;
-    }
-  }, [isLoaded, measure.sent, measure.timeoutId, measure.requestId, measure, metricType]);
+
+      measure.timeoutId = window.setTimeout(() => {
+        metrics.pushEvent<LoadingTimeoutEvent>({
+          event: `${metricType}.timeout`,
+          isError: true,
+          time: metrics.getTime(metricType, false, fromLocalStorage),
+          data: {
+            requestId: measure.requestId,
+          },
+        });
+      }, timeout);
+    },
+    [measure, metricType, skip, timeout]
+  );
+
+  useEffect(
+    function failedEff() {
+      if (error && !measure.done && measure.requestId) {
+        clearTimeout(measure.timeoutId);
+
+        const errorData = prepareErrorMetricData(error);
+
+        metrics.pushEvent<LoadingFailedEvent>({
+          event: `${metricType}.failed`,
+          isError: true,
+          time: metrics.getTime(metricType, true, fromLocalStorage),
+          data: {
+            ...errorData,
+            requestId: measure.requestId,
+          },
+        });
+        measure.done = true;
+      }
+    },
+    [error, measure, metricType]
+  );
+
+  useEffect(
+    function successEff() {
+      if (isLoaded && !measure.done && measure.requestId) {
+        clearTimeout(measure.timeoutId);
+
+        metrics.pushEvent<LoadingSuccessEvent>({
+          event: `${metricType}.success`,
+          isError: false,
+          time: metrics.getTime(metricType, true, fromLocalStorage),
+          data: {
+            requestId: measure.requestId,
+          },
+        });
+        measure.done = true;
+      }
+    },
+    [isLoaded, measure.done, measure.timeoutId, measure.requestId, measure, metricType]
+  );
 }

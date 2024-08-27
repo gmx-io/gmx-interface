@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
+import { PnlSummaryPoint } from "domain/synthetics/accountStats";
 import { formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 

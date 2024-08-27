@@ -22,6 +22,10 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "지갑이 연결되지 않음"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Not likely"
+msgstr ""
+
 #: src/pages/Home/Home.jsx
 msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
@@ -73,6 +77,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Position Fee"
 msgstr "포지션 수수료"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What would have made your rating a 9 or 10?"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
@@ -627,6 +635,10 @@ msgstr ""
 msgid "MARKET"
 msgstr "마켓"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What did you like the most about our service?"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -638,6 +650,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "시장 주문"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we address your concerns and improve your experience?"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1152,6 +1168,10 @@ msgstr "대시보드"
 msgid "Swap Price Impact"
 msgstr ""
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What issues did you encounter that led to your rating?"
+msgstr ""
+
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "No PnLs found"
 msgstr "손익을 찾지 못했습니다."
@@ -1258,6 +1278,10 @@ msgstr "스왑 주문 생성 실패."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "차트 포지션"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time.>>>>>>> a370b6cabf22a25f334eb2d7728d48c7e68fd52c"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -2377,6 +2401,10 @@ msgstr "최소량 수치 완료"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용되고 있지 않은 유휴 수량"
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Enter your feedback here"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2595,6 +2623,10 @@ msgstr ""
 msgid "Stake"
 msgstr "스테이킹"
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Help us improve"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Invalid Liquidation Price"
@@ -2671,6 +2703,10 @@ msgstr "{swapTokenSymbol}을 1inch에서 구매하기"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we continue to meet your expectations?"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -2791,6 +2827,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake failed."
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Submitting..."
 msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -3429,6 +3470,10 @@ msgstr "담보 자산"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "GM Markets"
+msgstr ""
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -4205,6 +4250,10 @@ msgstr ""
 msgid "Total Trades"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Enter your answer here"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -4866,6 +4915,10 @@ msgstr "전송시작"
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "How likely are you to recommend our service to a friend or colleague?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr ""
@@ -5019,6 +5072,10 @@ msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합�
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr "롱 포지션 순 수수료율 / 1시간"
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+#~ msgid "We Value Your Feedback======="
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -5422,7 +5479,9 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
 
@@ -5998,6 +6057,10 @@ msgstr "영향 없는 담보 잔액"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}"
+msgstr "<<<<<<< HEAD"
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "We Value Your Feedback"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6056,6 +6119,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6698,6 +6765,10 @@ msgstr "주문 밸리데이션 무효화"
 msgid "Staked"
 msgstr "스테이킹 완료"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave feedback"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -6836,6 +6907,11 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "시장 스왑 실패"
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Error occurred. Please try again"
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -7536,6 +7612,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
+msgstr ""
+
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Very likely"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx

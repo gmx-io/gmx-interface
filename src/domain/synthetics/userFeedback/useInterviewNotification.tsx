@@ -1,6 +1,6 @@
 import { InterviewToast } from "components/InterviewToast/InterviewToast";
 import { HIGH_TRADE_VOLUME_FOR_FEEDBACK } from "config/constants";
-import { INTERVIEW_INVITATION_SHOWN_TIME } from "config/localStorage";
+import { INTERVIEW_INVITATION_SHOWN_TIME_KEY } from "config/localStorage";
 import { selectLastWeekAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { differenceInDays } from "date-fns";
@@ -14,13 +14,13 @@ export function useInterviewNotification() {
   const [isInterviewModalVisible, setIsInterviewModalVisible] = useState(false);
   const [interviewInvitationShownTime, setInterviewInvitationShownTime] = useLocalStorageSerializeKey<
     number | undefined
-  >(INTERVIEW_INVITATION_SHOWN_TIME, undefined);
+  >(INTERVIEW_INVITATION_SHOWN_TIME_KEY, undefined);
 
   useEffect(
     function showInterviewToast() {
       const isHighTradeVolume = lastWeekAccountStats && lastWeekAccountStats.volume >= HIGH_TRADE_VOLUME_FOR_FEEDBACK;
       const isAlreadyShown =
-        interviewInvitationShownTime && differenceInDays(interviewInvitationShownTime, Date.now()) < 30;
+        interviewInvitationShownTime && differenceInDays(Date.now(), interviewInvitationShownTime) < 30;
 
       if (!isHighTradeVolume || isAlreadyShown) {
         return;
