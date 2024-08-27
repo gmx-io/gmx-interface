@@ -2597,10 +2597,6 @@ msgstr ""
 msgid "AUM"
 msgstr "管理下の資産額"
 
-#: src/components/RatingToast/RatingToast.tsx
-#~ msgid "No likely"
-#~ msgstr ""
-
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -2614,6 +2610,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake"
 msgstr "ステーク"
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Help us improve"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -7694,7 +7694,6 @@ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impa
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
-#: src/components/NpsModal/NpsModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr ""
 

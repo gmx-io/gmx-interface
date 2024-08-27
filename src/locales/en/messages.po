@@ -2597,10 +2597,6 @@ msgstr "V1 Arbitrum"
 msgid "AUM"
 msgstr "AUM"
 
-#: src/components/RatingToast/RatingToast.tsx
-#~ msgid "No likely"
-#~ msgstr "No likely"
-
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -2614,6 +2610,10 @@ msgstr "SL"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake"
 msgstr "Stake"
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Help us improve"
+msgstr "Help us improve"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -7700,7 +7700,6 @@ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impa
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 
 #: src/components/InterviewModal/InterviewModal.tsx
-#: src/components/NpsModal/NpsModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
 

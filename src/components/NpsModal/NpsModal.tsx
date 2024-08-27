@@ -59,7 +59,7 @@ export function NpsModal() {
   );
 
   return (
-    <Modal isVisible={isModalVisible} setIsVisible={() => onSubmitSurvey(questions)} label={t`Anonymous chat with GMX`}>
+    <Modal isVisible={isModalVisible} setIsVisible={() => onSubmitSurvey(questions)} label={t`Help us improve`}>
       <div className="max-w-xl">
         {questions.map((question, index) => (
           <div key={question.questionType} className="mb-15">
