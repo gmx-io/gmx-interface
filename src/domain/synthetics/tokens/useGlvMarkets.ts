@@ -24,11 +24,11 @@ export type GlvList = {
   markets: string[];
 }[];
 
-export type GlvPoolsData = {
-  [key in string]: GlvPoolInfo;
+export type GlvMarketsData = {
+  [key in string]: GlvMarketInfo;
 };
 
-export interface GlvPoolInfo extends MarketInfo {
+export interface GlvMarketInfo extends MarketInfo {
   isGlv: true;
   indexToken: TokenData & {
     contractSymbol: string;
@@ -61,7 +61,7 @@ type GlvsRequestConfig = MulticallRequestConfig<{
   };
 }>;
 
-export function useGlvPoolsInfo(
+export function useGlvMarketsInfo(
   enabled: boolean,
   deps: {
     marketsInfoData: MarketsInfoData | undefined;
@@ -101,7 +101,7 @@ export function useGlvPoolsInfo(
 
   const shouldRequest = enabled && glvs && marketsInfoData && tokensData && account;
 
-  const { data: glvPoolsInfo, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvPoolsData | undefined>(
+  const { data: glvMarketInfo, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvMarketsData | undefined>(
     chainId,
     "useGlvMarketsInfos",
     {
@@ -234,7 +234,7 @@ export function useGlvPoolsInfo(
           return undefined;
         }
 
-        const result: GlvPoolsData = {};
+        const result: GlvMarketsData = {};
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
@@ -304,7 +304,7 @@ export function useGlvPoolsInfo(
   );
 
   return {
-    glvPoolsInfo,
+    glvMarketInfo,
     isLoading: isLoadingGlvs || isLoadingGlvsInfo,
   };
 }

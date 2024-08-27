@@ -301,6 +301,7 @@ msgid "Confirm Settle"
 msgstr ""
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
+#: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Deposit error."
 msgstr ""
 
@@ -605,6 +606,11 @@ msgstr "Искать Токен"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
+msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -6555,8 +6561,8 @@ msgstr "Реферальный Код не существует"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-msgstr ""
+#~ msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking calculator"

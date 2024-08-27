@@ -7,7 +7,7 @@ import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numb
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export function MintableAmount({
@@ -27,7 +27,7 @@ export function MintableAmount({
         shortDepositCapacityAmount?: bigint;
       }
     | undefined;
-  market: MarketInfo | GlvPoolInfo;
+  market: MarketInfo | GlvMarketInfo;
   token: TokenData;
   longToken?: TokenData;
   shortToken?: TokenData;

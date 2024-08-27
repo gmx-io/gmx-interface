@@ -18,7 +18,7 @@ import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
-  PoolsInfoData,
+  AllMarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
@@ -196,7 +196,7 @@ export function GmList({
           <tbody>
             {currentData.length > 0 &&
               currentData.map((token) => (
-                <PoolsListItem
+                <GmListItem
                   key={token.address}
                   token={token}
                   marketsTokensApyData={marketsTokensApyData}
@@ -244,7 +244,7 @@ function useFilterSortPools({
   searchText,
   tokensData,
 }: {
-  poolsInfo: PoolsInfoData | undefined;
+  poolsInfo: AllMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
   orderBy: SortField;
   direction: SortDirection;
@@ -342,7 +342,7 @@ function useFilterSortPools({
   return filteredTokens;
 }
 
-function PoolsListItem({
+function GmListItem({
   token,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
@@ -439,9 +439,11 @@ function PoolsListItem({
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
     : getNormalizedTokenSymbol(indexToken.symbol);
 
-  const tokenIconBadge = isGlvMarket
-    ? getGlvMarketBadgeName(market.name)
-    : ([market.longToken.symbol, market.shortToken.symbol] as const);
+  const tokenIconBadge = market.isSpotOnly
+    ? undefined
+    : isGlvMarket
+      ? getGlvMarketBadgeName(market.name)
+      : ([market.longToken.symbol, market.shortToken.symbol] as const);
 
   return (
     <ExchangeTr key={token.address} hoverable={false} bordered={false}>

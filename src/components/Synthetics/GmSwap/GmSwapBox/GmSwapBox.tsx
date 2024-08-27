@@ -14,7 +14,7 @@ import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlv } from "domain/synthetics/markets/glv";
 
-import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
 
@@ -115,7 +115,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal
           selectedMarketAddress={selectedMarketAddress}
-          glvMarket={marketInfo as GlvPoolInfo}
+          glvMarket={marketInfo as GlvMarketInfo}
           onSelectMarket={onSelectMarket}
           selectedGlvGmMarket={selectedGlvGmMarket}
           onSelectGlvGmMarket={onSelectGlvGmMarket}

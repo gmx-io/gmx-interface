@@ -16,7 +16,7 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
-import { GlvPoolsData } from "../tokens/useGlvPools";
+import { GlvMarketsData } from "../tokens/useGlvMarkets";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
@@ -26,7 +26,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvPoolsData }
+  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvMarketsData }
 ): MarketTokensDataResult {
   const { isDeposit, account, glvMarketsData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);

@@ -7,7 +7,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { createDepositTxn, createWithdrawalTxn, MarketInfo } from "domain/synthetics/markets";
+import { createDepositTxn, createGlvDepositTxn, createWithdrawalTxn, MarketInfo } from "domain/synthetics/markets";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import {
   getNeedTokenApprove,
@@ -24,12 +24,14 @@ import { useCallback, useMemo, useState } from "react";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useFees } from "./useFees";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
   fees: ReturnType<typeof useFees>["fees"];
   isDeposit: boolean;
   marketInfo?: MarketInfo;
+  vaultInfo?: GlvMarketInfo;
   marketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
@@ -58,6 +60,7 @@ interface Props {
   marketTokensData?: TokensData;
   executionFee: ExecutionFee | undefined;
   isGlv: boolean;
+  selectedGlvGmMarket?: string;
 }
 
 const processingTextMap = {
@@ -93,6 +96,8 @@ export const useSubmitButtonState = ({
   marketTokensData,
   executionFee,
   isGlv,
+  selectedGlvGmMarket,
+  vaultInfo,
 }: Props) => {
   const chainId = useSelector(selectChainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -248,6 +253,27 @@ export const useSubmitButtonState = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
+      if (isGlv && selectedGlvGmMarket && vaultInfo) {
+        return createGlvDepositTxn(chainId, signer, {
+          account,
+          initialLongTokenAddress,
+          initialShortTokenAddress,
+          minGlvTokens: marketTokenAmount,
+          glv: vaultInfo.indexTokenAddress,
+          longTokenSwapPath: [],
+          shortTokenSwapPath: [],
+          longTokenAmount: longTokenAmount ?? 0n,
+          shortTokenAmount: shortTokenAmount ?? 0n,
+          market: selectedGlvGmMarket,
+          executionFee: executionFee.feeTokenAmount,
+          skipSimulation: shouldDisableValidation,
+          tokensData,
+          setPendingTxns,
+          setPendingDeposit,
+          isMarketTokenDeposit: longToken?.symbol === "GM",
+        });
+      }
+
       return createDepositTxn(chainId, signer, {
         account,
         initialLongTokenAddress,
@@ -282,6 +308,9 @@ export const useSubmitButtonState = ({
       chainId,
       setPendingDeposit,
       setPendingTxns,
+      selectedGlvGmMarket,
+      isGlv,
+      vaultInfo,
     ]
   );
 

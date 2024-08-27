@@ -19,7 +19,11 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getGlvMarketName(chainId: number, address: string) {
-  return GLV_MARKETS?.[chainId]?.[address] || GLV_MARKETS.default;
+  return GLV_MARKETS?.[chainId]?.[address]?.name || GLV_MARKETS.default;
+}
+
+export function getGlvMarketSubtitle(chainId: number, address: string) {
+  return GLV_MARKETS?.[chainId]?.[address]?.subtitle || "";
 }
 
 export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {

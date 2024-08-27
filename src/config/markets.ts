@@ -148,12 +148,18 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
   return tokenListing.listingDate;
 }
 
-export const GLV_MARKETS = {
+export const GLV_MARKETS: {
+  [chainId: number]: Record<string, { name: string; subtitle: string }>;
+  default: string;
+} = {
   [ARBITRUM]: {},
   [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {},
   [AVALANCHE_FUJI]: {
-    "0xDD06Cd6694FeB4222FD1a4146d118078D672d7EB": "High Caps",
+    "0xDD06Cd6694FeB4222FD1a4146d118078D672d7EB": {
+      name: "High Caps",
+      subtitle: "Core ETH Markets Vault",
+    },
   },
   default: "GLV",
-} as const;
+};

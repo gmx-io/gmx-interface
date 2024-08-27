@@ -57,6 +57,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useGlvMarketsInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -73,6 +74,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { glvMarketInfo } = useGlvMarketsInfo(true, {
+    marketsInfoData,
+    tokensData,
+    chainId,
+    account: currentAccount,
+  });
+
+  const allMarketsData = useMemo(() => {
+    return {
+      ...marketsInfoData,
+      ...glvMarketInfo,
+    };
+  }, [marketsInfoData, glvMarketInfo]);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
@@ -631,7 +645,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingDepositData={data}
-            marketsInfoData={marketsInfoData}
+            marketsInfoData={allMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -704,6 +718,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     tokensData,
     withdrawalStatuses,
+    allMarketsData,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

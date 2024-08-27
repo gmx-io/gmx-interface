@@ -28,6 +28,7 @@ type Props = {
   tokenAddress: string;
   tokens: Token[];
   infoTokens?: InfoTokens;
+  tokenInfo?: TokenInfo;
   showMintingCap?: boolean;
   mintingCap?: bigint;
   disabled?: boolean;
@@ -45,12 +46,14 @@ type Props = {
 export default function TokenSelector(props: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let tokenInfo: TokenInfo | undefined;
+  let tokenInfo: TokenInfo | undefined = props.tokenInfo;
 
-  try {
-    tokenInfo = getToken(props.chainId, props.tokenAddress);
-  } catch (e) {
-    // ...ignore unsupported tokens
+  if (!tokenInfo) {
+    try {
+      tokenInfo = getToken(props.chainId, props.tokenAddress);
+    } catch (e) {
+      // ...ignore unsupported tokens
+    }
   }
 
   const {

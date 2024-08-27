@@ -21,6 +21,7 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
+import { useGlvMarketsInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
@@ -35,7 +36,6 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { GlvPoolsData, useGlvPoolsInfo } from "domain/synthetics/tokens/useGlvPools";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -61,7 +61,7 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
-    glvInfo: ReturnType<typeof useGlvPoolsInfo>;
+    glvInfo: ReturnType<typeof useGlvMarketsInfo>;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
@@ -124,8 +124,8 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
 
-  const isPoolsPage = pageType === "pools" || pageType === "dashboard";
-  const glvInfo = useGlvPoolsInfo(isPoolsPage, {
+  const shouldFetchGlvMarkets = pageType === "pools" || pageType === "dashboard" || pageType === "earn";
+  const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
     chainId: chainId,
@@ -135,7 +135,7 @@ export function SyntheticsStateContextProvider({
   const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, {
     isDeposit: true,
     account,
-    glvMarketsData: glvInfo.glvPoolsInfo,
+    glvMarketsData: glvInfo.glvMarketInfo,
   });
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);

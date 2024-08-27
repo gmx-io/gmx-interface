@@ -1,14 +1,14 @@
 import values from "lodash/values";
 
 import { getSellableMarketToken, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { GlvMarket, GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarket, GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 import { bigMath } from "lib/bigmath";
 
 import { convertToUsd } from "../tokens/utils";
 import { TokensData } from "../tokens";
 
-export function getMaxUsdBuyableAmountInMarket(glvPriceUsd: bigint, market: GlvMarket, glv: GlvPoolInfo) {
+export function getMaxUsdBuyableAmountInMarket(glvPriceUsd: bigint, market: GlvMarket, glv: GlvMarketInfo) {
   const gmBalanceUsd = convertToUsd(market.gmBalance, glv.indexToken.decimals, glvPriceUsd) ?? 0n;
 
   return (
@@ -19,7 +19,7 @@ export function getMaxUsdBuyableAmountInMarket(glvPriceUsd: bigint, market: GlvM
   );
 }
 
-export function getMintableInfoGlv(glv: GlvPoolInfo) {
+export function getMintableInfoGlv(glv: GlvMarketInfo) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {
@@ -37,12 +37,13 @@ export function getMintableInfoGlv(glv: GlvPoolInfo) {
   };
 }
 
-export function getSellableInfoGlv(glv: GlvPoolInfo, marketsData?: MarketsInfoData, tokensData?: TokensData) {
+export function getSellableInfoGlv(glv: GlvMarketInfo, marketsData?: MarketsInfoData, tokensData?: TokensData) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
     const gmMarket = marketsData?.[market.address];
 
     if (!gmMarket) {
+      // eslint-disable-next-line no-console
       console.warn(`Market ${market.address} presented in GLV Vault doesn't exist in the markets data`);
       return acc;
     }
@@ -68,7 +69,7 @@ export function getSellableInfoGlv(glv: GlvPoolInfo, marketsData?: MarketsInfoDa
   };
 }
 
-export function isGlv(pool?: GlvPoolInfo | MarketInfo): pool is GlvPoolInfo {
+export function isGlv(pool?: GlvMarketInfo | MarketInfo): pool is GlvMarketInfo {
   return Boolean(pool && "isGlv" in pool && pool.isGlv);
 }
 

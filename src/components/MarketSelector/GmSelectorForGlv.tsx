@@ -19,7 +19,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 import "./MarketSelector.scss";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
@@ -27,7 +27,7 @@ import { PoolListItem } from "./PoolListItem";
 
 type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
-  glvMarketInfo?: GlvPoolInfo;
+  glvMarketInfo?: GlvMarketInfo;
   onSelectGmMarket?: (market: MarketInfo) => void;
 };
 

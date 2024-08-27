@@ -7,10 +7,10 @@ import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { MarketInfo, PoolsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { MarketInfo, AllMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
-import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import useWallet, { WalletClient } from "lib/wallets/useWallet";
@@ -23,12 +23,12 @@ import "./GmAssetDropdown.scss";
 
 type Props = {
   token?: TokenData;
-  marketsInfoData?: PoolsInfoData;
+  marketsInfoData?: AllMarketsInfoData;
   position?: Placement;
   tokensData?: TokensData;
 };
 
-function renderMarketName(market?: MarketInfo | GlvPoolInfo) {
+function renderMarketName(market?: MarketInfo | GlvMarketInfo) {
   if (!market) {
     return null;
   }
@@ -81,7 +81,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-10 rounded-4 border border-gray-800 bg-slate-800 outline-none"
+          className="border z-10 rounded-4 border-gray-800 bg-slate-800 outline-none"
         >
           {market && (
             <Menu.Item as="div">

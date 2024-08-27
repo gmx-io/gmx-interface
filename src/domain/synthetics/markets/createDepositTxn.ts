@@ -1,15 +1,14 @@
+import { t } from "@lingui/macro";
+import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingDeposit } from "context/SyntheticsEvents";
-import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { t } from "@lingui/macro";
-import { useMulticall } from "lib/multicall";
+import { applySlippageToMinOut } from "../trade";
 
 import GlvRouter from "abis/GlvRouter.json";
 
@@ -132,103 +131,128 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   });
 }
 
-// interface GlvParams {
-//   account: account,
-//   glv: params.glv,
-//   receiver: params.receiver,
-//   callbackContract: params.callbackContract,
-//   uiFeeReceiver: params.uiFeeReceiver,
-//   market: params.market,
-//   initialLongToken: params.initialLongToken,
-//   initialShortToken: params.initialShortToken,
-//   longTokenSwapPath: params.longTokenSwapPath,
-//   shortTokenSwapPath: params.shortTokenSwapPath
+interface CreateGlvDepositParams {
+  account: string;
+  glv: string;
+  market: string;
 
-// export async function createGlvDepositTxn(chainId: number, signer: Signer, p: GlvParams) {
-//   const contract = getContract(chainId, "GlvRouter");
-//   return useMulticall(chainId, "createGlvDepositTxn", {
-//     refreshInterval: null,
-//     key: ["createGlvDepositTxn"],
-//     request: () => {
-//       return {
-//         glvs: {
-//           contractAddress: contract,
-//           abi: GlvRouter.abi,
-//           calls: {
-//             list: {
-//               methodName: "createGlvDeposit",
-//               // {
-//               //   "internalType": "address",
-//               //   "name": "receiver",
-//               //   "type": "address"
-//               // },
-//               // {
-//               //   "internalType": "address",
-//               //   "name": "callbackContract",
-//               //   "type": "address"
-//               // },
-//               // {
-//               //   "internalType": "address",
-//               //   "name": "uiFeeReceiver",
-//               //   "type": "address"
-//               // },
-//               // {
-//               //   "internalType": "address",
-//               //   "name": "market",
-//               //   "type": "address"
-//               // },
-//               // {
-//               //   "internalType": "address",
-//               //   "name": "glv",
-//               //   "type": "address"
-//               // },
-//               // {
-//               //   "internalType": "address[]",
-//               //   "name": "longTokenSwapPath",
-//               //   "type": "address[]"
-//               // },
-//               // {
-//               //   "internalType": "address[]",
-//               //   "name": "shortTokenSwapPath",
-//               //   "type": "address[]"
-//               // },
-//               // {
-//               //   "internalType": "uint256",
-//               //   "name": "minLongTokenAmount",
-//               //   "type": "uint256"
-//               // },
-//               // {
-//               //   "internalType": "uint256",
-//               //   "name": "minShortTokenAmount",
-//               //   "type": "uint256"
-//               // },
-//               // {
-//               //   "internalType": "bool",
-//               //   "name": "shouldUnwrapNativeToken",
-//               //   "type": "bool"
-//               // },
-//               // {
-//               //   "internalType": "uint256",
-//               //   "name": "executionFee",
-//               //   "type": "uint256"
-//               // },
-//               // {
-//               //   "internalType": "uint256",
-//               //   "name": "callbackGasLimit",
-//               //   "type": "uint256"
-//               // }
-//               params: [{
-//                 receiver: p.account,
-//               }
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
 
-//               ],
-//             },
-//           },
-//         },
-//       };
-//     },
-//     parseResponse(result) {
-//       return result.data.glvs.list.returnValues as GlvList;
-//     },
-//   });
-// }
+  initialLongTokenAddress: string;
+  initialShortTokenAddress: string;
+
+  shortTokenSwapPath: string[];
+  longTokenSwapPath: string[];
+
+  minGlvTokens: bigint;
+
+  executionFee: bigint;
+
+  tokensData: TokensData;
+  skipSimulation?: boolean;
+  metricId?: string;
+  setPendingTxns: (txns: any) => void;
+  setPendingDeposit: SetPendingDeposit;
+  isMarketTokenDeposit: boolean;
+}
+
+export async function createGlvDepositTxn(chainId: number, signer: Signer, p: CreateGlvDepositParams) {
+  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), GlvRouter.abi, signer);
+  const depositVaultAddress = getContract(chainId, "GlvVault");
+
+  const isNativeLongDeposit = Boolean(
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+  );
+  const isNativeShortDeposit = Boolean(
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+  );
+
+  let wntDeposit = 0n;
+
+  if (isNativeLongDeposit) {
+    wntDeposit = wntDeposit + p.longTokenAmount!;
+  }
+
+  if (isNativeShortDeposit) {
+    wntDeposit = wntDeposit + p.shortTokenAmount!;
+  }
+
+  const shouldUnwrapNativeToken = isNativeLongDeposit || isNativeShortDeposit;
+
+  const wntAmount = p.executionFee + wntDeposit;
+
+  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
+  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
+
+  const multicall = [
+    { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
+    !isNativeLongDeposit && p.longTokenAmount > 0
+      ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
+      : undefined,
+
+    !isNativeShortDeposit && p.shortTokenAmount > 0
+      ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
+      : undefined,
+    {
+      method: "createGlvDeposit",
+      params: [
+        {
+          glv: p.glv,
+          market: p.market,
+          receiver: p.account,
+          callbackContract: ethers.ZeroAddress,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+          initialLongToken: initialLongTokenAddress,
+          initialShortToken: initialShortTokenAddress,
+          longTokenSwapPath: [],
+          shortTokenSwapPath: [],
+          minGlvTokens: p.minGlvTokens,
+          executionFee: p.executionFee,
+          callbackGasLimit: 0n,
+          shouldUnwrapNativeToken,
+          isMarketTokenDeposit: p.isMarketTokenDeposit,
+        },
+      ],
+    },
+  ];
+
+  const encodedPayload = multicall
+    .filter(Boolean)
+    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+
+  if (!p.skipSimulation) {
+    await simulateExecuteTxn(chainId, {
+      account: p.account,
+      primaryPriceOverrides: {},
+      tokensData: p.tokensData,
+      createMulticallPayload: encodedPayload,
+      method: "simulateExecuteGlvDeposit",
+      errorTitle: t`Deposit error.`,
+      value: wntAmount,
+    });
+  }
+
+  return;
+  // return callContract(chainId, contract, "multicall", [encodedPayload], {
+  //   value: wntAmount,
+  //   hideSentMsg: true,
+  //   hideSuccessMsg: true,
+  //   metricId: p.metricId,
+  //   setPendingTxns: p.setPendingTxns,
+  // }).then(() => {
+  //   debugger; // eslint-disable-line
+  //   p.setPendingDeposit({
+  //     account: p.account,
+  //     marketAddress: p.glv,
+  //     initialLongTokenAddress,
+  //     initialShortTokenAddress,
+  //     longTokenSwapPath: p.longTokenSwapPath,
+  //     shortTokenSwapPath: p.shortTokenSwapPath,
+  //     minMarketTokens: p.minGlvTokens,
+  //     shouldUnwrapNativeToken,
+  //     initialLongTokenAmount: p.longTokenAmount,
+  //     initialShortTokenAmount: p.shortTokenAmount,
+  //   });
+  // });
+}

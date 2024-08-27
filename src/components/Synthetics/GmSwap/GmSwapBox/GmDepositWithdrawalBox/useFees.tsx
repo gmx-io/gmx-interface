@@ -1,7 +1,10 @@
 import { useMemo } from "react";
-import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
+
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import {
   estimateExecuteDepositGasLimit,
+  estimateExecuteGlvDepositGasLimit,
+  estimateExecuteGlvWithdrawalGasLimit,
   estimateExecuteWithdrawalGasLimit,
   FeeItem,
   GasLimitsConfig,
@@ -9,12 +12,15 @@ import {
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
-import { TokensData } from "domain/synthetics/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
 import {
   estimateDepositOraclePriceCount,
+  estimateGlvDepositOraclePriceCount,
+  estimateGlvWithdrawalOraclePriceCount,
   estimateWithdrawalOraclePriceCount,
 } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { TokensData } from "domain/synthetics/tokens";
+import { GmSwapFees } from "domain/synthetics/trade";
+import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 
 export const useFees = ({
   amounts,
@@ -23,6 +29,9 @@ export const useFees = ({
   gasPrice,
   isDeposit,
   tokensData,
+  glvMarket,
+  isGlv,
+  isMarketTokenDeposit,
 }: {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
   chainId: number;
@@ -30,6 +39,9 @@ export const useFees = ({
   gasPrice: bigint | undefined;
   isDeposit: boolean;
   tokensData: TokensData | undefined;
+  glvMarket: GlvMarketInfo | undefined;
+  isGlv;
+  isMarketTokenDeposit: boolean;
 }) => {
   return useMemo(() => {
     if (!gasLimits || gasPrice === undefined || !tokensData || !amounts) {
@@ -54,14 +66,38 @@ export const useFees = ({
       uiFee,
     };
 
-    const gasLimit = isDeposit
-      ? estimateExecuteDepositGasLimit(gasLimits, {
-          initialLongTokenAmount: amounts.longTokenAmount,
-          initialShortTokenAmount: amounts.shortTokenAmount,
-        })
-      : estimateExecuteWithdrawalGasLimit(gasLimits, {});
+    let gasLimit;
+    let oraclePriceCount;
 
-    const oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
+    const glvMarketsCount = BigInt(glvMarket?.markets?.length ?? 0);
+
+    if (isGlv) {
+      gasLimit = isDeposit
+        ? estimateExecuteGlvDepositGasLimit(gasLimits, {
+            marketsCount: glvMarketsCount,
+            initialLongTokenAmount: amounts.longTokenAmount,
+            initialShortTokenAmount: amounts.shortTokenAmount,
+            isMarketTokenDeposit: isMarketTokenDeposit,
+          })
+        : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
+            marketsCount: glvMarketsCount,
+          });
+    } else {
+      gasLimit = isDeposit
+        ? estimateExecuteDepositGasLimit(gasLimits, {
+            initialLongTokenAmount: amounts.longTokenAmount,
+            initialShortTokenAmount: amounts.shortTokenAmount,
+          })
+        : estimateExecuteWithdrawalGasLimit(gasLimits, {});
+    }
+
+    if (isGlv) {
+      oraclePriceCount = isDeposit
+        ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
+        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
+    } else {
+      oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
+    }
 
     const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
 
@@ -69,5 +105,5 @@ export const useFees = ({
       fees,
       executionFee,
     };
-  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData]);
+  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvMarket, isGlv, isMarketTokenDeposit]);
 };

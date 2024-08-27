@@ -294,6 +294,7 @@ export function MarketStatsWithComposition(p: Props) {
         })}
       >
         <MarketTokenSelector
+          chainId={chainId}
           marketTokensData={marketTokensData}
           marketsInfoData={marketsInfoData}
           marketsTokensAPRData={marketsTokensApyData}
@@ -381,7 +382,12 @@ export function MarketStatsWithComposition(p: Props) {
             label={t`APY`}
             value={
               isGlvMarket ? (
-                glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress]?.toString() ?? <>...</>
+                <AprInfo
+                  lidoApr={undefined}
+                  incentiveApr={undefined}
+                  apy={glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress]}
+                  tokenAddress={marketToken?.address ?? zeroAddress}
+                />
               ) : (
                 <AprInfo
                   apy={apy}
@@ -440,7 +446,7 @@ export function MarketStatsWithComposition(p: Props) {
       >
         <div className="p-20">
           <p>Composition</p>
-          <CompositionBar marketInfo={marketInfo} />
+          <CompositionBar marketInfo={marketInfo} marketsInfoData={marketsInfoData} />
           <CompositionTableGm marketInfo={marketInfo} />
         </div>
       </div>

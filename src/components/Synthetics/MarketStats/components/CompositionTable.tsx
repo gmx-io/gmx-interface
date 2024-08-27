@@ -10,7 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvPoolInfo } from "domain/synthetics/tokens/useGlvPools";
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
@@ -18,7 +18,7 @@ import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCo
 import { USD_DECIMALS } from "@/config/factors";
 
 interface CompositionTableGmProps {
-  marketInfo?: MarketInfo | GlvPoolInfo;
+  marketInfo?: MarketInfo | GlvMarketInfo;
 }
 
 interface GmTableConfig {
@@ -107,12 +107,12 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         }
 
         return (
-          <ExchangeTr key={`comp-data-${pool.indexTokenAddress}-${index}`} hoverable={false} bordered={false}>
+          <ExchangeTr key={`comp-data-${pool.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
             <ExchangeTd className="py-6" padding="none">
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
-                  style={{ backgroundColor: TOKEN_COLOR_MAP[pool.indexToken.address] ?? TOKEN_COLOR_MAP.default }}
+                  style={{ backgroundColor: TOKEN_COLOR_MAP[pool.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
                 <TokenIcon symbol={pool.indexToken.symbol} displaySize={24} />
                 <span>{getMarketIndexName({ indexToken: pool.indexToken, isSpotOnly: false })}</span>
@@ -122,7 +122,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 0)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 0)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toString()}
+              {comp.toFixed(2)}
             </ExchangeTd>
           </ExchangeTr>
         );

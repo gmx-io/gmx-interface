@@ -3,6 +3,7 @@ import { DataStore__factory } from "typechain-types/factories/DataStore__factory
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import { GlvRouter__factory } from "@/typechain-types";
 
 const { ZeroAddress } = ethers;
 
@@ -135,7 +136,7 @@ const CONTRACTS = {
 
     // @todo
     GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
-    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
+    GlvRouter: "0x7db700C1D73E2eBF94904cE07D1702Ca4d50d3d0",
 
     Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
   },
@@ -195,7 +196,7 @@ const CONTRACTS = {
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
     // @todo
     GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
-    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
+    GlvRouter: "0x7db700C1D73E2eBF94904cE07D1702Ca4d50d3d0",
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
@@ -256,7 +257,7 @@ const CONTRACTS = {
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
     // @todo
     GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
-    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
+    GlvRouter: "0x7db700C1D73E2eBF94904cE07D1702Ca4d50d3d0",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
@@ -316,7 +317,8 @@ const CONTRACTS = {
     Timelock: ZeroAddress,
 
     GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
-    GlvRouter: "0x535c0AAd85937d3Db9EBaB2cdB38F8186bb7F3C0",
+    GlvRouter: "0x7db700C1D73E2eBF94904cE07D1702Ca4d50d3d0",
+    GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },
@@ -345,3 +347,4 @@ function makeGetContract<T extends { abi: InterfaceAbi; connect: (address: strin
 export const getDataStoreContract = makeGetContract("DataStore", DataStore__factory);
 export const getMulticallContract = makeGetContract("Multicall", Multicall__factory);
 export const getExchangeRouterContract = makeGetContract("ExchangeRouter", ExchangeRouter__factory);
+export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);

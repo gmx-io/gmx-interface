@@ -1041,6 +1041,8 @@ export const TOKEN_COLOR_MAP = {
   XRP: "#23292f",
   LTC: "#16182e",
   OP: "#ff0421",
+  DOT: "#e6007a",
+  TEST: "#2d3ed7",
   default: "#6062a6",
 };
 

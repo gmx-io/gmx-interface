@@ -3,8 +3,14 @@ import {
   ESTIMATED_GAS_FEE_BASE_AMOUNT_V2_1,
   ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR,
   ESTIMATED_GAS_FEE_PER_ORACLE_PRICE,
+  GLV_DEPOSIT_GAS_LIMIT,
+  GLV_PER_MARKET_GAS_LIMIT,
+  GLV_WITHDRAWAL_GAS_LIMIT,
   decreaseOrderGasLimitKey,
   depositGasLimitKey,
+  glvDepositGasLimitKey,
+  glvPerMarketGasLimitKey,
+  glvWithdrawalGasLimitKey,
   increaseOrderGasLimitKey,
   shiftGasLimitKey,
   singleSwapGasLimitKey,
@@ -73,6 +79,18 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
             methodName: "getUint",
             params: [ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR],
           },
+          glvDepositGasLimit: {
+            methodName: "getUint",
+            params: [GLV_DEPOSIT_GAS_LIMIT],
+          },
+          glvWithdrawalGasLimit: {
+            methodName: "getUint",
+            params: [GLV_WITHDRAWAL_GAS_LIMIT],
+          },
+          glvPerMarketGasLimit: {
+            methodName: "getUint",
+            params: [GLV_PER_MARKET_GAS_LIMIT],
+          },
         },
       },
     }),
@@ -95,6 +113,9 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
         estimatedGasFeeBaseAmount: getBigInt("estimatedGasFeeBaseAmount"),
         estimatedGasFeePerOraclePrice: getBigInt("estimatedGasFeePerOraclePrice"),
         estimatedFeeMultiplierFactor: getBigInt("estimatedFeeMultiplierFactor"),
+        glvDepositGasLimit: getBigInt("glvDepositGasLimit"),
+        glvWithdrawalGasLimit: getBigInt("glvWithdrawalGasLimit"),
+        glvPerMarketGasLimit: getBigInt("glvPerMarketGasLimit"),
       };
     },
   });
