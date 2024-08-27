@@ -24,3 +24,5 @@ export const GLP_PRICE_DECIMALS = 4;
 export const GMX_PRICE_DECIMALS = 2;
 
 export const DATA_LOAD_TIMEOUT_FOR_METRICS = 10000;
+
+export const MAX_FEEDBACK_LENGTH = 500;

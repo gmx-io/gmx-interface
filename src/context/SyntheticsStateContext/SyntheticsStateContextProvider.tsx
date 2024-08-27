@@ -181,7 +181,10 @@ export function SyntheticsStateContextProvider({
     enabled: pageType === "trade",
   });
 
-  const { data: accountStats } = useAccountStats(chainId, { account, enabled: pageType === "trade" });
+  const { data: accountStats } = useAccountStats(chainId, {
+    account,
+    enabled: pageType === "trade",
+  });
 
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);

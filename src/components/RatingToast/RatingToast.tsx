@@ -19,7 +19,7 @@ export function RatingToast({ onRatingClick }: Props) {
       </div>
       <div className="mb-6 flex w-full flex-row justify-between text-gray-300">
         <div>
-          <Trans>No likely</Trans>
+          <Trans>Not likely</Trans>
         </div>
         <div>
           <Trans>Very likely</Trans>

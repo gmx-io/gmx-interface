@@ -4,9 +4,10 @@ export type Answer = {
   answer: string;
 };
 
-export type NpsSurveyResult = {
-  account: string;
-  rating: number;
+export type UserFeedback = {
+  account: string | undefined;
+  rating: number | undefined;
+  isGeneralFeedback: boolean | undefined;
   totalVolume: number;
   monthVolume: number;
   answers: Answer[];

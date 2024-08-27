@@ -1,11 +1,10 @@
+import { MAX_FEEDBACK_LENGTH } from "@/config/ui";
 import { Answer, getQuestionsByRating, useNpsSurvey } from "@/domain/synthetics/userFeedback";
 import { t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
 import { useEffect, useMemo, useState } from "react";
-
-const MAX_ANSWER_LENGTH = 500;
 
 export function NpsModal() {
   const { isModalVisible, isSubmitting, onSubmitSurvey, rating, error } = useNpsSurvey();
@@ -33,7 +32,7 @@ export function NpsModal() {
   }, [error, isSubmitting]);
 
   function onChangeAnswer(index: number, answer: string) {
-    if (answer.length > MAX_ANSWER_LENGTH) {
+    if (answer.length > MAX_FEEDBACK_LENGTH) {
       return;
     }
 
@@ -65,7 +64,11 @@ export function NpsModal() {
         {questions.map((question, index) => (
           <div key={question.questionType} className="mb-15">
             {question.question}
-            <Textarea value={question.answer} onChange={(val) => onChangeAnswer(index, val)} />
+            <Textarea
+              value={question.answer}
+              onChange={(val) => onChangeAnswer(index, val)}
+              placeholder={t`Enter your answer here`}
+            />
           </div>
         ))}
       </div>

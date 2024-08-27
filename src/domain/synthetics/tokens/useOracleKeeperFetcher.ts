@@ -8,7 +8,7 @@ import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { NpsSurveyResult } from "domain/synthetics/userFeedback";
+import { UserFeedback } from "domain/synthetics/userFeedback";
 import { isLocal } from "@/config/env";
 
 export type TickersResponse = {
@@ -62,7 +62,7 @@ export type RawIncentivesStats = {
 };
 
 export type UserFeedbackBody = {
-  feedback: NpsSurveyResult;
+  feedback: UserFeedback;
 };
 
 function parseOracleCandle(rawCandle: number[]): Bar {
@@ -115,7 +115,7 @@ export interface OracleFetcher {
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response>;
-  fetchPostFeedback(body: UserFeedbackBody, debug: boolean): Promise<Response>;
+  fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
 }
 
 class OracleKeeperFetcher implements OracleFetcher {
