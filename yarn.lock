@@ -2423,7 +2423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
+"@eslint-community/eslint-utils@npm:^4.1.2, @eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
   dependencies:
@@ -2431,6 +2431,13 @@ __metadata:
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
   checksum: cdfe3ae42b4f572cbfb46d20edafe6f36fc5fb52bf2d90875c58aefe226892b9677fef60820e2832caf864a326fe4fc225714c46e8389ccca04d5f9288aabd22
+  languageName: node
+  linkType: hard
+
+"@eslint-community/regexpp@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "@eslint-community/regexpp@npm:4.11.0"
+  checksum: 97d2fe46690b69417a551bd19a3dc53b6d9590d2295c43cc4c4e44e64131af541e2f4a44d5c12e87de990403654d3dae9d33600081f3a2f0386b368abc9111ec
   languageName: node
   linkType: hard
 
@@ -8410,6 +8417,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-compat-utils@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "eslint-compat-utils@npm:0.5.1"
+  dependencies:
+    semver: ^7.5.4
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: beccf2a5bd7c7974e3584b269f8a02667c83bca64cfd4c866f3055867f187e78b00ee826721765bdee9b13efaaa248f8068c581f7bb05803e8f47abb116e68fc
+  languageName: node
+  linkType: hard
+
 "eslint-config-esnext@npm:^4.1.0":
   version: 4.1.0
   resolution: "eslint-config-esnext@npm:4.1.0"
@@ -8530,6 +8548,19 @@ __metadata:
   peerDependencies:
     eslint: ">=4.0.0"
   checksum: 18b0bfda53deab4056160a4f3a89a4649b6ae17e4970cc836f7d586c8abab5ebb492440e2acf4770a463138a44a4ee7f9b22b4ed1fdbe69c652f714c1d973e38
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-es-x@npm:8.0.0":
+  version: 8.0.0
+  resolution: "eslint-plugin-es-x@npm:8.0.0"
+  dependencies:
+    "@eslint-community/eslint-utils": ^4.1.2
+    "@eslint-community/regexpp": ^4.11.0
+    eslint-compat-utils: ^0.5.1
+  peerDependencies:
+    eslint: ">=8"
+  checksum: cdd1248f93619e9f922a2cd79e785e3280b511be2703bb6a347fbf04889d763331b06805f93fb05d7bd8dfa1c38cd3389634950ec0054f774da833e65b421520
   languageName: node
   linkType: hard
 
@@ -9857,6 +9888,7 @@ __metadata:
     eslint-config-prettier: 9.0.0
     eslint-config-react-app: ^7.0.1
     eslint-config-recommended: 4.1.0
+    eslint-plugin-es-x: 8.0.0
     eslint-plugin-local-rules: 2.0.1
     eslint-plugin-react: 7.33.2
     eslint-plugin-react-hooks: 4.6.0
