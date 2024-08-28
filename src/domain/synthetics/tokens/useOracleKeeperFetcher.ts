@@ -208,16 +208,6 @@ class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
-  fetchPostReport(body: { report: object; version: string | undefined; isError: boolean }): Promise<Response> {
-    return fetch(buildUrl(this.url!, "/report/ui"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-  }
-
   fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console

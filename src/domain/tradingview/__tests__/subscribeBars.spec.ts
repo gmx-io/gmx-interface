@@ -69,10 +69,6 @@ class MockOracleKeeperFetcher implements OracleFetcher {
     } satisfies RawIncentivesStats);
   }
 
-  fetchPostReport(): Promise<Response> {
-    return Promise.resolve(new Response());
-  }
-
   fetchPostFeedback(): Promise<Response> {
     return Promise.resolve(new Response());
   }
