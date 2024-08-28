@@ -56,7 +56,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
     fetcher
       .fetchPostFeedback({
         feedback: {
-          account,
+          account: "",
           rating: undefined,
           isGeneralFeedback: true,
           monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, false)!,
@@ -78,7 +78,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
         setIsSubmitting(false);
         setError(error);
       });
-  }, [account, accountStats?.volume, feedback, feedbackQuestion, fetcher, lastMonthAccountStats?.volume, setIsVisible]);
+  }, [accountStats?.volume, feedback, feedbackQuestion, fetcher, lastMonthAccountStats?.volume, setIsVisible]);
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {

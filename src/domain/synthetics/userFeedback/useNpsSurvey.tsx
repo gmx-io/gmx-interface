@@ -65,7 +65,7 @@ export function useNpsSurvey() {
         .fetchPostFeedback(
           {
             feedback: {
-              account,
+              account: "",
               rating,
               isGeneralFeedback: false,
               monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, false)!,
