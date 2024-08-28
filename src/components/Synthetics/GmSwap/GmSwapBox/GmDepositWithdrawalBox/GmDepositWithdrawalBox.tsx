@@ -252,7 +252,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
    * but here marketInfo may be a Vault market
    */
   const { underlyingGmMarket, marketToken, marketTokenUsd, marketTokenAmount } = useMemo(() => {
-    const realGmMarket = isGlvMarket && selectedGlvGmMarket ? marketsInfoData[selectedGlvGmMarket] : marketInfo;
+    const realGmMarket = isGlvMarket
+      ? selectedGlvGmMarket
+        ? marketsInfoData[selectedGlvGmMarket]
+        : marketsInfoData[(marketInfo as GlvMarketInfo).markets[0].address]
+      : marketInfo;
 
     const marketToken = getTokenData(
       isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
