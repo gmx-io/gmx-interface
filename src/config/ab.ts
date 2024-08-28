@@ -1,6 +1,7 @@
+import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = "testWorkerLogic";
+type Flag = "testWorkerLogic" | "testRpcWindowFallback";
 
 type AbFlag = {
   enabled: boolean;
@@ -12,6 +13,7 @@ type AbStorage = {
 
 const abFlagsConfig: Record<Flag, number> = {
   testWorkerLogic: 0.5,
+  testRpcWindowFallback: 0.5,
 };
 
 const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];
@@ -71,4 +73,8 @@ loadAbStorage();
 
 export function getIsFlagEnabled(flag: Flag): boolean {
   return Boolean(abStorage[flag]?.enabled);
+}
+
+export function getAbFlags(): Record<Flag, boolean> {
+  return mapValues(abStorage, ({ enabled }) => enabled);
 }

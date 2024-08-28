@@ -5,7 +5,7 @@ export type GlobalMetricData = {
   isMobileMetamask: boolean;
   isWindowVisible: boolean;
   isAuthorised: boolean;
-  testWorkersLogic: boolean | undefined;
+  abFlags: Record<string, boolean>;
   isMobile: boolean;
   isHomeSite: boolean;
 };
@@ -146,6 +146,17 @@ export type MulticallTimeoutEvent = {
   data: {
     metricType: "rpcTimeout" | "multicallTimeout" | "workerTimeout";
     isInMainThread: boolean;
+    isFallbackRequest?: boolean;
+    errorMessage: string;
+  };
+};
+
+export type MulticallErrorEvent = {
+  event: "multicall.error";
+  isError: true;
+  data: {
+    isInMainThread: boolean;
+    isFallbackRequest?: boolean;
     errorMessage: string;
   };
 };

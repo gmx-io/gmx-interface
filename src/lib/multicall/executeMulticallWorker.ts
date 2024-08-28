@@ -1,14 +1,15 @@
 import uniqueId from "lodash/uniqueId";
 
-import { PRODUCTION_PREVIEW_KEY } from "@/config/localStorage";
-import { sleep } from "@/lib/sleep";
-import { promiseWithResolvers } from "@/lib/utils";
+import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
+import { sleep } from "lib/sleep";
+import { promiseWithResolvers } from "lib/utils";
 
-import { emitMetricEvent } from "@/lib/metrics/emitMetricEvent";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { MAX_TIMEOUT } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { MetricEventParams, MulticallTimeoutEvent } from "@/lib/metrics";
+import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
+import { getAbFlags } from "config/ab";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
@@ -54,6 +55,7 @@ export async function executeMulticallWorker(
     id,
     chainId,
     request,
+    abFlags: getAbFlags(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 

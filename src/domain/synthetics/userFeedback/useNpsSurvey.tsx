@@ -1,4 +1,4 @@
-import { RatingToast } from "@/components/RatingToast/RatingToast";
+import { RatingToast } from "components/RatingToast/RatingToast";
 import { NPS_SURVEY_SHOWN_TIME_KEY } from "config/localStorage";
 import {
   selectAccountStats,
@@ -10,13 +10,13 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useOracleKeeperFetcher } from "../tokens";
-import { useChainId } from "@/lib/chains";
-import { formatAmountForMetrics } from "@/lib/metrics";
-import { USD_DECIMALS } from "@/config/factors";
-import { useShowDebugValues } from "@/context/SyntheticsStateContext/hooks/settingsHooks";
-import useWallet from "@/lib/wallets/useWallet";
+import { useChainId } from "lib/chains";
+import { formatAmountForMetrics } from "lib/metrics";
+import { USD_DECIMALS } from "config/factors";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import useWallet from "lib/wallets/useWallet";
 import { differenceInDays } from "date-fns";
-import { useSyntheticsEvents } from "@/context/SyntheticsEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { OrderType } from "domain/synthetics/orders";
 import { useUnmount } from "react-use";
 

@@ -1,6 +1,6 @@
 import { ResolutionString } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "domain/synthetics/tokens";
+import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "lib/oracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { ethers } from "ethers";
 import noop from "lodash/noop";
@@ -74,6 +74,14 @@ class MockOracleKeeperFetcher implements OracleFetcher {
   }
 
   fetchPostEvent(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
+
+  fetchPostCounter(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
+
+  fetchPostTiming(): Promise<Response> {
     return Promise.resolve(new Response());
   }
 }

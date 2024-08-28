@@ -2,7 +2,7 @@ import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import { sleep } from "lib/sleep";
-import { OracleFetcher } from "../tokens/useOracleKeeperFetcher";
+import { OracleFetcher } from "lib/oracleKeeperFetcher";
 
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
