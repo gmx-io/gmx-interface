@@ -350,7 +350,7 @@ export default function PositionsList(props) {
 
                                   {!hideActions && (
                                     <span>
-                                      <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                                      <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
                                     </span>
                                   )}
                                 </>
@@ -685,7 +685,7 @@ export default function PositionsList(props) {
                             {!hideActions && (
                               <>
                                 <br />
-                                <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                                <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
                               </>
                             )}
                           </>

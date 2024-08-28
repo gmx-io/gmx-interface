@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import cx from "classnames";
 import "./Footer.css";
 import logoImg from "img/ic_gmx_footer.svg";
@@ -6,11 +6,14 @@ import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { getFooterLinks, SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
+import { Trans } from "@lingui/macro";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
   const isHome = isHomeSite();
+  const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
   return (
     <div className="Footer">
@@ -62,8 +65,16 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
               </NavLink>
             );
           })}
+          {!isHome && (
+            <div className="Footer-link" onClick={() => setIsUserFeedbackModalVisible(true)}>
+              <Trans>Leave feedback</Trans>
+            </div>
+          )}
         </div>
       </div>
+      {!isHome && (
+        <UserFeedbackModal isVisible={isUserFeedbackModalVisible} setIsVisible={setIsUserFeedbackModalVisible} />
+      )}
     </div>
   );
 }

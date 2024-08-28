@@ -3,7 +3,7 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-export type PeriodAccountStats = {
+export type AccountStats = {
   closedCount: number;
   cumsumCollateral: bigint;
   cumsumSize: bigint;
@@ -13,30 +13,24 @@ export type PeriodAccountStats = {
   realizedFees: bigint;
   realizedPnl: bigint;
   realizedPriceImpact: bigint;
-  startUnrealizedFees: bigint;
-  startUnrealizedPnl: bigint;
-  startUnrealizedPriceImpact: bigint;
   sumMaxSize: bigint;
   volume: bigint;
   wins: number;
   id: string;
 };
 
-export function usePeriodAccountStats(
-  chainId: number,
-  params: { account?: string; from?: number; to?: number; enabled?: boolean }
-) {
-  const { account, from, to, enabled = true } = params;
+export function useAccountStats(chainId: number, params: { account?: string; enabled?: boolean }) {
+  const { account, enabled = true } = params;
 
-  const { data, error, isLoading } = useSWR<PeriodAccountStats | undefined>(
-    enabled && account ? ["usePeriodAccountStats", from, to, chainId, account] : null,
+  const { data, error, isLoading } = useSWR<AccountStats | undefined>(
+    enabled && account ? ["useAccountStats", chainId, account] : null,
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
         const res = await client?.query({
           query: gql`
-            query PeriodAccountStats($account: String!, $from: Int, $to: Int) {
-              periodAccountStats(where: { id_eq: $account, from: $from, to: $to }) {
+            query AccountStats($account: String!) {
+              accountStats(where: { id_eq: $account }) {
                 closedCount
                 cumsumCollateral
                 cumsumSize
@@ -46,9 +40,6 @@ export function usePeriodAccountStats(
                 realizedFees
                 realizedPnl
                 realizedPriceImpact
-                startUnrealizedFees
-                startUnrealizedPnl
-                startUnrealizedPriceImpact
                 sumMaxSize
                 volume
                 wins
@@ -56,11 +47,11 @@ export function usePeriodAccountStats(
               }
             }
           `,
-          variables: { account, from, to },
+          variables: { account },
           fetchPolicy: "no-cache",
         });
 
-        const stats = res?.data?.periodAccountStats[0];
+        const stats = res?.data?.accountStats[0];
 
         if (!stats) {
           return undefined;
@@ -76,9 +67,6 @@ export function usePeriodAccountStats(
           realizedFees: BigInt(stats.realizedFees),
           realizedPnl: BigInt(stats.realizedPnl),
           realizedPriceImpact: BigInt(stats.realizedPriceImpact),
-          startUnrealizedFees: BigInt(stats.startUnrealizedFees),
-          startUnrealizedPnl: BigInt(stats.startUnrealizedPnl),
-          startUnrealizedPriceImpact: BigInt(stats.startUnrealizedPriceImpact),
           sumMaxSize: BigInt(stats.sumMaxSize),
           volume: BigInt(stats.volume),
           wins: stats.wins,

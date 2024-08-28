@@ -73,10 +73,10 @@ export function PositionList(p: Props) {
               <Trans>Position</Trans>
             </th>
             <th>
-              <Trans>Net Value</Trans>
+              <Trans>Size</Trans>
             </th>
             <th>
-              <Trans>Size</Trans>
+              <Trans>Net Value</Trans>
             </th>
             <th>
               <Trans>Collateral</Trans>

@@ -8,6 +8,7 @@ import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMeta
 import useWallet from "lib/wallets/useWallet";
 import { useEffect } from "react";
 import { metrics } from "./Metrics";
+import { isHomeSite } from "../legacy";
 
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
@@ -39,6 +40,7 @@ export function useConfigureMetrics() {
       isAuthorised: active,
       testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
       isMobile: getIsMobileUserAgent(),
+      isHomeSite: isHomeSite(),
     });
   }, [active, isMobileMetamask, isWindowVisible]);
 }

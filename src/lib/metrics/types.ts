@@ -7,6 +7,7 @@ export type GlobalMetricData = {
   isAuthorised: boolean;
   testWorkersLogic: boolean | undefined;
   isMobile: boolean;
+  isHomeSite: boolean;
 };
 
 export enum OrderStage {
@@ -149,6 +150,13 @@ export type MulticallTimeoutEvent = {
   };
 };
 
+// Error tracking
+export type ErrorEvent = {
+  event: "error";
+  isError: true;
+  data: ErrorMetricData;
+};
+
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
@@ -257,4 +265,5 @@ export type ErrorMetricData = {
   reason?: string;
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
+  errorSource?: string;
 };

@@ -5,10 +5,6 @@
   bottom: auto;
 }
 
-.PositionSeller-token-selector .Modal .Modal-content .Modal-body {
-  max-height: calc(80vh - 13rem);
-}
-
 .PositionSeller-token-selector.warning .TokenSelector-box {
   color: rgb(247, 147, 26);
 }

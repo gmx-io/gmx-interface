@@ -18,6 +18,10 @@ const colors = {
     700: "#3a3f798f",
     900: "#1e203e",
   },
+  "pale-blue": {
+    100: "rgba(180,187,255, 0.1)",
+    600: "rgba(180,187,255, 0.6)",
+  },
   slate: {
     100: "#a0a3c4",
     500: "#3e4361",
@@ -82,10 +86,7 @@ function injectColorsPlugin({ addBase, theme }) {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
