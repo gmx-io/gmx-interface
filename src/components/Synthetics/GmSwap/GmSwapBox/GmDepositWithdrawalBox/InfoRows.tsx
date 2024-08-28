@@ -37,6 +37,7 @@ export function InfoRows({
   onMarketChange,
   onGmPoolChange,
   selectedGlvGmMarket,
+  disablePoolSelector,
 }: {
   indexName: string | undefined;
   marketAddress: string | undefined;
@@ -52,6 +53,7 @@ export function InfoRows({
   onMarketChange: (marketAddress: string) => void;
   onGmPoolChange?: (marketAddress: string) => void;
   selectedGlvGmMarket?: string;
+  disablePoolSelector?: boolean;
 }) {
   const gmTokenFavoritesContext = useGmTokensFavorites();
   const markets = values(useSelector(selectAllMarketsData));
@@ -82,6 +84,7 @@ export function InfoRows({
                 marketTokensData={marketTokensData}
                 isSideMenu
                 showBalances
+                disablePoolSelector={disablePoolSelector}
                 onSelectGmMarket={onSelectGmMarket}
                 {...gmTokenFavoritesContext}
               />

@@ -29,6 +29,7 @@ type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
   glvMarketInfo?: GlvMarketInfo;
   onSelectGmMarket?: (market: MarketInfo) => void;
+  disablePoolSelector?: boolean;
 };
 
 export function GmPoolsSelector({
@@ -48,6 +49,7 @@ export function GmPoolsSelector({
   setFavoriteTokens,
   tab,
   setTab,
+  disablePoolSelector,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -107,7 +109,11 @@ export function GmPoolsSelector({
   }, [getMarketState, marketTokensData, markets, glvMarketInfo]);
 
   const selectedPool = useMemo(
-    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
+    // @todo pick best pool
+    () =>
+      !selectedMarketAddress
+        ? marketsOptions[0]
+        : marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -166,9 +172,9 @@ export function GmPoolsSelector({
 
     if (glvMarketInfo) {
       return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="TokenSelector-box" onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}>
           {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-          <BiChevronDown className="TokenSelector-caret" />
+          {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
         </div>
       );
     }

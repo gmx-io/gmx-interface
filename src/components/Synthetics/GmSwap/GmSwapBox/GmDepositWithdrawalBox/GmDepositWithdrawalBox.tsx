@@ -237,10 +237,15 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
               const token = marketTokensData?.[m.address];
               const market = marketsInfoData[m.address];
 
+              if (market.isDisabled) {
+                return;
+              }
+
               if (token) {
                 return {
                   ...token,
-                  name: market.name,
+                  name: `${market.indexToken.symbol}: ${market.name}`,
+                  symbol: market.indexToken.symbol,
                 };
               }
             })
@@ -334,8 +339,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     tokensData,
     isGlv: isGlvMarket,
     glvMarket: marketInfo as GlvMarketInfo,
-    // @todo
-    isMarketTokenDeposit: false,
+    isMarketTokenDeposit: Boolean(longTokenInputState?.isGm),
   });
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
@@ -596,6 +600,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     [marketAddress, onMarketChange, sortedMarketsInfoByIndexToken]
   );
 
+  useEffect(() => {
+    const isGmAsLongSelected = longTokenInputState?.isGm;
+
+    if (isGmAsLongSelected) {
+      onSelectGlvGmMarket?.(longTokenInputState?.address);
+    }
+  }, [longTokenInputState, onSelectGlvGmMarket]);
+
   useUpdateByQueryParams({
     operation,
     setOperation: onSetOperation,
@@ -721,6 +733,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
           marketInfo={marketInfo}
           executionFee={executionFee}
           isHighPriceImpact={isHighPriceImpact}
+          disablePoolSelector={longTokenInputState?.isGm}
           selectedGlvGmMarket={selectedGlvGmMarket}
           isHighPriceImpactAccepted={isHighPriceImpactAccepted}
           setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}

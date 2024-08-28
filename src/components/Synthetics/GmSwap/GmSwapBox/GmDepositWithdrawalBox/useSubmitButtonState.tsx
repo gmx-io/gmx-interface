@@ -1,6 +1,6 @@
+import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { getContract } from "config/contracts";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -24,7 +24,6 @@ import { useCallback, useMemo, useState } from "react";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useFees } from "./useFees";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
