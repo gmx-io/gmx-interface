@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { MarketInfo } from "domain/synthetics/markets/types";
-import { TokenData } from "domain/synthetics/tokens";
+import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types";
@@ -16,6 +16,7 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount,
   uiFeeFactor,
   focusedInput,
+  marketTokensData,
 }: {
   isDeposit: boolean;
   isWithdrawal: boolean;
@@ -25,6 +26,7 @@ export function useDepositWithdrawalAmounts({
     | {
         address: string;
         amount?: bigint | undefined;
+        isGm?: boolean;
       }
     | undefined;
   shortTokenInputState:
@@ -36,12 +38,13 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount: bigint;
   uiFeeFactor: bigint;
   focusedInput: string;
+  marketTokensData?: TokensData;
 }): DepositAmounts | WithdrawalAmounts | undefined {
   const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
 
   const amounts = useMemo(() => {
     if (isDeposit) {
-      if (!marketInfo || !marketToken) {
+      if (!marketInfo || !marketToken || !marketTokensData) {
         return undefined;
       }
 
@@ -56,7 +59,7 @@ export function useDepositWithdrawalAmounts({
       return getDepositAmounts({
         marketInfo,
         marketToken,
-        longToken: marketInfo.longToken,
+        longToken: longTokenInputState?.isGm ? marketTokensData[longTokenInputState?.address] : marketInfo.longToken,
         shortToken: marketInfo.shortToken,
         longTokenAmount,
         shortTokenAmount,
@@ -102,7 +105,9 @@ export function useDepositWithdrawalAmounts({
     halfOfLong,
     isDeposit,
     isWithdrawal,
+    marketTokensData,
     longTokenInputState?.address,
+    longTokenInputState?.isGm,
     longTokenInputState?.amount,
     marketInfo,
     marketToken,

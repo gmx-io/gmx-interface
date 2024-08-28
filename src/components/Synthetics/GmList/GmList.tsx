@@ -12,7 +12,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectChainId,
   selectGlvInfoLoading,
-  selectPoolsData,
+  selectAllMarketsData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -71,7 +71,7 @@ export function GmList({
   isDeposit,
 }: Props) {
   const chainId = useSelector(selectChainId);
-  const poolsInfo = useSelector(selectPoolsData);
+  const poolsInfo = useSelector(selectAllMarketsData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
@@ -360,7 +360,7 @@ function GmListItem({
   isShiftAvailable: boolean;
 }) {
   const chainId = useSelector(selectChainId);
-  const marketsInfoData = useSelector(selectPoolsData);
+  const marketsInfoData = useSelector(selectAllMarketsData);
   const tokensData = useTokensData();
   const userEarnings = useUserEarnings(chainId);
   const daysConsidered = useDaysConsideredInMarketsApr();

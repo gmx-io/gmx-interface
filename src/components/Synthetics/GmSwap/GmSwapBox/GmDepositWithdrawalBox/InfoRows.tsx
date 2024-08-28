@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import values from "lodash/values";
 
-import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { TokensData } from "domain/synthetics/tokens";
@@ -54,7 +54,7 @@ export function InfoRows({
   selectedGlvGmMarket?: string;
 }) {
   const gmTokenFavoritesContext = useGmTokensFavorites();
-  const markets = values(useSelector(selectPoolsData));
+  const markets = values(useSelector(selectAllMarketsData));
 
   const onSelectGmMarket = useCallback(
     (marketInfo: MarketInfo) => {

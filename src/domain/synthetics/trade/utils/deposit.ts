@@ -55,6 +55,11 @@ export function getDepositAmounts(p: {
 
     values.longTokenAmount = longTokenAmount;
     values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
+
+    if (longToken.symbol === "GM") {
+      return values;
+    }
+
     values.shortTokenAmount = shortTokenAmount;
     values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
 

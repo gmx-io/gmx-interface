@@ -255,6 +255,45 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
     },
 
+    GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      debugger; // eslint-disable-line
+      const depositData: DepositCreatedEventData = {
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        marketAddress: eventData.addressItems.items.market,
+        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
+        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
+        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
+        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
+        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
+        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+        minMarketTokens: eventData.uintItems.items.minMarketTokens,
+        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+        executionFee: eventData.uintItems.items.executionFee,
+        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+        key: eventData.bytes32Items.items.key,
+      };
+
+      if (depositData.account !== currentAccount) {
+        return;
+      }
+
+      const metricId = getGMSwapMetricId(depositData);
+
+      sendOrderCreatedMetric(metricId);
+
+      setDepositStatuses((old) =>
+        setByKey(old, depositData.key, {
+          key: depositData.key,
+          data: depositData,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
+      );
+    },
+
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const depositData: DepositCreatedEventData = {
         account: eventData.addressItems.items.account,
@@ -293,6 +332,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
     },
 
+    GlvDepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      debugger; // eslint-disable-line
+      const key = eventData.bytes32Items.items.key;
+
+      if (depositStatuses[key]?.data) {
+        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
+
+        sendOrderExecutedMetric(metricId);
+
+        setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
+    },
+
     DepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
@@ -306,6 +358,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     DepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (depositStatuses[key]?.data) {
+        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
+
+        sendOrderCancelledMetric(metricId, eventData);
+
+        setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
+    },
+
+    GlvDepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      debugger; // eslint-disable-line
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {

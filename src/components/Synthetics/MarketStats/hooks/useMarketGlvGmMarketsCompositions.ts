@@ -1,4 +1,4 @@
-import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { getMaxUsdBuyableAmountInMarket, isGlv } from "domain/synthetics/markets/glv";
@@ -12,7 +12,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     isDeposit,
   });
 
-  const allMarkets = useSelector(selectPoolsData);
+  const allMarkets = useSelector(selectAllMarketsData);
 
   return useMemo(() => {
     if (!glvAddress) {

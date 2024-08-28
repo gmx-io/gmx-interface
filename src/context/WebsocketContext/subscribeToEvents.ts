@@ -73,14 +73,17 @@ export function subscribeToV2Events(
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, provider);
 
   function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
+    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
+    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
+    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 

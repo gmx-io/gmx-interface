@@ -30,6 +30,7 @@ interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
   fees: ReturnType<typeof useFees>["fees"];
   isDeposit: boolean;
+  routerAddress: string;
   marketInfo?: MarketInfo;
   vaultInfo?: GlvMarketInfo;
   marketToken: TokenData;
@@ -53,6 +54,7 @@ interface Props {
 
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
+  isHighFeeConsentError: boolean | undefined;
 
   shouldDisableValidation?: boolean;
 
@@ -71,6 +73,7 @@ const processingTextMap = {
 
 export const useSubmitButtonState = ({
   isDeposit,
+  routerAddress,
   amounts,
   fees,
   marketInfo,
@@ -97,10 +100,10 @@ export const useSubmitButtonState = ({
   executionFee,
   isGlv,
   selectedGlvGmMarket,
+  isHighFeeConsentError,
   vaultInfo,
 }: Props) => {
   const chainId = useSelector(selectChainId);
-  const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
   const { signer, account } = useWallet();
@@ -265,6 +268,7 @@ export const useSubmitButtonState = ({
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
           market: selectedGlvGmMarket,
+          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: executionFee.feeTokenAmount,
           skipSimulation: shouldDisableValidation,
           tokensData,
@@ -438,6 +442,7 @@ export const useSubmitButtonState = ({
       return {
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
+        tokensToApprove,
       };
     }
 
@@ -445,6 +450,7 @@ export const useSubmitButtonState = ({
       return {
         text: t`Loading...`,
         disabled: true,
+        tokensToApprove,
       };
     }
 
@@ -453,6 +459,7 @@ export const useSubmitButtonState = ({
         text: error,
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
+        tokensToApprove,
       };
     }
 
@@ -461,6 +468,13 @@ export const useSubmitButtonState = ({
     if (isSubmitting) {
       return {
         text: processingTextMap[operation](operationTokenSymbol),
+        disabled: true,
+      };
+    }
+
+    if (isHighFeeConsentError) {
+      return {
+        text: t`High Network Fee not yet acknowledged`,
         disabled: true,
       };
     }
@@ -479,12 +493,14 @@ export const useSubmitButtonState = ({
           other: `Pending ${symbolsText} approvals`,
         }),
         disabled: true,
+        tokensToApprove,
       };
     }
 
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
+      tokensToApprove,
     };
   }, [
     account,
@@ -502,5 +518,6 @@ export const useSubmitButtonState = ({
     marketTokensData,
     payTokenAddresses.length,
     isGlv,
+    isHighFeeConsentError,
   ]);
 };

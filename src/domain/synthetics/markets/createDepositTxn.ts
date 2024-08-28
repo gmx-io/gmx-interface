@@ -135,6 +135,7 @@ interface CreateGlvDepositParams {
   account: string;
   glv: string;
   market: string;
+  allowedSlippage: number;
 
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
@@ -185,6 +186,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
+  const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minGlvTokens);
+
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
     !isNativeLongDeposit && p.longTokenAmount > 0
@@ -207,7 +210,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
           initialShortToken: initialShortTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
-          minGlvTokens: p.minGlvTokens,
+          minGlvTokens: minGlvTokens,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
           shouldUnwrapNativeToken,
@@ -233,26 +236,24 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     });
   }
 
-  return;
-  // return callContract(chainId, contract, "multicall", [encodedPayload], {
-  //   value: wntAmount,
-  //   hideSentMsg: true,
-  //   hideSuccessMsg: true,
-  //   metricId: p.metricId,
-  //   setPendingTxns: p.setPendingTxns,
-  // }).then(() => {
-  //   debugger; // eslint-disable-line
-  //   p.setPendingDeposit({
-  //     account: p.account,
-  //     marketAddress: p.glv,
-  //     initialLongTokenAddress,
-  //     initialShortTokenAddress,
-  //     longTokenSwapPath: p.longTokenSwapPath,
-  //     shortTokenSwapPath: p.shortTokenSwapPath,
-  //     minMarketTokens: p.minGlvTokens,
-  //     shouldUnwrapNativeToken,
-  //     initialLongTokenAmount: p.longTokenAmount,
-  //     initialShortTokenAmount: p.shortTokenAmount,
-  //   });
-  // });
+  return callContract(chainId, contract, "multicall", [encodedPayload], {
+    value: wntAmount,
+    hideSentMsg: true,
+    hideSuccessMsg: true,
+    metricId: p.metricId,
+    setPendingTxns: p.setPendingTxns,
+  }).then(() => {
+    p.setPendingDeposit({
+      account: p.account,
+      marketAddress: p.glv,
+      initialLongTokenAddress,
+      initialShortTokenAddress,
+      longTokenSwapPath: p.longTokenSwapPath,
+      shortTokenSwapPath: p.shortTokenSwapPath,
+      minMarketTokens: p.minGlvTokens,
+      shouldUnwrapNativeToken,
+      initialLongTokenAmount: p.longTokenAmount,
+      initialShortTokenAmount: p.shortTokenAmount,
+    });
+  });
 }

@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
-import { selectChainId, selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -42,7 +42,7 @@ export function useUpdateByQueryParams({
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
 
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectPoolsData);
+  const marketsInfo = useSelector(selectAllMarketsData);
   const markets = useMemo(() => values(marketsInfo), [marketsInfo]);
 
   useEffect(

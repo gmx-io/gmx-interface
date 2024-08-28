@@ -7,6 +7,7 @@ import { getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthe
 import { isGlv } from "domain/synthetics/markets/glv";
 
 import { bigMath } from "lib/bigmath";
+import { bigintToNumber } from "@/lib/numbers";
 
 interface CompositionBarProps {
   marketInfo?: MarketInfo | GlvMarketInfo;
@@ -45,26 +46,33 @@ export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarPr
     ];
   }, [marketInfo, marketsInfoData]);
 
-  const sum = data.reduce((acc, { value }) => acc + (value ?? 0n), 0n);
-  const percents = data.map(({ value }) => (value === undefined || sum === 0n ? 0n : bigMath.mulDiv(value, 100n, sum)));
-
-  return (
-    <div className="relative mt-10 h-8 overflow-hidden rounded-2">
-      {data.map(({ color, value }, index) => {
-        if (value === undefined) {
-          return null;
-        }
-        const widthPc = percents[index].toString();
-        const previousWidthPc = index ? percents[index - 1]?.toString() : "0";
-
-        return (
-          <div
-            key={`comp-pc-${index}`}
-            className="absolute left-0 top-0 h-8 border-slate-800 [&:not(:last-child)]:border-r-1"
-            style={{ width: `${widthPc}%`, backgroundColor: color, left: previousWidthPc + "%" }}
-          />
-        );
-      })}
-    </div>
+  const sum = bigintToNumber(
+    data.reduce((acc, { value }) => acc + (value ?? 0n), 0n),
+    0
   );
+  const percents = data.map(({ value }) =>
+    value === undefined || sum === 0 ? 0 : (bigintToNumber(value, 0) * 100) / sum
+  );
+
+  const bars = useMemo(() => {
+    let previousWidthPc = 0;
+    return data.map(({ color, value }, index) => {
+      if (value === undefined) {
+        return null;
+      }
+      const widthPc = percents[index].toFixed(2);
+
+      previousWidthPc += index ? percents[index - 1] : 0;
+
+      return (
+        <div
+          key={`comp-pc-${index}`}
+          className="absolute left-0 top-0 h-8 border-slate-800 [&:not(:last-child)]:border-r-1"
+          style={{ width: `${widthPc}%`, backgroundColor: color, left: previousWidthPc.toFixed(2) + "%" }}
+        />
+      );
+    });
+  }, [data, percents]);
+
+  return <div className="relative mt-10 h-8 overflow-hidden rounded-2">{bars}</div>;
 }

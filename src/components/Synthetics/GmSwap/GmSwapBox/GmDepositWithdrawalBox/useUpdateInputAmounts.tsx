@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 
 import { isGlv } from "domain/synthetics/markets/glv";
 import { MarketInfo } from "domain/synthetics/markets/types";
-import { convertToTokenAmount, TokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
 
@@ -30,6 +30,7 @@ export function useUpdateInputAmounts({
         usd?: bigint | undefined;
         token?: TokenData | undefined;
         setValue: (val: string) => void;
+        isGm?: boolean;
       }
     | undefined;
   shortTokenInputState:
@@ -69,10 +70,19 @@ export function useUpdateInputAmounts({
 
           if (amounts) {
             if (isGlv(marketInfo)) {
-              const glvPrice = isDeposit
-                ? marketInfo.indexToken.prices.maxPrice
-                : marketInfo.indexToken.prices.minPrice;
-              const gmUsdAmount = amounts.marketTokenUsd;
+              const glvPrice = marketInfo.indexToken.prices.maxPrice;
+              let gmUsdAmount: undefined | bigint = 0n;
+
+              if (longTokenInputState?.isGm) {
+                gmUsdAmount = convertToUsd(
+                  amounts.longTokenAmount,
+                  longTokenInputState.token?.decimals,
+                  longTokenInputState.token?.prices.minPrice
+                );
+              } else {
+                gmUsdAmount = amounts.marketTokenUsd;
+              }
+
               const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
 
               setMarketTokenInputValue(

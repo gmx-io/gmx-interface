@@ -11,7 +11,7 @@ import { Mode, Operation } from "./types";
 import Tab from "components/Tab/Tab";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
-import { selectPoolsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlv } from "domain/synthetics/markets/glv";
 
 import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
@@ -62,7 +62,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
 
   const marketAddress = selectedMarketAddress;
 
-  const marketsInfoData = useSelector(selectPoolsData);
+  const marketsInfoData = useSelector(selectAllMarketsData);
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 

@@ -126,11 +126,10 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   try {
     const router = method === "simulateExecuteGlvDeposit" ? glvRouter : exchangeRouter;
 
-    await router.multicall(simulationPayloadData, {
+    await router.multicall.staticCall(simulationPayloadData, {
       value: p.value,
-      gasLimit: 15_000_000,
-      // blockTag: blockNumber,
-      // from: p.account,
+      blockTag: blockNumber,
+      from: p.account,
     });
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);

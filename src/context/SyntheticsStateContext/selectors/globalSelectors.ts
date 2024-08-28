@@ -17,7 +17,7 @@ export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.d
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvMarketInfo;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
-export const selectPoolsData = createSelector((q) => {
+export const selectAllMarketsData = createSelector((q) => {
   const glvMarketInfo = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
 
