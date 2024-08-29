@@ -62,9 +62,18 @@ export function getDepositAmounts(p: {
     values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
 
     /**
-     * If it's GM -> GLV deposit, then we don't apply any fees or price impact
+     * If it's GM -> GLV deposit, then don't apply any fees or price impact, just convert GM to GLV
      */
-    if (isMarketTokenDeposit) {
+    if (isMarketTokenDeposit && vaultInfo) {
+      const gmTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
+      const glvTokenAmount =
+        convertToTokenAmount(gmTokenUsd, vaultInfo.indexToken.decimals, vaultInfo.indexToken.prices.minPrice) ?? 0n;
+      const glvTokenUsd =
+        convertToUsd(glvTokenAmount, vaultInfo.indexToken.decimals, vaultInfo.indexToken.prices.minPrice) ?? 0n;
+
+      values.marketTokenAmount = glvTokenAmount;
+      values.marketTokenUsd = glvTokenUsd;
+
       return values;
     }
 

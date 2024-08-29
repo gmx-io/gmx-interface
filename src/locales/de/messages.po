@@ -2441,6 +2441,10 @@ msgstr "Min. Empfangen"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Verfügbarer Auszahlungsbetrag aus GLP. Mittel, die nicht durch aktuelle offene Positionen in Anspruch genommen werden."
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GLV liquidity"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx

@@ -7,6 +7,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useSafeState } from "lib/useSafeState";
 
 import { Mode, Operation } from "../types";
+import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 
 export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode, marketAddress: string | undefined) {
   const isDeposit = operation === Operation.Deposit;
@@ -16,10 +17,8 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
-    undefined
-  );
+  const [firstTokenAddress, setFirstTokenAddress] = useDepositWithdrawalSetFirstTokenAddress(isDeposit, marketAddress);
+
   const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "second"],
     undefined

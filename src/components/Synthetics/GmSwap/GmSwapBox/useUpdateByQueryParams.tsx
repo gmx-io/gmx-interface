@@ -30,12 +30,14 @@ export function useUpdateByQueryParams({
   setMode,
   setFirstTokenAddress,
   onSelectMarket,
+  onSelectGlvGmMarket,
 }: {
   operation: Operation;
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
   setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
+  onSelectGlvGmMarket?: (marketAddress: string) => void;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
@@ -51,6 +53,7 @@ export function useUpdateByQueryParams({
       const marketAddress = marketRaw?.toLowerCase();
 
       if (operation) {
+        debugger; // eslint-disable-line
         let finalOperation;
 
         if (operation.toLowerCase() === "buy") {
@@ -85,6 +88,7 @@ export function useUpdateByQueryParams({
       if (scroll === "1") {
         window.scrollTo({ top: 0, left: 0 });
       }
+
       if ((marketAddress || pool) && markets.length > 0) {
         if (marketAddress && isAddress(marketAddress)) {
           const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
@@ -110,6 +114,11 @@ export function useUpdateByQueryParams({
 
             if (isCurrentlyShift && !isNewMarketShiftAvailable) {
               setOperation(Operation.Deposit);
+            }
+
+            if (pool && isGlvMarket && setFirstTokenAddress && onSelectGlvGmMarket) {
+              setFirstTokenAddress(pool);
+              onSelectGlvGmMarket(pool);
             }
           }
         }
@@ -137,6 +146,7 @@ export function useUpdateByQueryParams({
       marketsInfo,
       currentOperation,
       shiftAvailableMarkets,
+      onSelectGlvGmMarket,
     ]
   );
 }

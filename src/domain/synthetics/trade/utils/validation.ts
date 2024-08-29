@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import {
   MarketInfo,
   getMaxAllowedLeverageByMinCollateralFactor,
@@ -12,14 +12,13 @@ import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "dom
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
+import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
+import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { getMaxUsdBuyableAmountInMarket, getMintableInfoGlv, isGlv } from "../../markets/glv";
+import { GlvMarketInfo } from "../../tokens/useGlvMarkets";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
-import { bigMath } from "lib/bigmath";
-import { GlvMarketInfo } from "../../tokens/useGlvMarkets";
-import { getMaxUsdBuyableAmountInMarket, getMintableInfoGlv, isGlv } from "../../markets/glv";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -549,6 +548,7 @@ export function getGmSwapError(p: {
   isHighPriceImpactAccepted: boolean;
   priceImpactUsd: bigint | undefined;
   vaultInfo?: GlvMarketInfo;
+  vaultSellableAmount?: bigint;
 }) {
   const {
     isDeposit,
@@ -569,6 +569,7 @@ export function getGmSwapError(p: {
     isHighPriceImpactAccepted,
     priceImpactUsd,
     vaultInfo,
+    vaultSellableAmount,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -669,6 +670,12 @@ export function getGmSwapError(p: {
 
     if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
       return [t`Insufficient ${shortToken?.symbol} liquidity`];
+    }
+
+    if (vaultInfo) {
+      if (marketTokenAmount > (vaultSellableAmount ?? 0n)) {
+        return [t`Insufficient GLV liquidity`];
+      }
     }
   }
 

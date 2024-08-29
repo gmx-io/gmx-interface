@@ -5,7 +5,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import {
   getNeedTokenApprove,
   getTokenData,
@@ -21,6 +21,7 @@ import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useFees } from "./useFees";
+import { getSellableInfoGlv } from "@/domain/synthetics/markets/glv";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -60,6 +61,7 @@ interface Props {
   isGlv: boolean;
   selectedGlvGmMarket?: string;
   isMarketTokenDeposit?: boolean;
+  marketsInfoData?: MarketsInfoData;
 }
 
 const processingTextMap = {
@@ -100,6 +102,7 @@ export const useSubmitButtonState = ({
   isHighFeeConsentError,
   vaultInfo,
   isMarketTokenDeposit,
+  marketsInfoData,
 }: Props) => {
   const chainId = useSelector(selectChainId);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
@@ -165,6 +168,10 @@ export const useSubmitButtonState = ({
     hasOutdatedUi,
   })[0];
 
+  const vaultSellableAmount = vaultInfo
+    ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
+    : undefined;
+
   const swapError = getGmSwapError({
     isDeposit,
     marketInfo,
@@ -184,6 +191,7 @@ export const useSubmitButtonState = ({
     isHighPriceImpact: Boolean(isHighPriceImpact),
     isHighPriceImpactAccepted,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
+    vaultSellableAmount: vaultSellableAmount?.totalAmount,
   })[0];
 
   const error = commonError || swapError;

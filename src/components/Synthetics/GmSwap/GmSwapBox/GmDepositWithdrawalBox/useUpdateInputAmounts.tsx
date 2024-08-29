@@ -1,8 +1,7 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import { isGlv } from "domain/synthetics/markets/glv";
 import { MarketInfo } from "domain/synthetics/markets/types";
-import { convertToTokenAmount, convertToUsd, TokenData } from "domain/synthetics/tokens";
+import { TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
 
@@ -83,11 +82,6 @@ export function useUpdateInputAmounts({
           if (amounts) {
             if (longToken) {
               let longTokenAmountToSet = amounts.longTokenAmount;
-
-              if (isGlv(marketInfo)) {
-                amounts.longTokenUsd;
-                // @todo
-              }
 
               longTokenInputState?.setValue(
                 longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, longToken.decimals) : ""

@@ -6,7 +6,6 @@ import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 
-import { bigMath } from "lib/bigmath";
 import { bigintToNumber } from "@/lib/numbers";
 
 interface CompositionBarProps {
@@ -68,6 +67,7 @@ export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarPr
         <div
           key={`comp-pc-${index}`}
           className="absolute left-0 top-0 h-8 border-slate-800 [&:not(:last-child)]:border-r-1"
+          // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
           style={{ width: `${widthPc}%`, backgroundColor: color, left: previousWidthPc.toFixed(2) + "%" }}
         />
       );

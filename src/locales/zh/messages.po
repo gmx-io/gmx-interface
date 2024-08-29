@@ -2441,6 +2441,10 @@ msgstr "最低已接收"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "可提取的GLP数量. 资金未被当前开仓所使用."
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GLV liquidity"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx

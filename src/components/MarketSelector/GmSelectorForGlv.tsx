@@ -172,7 +172,12 @@ export function GmPoolsSelector({
 
     if (glvMarketInfo) {
       return (
-        <div className="TokenSelector-box" onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}>
+        <div
+          className={cx("TokenSelector-box", {
+            "pointer-events-none": disablePoolSelector,
+          })}
+          onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
+        >
           {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
           {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
         </div>

@@ -112,6 +112,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
                   style={{ backgroundColor: TOKEN_COLOR_MAP[pool.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
                 <TokenIcon symbol={pool.indexToken.symbol} displaySize={24} />
@@ -141,6 +142,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
                   style={{ backgroundColor: TOKEN_COLOR_MAP[token.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
                 <TokenIcon symbol={token.symbol} displaySize={24} />

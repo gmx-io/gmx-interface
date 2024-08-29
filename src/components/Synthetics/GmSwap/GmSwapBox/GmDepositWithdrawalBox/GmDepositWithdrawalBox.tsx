@@ -35,7 +35,10 @@ import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 
+import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "@/config/contracts";
 import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
@@ -43,14 +46,11 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { isGlv } from "domain/synthetics/markets/glv";
 import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
 import { useFees } from "./useFees";
 import { useSubmitButtonState } from "./useSubmitButtonState";
-import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
-import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
-import { getContract } from "@/config/contracts";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: GlvMarketInfo }) {
   const {
@@ -395,6 +395,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     selectedGlvGmMarket,
     isHighFeeConsentError,
     isMarketTokenDeposit: isMarketTokenDeposit,
+    marketsInfoData,
   });
 
   const firstTokenShowMaxButton =
@@ -630,6 +631,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     setOperation: onSetOperation,
     setMode: onSetMode,
     onSelectMarket,
+    onSelectGlvGmMarket,
     setFirstTokenAddress,
   });
 

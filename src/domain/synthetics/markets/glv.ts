@@ -37,9 +37,18 @@ export function getMintableInfoGlv(glv: GlvMarketInfo) {
   };
 }
 
-export function getSellableInfoGlv(glv: GlvMarketInfo, marketsData?: MarketsInfoData, tokensData?: TokensData) {
+export function getSellableInfoGlv(
+  glv: GlvMarketInfo,
+  marketsData: MarketsInfoData | undefined,
+  tokensData: TokensData | undefined,
+  gmMarketAddress: string
+) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
+    if (gmMarketAddress && gmMarketAddress !== market.address) {
+      return acc;
+    }
+
     const gmMarket = marketsData?.[market.address];
 
     if (!gmMarket) {

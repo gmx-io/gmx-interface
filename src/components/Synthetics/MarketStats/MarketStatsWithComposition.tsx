@@ -1,5 +1,5 @@
-import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { useMemo } from "react";
 
 import {
@@ -26,16 +26,18 @@ import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
 import { isGlv } from "domain/synthetics/markets/glv";
+import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
-import "./MarketStats.scss";
+import { formatDateTime } from "../../../lib/dates";
+import { bigintToNumber } from "../../../lib/numbers";
+
 import { CompositionBar } from "./components/CompositionBar";
 import { CompositionTableGm } from "./components/CompositionTable";
 import { MarketDescription } from "./components/MarketDescription";
 import { useMarketMintableTokens } from "./hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
-import { useMedia } from "react-use";
-import { bigintToNumber } from "../../../lib/numbers";
-import { formatDate, formatDateTime } from "../../../lib/dates";
+
+import "./MarketStats.scss";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;

@@ -2441,6 +2441,10 @@ msgstr "최소량 수치 완료"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용되고 있지 않은 유휴 수량"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GLV liquidity"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx

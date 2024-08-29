@@ -66,6 +66,10 @@ const GLV_DEPOSIT_CREATED_HASH = ethers.id("GlvDepositCreated");
 const GLV_DEPOSIT_EXECUTED_HASH = ethers.id("GlvDepositExecuted");
 const GLV_DEPOSIT_CANCELLED_HASH = ethers.id("GlvDepositCancelled");
 
+const GLV_WITHDRAWAL_CREATED_HASH = ethers.id("GlvWithdrawalCreated");
+const GLV_WITHDRAWAL_EXECUTED_HASH = ethers.id("GlvWithdrawalExecuted");
+const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
+
 export function subscribeToV2Events(
   chainId: number,
   provider: Provider,
@@ -228,8 +232,9 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
           GLV_DEPOSIT_CREATED_HASH,
           GLV_DEPOSIT_CANCELLED_HASH,
           GLV_DEPOSIT_EXECUTED_HASH,
-
-          // glv withdrawals
+          GLV_WITHDRAWAL_CREATED_HASH,
+          GLV_WITHDRAWAL_EXECUTED_HASH,
+          GLV_WITHDRAWAL_CANCELLED_HASH,
         ],
         null,
         addressHash,

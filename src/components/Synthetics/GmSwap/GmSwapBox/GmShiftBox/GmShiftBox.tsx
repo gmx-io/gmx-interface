@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectAllMarketsData,
   selectChainId,
@@ -29,6 +29,10 @@ import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
 
+import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "@/config/contracts";
+import { getTokenData } from "@/domain/synthetics/tokens";
+import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
@@ -37,11 +41,8 @@ import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow
 import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
-import { getTokenData } from "@/domain/synthetics/tokens";
-import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "@/config/contracts";
-import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
-import { isGlv } from "@/domain/synthetics/markets/glv";
+import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
+import { useRedirectToBuyOnShiftToGlv } from "./useRedirectToBuyOnShiftToGlv";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -153,6 +154,18 @@ export function GmShiftBox({
 
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
+  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, toMarketAddress);
+
+  useRedirectToBuyOnShiftToGlv({
+    toMarketAddress,
+    toMarketInfo,
+    selectedMarketInfo,
+    onSelectMarket,
+    onSelectGlvGmMarket,
+    setFirstTokenAddressForDeposit,
+    onSetOperation,
+  });
+
   useUpdateByQueryParams({
     operation: Operation.Shift,
     onSelectMarket,
@@ -198,18 +211,10 @@ export function GmShiftBox({
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
-      debugger; // eslint-disable-line
-      if (isGlv(marketInfo) && selectedMarketInfo?.marketTokenAddress) {
-        onSelectMarket(marketInfo.marketTokenAddress);
-        onSelectGlvGmMarket?.(selectedMarketInfo?.marketTokenAddress);
-        onSetOperation(Operation.Deposit);
-        return;
-      }
-
       setToMarketAddress(marketInfo.marketTokenAddress);
       handleClearValues();
     },
-    [handleClearValues, onSetOperation, onSelectMarket, onSelectGlvGmMarket]
+    [handleClearValues]
   );
 
   return (

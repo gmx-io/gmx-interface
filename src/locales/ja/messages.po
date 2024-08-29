@@ -2441,6 +2441,10 @@ msgstr "最低受け取り済"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLPから引き出し可能な金額。現在オープンなポジションで利用されていない資金。"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GLV liquidity"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
