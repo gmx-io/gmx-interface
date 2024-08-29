@@ -127,6 +127,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       ) : (
         <GmShiftBox
           selectedMarketAddress={selectedMarketAddress}
+          onSelectGlvGmMarket={onSelectGlvGmMarket}
           onSelectMarket={onSelectMarket}
           onSetMode={onSetMode}
           onSetOperation={onSetOperation}

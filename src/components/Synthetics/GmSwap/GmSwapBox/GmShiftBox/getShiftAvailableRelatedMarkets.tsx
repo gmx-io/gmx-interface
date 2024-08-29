@@ -1,12 +1,14 @@
+import { isGlv } from "@/domain/synthetics/markets/glv";
+import type { AllMarketsInfoData, MarketInfo } from "domain/synthetics/markets/types";
+
 import { EMPTY_ARRAY } from "lib/objects";
-import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 
 export function getShiftAvailableRelatedMarkets({
   marketsInfoData,
   sortedMarketsInfoByIndexToken,
   marketTokenAddress,
 }: {
-  marketsInfoData: MarketsInfoData | undefined;
+  marketsInfoData: AllMarketsInfoData | undefined;
   sortedMarketsInfoByIndexToken: MarketInfo[];
   marketTokenAddress?: string;
 }) {
@@ -27,11 +29,25 @@ export function getShiftAvailableRelatedMarkets({
   const longTokenAddress = currentMarketInfo.longTokenAddress;
   const shortTokenAddress = currentMarketInfo.shortTokenAddress;
 
-  return sortedMarketsInfoByIndexToken.filter((marketInfo) => {
+  const gmToGmShiftRelatedMarkets = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
+    if (isGlv(marketInfo)) {
+      return false;
+    }
+
     const isSame = marketInfo.marketTokenAddress === marketTokenAddress;
     const isRelated =
       marketInfo.longTokenAddress === longTokenAddress && marketInfo.shortTokenAddress === shortTokenAddress;
 
     return !isSame && isRelated;
   });
+
+  const relatedGlvMarkets = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
+    if (isGlv(marketInfo)) {
+      return marketInfo.markets.some((market) => market.address === marketTokenAddress);
+    }
+
+    return false;
+  });
+
+  return [...gmToGmShiftRelatedMarkets, ...relatedGlvMarkets];
 }

@@ -30,10 +30,10 @@ export function getMintableInfoGlv(glv: GlvMarketInfo) {
     mintableAmount: (amountUsd / glvPriceUsd) * 10n ** BigInt(glv.indexToken.decimals),
     mintableUsd: amountUsd,
     // @todo
-    longDepositCapacityUsd: undefined,
-    shortDepositCapacityUsd: undefined,
-    longDepositCapacityAmount: undefined,
-    shortDepositCapacityAmount: undefined,
+    longDepositCapacityUsd: 0n,
+    shortDepositCapacityUsd: 0n,
+    longDepositCapacityAmount: 0n,
+    shortDepositCapacityAmount: 0n,
   };
 }
 

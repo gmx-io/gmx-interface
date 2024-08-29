@@ -71,7 +71,7 @@ export function GmList({
   isDeposit,
 }: Props) {
   const chainId = useSelector(selectChainId);
-  const poolsInfo = useSelector(selectAllMarketsData);
+  const marketsInfo = useSelector(selectAllMarketsData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
@@ -86,10 +86,10 @@ export function GmList({
     [shiftAvailableMarkets]
   );
 
-  const isLoading = !poolsInfo || !marketTokensData || glvsLoading;
+  const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
 
   const filteredGmTokens = useFilterSortPools({
-    poolsInfo,
+    marketsInfo,
     marketTokensData,
     orderBy,
     direction,
@@ -233,7 +233,7 @@ export function GmList({
 }
 
 function useFilterSortPools({
-  poolsInfo,
+  marketsInfo,
   marketTokensData,
   orderBy,
   direction,
@@ -244,7 +244,7 @@ function useFilterSortPools({
   searchText,
   tokensData,
 }: {
-  poolsInfo: AllMarketsInfoData | undefined;
+  marketsInfo: AllMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
   orderBy: SortField;
   direction: SortDirection;
@@ -258,17 +258,17 @@ function useFilterSortPools({
   const chainId = useSelector(selectChainId);
 
   const sortedTokens = useMemo(() => {
-    if (!poolsInfo || !marketTokensData) {
+    if (!marketsInfo || !marketTokensData) {
       return [];
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault(poolsInfo, marketTokensData);
+      return sortGmTokensDefault(marketsInfo, marketTokensData);
     }
 
     return sortGmTokensByField({
       chainId,
-      poolsInfo,
+      marketsInfo,
       marketTokensData,
       orderBy,
       direction,
@@ -281,7 +281,7 @@ function useFilterSortPools({
     chainId,
     direction,
     marketTokensData,
-    poolsInfo,
+    marketsInfo,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     glvMarketsTokensApyData,
@@ -295,7 +295,7 @@ function useFilterSortPools({
     }
 
     return sortedTokens.filter((token) => {
-      const market = getByKey(poolsInfo, token?.address)!;
+      const market = getByKey(marketsInfo, token?.address)!;
       const indexToken = isGlv(market)
         ? market.indexToken
         : getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -337,7 +337,7 @@ function useFilterSortPools({
             isAddressEqual(shortTokenAddress as Address, searchText)))
       );
     });
-  }, [poolsInfo, searchText, sortedTokens, tokensData]);
+  }, [marketsInfo, searchText, sortedTokens, tokensData]);
 
   return filteredTokens;
 }
@@ -387,7 +387,7 @@ function GmListItem({
       <Button
         className="w-full"
         variant="secondary"
-        disabled={isGlvMarket}
+        disabled={!isShiftAvailable}
         to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
       >
         <Trans>Shift</Trans>

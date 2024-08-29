@@ -5,6 +5,7 @@ import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectAllMarketsData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -33,15 +34,19 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { GmConfirmationBox } from "../../GmConfirmationBox/GmConfirmationBox";
 import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
+import { getTokenData } from "@/domain/synthetics/tokens";
+import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "@/config/contracts";
+import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
+import { isGlv } from "@/domain/synthetics/markets/glv";
 
 export function GmShiftBox({
   selectedMarketAddress,
   onSelectMarket,
-
+  onSelectGlvGmMarket,
   onSetMode,
   onSetOperation,
 }: {
@@ -49,26 +54,27 @@ export function GmShiftBox({
   onSelectMarket: (marketAddress: string) => void;
   onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
+  onSelectGlvGmMarket?: (marketAddress: string) => void;
 }) {
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
   const [toMarketText, setToMarketText] = useState("");
   const gmTokenFavoritesContext = useGmTokensFavorites();
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
-  const [isConfirmationBoxVisible, setIsConfirmationBoxVisible] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const chainId = useSelector(selectChainId);
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
-  const marketsInfoData = useMarketsInfoData();
+  const marketsInfoData = useSelector(selectAllMarketsData);
   const tokensData = useTokensData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     marketsInfoData,
     depositMarketTokensData
   );
+
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableRelatedMarkets = useShiftAvailableRelatedMarkets(
     marketsInfoData,
@@ -111,6 +117,11 @@ export function GmShiftBox({
   const toTokenShowDollarAmount =
     amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? formatUsd(amounts.toTokenUsd) : "";
 
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
+
   const submitState = useShiftSubmitState({
     selectedMarketInfo,
     selectedToken,
@@ -120,8 +131,13 @@ export function GmShiftBox({
     fees,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
-    setIsConfirmationBoxVisible,
     shouldDisableValidationForTesting,
+    tokensData,
+    marketTokenUsd: amounts?.fromTokenUsd,
+    executionFee,
+    routerAddress,
+    payTokenAddresses: [selectedToken?.address ?? ""],
+    isHighFeeConsentError,
   });
 
   useUpdateMarkets({
@@ -147,7 +163,7 @@ export function GmShiftBox({
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      submitState.onSubmit();
+      submitState.onSubmit?.();
     },
     [submitState]
   );
@@ -182,15 +198,19 @@ export function GmShiftBox({
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
+      debugger; // eslint-disable-line
+      if (isGlv(marketInfo) && selectedMarketInfo?.marketTokenAddress) {
+        onSelectMarket(marketInfo.marketTokenAddress);
+        onSelectGlvGmMarket?.(selectedMarketInfo?.marketTokenAddress);
+        onSetOperation(Operation.Deposit);
+        return;
+      }
+
       setToMarketAddress(marketInfo.marketTokenAddress);
       handleClearValues();
     },
-    [handleClearValues]
+    [handleClearValues, onSetOperation, onSelectMarket, onSelectGlvGmMarket]
   );
-
-  const handleSubmittedOrClosed = useCallback(() => {
-    setIsConfirmationBoxVisible(false);
-  }, []);
 
   return (
     <>
@@ -267,27 +287,34 @@ export function GmShiftBox({
           )}
         </ExchangeInfo>
 
-        <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.isDisabled}>
+        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+          <div>
+            {submitState.tokensToApprove.map((address) => {
+              const token = getTokenData(tokensData, address)!;
+              let marketTokenData =
+                address === selectedToken?.address && getByKey(marketsInfoData, selectedToken?.address);
+              return (
+                <div key={address}>
+                  <ApproveTokenButton
+                    key={address}
+                    tokenAddress={address}
+                    tokenSymbol={marketTokenData ? `GM: ${marketTokenData.name}` : token.assetSymbol ?? token.symbol}
+                    spenderAddress={routerAddress}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {highExecutionFeeAcknowledgement ? (
+          <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
+        ) : null}
+
+        <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
           {submitState.text}
         </Button>
       </form>
-
-      <GmConfirmationBox
-        isVisible={isConfirmationBoxVisible}
-        fromMarketToken={selectedToken}
-        fromMarketTokenAmount={amounts?.fromTokenAmount ?? 0n}
-        fromMarketTokenUsd={amounts?.fromTokenUsd ?? 0n}
-        marketToken={toToken}
-        marketTokenAmount={amounts?.toTokenAmount ?? 0n}
-        marketTokenUsd={amounts?.toTokenUsd ?? 0n}
-        fees={fees!}
-        error={submitState.error}
-        operation={Operation.Shift}
-        executionFee={executionFee}
-        onSubmitted={handleSubmittedOrClosed}
-        onClose={handleSubmittedOrClosed}
-        shouldDisableValidation={shouldDisableValidationForTesting}
-      />
     </>
   );
 }

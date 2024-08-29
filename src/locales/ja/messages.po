@@ -1666,6 +1666,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
@@ -2864,6 +2865,10 @@ msgstr ""
 msgid "Stake failed."
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+msgid "Submitting..."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -3852,6 +3857,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
@@ -5887,6 +5893,10 @@ msgstr ""
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "Buy / Sell GLP"
 msgstr "GLPの購入/売却"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max GM mintable amount exceeded"
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"

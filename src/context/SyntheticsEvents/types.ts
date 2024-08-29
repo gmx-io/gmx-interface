@@ -100,6 +100,7 @@ export type PendingDepositData = {
   initialShortTokenAmount: bigint;
   minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
+  isShift?: boolean;
 };
 
 export type WithdrawalCreatedEventData = {

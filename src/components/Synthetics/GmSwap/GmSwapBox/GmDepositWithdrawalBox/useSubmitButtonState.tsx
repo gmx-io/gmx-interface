@@ -1,20 +1,11 @@
 import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import {
-  createDepositTxn,
-  createGlvDepositTxn,
-  createGlvWithdrawalTxn,
-  createWithdrawalTxn,
-  MarketInfo,
-} from "domain/synthetics/markets";
-import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
+import { MarketInfo } from "domain/synthetics/markets";
 import {
   getNeedTokenApprove,
   getTokenData,
@@ -23,14 +14,13 @@ import {
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 import uniq from "lodash/uniq";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
+import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useFees } from "./useFees";
-import { ethers, ZeroAddress } from "ethers";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -114,11 +104,25 @@ export const useSubmitButtonState = ({
   const chainId = useSelector(selectChainId);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
-  const { signer, account } = useWallet();
-  const { setPendingDeposit, setPendingWithdrawal, setPendingShift } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { account } = useWallet();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
+    marketInfo,
+    marketToken,
+    operation,
+    longToken,
+    longTokenAmount,
+    shortToken,
+    shortTokenAmount,
+    marketTokenAmount,
+    shouldDisableValidation,
+    tokensData,
+    executionFee,
+    isGlv,
+    selectedGlvGmMarket,
+    vaultInfo,
+    isMarketTokenDeposit,
+  });
 
   const onConnectAccount = useCallback(() => {
     openConnectModal?.();
@@ -164,6 +168,7 @@ export const useSubmitButtonState = ({
   const swapError = getGmSwapError({
     isDeposit,
     marketInfo,
+    vaultInfo,
     marketToken: isDeposit ? marketToken : vaultInfo?.indexToken,
     longToken: isDeposit ? longToken : vaultInfo?.indexToken,
     shortToken: shortToken,
@@ -244,231 +249,6 @@ export const useSubmitButtonState = ({
       tokensAllowanceData,
     ]
   );
-
-  const onCreateDeposit = useCallback(
-    function onCreateDeposit() {
-      if (
-        !account ||
-        !executionFee ||
-        !marketToken ||
-        !marketInfo ||
-        marketTokenAmount === undefined ||
-        !tokensData ||
-        !signer
-      ) {
-        return Promise.resolve();
-      }
-      const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
-      const initialShortTokenAddress = marketInfo.isSameCollaterals
-        ? initialLongTokenAddress
-        : shortToken?.address || marketInfo.shortTokenAddress;
-
-      if (isGlv && selectedGlvGmMarket && vaultInfo) {
-        return createGlvDepositTxn(chainId, signer, {
-          account,
-          initialLongTokenAddress,
-          initialShortTokenAddress,
-          minGlvTokens: marketTokenAmount,
-          glv: vaultInfo.indexTokenAddress,
-          longTokenSwapPath: [],
-          shortTokenSwapPath: [],
-          longTokenAmount: longTokenAmount ?? 0n,
-          shortTokenAmount: shortTokenAmount ?? 0n,
-          market: selectedGlvGmMarket,
-          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-          executionFee: executionFee.feeTokenAmount,
-          skipSimulation: shouldDisableValidation,
-          tokensData,
-          setPendingTxns,
-          setPendingDeposit,
-          isMarketTokenDeposit: isMarketTokenDeposit ?? false,
-        });
-      }
-
-      return createDepositTxn(chainId, signer, {
-        account,
-        initialLongTokenAddress,
-        initialShortTokenAddress,
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
-        longTokenAmount: longTokenAmount ?? 0n,
-        shortTokenAmount: shortTokenAmount ?? 0n,
-        marketTokenAddress: marketToken.address,
-        minMarketTokens: marketTokenAmount,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-        skipSimulation: shouldDisableValidation,
-        tokensData,
-        setPendingTxns,
-        setPendingDeposit,
-      });
-    },
-    [
-      account,
-      executionFee,
-      longToken,
-      longTokenAmount,
-      marketInfo,
-      marketToken,
-      marketTokenAmount,
-      shortToken,
-      shortTokenAmount,
-      signer,
-      tokensData,
-      shouldDisableValidation,
-      chainId,
-      setPendingDeposit,
-      setPendingTxns,
-      selectedGlvGmMarket,
-      isGlv,
-      vaultInfo,
-      isMarketTokenDeposit,
-    ]
-  );
-
-  const onCreateWithdrawal = useCallback(
-    function onCreateWithdrawal() {
-      if (
-        !account ||
-        !marketInfo ||
-        !marketToken ||
-        !executionFee ||
-        longTokenAmount === undefined ||
-        shortTokenAmount === undefined ||
-        !tokensData ||
-        !signer
-      ) {
-        return Promise.resolve();
-      }
-
-      if (isGlv && selectedGlvGmMarket && vaultInfo) {
-        return createGlvWithdrawalTxn(chainId, signer, {
-          account,
-          initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
-          initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
-          longTokenSwapPath: [],
-          shortTokenSwapPath: [],
-          marketTokenAddress: vaultInfo.indexToken.address,
-          marketTokenAmount: marketTokenAmount!,
-          minLongTokenAmount: longTokenAmount,
-          minShortTokenAmount: shortTokenAmount,
-          executionFee: executionFee.feeTokenAmount,
-          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-          skipSimulation: shouldDisableValidation,
-          tokensData,
-          setPendingTxns,
-          setPendingWithdrawal,
-          selectedGmMarket: selectedGlvGmMarket,
-          glv: vaultInfo.marketTokenAddress,
-        });
-      }
-
-      return createWithdrawalTxn(chainId, signer, {
-        account,
-        initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
-        initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
-        marketTokenAmount: marketTokenAmount!,
-        minLongTokenAmount: longTokenAmount,
-        minShortTokenAmount: shortTokenAmount,
-        marketTokenAddress: marketToken.address,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-        tokensData,
-        skipSimulation: shouldDisableValidation,
-        setPendingTxns,
-        setPendingWithdrawal,
-      });
-    },
-    [
-      account,
-      executionFee,
-      longToken,
-      longTokenAmount,
-      marketInfo,
-      marketToken,
-      marketTokenAmount,
-      shortToken,
-      shortTokenAmount,
-      signer,
-      tokensData,
-      shouldDisableValidation,
-      chainId,
-      setPendingWithdrawal,
-      setPendingTxns,
-      selectedGlvGmMarket,
-      isGlv,
-      vaultInfo,
-    ]
-  );
-
-  const onCreateShift = useCallback(
-    function onCreateShift() {
-      if (
-        !signer ||
-        !account ||
-        !fromMarketToken ||
-        !executionFee ||
-        !marketToken ||
-        fromMarketTokenAmount === undefined ||
-        marketTokenAmount === undefined ||
-        !tokensData
-      ) {
-        return Promise.resolve();
-      }
-
-      return createShiftTxn(chainId, signer, {
-        account,
-        fromMarketTokenAddress: fromMarketToken.address,
-        fromMarketTokenAmount: fromMarketTokenAmount,
-        toMarketTokenAddress: marketToken.address,
-        minToMarketTokenAmount: marketTokenAmount,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-        skipSimulation: shouldDisableValidation,
-        tokensData,
-        setPendingTxns,
-        setPendingShift,
-      });
-    },
-    [
-      account,
-      executionFee,
-      fromMarketToken,
-      fromMarketTokenAmount,
-      marketToken,
-      marketTokenAmount,
-      signer,
-      tokensData,
-      shouldDisableValidation,
-      chainId,
-      setPendingShift,
-      setPendingTxns,
-    ]
-  );
-
-  const onSubmit = useCallback(() => {
-    setIsSubmitting(true);
-
-    let txnPromise: Promise<any>;
-
-    if (operation === Operation.Deposit) {
-      txnPromise = onCreateDeposit();
-    } else if (operation === Operation.Withdrawal) {
-      txnPromise = onCreateWithdrawal();
-    } else {
-      txnPromise = onCreateShift();
-    }
-
-    txnPromise
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  }, [operation, onCreateDeposit, onCreateShift, onCreateWithdrawal]);
 
   return useMemo(() => {
     if (!account) {

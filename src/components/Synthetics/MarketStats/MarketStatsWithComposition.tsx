@@ -34,6 +34,8 @@ import { MarketDescription } from "./components/MarketDescription";
 import { useMarketMintableTokens } from "./hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
 import { useMedia } from "react-use";
+import { bigintToNumber } from "../../../lib/numbers";
+import { formatDate, formatDateTime } from "../../../lib/dates";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -424,7 +426,11 @@ export function MarketStatsWithComposition(p: Props) {
               <CardRow
                 label={t`Last Rebalance`}
                 value={
-                  marketInfo?.shiftLastExecutedAt === 0n ? "-" : marketInfo?.shiftLastExecutedAt.toString() ?? "..."
+                  marketInfo?.shiftLastExecutedAt
+                    ? marketInfo?.shiftLastExecutedAt === 0n
+                      ? "-"
+                      : formatDateTime(bigintToNumber(marketInfo.shiftLastExecutedAt, 0))
+                    : "..."
                 }
               />
               <CardRow

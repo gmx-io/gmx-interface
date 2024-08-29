@@ -1666,6 +1666,7 @@ msgstr "GMX Alerts"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
@@ -2864,6 +2865,10 @@ msgstr "Lev."
 msgid "Stake failed."
 msgstr "Stake failed."
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+msgid "Submitting..."
+msgstr "Submitting..."
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "App"
@@ -3855,6 +3860,7 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
@@ -5893,6 +5899,10 @@ msgstr "Maximum auto top-up amount is required"
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "Buy / Sell GLP"
 msgstr "Buy / Sell GLP"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max GM mintable amount exceeded"
+msgstr "Max GM mintable amount exceeded"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"

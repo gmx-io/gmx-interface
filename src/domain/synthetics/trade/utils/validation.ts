@@ -18,6 +18,8 @@ import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers"
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 import { bigMath } from "lib/bigmath";
+import { GlvMarketInfo } from "../../tokens/useGlvMarkets";
+import { getMaxUsdBuyableAmountInMarket, getMintableInfoGlv, isGlv } from "../../markets/glv";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -546,6 +548,7 @@ export function getGmSwapError(p: {
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
   priceImpactUsd: bigint | undefined;
+  vaultInfo?: GlvMarketInfo;
 }) {
   const {
     isDeposit,
@@ -565,6 +568,7 @@ export function getGmSwapError(p: {
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     priceImpactUsd,
+    vaultInfo,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -591,7 +595,9 @@ export function getGmSwapError(p: {
 
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
-    const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+    const mintableInfo = isGlv(marketInfo)
+      ? getMintableInfoGlv(marketInfo)
+      : getMintableMarketTokens(marketInfo, marketToken);
 
     if (
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
@@ -634,6 +640,22 @@ export function getGmSwapError(p: {
 
       if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
         return [t`Insufficient ${shortToken?.symbol} balance`];
+      }
+
+      if (vaultInfo) {
+        const { mintableUsd: mintableGmUsd } = getMintableMarketTokens(marketInfo, marketToken);
+        const glvGmMarket = vaultInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
+
+        const maxMintableInMarketUsd = glvGmMarket
+          ? getMaxUsdBuyableAmountInMarket(vaultInfo.indexToken.prices.minPrice, glvGmMarket, vaultInfo)
+          : 0n;
+
+        if (
+          marketTokenUsd !== undefined &&
+          (mintableGmUsd < marketTokenUsd || maxMintableInMarketUsd < marketTokenUsd)
+        ) {
+          return [t`Max GM mintable amount exceeded`];
+        }
       }
     }
   } else {
@@ -681,6 +703,8 @@ export function getGmShiftError({
   isHighPriceImpactAccepted: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
+  const isGlvMarket = isGlv(toMarketInfo);
+
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return [t`Loading...`];
   }
@@ -708,14 +732,14 @@ export function getGmShiftError({
     return [t`Max ${fromToken?.symbol} sellable amount exceeded`];
   }
 
-  const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
+  const mintableInfo = isGlvMarket ? getMintableInfoGlv(toMarketInfo) : getMintableMarketTokens(toMarketInfo, toToken);
 
   const longExceedCapacity =
     fromLongTokenAmount !== undefined && fromLongTokenAmount > mintableInfo.longDepositCapacityAmount;
   const shortExceedCapacity =
     fromShortTokenAmount !== undefined && fromShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
-  if (longExceedCapacity || shortExceedCapacity) {
+  if (!isGlvMarket && (longExceedCapacity || shortExceedCapacity)) {
     return [t`Max ${fromToken?.symbol} buyable amount exceeded`];
   }
 
@@ -742,6 +766,11 @@ export function getGmShiftError({
 }
 
 function getIsValidPoolUsdForDeposit(marketInfo: MarketInfo) {
+  if (isGlv(marketInfo)) {
+    // @todo
+    return true;
+  }
+
   const tokenIn = getTokenIn(marketInfo);
   const poolAmount =
     tokenIn.address === marketInfo.longToken.address ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;

@@ -32,6 +32,7 @@ export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-toke
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_DEPOSIT_MARKET_GLV_KEY = "synthetics-market-glv-deposit-market";
 
+export const SYNTHETICS_GLV_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-glv-market-deposit-token";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";

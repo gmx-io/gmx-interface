@@ -131,31 +131,10 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
   });
 }
 
-interface CreateGlvDepositParams {
-  account: string;
-  glv: string;
+interface CreateGlvDepositParams extends Params {
   market: string;
-  allowedSlippage: number;
-
-  longTokenAmount: bigint;
-  shortTokenAmount: bigint;
-
-  initialLongTokenAddress: string;
-  initialShortTokenAddress: string;
-
-  shortTokenSwapPath: string[];
-  longTokenSwapPath: string[];
-
-  minGlvTokens: bigint;
-
-  executionFee: bigint;
-
-  tokensData: TokensData;
-  skipSimulation?: boolean;
-  metricId?: string;
-  setPendingTxns: (txns: any) => void;
-  setPendingDeposit: SetPendingDeposit;
   isMarketTokenDeposit: boolean;
+  isShift: boolean;
 }
 
 export async function createGlvDepositTxn(chainId: number, signer: Signer, p: CreateGlvDepositParams) {
@@ -186,7 +165,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
-  const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minGlvTokens);
+  const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
@@ -207,7 +186,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       method: "createGlvDeposit",
       params: [
         {
-          glv: p.glv,
+          glv: p.marketTokenAddress,
           market: p.market,
           receiver: p.account,
           callbackContract: ethers.ZeroAddress,
@@ -250,13 +229,14 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({
+      isShift: p.isShift,
       account: p.account,
-      marketAddress: p.glv,
+      marketAddress: p.marketTokenAddress,
       initialLongTokenAddress,
       initialShortTokenAddress,
       longTokenSwapPath: p.longTokenSwapPath,
       shortTokenSwapPath: p.shortTokenSwapPath,
-      minMarketTokens: p.minGlvTokens,
+      minMarketTokens: p.minMarketTokens,
       shouldUnwrapNativeToken,
       initialLongTokenAmount: p.longTokenAmount,
       initialShortTokenAmount: p.shortTokenAmount,

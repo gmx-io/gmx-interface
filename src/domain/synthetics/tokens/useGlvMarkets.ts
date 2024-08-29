@@ -238,8 +238,8 @@ export function useGlvMarketsInfo(
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
-          const [priceMin, usdAmountMin, totalSupply] = pricesMax;
-          const [priceMax, usdAmountMax] = pricesMin;
+          const [priceMin, totalSupply] = pricesMax;
+          const [priceMax] = pricesMin;
 
           const glvName = getGlvMarketName(chainId, glv.glvToken);
 
@@ -251,13 +251,10 @@ export function useGlvMarketsInfo(
             ...tokenConfig,
             address: glv.glvToken,
             prices: {
-              minPrice: priceMin, // 10n ** BigInt(18),
-              maxPrice: priceMax, // 10n ** BigInt(18),
+              minPrice: priceMin,
+              maxPrice: priceMax,
             },
             totalSupply: totalSupply,
-            // @todo
-            // usdAmountMax: usdAmountMax,
-            // usdAmountMin: usdAmountMin,
             balance: data[glv.glvToken + "-tokenData"].balance.returnValues[0],
             contractSymbol: data[glv.glvToken + "-tokenData"].symbol.returnValues[0],
           };
