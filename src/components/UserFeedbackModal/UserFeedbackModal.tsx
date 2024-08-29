@@ -11,6 +11,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
 
 type Props = {
   isVisible: boolean;
@@ -61,13 +62,13 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
           isGeneralFeedback: true,
           monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, false)!,
           totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, false)!,
-          answers: [
+          answers: formatAnswersByQuestionType([
             {
-              questionType: "generalFeedback",
+              questionType: QuestionType.generalFeedback,
               question: feedbackQuestion,
               answer: feedback,
             },
-          ],
+          ]),
         },
       })
       .then(() => {
