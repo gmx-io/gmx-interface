@@ -62,6 +62,10 @@ const ORDER_UPDATED_HASH = ethers.id("OrderUpdated");
 const POSITION_INCREASE_HASH = ethers.id("PositionIncrease");
 const POSITION_DECREASE_HASH = ethers.id("PositionDecrease");
 
+const GLV_DEPOSIT_CREATED_HASH = ethers.id("GlvDepositCreated");
+const GLV_DEPOSIT_EXECUTED_HASH = ethers.id("GlvDepositExecuted");
+const GLV_DEPOSIT_CANCELLED_HASH = ethers.id("GlvDepositCancelled");
+
 export function subscribeToV2Events(
   chainId: number,
   provider: Provider,
@@ -73,17 +77,14 @@ export function subscribeToV2Events(
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, provider);
 
   function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
   function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-    console.log("----------->", eventName);
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
   }
 
@@ -217,6 +218,22 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
     {
       address: getContract(chainId, "EventEmitter"),
       topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
+    },
+    // GLV DEPOSITS
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [
+        [EVENT_LOG_TOPIC, EVENT_LOG1_TOPIC, EVENT_LOG2_TOPIC],
+        [
+          GLV_DEPOSIT_CREATED_HASH,
+          GLV_DEPOSIT_CANCELLED_HASH,
+          GLV_DEPOSIT_EXECUTED_HASH,
+
+          // glv withdrawals
+        ],
+        null,
+        addressHash,
+      ],
     },
   ];
 }

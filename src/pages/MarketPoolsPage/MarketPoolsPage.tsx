@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositGlvMarketKey, getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  selectDepositMarketTokensData,
   selectAllMarketsData,
+  selectDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -16,13 +16,13 @@ import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
+import { GmList } from "@/components/Synthetics/GmList/GmList";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { GmList } from "@/components/Synthetics/GmList/GmList";
 
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 import "./MarketPoolsPage.scss";

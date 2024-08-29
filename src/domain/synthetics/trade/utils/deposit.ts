@@ -4,6 +4,7 @@ import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "doma
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
+import { GlvMarketInfo } from "../../tokens/useGlvMarkets";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
@@ -18,6 +19,8 @@ export function getDepositAmounts(p: {
   includeShortToken: boolean;
   uiFeeFactor: bigint;
   forShift?: boolean;
+  isMarketTokenDeposit: boolean;
+  vaultInfo?: GlvMarketInfo;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -31,6 +34,8 @@ export function getDepositAmounts(p: {
     includeLongToken,
     includeShortToken,
     uiFeeFactor,
+    isMarketTokenDeposit,
+    vaultInfo,
   } = p;
 
   const longTokenPrice = getMidPrice(longToken.prices);
@@ -56,7 +61,10 @@ export function getDepositAmounts(p: {
     values.longTokenAmount = longTokenAmount;
     values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
 
-    if (longToken.symbol === "GM") {
+    /**
+     * If it's GM -> GLV deposit, then we don't apply any fees or price impact
+     */
+    if (isMarketTokenDeposit) {
       return values;
     }
 
@@ -120,13 +128,35 @@ export function getDepositAmounts(p: {
     }
 
     values.marketTokenUsd = convertToUsd(values.marketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
+
+    if (vaultInfo) {
+      const glvPrice = vaultInfo.indexToken.prices.maxPrice;
+      let gmUsdAmount: undefined | bigint = 0n;
+
+      if (isMarketTokenDeposit) {
+        gmUsdAmount = convertToUsd(values.longTokenAmount, longToken?.decimals, longToken?.prices.minPrice);
+      } else {
+        gmUsdAmount = values.marketTokenUsd;
+      }
+
+      const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
+      if (glvAmount !== undefined && glvAmount > 0) {
+        values.marketTokenAmount = glvAmount;
+        values.marketTokenUsd = convertToUsd(glvAmount, vaultInfo.indexToken.decimals, glvPrice)!;
+      }
+    }
   } else if (strategy === "byMarketToken") {
     if (marketTokenAmount == 0n) {
       return values;
     }
 
     values.marketTokenAmount = marketTokenAmount;
-    values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
+    if (vaultInfo) {
+      const glvPrice = vaultInfo.indexToken.prices.minPrice;
+      values.marketTokenUsd = convertToUsd(marketTokenAmount, vaultInfo.indexToken.decimals, glvPrice)!;
+    } else {
+      values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
+    }
 
     const prevLongTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
     const prevShortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;

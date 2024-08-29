@@ -69,32 +69,9 @@ export function useUpdateInputAmounts({
           }
 
           if (amounts) {
-            if (isGlv(marketInfo)) {
-              const glvPrice = marketInfo.indexToken.prices.maxPrice;
-              let gmUsdAmount: undefined | bigint = 0n;
-
-              if (longTokenInputState?.isGm) {
-                gmUsdAmount = convertToUsd(
-                  amounts.longTokenAmount,
-                  longTokenInputState.token?.decimals,
-                  longTokenInputState.token?.prices.minPrice
-                );
-              } else {
-                gmUsdAmount = amounts.marketTokenUsd;
-              }
-
-              const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
-
-              setMarketTokenInputValue(
-                glvAmount !== undefined && glvAmount > 0
-                  ? formatAmountFree(glvAmount, marketInfo.indexToken.decimals)
-                  : ""
-              );
-            } else {
-              setMarketTokenInputValue(
-                amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
-              );
-            }
+            setMarketTokenInputValue(
+              amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+            );
           }
         } else if (focusedInput === "market") {
           if (marketTokenAmount <= 0) {

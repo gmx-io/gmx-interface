@@ -77,7 +77,7 @@ export const useFees = ({
             marketsCount: glvMarketsCount,
             initialLongTokenAmount: amounts.longTokenAmount,
             initialShortTokenAmount: amounts.shortTokenAmount,
-            isMarketTokenDeposit: isMarketTokenDeposit,
+            isMarketTokenDeposit,
           })
         : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
             marketsCount: glvMarketsCount,

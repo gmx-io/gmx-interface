@@ -34,7 +34,8 @@ type SimulateExecuteParams = {
     | "simulateExecuteWithdrawal"
     | "simulateExecuteOrder"
     | "simulateExecuteShift"
-    | "simulateExecuteGlvDeposit";
+    | "simulateExecuteGlvDeposit"
+    | "simulateExecuteGlvWithdrawal";
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
 };
@@ -69,6 +70,8 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 5n;
   const method = p.method || "simulateExecuteOrder";
+
+  const isGlv = method === "simulateExecuteGlvDeposit" || method === "simulateExecuteGlvWithdrawal";
 
   const simulationPriceParams = {
     primaryTokens: primaryTokens,
@@ -107,6 +110,10 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
     simulationPayloadData.push(
       glvRouter.interface.encodeFunctionData("simulateExecuteGlvDeposit", [nextKey, simulationPriceParams])
     );
+  } else if (method === "simulateExecuteGlvWithdrawal") {
+    simulationPayloadData.push(
+      glvRouter.interface.encodeFunctionData("simulateExecuteGlvWithdrawal", [nextKey, simulationPriceParams])
+    );
   } else {
     throw new Error(`Unknown method: ${method}`);
   }
@@ -124,7 +131,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
-    const router = method === "simulateExecuteGlvDeposit" ? glvRouter : exchangeRouter;
+    const router = isGlv ? glvRouter : exchangeRouter;
 
     await router.multicall.staticCall(simulationPayloadData, {
       value: p.value,

@@ -190,12 +190,18 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
-    !isNativeLongDeposit && p.longTokenAmount > 0
+    !isNativeLongDeposit && p.longTokenAmount > 0 && !p.isMarketTokenDeposit
       ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount > 0
+    !isNativeShortDeposit && p.shortTokenAmount > 0 && !p.isMarketTokenDeposit
       ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
+      : undefined,
+    p.isMarketTokenDeposit
+      ? {
+          method: "sendTokens",
+          params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount],
+        }
       : undefined,
     {
       method: "createGlvDeposit",
@@ -206,8 +212,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
           receiver: p.account,
           callbackContract: ethers.ZeroAddress,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          initialLongToken: initialLongTokenAddress,
-          initialShortToken: initialShortTokenAddress,
+          initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
+          initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           minGlvTokens: minGlvTokens,

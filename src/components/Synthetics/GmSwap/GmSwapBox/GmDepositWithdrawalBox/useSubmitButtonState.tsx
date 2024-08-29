@@ -7,7 +7,13 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { createDepositTxn, createGlvDepositTxn, createWithdrawalTxn, MarketInfo } from "domain/synthetics/markets";
+import {
+  createDepositTxn,
+  createGlvDepositTxn,
+  createGlvWithdrawalTxn,
+  createWithdrawalTxn,
+  MarketInfo,
+} from "domain/synthetics/markets";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import {
   getNeedTokenApprove,
@@ -24,6 +30,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useFees } from "./useFees";
+import { ethers, ZeroAddress } from "ethers";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -62,6 +69,7 @@ interface Props {
   executionFee: ExecutionFee | undefined;
   isGlv: boolean;
   selectedGlvGmMarket?: string;
+  isMarketTokenDeposit?: boolean;
 }
 
 const processingTextMap = {
@@ -101,6 +109,7 @@ export const useSubmitButtonState = ({
   selectedGlvGmMarket,
   isHighFeeConsentError,
   vaultInfo,
+  isMarketTokenDeposit,
 }: Props) => {
   const chainId = useSelector(selectChainId);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
@@ -155,8 +164,8 @@ export const useSubmitButtonState = ({
   const swapError = getGmSwapError({
     isDeposit,
     marketInfo,
-    marketToken,
-    longToken: longToken,
+    marketToken: isDeposit ? marketToken : vaultInfo?.indexToken,
+    longToken: isDeposit ? longToken : vaultInfo?.indexToken,
     shortToken: shortToken,
     marketTokenAmount,
     marketTokenUsd: amounts?.marketTokenUsd,
@@ -249,7 +258,6 @@ export const useSubmitButtonState = ({
       ) {
         return Promise.resolve();
       }
-
       const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
       const initialShortTokenAddress = marketInfo.isSameCollaterals
         ? initialLongTokenAddress
@@ -273,7 +281,7 @@ export const useSubmitButtonState = ({
           tokensData,
           setPendingTxns,
           setPendingDeposit,
-          isMarketTokenDeposit: longToken?.symbol === "GM",
+          isMarketTokenDeposit: isMarketTokenDeposit ?? false,
         });
       }
 
@@ -314,6 +322,7 @@ export const useSubmitButtonState = ({
       selectedGlvGmMarket,
       isGlv,
       vaultInfo,
+      isMarketTokenDeposit,
     ]
   );
 
@@ -330,6 +339,28 @@ export const useSubmitButtonState = ({
         !signer
       ) {
         return Promise.resolve();
+      }
+
+      if (isGlv && selectedGlvGmMarket && vaultInfo) {
+        return createGlvWithdrawalTxn(chainId, signer, {
+          account,
+          initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
+          initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
+          longTokenSwapPath: [],
+          shortTokenSwapPath: [],
+          marketTokenAddress: vaultInfo.indexToken.address,
+          marketTokenAmount: marketTokenAmount!,
+          minLongTokenAmount: longTokenAmount,
+          minShortTokenAmount: shortTokenAmount,
+          executionFee: executionFee.feeTokenAmount,
+          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+          skipSimulation: shouldDisableValidation,
+          tokensData,
+          setPendingTxns,
+          setPendingWithdrawal,
+          selectedGmMarket: selectedGlvGmMarket,
+          glv: vaultInfo.marketTokenAddress,
+        });
       }
 
       return createWithdrawalTxn(chainId, signer, {
@@ -366,6 +397,9 @@ export const useSubmitButtonState = ({
       chainId,
       setPendingWithdrawal,
       setPendingTxns,
+      selectedGlvGmMarket,
+      isGlv,
+      vaultInfo,
     ]
   );
 
@@ -481,7 +515,7 @@ export const useSubmitButtonState = ({
     if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
-        return address === marketToken.address ? "GM" : token?.assetSymbol ?? token?.symbol;
+        return address === marketToken.address ? operationTokenSymbol : token?.assetSymbol ?? token?.symbol;
       });
 
       const symbolsText = symbols.join(", ");

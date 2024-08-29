@@ -11,6 +11,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 import { SwapPricingType } from "../orders";
+import GlvRouter from "abis/GlvRouter.json";
 
 type Params = {
   account: string;
@@ -82,6 +83,81 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
       tokensData: p.tokensData,
       createMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
+      errorTitle: t`Withdrawal error.`,
+      value: wntAmount,
+      swapPricingType: SwapPricingType.TwoStep,
+    });
+  }
+
+  return callContract(chainId, contract, "multicall", [encodedPayload], {
+    value: wntAmount,
+    hideSentMsg: true,
+    hideSuccessMsg: true,
+    metricId: p.metricId,
+    setPendingTxns: p.setPendingTxns,
+  }).then(() => {
+    p.setPendingWithdrawal({
+      account: p.account,
+      marketAddress: p.marketTokenAddress,
+      marketTokenAmount: p.marketTokenAmount,
+      minLongTokenAmount,
+      minShortTokenAmount,
+      shouldUnwrapNativeToken: isNativeWithdrawal,
+    });
+  });
+}
+
+interface GlvParams extends Params {
+  glv: string;
+  selectedGmMarket: string;
+}
+
+export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p: GlvParams) {
+  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), GlvRouter.abi, signer);
+  const withdrawalVaultAddress = getContract(chainId, "GlvVault");
+
+  const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+
+  const wntAmount = p.executionFee;
+
+  const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
+  const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
+
+  const multicall = [
+    { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
+    { method: "sendTokens", params: [p.marketTokenAddress, withdrawalVaultAddress, p.marketTokenAmount] },
+    {
+      method: "createGlvWithdrawal",
+      params: [
+        {
+          receiver: p.account,
+          callbackContract: ethers.ZeroAddress,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+          market: p.selectedGmMarket,
+          glv: p.glv,
+          longTokenSwapPath: p.longTokenSwapPath,
+          shortTokenSwapPath: p.shortTokenSwapPath,
+          minLongTokenAmount,
+          minShortTokenAmount,
+          shouldUnwrapNativeToken: isNativeWithdrawal,
+          executionFee: p.executionFee,
+          callbackGasLimit: 0n,
+        },
+      ],
+    },
+  ];
+
+  const encodedPayload = multicall
+    .filter(Boolean)
+    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+
+  if (!p.skipSimulation) {
+    await simulateExecuteTxn(chainId, {
+      account: p.account,
+      primaryPriceOverrides: {},
+      tokensData: p.tokensData,
+      createMulticallPayload: encodedPayload,
+      method: "simulateExecuteGlvWithdrawal",
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
       swapPricingType: SwapPricingType.TwoStep,
